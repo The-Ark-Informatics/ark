@@ -1,0 +1,1 @@
+ALTER TABLE ix_notes ADD COLUMN "ADDEDBY" varchar(25) NULL;
