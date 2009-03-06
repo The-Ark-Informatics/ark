@@ -1,0 +1,12 @@
+BiogenixCoreDBSchema.xml
+CoreDBSchema.xml
+CUserAdminDBSchema.xml
+CBiospecimenDBSchema.xml
+CCoreDomainsDBSchema.xml
+CISearchDBSchema.xml
+CInventoryDBSchema.xml
+CPatientDBSchema.xml
+CSmartformAdminDBSchema.xml
+CSmartformDBSchema.xml
+CStudyDBSchema.xml
+CReportDBSchema.xml
