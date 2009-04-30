@@ -27,13 +27,13 @@
 
 	<domain iname="CELL" ename="ix_inv_cell" activity="inventory_view" sequence="ix_inv_cell_seq" primarykey="intCellID">
 	</domain>
-
+<!--
         <domain iname="CONSENT" ename="ix_consent" sequence="ix_consent_consentkey_seq" primarykey="intConsentKey">
 	</domain>
         
         <domain iname="CONSENTSTUDY" ename="ix_consent_study" sequence="ix_consent_study_cstudykey_seq" primarykey="intConsentStudyKey">
 	</domain>
-       
+    -->   
        <domain iname="BIOANALYSIS" ename="ix_bio_analysis" sequence="ix_bioanalysis_seq" primarykey="intBioAnalysisKey">       
        </domain>
        
@@ -53,8 +53,9 @@
         <join first_domain="BOX" second_domain="TANK" type="INNER JOIN" first_field="BOX_intTankID" second_field="TANK_intTankID" />
         <join first_domain="TANK" second_domain="SITE" type="INNER JOIN" first_field="TANK_intSiteID" second_field="SITE_intSiteID" />
         <join first_domain="BIOSPECIMEN" second_domain="BIOSPECIMEN_TRANSACTIONS" type="INNER JOIN" first_field="BIOSPECIMEN_intBiospecimenID" second_field="BIOSPECIMEN_TRANSACTIONS_intBiospecimenID" />        
-        <join first_domain="CONSENT" second_domain="PATIENT" type="INNER JOIN" first_field="PATIENT_intInternalPatientID" second_field="CONSENT_intInternalPatientID" />                
+       <!-- <join first_domain="CONSENT" second_domain="PATIENT" type="INNER JOIN" first_field="PATIENT_intInternalPatientID" second_field="CONSENT_intInternalPatientID" />                
         <join first_domain="CONSENTSTUDY" second_domain="CONSENT" type="INNER JOIN" first_field="CONSENTSTUDY_intConsentKey" second_field="CONSENT_intConsentKey" />
+        -->
         <join first_domain="BIOSPECIMEN" second_domain="STUDY" type="INNER JOIN" first_field="BIOSPECIMEN_intStudyKey" second_field="STUDY_intStudyID" />                                                         
         <join first_domain="ADMISSIONS" second_domain="PATIENT" type="INNER JOIN" first_field="ADMISSIONS_intPatientID" second_field="PATIENT_intInternalPatientID" />       
         <!--
@@ -76,7 +77,7 @@
                 <domainName name="BOX" display="RACK" />
                 <domainName name="TRAY" display="BOX" />
                 <domainName name="APPOINTMENTS" display="FOLLOW UP" />
-                <domainName name="CONSENTSTUDY" display="CONSENT DETAILS" />
+             <!--   <domainName name="CONSENTSTUDY" display="CONSENT DETAILS" />-->
         </domainDisplayNames>        
               
         

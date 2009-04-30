@@ -3167,7 +3167,7 @@ public class IntelligentSearch
        // Set the Consent and Consent Study domains if Study is selected & a domain is also selected
        if( vtSelectedDomains.isEmpty() == false  ){//&& vtSelectedStudys.size() > 0
            if(vtSelectedDomains.contains("PATIENT")){        
-               
+              /**
                 // if Consent is selected & Consent Study is not selected, and Study is selected along with Patient
                 if( vtSelectedDomains.contains("CONSENT") && !vtSelectedDomains.contains("CONSENTSTUDY") && vtSelectedStudys.isEmpty() == false ){
                     
@@ -3181,12 +3181,13 @@ public class IntelligentSearch
                     query.setDomain( "CONSENTSTUDY", "CONSENTSTUDY_intConsentKey", "CONSENT_intConsentKey", "INNER JOIN");
                     query.setDomain( "STUDY", "STUDY_intStudyID", "CONSENTSTUDY_intStudyID", "INNER JOIN");            
                     
-                }   
+                } 
+                  
                 // if Consent is selected & Consent Study is not selected, and Study is selected along with Patient
                 if( vtSelectedDomains.contains("CONSENT") && vtSelectedDomains.contains("CONSENTSTUDY") && vtSelectedStudys.isEmpty() == false ){
                     query.setDomain( "STUDY", "STUDY_intStudyID", "CONSENTSTUDY_intStudyID", "INNER JOIN");                                 
                 }                
-                
+                **/
            }
            if (vtSelectedDomains.contains("BIOSPECIMEN")) {
         	  

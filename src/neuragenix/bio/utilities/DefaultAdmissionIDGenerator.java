@@ -132,7 +132,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
         	//Strip last 5 digits off admissionID - if possible - length should be 5 digits + 2 or 3 letters
         	if (currentID != null) {
         	if (currentID.length() < 7) throw new NumberFormatException(); 
-            int temp = Integer.parseInt(currentID.substring(currentID.length() - 4));
+            int temp = Integer.parseInt(currentID.substring(currentID.length() - 5)); //FIXME: Magic numbers here - need to remove.
             
             admissionIDCount = Integer.toString(temp).toString();
         	}
