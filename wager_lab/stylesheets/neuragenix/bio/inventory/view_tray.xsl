@@ -173,15 +173,15 @@
                                                   <!-- Save button -->
                                                       <td>
                                                           <xsl:if test="hasEditRights">
-                                                          <a class="button" href="{$baseActionURL}?current=add_transfer&amp;TRANSFER_intTrayID={$TRAY_intTrayID}" onclick="this.blur();"><span><img src="/media/neuragenix/icons/transfer.png" height="14" align="top" border="0"/>Transfer</span></a>  
+                                                              <a class="button" href="{$baseActionURL}?uP_root=root&amp;current=add_transfer&amp;TRANSFER_intTrayID={$TRAY_intTrayID}" onclick="this.blur();"><span><img src="/wagerlab/media/neuragenix/icons/transfer.png" height="14" align="top" border="0"/>Transfer</span></a>  
                                          
-                                                          <a class="button" href="#" onclick="this.blur(); document.location.href='/Barcode.prn?trayid={$TRAY_intTrayID}';"><span><img src="/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print Tray</span></a>  
+                                                          <a class="button" href="#" onclick="this.blur(); document.location.href='/Barcode.prn?trayid={$TRAY_intTrayID}';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print Tray</span></a>  
                                                           
-                                                          <a class="button" href="#" onclick="this.blur(); window.open('{$downloadURL}?uP_root={$nodeId}&amp;file_name={$strReportName}&amp;property_name=neuragenix.bio.search.ExportFileLocation&amp;activity_required=inventory_view')"><span><img src="/media/neuragenix/icons/report.png" height="14" align="top" border="0"/>Tray Report</span></a>
+                                                          <a class="button" href="#" onclick="this.blur(); window.open('{$downloadURL}?uP_root={$nodeId}&amp;file_name={$strReportName}&amp;property_name=neuragenix.bio.search.ExportFileLocation&amp;activity_required=inventory_view')"><span><img src="/wagerlab/media/neuragenix/icons/report.png" height="14" align="top" border="0"/>Tray Report</span></a>
                                                            
-                                                          <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?current=batch_allocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span><img src="/media/neuragenix/icons/scanner.gif" height="14" align="top" border="0"/>Batch Allocate</span></a>
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?uP_root=root&amp;current=batch_allocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span><img src="/wagerlab/media/neuragenix/icons/scanner.gif" height="14" align="top" border="0"/>Batch Allocate</span></a>
                                    
-                                                          <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?current=batch_unallocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span>Unallocate</span></a>
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?uP_root=root&amp;current=batch_unallocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span>Unallocate</span></a>
                                                               </xsl:if>
                                                           <xsl:if test="string($strBackButton)">
                                                           <a class="button" href="#" onclick="this.blur(); jumpTo('{$biospecimenChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$biospecimenTabOrder}&amp;{$strBackButton}')"><span>Back</span></a>
@@ -459,11 +459,11 @@
                                     <table width="100%">
                                         <tr>
                                             <td width="50%" align="left">
-                                                <xsl:if test="hasEditRights">  <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?uP_root=root&amp;current=view_tray&amp;TRAY_intTrayID={$TRAY_intTrayID}')" > <span><img src="/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a></xsl:if>
+                                                <xsl:if test="hasEditRights">  <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?uP_root=root&amp;current=view_tray&amp;TRAY_intTrayID={$TRAY_intTrayID}')" > <span><img src="/wagerlab/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a></xsl:if>
                                             </td>
                                             
                                             <td width="50%" align="right">
-                                                <xsl:if test="hasEditRights or hasSaveOnlyRights">  <a class="button" name="save" href="#" onclick="this.blur(); document.saveform.submit()"><span><img src="/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  </xsl:if>
+                                                <xsl:if test="hasEditRights or hasSaveOnlyRights">  <a class="button" name="save" href="#" onclick="this.blur(); document.saveform.submit()"><span><img src="/wagerlab/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  </xsl:if>
                                             </td>
                                         </tr>
                                         

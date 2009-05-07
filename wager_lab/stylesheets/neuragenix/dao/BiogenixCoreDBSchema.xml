@@ -193,7 +193,7 @@
 		<field iname="intPhoneMobile" lname="Mobile" sname="intPhoneMobile" unique="false" required="false" type="string" length="20" ename="TELEPHONE_MOBILE" cname="Mobile"/>
 		<field iname="intInternalPatientID" lname="Patient key" sname="intIntPatientID" unique="true" required="false" type="integer" length="8" ename="PATIENTKEY" cname="Patient key"/>
 		<field iname="strAddressOtherState" lname="Other state" sname="strAddrOthState" unique="false" required="false" type="string" length="50" ename="ADDR_OTHER_STATE" cname="Other state"/>
-		<field iname="strStatus" lov_type="STATUS" lname="Status" sname="strStatus" unique="false" required="false" type="string" length="20" ename="STATUS" cname="Status"/>
+		<field iname="intStatus" lname="Status" sname="intStatus" unique="false" required="false" type="integer" length="20" ename="STATUS" cname="Status"/>
 		<field iname="strHospital" lov_type="HOSPITAL" lname="Hospital" sname="strHospital" unique="false" required="false" type="string" length="50" ename="HOSPITALNAME" cname="Hospital"/>
 		<field iname="intAddressPostCode" lname="Postcode" sname="intAddrPostCode" unique="false" required="false" type="string" length="10" ename="ADDR_POSTCODE" cname="Postcode"/>
 		<field iname="strSpecies" lov_type="SPECIES" lname="Species" sname="strSpecies" unique="false" required="false" type="string" length="20" ename="SPECIES" cname="Species"/>
