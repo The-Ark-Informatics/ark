@@ -91,7 +91,7 @@
                 <fieldname sname="PATN_strTitle" name="PATIENT_strTitle"/>
 		<fieldname sname="PATN_strSex" name="PATIENT_strSex"/>
 		<fieldname sname="PATN_strCauseOfDeath" name="PATIENT_strCauseOfDeath"/>
-		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
+		<fieldname sname="PATN_intStatus" name="PATIENT_intStatus"/>
 		<fieldname sname="PATN_strEmail" name="PATIENT_strEmail"/>
 		<fieldname sname="PATN_strAddrOthState" name="PATIENT_strAddressOtherState"/>
 		<fieldname sname="PATN_strAddressLine1" name="PATIENT_strAddressLine1"/>
@@ -169,7 +169,7 @@
 		<fieldname sname="PATN_strSpecies" name="PATIENT_strSpecies"/>
 		<fieldname sname="PATN_strTitle" name="PATIENT_strTitle"/>
 		<fieldname sname="PATN_strSex" name="PATIENT_strSex"/>
-		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
+		<fieldname sname="PATN_intStatus" name="PATIENT_intStatus"/>
 		<fieldname sname="PATN_strMedicareNo" name="PATIENT_strMedicareNo"/>
 		<fieldname sname="PATN_strCauseOfDeath" name="PATIENT_strCauseOfDeath"/>
 		<fieldname sname="PATN_dtDob" name="PATIENT_dtDob"/>
@@ -262,7 +262,7 @@
 		<fieldname sname="PATN_intAddrPostCode" name="PATIENT_intAddressPostCode"/>
 		<fieldname sname="PATN_strFirstName" name="PATIENT_strFirstName"/>
 		<fieldname sname="PATN_intPhoneWork" name="PATIENT_intPhoneWork"/>
-		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
+		<fieldname sname="PATN_intStatus" name="PATIENT_intStatus"/>
                 <fieldname sname="PATN_strUser" name="PATIENT_strUser"/>                
 	</formfield>
 	<formfield name="cpatient_add_patient_attachments">
@@ -276,7 +276,7 @@
 		<fieldname sname="PATN_strTitle" name="PATIENT_strTitle"/>
 		<fieldname sname="PATN_strSex" name="PATIENT_strSex"/>
 		<fieldname sname="PATN_strCauseOfDeath" name="PATIENT_strCauseOfDeath"/>
-		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
+		<fieldname sname="PATN_intStatus" name="PATIENT_intStatus"/>
 		<fieldname sname="PATN_strEmail" name="PATIENT_strEmail"/>
 		<fieldname sname="PATN_strAddrOthState" name="PATIENT_strAddressOtherState"/>
                 <fieldname sname="PATN_strOtherID" name="PATIENT_strOtherID"/>

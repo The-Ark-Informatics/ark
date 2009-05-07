@@ -41,6 +41,11 @@ A.navigation:hover {
 	color : Black;
 	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
 	font-size : 10px;
+}
+.uportal-label2{
+	color : Black;
+	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif;
+	font-size : 10px;
 	font-weight : bold;
 }
 .uportal-input-text{

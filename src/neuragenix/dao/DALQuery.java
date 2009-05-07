@@ -42,6 +42,7 @@ public class DALQuery
      */
     public static final int WHERE_HAS_VALUE = 0;
     
+    
     /** Indicate that both sides of the WHERE clause are fields
      */
     public static final int WHERE_BOTH_FIELDS = 1;

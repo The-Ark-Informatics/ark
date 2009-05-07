@@ -128,7 +128,22 @@
         </option>
         </xsl:for-each>
         </select>
-	</xsl:when>
+		</xsl:when>
+			
+			<xsl:when test="PARAMTYPE='STUDY'">
+				
+				<select name="{$paramName}" onclick="javascript:onUpdate()">
+					<xsl:for-each select="VALUE">
+						<option>
+							<xsl:attribute name="value"><xsl:value-of select="." /></xsl:attribute>
+							<xsl:if test="@selected=1">
+								<xsl:attribute name="selected"/>
+							</xsl:if>
+							<xsl:value-of select="." />
+						</option>
+					</xsl:for-each>
+				</select>
+			</xsl:when>
 		</xsl:choose>
 		</td>
 		</tr>

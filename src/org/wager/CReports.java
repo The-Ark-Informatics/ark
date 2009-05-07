@@ -406,6 +406,10 @@ if (submitting)
 	    			   if (rs.getString("PARAMTYPE").equals("DATE")) {
 	    				   param.appendChild(generateDateXML(document,rs.getString("PARAMNAME")));
 	    			   }
+   				    else if (rs.getString("PARAMTYPE").equals("STUDY")) {
+					   generateStudyXML(document,param,rs.getString("PARAMNAME"));
+				
+				   }
 	    			   else {
 	    				   Node column =(Element) document.createElement("VALUE");
 	    				   param.appendChild(column);
@@ -584,7 +588,40 @@ void createParamData(Connection conn, Document d) {
 	
 }
 
+	void  generateStudyXML(Document d,Node n, String param_name) {
 	
+	// Default to today's date
+	String dtstring = (String) parameters.get(param_name);
+	if (dtstring != null) {
+	}
+	else dtstring = new String("");
+	Statement stmt;
+        ResultSet rs;
+        
+	Element fields = d.createElement(param_name);
+	 try{
+                         stmt = conn.createStatement();
+                         Vector studyList = authToken.getStudyList();
+              	       String inStr = StudyUtilities.getStudyIDSQLString(studyList);
+                            rs = stmt.executeQuery("SELECT STUDYNAME from zeus.study where studykey in "+inStr);  
+                            while (rs.next() ) {
+					Element row = d.createElement("VALUE");
+					System.err.println(rs.getString(1));	
+                                   row.appendChild((Node) d.createTextNode(rs.getString(1)==null ? "" : rs.getString(1)));
+					n.appendChild(row);
+					if (dtstring.equals(rs.getString(1))) {
+					 NamedNodeMap attr = row.getAttributes();
+			                  Attr selected = d.createAttribute("selected");
+                 			 selected.setValue("1");
+                  			attr.setNamedItem(selected);
+					}
+                                   }
+
+                        }catch(SQLException se) {se.printStackTrace();}
+
+
+	}	
+
 
 	Element  generateDateXML(Document d,String param_name) {
 	

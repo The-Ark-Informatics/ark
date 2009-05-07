@@ -2,6 +2,7 @@
 
 <!-- inventory_menu.xsl. Menu used for all inventory.-->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+    <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:template match="/">
         <script language="javascript"> function confirmDelete(aURL) { var confirmAnswer =
             confirm('Are you sure you want to delete this record?'); if(confirmAnswer == true){
@@ -140,7 +141,7 @@
                 </xsl:choose>
             </td>
             <td align="left" width="75%" class="uportal-text" >
-                <a href="{$baseActionURL}?current=view_tray&amp;TRAY_intTrayID={$varTrayID}">
+                <a href="{$baseActionURL}?uP_root=root&amp;current=view_tray&amp;TRAY_intTrayID={$varTrayID}">
                     <xsl:value-of select="TRAY_strTrayName"/> 
                     <!--xsl:value-of select="concat('/inventory/site',$varInvSiteID)" /-->
                     <xsl:if test="transfer">
@@ -186,13 +187,13 @@
                 <xsl:choose>
                     <xsl:when test="$box_expanded = 'true'">
                         <a
-                            href="{$baseActionURL}?current=view_box&amp;id={$varBoxID}&amp;target=BOX&amp;BOX_intBoxID={$varBoxID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_box&amp;id={$varBoxID}&amp;target=BOX&amp;BOX_intBoxID={$varBoxID}">
                             <img src="media/neuragenix/icons/open.gif" border="0"/>
                         </a>
                     </xsl:when>
                     <xsl:when test="$box_expanded = 'false'">
                         <a
-                            href="{$baseActionURL}?current=view_box&amp;id={$varBoxID}&amp;target=BOX&amp;BOX_intBoxID={$varBoxID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_box&amp;id={$varBoxID}&amp;target=BOX&amp;BOX_intBoxID={$varBoxID}">
                             <img src="media/neuragenix/icons/closed.gif" border="0"/>
                         </a>
                     </xsl:when>
@@ -215,7 +216,7 @@
                 </xsl:choose>
             </td>
             <td width="80%" colspan="3" class="uportal-text">
-                <a href="{$baseActionURL}?current=view_box&amp;BOX_intBoxID={$varBoxID}">
+                <a href="{$baseActionURL}?uP_root=root&amp;current=view_box&amp;BOX_intBoxID={$varBoxID}">
                     <xsl:value-of select="BOX_strBoxName"/>
                     
                 </a>
@@ -285,13 +286,13 @@
                 <xsl:choose>
                     <xsl:when test="$tank_expanded = 'true'">
                         <a
-                            href="{$baseActionURL}?current=view_tank&amp;id={$varTankID}&amp;target=TANK&amp;TANK_intTankID={$varTankID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_tank&amp;id={$varTankID}&amp;target=TANK&amp;TANK_intTankID={$varTankID}">
                             <img src="media/neuragenix/icons/open.gif" border="0"/>
                         </a>
                     </xsl:when>
                     <xsl:when test="$tank_expanded = 'false'">
                         <a
-                            href="{$baseActionURL}?current=view_tank&amp;id={$varTankID}&amp;target=TANK&amp;TANK_intTankID={$varTankID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_tank&amp;id={$varTankID}&amp;target=TANK&amp;TANK_intTankID={$varTankID}">
                             <img src="media/neuragenix/icons/closed.gif" border="0"/>
                         </a>
                     </xsl:when>
@@ -314,7 +315,7 @@
                 </xsl:choose>
             </td>
             <td  align="left" width="95%" colspan="5"  class="uportal-text" >
-                <a href="{$baseActionURL}?current=view_tank&amp;TANK_intTankID={$varTankID}">
+                <a href="{$baseActionURL}?uP_root=root&amp;current=view_tank&amp;TANK_intTankID={$varTankID}">
                 <xsl:value-of select="TANK_strTankName"/>
                    </a>
                 <!--xsl:value-of select="concat('/inventory/site',$varInvSiteID)" /-->
@@ -383,20 +384,20 @@
                 <xsl:choose>
                     <xsl:when test="$site_expanded = 'true'">
                         <a
-                            href="{$baseActionURL}?current=view_site&amp;id={$varSiteID}&amp;target=SITE&amp;SITE_intSiteID={$varSiteID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_site&amp;id={$varSiteID}&amp;target=SITE&amp;SITE_intSiteID={$varSiteID}">
                             <img src="media/neuragenix/icons/open.gif" border="0"/>
                         </a>
                     </xsl:when>
                     <xsl:when test="$site_expanded = 'false'">
                         <a
-                            href="{$baseActionURL}?current=view_site&amp;id={$varSiteID}&amp;target=SITE&amp;SITE_intSiteID={$varSiteID}">
+                            href="{$baseActionURL}?uP_root=root&amp;current=view_site&amp;id={$varSiteID}&amp;target=SITE&amp;SITE_intSiteID={$varSiteID}">
                             <img src="media/neuragenix/icons/closed.gif" border="0"/>
                         </a>
                     </xsl:when>
                 </xsl:choose>
             </td>
             <td colspan="5" width="95%" class="uportal-text">
-                <a href="{$baseActionURL}?current=view_site&amp;SITE_intSiteID={$varSiteID}">
+                <a href="{$baseActionURL}?uP_root=root&amp;current=view_site&amp;SITE_intSiteID={$varSiteID}">
                     <xsl:value-of select="SITE_strSiteName"/>
                     <xsl:if test="siteAccess='0'">
                         <img src="media/neuragenix/icons/lock.png" border="0" valign="middle"
@@ -492,7 +493,7 @@
                                     class="funcpanel_content"><td
                                     class="funcpanel_left_border">&#160;</td><td
                                     class="form_label"><xsl:if test="intInventoryAddTank=1">
-                        <a href="{$baseActionURL}?current=add_tank">Add <xsl:value-of
+                                        <a href="{$baseActionURL}?uP_root=root&amp;current=add_tank">Add <xsl:value-of
                                 select="TANK_strTitleDisplay"/>
                         </a>
                     </xsl:if></td><td
@@ -501,7 +502,7 @@
                                     class="funcpanel_content"><td
                                     class="funcpanel_left_border">&#160;</td><td
                                     class="form_label"><xsl:if test="intInventoryAddBox=1">
-                        <a href="{$baseActionURL}?current=add_box">Add <xsl:value-of
+                                        <a href="{$baseActionURL}?uP_root=root&amp;current=add_box">Add <xsl:value-of
                                 select="BOX_strTitleDisplay"/>
                         </a>
                     </xsl:if></td><td
@@ -510,7 +511,7 @@
                                     class="funcpanel_content"><td
                                     class="funcpanel_left_border">&#160;</td><td
                                     class="form_label"><xsl:if test="intInventoryAddTray=1">
-                        <a href="{$baseActionURL}?current=add_tray">Add <xsl:value-of
+                                        <a href="{$baseActionURL}?uP_root=root&amp;current=add_tray">Add <xsl:value-of
                                 select="TRAY_strTitleDisplay"/>
                         </a>
                     </xsl:if></td><td
@@ -519,7 +520,7 @@
                                     class="funcpanel_content"><td
                                     class="funcpanel_left_border">&#160;</td><td
                                     class="form_label"><xsl:if test="$varAdminViewHistory=1">
-				<a href="{$baseActionURL}?current=view_history">Inventory History</a>
+                                        <a href="{$baseActionURL}?uP_root=root&amp;current=view_history">Inventory History</a>
                     </xsl:if></td><td
                                 class="funcpanel_right_border">&#160;</td></tr>
 		
