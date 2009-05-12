@@ -23,6 +23,9 @@ import java.util.*;
 import java.io.*;
 import java.text.*;
 import  net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.export.*;
+import net.sf.jasperreports.engine.export.JRXlsExporterParameter;
+
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
@@ -95,7 +98,7 @@ public class CReports implements IChannel, IMimeResponse{
     return new ChannelRuntimeProperties();
   }
   public String getContentType() {
-   return new String("application/pdf");
+   return new String("application/xls");
   } 
 	
   public InputStream getInputStream() {
@@ -103,9 +106,19 @@ public class CReports implements IChannel, IMimeResponse{
 	this.conn = DriverManager.getConnection("jdbc:poolman://oracle");
 	JasperPrint jasperPrint = JasperFillManager.fillReport(PropertiesManager.getProperty("org.wager.report.ReportLocation")+"/"+filename,
          parameters, conn);
-        this.bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+	ByteArrayOutputStream byteArrayOutputStream
+    = new ByteArrayOutputStream();
+       // this.bytes = JasperExportManager.exportReportToPdf(jasperPrint);
+        JRCsvExporter exporterCSV = new JRCsvExporter();
+        exporterCSV.setParameter(JRXlsExporterParameter.JASPER_PRINT,
+                jasperPrint);
+        exporterCSV.setParameter(JRXlsExporterParameter.OUTPUT_STREAM,
+                byteArrayOutputStream);
+        exporterCSV.setParameter(JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS, new Boolean(true));
+        exporterCSV.exportReport();
+
 	conn.close();
-	return new ByteArrayInputStream(bytes);
+	return new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
 	}
 	catch(Exception e) {
 	e.printStackTrace();
@@ -113,11 +126,11 @@ public class CReports implements IChannel, IMimeResponse{
 	}
 	}
   public String getName() {
-	return new String("report.pdf");
+	return new String("report.csv");
   }
   public java.util.Map getHeaders() {
 	Map headers = new HashMap();
-	headers.put ("Content-Disposition", "attachment; filename=\"Report.pdf\"");
+	headers.put ("Content-Disposition", "attachment; filename=\"Report.csv\"");
 	return headers;
   }
   public void downloadData(OutputStream o) {
