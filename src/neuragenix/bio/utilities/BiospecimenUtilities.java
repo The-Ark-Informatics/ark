@@ -25,7 +25,7 @@ import java.util.Vector;
 import org.jasig.portal.ChannelRuntimeData;
 import org.jasig.portal.services.LogService;
 
-public class BiospecimenUtilities  {
+public class BiospecimenUtilities  { 
     
     /** Creates a new instance of BiospecimenUtilities */
     public BiospecimenUtilities() {
