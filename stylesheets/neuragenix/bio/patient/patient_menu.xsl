@@ -232,7 +232,15 @@ xmlns:url="http://www.jclark.com/xt/java/java.net.URLEncoder" exclude-result-pre
 
 	 <td><input class="funcpanel_form" type="text"   name="ADMISSIONS_strHospitalUR" size="20"/></td>
                                                                                         <td class="funcpanel_right_border">&#160;</td>
-                                                                                </tr>
+										</tr>
+										<tr class="funcpanel_content">
+											<td class="funcpanel_left_border">&#160;</td>
+											<td class="form_label">Postcode &#160;:</td>
+											<td>&#160;</td>
+											
+											<td><input class="funcpanel_form" type="text"   name="PATIENT_intAddressPostCode" size="20"/></td>
+											<td class="funcpanel_right_border">&#160;</td>
+										</tr>
 										 <tr class="funcpanel_content">
                                                                                         <td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
                                                                                 </tr>

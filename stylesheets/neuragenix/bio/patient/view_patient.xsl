@@ -473,15 +473,10 @@
 														<td>&#160;</td>
 														<td class="uportal-input-text">
 														
-																<xsl:for-each select="PATIENT_strStatus">
+																<xsl:value-of select="PATIENT_strStatus"/>
 																	
 																		
-																		<xsl:if test="@selected=1">
-																			<xsl:value-of select="."/>
-																		</xsl:if>
-																		
 																	
-																</xsl:for-each>
 														
 														</td>
 													</tr>

@@ -98,7 +98,7 @@ public class CReports implements IChannel, IMimeResponse{
     return new ChannelRuntimeProperties();
   }
   public String getContentType() {
-   return new String("application/xls");
+   return new String("text/csv");
   } 
 	
   public InputStream getInputStream() {

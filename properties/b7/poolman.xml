@@ -88,7 +88,7 @@
     <dbname>oracle</dbname>
     <jndiName>oracle</jndiName>
     <driver>oracle.jdbc.OracleDriver</driver>
-    <url>jdbc:oracle:thin:@localhost:9521:dbdevel</url>
+    <url>jdbc:oracle:thin:@192.168.2.227:1521:dbdevel</url>
     <username>wagerlab</username>
     <password>veTum1n</password>
 

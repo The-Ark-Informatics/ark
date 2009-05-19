@@ -45,7 +45,6 @@
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/jai_codec.jar"/>
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/jai_core.jar"/>
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/jakarta-oro-2.0.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/jakarta-poi-1.5.1-final-20020615.jar"/>
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/jakarta-regexp-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/java_uno_accessbridge.jar"/>
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/java_uno.jar"/>
@@ -117,6 +116,7 @@
 	<classpathentry exported="true" kind="lib" path="pages/WEB-INF/lib/commons-csv-20070729.jar"/>
 	<classpathentry kind="lib" path="pages/WEB-INF/lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="pages/WEB-INF/lib/xsu12.jar"/>
-	<classpathentry kind="lib" path="pages/WEB-INF/lib/jasperreports-1.2.7.jar"/>
+	<classpathentry kind="lib" path="pages/WEB-INF/lib/jasperreports-3.5.1.jar"/>
+	<classpathentry kind="lib" path="pages/WEB-INF/lib/poi-3.2-FINAL-20081019.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
