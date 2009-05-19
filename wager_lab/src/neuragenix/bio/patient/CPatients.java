@@ -324,9 +324,9 @@ public class CPatients implements IChannel {
                 (String) globalIDContext.lookup("CBiospecimen"));
             biospecimenTab = SessionManager.getTabOrder( authToken, "CBiospecimen");
             
-            SessionManager.addChannelID(strSessionUniqueID, "CStudy",
-                (String) globalIDContext.lookup("CStudy"));
-            studyTab = SessionManager.getTabOrder( authToken, "CStudy");
+//            SessionManager.addChannelID(strSessionUniqueID, "CStudy",
+//                (String) globalIDContext.lookup("CStudy"));
+//            studyTab = SessionManager.getTabOrder( authToken, "CStudy");
             
             SessionManager.addChannelID(strSessionUniqueID, "CSmartform",
                 (String) globalIDContext.lookup("CSmartform"));
@@ -785,7 +785,12 @@ public class CPatients implements IChannel {
                         "PATIENT_intInternalPatientID", "INNER JOIN");
                         searchQuery.setWhere( "AND", 0, "ADMISSIONS_strHospitalUR", "LIKE",
                         runtimeData.getParameter( "ADMISSIONS_strHospitalUR" ).trim(), 0, DALQuery.WHERE_HAS_VALUE );
-                    }                                        
+                    }   
+                    
+                    if( runtimeData.getParameter( "PATIENT_intAddressPostCode" ) != null && runtimeData.getParameter( "PATIENT_intAddressPostCode" ).trim().length() > 0 ){
+                        searchQuery.setWhere( "AND", 0, "PATIENT_intAddressPostCode", "LIKE",
+                        runtimeData.getParameter( "PATIENT_intAddressPostCode" ).trim(), 0, DALQuery.WHERE_HAS_VALUE );
+                    } 
 
                     if( runtimeData.getParameter( "PATIENT_strProtocol" ) != null && runtimeData.getParameter( "PATIENT_strProtocol" ).trim().length() > 0 ){
                         searchQuery.setWhere( "AND", 0, "PATIENT_strProtocol", "LIKE",
