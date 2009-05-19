@@ -3223,9 +3223,9 @@ public class IntelligentSearch
        if( vtSearchFormFields.isEmpty() == false){ 
            
            // display the study name
-           if(  vtSelectedDomains.isEmpty() == false && vtSelectedStudys.isEmpty() == false ){
-               vtSearchFormFields.add("STUDY_strStudyName");
-           }
+    //       if(  vtSelectedDomains.isEmpty() == false && vtSelectedStudys.isEmpty() == false ){
+        //       vtSearchFormFields.add("STUDY_strStudyName");
+      //     }
        
            // Set the form fields
            query.setFields(vtSearchFormFields, null);             
