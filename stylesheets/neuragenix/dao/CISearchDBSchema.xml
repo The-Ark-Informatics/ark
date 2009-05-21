@@ -134,7 +134,7 @@
 		<fieldname sname="PATN_intPhoneWork" name="PATIENT_intPhoneWork"/>
 		<fieldname sname="PATN_intPhoneMobile" name="PATIENT_intPhoneMobile"/>
 		<fieldname sname="PATN_strEmail" name="PATIENT_strEmail"/>
-		<fieldname sname="PATN_intStatus" name="PATIENT_intStatus"/>
+		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
 	</formfield>
 	<formfield name="advanced search bioanalysis">
 		<fieldname sname="BANL_intBioAnalKey" name="BIOANALYSIS_intBioAnalysisKey"/>

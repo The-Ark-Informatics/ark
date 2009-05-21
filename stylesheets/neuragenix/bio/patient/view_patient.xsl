@@ -473,8 +473,12 @@
 														<td>&#160;</td>
 														<td class="uportal-input-text">
 														
-																<xsl:value-of select="PATIENT_strStatus"/>
-																	
+
+																<xsl:value-of select="PATIENT_strStatus[@selected=1]"/>
+																
+																
+																
+														
 																		
 																	
 														

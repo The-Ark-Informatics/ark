@@ -824,7 +824,11 @@ public class CPatients implements IChannel {
                         searchQuery.setWhere( "AND", 0, "CONSENT_intDeleted", "=","0", 0, DALQuery.WHERE_HAS_VALUE );
                         searchQuery.setWhere( "AND", 0, "CONSENTSTUDY_intDeleted", "=","0", 0, DALQuery.WHERE_HAS_VALUE );
                         searchQuery.setWhere( "AND", 0, "STUDY_intDeleted", "=","0", 0, DALQuery.WHERE_HAS_VALUE );*/
-                   
+                    if(runtimeData.getParameter( "strStatus" ) != null && runtimeData.getParameter( "strStatus" ).trim().length() > 0)
+                    {
+                    	  String strStatus = runtimeData.getParameter("strStatus");
+                    	 searchQuery.setWhere( "AND", 0, "PATIENT_strStatus", "=",strStatus, 0, DALQuery.WHERE_HAS_VALUE );
+                    }
                     if(runtimeData.getParameter( "intStudyID" ) != null && runtimeData.getParameter( "intStudyID" ).trim().length() > 0)
                     {
                     	  intStudyID = runtimeData.getParameter("intStudyID");

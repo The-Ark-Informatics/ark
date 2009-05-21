@@ -140,6 +140,11 @@
 					</td>
 					<td class="stripped_separator" width="1"><img width="1" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/></td>-->
 					<td class="stripped_column_heading">
+						Status
+					</td>
+					<td class="stripped_separator" width="1"><img width="1" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/></td>
+					
+					<td class="stripped_column_heading">
 						Bio
 					</td>
 					<td class="stripped_separator" width="1"><img width="1" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/></td>
@@ -158,6 +163,11 @@
 							<td width="2">
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+								<xsl:choose>
 									<xsl:when test="position() mod 2 != 0">
 										<xsl:attribute name="class">stripped_light</xsl:attribute>
 									</xsl:when>
@@ -165,16 +175,25 @@
 										<xsl:attribute name="class">stripped_dark</xsl:attribute>
 									</xsl:otherwise>
 								</xsl:choose>
+									</xsl:otherwise>
+									</xsl:choose>
 								<img width="2" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/>
 							</td>
 							<td>
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								<a class="stripped_content" href="{$baseActionURL}?action=view_patient&amp;PATIENT_intInternalPatientID={$varPatientInternalID}">
@@ -185,11 +204,18 @@
 							<td>
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 									<a class="stripped_content" href="{$baseActionURL}?action=view_patient&amp;PATIENT_intInternalPatientID={$varPatientInternalID}">
@@ -200,11 +226,18 @@
 							<td>
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								<a class="stripped_content" href="{$baseActionURL}?action=view_patient&amp;PATIENT_intInternalPatientID={$varPatientInternalID}">
@@ -215,11 +248,18 @@
 							<td>
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								<a class="stripped_content" href="{$baseActionURL}?action=view_patient&amp;PATIENT_intInternalPatientID={$varPatientInternalID}">
@@ -242,14 +282,44 @@
 								</a>
 							</td>
 							<td class="stripped_separator" width="1"><img width="1" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/></td>-->
+						
+							<td>
+								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
+								<xsl:choose>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
+									</xsl:otherwise>
+								</xsl:choose>
+								<a class="stripped_content" href="{$baseActionURL}?action=view_patient&amp;PATIENT_intInternalPatientID={$varPatientInternalID}">
+									<xsl:value-of select="PATIENT_strStatus"/>
+								</a>
+							</td>	
+							<td class="stripped_separator" width="1"><img width="1" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/></td>
 							<td>
 								<!--Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								<a class="stripped_content" href="{$biospecimenURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$biospecimenTab}&amp;intInternalPatientID={$varPatientInternalID}&amp;current=biospecimen_search&amp;submit=intInternalPatientID&amp;currentPage=patient_results&amp;searchResultPage={$intCurrentPage}&amp;module=biospecimen_search&amp;action=patient_entry">view</a>
@@ -270,11 +340,18 @@
 							<td class="stripped_dark" width="2">
 								<!-- Assign Cell Class Based on Whether Row is Odd or Even -->
 								<xsl:choose>
-									<xsl:when test="position() mod 2 != 0">
-										<xsl:attribute name="class">stripped_light</xsl:attribute>
+									<xsl:when test="PATIENT_strStatus!='Consented'">
+										<xsl:attribute name="class">withdrawn</xsl:attribute>
 									</xsl:when>
 									<xsl:otherwise>
-										<xsl:attribute name="class">stripped_dark</xsl:attribute>
+										<xsl:choose>
+											<xsl:when test="position() mod 2 != 0">
+												<xsl:attribute name="class">stripped_light</xsl:attribute>
+											</xsl:when>
+											<xsl:otherwise>
+												<xsl:attribute name="class">stripped_dark</xsl:attribute>
+											</xsl:otherwise>
+										</xsl:choose>
 									</xsl:otherwise>
 								</xsl:choose>
 								<img width="2" height="1" border="0" src="{$infopanelImagePath}/spacer.gif"/>
