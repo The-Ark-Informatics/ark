@@ -510,6 +510,16 @@ comments.value = commentsval;
                             </tr>
                             <tr class="funcpanel_content">
                                 <td class="funcpanel_left_border">&#160;</td>
+                                <td class="form_label">Consent Status&#160;:</td>
+                                <td>&#160;</td>
+                                <td><xsl:if test="/biospecimen/patient_details/PATIENT_strStatus[@selected=1]!='Consented'">
+                                    <xsl:attribute name="class">withdrawn</xsl:attribute>
+                                </xsl:if>
+                                    <xsl:value-of select="/biospecimen/patient_details/PATIENT_strStatus[@selected=1]"/></td>
+                                <td class="funcpanel_right_border">&#160;</td>
+                            </tr>
+                            <tr class="funcpanel_content">
+                                <td class="funcpanel_left_border">&#160;</td>
                                 <td class="form_label" colspan="3"><xsl:variable name="patientID">
                                     <xsl:value-of
                                         select="/biospecimen/patient_details/PATIENT_intInternalPatientID"
@@ -1572,7 +1582,7 @@ comments.value = commentsval;
                                 <td id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text"/>
                                 <td id="neuragenix-form-row-input-label" class="uportal-label">
-                                    Tray: </td>
+                                    Box: </td>
                                 <td class="uportal-text">
                                     <xsl:value-of select="inventory_info/TRAY_strTrayName"/>
                                 </td>
@@ -1582,7 +1592,7 @@ comments.value = commentsval;
                                 <td id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text"/>
                                 <td id="neuragenix-form-row-input-label" class="uportal-label">
-                                    Tank: </td>
+                                    Freezer: </td>
                                 <td class="uportal-text">
                                     <xsl:value-of select="inventory_info/TANK_strTankName"/>
                                 </td>
@@ -1599,7 +1609,7 @@ comments.value = commentsval;
                             <tr>
                                 <td id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text"/>
-                                <td id="neuragenix-form-row-input-label" class="uportal-label"> Box: </td>
+                                <td id="neuragenix-form-row-input-label" class="uportal-label"> Rack: </td>
                                 <td class="uportal-text">
                                     <xsl:value-of select="inventory_info/BOX_strBoxName"/>
                                 </td>

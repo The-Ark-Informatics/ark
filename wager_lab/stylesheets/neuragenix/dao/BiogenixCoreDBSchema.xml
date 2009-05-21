@@ -70,10 +70,10 @@
 		<field iname="intDeleted" lname="Deleted" sname="intDeleted" unique="false" required="false" type="integer" length="4" ename="DELETED" cname="Deleted"/>
 		<field iname="intNoOfCol" lname="No. of columns" sname="intNoOfCol" unique="false" required="true" type="integer" length="8" ename="NOOFCOL" cname="No. of columns"/>
 		<field iname="strColNoType" lov_type="TRAY_LABEL" lname="Column no type" sname="strColNoType" unique="false" required="true" type="string" length="15" ename="COLNOTYPE" cname="Column no type"/>
-		<field iname="intTrayID" lname="Tray key" sname="intTrayID" unique="true" required="true" type="integer" length="8" ename="TRAYKEY" cname="Tray key"/>
+		<field iname="intTrayID" lname="Tray key" sname="intTrayID" unique="true" required="true" type="integer" length="8" ename="TRAYKEY" cname="Box key"/>
 		<field iname="intTrayCapacity" lname="Capacity" sname="intTrayCapacity" unique="false" required="false" type="integer" length="8" ename="CAPACITY" cname="Capacity"/>
-		<field iname="strTrayName" lname="Tray name" sname="strTrayName" unique="false" required="true" type="string" length="50" ename="NAME" cname="Tray name"/>
-		<field iname="intBoxID" lname="Box key" sname="intBoxID" unique="false" required="true" type="integer" length="8" ename="BOXKEY" cname="Box key"/>
+		<field iname="strTrayName" lname="Box name" sname="strTrayName" unique="false" required="true" type="string" length="50" ename="NAME" cname="Box name"/>
+		<field iname="intBoxID" lname="Box key" sname="intBoxID" unique="false" required="true" type="integer" length="8" ename="BOXKEY" cname="Rack key"/>
 		<field iname="intTransferID" lname="Transfer key" sname="intTransferID" unique="false" required="false" type="integer" length="8" ename="TRANSFERKEY" cname="Transfer key"/>
 		<field iname="intTrayAvailable" lname="Available" sname="intTrayAvail" unique="false" required="false" type="integer" length="8" ename="AVAILABLE" cname="Available"/>
 		<field iname="intNoOfRow" lname="No. of rows" sname="intNoOfRow" unique="false" required="true" type="integer" length="8" ename="NOOFROW" cname="No. of rows"/>
@@ -193,7 +193,7 @@
 		<field iname="intPhoneMobile" lname="Mobile" sname="intPhoneMobile" unique="false" required="false" type="string" length="20" ename="TELEPHONE_MOBILE" cname="Mobile"/>
 		<field iname="intInternalPatientID" lname="Patient key" sname="intIntPatientID" unique="true" required="false" type="integer" length="8" ename="PATIENTKEY" cname="Patient key"/>
 		<field iname="strAddressOtherState" lname="Other state" sname="strAddrOthState" unique="false" required="false" type="string" length="50" ename="ADDR_OTHER_STATE" cname="Other state"/>
-		<field iname="strStatus" lname="Status" sname="strStatus" unique="false" required="false" type="string" length="30" ename="STATUS" cname="Status"/>
+		<field iname="strStatus" lov_type="CONSENTSTATUS" lname="Status" sname="strStatus" unique="false" required="false" type="string" length="30" ename="STATUS" cname="Status"/>
 		<field iname="strHospital" lov_type="HOSPITAL" lname="Hospital" sname="strHospital" unique="false" required="false" type="string" length="50" ename="HOSPITALNAME" cname="Hospital"/>
 		<field iname="intAddressPostCode" lname="Postcode" sname="intAddrPostCode" unique="false" required="false" type="string" length="10" ename="ADDR_POSTCODE" cname="Postcode"/>
 		<field iname="strSpecies" lov_type="SPECIES" lname="Species" sname="strSpecies" unique="false" required="false" type="string" length="20" ename="SPECIES" cname="Species"/>
@@ -398,7 +398,7 @@
 		<field iname="strUser" lname="User" sname="strUser" unique="false" required="true" type="string" length="100" ename="USER" cname="User"/>
 	</domain>
 	<domain iname="TANK" sname="TANK" activity="inventory_view" ename="ix_inv_tank" sequence="ix_inv_tank_seq" primarykey="TANKKEY">
-		<field iname="intTankID" lname="Tank key" sname="intTankID" unique="true" required="true" type="integer" length="8" ename="TANKKEY" cname="Tank key"/>
+		<field iname="intTankID" lname="Freezer key" sname="intTankID" unique="true" required="true" type="integer" length="8" ename="TANKKEY" cname="Freezer key"/>
 		<field iname="strTankLocation" lname="Location" sname="strTankLocation" unique="false" required="false" type="string" length="1000" ename="LOCATION" cname="Location"/>
 		<field iname="strStatus" lov_type="INVTANKSTATUS" lname="Status" sname="strStatus" unique="false" required="false" type="string" length="50" ename="STATUS" cname="Status"/>
 		<field iname="intSiteID" lname="Site key" sname="intSiteID" unique="false" required="true" type="integer" length="8" ename="SITEKEY" cname="Site key"/>
@@ -494,12 +494,12 @@
 	</domain>
 	<domain iname="BOX" sname="BOX" activity="inventory_view" ename="ix_inv_box" sequence="ix_inv_box_seq" primarykey="BOXKEY">
 		<field iname="strBoxName" lname="Rack name" sname="strBoxName" unique="false" required="true" type="string" length="50" ename="NAME" cname="Rack name"/>
-		<field iname="intBoxID" lname="Box key" sname="intBoxID" unique="true" required="true" type="integer" length="8" ename="BOXKEY" cname="Box key"/>
+		<field iname="intBoxID" lname="Box key" sname="intBoxID" unique="true" required="true" type="integer" length="8" ename="BOXKEY" cname="Rack key"/>
 		<field iname="intBoxAvailable" lname="Available" sname="intBoxAvailable" unique="false" required="false" type="integer" length="8" ename="AVAILABLE" cname="Available"/>
 		<field iname="intDeleted" lname="Deleted" sname="intDeleted" unique="false" required="false" type="integer" length="4" ename="DELETED" cname="Deleted"/>
 		<field iname="strBoxDescription" lname="Description" sname="strBoxDescr" unique="false" required="false" type="string" length="3000" ename="DESCRIPTION" cname="Description"/>
 		<field iname="intBoxCapacity" lname="Capacity" sname="intBoxCapacity" unique="false" required="false" type="integer" length="8" ename="CAPACITY" cname="Capacity"/>
-		<field iname="intTankID" lname="Tank key" sname="intTankID" unique="false" required="true" type="integer" length="8" ename="TANKKEY" cname="Tank key"/>
+		<field iname="intTankID" lname="Freezer key" sname="intTankID" unique="false" required="true" type="integer" length="8" ename="TANKKEY" cname="Freezer key"/>
                 <field iname="strTimeStamp" lname="Time Stamp" ename="TIMESTAMP" sname="strTimeStamp" cname="Time stamp" type="varchar" length="55" unique="false" required="false"/>
                 <field iname="strTitle" ename="NAME" lname="Rack" cname="Rack" sname="strTitle" type="string" length="50" unique="false" required="false" />
 	</domain>

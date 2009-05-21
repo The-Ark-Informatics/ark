@@ -590,6 +590,8 @@
 		<fieldname sname="PATN_strPatientID" name="PATIENT_strPatientID"/>
 		<fieldname sname="PATN_dtDob" name="PATIENT_dtDob"/>
 		<fieldname sname="PATN_strSurname" name="PATIENT_strSurname"/>
+		<fieldname sname="PATN_strStatus" name="PATIENT_strStatus"/>
+		
 	</formfield>
 	<formfield name="cbiospecimen_list_inventory_tank">
 		<fieldname sname="TANK_strTankName" name="TANK_strTankName"/>

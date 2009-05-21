@@ -335,22 +335,21 @@ td
 a
 {
 	text-decoration : underline;
+	color: inherit;
 	font-family : Verdana, System, Arial;
-	color : #6c2535;
         font-size : 10px;
 }
 a:visited
 {
 	text-decoration : underline;
+	color: black;
 	font-family : Verdana, System, Arial;
-	color : #6c2535;
         font-size : 10px;
 }
 a:hover
 {
 	text-decoration : underline;
 	font-family : Verdana, System, Arial;
-	color : #6c2535;
         font-size : 10px;
 }
 input
@@ -738,12 +737,12 @@ td.stripped_column_heading
 {
 	color : black;
 	background-color : #c6c6c6;
+    font-weight: bold;
 	padding : 4px;
 }
 a.stripped_content
 {
 	text-decoration : none;
-	color : #000000;
 	font-weight : bold;
 }
 a.stripped_content:visited
@@ -755,7 +754,6 @@ a.stripped_content:visited
 a.stripped_content:hover
 {
 	text-decoration : none;
-	color : #6c2535;
 	font-weight : bold;
 }
 tr.stripped_light
@@ -771,10 +769,23 @@ tr.stripped_dark
 	background-color : #FFF7E4;
 	padding : 4px;
 }
+tr.withdrawn
+{
+	color : white;
+	background-color : #524040;
+	padding : 4px;
+}
 td.stripped_light
 {
 	color : #000000;
 	background-color : white;
+	padding : 4px;
+	border-bottom:1px solid #FFD87E;
+}
+td.withdrawn
+{
+	color : white;
+	background-color : #524040;
 	padding : 4px;
 	border-bottom:1px solid #FFD87E;
 }

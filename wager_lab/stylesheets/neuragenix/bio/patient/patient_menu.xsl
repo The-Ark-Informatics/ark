@@ -111,7 +111,18 @@ xmlns:url="http://www.jclark.com/xt/java/java.net.URLEncoder" exclude-result-pre
 										<tr class="funcpanel_content">
 											<td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
 										</tr>
-                                                                                </xsl:if>
+										</xsl:if>
+										<tr class="funcpanel_content">
+											<td class="funcpanel_left_border">&#160;</td>
+											<td class="form_label">Lab ID &#160;:</td>
+											<td>&#160;</td>
+											
+											<td><input class="funcpanel_form" type="text"   name="ADMISSIONS_strHospitalUR" size="20"/></td>
+											<td class="funcpanel_right_border">&#160;</td>
+										</tr>
+										<tr class="funcpanel_content">
+											<td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
+										</tr>
 										<!-- Seena
 										<xsl:if test="$disable-PATIENT_strHospitalUR != 'true'">
                                                                                 <tr class="funcpanel_content">
@@ -121,9 +132,7 @@ xmlns:url="http://www.jclark.com/xt/java/java.net.URLEncoder" exclude-result-pre
 											<td><input class="funcpanel_form" type="text" value="{$PATIENT_strHospitalUR}" name="PATIENT_strHospitalUR" size="20"/></td>
 											<td class="funcpanel_right_border">&#160;</td>
 										</tr>
-										<tr class="funcpanel_content">
-											<td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
-										</tr>
+										
                                                                                 </xsl:if>
 										-->
 										<xsl:if test="$disable-PATIENT_strSurname != 'true'">
@@ -225,20 +234,24 @@ xmlns:url="http://www.jclark.com/xt/java/java.net.URLEncoder" exclude-result-pre
 
         <td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
                                                                                 </tr>
-										<tr class="funcpanel_content">
-                                                                                        <td class="funcpanel_left_border">&#160;</td>
-                                                                                        <td class="form_label">Lab ID &#160;:</td>
-                                                                                        <td>&#160;</td>
-
-	 <td><input class="funcpanel_form" type="text"   name="ADMISSIONS_strHospitalUR" size="20"/></td>
-                                                                                        <td class="funcpanel_right_border">&#160;</td>
-										</tr>
+										
 										<tr class="funcpanel_content">
 											<td class="funcpanel_left_border">&#160;</td>
-											<td class="form_label">Postcode &#160;:</td>
+											<td class="form_label">Status &#160;:</td>
 											<td>&#160;</td>
 											
-											<td><input class="funcpanel_form" type="text"   name="PATIENT_intAddressPostCode" size="20"/></td>
+											<td>  <select class="funcpanel_form" name="strStatus" >
+												<option value=""></option>
+												<xsl:for-each select="/body/search/PATIENT_strStatus">
+													<option>
+														<xsl:attribute name="value"><xsl:value-of select="."/></xsl:attribute>
+														<xsl:if test="@selected = '1'">
+															<xsl:attribute name="selected">true</xsl:attribute>
+														</xsl:if>
+														<xsl:value-of select="."/>
+													</option>
+												</xsl:for-each>
+											</select></td>
 											<td class="funcpanel_right_border">&#160;</td>
 										</tr>
 										 <tr class="funcpanel_content">
