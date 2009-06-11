@@ -71,7 +71,10 @@
                 <td class="stripped_column_heading"></td>
             </tr>
             <xsl:for-each select="search_trans">
-                <xsl:sort select="BIOSPECIMEN_TRANSACTIONS_dtTransactionDate" order="descending"/>
+                
+                <xsl:sort select="substring(BIOSPECIMEN_TRANSACTIONS_dtTransactionDate,7,4)" order="descending"/> <!-- year  -->
+                <xsl:sort select="substring(BIOSPECIMEN_TRANSACTIONS_dtTransactionDate,3,2)" order="descending"/> <!-- month -->
+                <xsl:sort select="substring(BIOSPECIMEN_TRANSACTIONS_dtTransactionDate,1,2)" order="descending"/> <!-- day   -->
                 <xsl:sort select="BIOSPECIMEN_TRANSACTIONS_intBioTransactionID" order="descending"/>
                 <xsl:variable name="BIOSPECIMEN_TRANSACTIONS_intBioTransactionID">
                     <xsl:value-of
@@ -363,7 +366,7 @@
         <xsl:call-template name="javascript_code"/>
         <link rel="stylesheet" type="text/css" href="stylesheets/neuragenix/bio/xmlsideTree.css"/>
         <script language="javascript">
-	window.onload = function()
+	<!--window.onload = function()
 {
                 var toggle = document.biospecimen_form.BIOSPECIMEN_strSampleType;
 
@@ -398,7 +401,7 @@ var selectBox = document.biospecimen_form.BIOSPECIMEN_strSampleType;
                                                         }
 
 }
-
+-->
 function archiveData() {
 purity = document.biospecimen_form.BIOSPECIMEN_flPurity;
 conc = document.biospecimen_form.BIOSPECIMEN_flDNAConc;
@@ -1515,7 +1518,6 @@ comments.value = commentsval;
                                 <td align="left" colspan="4">
                                     <input type="button" name="delete" value="Delete" tabindex="44"
                                         class="uportal-button"
-                                        onblur="javascript:document.biospecimen_form.strBiospecSampleType.focus()"
                                         onclick="javascript:confirmDelete('{$baseActionURL}?current=biospecimen_view&amp;module=core&amp;action=delete_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;target=biospecimen')"
                                     />
                                 </td>
@@ -1545,7 +1547,6 @@ comments.value = commentsval;
 								</xsl:choose>
                                     <input type="submit" name="save" value="Save Biospecimen"
                                         tabindex="43" class="uportal-button"
-                                        onblur="javascript:document.biospecimen_form.strBiospecSampleType.focus()"
                                         onclick="javascript:submitBiospecimenForm()"/>
                                 </td>
                             </tr>
@@ -2274,8 +2275,6 @@ comments.value = commentsval;
             </tr>
         </table>
         <!-- Move the cursor to the first date entry box as the page is loaded-->
-        <script language="javascript"> document.biospecimen_view.strBiospecSampleType.focus();
-        </script>
     </xsl:template>
     <xsl:template match="strBiospecimenID"/>
     <xsl:template name="branch" match="branch">
