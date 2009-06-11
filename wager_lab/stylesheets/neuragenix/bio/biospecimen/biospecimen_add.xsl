@@ -74,7 +74,7 @@
 
 		<script src="htmlarea/lert.js" type="text/javascript"/>
 		<script language="javascript">
-            window.onload = function () {
+           <!-- window.onload = function () {
                 var toggle = document.biospecimen_form.BIOSPECIMEN_strSampleType;
                 var selectBox = document.biospecimen_form.BIOSPECIMEN_strSampleType;
                 user_input = selectBox.options[selectBox.selectedIndex].value
@@ -89,7 +89,7 @@
                         }
                     }
                 }
-            }
+            }-->
             function aliquotdialog() {
                 
                 var cancel = new LertButton('Cancel', function () {
@@ -312,10 +312,15 @@
                             function dropDownUpdate() {
                                 document.biospecimen_form.action.value = 'add_biospecimen';
                                 document.biospecimen_form.submit();
-                            }</script>
+                                }</script>
+					
+						
 					<td id="neuragenix-form-row-input-input" class="uportal-label">
-						<select multiple="" size="4" name="BIOSPECIMEN_strSampleType" tabindex="22"
-							class="uportal-input-text">
+						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text">							
+								<xsl:if test="$intBiospecParentID = -1">		
+									<xsl:attribute name="multiple"></xsl:attribute>
+									<xsl:attribute name="size">4</xsl:attribute>
+								</xsl:if>
 							<xsl:for-each select="BIOSPECIMEN_strSampleType">
 								<option>
 									<xsl:attribute name="value">
@@ -327,8 +332,10 @@
 									<xsl:value-of select="."/>
 								</option>
 							</xsl:for-each>
-						</select> X <input type="text" length="4" size="4"
-							name="BIOSPECIMEN_intMultiple" value="1"/>
+						</select> <xsl:if test="$intBiospecParentID = -1">
+							X <input type="text" length="4" size="4"
+						name="BIOSPECIMEN_intMultiple" value="1"/>
+						</xsl:if>
 					</td>
 
 					<!--<xsl:value-of select="BIOSPECIMEN_strSpeciesDisplay"/>: -->

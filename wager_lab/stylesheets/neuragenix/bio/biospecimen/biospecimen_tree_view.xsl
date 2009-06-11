@@ -140,6 +140,9 @@
                                 <a href="{$baseActionURL}?module=core&amp;action=add_biospecimen&amp;PATIENT_intInternalPatientID={PATIENT_intInternalPatientID}&amp;BIOSPECIMEN_intPatientID={PATIENT_intInternalPatientID}">
                                     Add New Biospecimen
                                 </a>
+                                <a href="/wagerlab/DefaultBarcode.prn?patientkey={PATIENT_intInternalPatientID}">
+                                    Print all barcodes
+                                </a>
                             </xsl:otherwise>
                         </xsl:choose>
                     </td>

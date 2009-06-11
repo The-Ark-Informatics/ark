@@ -2177,10 +2177,7 @@ public class BiospecimenCore {
 				strXML.append("<BIOSPECIMEN_intStudyKey>");
 				strXML.append(runtimeData.getParameter("BIOSPECIMEN_strStudyKey"));
 				strXML.append("</BIOSPECIMEN_intStudyKey>");
-				strXML.append("<BIOSPECIMEN_strProcessingType>");
-				strXML.append("<type>Sub-aliquot</type>");
-				strXML.append("<type>Processing</type>");
-				strXML.append("</BIOSPECIMEN_strProcessingType>");
+		
 				strXML.append(getTransactionDetailsXML(Integer
 						.parseInt(strBioParentKey)));
 
@@ -2207,6 +2204,10 @@ public class BiospecimenCore {
 				strXML.append("<parent_flDNAConc>");
 				strXML.append(parentDNAConc);
 				strXML.append("</parent_flDNAConc>");
+				strXML.append("<BIOSPECIMEN_strProcessingType>");
+				strXML.append("<type>Sub-aliquot</type>");
+				strXML.append("<type>Processing</type>");
+				strXML.append("</BIOSPECIMEN_strProcessingType>");
 				
 				
 			} else {
@@ -3613,7 +3614,7 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 					intBiospecimenKey + "", 0, DALQuery.WHERE_HAS_VALUE);
 			query.setWhere("AND", 0, "BIOSPECIMEN_TRANSACTIONS_intDeleted",
 					"=", "0", 0, DALQuery.WHERE_HAS_VALUE);
-
+			query.setOrderBy("BIOSPECIMEN_TRANSACTIONS_dtTransactionDate", "DESC");
 			rs = query.executeSelect();
 			strXML.append(QueryChannel.buildSearchXMLFile("search_trans", rs,
 					vtSearchBioTransactions));
