@@ -693,11 +693,11 @@ public class BatchSFResultsManager {
 
         try
         {
-            Enumeration enum = hashCloneFieldData.keys();        
+            Enumeration key_enum = hashCloneFieldData.keys();        
 
-            while (enum.hasMoreElements())
+            while (key_enum.hasMoreElements())
             {
-                String strDEID = enum.nextElement().toString();
+                String strDEID = key_enum.nextElement().toString();
 
                 if (hashDEType.get(strDEID).equals("DATE"))
                 {
@@ -830,11 +830,11 @@ public class BatchSFResultsManager {
             for (int i=0; i<vtStandaloneData.size(); i++)
             {
                 Hashtable hashStandaloneData = (Hashtable) vtStandaloneData.get(i);            
-                Enumeration enum = hashStandaloneData.keys();
+                Enumeration key_enum = hashStandaloneData.keys();
 
-                while (enum.hasMoreElements())
+                while (key_enum.hasMoreElements())
                 {
-                    String strDEID = enum.nextElement().toString();
+                    String strDEID = key_enum.nextElement().toString();
 
                     if (hashDEType.get(strDEID).equals("DATE"))
                     {

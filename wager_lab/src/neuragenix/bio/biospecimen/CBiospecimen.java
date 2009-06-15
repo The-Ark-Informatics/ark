@@ -420,6 +420,7 @@ public class CBiospecimen implements IChannel
             
             rp.clearXML();
             rp.addXML("<biospecimen>");
+            rp.addXML(bcBiospecimen.getSearchCriteriaXML());
             rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intLastDomainSearch,  htCurrentSearchCriteria, true, 0, this.intCurrentPagingSize, false, -1, isTransSearch));
             rp.addXML("</biospecimen>");
             rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
@@ -432,7 +433,7 @@ public class CBiospecimen implements IChannel
             + bcBiospecimen.getSearchCriteriaXML()
             + FlagManager.getFlaggedRecordsXML(FlagManager.DOMAIN_BIOSPECIMEN, null)
             + "</biospecimen>");
-            rp.setStylesheet(BiospecimenCore.ACTION_BIOSPECIMEN_SEARCH);
+            rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
          }
          
          
@@ -1066,6 +1067,7 @@ public class CBiospecimen implements IChannel
                        
                        rp.clearXML();
                        rp.addXML("<biospecimen>");
+                       rp.addXML( bcBiospecimen.getSearchCriteriaXML());
                        rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intLastDomainSearch,  htCurrentSearchCriteria, true, 0, this.intCurrentPagingSize, false, -1, isTransSearch));
                        rp.addXML("</biospecimen>");
                        rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
@@ -1078,7 +1080,7 @@ public class CBiospecimen implements IChannel
                        + bcBiospecimen.getSearchCriteriaXML()
                        + FlagManager.getFlaggedRecordsXML(FlagManager.DOMAIN_BIOSPECIMEN, null)
                        + "</biospecimen>");
-                       rp.setStylesheet(BiospecimenCore.ACTION_BIOSPECIMEN_SEARCH);
+                       rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
                     }
                     
                 }
@@ -1632,6 +1634,7 @@ public class CBiospecimen implements IChannel
                   {
                      rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intLastDomainSearch,  htCurrentSearchCriteria, false, intPageToDisplay, this.intCurrentPagingSize, false, intExpandID));
                   }
+                  rp.addXML(bcBiospecimen.getSearchCriteriaXML());
                   rp.addXML("</biospecimen>");
                   rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
                   // System.out.println ("good for open node display");
@@ -1671,6 +1674,7 @@ public class CBiospecimen implements IChannel
                   {
                      rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intLastDomainSearch,  htCurrentSearchCriteria, false, intPageToDisplay, this.intCurrentPagingSize, false, intExpandID));
                   }
+                  rp.addXML(bcBiospecimen.getSearchCriteriaXML());
                   rp.addXML("</biospecimen>");
                   rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
                   // System.out.println ("good for open node display");
@@ -1717,6 +1721,7 @@ public class CBiospecimen implements IChannel
                {
                   rp.addXML("<hasCollection>" + hasCollection + "</hasCollection>");
                }
+               rp.addXML(bcBiospecimen.getSearchCriteriaXML());
                rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(BiospecimenCore.DOMAIN_PATIENT,  htCurrentSearchCriteria, true, 0, this.intCurrentPagingSize, false, -1));
                rp.addXML("</biospecimen>");
                rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
@@ -1742,6 +1747,7 @@ public class CBiospecimen implements IChannel
                
                rp.clearXML();
                rp.addXML("<biospecimen>");
+               rp.addXML(bcBiospecimen.getSearchCriteriaXML());
                rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(BiospecimenCore.DOMAIN_STUDYALLOC_ALLOC,  htCurrentSearchCriteria, true, 0, this.intCurrentPagingSize, false, -1, true));
                rp.addXML("<intStudyID>"+runtimeData.getParameter("BIOSPECIMEN_intStudyID")+"</intStudyID>");
                rp.addXML("</biospecimen>");
@@ -1822,6 +1828,7 @@ public class CBiospecimen implements IChannel
                
                setSearchResultsRuntimeProperties(intLastDomainSearch, intPageToDisplay, htCurrentSearchCriteria);
                
+               
             }
             else if (strAction.equals("PAGING_setPage"))
             {
@@ -1855,7 +1862,9 @@ public class CBiospecimen implements IChannel
                   rp.clearXML();
                   rp.addXML("<biospecimen>");
                   rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intLastDomainSearch,  htCurrentSearchCriteria, true, 0, this.intCurrentPagingSize, false, -1, isTransSearch));
+                  rp.addXML(bcBiospecimen.getSearchCriteriaXML());
                   rp.addXML("</biospecimen>");
+                
                   rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
                }
                else
@@ -1866,7 +1875,7 @@ public class CBiospecimen implements IChannel
                   + bcBiospecimen.getSearchCriteriaXML()
                   + FlagManager.getFlaggedRecordsXML(FlagManager.DOMAIN_BIOSPECIMEN, null)
                   + "</biospecimen>");
-                  rp.setStylesheet(BiospecimenCore.ACTION_BIOSPECIMEN_SEARCH);
+                  rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
                }
                
                
@@ -1904,6 +1913,7 @@ public class CBiospecimen implements IChannel
 		long finishedsearch = System.currentTimeMillis();
 		
            rp.addXML(StudyUtilities.getListOfStudiesXML(rp.getAuthToken(),true)); 
+           rp.addXML(bcBiospecimen.getSearchCriteriaXML());
             rp.addXML("</biospecimen>");
 		long finishedstudylist = System.currentTimeMillis();
 		double searchtime = ((double) (finishedsearch - timenow))/1000.0;
@@ -2078,7 +2088,7 @@ public class CBiospecimen implements IChannel
       + FlagManager.getFlaggedRecordsXML(FlagManager.DOMAIN_BIOSPECIMEN, null)
       + "</biospecimen>");
       //System.out.println("Rp xml : " + rp.getXML());
-      rp.setStylesheet(BiospecimenCore.ACTION_BIOSPECIMEN_SEARCH);
+      rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
    }
    
    // only to be used for paging.
@@ -2092,6 +2102,7 @@ public class CBiospecimen implements IChannel
       rp.clearXML();
       rp.addXML("<biospecimen>");
       rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(intCallingDomain,  htCriteria, false, intPageToDisplay, this.intCurrentPagingSize, false, -1, transSearch));
+      rp.addXML(bcBiospecimen.getSearchCriteriaXML());
       rp.addXML("</biospecimen>");
       rp.setStylesheet(BiospecimenCore.XSL_BIOSPECIMEN_TREE_VIEW);
       

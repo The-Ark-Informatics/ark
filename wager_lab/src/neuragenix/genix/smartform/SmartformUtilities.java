@@ -269,9 +269,9 @@ public class SmartformUtilities
                 }
                 
                 // set fields
-                Enumeration enum = hashFields.keys();
-                while (enum.hasMoreElements())
-                    lookupQuery.setField((String) enum.nextElement(), null);
+                Enumeration key_enum = hashFields.keys();
+                while (key_enum.hasMoreElements())
+                    lookupQuery.setField((String) key_enum.nextElement(), null);
                     
                 // set where conditions
                 query = new DALQuery();

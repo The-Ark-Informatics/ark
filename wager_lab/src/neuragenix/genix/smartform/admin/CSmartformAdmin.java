@@ -4549,11 +4549,11 @@ loop1:          for(int i=0; i< vtLookupFieldNames.size();i++)
             
             // Type System Lookup - Get Lookup Object names and its field names
             Hashtable hashLookupObjs = DatabaseSchema.getLookupObjects();
-            Enumeration enum = hashLookupObjs.keys();            
-            while (enum.hasMoreElements())
+            Enumeration key_enum = hashLookupObjs.keys();            
+            while (key_enum.hasMoreElements())
             {   
                 // Get Lookup Object Names
-                String lookupObjName =  (String)enum.nextElement();                
+                String lookupObjName =  (String)key_enum.nextElement();                
                 //System.out.println("lookupObjName:"+lookupObjName);                
                 strXML+= "<build_LookupTypes><DATAELEMENTS_strDataElementLookupType>"+lookupObjName +"</DATAELEMENTS_strDataElementLookupType></build_LookupTypes>";      
                 
@@ -4663,11 +4663,11 @@ loop1:          for(int i=0; i< vtLookupFieldNames.size();i++)
             
             // Type System Lookup - Get Lookup Object names and its field names
             Hashtable hashLookupObjs = DatabaseSchema.getLookupObjects();
-            Enumeration enum = hashLookupObjs.keys();            
-            while (enum.hasMoreElements())
+            Enumeration key_enum = hashLookupObjs.keys();            
+            while (key_enum.hasMoreElements())
             {   
                 // Get Lookup Object Names
-                String lookupObjName =  (String)enum.nextElement();                
+                String lookupObjName =  (String)key_enum.nextElement();                
                 //System.out.println("lookupObjName:"+lookupObjName);                
                 
                  // Get the lookup Objects Field Names
@@ -6687,11 +6687,11 @@ loop1:          for(int i=0; i< vtLookupFieldNames.size();i++)
             
             // Type System Lookup - Get Lookup Object names and its field names
             Hashtable hashLookupObjs = DatabaseSchema.getLookupObjects();
-            Enumeration enum = hashLookupObjs.keys();            
-            while (enum.hasMoreElements())
+            Enumeration key_enum = hashLookupObjs.keys();            
+            while (key_enum.hasMoreElements())
             {   
                 // Get Lookup Object Names
-                String lookupObjName =  (String)enum.nextElement();                
+                String lookupObjName =  (String)key_enum.nextElement();                
                 //System.out.println("lookupObjName:"+lookupObjName);                
                 
                  // Get the lookup Objects Field Names

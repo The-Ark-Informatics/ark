@@ -2277,11 +2277,11 @@ public class CSmartform implements IChannel {
     private void processRepeatableDEforDisplay() 
     {
         
-        Enumeration enum = htRepeatableDEResults.keys();
+        Enumeration key_enum = htRepeatableDEResults.keys();
         
-        while (enum.hasMoreElements())
+        while (key_enum.hasMoreElements())
         {
-            String strDEOrder = enum.nextElement().toString();
+            String strDEOrder = key_enum.nextElement().toString();
             String strDEResult = htRepeatableDEResults.get(strDEOrder).toString();
             String strRepeatableData[] = strDEResult.split(";");
             Vector vtRepeatableDEData = new Vector();
@@ -2355,11 +2355,11 @@ public class CSmartform implements IChannel {
     private void updateDataInRepeatableDE() 
     {        
         
-        Enumeration enum = htRepeatableDEResults.keys();
+        Enumeration key_enum = htRepeatableDEResults.keys();
         
-        while (enum.hasMoreElements())
+        while (key_enum.hasMoreElements())
         {
-            String strDEOrder = enum.nextElement().toString();
+            String strDEOrder = key_enum.nextElement().toString();
             Vector vtRepeatableDEData = (Vector) htRepeatableDEResults.get(strDEOrder);
             for (int index=0; index<vtRepeatableDEData.size(); index++)
             {    
@@ -2388,12 +2388,12 @@ public class CSmartform implements IChannel {
     private void processRepeatableDEforDB() 
     {
         
-        Enumeration enum = htRepeatableDEResults.keys();
+        Enumeration key_enum = htRepeatableDEResults.keys();
         String strResult = "";
         
-        while (enum.hasMoreElements())
+        while (key_enum.hasMoreElements())
         {
-            String strDEOrder = enum.nextElement().toString();
+            String strDEOrder = key_enum.nextElement().toString();
             Vector vtRepeatableDEData = (Vector) htRepeatableDEResults.get(strDEOrder);
             for (int i=0; i<vtRepeatableDEData.size(); i++)
             {

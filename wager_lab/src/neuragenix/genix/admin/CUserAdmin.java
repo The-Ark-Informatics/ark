@@ -2667,16 +2667,17 @@ public class CUserAdmin implements IChannel {
         StringBuffer strXML = new StringBuffer();
         
         // traverse through tree elements
-        Enumeration enum = myTree.breadthFirstEnumeration();
-        enum.nextElement();
+        Enumeration tree_enum = myTree.breadthFirstEnumeration();
+        
+        tree_enum.nextElement();
         
         strXML.append("<usergroupTree>");
         
         // go in to each node
-        while (enum.hasMoreElements()){
+        while (tree_enum.hasMoreElements()){
             
             Hashtable currentNode = (Hashtable) (
-            ((DefaultMutableTreeNode) enum.nextElement()).getUserObject());
+            ((DefaultMutableTreeNode) tree_enum.nextElement()).getUserObject());
             
             strXML.append("<treeNode>");
             
@@ -2723,15 +2724,15 @@ public class CUserAdmin implements IChannel {
         DefaultMutableTreeNode myTree =
         new GenericTree().buildTree(new Hashtable(),"Root",GenericTree.SINGLE_DOMAIN, CHANNEL_NAME);
         
-        Enumeration enum = myTree.breadthFirstEnumeration();
+        Enumeration tree_enum = myTree.breadthFirstEnumeration();
         // skip the root
-        enum.nextElement();
+        tree_enum.nextElement();
         
         // assign unique ids to groups
         int id=ROOT_ID;
-        while(enum.hasMoreElements()){
+        while(tree_enum.hasMoreElements()){
             
-            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) enum.nextElement();
+            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
             Hashtable currentNode = (Hashtable) cNode.getUserObject();
             
             // set up elements
@@ -2747,13 +2748,13 @@ public class CUserAdmin implements IChannel {
         }
         
         // make parentID
-        enum = myTree.breadthFirstEnumeration();
-        enum.nextElement();
-        enum.nextElement();
+        tree_enum = myTree.breadthFirstEnumeration();
+        tree_enum.nextElement();
+        tree_enum.nextElement();
         
-        while(enum.hasMoreElements()){
+        while(tree_enum.hasMoreElements()){
             
-            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) enum.nextElement();
+            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
             if (cNode != null && cNode.getParent() != null)
             {
                 Hashtable pNode = (Hashtable) (((DefaultMutableTreeNode)cNode.getParent()).getUserObject());
@@ -2850,11 +2851,11 @@ public class CUserAdmin implements IChannel {
         try{
             
             
-            Enumeration enum = tree.breadthFirstEnumeration();
-            enum.nextElement();
+            Enumeration tree_enum = tree.breadthFirstEnumeration();
+            tree_enum.nextElement();
             
             
-            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) enum.nextElement();
+            DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
             Hashtable currentNode = (Hashtable) cNode.getUserObject();
             
         
@@ -2865,9 +2866,9 @@ public class CUserAdmin implements IChannel {
             lockUsergroup(currentNode.get("id").toString(),visible.containsKey(currentNode.get("id")),LockRecord.READ_ONLY);
             
             
-            while(enum.hasMoreElements()){
+            while(tree_enum.hasMoreElements()){
                 
-                cNode = (DefaultMutableTreeNode) enum.nextElement();
+                cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
                 currentNode = (Hashtable) cNode.getUserObject();
                 
                 DefaultMutableTreeNode pNode = (DefaultMutableTreeNode) cNode.getParent();

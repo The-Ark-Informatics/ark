@@ -2244,6 +2244,8 @@ public class BiospecimenCore {
 
 			strXML.append(QueryChannel.buildFormLabelXMLFile(DatabaseSchema
 					.getFormFields("cbiospecimen_inventory_titles")));
+			strXML.append("<callingDomain>patient</callingDomain>");
+			strXML.append("<hideSearchBox>true</hideSearchBox>");
 			return strXML.toString();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -2945,11 +2947,11 @@ public class BiospecimenCore {
 			String strEqualityCondition = getSearchEqualityCondition();
 			try {
 				dalChildQuery.setDomain("BIOSPECIMEN", null, null, null);
-				if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
+				//if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
 					dalChildQuery.setDomain("PATIENT",
 							"PATIENT_intInternalPatientID",
 							"BIOSPECIMEN_intPatientID", "INNER JOIN");
-				}
+				//}
 				dalChildQuery.setFields(vtFormFields, null);
 				dalChildQuery.setWhere(null, 0, "BIOSPECIMEN_intDeleted", "=",
 						"0", 0, DALQuery.WHERE_HAS_VALUE);
@@ -3034,11 +3036,11 @@ public class BiospecimenCore {
 
 			try {
 				dsqQuery.setDomain("BIOSPECIMEN", null, null, null);
-				if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
+				//if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
 					dsqQuery.setDomain("PATIENT",
 							"PATIENT_intInternalPatientID",
 							"BIOSPECIMEN_intPatientID", "INNER JOIN");
-				}
+				//}
 				// dsqQuery.setDomain("CELL", "CELL_intBiospecimenID",
 				// "BIOSPECIMEN_intBiospecimenID", "LEFT JOIN");
 				

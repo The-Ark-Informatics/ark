@@ -85,11 +85,11 @@ public class BuildQuery extends IntelligentSearch{
 
             // Add the identity keys based on the domains to be searched on
             // to vtSearchFormFields
-            Enumeration enum = hashSFDomains.keys();
+            Enumeration key_enum = hashSFDomains.keys();
 
-            while (enum.hasMoreElements())
+            while (key_enum.hasMoreElements())
             {
-                strDomain = enum.nextElement().toString();
+                strDomain = key_enum.nextElement().toString();
                 if (hashIdentityKey.containsKey(strDomain))
                 {    
                     if (!vtSearchFormFields.contains(hashIdentityKey.get(strDomain)))
@@ -1118,10 +1118,10 @@ public class BuildQuery extends IntelligentSearch{
             
             //Start Debug            
             /*
-            Enumeration enum = hashSFDomains.keys();            
-            while (enum.hasMoreElements())
+            Enumeration key_enum = hashSFDomains.keys();            
+            while (key_enum.hasMoreElements())
             {
-                String domain = enum.nextElement().toString();
+                String domain = key_enum.nextElement().toString();
                 
                 if (hashSFDomains.get(domain) != null)
                 {

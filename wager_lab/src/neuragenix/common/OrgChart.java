@@ -80,7 +80,7 @@ public class OrgChart {
             while ( rs.next() ) {
                   
                 boolean added = false;
-                Enumeration enum = myTree.breadthFirstEnumeration();
+                Enumeration tree_enum = myTree.breadthFirstEnumeration();
                 
                 DefaultMutableTreeNode cNode = new DefaultMutableTreeNode();
                 DefaultMutableTreeNode nNode = new DefaultMutableTreeNode( makeHash(rs));
@@ -92,9 +92,9 @@ public class OrgChart {
                 //System.err.println("RS: g=" + recGroupKey + ", p=" + recParentKey);                
                 
                 // go in to each node and assign all the child nodes first
-                while( enum.hasMoreElements() ){
+                while( tree_enum.hasMoreElements() ){
                     
-                    cNode = (DefaultMutableTreeNode) enum.nextElement();                    
+                    cNode = (DefaultMutableTreeNode) tree_enum.nextElement();                    
                     hNode = (Hashtable) cNode.getUserObject();
                   
                     // check if the current record is the PARENT of some node.
@@ -109,10 +109,10 @@ public class OrgChart {
 
                 // go in to each node again and assign the parent nodes.  Also,
                 // check for child nodes in cause any has been missed!
-                enum = myTree.breadthFirstEnumeration();
-                while( enum.hasMoreElements() ){
+                tree_enum = myTree.breadthFirstEnumeration();
+                while( tree_enum.hasMoreElements() ){
 
-                    cNode = (DefaultMutableTreeNode) enum.nextElement();                    
+                    cNode = (DefaultMutableTreeNode) tree_enum.nextElement();                    
                     hNode = (Hashtable) cNode.getUserObject();
 
                     String childGroupKey  = hNode.get("ORGGROUPTREE_intOrgGroupKey").toString();
@@ -147,15 +147,15 @@ public class OrgChart {
                     rootNode.add( nNode );
             }            
             
-            Enumeration enum = myTree.breadthFirstEnumeration();
+            Enumeration tree_enum = myTree.breadthFirstEnumeration();
             
             // skip the root
-            enum.nextElement();
+            tree_enum.nextElement();
             
             // assign action url to groups
-            while( enum.hasMoreElements() ){
+            while( tree_enum.hasMoreElements() ){
                 
-                DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) enum.nextElement();
+                DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
                 hNode = (Hashtable) cNode.getUserObject();
                 hNode.put("url_action",groupAction);
                 
@@ -166,17 +166,17 @@ public class OrgChart {
             vtFormField = DatabaseSchema.getFormFields("orgusertree_view");
             
             // start from root group again
-            enum = myTree.breadthFirstEnumeration();
-            enum.nextElement();
+            tree_enum = myTree.breadthFirstEnumeration();
+            tree_enum.nextElement();
             
             
             // add users to group
             try{
                 // go into every node
-                while (enum.hasMoreElements()){
+                while (tree_enum.hasMoreElements()){
                     
                     // set up the current node
-                    DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) enum.nextElement();
+                    DefaultMutableTreeNode cNode = (DefaultMutableTreeNode) tree_enum.nextElement();
                     hNode = (Hashtable) cNode.getUserObject();
                     
                     
@@ -251,16 +251,16 @@ public class OrgChart {
         StringBuffer strXML = new StringBuffer();
         
         // traverse through tree elements
-        Enumeration enum = myTree.breadthFirstEnumeration();
-        enum.nextElement();
+        Enumeration tree_enum = myTree.breadthFirstEnumeration();
+        tree_enum.nextElement();
         
         strXML.append("<orgTree>");
         
         // go in to each node
-        while (enum.hasMoreElements()){
+        while (tree_enum.hasMoreElements()){
             
             Hashtable hNode = (Hashtable) (
-            ((DefaultMutableTreeNode) enum.nextElement()).getUserObject());
+            ((DefaultMutableTreeNode) tree_enum.nextElement()).getUserObject());
             
             strXML.append("<treeNode>");
             
