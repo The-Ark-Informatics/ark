@@ -248,10 +248,10 @@ public class TrayManager {
             // Get a tree map of the old cell IDs that
             // can then be sorted in ascending order
             TreeMap trOldCellMap = new TreeMap ();
-            Enumeration enum = htMapCellID.keys();
-            while (enum.hasMoreElements())
+            Enumeration key_enum = htMapCellID.keys();
+            while (key_enum.hasMoreElements())
             {
-                String strOldCellID = enum.nextElement().toString();
+                String strOldCellID = key_enum.nextElement().toString();
                 trOldCellMap.put(strOldCellID, strOldCellID);
             }                   
 
@@ -298,10 +298,10 @@ public class TrayManager {
             // Get a tree map of the old cell IDs that
             // can then be sorted in ascending order
             TreeMap trCellMap = new TreeMap ();
-            Enumeration enum = htCellIDs.keys();
-            while (enum.hasMoreElements())
+            Enumeration key_enum = htCellIDs.keys();
+            while (key_enum.hasMoreElements())
             {
-                String strOldCellID = enum.nextElement().toString();
+                String strOldCellID = key_enum.nextElement().toString();
                 trCellMap.put(strOldCellID, strOldCellID);
             }                   
 

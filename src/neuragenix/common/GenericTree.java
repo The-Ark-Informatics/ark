@@ -193,14 +193,14 @@ public class GenericTree
 
 						Hashtable hashNewNode =
 								(Hashtable) vtResult.get(intIndex1);
-						Enumeration enum =
+						Enumeration tree_enum =
 								genericTree.breadthFirstEnumeration();
-						enum.nextElement();// skip the root
+						tree_enum.nextElement();// skip the root
 						
-						while (enum.hasMoreElements())
+						while (tree_enum.hasMoreElements())
 						{
 							DefaultMutableTreeNode currentNode =
-									(DefaultMutableTreeNode) enum.nextElement();
+									(DefaultMutableTreeNode) tree_enum.nextElement();
 							Hashtable hashCurrentObject =
 									(Hashtable) currentNode.getUserObject();
 
@@ -453,14 +453,14 @@ public class GenericTree
 
 						Hashtable hashNewNode =
 								(Hashtable) vtResult.get(intIndex1);
-						Enumeration enum =
+						Enumeration tree_enum =
 								genericTree.breadthFirstEnumeration();
-						enum.nextElement();// skip the root
+						tree_enum.nextElement();// skip the root
 						
-						while (enum.hasMoreElements())
+						while (tree_enum.hasMoreElements())
 						{
 							DefaultMutableTreeNode currentNode =
-									(DefaultMutableTreeNode) enum.nextElement();
+									(DefaultMutableTreeNode) tree_enum.nextElement();
 							Hashtable hashCurrentObject =
 									(Hashtable) currentNode.getUserObject();
 
@@ -614,8 +614,8 @@ public class GenericTree
         if (!root.isLeaf())
         {
 			String strInitialNode = "Root";
-			Enumeration enum = root.breadthFirstEnumeration();
-			enum.nextElement();// skip the root
+			Enumeration tree_enum = root.breadthFirstEnumeration();
+			tree_enum.nextElement();// skip the root
 			Hashtable hashTreeStructure =
 					TreeSchema.getTreeStructures(strTreeType);
 //System.err.println("strFormFieldMappingName = " + strFormFieldMappingName + "<<<<<------------");
@@ -630,10 +630,10 @@ public class GenericTree
 			String strConcatenatedURL = "";
 			
 		    sbfResult.append("<tree>");
-			for(int intIndex0=1; enum.hasMoreElements(); intIndex0++)
+			for(int intIndex0=1; tree_enum.hasMoreElements(); intIndex0++)
 			{
 				DefaultMutableTreeNode currentNode =
-						(DefaultMutableTreeNode) enum.nextElement();
+						(DefaultMutableTreeNode) tree_enum.nextElement();
 				int intNodeLevel = currentNode.getLevel();
 				
 				String strCurrentDomain = 

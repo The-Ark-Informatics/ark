@@ -263,11 +263,11 @@ public class BiospecimenBaseChannel extends BaseChannel{
 
                 
 
-                Enumeration enum = biospecimenTree.breadthFirstEnumeration();
+                Enumeration tree_enum = biospecimenTree.breadthFirstEnumeration();
                 
                
 
-                enum.nextElement();// skip the root
+                tree_enum.nextElement();// skip the root
                 
 
                 boolean isChild = false;
@@ -282,11 +282,11 @@ public class BiospecimenBaseChannel extends BaseChannel{
 
                 pNodes = new Vector();
 
-                while (enum.hasMoreElements())
+                while (tree_enum.hasMoreElements())
 
                 {
 
-                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enum.nextElement();
+                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree_enum.nextElement();
                     
 
                     Hashtable hashTemp = (Hashtable) currentNode.getUserObject();

@@ -15948,12 +15948,12 @@ public class WorkflowManager
                 
                 // extract all the domains first
                 Hashtable hashDomains = getWorkflowDomains(query);          
-                Enumeration enum = hashDomains.keys();
+                Enumeration key_enum = hashDomains.keys();
                 
                 // get the trigger types based on each domain
-                while (enum.hasMoreElements())
+                while (key_enum.hasMoreElements())
                 {
-                    String domainKey  = (String) enum.nextElement();
+                    String domainKey  = (String) key_enum.nextElement();
                     String domainName = (String) hashDomains.get(domainKey);
                                         
                     query.reset();

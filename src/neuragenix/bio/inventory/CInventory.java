@@ -880,13 +880,13 @@ public class CInventory implements IChannel
 	            for (int i=0; i < vtResult.size(); i++)
 	            {
 	                Hashtable hashNewNode = (Hashtable) vtResult.get(i);
-	                Enumeration enum = inventoryTree.breadthFirstEnumeration();
-	                enum.nextElement();// skip the root
+	                Enumeration tree_enum = inventoryTree.breadthFirstEnumeration();
+	                tree_enum.nextElement();// skip the root
 	                
 	                
-	                while (enum.hasMoreElements())
+	                while (tree_enum.hasMoreElements())
 	                {
-	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enum.nextElement();
+	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree_enum.nextElement();
 	                    Hashtable hashCurrentObject = (Hashtable) currentNode.getUserObject();
 	
 	                    // new node is the parent of a tree node
@@ -932,13 +932,13 @@ public class CInventory implements IChannel
 	            for (int i=0; i < vtResult.size(); i++)
 	            {
 	                Hashtable hashNewNode = (Hashtable) vtResult.get(i);
-	                Enumeration enum = inventoryTree.breadthFirstEnumeration();
-	                enum.nextElement();// skip the root
+	                Enumeration tree_enum = inventoryTree.breadthFirstEnumeration();
+	               tree_enum.nextElement();// skip the root
 	                
 	                
-	                while (enum.hasMoreElements())
+	                while (tree_enum.hasMoreElements())
 	                {
-	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enum.nextElement();
+	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree_enum.nextElement();
 	                    Hashtable hashCurrentObject = (Hashtable) currentNode.getUserObject();
 	
 	                    // new node is the parent of a tree node
@@ -986,13 +986,13 @@ public class CInventory implements IChannel
 	            for (int i=0; i < vtResult.size(); i++)
 	            {
 	                Hashtable hashNewNode = (Hashtable) vtResult.get(i);
-	                Enumeration enum = inventoryTree.breadthFirstEnumeration();
-	                enum.nextElement();// skip the root
+	                Enumeration tree_enum = inventoryTree.breadthFirstEnumeration();
+	                tree_enum.nextElement();// skip the root
 	                
 	                
-	                while (enum.hasMoreElements())
+	                while (tree_enum.hasMoreElements())
 	                {
-	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) enum.nextElement();
+	                    DefaultMutableTreeNode currentNode = (DefaultMutableTreeNode) tree_enum.nextElement();
 	                    Hashtable hashCurrentObject = (Hashtable) currentNode.getUserObject();
 	
 	                    // new node is the parent of a tree node

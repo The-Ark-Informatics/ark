@@ -1500,9 +1500,9 @@ public class COrgChart implements IChannel {
                 //check if the current group is expanded, add its children to visible vector
                 if( (hNode.get( "ORGGROUPTREE_intOrgGroupKey" ) != null) && (hashExpanded.containsKey( hNode.get("ORGGROUPTREE_intOrgGroupKey") ))){
                     
-                    Enumeration enum = cNode.children();
-                    while( enum.hasMoreElements() )
-                        visible.add( enum.nextElement());
+                    Enumeration child_enum = cNode.children();
+                    while( child_enum.hasMoreElements() )
+                        visible.add( child_enum.nextElement());
                     
                 }
                 

@@ -3188,6 +3188,8 @@ public class IntelligentSearch
                     query.setDomain( "STUDY", "STUDY_intStudyID", "CONSENTSTUDY_intStudyID", "INNER JOIN");                                 
                 }                
                 **/
+        	   query.setDomain( "STUDY", "STUDY_intStudyID", "PATIENT_intStudyID", "INNER JOIN");           
+        	   
            }
            if (vtSelectedDomains.contains("BIOSPECIMEN")) {
         	  
@@ -4833,7 +4835,13 @@ public class IntelligentSearch
                 for (int j=0; j < vtSearchFormFields.size(); j++)
                 { 
                     if( !hashNonDisplayFields.contains(vtSearchFormFields.get(j).toString())){
-                        String value = ((Hashtable) vtSearchResult.get(i)).get((String) vtSearchFormFields.get(j)).toString();                
+                    	
+                        //String value = ((Hashtable) vtSearchResult.get(i)).get((String) vtSearchFormFields.get(j)).toString(); 
+                    	
+                        Hashtable iHash = (Hashtable) vtSearchResult.get(i);
+                        String jSearchField = (String) vtSearchFormFields.get(j);
+                        String value = iHash.get(jSearchField).toString();
+                        
                             if ( (value == null) || (value.equals("Empty")) )
                                 value = "";
 
