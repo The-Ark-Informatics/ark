@@ -60,6 +60,7 @@
     <xsl:template name="quantity_details">
         <xsl:param name="intBiospecimenID"/>
         <table width="100%" border="0" style="empty-cells:show;">
+            <xsl:if test="count(search_trans) > 0">
             <tr>
                 <td class="stripped_column_heading" >Date</td>
                 <td class="stripped_column_heading" >Type</td>
@@ -70,6 +71,10 @@
                 <td class="stripped_column_heading">Delivery Date</td> 
                 <td class="stripped_column_heading"></td>
             </tr>
+            </xsl:if>
+            <xsl:if test="count(search_trans) = 0">
+                There are no transactions for this biospecimen
+                </xsl:if>
             <xsl:for-each select="search_trans">
                 
                 <xsl:sort select="substring(BIOSPECIMEN_TRANSACTIONS_dtTransactionDate,7,4)" order="descending"/> <!-- year  -->
