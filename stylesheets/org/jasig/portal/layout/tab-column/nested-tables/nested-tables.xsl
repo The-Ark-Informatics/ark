@@ -45,14 +45,25 @@
             window.open(theURL,winName,features);
           }
         </script>
+	<script language="JavaScript">
+ function GetMySize()
+        {
+                 w = window.document.body.scrollWidth + 40;
+                h = window.document.body.scrollHeight + 15;
+if (window.parent != window) {
+window.parent.SetIFrameSize("app",h,w);
+}
+        }
+</script>
+
 			</head>
-			<body leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
+			<body onLoad="GetMySize()" leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0" marginheight="0" marginwidth="0">
 				<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
-					<tr valign="top">
+					<!--<tr valign="top">
 						<td>
 							<xsl:apply-templates select="header"/>
 						</td>
-					</tr>
+					</tr>-->
 					<xsl:if test="not(//focused)">
 						<tr>
 							<td>
