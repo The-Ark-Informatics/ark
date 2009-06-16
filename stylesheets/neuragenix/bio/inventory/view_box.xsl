@@ -167,11 +167,11 @@
                         <table width="100%">
                             <tr>
                                 <td width="50%" align="left">
-                                    <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?current=view_box&amp;BOX_intBoxID={$BOX_intBoxID}')" > <span><img src="media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
+                                    <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?current=view_box&amp;BOX_intBoxID={$BOX_intBoxID}')" > <span><img src="/wagerlab/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
                                 </td>
                             	<input type="hidden" name="save"/> 
                                 <td width="50%" align="right">
-                                    <a class="button" name="savebtn" href="#" onclick="this.blur(); document.saveform.save.value = '1'; document.saveform.submit()"><span><img src="media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  
+                                    <a class="button" name="savebtn" href="#" onclick="this.blur(); document.saveform.save.value = '1'; document.saveform.submit()"><span><img src="/wagerlab/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  
                                 </td>
                             </tr>
                             
