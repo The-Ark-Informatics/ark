@@ -34,7 +34,11 @@
                 <fieldname sname="BSPC_intCellID" name="BIOSPECIMEN_intCellID" />
                 <fieldname sname="BSPC_flCollected" name="BIOSPECIMEN_flNumberCollected" />
                 <fieldname sname="BSPC_flRemoved" name="BIOSPECIMEN_flNumberRemoved" />
+        	<fieldname sname="PATN_strPatientID" name="PATIENT_strPatientID" />
+        	<fieldname sname="BSPC_intStudyKey" name="BIOSPECIMEN_intStudyKey" />
+        	<fieldname sname="BSPC_dtExtractedDate" name="BIOSPECIMEN_dtExtractedDate" />
                 <fieldname sname="BSPC_flQuantity" name="BIOSPECIMEN_flQuantity" />
+        	<fieldname sname="BSPC_strOtherID" name="BIOSPECIMEN_strOtherID" />
 		<fieldname sname="BSPC_strUnit" name="BIOSPECIMEN_strUnit"/>		
         </formfield>
 

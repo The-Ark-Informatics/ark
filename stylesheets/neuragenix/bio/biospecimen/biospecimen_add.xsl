@@ -775,13 +775,11 @@
 						<input type="button" name="clear" value="Clear" tabindex="51"
 							class="uportal-button"
 							onclick="javascript:confirmClear('{$baseActionURL}?current=biospecimen_add&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intParentID={$intBiospecParentID}&amp;BIOSPECIMEN_strParentID={$strBiospecParentID}&amp;module=core&amp;action=add_biospecimen')"
-							onblur="javascript:document.biospecimen_form.BIOSPECIMEN_strBiospecimenID.focus()"
 						/>
 					</td>
 				</tr>
 			</table>
 		</form>
-		<script language="javascript">
-            document.biospecimen_form.BIOSPECIMEN_strBiospecimenID.focus();</script>
+		
 	</xsl:template>
 </xsl:stylesheet>
