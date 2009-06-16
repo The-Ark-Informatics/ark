@@ -307,11 +307,11 @@
                            
                             <tr>
                                 <td width="50%" align="left">
-                                    <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?current=view_tank&amp;TANK_intTankID={$TANK_intTankID}')" > <span><img src="/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
+                                    <a class="button" href="#" onclick="this.blur(); confirmDelete('{$baseActionURL}?current=view_tank&amp;TANK_intTankID={$TANK_intTankID}')" > <span><img src="media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
                                 </td>
                                 
                                 <td width="50%" align="right">
-                                    <a class="button" name="save" href="#" onclick="this.blur(); document.saveform.submit()"><span><img src="/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  
+                                    <a class="button" name="save" href="#" onclick="this.blur(); document.saveform.submit()"><span><img src="media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>  
                                 </td>
                             </tr>
                             

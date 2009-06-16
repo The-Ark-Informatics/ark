@@ -16,6 +16,7 @@
 
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:include href="./biospecimen_menu.xsl"/>
+    <xsl:include href="./infopanel.xsl"/>
 <xsl:include href="../../common/common_btn_name.xsl"/>
 
 <xsl:output method="html" />
@@ -24,10 +25,15 @@
     <xsl:param name="inventoryChannelURL">inventoryChannelURL_false</xsl:param>
     <xsl:param name="inventoryChannelTabOrder"></xsl:param>
     <xsl:param name="biospecimenChannelTabOrder"></xsl:param>
+    <xsl:variable name="infopanelImagePath">media/neuragenix/infopanel</xsl:variable>
+    <xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
+    <xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
     <xsl:param name="patientChannelTabOrder"></xsl:param>
     <xsl:template match="biospecimen">
         <xsl:param name="intCurrentPage"><xsl:value-of select="intCurrentPage" /></xsl:param>
-        <xsl:param name="intRecordPerPage"><xsl:value-of select="intRecordPerPage" /></xsl:param>
+        <xsl:param name="intRecordPerPage">
+            <xsl:value-of select="intRecordPerPage"/>
+        </xsl:param>
         <xsl:param name="intMaxPage"><xsl:value-of select="intMaxPage" /></xsl:param>
         <xsl:param name="blBackBioButton"><xsl:value-of select="blBackBioButton" /></xsl:param>
         <xsl:param name="callingDomain"><xsl:value-of select="callingDomain" /> </xsl:param>
@@ -40,7 +46,7 @@
 
         <table width="100%">
             <tr>
-                <td class="uportal-channel-subtitle">Search results</td>
+                <td class="uportal-channel-subtitle"></td>
                 <td align="right">
 
                 <xsl:if test="$callingDomain='patient'">
@@ -83,97 +89,64 @@
 
                 </td>
             </tr>
-
-        </table>
-
-        <table width = "100%">
-            <tr>
-                <td>
-                    <hr />
-                </td>
+            <tr><td colspan="3">
+                <xsl:if test="$callingDomain='patient'">	
+                <xsl:choose>
+                    <xsl:when test="hasCollection='false'">
+                        <font color="RED">There are no collections added for this patient - No biospecimens can be added!</font>
+                    </xsl:when>
+                    <xsl:otherwise>
+                       
+                        <a class="button" name="save" href="{$baseActionURL}?module=core&amp;action=add_biospecimen&amp;PATIENT_intInternalPatientID={/biospecimen/PATIENT_intInternalPatientID}&amp;BIOSPECIMEN_intPatientID={/biospecimen/PATIENT_intInternalPatientID}" onclick="this.blur();"><span><img src="media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Add new biospecimen</span></a>  
+                        
+                        <a class="button" name="save" href="/wagerlab/DefaultBarcode.prn?patientkey={/biospecimen/PATIENT_intInternalPatientID}" onclick="this.blur();"><span><img src="media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>  Print all barcodes</span></a>  
+                        <br/>
+                    </xsl:otherwise>
+                </xsl:choose>
+                </xsl:if>
+            </td>
             </tr>
         </table>
 
 
-        <xsl:if test="$callingDomain='patient'">	
-
-            <table width="100%">
-		<tr>
-                    <td width="10%" />			
-                    <td width="15%" class="uportal-label"><xsl:value-of select="PATIENT_strPatientIDDisplay" />: </td>
-                    <td width="15%" class="uportal-text"><xsl:value-of select="PATIENT_strPatientID" /></td>
-                    <td width="5%"></td>
-                    <td width="15%" class="uportal-label"><xsl:value-of select="PATIENT_dtDobDisplay" />: </td>
-		    
-		    <td width="15%" class="uportal-text" ><xsl:value-of select="PATIENT_dtDob" /></td>
-                    <td width="25%"/>		
-		</tr>
-
-		<tr> 
-                    <td width="10%"/>		
-                    <td width="15%" class="uportal-label"><xsl:value-of select="PATIENT_strFirstNameDisplay" />: </td>
-                    <td width="15%" class="uportal-text"><xsl:value-of select="PATIENT_strFirstName" /></td>
-                    <td width="5%"></td>
-                    <td width="15%" class="uportal-label"><xsl:value-of select="PATIENT_strSurnameDisplay" />:</td>
-                    <td width="15%" class="uportal-text"><xsl:value-of select="PATIENT_strSurname" /></td>
-                    <td width="25%"/>		
-		</tr>
-            </table>
-
-            <table width = "100%">
-                <tr>
-                    <td>
-                        <hr />
-                    </td>
-                </tr>
-            </table>
-
-            <table width="100%"> 
-		<tr>  
-                    <td width="3%"></td>
-                    <td width="97%">
-                        <xsl:choose>
-                            <xsl:when test="hasCollection='false'">
-                                <font color="RED">There are no collections added for this patient - No biospecimens can be added!</font>
-                            </xsl:when>
-                            <xsl:otherwise>
-                                <a href="{$baseActionURL}?module=core&amp;action=add_biospecimen&amp;PATIENT_intInternalPatientID={PATIENT_intInternalPatientID}&amp;BIOSPECIMEN_intPatientID={PATIENT_intInternalPatientID}">
-                                    Add New Biospecimen
-                                </a>
-                                <a href="/wagerlab/DefaultBarcode.prn?patientkey={PATIENT_intInternalPatientID}">
-                                    Print all barcodes
-                                </a>
-                            </xsl:otherwise>
-                        </xsl:choose>
-                    </td>
-		</tr>
-            </table>
-
-            <table width = "100%">
-                <tr>
-                    <td>
-                        <hr />
-                    </td>
-                </tr>
-            </table>
-
-        </xsl:if>
-
+       
+       
+        <xsl:if test="count(node) > 0">
         <xsl:if test="not(hasCollection='false')">
-        
-        <table width="100%">
- 
-            <tr>
-                <td width="2%" />
-                <td width="18%" class="uportal-label"><xsl:value-of select="BIOSPECIMEN_strBiospecimenIDDisplay" /></td>
-                <td width="10%" class="uportal-label"><xsl:value-of select="BIOSPECIMEN_strSampleTypeDisplay" /></td>
-                <td width="15%" class="uportal-label"><xsl:value-of select="BIOSPECIMEN_dtSampleDateDisplay" /></td>
-                <td width="10%"  class="uportal-label" align="center">Qty. Avail</td>
-                <td width="25%"  class="uportal-label">Location</td>
-            </tr>
-
+           
+            <table  width="100%" cellpadding="0" cellspacing="0" border="0"   >
+                <tr><td colspan="3">
+            <xsl:call-template name="infopaneltop">
+                <xsl:with-param name="titleString">SEARCH RESULTS</xsl:with-param>
+                
+            </xsl:call-template>
+                </td>
+                </tr> 
+             
+           
+               
+                <tr class="funcpanel_content">
+                    <td class="funcpanel_left_border" width="1px">&#160;</td>
+                    <td>  <table cellpadding="0" border="0" cellspacing="0" width="100%" style="empty-cells:show;">
+                        
+                        <tr class="funcpanel_content">
+                         
+                            <td width="2%" class="stripped_column_heading" />
+                            <td width="18%" class="stripped_column_heading"><xsl:value-of select="BIOSPECIMEN_strBiospecimenIDDisplay" /></td>
+                            <td width="10%" class="stripped_column_heading"><xsl:value-of select="BIOSPECIMEN_strSampleTypeDisplay" /></td>
+                            <td width="15%" class="stripped_column_heading"><xsl:value-of select="BIOSPECIMEN_dtSampleDateDisplay" /></td>
+                            <td width="10%"  class="stripped_column_heading" align="center">Qty. Avail</td>
+                            <td width="25%"  class="stripped_column_heading">Location</td>
+                            
+                           
+                        </tr>
+                        
+                        
+                        
+                        
            
                 <xsl:for-each select="node">
+                    
                     
                 
                 <!--- DEBUG PRINTS : REMOVE ME ! -->
@@ -212,17 +185,11 @@
                     
                     
                     
-                    <tr class="uportal-input-text">
+                    <tr class="funcpanel_content">
+                        
                         <xsl:variable name="classIDNumber"><xsl:number level="any" count="node" /></xsl:variable>
-                            <xsl:choose>
-                               <xsl:when test="$classIDNumber mod 2 != 0">
-                                  <xsl:attribute name="class">uportal-input-text</xsl:attribute> 
-                               </xsl:when>
-                               <xsl:otherwise>
-                                  <xsl:attribute name="class">uportal-text</xsl:attribute> 
-                               </xsl:otherwise>
-                            </xsl:choose>
-                    
+                           
+                        
                     
                     
                     
@@ -244,6 +211,14 @@
                         
                         
                         <td align="left">
+                            <xsl:choose>
+                                <xsl:when test="position() mod 2 != 0">
+                                    <xsl:attribute name="class">stripped_light</xsl:attribute>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="class">stripped_dark</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
                            <!-- biospecimen ID and arrow -->
                             <xsl:call-template name="spacer">
                                 <xsl:with-param name="spacerAmount" select="number($level)" />
@@ -271,22 +246,54 @@
                         </td>
                         
                         <td>
+                            <xsl:choose>
+                                <xsl:when test="position() mod 2 != 0">
+                                    <xsl:attribute name="class">stripped_light</xsl:attribute>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="class">stripped_dark</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
                             <a href="{$baseActionURL}?uP_root=root&amp;module=core&amp;action=view_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$bioID}">
                                 <xsl:value-of select="BIOSPECIMEN_strBiospecimenID" />
                             </a>
                         </td>
                         
                         <td>
+                            <xsl:choose>
+                                <xsl:when test="position() mod 2 != 0">
+                                    <xsl:attribute name="class">stripped_light</xsl:attribute>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="class">stripped_dark</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
                             <xsl:value-of select="BIOSPECIMEN_strSampleType" /> 
                         </td>
                         
                         
                         <td>
+                            <xsl:choose>
+                                <xsl:when test="position() mod 2 != 0">
+                                    <xsl:attribute name="class">stripped_light</xsl:attribute>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="class">stripped_dark</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
                            <xsl:value-of select="BIOSPECIMEN_dtSampleDate" />
                         </td>
                         
                         
                         <td align="center">
+                            <xsl:choose>
+                                <xsl:when test="position() mod 2 != 0">
+                                    <xsl:attribute name="class">stripped_light</xsl:attribute>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:attribute name="class">stripped_dark</xsl:attribute>
+                                </xsl:otherwise>
+                            </xsl:choose>
 			<xsl:variable name="qty_avail">
 			<xsl:value-of select="BIOSPECIMEN_flNumberRemoved + BIOSPECIMEN_flNumberCollected" />
 			</xsl:variable>
@@ -304,7 +311,14 @@
 			</xsl:choose>		
                        </td>
 			 <td>
-                        
+			     <xsl:choose>
+			         <xsl:when test="position() mod 2 != 0">
+			             <xsl:attribute name="class">stripped_light</xsl:attribute>
+			         </xsl:when>
+			         <xsl:otherwise>
+			             <xsl:attribute name="class">stripped_dark</xsl:attribute>
+			         </xsl:otherwise>
+			     </xsl:choose>
                         
                            <xsl:variable name="intCellID"><xsl:value-of select="BIOSPECIMEN_intCellID" /></xsl:variable>                        
                            <xsl:if test="not(number($intCellID)=-1)">
@@ -313,15 +327,25 @@
                               </a>
                            </xsl:if>
                         </td>
-                        
+                       
                     </tr>
                     
                     
-                </xsl:for-each>
-                   
-            
-            
-        </table>
+                </xsl:for-each></table>
+                    </td>
+                    <td class="funcpanel_right_border" width="1px">&#160;</td>
+                </tr>
+             
+               <tr><td colspan="3">
+               
+                <xsl:call-template name="infopanelbottom">
+                 
+                    
+                </xsl:call-template>
+               </td>
+          </tr>
+            </table>
+       
 
        
         
@@ -413,7 +437,8 @@
                
             </table>
        </xsl:if>
-</xsl:template>
+        </xsl:if>
+    </xsl:template>
 
 
 

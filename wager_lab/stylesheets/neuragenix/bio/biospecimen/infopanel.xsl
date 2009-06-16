@@ -5,6 +5,7 @@
     <xsl:variable name="subtabImagePath">media/neuragenix/infopanel</xsl:variable>
     <xsl:template name="infopaneltop">
         <xsl:param name="titleString"/>
+        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0">
         <tr valign="bottom">
             <td>
                 <img border="0" src="{$infopanelImagePath}/infopanel_top_left1.gif" width="5" height="27"/>
@@ -35,10 +36,11 @@
                 <img border="0" src="{$infopanelImagePath}/infopanel_top_right2.gif" width="5" height="27"/>
             </td>
         </tr>
-        
+        </table>
       
 </xsl:template>
-    <xsl:template name="infopanelbottom">
+    <xsl:template name="funcpanel">
+        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0">
         <tr valign="top">
             <td>
                 <img border="0" src="{$infopanelImagePath}/infopanel_bottom_left1.gif" width="5" height="8"/>
@@ -54,5 +56,26 @@
                 <img border="0" src="{$infopanelImagePath}/infopanel_bottom_right2.gif" width="5" height="8"/>
             </td>
         </tr>
-        </xsl:template>
+        </table>
+    </xsl:template>
+    
+    <xsl:template name="infopanelbottom">
+        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0">
+            <tr valign="top">
+                <td>
+                    <img border="0" src="{$infopanelImagePath}/infopanel_bottom_left1.gif" width="5" height="8"/>
+                </td>
+                <td>
+                    <img border="0" src="{$infopanelImagePath}/infopanel_bottom_left2.gif" width="5" height="8"/>
+                </td>
+                <td width="100%" height="8" style="background-image: url('{$infopanelImagePath}/infopanel_bottom_border.gif'); background-repeat: repeat-x;">&#160;</td>
+                <td>
+                    <img border="0" src="{$infopanelImagePath}/infopanel_bottom_right1.gif" width="5" height="8"/>
+                </td>
+                <td>
+                    <img border="0" src="{$infopanelImagePath}/infopanel_bottom_right2.gif" width="5" height="8"/>
+                </td>
+            </tr>
+        </table>
+    </xsl:template>
 </xsl:stylesheet>
