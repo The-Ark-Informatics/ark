@@ -319,6 +319,7 @@ body
 	margin : 0px;
 	padding : 0px;
 	background-color : #FFFFFF;
+	color: black;
 }
 p
 {
@@ -335,7 +336,7 @@ td
 a
 {
 	text-decoration : underline;
-	color: inherit;
+	color: black;
 	font-family : Verdana, System, Arial;
         font-size : 10px;
 }
@@ -744,6 +745,7 @@ a.stripped_content
 {
 	text-decoration : none;
 	font-weight : bold;
+	color : #000000;
 }
 a.stripped_content:visited
 {
