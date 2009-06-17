@@ -13,10 +13,10 @@ package neuragenix.dao;
 
 // java packages
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.sql.*;
-import java.sql.Types;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -1148,11 +1148,15 @@ public class DALQuery
             strResult = new StringBuffer(strResult.substring(0, strResult.length() - 2) + " FROM ");
         
         // add domains
+        Vector<String> vtLeftovers = new Vector<String>();
         String strFirstDomainName = (String) DatabaseSchema.getDomains().get(vtDomains.get(0));
         strResult.append(strFirstDomainName);
+        boolean setFirstDomainClause = false;
         for (int index=1; index < vtDomains.size(); index++)
         {
+        		setFirstDomainClause = false;
             String strPrevDomainName = (String) DatabaseSchema.getDomains().get(vtDomains.get(index-1));
+            
             String strDomainName = (String) DatabaseSchema.getDomains().get(vtDomains.get(index));
             String strJoinType = (String) vtJoinTypes.get(index);
             
@@ -1160,23 +1164,38 @@ public class DALQuery
             if (strJoinType == null)
                 strResult.append(", " + strDomainName);
             else
+            	
             {
             	Vector joinFields1 = (Vector) vtFirstJoinFields.get(index);
             	Vector joinFields2 = (Vector) vtSecondJoinFields.get(index);
+            
             	for (int i=0; i < joinFields1.size(); i++) {
             			DBField firstJoinField =(DBField) DatabaseSchema.getFields().get(joinFields1.get(i));
             			 DBField secondJoinField = (DBField) DatabaseSchema.getFields().get(joinFields2.get(i));
-            			 if ( firstJoinField == null)
-            				 System.err.println("1st join field is null "+i);
-            			 if ( secondJoinField == null)
-            				 System.err.println("2nd join field is null "+i);
+            		// if ( firstJoinField == null)
+            				// System.err.println("1st join field is null "+i);
+            			// if ( secondJoinField == null)
+            				// System.err.println("2nd join field is null "+i);
+            			 //-System.err.println("'"+DatabaseSchema.secondJoinField.getDomain() + "'\t'" +firstJoinField.getDomain() + "'=" + strPrevDomainName  );
+            			 String firstJoinFieldDomain = (String) DatabaseSchema.getDomains().get(firstJoinField.getDomain());
+            			 String secondJoinFieldDomain = (String) DatabaseSchema.getDomains().get(secondJoinField.getDomain());
+            			 List subList =  vtDomains.subList(0, index);
+            			 boolean previouslyCovered = subList.contains(firstJoinField.getDomain()) || subList.contains(secondJoinField.getDomain());
+            			 if (firstJoinFieldDomain.equals(strPrevDomainName) || secondJoinFieldDomain.equals(strPrevDomainName) || previouslyCovered) {
             			 
-            			 if (i==0) {
-            				 strResult.append(DBMSTypes.getOperator(strJoinType) + strDomainName + " ON " + firstJoinField.getExternalName() + " = " + secondJoinField.getExternalName());
+            				 if (setFirstDomainClause==false) {
+            					 strResult.append(DBMSTypes.getOperator(strJoinType) + strDomainName + " ON " + firstJoinField.getExternalName() + " = " + secondJoinField.getExternalName());
+            					 setFirstDomainClause=true;
+            				 }
+            				 else
+            					 strResult.append(" AND "+ firstJoinField.getExternalName() + " = " + secondJoinField.getExternalName());
+            				
             			 }
-            			 else
-            				 strResult.append(" AND "+ firstJoinField.getExternalName() + " = " + secondJoinField.getExternalName());
-            		
+            			 else {
+            				 vtLeftovers.add(firstJoinField.getExternalName() + " = " + secondJoinField.getExternalName());
+            				
+            				 
+            			 }
             		
             	}
             			
@@ -1412,7 +1431,30 @@ public class DALQuery
                     break;
             }
         }
+        
+        
+        // Add leftover where clauses (from domain joins)
+        if (vtLeftovers.size() > 0) {
+       
+        	 if (vtWhereFields.size() == 0 ) {
 
+        		 strResult.append(" WHERE ");
+        	 }
+        	 else
+        		 strResult.append(" AND ");
+        	 
+        	 for (int index=0; index < vtLeftovers.size(); index++) {
+        		 
+        		 	
+        		 if (index > 0 ) {
+        			 strResult.append(" AND ");
+        		 }
+        		
+        			 strResult.append(vtLeftovers.get(index));
+      
+        	 }
+        }
+        	 
          // add sibling queries
         for (int index=0; index < vtSiblingQueries.size(); index++) {
             int intOpenBrackets = ((Integer) vtSiblingQueryOpenBrackets.get(index)).intValue();
@@ -1423,7 +1465,7 @@ public class DALQuery
             {
                 if (!vtSiblingQueryConnectors.get(index).equals("UNION"))
                 {    
-                    if (vtWhereFields.size() > 0)
+                    if (vtWhereFields.size() > 0 || vtLeftovers.size() > 0)
                     {
                         strResult.append(" AND " + DBMSTypes.getOperator((String) vtSiblingQueryConnectors.get(index)) + " (");
                     }
