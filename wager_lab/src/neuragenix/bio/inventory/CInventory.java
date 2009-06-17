@@ -1594,14 +1594,19 @@ public class CInventory implements IChannel
                             // if there is an error on data, display error message
                             else
                             {
-                                strStylesheet = ADD_TANK;
+                               /**
+                            	strStylesheet = ADD_TANK;
                                 strErrorMessage = strValidation;
 
                                 strXML = QueryChannel.buildSearchXMLFile("search_site", rsSiteList, vtListSiteFormFields) +
                                          QueryChannel.buildFormLabelXMLFile(DatabaseSchema.getFormFields("cinventory_view_titles")) +
                                          QueryChannel.buildFormLabelXMLFile(vtAddTankFormFields) +
                                          QueryChannel.buildViewXMLFile(vtAddTankFormFields, runtimeData);
-                                this.runtimeData.setParameter("SITE_intSiteID",runtimeData.getParameter("TANK_intSiteID"));
+                                **/
+                                displayAddTankForm();
+                            	this.runtimeData.setParameter("SITE_intSiteID",runtimeData.getParameter("TANK_intSiteID"));
+                                
+                            	
                                 Site stObj = this.invmgr.createSite(this.runtimeData);
                                 if(stObj != null)
                                 {
@@ -1612,7 +1617,7 @@ public class CInventory implements IChannel
                         // if required fields values are not supplied. Display error message
                         else
                         {
-                            strStylesheet = ADD_TANK;
+                            //strStylesheet = ADD_TANK;
                             if(strCheckRequiredFields != null)
                             {
                                 strErrorMessage = strCheckRequiredFields;
@@ -1621,11 +1626,13 @@ public class CInventory implements IChannel
                             {
                                 strErrorMessage = strCheckDuplicates;
                             }
-                            strXML = QueryChannel.buildSearchXMLFile("search_site", rsSiteList, vtListSiteFormFields) +
+                           /* strXML = QueryChannel.buildSearchXMLFile("search_site", rsSiteList, vtListSiteFormFields) +
                                      QueryChannel.buildFormLabelXMLFile(DatabaseSchema.getFormFields("cinventory_view_titles")) +
                                      QueryChannel.buildFormLabelXMLFile(vtAddTankFormFields) +
                                      QueryChannel.buildViewXMLFile(vtAddTankFormFields, runtimeData);
-                                this.runtimeData.setParameter("SITE_intSiteID",runtimeData.getParameter("TANK_intSiteID"));
+                                this.runtimeData.setParameter("SITE_intSiteID",runtimeData.getParameter("TANK_intSiteID"));*/
+                            
+                            displayAddTankForm();
                                  Site stObj = this.invmgr.createSite(this.runtimeData);
                                 if(stObj != null)
                                 {
