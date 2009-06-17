@@ -49,7 +49,7 @@
  function GetMySize()
         {
         if (window.parent != window) {
-        window.parent.SetIFrameSize("app",100,w);
+        window.parent.SetIFrameSize("app",100,window.document.body.scrollWidth + 40);
         }
                  w = window.document.body.scrollWidth + 40;
                 h = window.document.body.scrollHeight + 15;
