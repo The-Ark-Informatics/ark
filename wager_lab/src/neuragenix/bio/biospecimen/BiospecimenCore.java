@@ -2205,7 +2205,9 @@ public class BiospecimenCore {
 				strXML.append(parentDNAConc);
 				strXML.append("</parent_flDNAConc>");
 				strXML.append("<BIOSPECIMEN_strProcessingType>");
+				if (parentDNAConc != null) {
 				strXML.append("<type>Sub-aliquot</type>");
+				}
 				strXML.append("<type>Processing</type>");
 				strXML.append("</BIOSPECIMEN_strProcessingType>");
 				
