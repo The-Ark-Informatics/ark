@@ -14,7 +14,6 @@
     
     <xsl:param name="blBackToVialCalc"><xsl:value-of select="blBackToVialCalc" /></xsl:param>
     
-    <form action="{$baseActionURL}?{$formParams}" method="post">
     <table width="100%">
         <tr valign="top">
             <td width="30%">
@@ -56,6 +55,7 @@
             
             <td width="70%">
                 
+    <form action="{$baseActionURL}?{$formParams}" method="post">
                 <table width="100%">
                     <tr>
                         <td colspan="5" class="uportal-channel-subtitle">
@@ -174,6 +174,7 @@
                     </tr>
                 </table>
                 
+    </form>
             </td>
         </tr>
     </table>
@@ -182,7 +183,6 @@
         <input type="hidden" name="vial_calc" value="true" />
     </xsl:if>
     
-    </form>
     </xsl:template>
 
 </xsl:stylesheet>

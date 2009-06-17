@@ -12,7 +12,6 @@
     <xsl:template match="inventory">
     
     
-    <form action="{$baseActionURL}?{$formParams}" method="post">
     <table width="100%">
         <tr valign="top">
             <td width="30%">
@@ -54,6 +53,7 @@
             
             <td width="70%">
                 
+    	<form action="{$baseActionURL}?{$formParams}" method="post">
                 <table width="100%">
                     <tr>
                         <td colspan="6" class="uportal-channel-subtitle">
@@ -134,10 +134,10 @@
                     </tr>
                 </table>
                 
+    </form>
             </td>
         </tr>
     </table>
-    </form>
     </xsl:template>
 
 </xsl:stylesheet>
