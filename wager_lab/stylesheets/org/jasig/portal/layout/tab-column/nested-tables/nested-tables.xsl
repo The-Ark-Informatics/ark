@@ -79,13 +79,8 @@ window.parent.SetIFrameSize("app",h,w);
 							<xsl:apply-templates select="content"/>
 						</td>
 					</tr>
-					<tr height="14">
-						<td class="footer" align="right">
-							<a href="http://www.neuragenix.com">
-								<img src="{$mediaPath}/{$skin}/institutional/powered_by_neuragenix.gif" border="0"/>
-							</a>
-						</td>
-					</tr>
+					
+					
 				</table>
 			</body>
 		</html>

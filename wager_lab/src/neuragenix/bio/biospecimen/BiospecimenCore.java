@@ -540,11 +540,11 @@ public class BiospecimenCore {
 					// get the biospecimen ID.
 					String strNewBiospecimenID = "";
 					int intPatientid = new Integer(runtimeData.getParameter("BIOSPECIMEN_intPatientID")).intValue();
-					System.err.println("Testing....");
-					System.err.println(BiospecimenUtilities.getNewBiospecimenID
-							(runtimeData.getParameter("BIOSPECIMEN_strEncounter"), 
-							intPatientid,runtimeData,null));
-					System.err.println("End Testing....");
+//					System.err.println("Testing....");
+//					System.err.println(BiospecimenUtilities.getNewBiospecimenID
+//							(runtimeData.getParameter("BIOSPECIMEN_strEncounter"), 
+//							intPatientid,runtimeData,null));
+//					System.err.println("End Testing....");
 					
 					if (runtimeData.getParameter("BIOSPECIMEN_intParentID") != null
 							&& !runtimeData.getParameter(
@@ -556,10 +556,10 @@ public class BiospecimenCore {
 						.getParameter("BIOSPECIMEN_strSampleType");
 						DALSecurityQuery query = new DALSecurityQuery(
 								"biospecimen_add", authToken);
-						System.err
-								.println("GOT HERE!!!!!!!!!!!!!! - but why?"
-										+ runtimeData
-												.getParameter("BIOSPECIMEN_intParentID"));
+						//System.err
+//								.println("GOT HERE!!!!!!!!!!!!!! - but why?"
+//										+ runtimeData
+//												.getParameter("BIOSPECIMEN_intParentID"));
 						int studykey = Integer.parseInt(runtimeData
 								.getParameter("BIOSPECIMEN_intStudyKey"));
 						
@@ -568,7 +568,7 @@ public class BiospecimenCore {
 								.getNewSubBiospecimenStringID(
 										query,strSampleType, BiospecimenUtilities.getUserBiospecimenID(intParentBioSpecID),true,studykey);
 					} else {
-						System.err.println("GOT HERE!!!!!!!!!!!!!!");
+						//System.err.println("GOT HERE!!!!!!!!!!!!!!");
 
 						IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
 								.getBiospecimenIDGenerationInstance();
@@ -2187,6 +2187,8 @@ public class BiospecimenCore {
 				parentquery.setDomain("BIOSPECIMEN", null,null,null);
 				parentquery.setField("BIOSPECIMEN_flDNAConc", null);
 				parentquery.setField("BIOSPECIMEN_strSampleType", null);
+				parentquery.setField("BIOSPECIMEN_flNumberRemoved",null);
+				parentquery.setField("BIOSPECIMEN_flNumberCollected",null);
 				parentquery.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID", "=",
 						strBioParentKey, 0, DALQuery.WHERE_HAS_VALUE);
 				parentquery.setWhere("AND", 0, "BIOSPECIMEN_intDeleted", "=", 0 + "",
@@ -2194,23 +2196,42 @@ public class BiospecimenCore {
 				ResultSet parent_rs = parentquery.executeSelect();
 				String parentSampleType="";
 				Double parentDNAConc = null;
+				double flQuantityParentCollected = 0;
+				double flQuantityParentRemoved = 0;
+				double flDNAConcParent = 0;
+				double flQuantityParent = 0;
 				if (parent_rs.next()) {
 					parentSampleType = parent_rs.getString("BIOSPECIMEN_strSampleType");
 					parentDNAConc = new Double(parent_rs.getDouble("BIOSPECIMEN_flDNAConc"));
-				}
+
+						try {
+							flQuantityParentCollected  = new Double(parent_rs
+									.getString("BIOSPECIMEN_flNumberCollected")).doubleValue();
+						} catch (NullPointerException ne ) {
+							System.err.println("Null pointer exception here - collected");
+						}
+						try{
+							flQuantityParentRemoved  = new Double(parent_rs
+									.getString("BIOSPECIMEN_flNumberRemoved")).doubleValue();
+						} catch (NullPointerException ne ) {
+							System.err.println("Null pointer exception here - removed");
+						}
+						flQuantityParent = flQuantityParentCollected + flQuantityParentRemoved;
+					
 				strXML.append("<parent_strSampleType>");
 				strXML.append(parentSampleType);
 				strXML.append("</parent_strSampleType>");
 				strXML.append("<parent_flDNAConc>");
 				strXML.append(parentDNAConc);
 				strXML.append("</parent_flDNAConc>");
+				strXML.append("<parent_flQuantity>"+flQuantityParent+"</parent_flQuantity>");
 				strXML.append("<BIOSPECIMEN_strProcessingType>");
-				if (parentDNAConc != null) {
+				if (parent_rs.getDouble("BIOSPECIMEN_flDNAConc") != 0) {
 				strXML.append("<type>Sub-aliquot</type>");
 				}
 				strXML.append("<type>Processing</type>");
 				strXML.append("</BIOSPECIMEN_strProcessingType>");
-				
+				}
 				
 			} else {
 				strXML.append("<BIOSPECIMEN_intParentID>");

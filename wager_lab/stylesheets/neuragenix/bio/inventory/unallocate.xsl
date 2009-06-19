@@ -121,7 +121,7 @@
                                         <td colspan="2">
                                             <center>
                                                 <table border="0" cellpadding="0" cellspacing="0"
-                                                  style="background-color: white>
+                                                  style="background-color: white">
                                                     <tr>
                                                     <td><img src="media/neuragenix/icons/cell_topleft.jpg"/></td>
                                                     <td style="background-image: url('media/neuragenix/icons/cell_top.jpg')" height="34"></td>
