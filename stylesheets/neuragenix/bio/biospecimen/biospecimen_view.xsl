@@ -419,7 +419,7 @@ commentsval = commentsval + '\nConcentration :' + conc.value;
 comments.value = commentsval;
 }
 	</script>
-
+        
 
 
 	<table width="100%">
@@ -545,8 +545,7 @@ comments.value = commentsval;
                                            
                            
                     </xsl:if>
-                    <br/>
-                    <br/>
+                    <!--
                     <xsl:if test="count(/biospecimen/flagged) &gt; 0"> Flagged Records : <table
                             border="0" width="100%">
                             <xsl:for-each select="/biospecimen/flagged">
@@ -566,7 +565,7 @@ comments.value = commentsval;
                                 </tr>
                             </xsl:for-each>
                         </table>
-                    </xsl:if>
+                    </xsl:if>-->
                     <!--                       <xsl:call-template name="branch"/> -->
                 </td>
                 <td width="5%"/>
@@ -575,28 +574,43 @@ comments.value = commentsval;
                 <td width="100%">
                     <table width="100%">
                         <tr>
-                            <td class="uportal-channel-subtitle">View biospecimen</td>
+                            <td class="uportal-channel-subtitle"></td>
                             <td align="right">
                                 <form name="back_form" action="{$baseActionURL}" method="POST">
                                     <!-- back to the parent biospecimen -->
                                     
-                                            <input type="hidden" name="uP_sparam" value="activeTab"/>
-                                            <input type="hidden" name="activeTab" value="{$biospecimenChannelTabOrder}"/>
-                                            <input type="hidden" name="uP_root" value="root"/>
-                                            <input type="hidden" name="module"
-                                                value="biospecimen_search"/>
-                                            <input type="hidden" name="action"
-                                                value="redo_last_search"/>
-                                       
+                                    <input type="hidden" name="uP_sparam" value="activeTab"/>
+                                    <input type="hidden" name="activeTab" value="{$biospecimenChannelTabOrder}"/>
+                                    <input type="hidden" name="uP_root" value="root"/>
+                                    <input type="hidden" name="module"
+                                        value="biospecimen_search"/>
+                                    <input type="hidden" name="action"
+                                        value="redo_last_search"/>
+                                    
                                 </form>
-                            
-                            <img border="0" src="media/neuragenix/buttons/previous_enabled.gif"
-                                alt="Previous" onclick="javascript:document.back_form.submit();"/>
-                            <img border="0" src="media/neuragenix/buttons/next_disabled.gif"
-                                alt="Next"/>
+                                
+                                <img border="0" src="media/neuragenix/buttons/previous_enabled.gif"
+                                    alt="Previous" onclick="javascript:document.back_form.submit();"/>
+                                <img border="0" src="media/neuragenix/buttons/next_disabled.gif"
+                                    alt="Next"/>
                             </td>
                         </tr>
                     </table>
+                    <table  width="100%" cellpadding="0" cellspacing="0" border="0"   >
+                        <tr><td colspan="3">
+                            <xsl:call-template name="infopaneltop">
+                                <xsl:with-param name="titleString"><xsl:value-of select="BIOSPECIMEN_strBiospecimenID"/></xsl:with-param>
+                                
+                            </xsl:call-template>
+                        </td>
+                        </tr> 
+                        
+                        
+                        
+                        <tr class="funcpanel_content">
+                            <td class="funcpanel_left_border" width="1px">&#160;</td>
+                            <td>
+                    
                     <xsl:if test="not(bioOffSite)" >
                     <table width="100%">
                         <tr><td><hr/></td></tr>
@@ -1566,13 +1580,20 @@ comments.value = commentsval;
                     
                     <!-- end of biospecimen form -->
                     <xsl:if test="contains($showInventory,'true')">
-                        <table width="100%">
-                            <tr>
-                                <td id="neuragenix-form-row-label-required"
-                                    class="neuragenix-form-required-text"/>
-                                <td class="uportal-channel-table-header" colspan="6">Location:</td>
-                                <td/>
+                        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0" width="100%">
+                            <tr valign="bottom">
+                                <td><img src="{$funcpanelImagePath}/funcpanel_header_inactive_left.gif"/></td>
+                                <td class="funcpanel_header_inactive" align="left" colspan="3" width="100%">LOCATION </td>
+                                <td><img src="{$funcpanelImagePath}/funcpanel_header_inactive_right.gif"/></td>
                             </tr>
+                            <tr class="funcpanel_content">
+                                <td class="funcpanel_content_spacer" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
+                            </tr>
+                            <tr class="funcpanel_content">
+                                <td class="funcpanel_left_border">&#160;</td>
+                                <td colspan="3">
+                        <table width="100%">
+                            
                             <tr>
                                 <td height="10px" colspan="8"/>
                             </tr>
@@ -1678,6 +1699,14 @@ comments.value = commentsval;
                                 </td>
                             </tr>
                         </table>
+                                </td>
+                                <td class="funcpanel_right_border">&#160;</td>
+                            </tr>
+                            <tr class="funcpanel_content">
+                                <td class="funcpanel_bottom_border" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
+                            </tr>
+                        </table>    
+                                    
                     </xsl:if>
                     <xsl:if test="contains($showTransactions, 'true')">
                         <!-- transaction stuff -->
@@ -1697,12 +1726,21 @@ comments.value = commentsval;
                                         <xsl:with-param name="intBiospecimenID"><xsl:value-of select="$intBiospecimenID"/></xsl:with-param>
                                     </xsl:call-template>
                               
-                                    <xsl:if test="not(bioOffSite)">
+
+                                        <br/>
+                                </td>
+                                <td class="funcpanel_right_border">&#160;</td>
+                            </tr>
+                            <tr class="funcpanel_content">
+                                <td class="funcpanel_bottom_border" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
+                            </tr>
+                        </table>
+                                                            <xsl:if test="not(bioOffSite)">
                                         <br/><br/>
-                        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0" align="center">
+                        <table class="funcpanel" cellpadding="0" cellspacing="0" border="0" width="100%">
                             <tr valign="bottom">
                                 <td><img src="{$funcpanelImagePath}/funcpanel_header_inactive_left.gif"/></td>
-                                <td class="funcpanel_header_inactive" align="left" colspan="3" >ADD TRANSACTION</td>
+                                <td class="funcpanel_header_inactive" align="left" colspan="3" width="100%">ADD TRANSACTION</td>
                                 <td><img src="{$funcpanelImagePath}/funcpanel_header_inactive_right.gif"/></td>
                             </tr>
                             <tr class="funcpanel_content">
@@ -2120,14 +2158,6 @@ comments.value = commentsval;
                             </tr>
                         </table>
                                     </xsl:if>
-                                        <br/>
-                                </td>
-                                <td class="funcpanel_right_border">&#160;</td>
-                            </tr>
-                            <tr class="funcpanel_content">
-                                <td class="funcpanel_bottom_border" colspan="5"><img width="1" height="4" src="{$spacerImagePath}"/></td>
-                            </tr>
-                        </table>
         </xsl:if>
              
                     
@@ -2275,11 +2305,25 @@ comments.value = commentsval;
                         </tr>
                     </table>
                         </xsl:if>
+                </td>	<td class="funcpanel_right_border" width="1px">&#160;</td>
+            </tr>
+	    
+	    <tr><td colspan="3">
+	        
+	        <xsl:call-template name="infopanelbottom">
+	            
+	            
+	        </xsl:call-template>
+	    </td>
+	    </tr>
+	</table>
 		    <!-- End of bottom button bar -->
                 </td>
             </tr>
         </table>
         <!-- Move the cursor to the first date entry box as the page is loaded-->
+                    
+             
     </xsl:template>
     <xsl:template match="strBiospecimenID"/>
     <xsl:template name="branch" match="branch">

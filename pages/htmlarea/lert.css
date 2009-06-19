@@ -63,8 +63,19 @@
 }
 
 .lertButton:hover {
-	background:#FFC;
+	background:#DDD;
+	height:20px;
+	background:#DDD;
+	padding:1px 4px;
+	margin: 0px 5px;
+	border:2px solid #AAA;
+	color:#000;
+	text-decoration:none;
+	font: normal 11px/10px Verdana, Tahoma, sans;
 }
+
+
+
 
 #lertDefaultButton {
 	font-weight:bold;

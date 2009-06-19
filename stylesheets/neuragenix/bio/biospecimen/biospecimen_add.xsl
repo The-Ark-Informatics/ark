@@ -2,9 +2,13 @@
 <!-- normal_explorer.xsl, part of the HelloWorld example channel -->
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 	<xsl:include href="./biospecimen_menu.xsl"/>
+	<xsl:include href="./infopanel.xsl"/>
 	<xsl:output method="html" indent="no"/>
 	<xsl:param name="inventoryChannelURL">inventoryChannelURL_false</xsl:param>
 	<xsl:param name="patientChannelTabOrder">patientChannelTabOrder</xsl:param>
+	<xsl:variable name="infopanelImagePath">media/neuragenix/infopanel</xsl:variable>
+	<xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
+	<xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
 	<xsl:param name="biospecimenChannelTabOrder">biospecimenChannelTabOrder</xsl:param>
 	<xsl:param name="strErrorMessage">strErrorMessage</xsl:param>
 	<xsl:template match="biospecimen">
@@ -73,68 +77,24 @@
 		<link href="htmlarea/lert.css" rel="stylesheet" type="text/css"/>
 
 		<script src="htmlarea/lert.js" type="text/javascript"/>
-		<script language="javascript">
-           <!-- window.onload = function () {
-                var toggle = document.biospecimen_form.BIOSPECIMEN_strSampleType;
-                var selectBox = document.biospecimen_form.BIOSPECIMEN_strSampleType;
-                user_input = selectBox.options[selectBox.selectedIndex].value
-                var tmp = document.getElementsByTagName('*');
-                for (var i = 0; i &lt; tmp.length; i++) {
-                    if (tmp[i].className == 'uportal-label2') {
-                        
-                        if (user_input == "DNA" || user_input == "DNA (undil)" || user_input == "RNA") {
-                            tmp[i].style.visibility = 'visible';
-                        } else {
-                            tmp[i].style.visibility = 'hidden';
-                        }
-                    }
-                }
-            }-->
-            function aliquotdialog() {
-                
-                var cancel = new LertButton('Cancel', function () {
-                    
-                    //do nothing
-                });
-                
-                var submit = new LertButton('Create Aliquot', function () {
-                 document.biospecimen_form.submit();
-                });
-                var parentid = document.biospecimen_form.BIOSPECIMEN_strParentID.value;
-                var dnaconc = document.biospecimen_form.BIOSPECIMEN_flDNAConc.value;
-                var volume = document.biospecimen_form.BIOSPECIMEN_flQuantity.value;
-                var type = document.biospecimen_form.BIOSPECIMEN_strProcessingType.value;
-               
-                if (type != "Processing") {
-                    var parentConc = document.biospecimen_form.parentDNA.value;
-                    var quantityreq = volume * dnaconc;
-                    var volumestockreq = quantityreq / parentConc;
-                    var message = '<b>' + volumestockreq.toFixed(2)+ ' mls</b> of sample<i>'+ parentid  + '</i>' +
-           			' will be removed to create the following aliquot' +
-           			 '<br/>Concentration: ' + dnaconc;
-			            var exampleLert = new Lert(
-           			 message,[cancel, submit], {
-             		   defaultButton: submit,
-             		   icon: 'htmlarea/i/dialog-information.png'
-          	 			 });
-            
-            			exampleLert.display();
-        		} else {
-        	var message = 'All of sample <i>' + parentid + '</i> will used in processing.';
-			var exampleLert = new Lert(
-			message,[cancel, submit], {
-			defaultButton: submit,
-			icon: 'htmlarea/i/dialog-information.png' });
-        	exampleLert.display();
-           
-        }
-    }</script>
+		<script src="htmlarea/add_biospecimen.js" type="text/javascript"/>
+		
+		<table  width="100%" cellpadding="0" cellspacing="0" border="0"   >
+			<tr><td colspan="3">
+				<xsl:call-template name="infopaneltop">
+					<xsl:with-param name="titleString">ADD BIOSPECIMEN</xsl:with-param>
+					
+				</xsl:call-template>
+			</td>
+			</tr> 
+			
+			
+			
+			<tr class="funcpanel_content">
+				<td class="funcpanel_left_border" width="1px">&#160;</td>
+				<td>
 		<table width="100%">
-			<tr>
-				<td class="uportal-channel-subtitle"> Add biospecimen<br/>
-					<hr/>
-				</td>
-			</tr>
+			
 			<tr align="right">
 				<td>
 					<form name="back_form" action="{$baseActionURL}" method="POST">
@@ -177,11 +137,7 @@
 				</td>
 			</tr>
 
-			<tr>
-				<td>
-					<hr/>
-				</td>
-			</tr>
+			
 		</table>
 		<form name="biospecimen_form" action="{$baseActionURL}?current=biospecimen_add"
 			method="post">
@@ -258,10 +214,15 @@
 							<xsl:variable name="parent_flDNAConc">
 								<xsl:value-of select="parent_flDNAConc"/>
 							</xsl:variable>
+							
 
 							<input type="hidden" name="parentDNA" value="{$parent_flDNAConc}"/>
-
+							
 						</xsl:if>
+						<xsl:variable name="parent_flQuantity">
+							<xsl:value-of select="parent_flQuantity"/>
+						</xsl:variable>
+						<input type="hidden" name="parentQuantity" value="{$parent_flQuantity}"/>
 					</tr>
 				</xsl:if>
 			</table>
@@ -780,6 +741,17 @@
 				</tr>
 			</table>
 		</form>
-		
+				</td>	<td class="funcpanel_right_border" width="1px">&#160;</td>
+			</tr>
+			
+			<tr><td colspan="3">
+				
+				<xsl:call-template name="infopanelbottom">
+					
+					
+				</xsl:call-template>
+			</td>
+			</tr>
+		</table>
 	</xsl:template>
 </xsl:stylesheet>
