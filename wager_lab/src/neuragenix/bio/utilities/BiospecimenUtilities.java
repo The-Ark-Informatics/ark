@@ -336,41 +336,7 @@ public class BiospecimenUtilities  {
     	return null;
     }
     
-    public static double getAvailQty(int intBiospecimenKey) {
-    	
-    	
-    	if (intBiospecimenKey < 0)
-            return -1;
-        
-        DALSecurityQuery dsqQuantQuery = new DALSecurityQuery();
-        ResultSet rs = null;
-        try
-        {
-            dsqQuantQuery.setDomain("BIOSPECIMEN", null, null, null);
-            dsqQuantQuery.setDomain("BIOSPECIMEN_TRANSACTIONS", "BIOSPECIMEN_, strAField2, strAJoinType)
-            dsqQuantQuery.setCountField("BIOSPECIMEN_intBiospecimenID", false);
-            dsqQuantQuery.setWhere(null, 0, "BIOSPECIMEN_intParentID", "=", intBiospecimenKey + "", 0, DALQuery.WHERE_HAS_VALUE);
-            dsqQuantQuery.setWhere("AND", 0, "BIOSPECIMEN_intDeleted", "=", "0", 0, DALQuery.WHERE_HAS_VALUE);
-            rs = dsqQuantQuery.executeSelect();
-            if (rs.first())
-            {
-                int result = rs.getInt(1);
-                rs.close();
-                return result;
-            }
-            else
-            {
-                rs.close();
-                return 0;
-            }
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            System.out.print("There wasan error getting the child count");
-        }
-        return -1;
-    }
+   
     
     
     public static String getClonedSuffix(String origSuffix, String sampleType, boolean isSubBio) {
