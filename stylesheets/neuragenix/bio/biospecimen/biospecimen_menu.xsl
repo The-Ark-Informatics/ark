@@ -372,17 +372,16 @@
 		                                </table>
 		                                <table width="100%">
 		                                        <tr>
-		                                                <td width="26%"></td>
-		                                                <td width="5%" class="uportal-label">
+		                                        	<td align="right">
 		                                                        <input type="hidden" name="module" value="BIOSPECIMEN_SEARCH" />
 		                                                	<a class="button" href="#" onclick="this.blur(); document.forms.biospecimen_search.submit();"><span>Submit</span></a>
 		                                                        <!--<input type="submit" name="submit" value="Search" class="uportal-button"/>-->
 		                                                </td>
-		                                                <td width="5%" class="uportal-label">
+		                                                <td align="right">
 		                                                	<a class="button" href="#" onclick="this.blur();javascript:confirmClear('{$baseActionURL}?{$formParams}')"><span>Clear</span></a>
 		                                                       <!-- <input type="button" name="clear" value="Clear" class="uportal-button" onclick="javascript:confirmClear('{$baseActionURL}?{$formParams}')" />-->
 		                                                </td>
-		                                                <td width="64%"></td>
+		                                                
 		                                        </tr>
 		                                        
 		                                </table>
