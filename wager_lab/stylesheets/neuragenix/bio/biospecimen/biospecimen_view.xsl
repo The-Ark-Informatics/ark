@@ -619,7 +619,7 @@ comments.value = commentsval;
                         <tr>
 			
                             <td>
-                                <form action="{$baseActionURL}" method="POST">
+                                <form action="{$baseActionURL}" method="POST" name="topprocessform">
                                     <input type="hidden" name="PATIENT_intInternalPatientID"
                                         value="{$intInternalPatientID}"/>
                                     <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
@@ -630,15 +630,17 @@ comments.value = commentsval;
                                         value="{$intBiospecimenID}"/>
                                     <input type="hidden" name="module" value="core"/>
                                     <input type="hidden" name="action" value="add_biospecimen"/>
-                                    <input type="submit" value="Process / Aliquot" tabindex="80"
-                                        class="uportal-button"/>
-				    <input type="button" onClick="javascript:archiveData()" value="Archive data to Comments" />
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.topprocessform.submit();"><span>Process</span></a>
+                                    <!--<input type="submit" value="Process / Aliquot" tabindex="80"
+                                    class="uportal-button"/>-->
+                                    <a class="button" href="#" onclick="this.blur(); javascript:archiveData();"><span>Archive data</span></a>
+				  <!-- <input type="button" onClick="javascript:archiveData()" value="Archive data to Comments" />-->
                                 </form>
                             </td>
 				
                             <td>
                                 <!-- clone biospecimen -->
-                                <form action="{$baseActionURL}" method="POST">
+                                <form action="{$baseActionURL}" method="POST" name="topcloneform">
                                     <input type="hidden" name="intInternalPatientID"
                                         value="{$intInternalPatientID}"/>
                                     <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
@@ -649,8 +651,9 @@ comments.value = commentsval;
                                         value="{$intBiospecStudyID}"/>
                                     <input type="hidden" name="action" value="clone_biospecimen"/>
                                     <input type="hidden" name="module" value="core"/>
-                                    <input type="submit" value="Clone" tabindex="81"
-                                        class="uportal-button"/>
+                                   <!-- <input type="submit" value="Clone" tabindex="81"
+                                    class="uportal-button"/>-->
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.topcloneform.submit();"><span>Clone</span></a>
                                 </form>
                             </td>
 			
@@ -703,7 +706,7 @@ comments.value = commentsval;
                                     class="neuragenix-form-required-text">
                                     <xsl:if
                                         test="./BIOSPECIMEN_strBiospecimenIDDisplay[@required='true']"
-                                        > * </xsl:if>
+                                        >  </xsl:if>
                                 </td>
                                 <td width="18%" id="neuragenix-form-row-input-label"
                                     class="uportal-label">
@@ -806,7 +809,7 @@ comments.value = commentsval;
                                     class="neuragenix-form-required-text">
 				
                                     <xsl:if test="./BIOSPECIMEN_strSampleTypeDisplay[@required='true']"
-                                        > * </xsl:if>
+                                        >  </xsl:if>
 				
                                 </td>
                                 <td width="18%" id="neuragenix-form-row-input-label"
@@ -874,7 +877,7 @@ comments.value = commentsval;
                                     <xsl:value-of select="format-number($qty_collected+$qty_removed,'#.0000')"/>
                                        </xsl:variable>
                                     <xsl:if test="number(BIOSPECIMEN_flDNAConc) and number($quantitytotal)"> 
-                                        <xsl:value-of select="format-number($quantitytotal*BIOSPECIMEN_flDNAConc,'#.0000')"/>
+                                        <xsl:value-of select="format-number($quantitytotal*BIOSPECIMEN_flDNAConc,'#.00')"/>
                                         
                                         </xsl:if>
                                     
@@ -1460,43 +1463,47 @@ comments.value = commentsval;
                             <xsl:if test="not(bioOffSite)">
                             <tr>
                                 <td align="left" colspan="4">
-                                    <input type="button" name="delete" value="Delete" tabindex="44"
+                                    <a class="button" href="#" onclick="this.blur(); javascript:confirmDelete('{$baseActionURL}?current=biospecimen_view&amp;module=core&amp;action=delete_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;target=biospecimen');"><span><img src="/wagerlab/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
+                                   <!-- <input type="button" name="delete" value="Delete" tabindex="44"
                                         class="uportal-button"
                                         onclick="javascript:confirmDelete('{$baseActionURL}?current=biospecimen_view&amp;module=core&amp;action=delete_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;target=biospecimen')"
-                                    />
+                                    />-->
                                 </td>
                                 <td align="right" colspan="4">
+                                    <table align="right">
 				<xsl:variable name="strSampleType">
 <xsl:value-of select="BIOSPECIMEN_strSampleType[@selected=1]"/>
 				</xsl:variable>
-                                    
+                                    <tr>
+                                    <td>
                                     
                                         <xsl:choose>
                                             <xsl:when test="$intBiospecStudyID=17">
                                                 <xsl:choose>
                                                     <xsl:when test="$strSampleType='Frozen lymphocytes (F) '">
                                                         
-                                                        <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'" value ="Print Barcode"/>
+                                                        <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                                     </xsl:when>
                                                     <xsl:otherwise>
                                                         
-                                                        <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSBioBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
+                                                        <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/WAFSSBioBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                                     </xsl:otherwise>
                                                 </xsl:choose>
                                             </xsl:when>
                                             <xsl:when test="$intBiospecStudyID=65">
-                                                <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/BDSBarcode.prn?barcode={$strBiospecimenID}&amp;patientkey={$intInternalPatientID}'" value="Print Barcode"></input>
+                                                <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/BDSBarcode.prn?barcode={$strBiospecimenID}&amp;patientkey={$intInternalPatientID}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                             </xsl:when>
                                             <xsl:otherwise>
-                                                <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/DefaultBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
+                                                <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/DefaultBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                             </xsl:otherwise>
                                         </xsl:choose>
                                         
-                                        
+                                        </td>
                                   
-                              
-                                    <a class="button" href="#" onclick="this.blur(); javascript:submitBiospecimenForm();"><span>Save Biospecimen</span></a>
-                                    
+                              <td>
+                                    <a class="button" href="#" onclick="this.blur(); javascript:submitBiospecimenForm();"><span><img src="/wagerlab/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>
+                                   </td></tr>
+                                    </table>
                                 </td>
                             </tr>
                             </xsl:if>
@@ -1586,9 +1593,10 @@ comments.value = commentsval;
                                         <xsl:when test="inventory_info/SITE_strSiteName = 'N/A'">
                                             <form
                                                 action="{$inventoryChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$inventoryChannelTabOrder}&amp;source=allocate&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;strOrigin=view_biospecimen"
-                                                method="post">
-                                                <input type="submit" class="uportal-button"
-                                                  value="Allocate"/>
+                                                method="post" name="allocateform">
+                                                <a class="button" href="#" onclick="this.blur(); document.forms.allocateform.submit();"><span>Allocate</span></a>
+                                               <!-- <input type="submit" class="uportal-button"
+                                                  value="Allocate"/>-->
                                             </form>
                                         </xsl:when>
                                         <xsl:otherwise>
@@ -2076,13 +2084,14 @@ comments.value = commentsval;
                             </table>
                             <table width="100%">
                                 <tr>
-                                    <td width="90%" class="uportal-label"/>
-                                    <td width="10%" class="uportal-label">
-                                        <input type="submit" name="save_quantity"
+                                    <td width="80%" class="uportal-label"/>
+                                    <td width="20%" class="uportal-label">
+                                        <a class="button" href="#" onclick="this.blur(); document.forms.quantity_form.submit();"><span>Save Quantity</span></a>
+                                      <!--  <input type="submit" name="save_quantity"
                                             value="Save Quantity" tabindex="65"
                                             class="uportal-button"
                                             onblur="javascript:document.quantity_form.BIOSPECIMEN_TRANSACTIONS_dtTransactionDate_Day.focus()"
-                                        />
+                                        />-->
                                     </td>
                                 </tr>
                             </table>
@@ -2107,7 +2116,7 @@ comments.value = commentsval;
 				<!-- Not required 5/08/2005 CE  -->
 			
                             <td>
-                                <form action="{$baseActionURL}" method="POST">
+                                <form action="{$baseActionURL}" method="POST" name="processform">
                                     <input type="hidden" name="PATIENT_intInternalPatientID"
                                         value="{$intInternalPatientID}"/>
                                     <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
@@ -2120,14 +2129,15 @@ comments.value = commentsval;
                                         value="{$intDepth}"/>
                                     <input type="hidden" name="module" value="core"/>
                                     <input type="hidden" name="action" value="add_biospecimen"/>
-                                    <input type="submit" value="Process / Aliquot" tabindex="80"
-                                        class="uportal-button"/>
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.processform.submit();"><span>Process</span></a>
+                                   <!-- <input type="submit" value="Process / Aliquot" tabindex="80"
+                                        class="uportal-button"/>-->
                                 </form>
                             </td>
 				
                             <td>
                                 <!-- clone biospecimen -->
-                                <form action="{$baseActionURL}" method="POST">
+                                <form action="{$baseActionURL}" method="POST" name ="cloneform">
                                     <input type="hidden" name="intInternalPatientID"
                                         value="{$intInternalPatientID}"/>
                                     <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
@@ -2138,8 +2148,9 @@ comments.value = commentsval;
                                         value="{$intBiospecStudyID}"/>
                                     <input type="hidden" name="action" value="clone_biospecimen"/>
                                     <input type="hidden" name="module" value="core"/>
-                                    <input type="submit" value="Clone" tabindex="81"
-                                        class="uportal-button"/>
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.cloneform.submit();"><span>Clone</span></a>
+                                  <!--  <input type="submit" value="Clone" tabindex="81"
+                                        class="uportal-button"/>-->
                                 </form>
                             </td>
 			    
