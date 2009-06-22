@@ -8,7 +8,7 @@
   <xsl:param name="report_num">0</xsl:param>
   <xsl:param name="error"></xsl:param>
   <xsl:template match="/">
-  	<script language="javascript">
+  	<!--<script language="javascript">
   		window.onload = function() {
   		 onUpdate();
   		}
@@ -25,7 +25,7 @@
                                                                 selectBox2.style.visibility='hidden';
   		
   		}
-  	</script>
+  	</script>-->
 	<table width="100%">
                                                                                 <tr>
                                                                                         <td class="message_text" width="80%">
