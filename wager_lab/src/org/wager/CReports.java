@@ -353,7 +353,7 @@ if (submitting)
 	    	    rs = stmt.executeQuery("SELECT * from REPORTS order by reportkey ");
 	       }
 	       else {
-	    	   PreparedStatement ps = conn.prepareStatement("SELECT r.*,p.*,v.value from REPORTS r, REPORTS_PARAM p, PARAM_VALUES v where r.reportkey = p.reportkey(+) and p.reportparamkey =v.reportparamkey(+)  order by p.reportparamkey");
+	    	   PreparedStatement ps = conn.prepareStatement("SELECT r.*,p.*,v.value from REPORTS r, REPORTS_PARAM p, PARAM_VALUES v where r.reportkey = p.reportkey(+) and p.reportparamkey =v.reportparamkey(+)  order by r.reportkey,p.reportparamkey");
 	    	   rs = ps.executeQuery();
 	       }
 	       
