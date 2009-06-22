@@ -1117,6 +1117,7 @@ public class CBiospecimen implements IChannel
                //save the transaction
                if (result == null) // locks have been acquired
                {
+            	  runtimeData.setParameter("BIOSPECIMEN_TRANSACTIONS_strType", "Manual");
                   result = bcBiospecimen.doSaveQuantity(intBiospecimenKey + "", runtimeData);
                   lckBiospecimen.unlock();
                   lckBiospecimen = new LockRequest(rp.getAuthToken());

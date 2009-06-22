@@ -745,7 +745,7 @@ public class BiospecimenCore {
 									"BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
 							removeData.setParameter(
 									"BIOSPECIMEN_TRANSACTIONS_strType",
-							"Sub-aliquot");
+							"Sub-aliquot: "+strNewBiospecimenID);
 							removeData.setParameter(
 									"BIOSPECIMEN_TRANSACTIONS_strStatus",
 							"Delivered");
