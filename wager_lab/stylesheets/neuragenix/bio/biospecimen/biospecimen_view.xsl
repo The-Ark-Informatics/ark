@@ -846,63 +846,39 @@ comments.value = commentsval;
                                 <td width="5%"/>
                                 <td width="1%" id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text">
-                                    <xsl:if
-                                        test="./BIOSPECIMEN_strSampleDateDisplay[@required='true']">
-                                        * </xsl:if>
+                                   
                                 </td>
                                 <td width="18%" id="neuragenix-form-row-input-label"
                                     class="uportal-label">
-                                    <xsl:value-of select="BIOSPECIMEN_dtSampleDateDisplay"/>
-                                </td>
-                                <td width="25%" class="uportal-label">
-                                    <xsl:choose>
-                                        
-                                        <xsl:when test="bioOffSite">
-                                           <xsl:value-of select="BIOSPECIMEN_dtSampleDate"/>
-                                        </xsl:when>
-                                        <xsl:otherwise>
-                                            
-                                       
-                                    <select name="BIOSPECIMEN_dtSampleDate_Day" tabindex="28"
-                                        class="uportal-input-text">
-                                        <xsl:for-each select="BIOSPECIMEN_dtSampleDate_Day">
-                                            <option>
-                                                <xsl:attribute name="value">
-                                                  <xsl:value-of select="."/>
-                                                </xsl:attribute>
-                                                <xsl:if test="@selected='1'">
-                                                  <xsl:attribute name="selected"
-                                                  >true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:value-of select="."/>
-                                            </option>
-                                        </xsl:for-each>
-                                    </select>
-                                    <select name="BIOSPECIMEN_dtSampleDate_Month" tabindex="29"
-                                        class="uportal-input-text">
-                                        <xsl:for-each select="BIOSPECIMEN_dtSampleDate_Month">
-                                            <option>
-                                                <xsl:attribute name="value">
-                                                  <xsl:value-of select="."/>
-                                                </xsl:attribute>
-                                                <xsl:if test="@selected='1'">
-                                                  <xsl:attribute name="selected"
-                                                  >true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:value-of select="."/>
-                                            </option>
-                                        </xsl:for-each>
-                                    </select>
-                                    <input type="text" name="BIOSPECIMEN_dtSampleDate_Year" size="5"
-                                        tabindex="30" class="uportal-input-text">
-                                        <xsl:attribute name="value">
-                                            <xsl:value-of select="BIOSPECIMEN_dtSampleDate_Year"/>
-                                        </xsl:attribute>
-                                    </input>
-                                        </xsl:otherwise>
+                                    <xsl:if
+                                        test="number(BIOSPECIMEN_flDNAConc)"> 
+                                        Quantity (ug): </xsl:if> </td>
+                                <td width="26%" id="neuragenix-form-row-input" class="uportal-label">
+                                    <xsl:variable name="qty_collected">
+                                        <xsl:choose>
+                                            <xsl:when test="number(BIOSPECIMEN_flNumberCollected)">
+                                                <xsl:value-of select="number(BIOSPECIMEN_flNumberCollected)" />
+                                            </xsl:when>
+                                            <xsl:otherwise>0</xsl:otherwise>
                                         </xsl:choose>
+                                    </xsl:variable>
+                                    <xsl:variable name="qty_removed">
+                                        <xsl:choose>
+                                            <xsl:when test="number(BIOSPECIMEN_flNumberRemoved)">
+                                                <xsl:value-of select="number(BIOSPECIMEN_flNumberRemoved)" />
+                                            </xsl:when>
+                                            <xsl:otherwise>0</xsl:otherwise>
+                                        </xsl:choose>
+                                    </xsl:variable>
+                                   <xsl:variable name="quantitytotal">
+                                    <xsl:value-of select="format-number($qty_collected+$qty_removed,'#.0000')"/>
+                                       </xsl:variable>
+                                    <xsl:if test="number(BIOSPECIMEN_flDNAConc) and number($quantitytotal)"> 
+                                        <xsl:value-of select="format-number($quantitytotal*BIOSPECIMEN_flDNAConc,'#.0000')"/>
+                                        
+                                        </xsl:if>
+                                    
                                 </td>
-                                <td width="5%" id="neuragenix-end-spacer"/>
                             </tr>
                             <tr>
                                 <td width="1%" id="neuragenix-form-row-input-label-required"
@@ -945,6 +921,75 @@ comments.value = commentsval;
                                     </xsl:choose>-->
                                     
                                 </td>
+                               
+                            </tr>
+                           
+                            <!-- -->
+                            <tr>
+                                <td colspan="8">
+                                    <hr/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td width="1%" id="neuragenix-form-row-input-label-required"
+                                    class="neuragenix-form-required-text">
+                                    <xsl:if
+                                        test="./BIOSPECIMEN_strSampleDateDisplay[@required='true']">
+                                        * </xsl:if>
+                                </td>
+                                <td width="18%" id="neuragenix-form-row-input-label"
+                                    class="uportal-label">
+                                    <xsl:value-of select="BIOSPECIMEN_dtSampleDateDisplay"/>
+                                </td>
+                                <td width="25%" class="uportal-label">
+                                    <xsl:choose>
+                                        
+                                        <xsl:when test="bioOffSite">
+                                            <xsl:value-of select="BIOSPECIMEN_dtSampleDate"/>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            
+                                            
+                                            <select name="BIOSPECIMEN_dtSampleDate_Day" tabindex="28"
+                                                class="uportal-input-text">
+                                                <xsl:for-each select="BIOSPECIMEN_dtSampleDate_Day">
+                                                    <option>
+                                                        <xsl:attribute name="value">
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:attribute>
+                                                        <xsl:if test="@selected='1'">
+                                                            <xsl:attribute name="selected"
+                                                                >true</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <select name="BIOSPECIMEN_dtSampleDate_Month" tabindex="29"
+                                                class="uportal-input-text">
+                                                <xsl:for-each select="BIOSPECIMEN_dtSampleDate_Month">
+                                                    <option>
+                                                        <xsl:attribute name="value">
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:attribute>
+                                                        <xsl:if test="@selected='1'">
+                                                            <xsl:attribute name="selected"
+                                                                >true</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <input type="text" name="BIOSPECIMEN_dtSampleDate_Year" size="5"
+                                                tabindex="30" class="uportal-input-text">
+                                                <xsl:attribute name="value">
+                                                    <xsl:value-of select="BIOSPECIMEN_dtSampleDate_Year"/>
+                                                </xsl:attribute>
+                                            </input>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                </td>
+                               
                                 <td width="5%"/>
                                 <td width="1%" id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text">
@@ -961,56 +1006,60 @@ comments.value = commentsval;
                                             <xsl:value-of select="BIOSPECIMEN_tmSampleTime"/>
                                         </xsl:when>
                                         <xsl:otherwise>
-                                    <select name="BIOSPECIMEN_tmSampleTime_Hour" tabindex="31"
-                                        class="uportal-input-text">
-                                        <xsl:for-each select="BIOSPECIMEN_tmSampleTime_Hour">
-                                            <option>
-                                                <xsl:attribute name="value">
-                                                  <xsl:value-of select="."/>
-                                                </xsl:attribute>
-                                                <xsl:if test="@selected='1'">
-                                                  <xsl:attribute name="selected"
-                                                  >true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:value-of select="."/>
-                                            </option>
-                                        </xsl:for-each>
-                                    </select>
-                                    <select name="BIOSPECIMEN_tmSampleTime_Minute" tabindex="32"
-                                        class="uportal-input-text">
-                                        <xsl:for-each select="BIOSPECIMEN_tmSampleTime_Minute">
-                                            <option>
-                                                <xsl:attribute name="value">
-                                                  <xsl:value-of select="."/>
-                                                </xsl:attribute>
-                                                <xsl:if test="@selected='1'">
-                                                  <xsl:attribute name="selected"
-                                                  >true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:value-of select="."/>
-                                            </option>
-                                        </xsl:for-each>
-                                    </select>
-                                    <select name="BIOSPECIMEN_tmSampleTime_AMPM" tabindex="33"
-                                        class="uportal-input-text">
-                                        <xsl:for-each select="BIOSPECIMEN_tmSampleTime_AMPM">
-                                            <option>
-                                                <xsl:attribute name="value">
-                                                  <xsl:value-of select="."/>
-                                                </xsl:attribute>
-                                                <xsl:if test="@selected='1'">
-                                                  <xsl:attribute name="selected"
-                                                  >true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:value-of select="."/>
-                                            </option>
-                                        </xsl:for-each>
-                                    </select>
+                                            <select name="BIOSPECIMEN_tmSampleTime_Hour" tabindex="31"
+                                                class="uportal-input-text">
+                                                <xsl:for-each select="BIOSPECIMEN_tmSampleTime_Hour">
+                                                    <option>
+                                                        <xsl:attribute name="value">
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:attribute>
+                                                        <xsl:if test="@selected='1'">
+                                                            <xsl:attribute name="selected"
+                                                                >true</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <select name="BIOSPECIMEN_tmSampleTime_Minute" tabindex="32"
+                                                class="uportal-input-text">
+                                                <xsl:for-each select="BIOSPECIMEN_tmSampleTime_Minute">
+                                                    <option>
+                                                        <xsl:attribute name="value">
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:attribute>
+                                                        <xsl:if test="@selected='1'">
+                                                            <xsl:attribute name="selected"
+                                                                >true</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
+                                            <select name="BIOSPECIMEN_tmSampleTime_AMPM" tabindex="33"
+                                                class="uportal-input-text">
+                                                <xsl:for-each select="BIOSPECIMEN_tmSampleTime_AMPM">
+                                                    <option>
+                                                        <xsl:attribute name="value">
+                                                            <xsl:value-of select="."/>
+                                                        </xsl:attribute>
+                                                        <xsl:if test="@selected='1'">
+                                                            <xsl:attribute name="selected"
+                                                                >true</xsl:attribute>
+                                                        </xsl:if>
+                                                        <xsl:value-of select="."/>
+                                                    </option>
+                                                </xsl:for-each>
+                                            </select>
                                         </xsl:otherwise>
-                                        </xsl:choose>
+                                    </xsl:choose>
                                 </td>
                                 <td width="5%" id="neuragenix-end-spacer"/>
+                                
                             </tr>
+                            
+                            
+                            
                             <tr>
                                 <td width="1%" id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text">
@@ -1421,13 +1470,13 @@ comments.value = commentsval;
 <xsl:value-of select="BIOSPECIMEN_strSampleType[@selected=1]"/>
 				</xsl:variable>
                                     
-                                    <xsl:variable name="barcodeengine_url">
+                                    
                                         <xsl:choose>
                                             <xsl:when test="$intBiospecStudyID=17">
                                                 <xsl:choose>
                                                     <xsl:when test="$strSampleType='Frozen lymphocytes (F) '">
                                                         
-                                                        <xsl:value-of select="'/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'"/>
+                                                        <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'" value ="Print Barcode"/>
                                                     </xsl:when>
                                                     <xsl:otherwise>
                                                         
@@ -1444,12 +1493,10 @@ comments.value = commentsval;
                                         </xsl:choose>
                                         
                                         
-                                    </xsl:variable>
+                                  
                               
-                                    <a class="button" href="#" onclick="this.blur(); document.forms.biospecimen_search.submit();"><span>Submit</span></a>
-                                    <input type="submit" name="save" value="Save Biospecimen"
-                                        tabindex="43" class="uportal-button"
-                                        onclick="javascript:submitBiospecimenForm()"/>
+                                    <a class="button" href="#" onclick="this.blur(); javascript:submitBiospecimenForm();"><span>Save Biospecimen</span></a>
+                                    
                                 </td>
                             </tr>
                             </xsl:if>
