@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="wafss_asrb" pageWidth="595" pageHeight="842" whenNoDataType="BlankPage" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" isIgnorePagination="true">
-	<parameter name="QUANTITYCHECK" class="java.lang.String">
-		<defaultValueExpression><![CDATA["No"]]></defaultValueExpression>
+	<parameter name="QUANTITYCHECK" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
 	</parameter>
 	<parameter name="QUANTITYSQL" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA[( $P{QUANTITYCHECK}.equals("Yes") ? " WHERE \"ug DNA\" < 10"  : " " )]]></defaultValueExpression>
