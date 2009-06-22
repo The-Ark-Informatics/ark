@@ -824,7 +824,7 @@ a.button span {
     background: transparent url('/wagerlab/media/neuragenix/icons/bg_button2_span.png') no-repeat;
     display: block;
     line-height: 14px;
-    padding: 8px 0 8px 20px;
+    padding: 8px 0 8px 13px;
 } 
 
 a.button:active {
@@ -835,6 +835,6 @@ a.button:active {
 
 a.button:active span {
     background-position: bottom left;
-    padding: 9px 0 7px 20px; /* push text down 1px */
+    padding: 9px 0 7px 13px; /* push text down 1px */
 } 
 

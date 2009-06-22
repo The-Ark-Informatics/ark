@@ -654,144 +654,7 @@ comments.value = commentsval;
                                 </form>
                             </td>
 			
-				<!--
-                            <td>
-                                <!- - batch cloning :: available if properties say so - - >
-                                <xsl:if test="biospecimen_modules/batchCloning='true'">
-                                    <form
-                                        action="{$baseActionURL}?module=BATCH_CLONE&amp;stage=BEGIN&amp;BIOSPECIMEN_intBiospecimenID={BIOSPECIMEN_intBiospecimenID}&amp;BIOSPECIMEN_strBiospecimenID={BIOSPECIMEN_strBiospecimenID}"
-                                        method="post">
-                                        <input type="submit" class="uportal-button"
-                                            value="Batch Clone" tabindex="82"/>
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td valign="top">
-                                <! - - bioanalysis/analysis results :: available if properties say so - - >
-                                <xsl:if test="biospecimen_modules/bioanalysis='true'">
-                                    <form action="{$baseActionURL}" method="POST">
-                                        <input type="hidden" name="intInternalPatientID"
-                                            value="{$intInternalPatientID}"/>
-                                        <input type="hidden" name="intBiospecimenID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_strParentID"
-                                            value="{$strBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_intParentID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_intStudyKey"
-                                            value="{$intBiospecStudyID}"/>
-                                        <input type="hidden" name="action" value="biospecimen_study"/>
-                                        <input type="hidden" name="module" value="core"/>
-                                        <input type="button" value="Analysis results" tabindex="83"
-                                            class="uportal-button"
-                                            onclick="javascript:jumpTo('{$smartformChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$smartformChannelTabOrder}&amp;domain=Bioanalysis&amp;participant={$intBiospecimenID}&amp;intStudyID={$intBiospecStudyID}&amp;strcurrent=biospecimen_view&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;strOrigin=biospecimen_view&amp;title={$strBiospecimenID}&amp;var1={$strBiospecSampleTypeSelected}&amp;var2={$dtBiospecSampleDate}')"
-                                        />
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td>
-                                <xsl:variable name="intVialKey" select="VIAL_CALCULATION_intVialKey"/>
-                                <xsl:if test="biospecimen_modules/vialCalculation='true'"/>
-                                <xsl:choose>
-                                    <xsl:when test="$intVialKey  ='-1'">
-                                        <form action="{$baseActionURL}?current=vial_calculation"
-                                            method="POST">
-                                            <input type="hidden" name="intInternalPatientID"
-                                                value="{$intInternalPatientID}"/>
-                                            <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
-                                                value="{$intBiospecimenID}"/>
-                                            <input type="hidden" name="BIOSPECIMEN_strBiospecimenID"
-                                                value="{$strBiospecimenID}"/>
-                                            <input type="hidden"
-                                                name="BIOSPECIMEN_strInitialBiospecSampleType"
-                                                value="{$strInitialBiospecSampleType}"/>
-                                            <input type="hidden" name="module"
-                                                value="vial_calculation"/>
-                                            <input type="hidden" name="action"
-                                                value="add_vial_calculation"/>
-                                            <input type="hidden" name="BIOSPECIMEN_dtSampleDate"
-                                                value="{$BIOSPECIMEN_dtSampleDate}"/>
-                                            <input type="hidden" name="BIOSPECIMEN_dtExtractedDate"
-                                                value="{$BIOSPECIMEN_dtExtractedDate}"/>
-                                            <input type="submit" name="vial_calculation"
-                                                value="Vial Calculation" tabindex="43"
-                                                class="uportal-button"/>
-                                        </form>
-                                    </xsl:when>
-                                    <xsl:otherwise>
-                                        <form action="{$baseActionURL}?" method="POST">
-                                            <input type="hidden" name="intInternalPatientID"
-                                                value="{$intInternalPatientID}"/>
-                                            <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
-                                                value="{$intBiospecimenID}"/>
-                                            <input type="hidden" name="BIOSPECIMEN_strBiospecimenID"
-                                                value="{$strBiospecimenID}"/>
-                                            <input type="hidden"
-                                                name="BIOSPECIMEN_strInitialBiospecSampleType"
-                                                value="{$strInitialBiospecSampleType}"/>
-                                            <input type="hidden" name="module"
-                                                value="vial_calculation"/>
-                                            <input type="hidden"
-                                                name="VIAL_CALCULATION_intVialCalculationKey"
-                                                value="{$intVialKey}"/>
-                                            <input type="hidden" name="action"
-                                                value="vial_calculation_history"/>
-                                            <input type="submit" name="vial_calculation_history"
-                                                value="Vial Calculation History " tabindex="43"
-                                                class="uportal-button"/>
-                                        </form>
-                                    </xsl:otherwise>
-                                </xsl:choose>
-                            </td>
-                            <td>
-                                <xsl:if test="biospecimen_modules/studySmartforms='true'">
-                                    <form action="{$baseActionURL}" method="POST">
-                                        <input type="hidden" name="current"
-                                            value="biospecimen_study"/>
-                                        <input type="hidden" name="intInternalPatientID"
-                                            value="{$intInternalPatientID}"/>
-                                        <input type="hidden" name="intBiospecimenID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="strBiospecParentID"
-                                            value="{$strBiospecimenID}"/>
-                                        <input type="hidden" name="intBiospecParentID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="intStudyID"
-                                            value="{$intBiospecStudyID}"/>
-                                        <input type="button" value="Study results" tabindex="42"
-                                            class="uportal-button"
-                                            onclick="javascript:jumpTo('{$smartformChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$smartformChannelTabOrder}&amp;domain=Biospecimen&amp;participant={$intBiospecimenID}&amp;intStudyID={$intBiospecStudyID}&amp;strcurrent=biospecimen_view&amp;intInternalPatientID={$intInternalPatientID}&amp;intBiospecimenID={$intBiospecimenID}&amp;strOrigin=biospecimen_view&amp;title={$strBiospecimenID}&amp;var1={$strBiospecSampleTypeSelected}&amp;var2={$dtBiospecSampleDate}')"
-                                        />
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td>
-                                <form action="{$baseActionURL}?ATTACHMENTS_domainName=Biospecimen"
-                                    method="POST">
-                                    <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
-                                        value="{$intBiospecimenID}"/>
-                                    <input type="hidden" name="intInternalPatientID"
-                                        value="{$intInternalPatientID}"/>
-                                    <input type="hidden" name="module" value="Attachments"/>
-                                    <input type="submit" value="Attachments" tabindex="84"
-                                        class="uportal-button"/>
-                                </form>
-                            </td>
-                            <td/>
-                            <td width="70%" style="text-align: right">
-                                <form action="{$baseActionURL}" method="POST">
-                                    <input type="hidden" name="current" value="biospecimen_view"/>
-                                    <input type="hidden" name="intInternalPatientID"
-                                        value="{$intInternalPatientID}"/>
-                                    <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
-                                        value="{$intBiospecimenID}"/>
-                                    <!- - <input type="hidden" name="action" value=""/> - - >
-                                    <input type="hidden" name="module" value="core"/>
-                                    <! - -<input type="submit" name="back" value="&lt; Back"
-                                        tabindex="85" class="uportal-button"/> - - >
-                                </form>
-                            </td>
-			-->
+
                         </tr>
                         <tr>
                             <td colspan="9">
@@ -854,19 +717,32 @@ comments.value = commentsval;
                                 <td width="5%"/>
                                 <td width="1%" id="neuragenix-form-row-input-label-required"
                                     class="neuragenix-form-required-text">
-                                    <xsl:if test="./BIOSPECIMEN_strParentDisplay[@required='true']">
-                                        * </xsl:if>
+                                   
                                 </td>
                                 <td width="18%" id="neuragenix-form-row-input-label"
                                     class="uportal-label">
-                                    <!--<xsl:value-of select="BIOSPECIMEN_strParentIDDisplay"/>:--> </td>
+                                    Volume: </td>
+                                <xsl:variable name="qty_collected">
+                                    <xsl:choose>
+                                        <xsl:when test="number(BIOSPECIMEN_flNumberCollected)">
+                                            <xsl:value-of select="number(BIOSPECIMEN_flNumberCollected)" />
+                                        </xsl:when>
+                                        <xsl:otherwise>0</xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:variable>
+                                <xsl:variable name="qty_removed">
+                                    <xsl:choose>
+                                        <xsl:when test="number(BIOSPECIMEN_flNumberRemoved)">
+                                            <xsl:value-of select="number(BIOSPECIMEN_flNumberRemoved)" />
+                                        </xsl:when>
+                                        <xsl:otherwise>0</xsl:otherwise>
+                                    </xsl:choose>
+                                </xsl:variable>
+                                
                                 <td width="26%" class="uportal-label"
                                     id="neuragenix-form-row-input-input">
-					<!--
-                                    <xsl:value-of select="BIOSPECIMEN_strParentID"/>
-					-->
-                                    <input type="hidden" name="BIOSPECIMEN_intParentID"
-                                        value="{$intBiospecParentID}"/>
+                                    <xsl:value-of select="format-number($qty_collected+$qty_removed,'#.0000')"/>
+                                    
                                 </td>
                                 <td width="5%" id="neuragenix-end-spacer"/>
                             </tr>
@@ -1039,10 +915,10 @@ comments.value = commentsval;
                                     class="uportal-label">
                                     <xsl:value-of select="BIOSPECIMEN_intStudyKeyDisplay"/>: </td>
                                 <td width="26%" id="neuragenix-form-row-input" class="uportal-label">
-                                    <xsl:choose>
-                                        <xsl:when test="bioOffSite">
+                                  <!--  <xsl:choose>
+                                        <xsl:when test="bioOffSite">-->
                                             <xsl:value-of select="study_list_biospecimen[@selected=1]/STUDY_strStudyName"/>
-                                        </xsl:when>
+                                <!--        </xsl:when>
                                         <xsl:otherwise>
                                     <select class="uportal-input-text"
                                         name="BIOSPECIMEN_intStudyKey" tabindex="23">
@@ -1066,7 +942,7 @@ comments.value = commentsval;
                                         </xsl:for-each>
                                     </select>
                                     </xsl:otherwise>
-                                    </xsl:choose>
+                                    </xsl:choose>-->
                                     
                                 </td>
                                 <td width="5%"/>
@@ -1544,26 +1420,33 @@ comments.value = commentsval;
 				<xsl:variable name="strSampleType">
 <xsl:value-of select="BIOSPECIMEN_strSampleType[@selected=1]"/>
 				</xsl:variable>
-                                <xsl:choose>
-                                <xsl:when test="$intBiospecStudyID=17">
-					<xsl:choose>
-						<xsl:when test="$strSampleType='Frozen lymphocytes (F) '">
-
-									<input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'" value="Print Barcode"></input>
-						</xsl:when>
-							<xsl:otherwise>
-			
-									<input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSBioBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
-							</xsl:otherwise>
-								</xsl:choose>
-								</xsl:when>
-								<xsl:when test="$intBiospecStudyID=65">
-									<input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/BDSBarcode.prn?barcode={$strBiospecimenID}&amp;patientkey={$intInternalPatientID}'" value="Print Barcode"></input>
-								</xsl:when>
-								<xsl:otherwise>
-								<input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/DefaultBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
-								</xsl:otherwise>
-								</xsl:choose>
+                                    
+                                    <xsl:variable name="barcodeengine_url">
+                                        <xsl:choose>
+                                            <xsl:when test="$intBiospecStudyID=17">
+                                                <xsl:choose>
+                                                    <xsl:when test="$strSampleType='Frozen lymphocytes (F) '">
+                                                        
+                                                        <xsl:value-of select="'/wagerlab/WAFSSLNBarcode.prn?barcode={$strBiospecimenID}&amp;dateOfSample={$BIOSPECIMEN_dtSampleDate}&amp;patientKey={$intInternalPatientID}'"/>
+                                                    </xsl:when>
+                                                    <xsl:otherwise>
+                                                        
+                                                        <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSBioBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
+                                                    </xsl:otherwise>
+                                                </xsl:choose>
+                                            </xsl:when>
+                                            <xsl:when test="$intBiospecStudyID=65">
+                                                <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/BDSBarcode.prn?barcode={$strBiospecimenID}&amp;patientkey={$intInternalPatientID}'" value="Print Barcode"></input>
+                                            </xsl:when>
+                                            <xsl:otherwise>
+                                                <input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/DefaultBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'" value="Print Barcode"></input>
+                                            </xsl:otherwise>
+                                        </xsl:choose>
+                                        
+                                        
+                                    </xsl:variable>
+                              
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.biospecimen_search.submit();"><span>Submit</span></a>
                                     <input type="submit" name="save" value="Save Biospecimen"
                                         tabindex="43" class="uportal-button"
                                         onclick="javascript:submitBiospecimenForm()"/>
@@ -1665,13 +1548,23 @@ comments.value = commentsval;
                                             <table align="right">
                                                 <tr>
                                                   <td>
-                                                  <form method="post"
+                                                      <a class="button" href="#" onclick="this.blur(); document.location.href='{$inventoryChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$inventoryChannelTabOrder}&amp;current=view_tray&amp;source=view&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;CELL_intCellID={$intInvCellID}&amp;strOrigin=view_biospecimen'"><span>View</span></a>
+                                                  </td>
+                                                    <xsl:if test="inventory_info/canChangeUnallocInv = '1'">
+                                                    <td>
+                                                        <a class="button" href="#" onclick="this.blur(); document.location.href='{$inventoryChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$inventoryChannelTabOrder}&amp;current=view_tray&amp;source=change&amp;PATIENT_intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;CELL_intCellID={$intInvCellID}&amp;strOrigin=view_biospecimen'"><span>Change</span></a>
+                                                    </td>
+                                                    <td>
+                                                        <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?current=view_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;intInvCellID={$intInvCellID}&amp;module=ALLOCATE_CELL&amp;action=unallocate'"><span>Unallocate</span></a>
+                                                    </td>
+                                                    </xsl:if>
+                                                <!--  <form method="post"
                                                   action="{$inventoryChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$inventoryChannelTabOrder}&amp;current=view_tray&amp;source=view&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;CELL_intCellID={$intInvCellID}&amp;strOrigin=view_biospecimen">
                                                   <input type="submit" value="View"
                                                   class="uportal-button"/>
                                                   </form>
                                                   </td>
-                                                    <xsl:if test="inventory_info/canChangeUnallocInv = '1'">
+                                                   
                                                   <td>
                                                   <form method="post"
                                                   action="{$inventoryChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$inventoryChannelTabOrder}&amp;current=view_tray&amp;source=change&amp;PATIENT_intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;CELL_intCellID={$intInvCellID}&amp;strOrigin=view_biospecimen">
@@ -1686,18 +1579,14 @@ comments.value = commentsval;
                                                   class="uportal-button"/>
                                                   </form>
                                                   </td>
-                                                        </xsl:if>
+                                                        </xsl:if>-->
                                                 </tr>
                                             </table>
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="8">
-                                    <hr/>
-                                </td>
-                            </tr>
+                            
                         </table>
                                 </td>
                                 <td class="funcpanel_right_border">&#160;</td>
@@ -1710,6 +1599,7 @@ comments.value = commentsval;
                     </xsl:if>
                     <xsl:if test="contains($showTransactions, 'true')">
                         <!-- transaction stuff -->
+                        <br/>
                         <table class="funcpanel" cellpadding="0" cellspacing="0" border="0">
                             <tr valign="bottom">
                                 <td><img src="{$funcpanelImagePath}/funcpanel_header_active_left.gif"/></td>
@@ -2206,102 +2096,7 @@ comments.value = commentsval;
                                 </form>
                             </td>
 			    
-				<!--
-                            <td>
-                                <!- - batch cloning :: available if properties say so - ->
-                                <xsl:if test="biospecimen_modules/batchCloning='true'">
-                                    <form
-                                        action="{$baseActionURL}?module=BATCH_CLONE&amp;stage=BEGIN&amp;BIOSPECIMEN_intBiospecimenID={BIOSPECIMEN_intBiospecimenID}&amp;BIOSPECIMEN_strBiospecimenID={BIOSPECIMEN_strBiospecimenID}"
-                                        method="post">
-                                        <input type="submit" class="uportal-button"
-                                            value="Batch Clone" tabindex="82"/>
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td valign="top">
-                                <!- - bioanalysis/analysis results :: available if properties say so - ->
-                                <xsl:if test="biospecimen_modules/bioanalysis='true'">
-                                    <form action="{$baseActionURL}" method="POST">
-                                        <input type="hidden" name="intInternalPatientID"
-                                            value="{$intInternalPatientID}"/>
-                                        <input type="hidden" name="intBiospecimenID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_strParentID"
-                                            value="{$strBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_intParentID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_intStudyKey"
-                                            value="{$intBiospecStudyID}"/>
-                                        <input type="hidden" name="action" value="biospecimen_study"/>
-                                        <input type="hidden" name="module" value="core"/>
-                                        <input type="button" value="Analysis results" tabindex="83"
-                                            class="uportal-button"
-                                            onclick="javascript:jumpTo('{$smartformChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$smartformChannelTabOrder}&amp;domain=Bioanalysis&amp;participant={$intBiospecimenID}&amp;intStudyID={$intBiospecStudyID}&amp;strcurrent=biospecimen_view&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;strOrigin=biospecimen_view&amp;title={$strBiospecimenID}&amp;var1={$strBiospecSampleTypeSelected}&amp;var2={$dtBiospecSampleDate}')"
-                                        />
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td>
-                                <xsl:if test="biospecimen_modules/vialCalculation='true'">
-                                    <form action="{$baseActionURL}?current=vial_calculation"
-                                        method="POST">
-                                        <input type="hidden" name="intInternalPatientID"
-                                            value="{$intInternalPatientID}"/>
-                                        <input type="hidden" name="intBiospecimenID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="strBiospecimenID"
-                                            value="{$strBiospecimenID}"/>
-                                        <input type="hidden" name="BIOSPECIMEN_dtSampleDate"
-                                            value="{$BIOSPECIMEN_dtSampleDate}"/>
-                                        <input type="hidden" name="BIOSPCIMEN_dtExtractedDate"
-                                            value="{$BIOSPECIMEN_dtExtractedDate}"/>
-                                        <input type="hidden" name="strInitialBiospecSampleType"
-                                            value="{$strInitialBiospecSampleType}"/>
-                                        <input type="submit" name="vial_calculation"
-                                            value="Vial Calculation" tabindex="43"
-                                            class="uportal-button"/>
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td>
-                                <xsl:if test="biospecimen_modules/studySmartforms='true'">
-                                    <form action="{$baseActionURL}" method="POST">
-                                        <input type="hidden" name="current"
-                                            value="biospecimen_study"/>
-                                        <input type="hidden" name="intInternalPatientID"
-                                            value="{$intInternalPatientID}"/>
-                                        <input type="hidden" name="intBiospecimenID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="strBiospecParentID"
-                                            value="{$strBiospecimenID}"/>
-                                        <input type="hidden" name="intBiospecParentID"
-                                            value="{$intBiospecimenID}"/>
-                                        <input type="hidden" name="intStudyID"
-                                            value="{$intBiospecStudyID}"/>
-                                        <input type="button" value="Study results" tabindex="42"
-                                            class="uportal-button"
-                                            onclick="javascript:jumpTo('{$smartformChannelURL}?uP_root=root&amp;uP_sparam=activeTab&amp;activeTab={$smartformChannelTabOrder}&amp;domain=Biospecimen&amp;participant={$intBiospecimenID}&amp;intStudyID={$intBiospecStudyID}&amp;strcurrent=biospecimen_view&amp;intInternalPatientID={$intInternalPatientID}&amp;intBiospecimenID={$intBiospecimenID}&amp;strOrigin=biospecimen_view&amp;title={$strBiospecimenID}&amp;var1={$strBiospecSampleTypeSelected}&amp;var2={$dtBiospecSampleDate}')"
-                                        />
-                                    </form>
-                                </xsl:if>
-                            </td>
-                            <td>
-                                <form action="{$baseActionURL}?ATTACHMENTS_domainName=Biospecimen"
-                                    method="POST">
-                                    <input type="hidden" name="BIOSPECIMEN_intBiospecimenID"
-                                        value="{$intBiospecimenID}"/>
-                                    <input type="hidden" name="intInternalPatientID"
-                                        value="{$intInternalPatientID}"/>
-                                    <input type="hidden" name="module" value="Attachments"/>
-                                    <input type="submit" value="Attachments" tabindex="84"
-                                        class="uportal-button"/>
-                                </form>
-                            </td>
-                            <td/>
-                            <td width="70%" style="text-align: right">
-                               
-                            </td>
-				-->
+			
                         </tr>
                     </table>
                         </xsl:if>
