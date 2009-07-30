@@ -21,7 +21,9 @@ import org.jasig.portal.ChannelRuntimeProperties;
 import org.jasig.portal.IMimeResponse;
 import org.jasig.portal.PortalEvent;
 import org.jasig.portal.PortalException;
+import org.jasig.portal.UPFileSpec;
 import org.jasig.portal.utils.XSLT;
+import org.wager.barcode.BarcodeManager;
 import org.xml.sax.ContentHandler;
 import org.jasig.portal.security.*;
 import org.jasig.portal.services.LogService;
@@ -30,6 +32,7 @@ import org.jasig.portal.PropertiesManager;
 
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.StringBuffer;
@@ -56,7 +59,7 @@ import javax.naming.NotContextException;
 import neuragenix.bio.biospecimen.batchactions.BatchCreationManager;
 import neuragenix.bio.utilities.*;
 
-public class CBiospecimen implements IChannel
+public class CBiospecimen implements IChannel,IMimeResponse
 {
    private ChannelRuntimeData runtimeData = null;
    private ChannelStaticData staticData = null;
@@ -263,7 +266,7 @@ public class CBiospecimen implements IChannel
       xslt.setStylesheetParameter("smartformChannelURL", upfTmp.getUPFile());
       xslt.setStylesheetParameter( "smartformChannelTabOrder", SessionManager.getTabOrder( rp.getAuthToken(), "CSmartform") );*/
       
-      
+      xslt.setStylesheetParameter("baseWorkerURL", runtimeData.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true));
       xslt.setTarget(out);
       
       
@@ -2289,6 +2292,51 @@ public class CBiospecimen implements IChannel
       // instantiate the hashChannelNotToClearLock
       hashChannelsNotToClearLock = SessionManager.getSharedChannels(rp.getAuthToken(), "CBiospecimen");
    }
+
+
+
+@Override
+public void downloadData(OutputStream arg0) throws IOException {
+	// TODO Auto-generated method stub
+	
+}
+
+
+
+@Override
+public String getContentType() {
+	// TODO Auto-generated method stub
+	 return new String("text/prn");
+}
+
+
+
+@Override
+public Map getHeaders() {
+	// TODO Auto-generated method stub
+	Map headers = new HashMap();
+	headers.put ("Content-Disposition", "attachment; filename=\"Barcode.prn\"");
+	return headers;
+}
+
+
+
+@Override
+public InputStream getInputStream() throws IOException {
+	// TODO Auto-generated method stub
+	
+	AuthToken authToken = rp.getAuthToken();
+	return BarcodeManager.generateBarcode(authToken, runtimeData);
+	
+}
+
+
+
+@Override
+public String getName() {
+	// TODO Auto-generated method stub
+	return "Barcode.prn";
+}
    
 }
 
