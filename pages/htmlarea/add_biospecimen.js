@@ -7,7 +7,7 @@ function aliquotdialog() {
     });
     
     var submit = new LertButton('Create Aliquot', function () {
-        document.biospecimen_form.submit();
+        document.biospecimen_form.submit(); return false;
     });
     var parentid = document.biospecimen_form.BIOSPECIMEN_strParentID.value;
     var dnaconc = document.biospecimen_form.BIOSPECIMEN_flDNAConc.value;

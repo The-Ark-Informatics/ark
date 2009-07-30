@@ -8,7 +8,7 @@
     <xsl:param name="inventoryChannelURL">inventoryChannelURL_false</xsl:param>
     <xsl:param name="smartformChannelURL">smartformChannelURL_false</xsl:param>
     <xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
-   
+    <xsl:param name="baseWorkerURL"></xsl:param>
     <xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
     <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:param name="smartformChannelTabOrder">smartformChannelTabOrder</xsl:param>
@@ -893,10 +893,15 @@ comments.value = commentsval;
                                 <td width="18%" id="neuragenix-form-row-input-label"
                                     class="uportal-label">
                                     <xsl:value-of select="BIOSPECIMEN_intStudyKeyDisplay"/>: </td>
+                                <input type="hidden" name="BIOSPECIMEN_intStudyKey"
+                                    value="{$intBiospecStudyID}"/>
                                 <td width="26%" id="neuragenix-form-row-input" class="uportal-label">
                                   <!--  <xsl:choose>
-                                        <xsl:when test="bioOffSite">-->
-                                            <xsl:value-of select="study_list_biospecimen[@selected=1]/STUDY_strStudyName"/>
+                                  <xsl:when test="bioOffSite">-->
+                                    <xsl:variable name="BIOSPECIMEN_intStudyID">
+                                        <xsl:value-of select="intBiospecStudyID"/>
+                                    </xsl:variable>
+                                    <xsl:value-of select="study_list_biospecimen/STUDY_strStudyName"/>
                                 <!--        </xsl:when>
                                         <xsl:otherwise>
                                     <select class="uportal-input-text"
@@ -1476,7 +1481,8 @@ comments.value = commentsval;
 				</xsl:variable>
                                     <tr>
                                     <td>
-                                    
+                                        
+                                        <input type="button" name="download" value="Download Report" onClick="document.location.href='{$baseWorkerURL}'" />
                                         <xsl:choose>
                                             <xsl:when test="$intBiospecStudyID=17">
                                                 <xsl:choose>
@@ -1501,7 +1507,7 @@ comments.value = commentsval;
                                         </td>
                                   
                               <td>
-                                    <a class="button" href="#" onclick="this.blur(); javascript:submitBiospecimenForm();"><span><img src="/wagerlab/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>
+                                    <a class="button" href="#" onclick="this.blur(); document.forms.biospecimen_form.submit();"><span><img src="/wagerlab/media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Save</span></a>
                                    </td></tr>
                                     </table>
                                 </td>

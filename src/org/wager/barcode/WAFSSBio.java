@@ -3,18 +3,20 @@ package org.wager.barcode;
 import java.io.*;
 import java.util.Hashtable;
 
+import org.jasig.portal.ChannelRuntimeData;
 import org.jasig.portal.RDBMServices;
 import java.sql.*;
 
 import neuragenix.dao.*;
+import neuragenix.security.AuthToken;
 
 public class WAFSSBio implements BarcodeEngine {
 
-	public InputStream getBarcode(Hashtable params) {
+	public InputStream getBarcode(ChannelRuntimeData runtimeData, AuthToken authtoken) {
 		 StringBuffer sb = new StringBuffer();
 		 
-		 String patientkey = (String) params.get("PATIENT_intInternalPatientID");
-         String admissionid = (String) params.get("BIOSPECIMEN_strEncounter");
+		 String patientkey = (String) runtimeData.getParameter("PATIENT_intInternalPatientID");
+         String admissionid = (String) runtimeData.getParameter("BIOSPECIMEN_strEncounter");
          try{
          Connection con = RDBMServices.getConnection();
          Statement stmt = con.createStatement();
@@ -22,10 +24,10 @@ public class WAFSSBio implements BarcodeEngine {
                  "select patientid, to_char(dob, 'dd/mm/yyyy'), to_char(admissiondate, 'dd/mm/yyyy'), familyid, otherid, ref_doctor, sex " +
                  "from ix_patientv2 p,ix_admissions adm " +
                  "where p.patientkey = adm.patientkey " +
-                 "and adm.admissionid = " + admissionid +
+                 "and adm.admissionid = '" + admissionid + "'" +
                  "and adm.deleted = 0" +
                  "and p.patientkey = " + patientkey);
-         
+         while (rset.next()) {
          String patientid = rset.getString(1);
          String dob = rset.getString(2);
          String admissiondate = rset.getString(3);
@@ -41,14 +43,11 @@ public class WAFSSBio implements BarcodeEngine {
          sb.append("N\n");
          sb.append("A240,10,1,2,1,1,N,\"ID: " + patientid + " Family ID:" + familyid + "\"" + "\n");
          sb.append("A220,10,1,2,1,1,N,\"ASRB No:" + asrbno + "\"" + "\n");
-         //sb.append("A180,10,1,2,1,1,N,\"ASRB No:" + asrbno + +"\"" + "\n");
-         //sb.append("A160,10,1,2,1,1,N,\"Collection Date: " + admissiondate + +"\"" + "\n");
          sb.append("A200,10,1,2,1,1,N,\"Collection Date: " + admissiondate + "\"" + "\n");
          sb.append("A180,10,1,2,1,1,N,\"Researcher: " + researcher + "\"" + "\n");
          sb.append("A160,10,1,2,1,1,N,\"DOB: " + dob + " " + "Sex: " + sex + "\"" + "\n");
-         //sb.append("A120,10,1,2,1,1,N,\"Sex: " + sex + +"\"" + "\n");
          sb.append("P1\n");
-
+         }
          }catch(SQLException se) {
         	 se.printStackTrace(System.err);
          }
