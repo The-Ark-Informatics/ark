@@ -1,5 +1,5 @@
 /**
- * Copyright © 2001 The JA-SIG Collaborative.  All rights reserved.
+ * Copyright ï¿½ 2001 The JA-SIG Collaborative.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -505,9 +505,9 @@ public class RDBMServices {
       this.query = query;
       activeQuery = this.query;
       if (RDBMServices.supportsPreparedStatements) {
-        pstmt = con.prepareStatement(query);
+        pstmt = this.con.prepareStatement(query);
       } else {
-        stmt = con.createStatement();
+        stmt = this.con.createStatement();
       }
     }
 
@@ -648,7 +648,7 @@ public class RDBMServices {
   }
 
   public abstract static class JoinQueryString implements IJoinQueryString {
-    private HashMap queryStrings = new HashMap();
+    private HashMap<String,String> queryStrings = new HashMap<String,String>();
     private String testJoin;
 
     protected void setTestJoin(String query) {
@@ -658,7 +658,7 @@ public class RDBMServices {
     protected String getTestJoin() {return testJoin;}
 
     public String getQuery(String key) throws SQLException {
-      String query = (String) queryStrings.get(key);
+      String query =  queryStrings.get(key);
       if (query == null) {
         throw new SQLException("Missing query");
       }
