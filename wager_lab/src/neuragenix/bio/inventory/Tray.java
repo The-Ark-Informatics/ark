@@ -8,7 +8,10 @@ package neuragenix.bio.inventory;
 
 /**
  *
- * @author  renny
+ * 
+ * @author  Chris Williams
+ * 
+ * 
  */
 public class Tray 
 {
