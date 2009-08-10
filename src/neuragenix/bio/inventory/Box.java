@@ -17,11 +17,11 @@ public class Box
     String strBoxID = "";
     String strParentID = "";
     String strDesc = "";
-    Vector vtTray = null;
+    Vector<Tray> vtTray = null;
     /** Creates a new instance of Box */
     public Box() 
     {
-        vtTray = new Vector();
+        vtTray = new Vector<Tray>();
     }
     public Box(String strName,String strID)
     {
@@ -70,11 +70,11 @@ public class Box
     {
         this.vtTray.add(tryObj);
     }
-    public void setTrays(Vector vtTrays)
+    public void setTrays(Vector<Tray> vtTrays)
     {
         this.vtTray = vtTrays;
     }
-    public Vector getTrays()
+    public Vector<Tray> getTrays()
     {
         return this.vtTray;
     }

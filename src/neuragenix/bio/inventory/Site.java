@@ -18,14 +18,14 @@ public class Site
 {
     String strSiteName = "";
     String strSiteID = "";
-    Vector vtTank = null;
+    Vector<Tank> vtTank = null;
     String strContact = null;
     String strAddress = null;
     String strPhone = null;
     /** Creates a new instance of Site */
     public Site() 
     {
-        vtTank = new Vector();
+        vtTank = new Vector<Tank>();
     }
     /**
      * This is a constructor that creates a Site object with a name and ID
@@ -104,7 +104,7 @@ public class Site
         this.vtTank.add(tkObj);
     }
     
-    public void setTanks(Vector vtTanks)
+    public void setTanks(Vector<Tank> vtTanks)
     {
         this.vtTank = vtTanks;
     }
@@ -112,7 +112,7 @@ public class Site
      * gets the Vector of Tanks associated with this SIte
      * @return Vector of Tanks
      */    
-    public Vector getTanks()
+    public Vector<Tank> getTanks()
     {
         return this.vtTank;
     }

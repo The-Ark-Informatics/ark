@@ -23,11 +23,11 @@ public class Tank
     String strDecommissionDate = null;
     String strLocation = null;
     String strDescription = null;
-    Vector vtBox = null;
+    Vector<Box> vtBox = null;
     /** Creates a new instance of Tank */
     public Tank() 
     {
-        vtBox = new Vector();
+        vtBox = new Vector<Box>();
     }
     public Tank(String strName,String strID)
     {
@@ -69,11 +69,11 @@ public class Tank
     {
         this.vtBox.add(bxObj);
     }
-    public void setBoxes(Vector vtBoxes)
+    public void setBoxes(Vector<Box> vtBoxes)
     {
         this.vtBox = vtBoxes;
     }
-    public Vector getBoxes()
+    public Vector<Box> getBoxes()
     {
         return this.vtBox;
     }
