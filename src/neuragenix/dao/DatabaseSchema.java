@@ -90,7 +90,7 @@ public class DatabaseSchema
    
     /** Keep formfields
      */
-    private static Hashtable hashFormFields = new Hashtable(50);
+    private static Hashtable<String,Vector<String>> hashFormFields = new Hashtable(50);
 
     /** Keep lookup objects
      */
@@ -291,12 +291,13 @@ public class DatabaseSchema
     
     /** Return a vector that represent a formfields
      */
-    public static Vector getFormFields(String strFormFieldName)
+    @SuppressWarnings("unchecked")
+	public static Vector<String> getFormFields(String strFormFieldName)
     { 
-        Vector vtReturnData = (Vector) hashFormFields.get(strFormFieldName);
+        Vector<String> vtReturnData = (Vector<String>) hashFormFields.get(strFormFieldName);
         if (vtReturnData == null) System.err.println ("[Database Schema] - Invalid Form Fields Request : " + strFormFieldName);
         //just return a copy of formfields only not reference to the original
-        return (Vector ) vtReturnData.clone();
+        return (Vector<String>) vtReturnData.clone();
     }
     
     /** Return true if the domain has DELETED field

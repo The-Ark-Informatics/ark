@@ -29,7 +29,7 @@ public class WAGERAuthTokenImpl implements AuthToken
 	private String sessionUID="";
     private Hashtable studyHash = new Hashtable();
 	private Hashtable hashActivities = new Hashtable();
-	private Hashtable hashSites = new Hashtable();
+	private Hashtable<String,Integer> hashSites = new Hashtable<String,Integer>();
     private Hashtable hashDenyActivities = new Hashtable();
 
 
@@ -266,9 +266,9 @@ public class WAGERAuthTokenImpl implements AuthToken
 		return getSiteList().contains(new Integer(intSiteKey));
 	}
 	
-	public Vector getSiteList() { //Returns list of sitekeys.
-		TreeSet hashSiteKeys = new TreeSet();
-		Iterator it = hashSites.values().iterator();
+	public Vector<Integer> getSiteList() { //Returns list of sitekeys.
+		TreeSet<Integer> hashSiteKeys = new TreeSet<Integer>();
+		Iterator<Integer> it = hashSites.values().iterator();
 
 	    while(it.hasNext()){
 	    	
@@ -277,7 +277,7 @@ public class WAGERAuthTokenImpl implements AuthToken
 	       hashSiteKeys.add(i);
 	    }
 		
-		return new Vector(hashSiteKeys);		
+		return new Vector<Integer>(hashSiteKeys);		
 	}
 	
 	public boolean hasActivity(String activity, int intStudyKey) throws SecurityException

@@ -23,6 +23,7 @@ public class IDGenerationFactory {
     private static String strDefaultBiospecimenIDGenerator = null;
     private static String strDefaultPatientIDGenerator = null;
     private static String strDefaultAdmissionIDGenerator = null;
+    private static String strDefaultPlateIDGenerator = null;
     /** Creates a new instance of BiospecimenIDGenerationManager */
     public IDGenerationFactory() 
     {
@@ -122,6 +123,15 @@ public class IDGenerationFactory {
             }
             
         }
+      
+    }
+    public static IInventoryIDGenerator getPlateIDGenerationInstance()
+    {
+        IInventoryIDGenerator defaultGenerator = new DefaultPlateIDGenerator();
+      
+            return defaultGenerator;
+     
+      
       
     }
     

@@ -128,6 +128,37 @@ public class InventoryUtilities
     	return -1;
    }
    
+   public static String getPlateCode(int intStudyID)
+   {
+      DALSecurityQuery query = new DALSecurityQuery();
+      
+      try
+      
+      {
+         query.setDomain("INVBARCODES", null, null, null);
+         query.setField("INVBARCODES_strPrefix", null);
+         query.setWhere(null, 0, "INVBARCODES_intStudyID", "=", intStudyID + "", 0, DALQuery.WHERE_HAS_VALUE);
+         System.err.println(query.convertSelectQueryToString());
+         ResultSet rs = query.executeSelect();
+
+         String strReturnString = "";
+         if (rs.first())
+         {
+            strReturnString = rs.getString("INVBARCODES_strPrefix");
+            
+         }
+         rs.close();
+         return strReturnString;
+      }
+      catch (Exception e)
+      {
+         System.err.println("[Study Utilities] There was an error getting the plate code");
+         e.printStackTrace(System.err);
+         return "";
+      }
+   }
+   
+   
    public static int getSiteKeyforTank(int intTankKey) {
 	   DALQuery query = new DALQuery();
 	   int intReturnValue;

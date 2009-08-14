@@ -31,7 +31,7 @@ public class TransactionManager
     private AuthToken authToken = null;
     private int intBiospecimenKey;
     private int intParentKey;
-    private Map quantities;
+    private Map<String,Object> quantities;
     public static final String CLIENT = PropertiesManager.getProperty("neuragenix.bio.Client");
 
     /** Creates a new instance of TransactionManager */
@@ -43,7 +43,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager] Exception - " + e.toString());
             e.printStackTrace();
         }
     }
@@ -64,7 +65,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager] Exception - " + e.toString());
             e.printStackTrace();
         }
     }
@@ -82,7 +84,7 @@ public class TransactionManager
             {
                 this.intBiospecimenKey = intBiospecimenKey;
                 this.authToken = authToken;
-                quantities = Collections.synchronizedMap(new HashMap());
+                quantities = Collections.synchronizedMap(new HashMap<String,Object>());
 
                 // set intParentKey
                 intParentKey = getParentBiospecimenKey (intBiospecimenKey);
@@ -102,13 +104,15 @@ public class TransactionManager
                 sbError.append(authToken.getUserIdentifier());
                 sbError.append(" attempted to update a biospecimen (due to a cascaded biospecimen quantity update).");
                 
-                LogService.instance().log(LogService.ERROR, sbError.toString());
+                LogService.instance();
+				LogService.log(LogService.ERROR, sbError.toString());
                 System.out.println (sbError.toString());
             }
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::reset] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::reset] Exception - " + e.toString());
             e.printStackTrace();
         }
         
@@ -154,12 +158,13 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::cascadedUpdateTransactions] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::cascadedUpdateTransactions] Exception - " + e.toString());
             e.printStackTrace();
         }
     }
     
-    private void recursiveTransactionUpdate (int intBiospecimenKey, Map quantity)
+    private void recursiveTransactionUpdate (int intBiospecimenKey, Map<String,Object> quantity)
     {
         try
         {
@@ -177,7 +182,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::recursiveTransactionUpdate] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::recursiveTransactionUpdate] Exception - " + e.toString());
             e.printStackTrace();
         }
     }
@@ -204,7 +210,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
             e.printStackTrace();
         }
         finally
@@ -221,13 +228,13 @@ public class TransactionManager
      *      Function then defines double values for collected, removed and remaining based on quantity available
      *      Function updates ix_biospecimen to reflect the new double values
      */
-    private void updateQuantity (int intBiospecimenKey, Map quantities) throws java.sql.SQLException
+    private void updateQuantity (int intBiospecimenKey, Map<String,Object> quantities) throws java.sql.SQLException
     {
         ResultSet rs = null;
         
         try
         {
-            Map myQuantity = Collections.synchronizedMap(new HashMap());
+            Map<String,Object> myQuantity = Collections.synchronizedMap(new HashMap<String,Object>());
             
             // if this specimen has its own bio-transactions take that into account
             getQuantity (intBiospecimenKey, myQuantity);
@@ -278,7 +285,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
             e.printStackTrace();
         }
         finally
@@ -292,7 +300,7 @@ public class TransactionManager
      *      Function determines the amount of qtyCollected, qtyRemoved and optionally qtyRemianing
      *      for the biospecimen as specified by intBiospecimenKey
      */
-    private void getQuantity (int intBiospecimenKey, Map quantities) throws java.sql.SQLException
+    private void getQuantity (int intBiospecimenKey, Map<String,Object> quantities) throws java.sql.SQLException
     {
         ResultSet rs = null;
         try
@@ -327,7 +335,8 @@ public class TransactionManager
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
+            LogService.instance();
+			LogService.log(LogService.ERROR, "[TransactionManager::getParentBiospecimenKey] Exception - " + e.toString());
             e.printStackTrace();
         }
         finally

@@ -15,10 +15,10 @@ import org.jasig.portal.PropertiesManager;
 import org.jasig.portal.services.LogService;
 
 import neuragenix.security.AuthToken;
+import neuragenix.security.exception.SecurityException;
 
 import neuragenix.dao.exception.*;
 import neuragenix.genix.auditlogger.AuditLogManager;
-import neuragenix.bio.utilities.StudyUtilities;
 /**
  *
  * @author dmurley
@@ -35,7 +35,7 @@ public class DALSecurityQuery extends DALQuery
    
    protected String strActivityRequested;
    
-   public DALSecurityQuery(String activity, AuthToken auth) throws Exception
+   public DALSecurityQuery(String activity, AuthToken auth) throws DAONotAuthorisedException, SecurityException
    {
 	   
 	   strActivityRequested = activity;
@@ -48,11 +48,7 @@ public class DALSecurityQuery extends DALQuery
 	         throw new DAONotAuthorisedException("Security Violation: Attempting to use a disallowed activity.") ;
 		   
 	   }
-	   if (authToken != null)
-	      {
-	         this.authToken = authToken;
-	      }
-	
+	  
 	   
    }
    
@@ -75,10 +71,7 @@ public class DALSecurityQuery extends DALQuery
     	  } 
       }
       
-      if (authToken != null)
-      {
-         this.authToken = authToken;
-      }
+     
       
    }
    
@@ -102,7 +95,7 @@ public class DALSecurityQuery extends DALQuery
    		}*/
    		if (vtDomains.contains(strADomain)) {
    		int vindex = vtDomains.indexOf(strADomain);
-   		Vector v = (Vector) vtFirstJoinFields.get(vindex);
+   		Vector<String> v = (Vector<String>) vtFirstJoinFields.get(vindex);
    		v.add(strAField1);
    		Vector v2 = (Vector) vtSecondJoinFields.get(vindex);
    		v2.add(strAField2);
