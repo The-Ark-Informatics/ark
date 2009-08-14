@@ -12,6 +12,10 @@ public class Admissions implements java.io.Serializable {
 
 	// Fields    
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1826957627188777613L;
 	private BigDecimal admissionkey;
 	private String timestamp;
 	private BigDecimal deleted;

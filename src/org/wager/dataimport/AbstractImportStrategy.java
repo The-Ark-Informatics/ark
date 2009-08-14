@@ -1,25 +1,25 @@
 package org.wager.dataimport;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
-import org.wager.biogenix.exceptions.InvalidBiospecimenException;
-import org.wager.biogenix.exceptions.InvalidDNAVolException;
-import org.wager.biogenix.exceptions.TEBufferVolException;
+import neuragenix.security.AuthToken;
+
 import org.wager.biogenix.types.Biospecimen;
 import org.wager.dataimport.dao.BiospecimenDAO;
 
 public abstract class AbstractImportStrategy implements IDataImportStrategy {
 	String[][] importedData;
-	StringBuffer errorXML;
-	StringBuffer outputXML;
+	StringBuffer errorXML = new StringBuffer();
+	StringBuffer outputXML = new StringBuffer();
+	AuthToken authToken;
 	HashMap<String,Integer> mapping;
 	public static final int BIOSPEC_INDEX = 0;
-	public static final int ALIQUOT_DNACONC_INDEX = 3;
-	public static final int ALIQUOT_VOLUME_INDEX = 4;
+
 	
 	BiospecimenDAO biospecDAO = new BiospecimenDAO();
 	List<Biospecimen> biospecUpdateList;
@@ -32,6 +32,17 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 		return outputXML.toString();
 	}
 	
+	public String getOutput() {
+		return outputXML.toString() + errorXML.toString();
+	}
+	protected void clearOutputLog() {
+		outputXML = new StringBuffer();
+	}
+	
+	protected void clearErrorLog() {
+		errorXML = new StringBuffer();
+	}
+	
 	@Override
 	public abstract void process();
 
@@ -39,7 +50,7 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 	protected abstract List<Integer> verifyRawData();
 	
 	
-	protected abstract void sanityCheck();
+	
 	
 	public String[] getRecordIDs() {
 		List<Integer> validDataRows = verifyRawData();
@@ -55,7 +66,9 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 	}
 	
 	
-	
+	public void setAuthToken(AuthToken auth) {
+		this.authToken= auth;
+	}
 	protected String[] findDuplicates(String [] s) {
 		TreeSet<String> set = new TreeSet<String>();
 		
@@ -75,22 +88,12 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 		return sa;
 	}
 	
-	public void importData(String[][] importData) {
-		this.importedData = importData;
-		String[] ids = getRecordIDs();
-		String dupes [] = findDuplicates(ids);
-		if (dupes.length > 0) {
-			for (int i=0; i< dupes.length; i++) {
-				errorXML.append("<error>"+ dupes[i] + " has duplicate entries</error>");
-			}
-		} else { 
-			biospecUpdateList = biospecDAO.getUpdateList(ids);
-			int count = biospecUpdateList.size();
-			outputXML.append("<biocount>"+count+"</biocount>");
-			
-		}
+	public abstract void importData(InputStream is) ;
+	
+	
+	
 		
-	}
+	
 	
 
 	

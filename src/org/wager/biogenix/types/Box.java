@@ -11,6 +11,10 @@ public class Box implements java.io.Serializable {
 
 	// Fields    
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -732580831028909478L;
 	private BigDecimal boxkey;
 	private String timestamp;
 	private BigDecimal deleted;

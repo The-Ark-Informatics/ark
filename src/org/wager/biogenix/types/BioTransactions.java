@@ -10,7 +10,15 @@ import java.util.Date;
  */
 public class BioTransactions implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -272636517034828425L;
 	// Fields    
+
+	/**
+	 * 
+	 */
 
 	private long biotransactionkey;
 	private String timestamp;

@@ -11,27 +11,31 @@ public class Biospecimen implements java.io.Serializable {
 
 	// Fields    
 
-	private long biospecimenkey;
+	/**
+	 * 
+	 */
+	private static final Long serialVersionUID = 8818323397571925412L;
+	private Long biospecimenkey;
 	private String timestamp;
-	private long deleted;
+	private Long deleted;
 	private String encounter;
 	private String otherid;
 	private String storedIn;
 	private Date sampleTime;
 	private String grade;
-	private long cellkey;
-	private long depth;
+	private Long cellkey;
+	private Long depth;
 	private String biospecimenid;
-	private long parentkey;
+	private Long parentkey;
 	private Date sampledate;
-	private long studykey;
+	private Long studykey;
 	private Date extractedTime;
 	private String parentid;
 	private String location;
 	private String sampletype;
 	private String subtypedesc;
 	private String species;
-	private long patientkey;
+	private Long patientkey;
 	private Double qtyCollected;
 	private Date dateextracted;
 	private Double qtyRemoved;
@@ -40,7 +44,7 @@ public class Biospecimen implements java.io.Serializable {
 	private String samplesubtype;
 	private Date datedistributed;
 	private String collaborator;
-	private long admissionkey;
+	private Long admissionkey;
 	private Double dnaconc;
 	private Double purity;
 	private String anticoag;
@@ -53,7 +57,7 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Biospecimen(long biospecimenkey, String biospecimenid,
+	public Biospecimen(Long biospecimenkey, String biospecimenid,
 			String sampletype) {
 		this.biospecimenkey = biospecimenkey;
 		this.biospecimenid = biospecimenid;
@@ -61,16 +65,16 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Biospecimen(long biospecimenkey, long deleted,
+	public Biospecimen(Long biospecimenkey, Long deleted,
 			String encounter, String otherid, String storedIn, Date sampleTime,
-			String grade, long cellkey, long depth,
-			String biospecimenid, long parentkey, Date sampledate,
-			long studykey, Date extractedTime, String parentid,
+			String grade, Long cellkey, Long depth,
+			String biospecimenid, Long parentkey, Date sampledate,
+			Long studykey, Date extractedTime, String parentid,
 			String location, String sampletype, String subtypedesc,
-			String species, long patientkey, Double qtyCollected,
+			String species, Long patientkey, Double qtyCollected,
 			Date dateextracted, Double qtyRemoved, Double gestat,
 			String comments, String samplesubtype, Date datedistributed,
-			String collaborator, long admissionkey, Double dnaconc,
+			String collaborator, Long admissionkey, Double dnaconc,
 			Double purity, String anticoag, String extractMethod) {
 		this.biospecimenkey = biospecimenkey;
 		this.deleted = deleted;
@@ -108,11 +112,11 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	// Property accessors
-	public long getBiospecimenkey() {
+	public Long getBiospecimenkey() {
 		return this.biospecimenkey;
 	}
 
-	public void setBiospecimenkey(long biospecimenkey) {
+	public void setBiospecimenkey(Long biospecimenkey) {
 		this.biospecimenkey = biospecimenkey;
 	}
 
@@ -124,11 +128,11 @@ public class Biospecimen implements java.io.Serializable {
 		this.timestamp = timestamp;
 	}
 
-	public long getDeleted() {
+	public Long getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(long deleted) {
+	public void setDeleted(Long deleted) {
 		this.deleted = deleted;
 	}
 
@@ -172,19 +176,19 @@ public class Biospecimen implements java.io.Serializable {
 		this.grade = grade;
 	}
 
-	public long getCellkey() {
+	public Long getCellkey() {
 		return this.cellkey;
 	}
 
-	public void setCellkey(long cellkey) {
+	public void setCellkey(Long cellkey) {
 		this.cellkey = cellkey;
 	}
 
-	public long getDepth() {
+	public Long getDepth() {
 		return this.depth;
 	}
 
-	public void setDepth(long depth) {
+	public void setDepth(Long depth) {
 		this.depth = depth;
 	}
 
@@ -196,11 +200,11 @@ public class Biospecimen implements java.io.Serializable {
 		this.biospecimenid = biospecimenid;
 	}
 
-	public long getParentkey() {
+	public Long getParentkey() {
 		return this.parentkey;
 	}
 
-	public void setParentkey(long parentkey) {
+	public void setParentkey(Long parentkey) {
 		this.parentkey = parentkey;
 	}
 
@@ -212,11 +216,11 @@ public class Biospecimen implements java.io.Serializable {
 		this.sampledate = sampledate;
 	}
 
-	public long getStudykey() {
+	public Long getStudykey() {
 		return this.studykey;
 	}
 
-	public void setStudykey(long studykey) {
+	public void setStudykey(Long studykey) {
 		this.studykey = studykey;
 	}
 
@@ -268,11 +272,11 @@ public class Biospecimen implements java.io.Serializable {
 		this.species = species;
 	}
 
-	public long getPatientkey() {
+	public Long getPatientkey() {
 		return this.patientkey;
 	}
 
-	public void setPatientkey(long patientkey) {
+	public void setPatientkey(Long patientkey) {
 		this.patientkey = patientkey;
 	}
 
@@ -340,11 +344,11 @@ public class Biospecimen implements java.io.Serializable {
 		this.collaborator = collaborator;
 	}
 
-	public long getAdmissionkey() {
+	public Long getAdmissionkey() {
 		return this.admissionkey;
 	}
 
-	public void setAdmissionkey(long admissionkey) {
+	public void setAdmissionkey(Long admissionkey) {
 		this.admissionkey = admissionkey;
 	}
 
