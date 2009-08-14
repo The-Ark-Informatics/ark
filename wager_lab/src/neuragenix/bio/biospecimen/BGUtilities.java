@@ -35,9 +35,9 @@ public class BGUtilities {
     
     
     
-    public Hashtable getCellDetails()
+    public Hashtable<String,String> getCellDetails()
     {
-        Hashtable cellDetails = new Hashtable();
+        Hashtable<String,String> cellDetails = new Hashtable<String,String>();
         DALQuery query = new DALQuery();  // Define a common query object for data access    
         ResultSet rs = null;
         
@@ -73,13 +73,13 @@ public class BGUtilities {
         
     }
     
-    public Hashtable getTrayDetails()
+    public Hashtable<String,String[]> getTrayDetails()
     {
-        Hashtable htTrayDetails = new Hashtable();
+        Hashtable<String,String[]> htTrayDetails = new Hashtable<String,String[]>();
         String[] strATrayDetails = null;
         
         
-        Vector vtTrayFields = DatabaseSchema.getFormFields("cbiospecimen_view_inventory_details_for_html");
+        Vector<String> vtTrayFields = DatabaseSchema.getFormFields("cbiospecimen_view_inventory_details_for_html");
         DALQuery qryTrayDetails = new DALQuery();
         try
         {

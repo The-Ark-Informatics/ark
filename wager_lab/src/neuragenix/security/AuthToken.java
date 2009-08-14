@@ -29,7 +29,7 @@ public interface AuthToken
 	public boolean hasActivity(String activity) throws SecurityException;
 	public boolean hasActivity(String activity, int studyKey) throws SecurityException;
     public boolean hasDenyActivity(String activity) throws SecurityException;
-    public Vector getSiteList();
+    public Vector<Integer> getSiteList();
     public boolean hasSite(int intSiteKey);
 	public String getGroup();
 

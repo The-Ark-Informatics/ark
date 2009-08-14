@@ -22,6 +22,7 @@
 // java packages
 package neuragenix.bio.inventory;
 
+import java.util.Map;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.Enumeration;
@@ -39,6 +40,7 @@ import org.jasig.portal.IChannel;
 import org.jasig.portal.ChannelStaticData;
 import org.jasig.portal.ChannelRuntimeData;
 import org.jasig.portal.ChannelRuntimeProperties;
+import org.jasig.portal.IMimeResponse;
 import org.jasig.portal.PortalEvent;
 import org.jasig.portal.PortalException;
 import org.jasig.portal.utils.XSLT;
@@ -58,7 +60,7 @@ import neuragenix.common.*;
 
 
 
-public class CInventory implements IChannel
+public class CInventory implements IChannel,IMimeResponse
 {
     //Directory to store data for export
     private static final String EXPORT_DIRECTORY = PropertiesManager.getProperty("neuragenix.bio.search.ExportFileLocation");
@@ -1020,7 +1022,8 @@ public class CInventory implements IChannel
 	        }
 	        catch (Exception e)
 	        {
-	            LogService.instance().log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
+	            LogService.instance();
+				LogService.log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
 	        }
 	        
 	        return inventoryTree;
@@ -1187,6 +1190,7 @@ public class CInventory implements IChannel
                 
                 usage = calInventoryUsage(capacity, available);
                 strResult += "<TRAY_intTrayID>" + hashTemp.get("TRAY_intTrayID") + "</TRAY_intTrayID>";
+                strResult += "<TRAY_intTrayType>" + hashTemp.get("TRAY_intTrayType") + "</TRAY_intTrayType>";
                 strResult += "<TRAY_strTrayName>" + Utilities.cleanForXSL((String) hashTemp.get("TRAY_strTrayName")) + "</TRAY_strTrayName>";
                if (transferID != -1) {
             	   try {
@@ -2430,9 +2434,17 @@ public class CInventory implements IChannel
                     {
                         String strCheckRequiredFields = QueryChannel.checkRequiredFields(vtAddTrayFormFields, runtimeData);
                         String strCheckDuplicates = "";
+                        
+                        int trayType = Integer.parseInt(runtimeData.getParameter("TRAY_intTrayType"));
+                        int intStudyKey = Integer.parseInt(runtimeData.getParameter("TRAY_intStudyKey"));
+                        String newTrayID = runtimeData.getParameter("TRAY_strTrayName");
+                        if (trayType == 1) {
+                        	IInventoryIDGenerator i = IDGenerationFactory.getPlateIDGenerationInstance();
+                        	newTrayID = i.getInventoryID(intStudyKey, authToken);
+                        }
                         if(ALLOW_INVENTORY_DUPLICATES.equalsIgnoreCase("false"))
                         {
-                            strCheckDuplicates += this.invmgr.checkIfDuplicateName(InventoryManager.DUPLICATE_TRAY_CHECK, runtimeData.getParameter("TRAY_strTrayName"),runtimeData.getParameter("TRAY_intTrayID"),runtimeData.getParameter("TRAY_intBoxID"));
+                            strCheckDuplicates += this.invmgr.checkIfDuplicateName(InventoryManager.DUPLICATE_TRAY_CHECK, newTrayID,runtimeData.getParameter("TRAY_intTrayID"),runtimeData.getParameter("TRAY_intBoxID"));
                         }
                         // if all required fields values are supplied. Do insert
                         if (strCheckRequiredFields == null && strCheckDuplicates.length() == 0)
@@ -2457,6 +2469,7 @@ public class CInventory implements IChannel
                                     // add new tray
                                     query.setDomain("TRAY", null, null, null);    
                                     query.setFields(vtAddTrayFormFields, runtimeData);
+                                    query.setField("TRAY_strTrayName",newTrayID);
                                     query.executeInsert();           
                                     int intCurrentTrayID = QueryChannel.getNewestKeyAsInt(query);
                                     String strCurrentTrayID = QueryChannel.getNewestKeyAsString(query);
@@ -2743,6 +2756,7 @@ public class CInventory implements IChannel
             
             strXML = QueryChannel.buildSearchXMLFile("search_box", rsBoxList, vtListBoxFormFields) +
                      QueryChannel.buildFormLabelXMLFile(DatabaseSchema.getFormFields("cinventory_view_titles")) +
+                     StudyUtilities.getListOfCurrentStudiesXML(authToken) +
                      QueryChannel.buildFormLabelXMLFile(vtAddTrayFormFields) +
                      QueryChannel.buildAddFormXMLFile(vtAddTrayFormFields);
             
@@ -3855,5 +3869,35 @@ public class CInventory implements IChannel
         {
             LogService.instance().log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
         }
-    }	
+    }
+
+	@Override
+	public void downloadData(OutputStream out) throws IOException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public String getContentType() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Map getHeaders() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
+	}	
 }

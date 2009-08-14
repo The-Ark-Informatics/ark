@@ -9,23 +9,24 @@ package neuragenix.bio.inventory;
 /**
  *
  * @author  sparappat
+ * @author Chris Williams
  */
 
 import neuragenix.security.AuthToken;
 import neuragenix.dao.*;
 import neuragenix.common.*;
 import neuragenix.bio.utilities.*;
-import neuragenix.bio.biospecimen.*;
+
 import java.sql.*;
 import java.util.Vector;
 import java.util.Hashtable;
 import java.util.TreeMap;
 import java.util.Iterator;
-import java.util.LinkedList;
+
 import java.util.Enumeration;
 import org.jasig.portal.ChannelRuntimeData;
 import org.jasig.portal.services.LogService;
-import org.jasig.portal.PropertiesManager;
+
 
 public class TrayManager {
     
@@ -55,11 +56,11 @@ public class TrayManager {
     
     private String strCellList;
     
-    private Vector vtMapCellDetails = new Vector ();
+    private Vector<Hashtable<String,String>> vtMapCellDetails = new Vector<Hashtable<String,String>> ();
     
-    private Hashtable htMapCellID = new Hashtable ();
+    private Hashtable<String,String> htMapCellID = new Hashtable<String,String>();
     
-    private Hashtable htNewCellBioID = new Hashtable ();
+    private Hashtable<String,String> htNewCellBioID = new Hashtable<String,String> ();
         
     private int intNewCellID[];
     
@@ -86,7 +87,7 @@ public class TrayManager {
    
     public NGXRuntimeProperties processRuntimeData(ChannelRuntimeData rd)
     {
-        Vector formFields = DatabaseSchema.getFormFields("cinventory_get_display");
+        Vector<String> formFields = DatabaseSchema.getFormFields("cinventory_get_display");
         this.runtimeData = rd;
         
         if (rp == null)
@@ -184,7 +185,7 @@ public class TrayManager {
 
     private void buildSelectedCellsInventoryXML ()
     {
-        Vector formFields = DatabaseSchema.getFormFields("cinventory_get_display");
+        Vector<String> formFields = DatabaseSchema.getFormFields("cinventory_get_display");
 
         // Get the inventory list based on the number of cells we want to move
         // get all the trays that have enough locations
@@ -200,14 +201,14 @@ public class TrayManager {
 
             // Get a tree map of the old cell IDs that
             // can then be sorted in ascending order
-            TreeMap trOldCellMap = new TreeMap ();
+            TreeMap<String,String> trOldCellMap = new TreeMap<String,String> ();
             for (int i=0; i<strCellID.length; i++)
             {
                 trOldCellMap.put(strCellID[i], strCellID[i]);
             }   
 
 
-            Iterator itr = trOldCellMap.keySet().iterator();
+            Iterator<String> itr = trOldCellMap.keySet().iterator();
             while (itr.hasNext())
             {
                 String strOldCellID = itr.next().toString();  
@@ -229,7 +230,7 @@ public class TrayManager {
     
     private void buildRelocationSummaryXML ()
     {
-        Vector formFields = DatabaseSchema.getFormFields("cinventory_get_display");
+        Vector<String> formFields = DatabaseSchema.getFormFields("cinventory_get_display");
         
         try
         {
@@ -247,19 +248,19 @@ public class TrayManager {
 
             // Get a tree map of the old cell IDs that
             // can then be sorted in ascending order
-            TreeMap trOldCellMap = new TreeMap ();
-            Enumeration key_enum = htMapCellID.keys();
+            TreeMap<String,String> trOldCellMap = new TreeMap<String,String> ();
+            Enumeration<String> key_enum = htMapCellID.keys();
             while (key_enum.hasMoreElements())
             {
                 String strOldCellID = key_enum.nextElement().toString();
                 trOldCellMap.put(strOldCellID, strOldCellID);
             }                   
 
-            Iterator itr = trOldCellMap.keySet().iterator();
+            Iterator<String> itr = trOldCellMap.keySet().iterator();
             int i=0;
             while (itr.hasNext())
             {
-                String strOldCellID = itr.next().toString();  
+                String strOldCellID = itr.next();
                 // Map the new cell ID to the old cell IDs
                 htMapCellID.put (strOldCellID,  Integer.toString(intNewCellID[i]));
                 i++;
@@ -277,7 +278,8 @@ public class TrayManager {
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "Error in Tray Manager - " + e.toString(), e);         
+            LogService.instance();
+			LogService.log(LogService.ERROR, "Error in Tray Manager - " + e.toString(), e);         
         }
         
     }
@@ -286,10 +288,10 @@ public class TrayManager {
     // Get the details for each of the cells to be moved
     // each entry in the vector is a Hashtable containing the cell's details (Old Cell ID, New Cell ID,
     // Biospecimen ID, Patient ID
-    private Vector getCellDetails (Hashtable htCellIDs)
+    private Vector<Hashtable<String,String>> getCellDetails (Hashtable<String,String> htCellIDs)
     {
-        Vector vtCellDetails = new Vector(intNumCells);     
-        Vector vtFormFields = DatabaseSchema.getFormFields("cinventory_cell_details");
+        Vector<Hashtable<String,String>> vtCellDetails = new Vector<Hashtable<String,String>>(intNumCells);     
+        Vector<String> vtFormFields = DatabaseSchema.getFormFields("cinventory_cell_details");
         DALQuery query = new DALQuery();
         
         try
@@ -297,19 +299,19 @@ public class TrayManager {
 
             // Get a tree map of the old cell IDs that
             // can then be sorted in ascending order
-            TreeMap trCellMap = new TreeMap ();
-            Enumeration key_enum = htCellIDs.keys();
-            while (key_enum.hasMoreElements())
-            {
-                String strOldCellID = key_enum.nextElement().toString();
+            TreeMap<String,String> trCellMap = new TreeMap<String,String> ();
+            Enumeration<String> key_enum = htCellIDs.keys();
+            while (key_enum.hasMoreElements()) {
+           
+                String strOldCellID = key_enum.nextElement();
                 trCellMap.put(strOldCellID, strOldCellID);
             }                   
 
-            Iterator itr = trCellMap.keySet().iterator();
+            Iterator<String> itr = trCellMap.keySet().iterator();
             
             while (itr.hasNext())
             {
-                Hashtable htCellDetails = new Hashtable (5);
+                Hashtable<String,String> htCellDetails = new Hashtable<String,String>(5);
                 String strOldCellID = itr.next().toString();
                 String strNewCellID = htCellIDs.get(strOldCellID).toString();
                 htCellDetails.put ("CELL_intOldCellID", strOldCellID);
@@ -365,7 +367,7 @@ public class TrayManager {
                 rsResultSet.close();
                 
                 // Map the new cell ID to the biospecimen it will contain
-                htNewCellBioID.put (htCellDetails.get("CELL_intNewCellID").toString(), htCellDetails.get("BIOSPECIMEN_strBiospecimenID").toString());
+                htNewCellBioID.put (htCellDetails.get("CELL_intNewCellID"), htCellDetails.get("BIOSPECIMEN_strBiospecimenID").toString());
             
                 vtCellDetails.add(htCellDetails);
             }                    
@@ -373,7 +375,8 @@ public class TrayManager {
         }
         catch (Exception e)
         {
-           LogService.instance().log(LogService.ERROR, "Error obtaining cell details - " + e.toString(), e);
+           LogService.instance();
+		LogService.log(LogService.ERROR, "Error obtaining cell details - " + e.toString(), e);
         }
     
         return vtCellDetails;
@@ -535,7 +538,8 @@ public class TrayManager {
         }
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
+            LogService.instance();
+			LogService.log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
         }
         
         return strXML;
@@ -554,8 +558,8 @@ public class TrayManager {
            {
                for (int i=0; i<vtMapCellDetails.size(); i++)
                {
-                   int intBiospecimenID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intBiospecimenID").toString());
-                   int intAllocCellID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intNewCellID").toString());
+                   int intBiospecimenID = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intBiospecimenID").toString());
+                   int intAllocCellID = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intNewCellID").toString());
                    //System.out.println ("intBiospecimenID =" + intBiospecimenID);
                    //System.out.println ("intAllocCellID =" + intAllocCellID);
 
@@ -577,7 +581,8 @@ public class TrayManager {
         }    
         catch (Exception e)
         {
-            LogService.instance().log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
+            LogService.instance();
+			LogService.log(LogService.ERROR, "Unknown error in Inventory Channel - " + e.toString(), e);
             return false;
         }
         
@@ -675,8 +680,8 @@ public class TrayManager {
         try
         {
             // Build the old and new site, tank, box and tray names
-            int intOldCellID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(0)).get("CELL_intOldCellID").toString());
-            int intNewCellID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(0)).get("CELL_intNewCellID").toString());
+            int intOldCellID = Integer.parseInt((vtMapCellDetails.get(0)).get("CELL_intOldCellID").toString());
+            int intNewCellID = Integer.parseInt((vtMapCellDetails.get(0)).get("CELL_intNewCellID").toString());
 
             String strOldCellDetails [] = InventoryUtilities.getBiospecimenLocation ("inventory", intOldCellID, authToken, null);
             strLocationDetails += "<strOldSiteName>" + strOldCellDetails[InventoryUtilities.SITENAME] + "</strOldSiteName>";
@@ -695,14 +700,14 @@ public class TrayManager {
             String strCellMapDetails = "";
             for (int i=0; i<vtMapCellDetails.size(); i++)
             {
-               String strBiospecimenID = (((Hashtable)vtMapCellDetails.get(i)).get("BIOSPECIMEN_strBiospecimenID").toString());
-               intOldCellID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intOldCellID").toString());
-               int intOldRowNo = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intRowNo").toString());
-               int intOldColNo = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intColNo").toString());
+               String strBiospecimenID = ((vtMapCellDetails.get(i)).get("BIOSPECIMEN_strBiospecimenID").toString());
+               intOldCellID = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intOldCellID").toString());
+               int intOldRowNo = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intRowNo").toString());
+               int intOldColNo = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intColNo").toString());
                
-               intNewCellID = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intNewCellID").toString());
-               int intNewRowNo = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intNewRowNo").toString());
-               int intNewColNo = Integer.parseInt(((Hashtable)vtMapCellDetails.get(i)).get("CELL_intNewColNo").toString());
+               intNewCellID = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intNewCellID").toString());
+               int intNewRowNo = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intNewRowNo").toString());
+               int intNewColNo = Integer.parseInt((vtMapCellDetails.get(i)).get("CELL_intNewColNo").toString());
                
                strCellMapDetails += "<cellLocationMapping>" + "<strBiospecimenID>" + strBiospecimenID + "</strBiospecimenID>" + "<strOldID>" + intOldCellID + "</strOldID>" +
                "<strOldLocation>" + getCellLocationString(intOldCellTrayID,intOldRowNo, intOldColNo) + "</strOldLocation>" + "<strNewID>" + intNewCellID + "</strNewID>" + 

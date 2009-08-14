@@ -2999,7 +2999,7 @@ public class BiospecimenCore {
 				
 				rs = dalChildQuery.executeSelect();
 				System.err.println("Execute select time: "+ (System.currentTimeMillis() - timenow1 )/ 1000.0);
-				// System.err.println(dalChildQuery.convertSelectQueryToString());
+				System.err.println(dalChildQuery.convertSelectQueryToString());
 
 				rs.beforeFirst();
 				Hashtable htChildrenCheck = new Hashtable();
