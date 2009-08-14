@@ -42,6 +42,7 @@
 		<fieldname sname="TRAY_strTrayName" name="TRAY_strTrayName"/>
 		<fieldname sname="TRAY_intNoOfRow" name="TRAY_intNoOfRow"/>
 		<fieldname sname="TRAY_intTransferID" name="TRAY_intTransferID"/>
+		<fieldname sname="TRAY_intTrayType" name="TRAY_intTrayType"/>
                 <fieldname sname="TRAY_strTimeStamp" name="TRAY_strTimeStamp"/>
 	</formfield>
 	<formfield name="cinventory_add_inventory_tank">
@@ -85,7 +86,7 @@
 		<fieldname sname="TRAY_strColNoType" name="TRAY_strColNoType"/>
 		<fieldname sname="TRAY_intTrayAvail" name="TRAY_intTrayAvailable"/>
 		<fieldname sname="TRAY_intNoOfCol" name="TRAY_intNoOfCol"/>
-                
+		<fieldname sname="TRAY_intTrayType" name="TRAY_intTrayType"/> 
 	</formfield>
 	<formfield name="cinventory_list_inventory_box">
 		<fieldname sname="SITE_strSiteName" name="SITE_strSiteName"/>
@@ -174,6 +175,7 @@
 		<fieldname sname="TRAY_intBoxID" name="TRAY_intBoxID"/>
 		<fieldname sname="TRAY_intNoOfRow" name="TRAY_intNoOfRow"/>
 		<fieldname sname="TRAY_strTrayName" name="TRAY_strTrayName"/>
+		<fieldname sname="TRAY_intTrayType" name="TRAY_intTrayType"/> 
 	</formfield>
 	<formfield name="cinventory_list_inventory_site">
 		<fieldname sname="SITE_intSiteID" name="SITE_intSiteID"/>

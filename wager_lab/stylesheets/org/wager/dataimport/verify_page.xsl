@@ -23,11 +23,12 @@
                 <td valign="top">
                     <xsl:choose>
                         <xsl:when test="count(error) &gt; 0">
-                            <img src="img/error.gif"/>
+                            <img src="media/org/wager/error.gif"/>
                         </xsl:when>
                         <xsl:otherwise>
-                            <img src="img/tick.gif"/>
+                            <img src="media/org/wager/tick.gif"/>
                         </xsl:otherwise>
+
                     </xsl:choose>
                 </td>
                 <td valign="top">

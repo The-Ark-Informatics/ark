@@ -10,10 +10,20 @@
     <xsl:param name="biospecimenChannelURL">biospecimenChannelURL_false</xsl:param>
     <xsl:param name="biospecimenTabOrder">biospecimenTabOrder</xsl:param>
   
+    
     <xsl:template match="inventory">
-    
+      
     <xsl:param name="blBackToVialCalc"><xsl:value-of select="blBackToVialCalc" /></xsl:param>
-    
+        <link href="htmlarea/dijit/themes/wager/wager.css" rel="stylesheet" type="text/css" />
+        <link href="htmlarea/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+        <script src="htmlarea/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true" />
+        <script src="htmlarea/dijit/dijit.js" type="text/javascript" djConfig="parseOnLoad: true" />
+        <script type="text/javascript">
+            dojo.require("dijit.form.FilteringSelect");
+            dojo.require("dijit._Widget");
+            dojo.require("dojo.parser");  // scan page for widgets and instantiate them
+        </script>
+        <script src="htmlarea/add_tray.js" type="text/javascript"/>
     <table width="100%">
         <tr valign="top">
             <td width="30%">
@@ -83,12 +93,31 @@
                 </table>
                 
                 <table width="100%">
-                    <tr><td width="1%" class="neuragenix-form-required-text">*</td>
-                        <td width="19%" class="uportal-label">
-                            <xsl:value-of select="BOX_strTitleDisplay" /> name:
+                    <tr><td width="1%" class="neuragenix-form-required-text"> </td>
+                        <td width="19%">
+                            <label for="TRAY_intBoxID">Type</label>
+                       
                         </td>
                         <td width="25%">
-                            <select name="TRAY_intBoxID" tabindex="1" class="uportal-input-text">
+                            <select name="TRAY_intTrayType" dojoType="dijit.form.FilteringSelect" 
+                                id="typeSelect" tabindex="1" 
+                                onChange="processType()"
+                                autoComplete="false" >
+                                                                   <option value="0">Box</option>
+                                                                    <option value="1">Plate</option>
+                            </select>
+                        </td>
+                        <td width="10%"></td><td width="1%" class="neuragenix-form-required-text"></td>
+                        
+                    </tr>
+                    
+                    
+                    <tr><td width="1%" class="neuragenix-form-required-text"></td>
+                        <td width="19%" class="uportal-label">
+                            <label for="TRAY_intBoxID">Location:</label>
+                        </td>
+                        <td width="25%">
+                            <select name="TRAY_intBoxID" id="TRAY_intBoxID"  dojoType="dijit.form.FilteringSelect"  autoComplete="false"  class="uportal-input-text">
 				<xsl:for-each select="search_box">
                                     
                                     <option>
@@ -101,7 +130,7 @@
 				</xsl:for-each>
                             </select>
                         </td>
-                        <td width="10%"></td><td width="1%" class="neuragenix-form-required-text">*</td>
+                        <td width="10%"></td><td width="1%" class="neuragenix-form-required-text"></td>
                         <td width="19%" class="uportal-label">
                             <xsl:value-of select="TRAY_intNoOfColDisplay" />:
                         </td>
@@ -126,23 +155,23 @@
                         </td>
                     </tr>
                     
-                    <tr><td width="1%" class="neuragenix-form-required-text">*</td>
+                    <tr><td width="1%" class="neuragenix-form-required-text"></td>
                         <td width="19%" class="uportal-label">
                             <xsl:value-of select="TRAY_strTitleDisplay" /> name:
                         </td>
                         <td width="25%">
-                            <input type="text" name="TRAY_strTrayName" size="22" tabindex="2" class="uportal-input-text" />
+                            <input type="text" name="TRAY_strTrayName" required="true" id="TRAY_strTrayName"  dojoType="dijit.form.ValidationTextBox" size="22" tabindex="2" class="uportal-input-text" />
+                            
                         </td>
-                        <td width="10%"></td><td width="1%" class="neuragenix-form-required-text">*</td>
+                        <td width="10%"></td><td width="1%" class="neuragenix-form-required-text"></td>
                         <td width="19%" class="uportal-label">
                             <xsl:value-of select="TRAY_intNoOfRowDisplay" />:
                         </td>
                         <td width="25%">
                             <input type="text" style="text-align: right" name="TRAY_intNoOfRow" size="10" tabindex="5" class="uportal-input-text" />
                             
-                            <select name="TRAY_strRowNoType" tabindex="6" class="uportal-input-text">
-				<xsl:for-each select="TRAY_strRowNoType">
-		
+                            <select name="TRAY_strRowNoType" class="uportal-input-text">
+                                <xsl:for-each select="TRAY_strRowNoType">
                                     <option>
                                         <xsl:attribute name="value">
                                         <xsl:value-of select="." />
@@ -158,7 +187,29 @@
                         </td>
                         
                     </tr>
-                    
+                    <tr><td width="1%" class="neuragenix-form-required-text"></td>
+                        <td width="19%" class="uportal-label">
+                            <label for="studySelect">Study: </label>
+                        </td>
+                        <td width="25%">
+                            <select name="TRAY_intStudyKey" dojoType="dijit.form.FilteringSelect" 
+                                id="studySelect" 
+                                autoComplete="false" >
+                             
+                                <xsl:for-each select="study_list">
+                                    <option>
+                                        <xsl:attribute name="value"><xsl:value-of select="STUDY_intStudyID"/></xsl:attribute>
+                                        <xsl:if test="@selected = '1'">
+                                            <xsl:attribute name="selected">true</xsl:attribute>
+                                        </xsl:if>
+                                        <xsl:value-of select="STUDY_strStudyName"/>
+                                    </option>
+                                </xsl:for-each>
+                            </select>
+                        </td>
+                        <td width="10%"></td>
+                        
+                    </tr>
                     <tr>
                         <td colspan="7"><hr /></td>
                     </tr>

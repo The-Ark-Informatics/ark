@@ -1482,8 +1482,8 @@ comments.value = commentsval;
                                     <tr>
                                     <td>
                                         
-                                        <input type="button" name="download" value="Download Report" onClick="document.location.href='{$baseWorkerURL}'" />
-                                        <xsl:choose>
+                                        <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?studykey={$intBiospecStudyID}&amp;domainkey={$intBiospecimenID}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
+                                        <!--<xsl:choose>
                                             <xsl:when test="$intBiospecStudyID=17">
                                                 <xsl:choose>
                                                     <xsl:when test="$strSampleType='Frozen lymphocytes (F) '">
@@ -1503,7 +1503,7 @@ comments.value = commentsval;
                                                 <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/DefaultBarcode.prn?barcode={$strBiospecimenID}&amp;dob={$strPatientDOB}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                             </xsl:otherwise>
                                         </xsl:choose>
-                                        
+                                        -->
                                         </td>
                                   
                               <td>
