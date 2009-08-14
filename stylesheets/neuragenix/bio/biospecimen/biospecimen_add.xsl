@@ -74,17 +74,32 @@
 		<xsl:param name="parent_strSampleType">
 			<xsl:value-of select="parent_strSampleType"/>
 		</xsl:param>
-		<link href="htmlarea/lert.css" rel="stylesheet" type="text/css"/>
+		<link href="htmlarea/lert.css" rel="stylesheet" type="text/css"/>		
+		<link href="htmlarea/dijit/themes/nihilo/nihilo.css" rel="stylesheet" type="text/css" />
+		<link href="htmlarea/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+		
+	<script src="htmlarea/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true" />
+		<script src="htmlarea/dijit/dijit.js" type="text/javascript" djConfig="parseOnLoad: true" />
 
 		<script src="htmlarea/lert.js" type="text/javascript"/>
 		<script src="htmlarea/add_biospecimen.js" type="text/javascript"/>
 		
 		<table  width="100%" cellpadding="0" cellspacing="0" border="0"   >
 			<tr><td colspan="3">
-				<xsl:call-template name="infopaneltop">
-					<xsl:with-param name="titleString">ADD BIOSPECIMEN</xsl:with-param>
-					
-				</xsl:call-template>
+				<xsl:choose>
+					<xsl:when test="$intBiospecParentID != -1">
+						<xsl:call-template name="infopaneltop">
+							<xsl:with-param name="titleString">PROCESS / ALIQUOT</xsl:with-param>
+					</xsl:call-template>
+						
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:call-template name="infopaneltop">
+							<xsl:with-param name="titleString">ADD BIOSPECIMEN</xsl:with-param>
+						</xsl:call-template>
+					</xsl:otherwise>
+				</xsl:choose>
+				
 			</td>
 			</tr> 
 			
@@ -723,8 +738,8 @@
 						<xsl:choose>
 
 							<xsl:when test="$intBiospecParentID != -1">
-								<input type="button" class="uportal-button"
-									onclick="aliquotdialog();" value="Save"/>
+								<button dojoType="dijit.form.Button" onclick="fillDiv(); dijit.byId('dialog1').show()">Process</button>
+								
 							</xsl:when>
 							<xsl:otherwise>
 								<input type="submit" name="save" value="Save" class="uportal-button"
@@ -753,5 +768,38 @@
 			</td>
 			</tr>
 		</table>
+		<script type="text/javascript">
+			dojo.require("dijit.Dialog");
+			dojo.require("dijit.form.TextBox");
+			dojo.require("dijit.form.TimeTextBox");
+			dojo.require("dijit.form.Button");
+			dojo.require("dijit.form.DateTextBox");
+		</script>
+		
+		<script type="text/javascript">
+			function hideDialog() {
+			dijit.byId('dialog1').hide();
+			
+			}
+			
+		</script>
+		
+		
+		
+		<div dojoType="dijit.Dialog" id="dialog1" title="Process Biospecimen">
+			<table>
+				<tr><td>
+					<div dojotype="dijit.layout.ContentPane" id = "dialog1pane" />
+				</td></tr>
+				<tr><td align="center"><button dojoType="dijit.form.Button" type="submit" id="CancelButton" onClick="hideDialog()">Cancel</button></td>
+					<td colspan="1" align="center">
+						
+						<button dojoType="dijit.form.Button" id="submitButton" type="submit" onClick="document.biospecimen_form.submit();">Process</button></td>
+				</tr>
+			</table>
+		</div>
+		
+		
+		
 	</xsl:template>
 </xsl:stylesheet>

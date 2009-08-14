@@ -58,6 +58,11 @@
 			<field iname="strChildCode" lname="ChildCode" sname="strChildCode" unique="false" required="true" type="string" length="4" ename="CHILDCODE" cname="ChildCode"  />
 			<field iname="intOrder" lname="Order" sname="intOrder" unique="false" required="true" type="integer" length="8" ename="ORDER" cname="Order"/>
 	</domain>
+	<domain iname="INVBARCODES" sname="INVBC" ename="IX_INV_BARCODES" primarykey="INVBCKEY" sequence="ix_invbarcodes_key_seq">
+		<field iname="intCodeID" lname="Code key" sname="intCodeID" unique="false" required="true" type="integer" length="8" ename="INVBCKEY" cname="Code key"/>
+		<field iname="intStudyID" lname="Study key" sname="intStudyID" unique="false" required="true" type="integer" length="8" ename="STUDYKEY" cname="Study key"/>
+		<field iname="strPrefix" lname="Prefix" sname="strPrefix" unique="false" required="true" type="string" length="255" ename="PREFIX" cname="Type"  />
+	</domain>
 	<domain iname="PATIENT_SMARTFORM" sname="PTSF" activity="patient_view" deletedfield="true" ename="ix_patient_smartform" sequence="ix_patient_smartformkey_seq" primarykey="PATIENTSMARTFORMKEY">
 		<field iname="intDeleted" lname="DELETED" sname="intDeleted" unique="false" required="false" type="integer" length="4" ename="DELETED" cname="DELETED"/>
 		<field iname="intInternalPatientID" lname="Patient key" sname="intIntPatientID" unique="false" type="integer" required="true" length="8" ename="PATIENTKEY" cname="Patient key"/>
@@ -73,13 +78,15 @@
 		<field iname="intTrayID" lname="Tray key" sname="intTrayID" unique="true" required="true" type="integer" length="8" ename="TRAYKEY" cname="Box key"/>
 		<field iname="intTrayCapacity" lname="Capacity" sname="intTrayCapacity" unique="false" required="false" type="integer" length="8" ename="CAPACITY" cname="Capacity"/>
 		<field iname="strTrayName" lname="Box name" sname="strTrayName" unique="false" required="true" type="string" length="50" ename="NAME" cname="Box name"/>
+		<field iname="intTrayType" lname="Box Type" sname="intTrayType" unique="false" required="true" type="integer" length="8" ename="TYPE" cname="Box/Plate"/>
 		<field iname="intBoxID" lname="Box key" sname="intBoxID" unique="false" required="true" type="integer" length="8" ename="BOXKEY" cname="Rack key"/>
 		<field iname="intTransferID" lname="Transfer key" sname="intTransferID" unique="false" required="false" type="integer" length="8" ename="TRANSFERKEY" cname="Transfer key"/>
 		<field iname="intTrayAvailable" lname="Available" sname="intTrayAvail" unique="false" required="false" type="integer" length="8" ename="AVAILABLE" cname="Available"/>
 		<field iname="intNoOfRow" lname="No. of rows" sname="intNoOfRow" unique="false" required="true" type="integer" length="8" ename="NOOFROW" cname="No. of rows"/>
 		<field iname="strRowNoType" lov_type="TRAY_LABEL" lname="Row no type" sname="strRowNoType" unique="false" required="true" type="string" length="15" ename="ROWNOTYPE" cname="Row no type"/>
                 <field iname="strTimeStamp" lname="Time Stamp" ename="TIMESTAMP" sname="strTimeStamp" cname="Time stamp" type="varchar" length="55" unique="false" required="false"/>
-                <field iname="strTitle" ename="NAME" sname="strTitle" lname="Box" cname="Box" type="string" length="50" unique="false" required="false" />                                           
+                <field iname="strTitle" ename="NAME" sname="strTitle" lname="Box" cname="Box" type="string" length="50" unique="false" required="false" />      
+		<field iname="intStudyID" lname="Study key" sname="intStudyID" unique="false" required="true" type="integer" length="8" ename="STUDYKEY" cname="Study key"/>
 	</domain>
 	<!-- domain iname="USERGROUP" sname="UGRP" ename="ix_usergroup" sequence="ix_profile_profilekey_seq">
 		<field iname="intParentKey" lname="Parent ID" sname="intParentKey" unique="false" required="true" type="integer" length="8" ename="PARENTUSERGROUP" cname="Add to"/>

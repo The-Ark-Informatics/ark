@@ -115,6 +115,9 @@
         <xsl:variable name="varTrayID">
             <xsl:value-of select="TRAY_intTrayID"/>
         </xsl:variable>
+        <xsl:variable name="varTrayType"> 
+            <xsl:value-of select="TRAY_intTrayType"/>
+        </xsl:variable>
         <xsl:variable name="usage">
             <xsl:value-of select="usage"/>
         </xsl:variable>
@@ -125,7 +128,15 @@
                                     class="funcpanel_content"><td
                                     class="funcpanel_left_border">&#160;</td><td/><td/><td/><td/><td/>
          <td width="5%">
-                <xsl:choose>
+             <xsl:choose>
+               <xsl:when test="$varTrayType = 1">
+                   <img src="media/neuragenix/icons/empty_plate.gif" border="0"/>
+                   
+               </xsl:when> 
+                 
+                 <xsl:otherwise>
+                 <xsl:choose>
+                     
                     <xsl:when test="$usage = 0">
                         <img src="media/neuragenix/icons/empty_tank.gif" border="0"/>
                     </xsl:when>
@@ -138,7 +149,10 @@
                     <xsl:when test="$usage = 3">
                         <img src="media/neuragenix/icons/red_tank.gif" border="0"/>
                     </xsl:when>
-                </xsl:choose>
+                   
+                 </xsl:choose>  
+               </xsl:otherwise>
+                 </xsl:choose>
             </td>
             <td align="left" width="75%" class="uportal-text" >
                 <a href="{$baseActionURL}?uP_root=root&amp;current=view_tray&amp;TRAY_intTrayID={$varTrayID}">
