@@ -819,22 +819,36 @@ a.button {
     padding-right: 13px; /* sliding doors padding */
     text-decoration: none;
 }
+a.button:visited {
+    background: transparent url('/wagerlab/media/neuragenix/icons/bg_button2_a.png') no-repeat scroll top right;
+    color: #444;
+    display: block;
+    float: left;
+    font: normal 12px arial, sans-serif;
+    height: 30px;
+    margin-right: 6px;
+    padding-right: 13px; /* sliding doors padding */
+    text-decoration: none;
+}
 
 a.button span {
     background: transparent url('/wagerlab/media/neuragenix/icons/bg_button2_span.png') no-repeat;
     display: block;
     line-height: 14px;
     padding: 8px 0 8px 13px;
+    text-decoration: none;
 } 
 
 a.button:active {
     background-position: bottom right;
     color: #000;
     outline: none; /* hide dotted outline in Firefox */
+     text-decoration: none;
 }
 
 a.button:active span {
     background-position: bottom left;
     padding: 9px 0 7px 13px; /* push text down 1px */
+     text-decoration: none;
 } 
 

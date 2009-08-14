@@ -58,4 +58,43 @@ function aliquotdialog() {
         });
         exampleLert.display();
     }
+    
+    
 }
+
+function fillDiv() {
+	var parentid = document.biospecimen_form.BIOSPECIMEN_strParentID.value;
+	var dnaconc = document.biospecimen_form.BIOSPECIMEN_flDNAConc.value;
+	var volume = document.biospecimen_form.BIOSPECIMEN_flQuantity.value;
+	var parentVolume = document.biospecimen_form.parentQuantity.value;
+	var type = document.biospecimen_form.BIOSPECIMEN_strProcessingType.value;
+	var success = - 1;
+	if (type != "Processing") {
+		var parentConc = document.biospecimen_form.parentDNA.value;
+		var quantityreq = volume * dnaconc;
+		var volumestockreq = quantityreq / parentConc;
+		if (! volume || ! dnaconc) {
+			var message = "<b><font color='red'>" +
+			"Volume and DNA concentrations are required values</font></b>";
+			dijit.byId('submitButton').domNode.style.display="none";
+	
+		} else if (parentVolume < volumestockreq) {
+				var message = "<b><font color='red'>" +
+				"There is insufficient volume of " +
+				parentid +
+				" to complete this transaction</font></b>";
+				dijit.byId('submitButton').domNode.style.display="none";
+	
+		} else {
+			var message = '<b>' + volumestockreq.toFixed(2) + ' mls</b> of sample <b>' + parentid +
+			'</b> will be used to create the following aliquot <br/>' +
+			'Concentration: ' + dnaconc + '<br/> Volume: ' + volume;
+			dijit.byId('submitButton').domNode.style.display="";
+		}
+	} else {
+	var message = 'All of sample <b>' + parentid + '</b>' +
+	' will used in processing.';
+	dijit.byId('submitButton').domNode.style.display="";
+	}
+	dijit.byId('dialog1pane').attr('content',message);
+	}
