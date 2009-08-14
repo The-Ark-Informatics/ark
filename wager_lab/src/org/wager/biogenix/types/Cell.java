@@ -9,8 +9,13 @@ import java.math.BigDecimal;
  */
 public class Cell implements java.io.Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1912438970156771898L;
 	// Fields    
 
+	
 	private BigDecimal cellkey;
 	private String timestamp;
 	private BigDecimal deleted;

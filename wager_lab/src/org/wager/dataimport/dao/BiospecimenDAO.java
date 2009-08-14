@@ -17,26 +17,34 @@ import org.wager.biogenix.types.Biospecimen;
 import org.wager.biogenix.types.Cell;
 
 public class BiospecimenDAO {
-	  
+	  Session hib_session;
 	   SessionFactory sf;
 	public BiospecimenDAO() {
 		  sf = new Configuration().configure().buildSessionFactory();
+		  createSession();
 	}
 
 	@SuppressWarnings("unchecked")
 	public List<Biospecimen> getUpdateList(String ids[]) {
 		
-		Session hib_session = sf.openSession();
+		
 		  List<Biospecimen> biospecsForUpdate = new ArrayList<Biospecimen>();
 		String inclauses[] = getListInSQL(ids);
 		for (int i=0; i< inclauses.length; i++)
 		biospecsForUpdate.addAll(hib_session.createQuery(
 	    "from Biospecimen bio where bio.deleted = 0 and bio.biospecimenid in "+ inclauses[i]).list());
-		hib_session.close();
+	
 		return  biospecsForUpdate;
 
 	}
 	
+	private void createSession() {
+		this.hib_session = sf.openSession();
+	}
+	
+	public void closeSession() {
+		this.hib_session.close();
+	}
 	
 	private String[] getListInSQL(String ids[]) {
 		StringBuffer sb;
@@ -73,20 +81,16 @@ public class BiospecimenDAO {
 	}
 	
 	public long saveNewBiospecimen(Biospecimen b) {
-		Session hib_session = sf.openSession();
 		Transaction tx = hib_session.beginTransaction();
 		long biospecId = ((Long) hib_session.save(b)).longValue();
 		tx.commit();
-		hib_session.close();
 		return biospecId;
 		
 	}
 	public long saveTransaction(BioTransactions b) {
-		Session hib_session = sf.openSession();
 		Transaction tx = hib_session.beginTransaction();
 		long biospecId = ((Long) hib_session.save(b)).longValue();
 		tx.commit();
-		hib_session.close();
 		return biospecId;
 		
 	}
@@ -95,11 +99,9 @@ public class BiospecimenDAO {
 	public void updateBiospecimen(Biospecimen b) {
 		Transaction tx = null;
 		try {
-			Session hib_session = sf.openSession();
 			tx = hib_session.beginTransaction();
 			hib_session.update(b);
 			tx.commit();
-			hib_session.close();
 		} catch (RuntimeException e) {
 			if (tx != null)
 				tx.rollback();

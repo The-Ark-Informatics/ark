@@ -66,7 +66,7 @@ public class CNanodrop implements IChannel {
 	    
 	  
 	  
-	  public CDataImport() {
+	  public CNanodrop() {
 		  sf = new Configuration().configure().buildSessionFactory();
 	   }
 	  
@@ -89,7 +89,7 @@ public class CNanodrop implements IChannel {
         	strat = CSVStrategy.DEFAULT_STRATEGY;
         
 		importData = (new CSVParser(br,strat)).getAllValues();
-		int i = 1;
+		
 		
 	   }
 
@@ -460,7 +460,7 @@ public class CNanodrop implements IChannel {
 				Biospecimen b = (Biospecimen) biospecsForUpdate.get(i);
 				String strNewBiospecimenID = "";
 				try{
-					int studykey = (int) b.getStudykey();
+					int studykey = (int) b.getStudykey().intValue();
 				strNewBiospecimenID = BiospecimenUtilities
 				.getNewSubBiospecimenStringID(
 						new DALSecurityQuery("biospecimen_add",authToken),b.getSampletype(), b.getBiospecimenid(),true, studykey);
@@ -522,7 +522,7 @@ public class CNanodrop implements IChannel {
 		Transaction tx = null;
 		try {
 		    tx = hib_session.beginTransaction();
-		    int studykey = (int) b.getStudykey();
+		    int studykey = (int) b.getStudykey().intValue();
 		    String strNewBiospecimenID = BiospecimenUtilities
 			.getNewSubBiospecimenStringID(
 					new DALSecurityQuery("biospecimen_add",authToken),b.getSampletype(), b.getBiospecimenid(),true,studykey);
