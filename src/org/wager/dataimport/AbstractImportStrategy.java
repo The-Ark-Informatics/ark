@@ -19,6 +19,9 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 	AuthToken authToken;
 	HashMap<String,Integer> mapping;
 	public static final int BIOSPEC_INDEX = 0;
+	
+	public static final String TAB_SEPARATOR = "tab";
+	public static final String COMMA_SEPARATOR = "comma";
 
 	
 	BiospecimenDAO biospecDAO = new BiospecimenDAO();
@@ -88,7 +91,7 @@ public abstract class AbstractImportStrategy implements IDataImportStrategy {
 		return sa;
 	}
 	
-	public abstract void importData(InputStream is) ;
+	public abstract void importData(InputStream is, String recordSeparator) ;
 	
 	
 	

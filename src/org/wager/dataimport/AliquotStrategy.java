@@ -205,12 +205,15 @@ public class AliquotStrategy extends AbstractImportStrategy {
 		return validDataRows;
 	}
 	@Override
-	public void importData(InputStream is)  {
+	public void importData(InputStream is, String recordSeparator)  {
 		// TODO Auto-generated method stub
 		BufferedReader br = new BufferedReader( new InputStreamReader(is));
        try {
         	br.readLine(); //Burn off the first header line.
         CSVStrategy strat;
+        if (recordSeparator.equals(TAB_SEPARATOR))
+        	strat = CSVStrategy.TDF_STRATEGY;
+        else
         	strat = CSVStrategy.DEFAULT_STRATEGY;
         
 		importedData = (new CSVParser(br,strat)).getAllValues();
