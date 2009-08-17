@@ -39,7 +39,7 @@ public class CDataImport implements IChannel {
 	  IDataImportStrategy importStrategy;
 	  private String strStylesheet;
 	  private StringBuffer strXML;	
-	
+	  private int mode = -1;
 	  public CDataImport() {
 		  
 	  }
@@ -60,9 +60,14 @@ public class CDataImport implements IChannel {
 	public void renderXML(ContentHandler out) throws PortalException {
 		// TODO Auto-generated method stub
 		try {
+			if (mode == MODE_NANODROP)
+				strXML.append("<mode>NANODROP</mode>");
+			else if (mode == MODE_ALIQUOT)
+					strXML.append("<mode>ALIQUOT</mode>");
+			
 		String xml = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" + "<nanodrop>\n" + strXML.toString() +  "</nanodrop>";  
 		System.err.println(xml);
-
+		
 	    // Create a new XSLT styling engine
 	    XSLT xslt = new XSLT(this);
 	    
@@ -100,27 +105,27 @@ public class CDataImport implements IChannel {
 		  this.runtimeData = rd;
 		  this.strXML = new StringBuffer();
 		  String action = runtimeData.getParameter( "action" );
-		  String mode = runtimeData.getParameter("mode");
+		  String strMode = runtimeData.getParameter("mode");
+		  String separator = runtimeData.getParameter("separator");
 		  this.strStylesheet=START;
 		  System.err.println("Action is ::::: " + action);
 		  if (action == null) // Show upload screen
 			  this.strXML.append(doStart());
 		  else if(action.equals("upload")) {
-			  if (mode != null) {
+			  if (strMode != null && separator != null) {
 			  org.jasig.portal.MultipartDataSource fileToSave = (org.jasig.portal.MultipartDataSource) runtimeData.getObjectParameter("ALIQUOT_strFilename");
-			  int intMode;
-			  if (mode.equals("NANODROP"))
-				  intMode = MODE_NANODROP;
+			  if (strMode.equals("0"))
+				  mode = MODE_NANODROP;
 			  else
-				  intMode = MODE_ALIQUOT;
+				  mode = MODE_ALIQUOT;
 			  
-				  this.importStrategy = ImportStrategyFactory.getInstance(intMode);
+				  this.importStrategy = ImportStrategyFactory.getInstance(mode);
 				if (importStrategy == null){
 					throw new PortalException();
 					
 				}
 			  try {
-				importStrategy.importData(fileToSave.getInputStream());
+				importStrategy.importData(fileToSave.getInputStream(),separator);
 				 strXML.append(importStrategy.getOutput());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -128,8 +133,10 @@ public class CDataImport implements IChannel {
 			}
 				
 				this.strStylesheet = VERIFY;
+				if (mode == MODE_NANODROP)
 				strXML.append("<mode>NANODROP</mode>");
-				
+				else
+					strXML.append("<mode>ALIQUOT</mode>");
 			  }
 		  }
 		
@@ -146,6 +153,7 @@ public class CDataImport implements IChannel {
 		  
 	}
 
+	
 	private String doStart() {
 		this.strStylesheet=START;
 		return "";

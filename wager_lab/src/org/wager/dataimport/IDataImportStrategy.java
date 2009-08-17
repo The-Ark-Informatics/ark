@@ -6,7 +6,7 @@ import java.io.InputStream;
 
 public interface IDataImportStrategy {
 
-	public void importData(InputStream is);
+	public void importData(InputStream is, String recordSeparator);
 	
 	public void process();
 	
