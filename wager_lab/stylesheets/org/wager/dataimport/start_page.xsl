@@ -25,6 +25,14 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                     <option value="1">DNA Aliquot</option>
                   </select>
                 </td>
+               
+                <td class="uportal-label" height="5px">Separator:</td>
+                <td>
+                <select name="separator">
+                  <option value="comma">Comma</option>
+                  <option value="tab">Tab</option>
+                </select>
+                </td>
               </tr>
               <tr>
               <td class="uportal-label" height="5px">
