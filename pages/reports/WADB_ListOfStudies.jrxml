@@ -14,7 +14,7 @@
 	<parameter name="REPORTROOT" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["/home/cwilliams-backup"]]></defaultValueExpression>
 	</parameter>
-	<parameter name="REPORTTYPE" class="java.lang.String" isForPrompting="false">
+	<parameter name="REPORTTYPE" class="java.lang.String">
 		<defaultValueExpression><![CDATA["H/J/W Breakdown"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="REPORTVIEW" class="java.lang.String" isForPrompting="false">
@@ -135,12 +135,10 @@
 				<textElement>
 					<font size="8" pdfFontName="Times-Roman"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORTTYPE}.equals("H/J/W Breakdown") ? "H" : ($P{REPORTTYPE}.equals("Donors") ? "TOTAL" : "UNALLOCATED")]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORTTYPE}.equals("H/J/W Breakdown") ? "H" : ($P{REPORTTYPE}.equals("Donors") ? "TOTAL DNA" : "UNALLOCATED")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-8" x="241" y="0" width="96" height="10">
-					<printWhenExpression><![CDATA[new Boolean(!$P{REPORTTYPE}.equals("Donors"))]]></printWhenExpression>
-				</reportElement>
+				<reportElement key="textField-8" x="241" y="0" width="96" height="10"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -150,7 +148,7 @@
 				<textElement>
 					<font size="8" pdfFontName="Times-Roman"/>
 				</textElement>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORTTYPE}.equals("H/J/W Breakdown") ? "J" : "ALLOCATED"]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{REPORTTYPE}.equals("H/J/W Breakdown") ? "J" : ($P{REPORTTYPE}.equals("Donors") ? "TOTAL RNA" : "ALLOCATED")]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
 				<reportElement key="textField-12" x="337" y="0" width="102" height="10">
@@ -198,9 +196,7 @@
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{UNALLOCATED}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
-				<reportElement key="textField-4" mode="Transparent" x="241" y="0" width="96" height="10" forecolor="#000000" backcolor="#FFFFFF">
-					<printWhenExpression><![CDATA[new Boolean(!$P{REPORTTYPE}.equals("Donors"))]]></printWhenExpression>
-				</reportElement>
+				<reportElement key="textField-4" mode="Transparent" x="241" y="0" width="96" height="10" forecolor="#000000" backcolor="#FFFFFF"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -271,9 +267,7 @@
 				<text><![CDATA[TOTAL]]></text>
 			</staticText>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField-10" x="241" y="0" width="96" height="12">
-					<printWhenExpression><![CDATA[new Boolean(!$P{REPORTTYPE}.equals("Donors"))]]></printWhenExpression>
-				</reportElement>
+				<reportElement key="textField-10" x="241" y="0" width="96" height="12"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
