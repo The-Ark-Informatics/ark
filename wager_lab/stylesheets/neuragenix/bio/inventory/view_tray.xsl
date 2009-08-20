@@ -8,6 +8,7 @@
     <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:param name="downloadURL">downloadURL_false</xsl:param>
     <xsl:param name="nodeId">nodeId_false</xsl:param>
+    <xsl:param name="baseWorkerURL"></xsl:param>
     <xsl:param name="biospecimenChannelURL">biospecimenChannelURL_false</xsl:param>
     <xsl:param name="biospecimenTabOrder"></xsl:param>
     <xsl:variable name="infopanelImagePath">media/neuragenix/infopanel</xsl:variable>
@@ -173,6 +174,8 @@
                                                   <!-- Save button -->
                                                       <td>
                                                           <xsl:if test="hasEditRights">
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?domainkey={$TRAY_intTrayID}&amp;studykey=0'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
+                                                              
                                                               <a class="button" href="{$baseActionURL}?uP_root=root&amp;current=add_transfer&amp;TRANSFER_intTrayID={$TRAY_intTrayID}" onclick="this.blur();"><span><img src="/wagerlab/media/neuragenix/icons/transfer.png" height="14" align="top" border="0"/>Transfer</span></a>  
                                          
                                                           <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/DefaultBarcode.prn?trayid={$TRAY_intTrayID}';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print Box</span></a>  
