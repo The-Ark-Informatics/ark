@@ -36,7 +36,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
         try
         {                       
             // Query the database determine the last AdmissionID for this study.
-            currentStrAdminID = getMaxAdmissionID (intStudyKey);
+            currentStrAdminID = getMaxAdmissionID (intStudyKey,intSubStudyKey);
             // System.err.println ("[DefaultPatientIDGenerator::autoGeneratePatientID] currentStrPatID = '" + currentStrPatID + "'");
 
             // Determine the new PATIENTID
@@ -69,7 +69,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
     // 1. Query the database for the last (max) record in ix_admissions
     // 2. Return the str AdmissionID for the last record in ix_admissions
     //--------------------------------------------------------------------------
-    private static String getMaxAdmissionID (int intStudyKey) 
+    private static String getMaxAdmissionID (int intStudyKey, int intSubStudyKey) 
     {
         String reqdStrAdmissionID = new String();
         try
@@ -82,6 +82,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
             queryMaxAdminID.setDomain("ADMISSIONS", null, null, null);
             queryMaxAdminID.setMaxField ("ADMISSIONS_strAdmissionID");
             queryMaxAdminID.setWhere(null,0,"ADMISSIONS_intStudyID", "=", ""+intStudyKey, 0, DALQuery.WHERE_HAS_VALUE);
+            queryMaxAdminID.setWhere("AND",0,"ADMISSIONS_intSubStudyID","=",""+intSubStudyKey,0,DALQuery.WHERE_HAS_VALUE);
             java.sql.ResultSet rs = queryMaxAdminID.executeSelect();
             System.err.println(queryMaxAdminID.convertSelectQueryToString());
             if (rs.next())
