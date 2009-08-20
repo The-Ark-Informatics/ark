@@ -22,6 +22,7 @@
 // java packages
 package neuragenix.bio.inventory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.Hashtable;
@@ -43,7 +44,9 @@ import org.jasig.portal.ChannelRuntimeProperties;
 import org.jasig.portal.IMimeResponse;
 import org.jasig.portal.PortalEvent;
 import org.jasig.portal.PortalException;
+import org.jasig.portal.UPFileSpec;
 import org.jasig.portal.utils.XSLT;
+import org.wager.barcode.BarcodeManager;
 import org.xml.sax.ContentHandler;
 import org.jasig.portal.security.*;
 import org.jasig.portal.services.LogService;
@@ -3720,6 +3723,8 @@ public class CInventory implements IChannel,IMimeResponse
         
         upfTmp.setTargetNodeId(SessionManager.getChannelID(strSessionUniqueID, "CDownload"));
         xslt.setStylesheetParameter("downloadURL", upfTmp.getUPFile());
+    	xslt.setStylesheetParameter("baseWorkerURL", runtimeData
+				.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true));
         xslt.setStylesheetParameter("nodeId", SessionManager.getChannelID(strSessionUniqueID, "CDownload")); 
         // set the output Handler for the output.
         xslt.setTarget(out);
@@ -3880,24 +3885,30 @@ public class CInventory implements IChannel,IMimeResponse
 	@Override
 	public String getContentType() {
 		// TODO Auto-generated method stub
-		return null;
+		return new String("text/prn");
 	}
 
 	@Override
 	public Map getHeaders() {
 		// TODO Auto-generated method stub
-		return null;
+		Map headers = new HashMap();
+		headers.put("Content-Disposition",
+				"attachment; filename=\"Barcode.prn\"");
+		return headers;
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
 		// TODO Auto-generated method stub
-		return null;
+		if (runtimeData.getParameter("domain") == null)
+		runtimeData.setParameter("domain", "PLATE");
+		return BarcodeManager.generateBarcode(authToken, runtimeData);
+
 	}
 
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
-		return null;
-	}	
+		return "Barcode.prn";
+	}
 }
