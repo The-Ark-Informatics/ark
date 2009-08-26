@@ -24,7 +24,7 @@ public class PlateBarcode extends AbstractBarcodeEngine {
 		sb.append("N\n");
 		sb.append("B30,0,0,1,1,2,23,N,\"" + b.getValue(BIOSPECIMEN_ID) + "\"\n");
 		sb.append("A230,0,0,1,1,1,N,\"" + b.getValue(BIOSPECIMEN_ID) + " PLATE\n");
-		sb.append("A230,15,0,1,1,1,N,\"" + b.getValue("CAPACITY") +"W 13/03/2008\"");
+		sb.append("A230,15,0,1,1,1,N,\"" + b.getValue("CAPACITY") +"W 13/03/2008\"\n");
 		sb.append("P1\n");
 
 	}

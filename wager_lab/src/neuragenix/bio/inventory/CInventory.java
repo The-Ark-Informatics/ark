@@ -212,6 +212,7 @@ public class CInventory implements IChannel,IMimeResponse
      */
     public void setRuntimeData(ChannelRuntimeData rd)
     {
+    	long startTime = System.currentTimeMillis();
         try
         {
             this.runtimeData = rd;
@@ -733,6 +734,7 @@ public class CInventory implements IChannel,IMimeResponse
                 strStylesheet = strPreviousStylesheet;
             }
             
+            
             strXML += "<strErrorMessage>" + strErrorMessage + "</strErrorMessage>";
             strXML += "<strSource>" + strSource + "</strSource>";
             
@@ -745,17 +747,22 @@ public class CInventory implements IChannel,IMimeResponse
             {
                 strXML += "<blBackToVialCalc>false</blBackToVialCalc>";
             }
-            
+            long beforeXMLTime=System.currentTimeMillis();
+            System.err.println("Inventory channel initialisation took " + (beforeXMLTime-startTime)/1000.0 + " seconds"); 
+         
             strXML += "<intCurrentPatientID>" + intCurrentPatientID + "</intCurrentPatientID>";
             strXML += "<intCurrentBiospecimenID>" + intCurrentBiospecimenID + "</intCurrentBiospecimenID>";
             strXML += "<intCurrentCellID>" + intCurrentCellID + "</intCurrentCellID>";
             strXML += "<strInitialBiospecSampleType>" + strInitialBiospecSampleType+ "</strInitialBiospecSampleType>";
-            strXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?><inventory>" + 
-                     buildXMLFileForInventoryTree(buildInventoryTree()) +
+            DefaultMutableTreeNode tree = buildInventoryTree();
+       
+           
+         
+            strXML = "<?xml version=\"1.0\" encoding=\"utf-8\"?><inventory>" + buildXMLFileForInventoryTree(tree) +
                      strXML + buildXMLInventoryAdmin() + "</inventory>";
             
-          
             
+         
         }
         catch(Exception e)
         {
@@ -2441,10 +2448,10 @@ public class CInventory implements IChannel,IMimeResponse
                         int trayType = Integer.parseInt(runtimeData.getParameter("TRAY_intTrayType"));
                         int intStudyKey = Integer.parseInt(runtimeData.getParameter("TRAY_intStudyKey"));
                         String newTrayID = runtimeData.getParameter("TRAY_strTrayName");
-                        if (trayType == 1) {
+                       /* if (trayType == 1) {
                         	IInventoryIDGenerator i = IDGenerationFactory.getPlateIDGenerationInstance();
                         	newTrayID = i.getInventoryID(intStudyKey, authToken);
-                        }
+                        }*/
                         if(ALLOW_INVENTORY_DUPLICATES.equalsIgnoreCase("false"))
                         {
                             strCheckDuplicates += this.invmgr.checkIfDuplicateName(InventoryManager.DUPLICATE_TRAY_CHECK, newTrayID,runtimeData.getParameter("TRAY_intTrayID"),runtimeData.getParameter("TRAY_intBoxID"));
@@ -2589,6 +2596,10 @@ public class CInventory implements IChannel,IMimeResponse
 
                                     rsBoxList.close();
                                     strXML += invmgr.getInventoryDetails(InventoryManager.TYPE_LIST_SITE_TANK_N_BOX_NAMES, INVENTORY_VIEW, authToken);
+                                    int intSiteID = InventoryUtilities.getSiteKeyforTray(intCurrentTrayID);
+                                	if (authToken.getSiteList().contains(new Integer(intSiteID)))
+                                		strXML = strXML + "<hasEditRights>1</hasEditRights>";
+                                 
                                 }
                                 else
                                 {

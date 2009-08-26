@@ -31,7 +31,8 @@ public class BarcodeManager {
 			ps.setString(1, domain.toUpperCase());
 			ps.setInt(2, studyKey);
 			ResultSet rs = ps.executeQuery();
-			rs.next(); // Grab the first.
+			if (!rs.next())
+				return null;// Grab the first.
 			String className = rs.getString("CLASS");
 			return className;
 			
@@ -82,6 +83,9 @@ public class BarcodeManager {
 			siteList.add(new Integer(0));
 		}
 		String classStr = barcodeSupported(siteList,domain,studyKey);
+		if (classStr == null ) {
+			return null;
+		}
 		System.out.println("Loading class: " + classStr );
 		//ClassLoader cl = ClassLoader.getSystemClassLoader();
 		try {
