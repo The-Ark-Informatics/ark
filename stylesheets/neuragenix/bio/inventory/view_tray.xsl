@@ -70,6 +70,13 @@
             
             <xsl:value-of select="blBackToVialCalc"/>
         </xsl:param>
+        <xsl:variable name="boxorplate">
+            <xsl:if test="TRAY_intTrayType=1">
+                Plate </xsl:if>
+            <xsl:if test="TRAY_intTrayType=0">
+                Box
+            </xsl:if>
+        </xsl:variable>
         <SCRIPT LANGUAGE="JavaScript" SRC="htmlarea/popupmouseover.js"> </SCRIPT>
         <script language="javascript">
             Style=["white","black","#6d1b1b","white","","","","","","","","","","",200,"",2,2,10,10,51,1,0,"",""];
@@ -107,6 +114,7 @@
                     <xsl:if test="$varAdminSection=1 and $accesstoexpandedsite=1">
                         <xsl:call-template name="inventory_admin"/>
                     </xsl:if>
+                   
                 </td>
                 <td width="70%" style="text-align: center">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
@@ -124,7 +132,7 @@
                                 <table width="100%" height="100%" cellpadding="0" cellspacing="0">
                                     <tr valign="bottom">
                                         <td class="infopanel_title" align="left">
-                                            <xsl:value-of select="TRAY_strTitleDisplay"/> details </td>
+                                                                          <xsl:value-of select="$boxorplate"/> details </td>
                                         <!-- Subtabs -->
                                         <td align="right"> &#160; </td>
                                     </tr>
@@ -174,13 +182,15 @@
                                                   <!-- Save button -->
                                                       <td>
                                                           <xsl:if test="hasEditRights">
+                                                              <xsl:if test="TRAY_intTrayType=1">
                                                               <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?domainkey={$TRAY_intTrayID}&amp;studykey=0'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
+                                                                  </xsl:if>
                                                               
                                                               <a class="button" href="{$baseActionURL}?uP_root=root&amp;current=add_transfer&amp;TRANSFER_intTrayID={$TRAY_intTrayID}" onclick="this.blur();"><span><img src="/wagerlab/media/neuragenix/icons/transfer.png" height="14" align="top" border="0"/>Transfer</span></a>  
                                          
-                                                          <a class="button" href="#" onclick="this.blur(); document.location.href='/wagerlab/DefaultBarcode.prn?trayid={$TRAY_intTrayID}';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print Box</span></a>  
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?domainkey={$TRAY_intTrayID}&amp;domain=INVENTORY&amp;studykey=0';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print all Barcodes </span></a>  
                                                           
-                                                          <a class="button" href="#" onclick="this.blur(); window.open('{$downloadURL}?uP_root={$nodeId}&amp;file_name={$strReportName}&amp;property_name=neuragenix.bio.search.ExportFileLocation&amp;activity_required=inventory_view')"><span><img src="/wagerlab/media/neuragenix/icons/report.png" height="14" align="top" border="0"/>Box Report</span></a>
+                                                              <a class="button" href="#" onclick="this.blur(); window.open('{$downloadURL}?uP_root={$nodeId}&amp;file_name={$strReportName}&amp;property_name=neuragenix.bio.search.ExportFileLocation&amp;activity_required=inventory_view')"><span><img src="/wagerlab/media/neuragenix/icons/report.png" height="14" align="top" border="0"/> <xsl:value-of select="$boxorplate"/> Report</span></a>
                                                            
                                                               <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?uP_root=root&amp;current=batch_allocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span><img src="/wagerlab/media/neuragenix/icons/scanner.gif" height="14" align="top" border="0"/>Batch Allocate</span></a>
                                    
@@ -337,7 +347,7 @@
                                         </tr>
                                         <tr>
                                             <td width="20%" class="uportal-label">
-                                                <xsl:value-of select="TRAY_strTrayNameDisplay"/>: </td>
+                                                <xsl:value-of select="$boxorplate"/> : </td>
                                             <td width="25%">
                                                 <input type="text" name="TRAY_strTrayName"
                                                   value="{$TRAY_strTrayName}" size="22"

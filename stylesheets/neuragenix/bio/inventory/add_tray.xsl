@@ -69,7 +69,7 @@
                 <table width="100%">
                     <tr>
                         <td colspan="5" class="uportal-channel-subtitle">
-                            Add New <xsl:value-of select="TRAY_strTitleDisplay" />
+                            Add New <xsl:value-of select="TRAY_strTitleDisplay" /> / Plate
                         </td>
                         <td align='right'>
                         <xsl:if test="$blBackToVialCalc = 'true'">
@@ -99,9 +99,8 @@
                        
                         </td>
                         <td width="25%">
-                            <select name="TRAY_intTrayType" dojoType="dijit.form.FilteringSelect" 
+                            <select name="TRAY_intTrayType" 
                                 id="typeSelect" tabindex="1" 
-                                onChange="processType()"
                                 autoComplete="false" >
                                                                    <option value="0">Box</option>
                                                                     <option value="1">Plate</option>
@@ -117,7 +116,7 @@
                             <label for="TRAY_intBoxID">Location:</label>
                         </td>
                         <td width="25%">
-                            <select name="TRAY_intBoxID" id="TRAY_intBoxID"  dojoType="dijit.form.FilteringSelect"  autoComplete="false"  class="uportal-input-text">
+                            <select name="TRAY_intBoxID" id="TRAY_intBoxID"  autoComplete="false"  class="uportal-input-text">
 				<xsl:for-each select="search_box">
                                     
                                     <option>
@@ -160,7 +159,7 @@
                             <xsl:value-of select="TRAY_strTitleDisplay" /> name:
                         </td>
                         <td width="25%">
-                            <input type="text" name="TRAY_strTrayName" required="true" id="TRAY_strTrayName"  dojoType="dijit.form.ValidationTextBox" size="22" tabindex="2" class="uportal-input-text" />
+                            <input type="text" name="TRAY_strTrayName" required="true" id="TRAY_strTrayName"   size="22" tabindex="2" class="uportal-input-text" />
                             
                         </td>
                         <td width="10%"></td><td width="1%" class="neuragenix-form-required-text"></td>
@@ -192,9 +191,9 @@
                             <label for="studySelect">Study: </label>
                         </td>
                         <td width="25%">
-                            <select name="TRAY_intStudyKey" dojoType="dijit.form.FilteringSelect" 
+                            <select name="TRAY_intStudyKey" 
                                 id="studySelect" 
-                                autoComplete="false" >
+                              >
                              
                                 <xsl:for-each select="study_list">
                                     <option>
