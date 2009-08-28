@@ -96,6 +96,7 @@
 		<fieldname sname="BSPC_dtSampleDate" name="BIOSPECIMEN_dtSampleDate"/>
 		<fieldname sname="BSPC_dtExtractedDate" name="BIOSPECIMEN_dtExtractedDate"/>
 		<fieldname sname="BSPC_flCollected" name="BIOSPECIMEN_flNumberCollected"/>
+		<fieldname sname="BSPC_flPurity" name="BIOSPECIMEN_flPurity"/>
 		<fieldname sname="BSPC_flRemoved" name="BIOSPECIMEN_flNumberRemoved"/>
                 <fieldname sname="BSPC_strEncounter" name="BIOSPECIMEN_strEncounter"/>
 		<fieldname sname="BSPC_strComments" name="BIOSPECIMEN_strComments"/>
