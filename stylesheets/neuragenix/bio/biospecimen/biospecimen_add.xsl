@@ -308,10 +308,10 @@
 									<xsl:value-of select="."/>
 								</option>
 							</xsl:for-each>
-						</select> <xsl:if test="$intBiospecParentID = -1">
+						</select> 
 							X <input type="text" length="4" size="4"
 						name="BIOSPECIMEN_intMultiple" value="1"/>
-						</xsl:if>
+						
 					</td>
 
 					<!--<xsl:value-of select="BIOSPECIMEN_strSpeciesDisplay"/>: -->
