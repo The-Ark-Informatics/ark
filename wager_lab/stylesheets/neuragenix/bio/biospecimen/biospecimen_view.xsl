@@ -675,6 +675,7 @@ comments.value = commentsval;
                             value="{$intInternalPatientID}"/>
                         <input type="hidden" name="PATIENT_intInternalPatientID"
                             value="{$intInternalPatientID}"/>
+                            <input type="hidden" name="BIOSPECIMEN_intParentID" value="{$intBiospecParentID}"/>
                         <input type="hidden" name="BIOSPECIMEN_Timestamp"
                             value="{$BIOSPECIMEN_Timestamp}"/>
                         <input type="hidden" name="action" value="save_biospecimen"/>
