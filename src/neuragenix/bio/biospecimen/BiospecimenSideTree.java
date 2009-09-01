@@ -163,6 +163,7 @@ public class BiospecimenSideTree
                     query.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID", "=",  strInternalParentID, 0, DALQuery.WHERE_HAS_VALUE);
                     query.setWhere("AND", 0, "BIOSPECIMEN_intDeleted", "=", "0",0,DALQuery.WHERE_HAS_VALUE); 
                     query.setOrderBy("BIOSPECIMEN_intBiospecimenID", "ASC");
+                    System.err.println(query.convertSelectQueryToString());
                     ResultSet rs = query.executeSelect();
                     
                     
