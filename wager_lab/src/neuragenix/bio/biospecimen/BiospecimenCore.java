@@ -569,7 +569,9 @@ public class BiospecimenCore {
 										query,strSampleType, BiospecimenUtilities.getUserBiospecimenID(intParentBioSpecID),true,studykey);
 					} else {
 						//System.err.println("GOT HERE!!!!!!!!!!!!!!");
-
+						if (runtimeData.getParameter("BIOSPECIMEN_intParentID") == null ) {
+							runtimeData.setParameter("BIOSPECIMEN_intParentID","-1");
+						}
 						IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
 								.getBiospecimenIDGenerationInstance();
 						DALSecurityQuery query = new DALSecurityQuery(
