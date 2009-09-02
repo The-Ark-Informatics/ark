@@ -292,11 +292,9 @@
 					
 						
 					<td id="neuragenix-form-row-input-input" class="uportal-label">
-						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text">							
-								<xsl:if test="$intBiospecParentID = -1">		
+						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text">								
 									<xsl:attribute name="multiple"></xsl:attribute>
 									<xsl:attribute name="size">4</xsl:attribute>
-								</xsl:if>
 							<xsl:for-each select="BIOSPECIMEN_strSampleType">
 								<option>
 									<xsl:attribute name="value">

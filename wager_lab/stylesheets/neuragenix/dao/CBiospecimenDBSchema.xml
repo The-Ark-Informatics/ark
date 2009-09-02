@@ -303,6 +303,7 @@
 		<fieldname sname="BSPC_flPurity" name="BIOSPECIMEN_flPurity"/>
 		<fieldname sname="BSPC_strProtocol" name="BIOSPECIMEN_strProtocol"/>
 		<fieldname sname="BSPC_strAnticoag" name="BIOSPECIMEN_strAnticoag"/>
+			<fieldname sname="BSPC_strStatus" name="BIOSPECIMEN_strStatus"/>
 		<fieldname sname="BSPC_strQuality" name="BIOSPECIMEN_strQuality"/>
 		<fieldname sname="BSPC_strWADB" name="BIOSPECIMEN_strWADB"/>
 		<fieldname sname="BSPC_strUnit" name="BIOSPECIMEN_strUnit"/>		
@@ -335,6 +336,7 @@
 		<fieldname sname="BSPC_strProtocol" name="BIOSPECIMEN_strProtocol"/>
 		<fieldname sname="BSPC_strAnticoag" name="BIOSPECIMEN_strAnticoag"/>
 		<fieldname sname="BSPC_strQuality" name="BIOSPECIMEN_strQuality"/>
+			<fieldname sname="BSPC_strStatus" name="BIOSPECIMEN_strStatus"/>
 		<fieldname sname="BSPC_strWADB" name="BIOSPECIMEN_strWADB"/>
 		<fieldname sname="BSPC_strUnit" name="BIOSPECIMEN_strUnit"/>		
 	</formfield>
@@ -518,6 +520,7 @@
 		<fieldname sname="BSPC_strEncounter" name="BIOSPECIMEN_strEncounter"/>
 		<fieldname sname="BSPC_strSubTypeDesc" name="BIOSPECIMEN_strSubTypeDescription"/>
 		<fieldname sname="BSPC_strWADB" name="BIOSPECIMEN_strWADB"/>
+			<fieldname sname="BSPC_strStatus" name="BIOSPECIMEN_strStatus"/>
 		<fieldname sname="BSPC_strUnit" name="BIOSPECIMEN_strUnit"/>		
 	</formfield>
         
@@ -551,6 +554,7 @@
 		<fieldname sname="BSPC_strSubTypeDesc" name="BIOSPECIMEN_strSubTypeDescription"/>
                 <fieldname sname="BSPC_intDepth" name="BIOSPECIMEN_intDepth"/>
 		<fieldname sname="BSPC_strWADB" name="BIOSPECIMEN_strWADB"/>
+		<fieldname sname="BSPC_strStatus" name="BIOSPECIMEN_strStatus"/>
 		<fieldname sname="BSPC_strUnit" name="BIOSPECIMEN_strUnit"/>		
 	</formfield>
         

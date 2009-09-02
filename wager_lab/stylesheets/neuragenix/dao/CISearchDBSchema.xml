@@ -93,6 +93,7 @@
 		<fieldname sname="BSPC_strOtherID" name="BIOSPECIMEN_strOtherID"/>
 		<fieldname sname="BSPC_flDNAConc" name="BIOSPECIMEN_flDNAConc" />
 		<fieldname sname="BSPC_intStudyKey" name="BIOSPECIMEN_intStudyKey"/>
+			<fieldname sname="BSPC_strStatus" name="BIOSPECIMEN_strStatus"/>
 		<fieldname sname="BSPC_dtSampleDate" name="BIOSPECIMEN_dtSampleDate"/>
 		<fieldname sname="BSPC_dtExtractedDate" name="BIOSPECIMEN_dtExtractedDate"/>
 		<fieldname sname="BSPC_flCollected" name="BIOSPECIMEN_flNumberCollected"/>

@@ -1403,11 +1403,34 @@ comments.value = commentsval;
                                 <td width="1%" id="neuragenix-form-row-input-label-required" class="neuragenix-form-required-text" valign="top"/>
                                 <td width="18%" id="neuragenix-form-row-input-label" class="uportal-label" valign="top">
                                     <xsl:value-of select="BIOSPECIMEN_strCommentsDisplay"/>: </td>
-                                <td width="25%" valign="top">
+                                <td width="25%" valign="top" rowspan="4">
                                     <textarea name="BIOSPECIMEN_strComments" rows="4" cols="40"
                                         tabindex="41" class="uportal-input-text">
                                         <xsl:value-of select="BIOSPECIMEN_strComments"/>
                                     </textarea>
+                                </td>
+                                <td width="5%" id="neuragenix-end-spacer" valign="top"/>
+                            </tr>
+                             <tr>
+				<td width="1%" id="neuragenix-form-row-input-label-required" class="neuragenix-form-required-text" valign="top"/>
+                                <td width="18%" id="neuragenix-form-row-input-label" class="uportal-label" valign="top">
+                                    <xsl:value-of select="BIOSPECIMEN_strStatusDisplay"/>: </td>
+                                <td width="25%" valign="top">
+                                    <select name="BIOSPECIMEN_strStatus" 
+                                        class="uportal-input-text">
+					<xsl:for-each select="BIOSPECIMEN_strStatus">
+					<option>
+                                                <xsl:attribute name="value">
+                                                  <xsl:value-of select="."/>
+                                                </xsl:attribute>
+                                                <xsl:if test="@selected=1">
+                                                  <xsl:attribute name="selected"
+                                                  >true</xsl:attribute>
+                                                </xsl:if>
+                                                <xsl:value-of select="."/>
+                                            </option>
+					</xsl:for-each>
+                                    </select>
                                 </td>
                                 <td width="5%" id="neuragenix-end-spacer" valign="top"/>
                             </tr>
