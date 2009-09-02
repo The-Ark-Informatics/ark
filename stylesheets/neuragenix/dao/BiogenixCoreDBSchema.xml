@@ -132,6 +132,7 @@
 		<field iname="strAnticoag" lname="Anticoagulant Type" sname="strAnticoag" unique="false" required="false" type="string" length="50" ename="ANTICOAG" cname="Anticoagulant Type" lov_type="ANTICOAG"/>
 		<field iname="strProtocol" lname="Extraction Protocol" sname="strProtocol" unique="false" required="false" type="string" length="50" ename="PROTOCOL" cname="Extraction Protocol" lov_type="EXTRACTION_PROTOCOL"/>
 		<field iname="strQuality" lname="Quality" sname="strQuality" unique="false" required="false" type="string" length="50" ename="QUALITY" cname="Quality" lov_type="QUALITY"/>
+		<field iname="strStatus" lname="Status" sname="strStatus" unique="false" required="false" type="string" length="50" ename="STATUS" cname="Status" lov_type="STATUS"/>
         </domain>
 	<domain iname="SMARTFORMRESULTS" sname="SFRS" deletedfield="true" ename="ix_smartform_results" sequence="ix_smartform_resultskey_seq" primarykey="SMARTFORMRESULTKEY">
 		<field iname="strDataElementResult" lname="Result" sname="strDEResult" unique="false" required="false" type="string" length="5000" ename="DATAELEMENTRESULT" cname="Result"/>
