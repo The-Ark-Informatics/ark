@@ -60,7 +60,7 @@ window.parent.SetIFrameSize("app",h,w);
 </script>
 				<link type="text/css" rel="stylesheet" href="htmlarea/dijit/themes/soria/soria.css"/>
 			</head>
-			<body onLoad="GetMySize()" leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0" marginheight="0" marginwidth="0" class="soria">
+			<body onLoad="GetMySize()" leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0" marginheight="0" marginwidth="0" class="nihilo">
 				<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="0">
 					<!--<tr valign="top">
 						<td>
