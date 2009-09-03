@@ -86,13 +86,15 @@ public class WAFSSBiospecimenBarcode extends DNABankBarcode {
 		
 		String aBarcode = b.getValue(BIOSPECIMEN_ID);
 		String dateOfSample = b.getValue("SAMPLEDATE");
-		String asrbno = b.getValue("ASBRNO");
+		String asrbno = b.getValue("ASRBNO");
 		String familyid = b.getValue("FAMILYID");
 		String result="";
-		if (asrbno == null && familyid != null) {
+		if (asrbno == null) asrbno = "";
+		if (familyid == null) familyid = "";
+		if (asrbno.equals("") && !familyid.equals("")) {
 			result="F: "+familyid; 
 		}
-		else
+		else if (!asrbno.equals(""))
 			result="A: "+ asrbno;
 		
 
