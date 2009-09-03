@@ -149,7 +149,10 @@ public abstract class AbstractBarcodeEngine implements BarcodeEngine {
 			data.put(DATE_OF_BIRTH,Dob);
 		}
 		public void setValue(String param, String value){
-			data.put(param, value);
+			String notNullValue = value;
+			if(value == null)
+				notNullValue = "";
+			data.put(param, notNullValue);
 		}	
 		
 		public String getValue(String param) {
