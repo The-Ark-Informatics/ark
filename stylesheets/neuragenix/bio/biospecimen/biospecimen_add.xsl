@@ -281,8 +281,8 @@
 				<!-- Row 3 -->
 				<tr>
 					<td id="neuragenix-form-row-input-label-required"
-						class="neuragenix-form-required-text"/>
-					<td id="neuragenix-form-row-input-label" class="uportal-label">
+						class="neuragenix-form-required-text" />
+					<td id="neuragenix-form-row-input-label" class="uportal-label" >
 						<xsl:value-of select="BIOSPECIMEN_strSampleTypeDisplay"/>: </td>
 					<script language="javascript">
                             function dropDownUpdate() {
@@ -291,7 +291,7 @@
                                 }</script>
 					
 						
-					<td id="neuragenix-form-row-input-input" class="uportal-label">
+					<td id="neuragenix-form-row-input-input" class="uportal-label"  >
 						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text">								
 									<xsl:attribute name="multiple"></xsl:attribute>
 									<xsl:attribute name="size">4</xsl:attribute>
@@ -307,8 +307,6 @@
 								</option>
 							</xsl:for-each>
 						</select> 
-							X <input type="text" length="4" size="4"
-						name="BIOSPECIMEN_intMultiple" value="1"/>
 						
 					</td>
 
@@ -375,6 +373,21 @@
 			</td-->
 					<td id="neuragenix-end-spacer"/>
 				</tr>
+<tr>
+					<td id="neuragenix-form-row-input-label-required"
+						class="neuragenix-form-required-text"/>
+					<td id="neuragenix-form-row-input-label" class="uportal-label">
+						Multiple: </td>
+					<td id="neuragenix-form-row-input" class="uportal-label">
+						<select class="uportal-input-text" name="BIOSPECIMEN_intMultiple"
+							tabindex="25">
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+						</select>
+					</td>
+</tr>
+
 
 				<tr>
 					<td id="neuragenix-form-row-input-label-required"
@@ -740,16 +753,16 @@
 								
 							</xsl:when>
 							<xsl:otherwise>
-								<input type="submit" name="save" value="Save" class="uportal-button"
-									tabindex="50"/>
+								<button dojoType="dijit.form.Button" onclick="document.forms.biospecimen_form.submit()">Save</button>
 
 							</xsl:otherwise>
 						</xsl:choose>
 						<!-- XXX: agus - unlock sub biospecimen type -->
-						<input type="button" name="clear" value="Clear" tabindex="51"
+						<button dojoType="dijit.form.Button" onclick="javascript:confirmClear('{$baseActionURL}?current=biospecimen_add&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intParentID={$intBiospecParentID}&amp;BIOSPECIMEN_strParentID={$strBiospecParentID}&amp;module=core&amp;action=add_biospecimen')">Clear</button>
+						<!-- <input type="button" name="clear" value="Clear" tabindex="51"
 							class="uportal-button"
 							onclick="javascript:confirmClear('{$baseActionURL}?current=biospecimen_add&amp;intInternalPatientID={$intInternalPatientID}&amp;BIOSPECIMEN_intParentID={$intBiospecParentID}&amp;BIOSPECIMEN_strParentID={$strBiospecParentID}&amp;module=core&amp;action=add_biospecimen')"
-						/>
+						/>-->
 					</td>
 				</tr>
 			</table>
