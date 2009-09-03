@@ -324,7 +324,7 @@ public class BiospecimenCore {
 					biospecimenid = twoyear + seqno + sampleCode;
 				else
 				 biospecimenid = twoyear + studyCode + seqno + sampleCode;
-					System.err.println("Biospecimen ID starting at "+ biospecimenid);
+					System.out.println("Biospecimen ID starting at "+ biospecimenid);
 				return BiospecimenUtilities.getNewSubBiospecimenStringID(query,
 						biospecimenid, 0);
 
