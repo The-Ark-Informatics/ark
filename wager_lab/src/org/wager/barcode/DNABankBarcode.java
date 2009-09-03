@@ -98,6 +98,7 @@ public class DNABankBarcode extends AbstractBarcodeEngine {
 
 		sb.append("\n");
 		sb.append("D14\n");
+		sb.append("q457\n");
 		sb.append("N\n");
 		sb.append("b200,15,D,h3,\"" + aBarcode + "\"\n");
 		sb.append("A100,20,0,2,1,1,N,\"" + aBarcode.substring(0, indexOfnum)

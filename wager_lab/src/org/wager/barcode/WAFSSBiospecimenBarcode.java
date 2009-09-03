@@ -30,7 +30,7 @@ public class WAFSSBiospecimenBarcode extends DNABankBarcode {
 		String barcode = b.getValue("BIOSPECIMENID");
 		String sampleType = b.getValue(SAMPLE_TYPE).trim();
 		System.out.println("**"+sampleType+"**");
-		if (sampleType.equals("Frozen Lymphocytes (F)")) {
+		if (sampleType.equals("Frozen Lymphocytes (F)") || sampleType.equals("Transformed lymphoblasts (T)")) {
 			printLNBarcode(b,sb);
 		}
 		else {
@@ -42,6 +42,7 @@ public class WAFSSBiospecimenBarcode extends DNABankBarcode {
 				// response.setContentType("application/pdf");
 
 				sb.append("\n");
+				sb.append("q457\n");
 				sb.append("D15\n");
 				sb.append("N\n");
 				// On rectangle label
@@ -84,18 +85,25 @@ public class WAFSSBiospecimenBarcode extends DNABankBarcode {
 	{
 		
 		String aBarcode = b.getValue(BIOSPECIMEN_ID);
-		String dateOfSample = b.getValue("SAMPLE_DATE");
+		String dateOfSample = b.getValue("SAMPLEDATE");
 		String asrbno = b.getValue("ASBRNO");
-		
+		String familyid = b.getValue("FAMILYID");
+		String result="";
+		if (asrbno == null && familyid != null) {
+			result="F: "+familyid; 
+		}
+		else
+			result="A: "+ asrbno;
 		
 
 		sb.append("\n");
+		sb.append("R125,5\n");
 		sb.append("D14\n");
 		sb.append("N\n");
 		sb.append("b200,15,D,h3,\"" + aBarcode + "\"\n");
 		sb.append("A260,15,0,1,1,2,N,\"" + aBarcode + "\"\n");
 		sb.append("A260,45,0,1,1,2,N,\"" + dateOfSample + "\"\n");
-		sb.append("A260,75,0,1,1,2,N,\"" + asrbno + "\"\n");
+		sb.append("A260,75,0,1,1,2,N,\"" + result + "\"\n");
 		sb.append("P1\n");
 	}// end printBarcode()
 

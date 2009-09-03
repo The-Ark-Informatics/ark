@@ -38,14 +38,14 @@ public abstract class AbstractBarcodeEngine implements BarcodeEngine {
         			"order by biospecimenid");*/
 	    ResultSet rset = null;
 	    if (strDomain.equals("SINGLE_BIOSPECIMEN")) {
-	    	rset = stmt.executeQuery("select biospecimenid, sampletype, to_char(p.dob,'dd/mm/yyyy') dob from ix_biospecimen b, ix_patientv2 p " +
+	    	rset = stmt.executeQuery("select biospecimenid, sampletype,to_char(sampledate,'dd/mm/yyyy') sampledate, to_char(p.dob,'dd/mm/yyyy') dob, p.otherid,p.familyid from ix_biospecimen b, ix_patientv2 p " +
 					"where p.patientkey = b.patientkey " +
 					"and b.biospecimenkey = " + domainkey +
 					" and b.deleted=0 " +
         			"order by biospecimenid");
 	    }
 	    else 
-	     rset = stmt.executeQuery("select biospecimenid, to_char(p.dob,'dd/mm/yyyy') from ix_biospecimen b, ix_patientv2 p " +
+	     rset = stmt.executeQuery("select biospecimenid, sampletype,to_char(sampledate,'dd/mm/yyyy') sampledate, to_char(p.dob,'dd/mm/yyyy') dob , p.otherid,p.familyid from ix_biospecimen b, ix_patientv2 p " +
 					"where p.patientkey = b.patientkey " +
 					"and p.patientkey = " + domainkey +
 					" and b.deleted=0 " +
@@ -59,8 +59,15 @@ public abstract class AbstractBarcodeEngine implements BarcodeEngine {
     		String biospecimenid = rset.getString("BIOSPECIMENID");
 		String thisDob = rset.getString("DOB");
 		String sampleType = rset.getString("SAMPLETYPE");
+		String sampleDate = rset.getString("SAMPLEDATE");
+		String asrbno = rset.getString("OTHERID");
+		String familyid = rset.getString("FAMILYID");
 		BarcodeData b = new BarcodeData(biospecimenid,thisDob);
 		b.setValue(SAMPLE_TYPE, sampleType);
+		b.setValue("SAMPLEDATE",sampleDate);
+		b.setValue("ASRBNO",asrbno);
+		b.setValue("FAMILYID",familyid);
+		
     		ts.add(b);
     		
     		

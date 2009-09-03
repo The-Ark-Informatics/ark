@@ -1639,6 +1639,8 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 								+ "</hasCollection>");
 					}
 					rp.addXML(bcBiospecimen.getSearchCriteriaXML());
+					rp.addXML("<intStudyID>" + StudyUtilities.getStudyKeyFromPatient(Integer
+							.parseInt(strInternalPatientKey))+"</intStudyID>");
 					rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(
 							BiospecimenCore.DOMAIN_PATIENT,
 							htCurrentSearchCriteria, true, 0,
@@ -2194,7 +2196,10 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		// TODO Auto-generated method stub
 
 		AuthToken authToken = rp.getAuthToken();
+		//Default to single biospecimen if no other choice is made a priori.
+		if (runtimeData.getParameter("domain") == null) {
 		runtimeData.setParameter("domain", "SINGLE_BIOSPECIMEN");
+		}
 		return BarcodeManager.generateBarcode(authToken, runtimeData);
 
 	}
