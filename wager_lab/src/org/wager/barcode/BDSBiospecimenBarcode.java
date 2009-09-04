@@ -26,7 +26,7 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 		if (strDomain.equals("SINGLE_BIOSPECIMEN")) {
 			rset = stmt
 					.executeQuery("select biospecimenid, to_char(z.dob,'dd/mm/yyyy'),zi.data_value from ix_biospecimen b, zeus.subject z, zeus.subject_info zi, zeus.subject_info_field f  "
-							+ "where z.patientkey = b.patientkey "
+							+ "where z.subjectkey = b.patientkey "
 							+ "and b.biospecimenkey = "
 							+ domainkey
 							+ " and b.deleted=0 "
@@ -36,8 +36,8 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 		} else
 			rset = stmt
 					.executeQuery("select biospecimenid, to_char(p.dob,'dd/mm/yyyy') ,zi.data_value from ix_biospecimen b, zeus.subject z, zeus.subject_info zi, zeus.subject_info_field f  "
-							+ "where z.patientkey = b.patientkey "
-							+ "and z.patientkey = "
+							+ "where z.subjectkey = b.patientkey "
+							+ "and z.subjectkey = "
 							+ domainkey
 							+ " and b.deleted=0 "
 							+ "and zi.sifieldkey = f.sifieldkey and f.field_name ='BSN_BLOOD_ID' "
