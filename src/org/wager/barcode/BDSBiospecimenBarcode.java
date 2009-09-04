@@ -30,7 +30,8 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 							+ "and b.biospecimenkey = "
 							+ domainkey
 							+ " and b.deleted=0 "
-							+ "and zi.sifieldkey = f.sifieldkey and f.field_name ='BSN_BLOOD_ID' "
+							+ " and z.subjectkey = zi.subjectkey "
+							+ " and zi.sifieldkey = f.sifieldkey and f.field_name ='BSN_BLOOD_ID' "
 							+ "order by biospecimenid");
 
 		} else
@@ -40,6 +41,7 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 							+ "and z.subjectkey = "
 							+ domainkey
 							+ " and b.deleted=0 "
+							+ " and z.subjectkey = zi.subjectkey "
 							+ "and zi.sifieldkey = f.sifieldkey and f.field_name ='BSN_BLOOD_ID' "
 							+ "order by biospecimenid");
 
