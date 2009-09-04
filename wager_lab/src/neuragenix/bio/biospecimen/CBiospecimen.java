@@ -1639,8 +1639,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 								+ "</hasCollection>");
 					}
 					rp.addXML(bcBiospecimen.getSearchCriteriaXML());
-					rp.addXML("<intStudyID>" + StudyUtilities.getStudyKeyFromPatient(Integer
-							.parseInt(strInternalPatientKey))+"</intStudyID>");
+				
 					rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(
 							BiospecimenCore.DOMAIN_PATIENT,
 							htCurrentSearchCriteria, true, 0,
