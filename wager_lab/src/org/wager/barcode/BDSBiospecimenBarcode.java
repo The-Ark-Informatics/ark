@@ -36,7 +36,7 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 
 		} else
 			rset = stmt
-					.executeQuery("select biospecimenid, to_char(p.dob,'dd/mm/yyyy') ,zi.data_value from ix_biospecimen b, zeus.subject z, zeus.subject_info zi, zeus.subject_info_field f  "
+					.executeQuery("select biospecimenid, to_char(z.dob,'dd/mm/yyyy') ,zi.data_value from ix_biospecimen b, zeus.subject z, zeus.subject_info zi, zeus.subject_info_field f  "
 							+ "where z.subjectkey = b.patientkey "
 							+ "and z.subjectkey = "
 							+ domainkey
