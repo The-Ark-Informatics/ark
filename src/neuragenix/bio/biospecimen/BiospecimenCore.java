@@ -3342,6 +3342,9 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 			switch (intCallingDomain) {
 			case DOMAIN_PATIENT:
 				strXML.append("<callingDomain>patient</callingDomain>");
+				String strPatientKey = (String) htKeyCriteria.get("BIOSPECIMEN_intPatientID");
+				int intPatientKey = Integer.parseInt(strPatientKey);
+				strXML.append("<intStudyID>"+StudyUtilities.getStudyKeyFromPatient(intPatientKey)+"</intStudyID>");
 				strXML.append(PatientUtilities.getPatientDetailsXML(
 						(String) htKeyCriteria.get("BIOSPECIMEN_intPatientID"),
 						authToken));
