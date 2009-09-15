@@ -49,9 +49,13 @@ public class BDSBiospecimenBarcode extends DNABankBarcode {
 
 		{
 
+			
 			String biospecimenid = rset.getString(1);
 			String thisDob = rset.getString(2);
+			if (thisDob == null) thisDob = new String("");
+			
 			String bsn_id = rset.getString(3);
+			if (bsn_id == null) bsn_id= new String("");
 			BarcodeData b = new BarcodeData(biospecimenid, thisDob);
 			b.setValue("BSN_ID", bsn_id);
 			ts.add(b);
