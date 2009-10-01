@@ -30,7 +30,7 @@ public class WAFSSBiospecimenBarcode extends DNABankBarcode {
 		String barcode = b.getValue("BIOSPECIMENID");
 		String sampleType = b.getValue(SAMPLE_TYPE).trim();
 		System.out.println("**"+sampleType+"**");
-		if (sampleType.equals("Frozen Lymphocytes (F)") || sampleType.equals("Transformed lymphoblasts (T)")) {
+		if (sampleType.equalsIgnoreCase("Frozen Lymphocytes (F)") || sampleType.equalsIgnoreCase("Transformed lymphoblasts (T)")) {
 			printLNBarcode(b,sb);
 		}
 		else {

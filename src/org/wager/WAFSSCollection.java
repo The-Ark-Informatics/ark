@@ -6,7 +6,6 @@
  * @author Chris Ellis
  */
 package org.wager ;
-import java.io.IOException;
 import java.io.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -37,10 +36,8 @@ public class WAFSSCollection extends HttpServlet
 	
 		try
 		{
-			OracleDataSource ods = new OracleDataSource();
-	            	ods.setURL("jdbc:oracle:thin:wagerlab/veTum1n@172.16.1.100:1521:PROD");
-		        Connection conn = ods.getConnection();
-			System.err.println("Connected to Oracle OK");
+			Connection conn = DriverManager.getConnection("jdbc:poolman://oracle");
+			
 	
 		       	Statement stmt = conn.createStatement();
             		ResultSet rset = stmt.executeQuery(
