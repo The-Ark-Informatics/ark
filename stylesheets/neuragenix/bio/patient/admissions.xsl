@@ -523,7 +523,7 @@ xmlns:url="http://www.jclark.com/xt/java/java.net.URLEncoder" exclude-result-pre
                                                         <input valign="left" type="button" name="deleteAdmission" value="Delete" class="uportal-button" onclick="javascript:confirmDelete('{$baseActionURL}?action=admissions&amp;deleteAdmission=true&amp;ADMISSIONS_intAdmissionkey={$ADMISSIONS_intAdmissionkey}&amp;ADMISSIONS_strAdmissionID={$strAdmissionID}&amp;PATIENT_intInternalPatientID={$PATIENT_intInternalPatientID}')"/>
                                                 </td>
                                                 <xsl:if test="ADMISSIONS_intStudyID=17">
-									<td><input type="button" class="uportal-button" onclick="document.location.href='/WAFSSAdmissBarcode.prn?patientkey={$PATIENT_intInternalPatientID}&amp;admissionid={$strAdmissionID}'" value="Print Barcode"></input></td>
+									<td><input type="button" class="uportal-button" onclick="document.location.href='/wagerlab/WAFSSAdmissBarcode.prn?patientkey={$PATIENT_intInternalPatientID}&amp;admissionid={$strAdmissionID}'" value="Print Barcode"></input></td>
 								</xsl:if>
                                                 <td width="65%" align="right" >
                                                         <input type="button" name="editAdmission" value="Edit" class="uportal-button" onclick="javascript:editAdmissions('{$baseActionURL}?action=admissions&amp;editAdmission=true&amp;ADMISSIONS_intAdmissionkey={$ADMISSIONS_intAdmissionkey}&amp;PATIENT_intInternalPatientID={$PATIENT_intInternalPatientID}')"/>

@@ -9,6 +9,7 @@
     <xsl:param name="smartformChannelURL">smartformChannelURL_false</xsl:param>
     <xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
     <xsl:param name="baseWorkerURL"></xsl:param>
+        <xsl:param name="barcodeURL"></xsl:param>
     <xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
     <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:param name="smartformChannelTabOrder">smartformChannelTabOrder</xsl:param>
@@ -1506,7 +1507,7 @@ comments.value = commentsval;
                                     <tr>
                                     <td>
                                         
-                                        <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?studykey={$intBiospecStudyID}&amp;domainkey={$intBiospecimenID}'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
+                                        <a class="button" href="{$barcodeURL}?studykey={$intBiospecStudyID}&amp;domainkey={$intBiospecimenID}&amp;x=.prn" onclick="this.blur()"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                         <!--<xsl:choose>
                                             <xsl:when test="$intBiospecStudyID=17">
                                                 <xsl:choose>
