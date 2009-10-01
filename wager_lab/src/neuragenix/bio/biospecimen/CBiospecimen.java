@@ -250,9 +250,13 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		 * "smartformChannelTabOrder", SessionManager.getTabOrder(
 		 * rp.getAuthToken(), "CSmartform") );
 		 */
-
-		xslt.setStylesheetParameter("baseWorkerURL", runtimeData
-				.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true));
+		String baseWorkerURL = runtimeData
+		.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true);
+		String barcodeURL = baseWorkerURL.replaceFirst("uP$", "prn");
+		
+		xslt.setStylesheetParameter("baseWorkerURL", baseWorkerURL);
+		xslt.setStylesheetParameter("barcodeURL", barcodeURL);
+		
 		xslt.setTarget(out);
 
 		// do the deed
@@ -776,7 +780,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 											}
 											lckBiospecimen.unlockWrites();
 										} else
-											strResult = "Only three copies are allowed.";
+											strResult = "Only ten copies are allowed.";
 									}
 								} else {
 
@@ -2161,6 +2165,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		} catch (NamingException e) {
 			LogService.log(LogService.ERROR, e);
 		}
+		
 
 		SessionManager.addLockRequestSession(strSessionUniqueID);
 
@@ -2180,13 +2185,18 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		// TODO Auto-generated method stub
 		return new String("text/prn");
 	}
+	
+	
 
 	@Override
 	public Map getHeaders() {
 		// TODO Auto-generated method stub
 		Map headers = new HashMap();
-		headers.put("Content-Disposition",
-				"attachment; filename=\"Barcode.prn\"");
+		headers.put("Content-Type","text/prn");
+		headers.put("X-Content-Type-Options","nosniff");
+	//headers.put("Content-Disposition",
+		//	"attachment; filename=\"Barcode.prn\"");
+		
 		return headers;
 	}
 
