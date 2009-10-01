@@ -92,7 +92,10 @@
     <servlet-class>org.jasig.portal.WelcomeServlet</servlet-class>
     <load-on-startup>5</load-on-startup>
   </servlet>
-
+<servlet>
+    <servlet-name>WAFSSCollection</servlet-name>
+    <servlet-class>org.wager.WAFSSCollection</servlet-class>
+  </servlet>
   <servlet>
     <servlet-name>Authentication</servlet-name>
     <servlet-class>org.jasig.portal.AuthenticationServlet</servlet-class>
@@ -115,7 +118,10 @@
     <servlet-class>Biogenix.genix.workflow.WorkflowServlet</servlet-class>
   </servlet-->
   <!-- End Biogenix -->
-
+<servlet-mapping>
+    <servlet-name>WAFSSCollection</servlet-name>
+    <url-pattern>/WAFSSAdmissBarcode.prn</url-pattern>
+  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>DisplayChart</servlet-name>
     <url-pattern>/DisplayChart</url-pattern>
@@ -143,8 +149,12 @@
   <servlet-mapping>
     <servlet-name>uPortal</servlet-name>
     <url-pattern>*.uP</url-pattern>
+  
   </servlet-mapping>
-
+<servlet-mapping>
+    <servlet-name>uPortal</servlet-name>
+  <url-pattern>*.prn</url-pattern>
+ </servlet-mapping>
   <servlet-mapping>
     <servlet-name>WelcomeServlet</servlet-name>
     <url-pattern>/Welcome</url-pattern>
