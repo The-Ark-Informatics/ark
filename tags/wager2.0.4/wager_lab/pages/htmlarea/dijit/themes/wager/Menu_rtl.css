@@ -1,0 +1,8 @@
+
+.dijitRtl .wager .dijitMenuItem .dijitMenuItemIcon {
+	padding-left: 3px;
+	padding-right: 0px;
+}
+.dijitRtl .wager .dijitMenuItem .dijitMenuExpand {
+	background-position: 0px top;
+}
