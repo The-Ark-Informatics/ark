@@ -1300,6 +1300,91 @@ public class QueryChannel
    
    /** Build XML string for lov fields
     */
+   public static String buildAJAXLOVXMLFile(String strFieldName, String strValue, int intStudyKey,String parentValue) throws Exception
+   {
+      
+      String strXML = "";
+      boolean blIsInList = false;
+      
+      try
+      {
+         DBField field = (DBField) DatabaseSchema.getFields().get(strFieldName);
+         String strLOVType = field.getLOVType();
+         DALQuery query = new DALQuery();
+         if (parentValue == null) {
+    
+    
+         
+            query.setDomain("LOV", null, null, null);
+            Vector vtFields = DatabaseSchema.getFormFields("view_listofvalues");
+            query.setFields(vtFields, null);
+            query.setWhere(null, 0, "LOV_strLOVType", "=", strLOVType, 0, DALQuery.WHERE_HAS_VALUE);
+            if (intStudyKey != -1){
+            	query.setWhere("AND", 1, "LOV_intStudyID", "=", ""+intStudyKey, 0, DALQuery.WHERE_HAS_VALUE);
+            	query.setWhere("OR", 0, "LOV_intStudyID", "=", "0", 1, DALQuery.WHERE_HAS_VALUE);
+            }
+            query.setWhere("AND", 0, "LOV_strLOVParentValue", "IS NULL","IS NULL", 0, DALQuery.WHERE_HAS_NULL_VALUE);
+            query.setWhere("AND", 0, "LOV_intDeleted", "=", "0", 0, DALQuery.WHERE_HAS_VALUE);
+            query.setOrderBy("LOV_intLOVSortOrder", "ASC");
+    }
+    else
+    {
+ 
+          query.setDomain("LOV", null, null, null);
+          Vector vtFields = DatabaseSchema.getFormFields("view_listofvalues");
+          query.setFields(vtFields, null);
+          query.setWhere(null, 0, "LOV_strLOVType", "=", strLOVType, 0, DALQuery.WHERE_HAS_VALUE);
+          query.setWhere("AND", 0, "LOV_strLOVParentValue", "=", parentValue, 0, DALQuery.WHERE_HAS_VALUE);
+          query.setWhere("AND", 0, "LOV_intDeleted", "=", "0", 0, DALQuery.WHERE_HAS_VALUE);
+          query.setOrderBy("LOV_intLOVSortOrder", "ASC");
+    
+    }
+            ResultSet rsResultSet = query.executeSelect();
+            while (rsResultSet.next())
+            {
+               String strTempValue = rsResultSet.getString("LOV_strLOVValue");
+               
+               if (strTempValue == null)
+               {
+               }
+               strXML += "<" + "lov"+ " selected=\"";
+               
+               
+               if (strValue == null)
+                  strXML += "0";
+               //if (strValue == null && rsResultSet.isFirst())
+               //    strXML += "1";
+               else if(strValue.equals(strTempValue))
+               {
+                  strXML += "1";
+                  blIsInList = true;
+               }
+               else
+                  strXML += "0";
+               
+               strXML += "\">"+ "<name>"+Utilities.cleanForXSL(strTempValue)+"</name>";
+               strXML += "</lov>";
+            }
+            
+            
+            rsResultSet.close();
+            rsResultSet = null;
+            
+          
+      }
+      catch (Exception e)
+      {
+         LogService.instance().log(LogService.ERROR, "Unknown error in QueryChannel - " + e.toString(), e);
+         throw new Exception("Unknown error in QueryChannel - " + e.toString());
+      }
+      
+      return strXML;
+   }
+   
+   
+   
+   /** Build XML string for lov fields
+    */
    public static String buildLOVXMLFile(String strFieldName, String strValue, int intStudyKey) throws Exception
    {
       

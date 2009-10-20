@@ -24,12 +24,14 @@ import org.jasig.portal.UPFileSpec;
 import org.jasig.portal.utils.XSLT;
 import org.wager.barcode.BarcodeManager;
 import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
 import org.jasig.portal.security.*;
 import org.jasig.portal.services.LogService;
 
 import org.jasig.portal.PropertiesManager;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,6 +55,7 @@ import neuragenix.common.*;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.NotContextException;
+import javax.xml.transform.Transformer;
 
 import neuragenix.bio.biospecimen.batchactions.BatchCreationManager;
 import neuragenix.bio.utilities.*;
@@ -189,7 +192,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 			}
 		}
 		xslt.setXML(rp.getXML());
-
+if (!rp.isRawXMLResponse()) {
 		// Specify the stylesheet we're going to use
 		xslt.setXSL("CBiospecimens.ssl", rp.getStylesheet(), runtimeData
 				.getBrowserInfo());
@@ -250,13 +253,13 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		 * "smartformChannelTabOrder", SessionManager.getTabOrder(
 		 * rp.getAuthToken(), "CSmartform") );
 		 */
-		String baseWorkerURL = runtimeData
-		.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true);
+		String baseWorkerURL = runtimeData.getBaseWorkerURL(
+				UPFileSpec.FILE_DOWNLOAD_WORKER, true);
 		String barcodeURL = baseWorkerURL.replaceFirst("uP$", "prn");
-		
+		String ajaxURL = runtimeData.getBaseActionURL(true);
 		xslt.setStylesheetParameter("baseWorkerURL", baseWorkerURL);
 		xslt.setStylesheetParameter("barcodeURL", barcodeURL);
-		
+		xslt.setStylesheetParameter("ajaxURL", barcodeURL);
 		xslt.setTarget(out);
 
 		// do the deed
@@ -264,7 +267,17 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		xslt.transform();
 
 		// destroy the old XML
+}
+else {
+	String xml = rp.getXML();
+	 try {
+		out.characters(xml.toCharArray(),0,xml.length() );
+	} catch (SAXException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
+}
 		rp.clearXML();
 
 	}
@@ -406,6 +419,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 			 * 
 			 * rp.setStylesheet(BiospecimenCore.ACTION_BIOSPECIMEN_SEARCH);
 			 */
+		
 
 		} else if (strModule.equalsIgnoreCase("BATCH_CREATION")) {
 			if (bcreatManager == null)
@@ -1517,7 +1531,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 					int intExpandID = Integer.parseInt(runtimeData
 							.getParameter("expandID"));
 					if (htCurrentSearchCriteria != null) // not that it should
-															// be
+					// be
 					{
 						String strCurrentSearchPage = runtimeData
 								.getParameter("PAGING_currentPage");
@@ -1563,7 +1577,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 				if (strAction.equals("close_node")) {
 					int intExpandID = -1;
 					if (htCurrentSearchCriteria != null) // not that it should
-															// be
+					// be
 					{
 						String strCurrentSearchPage = runtimeData
 								.getParameter("PAGING_currentPage");
@@ -1643,7 +1657,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 								+ "</hasCollection>");
 					}
 					rp.addXML(bcBiospecimen.getSearchCriteriaXML());
-				
+
 					rp.addXML(bcBiospecimen.getBiospecimenSearchResultsXML(
 							BiospecimenCore.DOMAIN_PATIENT,
 							htCurrentSearchCriteria, true, 0,
@@ -1838,7 +1852,7 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 					QueryChannel.updateDateValuesInRuntimeData(vtSearchFields,
 							runtimeData);
 					String rtValue = runtimeData.getParameter(fieldName);
-				
+
 					if (rtValue != null && (!rtValue.equals(""))) {
 						if (fieldName.equals("BIOSPECIMEN_strBiospecimenID"))
 							rtValue = rtValue.toUpperCase();
@@ -1858,8 +1872,8 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 						0, this.intCurrentPagingSize, false, -1));
 				long finishedsearch = System.currentTimeMillis();
 
-				//rp.addXML(StudyUtilities.getListOfStudiesXML(rp.getAuthToken(),
-				//		true));
+				// rp.addXML(StudyUtilities.getListOfStudiesXML(rp.getAuthToken(),
+				// true));
 				rp.addXML(bcBiospecimen.getSearchCriteriaXML());
 				rp.addXML("</biospecimen>");
 				long finishedstudylist = System.currentTimeMillis();
@@ -2165,7 +2179,6 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 		} catch (NamingException e) {
 			LogService.log(LogService.ERROR, e);
 		}
-		
 
 		SessionManager.addLockRequestSession(strSessionUniqueID);
 
@@ -2183,40 +2196,69 @@ public class CBiospecimen implements IChannel, IMimeResponse {
 	@Override
 	public String getContentType() {
 		// TODO Auto-generated method stub
-		return new String("text/prn");
+		
+		String strModule = runtimeData.getParameter("module");
+		if (strModule == null) {
+			return new String("text/prn");
+			}
+			return "text/xml";
 	}
-	
-	
 
 	@Override
 	public Map getHeaders() {
 		// TODO Auto-generated method stub
 		Map headers = new HashMap();
-		headers.put("Content-Type","text/prn");
-		headers.put("X-Content-Type-Options","nosniff");
-	//headers.put("Content-Disposition",
-		//	"attachment; filename=\"Barcode.prn\"");
-		
+	
+		// headers.put("Content-Disposition",
+		// "attachment; filename=\"Barcode.prn\"");
+
 		return headers;
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		// TODO Auto-generated method stub
-
+		
 		AuthToken authToken = rp.getAuthToken();
-		//Default to single biospecimen if no other choice is made a priori.
+		// Default to single biospecimen if no other choice is made a priori.
+		String strModule = runtimeData.getParameter("module");
+
+		if (strModule != null && strModule.equalsIgnoreCase("AJAX")) {
+			try {
+				String strParentType = runtimeData.getParameter("parentType");
+				rp.clearXML();
+				String xml = "<bioform><fieldset><field><key>23</key><label>DNA Concentration</label><type>number</type><value>130.0</value><length>5</length></field><field><key>34</key><label>OD 230/260</label><type>number</type><value>1.6</value><length>5</length></field></fieldset><fieldset><field><key>56</key><label>Sample Date</label><type>date</type><length>5</length></field><field><key>67</key><label>Anticoagulant</label><type>dropdown</type><value >EDTA</value><value selected='1'>Lithium Heparin</value></field></fieldset></bioform>";
+				XSLT transformer = new XSLT(this);
+				transformer.setXML(xml);	
+				ByteArrayOutputStream out = new ByteArrayOutputStream();
+				transformer.setXSL("bioform.xsl");
+				transformer.setTarget(out);
+				transformer.transform();
+				byte[] html = out.toByteArray();
+				return new ByteArrayInputStream(html);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			String xml = rp.getXML();
+			rp.clearXML();
+			return null;
+		}
+		else {
 		if (runtimeData.getParameter("domain") == null) {
-		runtimeData.setParameter("domain", "SINGLE_BIOSPECIMEN");
+			runtimeData.setParameter("domain", "SINGLE_BIOSPECIMEN");
 		}
 		return BarcodeManager.generateBarcode(authToken, runtimeData);
-
+		}
 	}
 
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
+		String strModule = runtimeData.getParameter("module");
+		if (!strModule.equalsIgnoreCase("AJAX")) {
 		return "Barcode.prn";
+		}
+		return "result.xml";
 	}
 
 }

@@ -6,6 +6,7 @@
 	<xsl:output method="html" indent="no"/>
 	<xsl:param name="inventoryChannelURL">inventoryChannelURL_false</xsl:param>
 	<xsl:param name="patientChannelTabOrder">patientChannelTabOrder</xsl:param>
+	<xsl:param name="ajaxURL">patientChannelTabOrder</xsl:param>
 	<xsl:variable name="infopanelImagePath">media/neuragenix/infopanel</xsl:variable>
 	<xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
 	<xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
@@ -292,7 +293,7 @@
 					
 						
 					<td id="neuragenix-form-row-input-input" class="uportal-label"  >
-						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text">								
+						<select  name="BIOSPECIMEN_strSampleType" tabindex="22"	class="uportal-input-text" onBlur="ajaxDiv()">								
 									<xsl:attribute name="multiple"></xsl:attribute>
 									<xsl:attribute name="size">4</xsl:attribute>
 							<xsl:for-each select="BIOSPECIMEN_strSampleType">
@@ -309,6 +310,29 @@
 						</select> 
 						
 					</td>
+  <script type="text/javascript">
+    function ajaxDiv() { 
+      dojo.xhrGet( { 
+        // The following URL must match that used to test the server.
+        url: "<xsl:value-of select="$ajaxURL"/>?module=AJAX", 
+        handleAs: "text",
+
+        timeout: 5000, // Time in milliseconds
+
+        // The LOAD function will be called on a successful response.
+        load: function(response, ioArgs) { 
+          dojo.byId("cargo").innerHTML = response;
+          return response;
+        },
+
+        // The ERROR function will be called in an error case.
+        error: function(response, ioArgs) {
+          console.error("HTTP status code: ", ioArgs.xhr.status); 
+          return response; 
+          }
+        });
+      }
+  </script>
 
 					<!--<xsl:value-of select="BIOSPECIMEN_strSpeciesDisplay"/>: -->
 					<input type="hidden" name="BIOSPECIMEN_strSpecies" value="Human"/>
@@ -747,6 +771,7 @@
 				<!-- subtype table end here -->
 			</table>
 			<input type="hidden" value="1" name="BIOSPECIMEN_strWADB"/>
+			<div id="cargo"/>
 			<table width="100%">
 				<tr>
 					<td width="1%"/>

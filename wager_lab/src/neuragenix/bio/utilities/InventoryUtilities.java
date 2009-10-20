@@ -12,6 +12,8 @@ package neuragenix.bio.utilities;
  */
 
 import neuragenix.dao.*;
+import neuragenix.dao.exception.DAOQueryInvalidDomain;
+import neuragenix.dao.exception.DAOQueryInvalidField;
 import neuragenix.common.*;
 import neuragenix.security.AuthToken;
 import java.sql.ResultSet;
@@ -45,6 +47,45 @@ public class InventoryUtilities
    /** Creates a new instance of InventoryUtilities */
    public InventoryUtilities()
    {
+   }
+   /** Returns -1 if mixed study box, else returns the studykey **/
+   public static int isMixedBox(int intTrayKey) {
+	   int intReturnValue;
+	   DALQuery query = new DALQuery();    
+	   try {
+		query.setDomain("BIOSPECIMEN", null, null, null);
+	    query.setDomain("CELL", "BIOSPECIMEN_intCellID", "CELL_intCellID", "INNER JOIN");
+	    query.setWhere(null, 0, "CELL_intTrayID", "=", intTrayKey + "", 0, DALQuery.WHERE_HAS_VALUE);
+	    query.setWhere("AND",0,"CELL_intDeleted", "=", "0",0,DALQuery.WHERE_HAS_VALUE);
+	   query.setField("BIOSPECIMEN_intStudyKey",null);
+	   query.setDistinctQuery();
+	   System.out.println(query.convertSelectQueryToString());
+	   ResultSet rsResultSet = query.executeSelect();
+	    
+	    if (rsResultSet.next())
+	    {
+	    	intReturnValue = rsResultSet.getInt(1);
+	    	 if (rsResultSet.next()) {
+				 return -1;
+			 }
+			 else
+				 return intReturnValue;
+	    	
+	    }
+		return -1;
+	
+	   
+	} catch (DAOQueryInvalidDomain e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (DAOQueryInvalidField e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	  catch (Exception e) { e.printStackTrace(); return -1; }
+	   
+	   
+	   return -1;
    }
    
    public static int getSiteKeyforBiospecimen(int intBiospecimenKey) {

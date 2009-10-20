@@ -8,6 +8,7 @@ drop table ix_barcodeengine;
 	 CONSTRAINT "IX_BARCODEENGINE_PK" PRIMARY KEY ("BARCODEKEY")
  );
 
+CREATE SEQUENCE  "WAGERLAB"."IX_BARCODEENGINE_SEQ" ;
   CREATE OR REPLACE TRIGGER "WAGERLAB"."IX_BARCODEENGINE_PK" before insert on "IX_BARCODEENGINE"    for each row begin     if inserting then       if :NEW."BARCODEKEY" is null then          select IX_BARCODEENGINE_SEQ.nextval into :NEW."BARCODEKEY" from dual;       end if;    end if; end;
 /
 ALTER TRIGGER "WAGERLAB"."IX_BARCODEENGINE_PK" ENABLE;

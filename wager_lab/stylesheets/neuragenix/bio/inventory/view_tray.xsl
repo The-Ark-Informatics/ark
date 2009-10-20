@@ -7,6 +7,7 @@
     <xsl:output method="html" indent="no"/>
     <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:param name="downloadURL">downloadURL_false</xsl:param>
+    <xsl:param name="barcodeURL"></xsl:param>
     <xsl:param name="nodeId">nodeId_false</xsl:param>
     <xsl:param name="baseWorkerURL"></xsl:param>
     <xsl:param name="biospecimenChannelURL">biospecimenChannelURL_false</xsl:param>
@@ -183,13 +184,13 @@
                                                       <td>
                                                           <xsl:if test="hasEditRights">
                                                               <xsl:if test="TRAY_intTrayType=1">
-                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?domainkey={$TRAY_intTrayID}&amp;studykey=0'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$barcodeURL}?domainkey={$TRAY_intTrayID}&amp;studykey=0'"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/> Print Barcode</span></a>
                                                                   </xsl:if>
-                                                              
+                                                              <xsl:variable name="studyBox"><xsl:value-of select="studyBox"/></xsl:variable>
                                                               <a class="button" href="{$baseActionURL}?uP_root=root&amp;current=add_transfer&amp;TRANSFER_intTrayID={$TRAY_intTrayID}" onclick="this.blur();"><span><img src="/wagerlab/media/neuragenix/icons/transfer.png" height="14" align="top" border="0"/>Transfer</span></a>  
-                                         
-                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseWorkerURL}?domainkey={$TRAY_intTrayID}&amp;domain=INVENTORY&amp;studykey=0';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print all Barcodes </span></a>  
-                                                          
+                                         					<xsl:if test="$studyBox != -1">
+                                                              <a class="button" href="#" onclick="this.blur(); document.location.href='{$barcodeURL}?domainkey={$TRAY_intTrayID}&amp;domain=INVENTORY&amp;studykey={$studyBox}';"><span><img src="/wagerlab/media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>Print all Barcodes </span></a>  
+                                                          </xsl:if>
                                                               <a class="button" href="#" onclick="this.blur(); window.open('{$downloadURL}?uP_root={$nodeId}&amp;file_name={$strReportName}&amp;property_name=neuragenix.bio.search.ExportFileLocation&amp;activity_required=inventory_view')"><span><img src="/wagerlab/media/neuragenix/icons/report.png" height="14" align="top" border="0"/> <xsl:value-of select="$boxorplate"/> Report</span></a>
                                                            
                                                               <a class="button" href="#" onclick="this.blur(); document.location.href='{$baseActionURL}?uP_root=root&amp;current=batch_allocate&amp;TRAY_intTrayID={$TRAY_intTrayID}'"><span><img src="/wagerlab/media/neuragenix/icons/scanner.gif" height="14" align="top" border="0"/>Batch Allocate</span></a>

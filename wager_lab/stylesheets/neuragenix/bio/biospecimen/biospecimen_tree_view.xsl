@@ -26,6 +26,7 @@
     <xsl:param name="inventoryChannelTabOrder"></xsl:param>
     <xsl:param name="biospecimenChannelTabOrder"></xsl:param>
      <xsl:param name="baseWorkerURL"></xsl:param>
+       <xsl:param name="barcodeURL"></xsl:param>
     <xsl:variable name="infopanelImagePath">media/neuragenix/infopanel</xsl:variable>
     <xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
     <xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
@@ -100,7 +101,7 @@
                        
                         <a class="button" name="save" href="{$baseActionURL}?module=core&amp;action=add_biospecimen&amp;PATIENT_intInternalPatientID={/biospecimen/PATIENT_intInternalPatientID}&amp;BIOSPECIMEN_intPatientID={/biospecimen/PATIENT_intInternalPatientID}" onclick="this.blur();"><span><img src="media/neuragenix/icons/disk.png" height="14" align="top" border="0"/> Add new biospecimen</span></a>  
                         
-                        <a class="button" name="print" href="{$baseWorkerURL}?studykey={$intStudyID}&amp;domainkey={/biospecimen/PATIENT_intInternalPatientID}&amp;domain=MULTIPLE_BIOSPECIMEN"><span><img src="media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>  Print all barcodes</span></a>  
+                        <a class="button" name="print" href="{$barcodeURL}?studykey={$intStudyID}&amp;domainkey={/biospecimen/PATIENT_intInternalPatientID}&amp;domain=MULTIPLE_BIOSPECIMEN"><span><img src="media/neuragenix/icons/printer.png" height="14" align="top" border="0"/>  Print all barcodes</span></a>  
                         <br/>
                     </xsl:otherwise>
                 </xsl:choose>

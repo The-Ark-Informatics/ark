@@ -3376,6 +3376,15 @@ public class CInventory implements IChannel,IMimeResponse
             		strXML = strXML + "<hasEditRights>1</hasEditRights>";
             	if(authToken.getSiteList().contains(new Integer(newSiteTransferKey)))
             		strXML = strXML + "<hasSaveOnlyRights>1</hasSaveOnlyRights>";
+            	int intTrayID = -1;
+            	try {
+            		intTrayID =  Integer.valueOf(strTrayID).intValue();
+            		
+            	}
+            	catch(Exception e) {}
+            	int isMixedBox = InventoryUtilities.isMixedBox(intTrayID);
+            		strXML += "<studyBox>"+isMixedBox+"</studyBox>";
+            	
                 if(runtimeData.getParameter("strOrigin") != null)
                 {   //guesing where we were, very shitty
                     // -- To the person who wrote the above comment, swearing is not nice.
@@ -3736,6 +3745,10 @@ public class CInventory implements IChannel,IMimeResponse
         xslt.setStylesheetParameter("downloadURL", upfTmp.getUPFile());
     	xslt.setStylesheetParameter("baseWorkerURL", runtimeData
 				.getBaseWorkerURL(UPFileSpec.FILE_DOWNLOAD_WORKER, true));
+    	String baseWorkerURL = runtimeData.getBaseWorkerURL(
+				UPFileSpec.FILE_DOWNLOAD_WORKER, true);
+		String barcodeURL = baseWorkerURL.replaceFirst("uP$", "prn");
+		xslt.setStylesheetParameter("barcodeURL", barcodeURL);
         xslt.setStylesheetParameter("nodeId", SessionManager.getChannelID(strSessionUniqueID, "CDownload")); 
         // set the output Handler for the output.
         xslt.setTarget(out);

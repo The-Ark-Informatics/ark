@@ -28,6 +28,7 @@ public class NGXRuntimeProperties
     private AuthToken authToken = null;
     
     private boolean blSecurityError = false;
+    private boolean blRawXML = false;
 
     private IPerson ip;
     
@@ -95,10 +96,18 @@ public class NGXRuntimeProperties
     }
 
     
+    public void setRawXMLResponse(boolean rawXML) {
+    	this.blRawXML = rawXML;
+    }
     
+    public boolean isRawXMLResponse() {
+    	return this.blRawXML;
+    }
+    	
     public void setStylesheet(String strStylesheet)
     {
         this.strCurrentStylesheet = strStylesheet;
+        this.blRawXML = false;
     }
     
     public String getStylesheet()
