@@ -145,8 +145,12 @@ public abstract class AbstractBarcodeEngine implements BarcodeEngine {
 		}
 		public BarcodeData(String biospecimenid,String Dob) {
 			data = new Hashtable<String,String>();
+			if (biospecimenid != null)
 			data.put(BIOSPECIMEN_ID, biospecimenid);
+			if( Dob != null)
 			data.put(DATE_OF_BIRTH,Dob);
+			else
+				data.put(DATE_OF_BIRTH,"");
 		}
 		public void setValue(String param, String value){
 			String notNullValue = value;
