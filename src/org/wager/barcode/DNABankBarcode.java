@@ -8,6 +8,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.wager.barcode.AbstractBarcodeEngine.BarcodeData;
+
 import neuragenix.security.AuthToken;
 
 public class DNABankBarcode extends AbstractBarcodeEngine {
@@ -25,7 +27,11 @@ public class DNABankBarcode extends AbstractBarcodeEngine {
 				Vector<BarcodeData> ts = executeBiospecimenSelect(strDomain, domainKey);
 				for (Iterator<BarcodeData> i = ts.iterator(); i.hasNext();) {
 					BarcodeData b = (BarcodeData) i.next();
-					printBarcode(b, sb);
+					if (b.getValue(SAMPLE_TYPE).equals("Straw")) {
+						printStrawBarcode(b,sb);
+					}
+					else
+						printBarcode(b, sb);
 
 				}
 			} catch (SQLException sqle) {
@@ -39,7 +45,11 @@ public class DNABankBarcode extends AbstractBarcodeEngine {
 				Vector<BarcodeData> ts = executeTraySelect(domainKey);
 				for (Iterator<BarcodeData> i = ts.iterator(); i.hasNext();) {
 					BarcodeData b = (BarcodeData) i.next();
-					printBarcode(b, sb);
+					if (b.getValue(SAMPLE_TYPE).equals("Straw")) {
+						printStrawBarcode(b,sb);
+					}
+					else
+						printBarcode(b, sb);
 				}
 			} catch (ClassNotFoundException cnfe) {
 			}
@@ -111,4 +121,18 @@ public class DNABankBarcode extends AbstractBarcodeEngine {
 		sb.append("P1\n");
 	}// end printBarcode()
 
+	
+	public void printStrawBarcode(BarcodeData b, StringBuffer sb) {
+			// TODO Auto-generated method stub
+			sb.append("q401\n");
+			sb.append("D14\n");
+			sb.append("N\n");
+			sb.append("B30,0,0,1,1,2,23,N,\"" + b.getValue(BIOSPECIMEN_ID) + "\"\n");
+			sb.append("A230,0,0,1,1,1,N,\"" + b.getValue(BIOSPECIMEN_ID)+"\"\n");
+			sb.append("A230,15,0,1,1,1,N,\"" + b.getValue(DATE_OF_BIRTH)+"\"\n");
+			sb.append("P1\n");
+
+		
+	}
+	
 }// end Barcode
