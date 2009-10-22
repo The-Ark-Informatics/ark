@@ -1,3 +1,31 @@
+ function ajaxDiv() { 
+         dojo.byId("bioData")
+         .innerHTML='<div align="center"><img src="media/neuragenix/icons/ajax.gif" /></div>';
+      dojo.xhrGet( { 
+      
+        url: varAjaxURL, 
+        handleAs: "text",
+
+        timeout: 5000, // Time in milliseconds
+
+        // The LOAD function will be called on a successful response.
+        load: function(response, ioArgs) { 
+        var bioTable = dojo.byId("bioData");
+         bioTable.innerHTML=response;
+         dojo.parser.parse(bioTable);
+
+          return response;
+        },
+
+        // The ERROR function will be called in an error case.
+        error: function(response, ioArgs) {
+          console.error("HTTP status code: ", ioArgs.xhr.status); 
+          return response; 
+          }
+        });
+   
+      }
+
 
 function aliquotdialog() {
     

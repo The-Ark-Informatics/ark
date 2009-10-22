@@ -181,6 +181,11 @@
   </servlet-mapping-->  
   <!-- End Biogenix -->
 
+<persistence-context-ref>
+   <persistence-context-ref-name>labPersistence</persistence-context-ref-name>
+   <persistence-unit-name>labPersistence</persistence-unit-name>
+  </persistence-context-ref>
+
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>
@@ -193,6 +198,7 @@
     <exception-type>java.lang.Exception</exception-type>
     <location>/error.jsp</location>
   </error-page>
+  
 
   <taglib>
     <taglib-uri>http://www.tonbeller.com/wcf</taglib-uri>

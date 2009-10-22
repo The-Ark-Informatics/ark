@@ -23,6 +23,12 @@ import org.jasig.portal.PortalException;
 import org.jasig.portal.UPFileSpec;
 import org.jasig.portal.utils.XSLT;
 import org.wager.barcode.BarcodeManager;
+import org.wager.lims.biodata.Criteria;
+import org.wager.lims.biodata.CriteriaDAO;
+import org.wager.lims.biodata.Data;
+import org.wager.lims.biodata.DataHome;
+import org.wager.lims.biodata.Group;
+import org.wager.lims.biodata.GroupDAO;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.jasig.portal.security.*;
@@ -36,10 +42,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.StringBuffer;
+import java.math.BigDecimal;
 import java.sql.DriverManager;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.LinkedList;
@@ -2228,9 +2236,14 @@ else {
 				rp.clearXML();
 				String xml = "<bioform><fieldset><field><key>23</key><label>DNA Concentration</label><type>number</type><value>130.0</value><length>5</length></field><field><key>34</key><label>OD 230/260</label><type>number</type><value>1.6</value><length>5</length></field></fieldset><fieldset><field><key>56</key><label>Sample Date</label><type>date</type><length>5</length></field><field><key>67</key><label>Anticoagulant</label><type>dropdown</type><value >EDTA</value><value selected='1'>Lithium Heparin</value></field></fieldset></bioform>";
 				XSLT transformer = new XSLT(this);
-				transformer.setXML(xml);	
+				BioDataHandler bd = new BioDataHandler();
+				CriteriaDAO gd = new CriteriaDAO();
+				Criteria c = gd.findById(new BigDecimal(1));
+				List<Group> groups = c.getGroups();
+				
+				transformer.setXML(bd.getBioData(groups));	
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
-				transformer.setXSL("bioform.xsl");
+				transformer.setXSL("biodata.xsl");
 				transformer.setTarget(out);
 				transformer.transform();
 				byte[] html = out.toByteArray();
@@ -2261,4 +2274,7 @@ else {
 		return "result.xml";
 	}
 
+	
+	
+	
 }
