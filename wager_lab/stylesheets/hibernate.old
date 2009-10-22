@@ -13,5 +13,10 @@
 	<property name="hibernate.show_sql">true</property>
         <mapping resource="org/wager/biogenix/types/Biospecimen.hbm.xml" />
         <mapping resource="org/wager/biogenix/types/BioTransactions.hbm.xml" />
+        <mapping class="org.wager.lims.biodata.Data"/>
+         <mapping class="org.wager.lims.biodata.Field"/>
+          <mapping class="org.wager.lims.biodata.Group"/>
+           <mapping class="org.wager.lims.biodata.Type"/>
+            <mapping class="org.wager.lims.biodata.Unit"/>
     </session-factory>
 </hibernate-configuration>
