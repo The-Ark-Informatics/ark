@@ -3,11 +3,15 @@ package org.wager.lims.biodata;
 // Generated 20/10/2009 12:25:59 PM by Hibernate Tools 3.2.4.GA
 
 import java.math.BigDecimal;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -75,4 +79,16 @@ public class GroupDAO {
 			throw re;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Object[]> findFieldsinGroupWithData(int biokey, Group g) {
+		Query q = entityManager.createQuery("select f,d from Field f left join f.datas as d where d.biospecimenkey = :biokey and f in (:grouplist)");
+		q.setParameter("biokey", new BigDecimal(biokey));
+		q.setParameter("grouplist",g.getFields());
+		List<Object[]> objectList = q.getResultList();
+		log.debug("Fields with/without data: " + objectList.size());
+		return objectList;
+		
+	}
+	
 }

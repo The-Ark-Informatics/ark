@@ -114,6 +114,11 @@ public class BioDataHandler {
 		return doc.toString();
 	}
 	
+	public List<Object[]> findFieldsinGroupWithData(int biokey, Group g) {
+		GroupDAO gd = new GroupDAO();
+		return gd.findFieldsinGroupWithData(biokey, g);
+	}
+	
 	public String getBioData(List<Group> groups) {
 		XMLDocument doc = new XMLDocument();
 		XML bioform = new XML("bioform");
@@ -124,6 +129,8 @@ public class BioDataHandler {
 		log.debug("XML output is : " + doc.toString());
 		return doc.toString();
 	}
+	
+	
 	
 	
 

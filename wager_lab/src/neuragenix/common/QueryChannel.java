@@ -30,6 +30,8 @@ import org.jasig.portal.ChannelRuntimeData;
 import org.jasig.portal.services.LogService;
 import org.jasig.portal.PropertiesManager;
 
+import com.hp.hpl.jena.util.Log;
+
 // neuragenix packages
 import neuragenix.dao.DBField;
 import neuragenix.dao.DatabaseSchema;
@@ -492,8 +494,13 @@ public class QueryChannel
       String strResult = null;
       try
       {
-         
-         strResult = rdData.getParameter( strField + "_Hour") + ":" + rdData.getParameter( strField + "_Minute") + " " + rdData.getParameter( strField + "_AMPM");
+         String hour = rdData.getParameter( strField + "_Hour");
+         String minute = rdData.getParameter( strField + "_Minute");
+         String ampm = rdData.getParameter( strField + "_AMPM");
+         if (hour == null || minute == null || ampm == null)
+        	 strResult = null;
+         else 
+        	 strResult = hour + ":" + minute + " " + ampm;
          
       }
       catch(Exception e)
@@ -793,9 +800,13 @@ public class QueryChannel
                }
             }
             // if the field is a time type field
-            else if (field.getDataType() == DBMSTypes.TIME_TYPE)
-               strXML += buildTimeDropDownXMLFile(strFieldName, rdData.getParameter(strFieldName));
+            else if (field.getDataType() == DBMSTypes.TIME_TYPE) {
+            	
+            	
+            		strXML += buildTimeDropDownXMLFile(strFieldName, rdData.getParameter(strFieldName));
             // normal field
+               
+            }
             else if (rdData.getParameter(strFieldName) != null)
                strXML += "<" + strFieldName + ">" + Utilities.cleanForXSL(rdData.getParameter(strFieldName)) + "</" + strFieldName + ">";
          }
@@ -2460,8 +2471,9 @@ public class QueryChannel
     */
    public static String buildTimeDropDownXMLFile(String strFieldName, String strTime)
    {
+	    LogService.instance().log(LogService.DEBUG, "QueryChannel:buildTimeDropXMLFile - '" + strTime+"'");
       StringBuffer strXML = new StringBuffer();
-      
+    try{  
       if (strTime == null)
       {
          strXML.append("<" + strFieldName + "></" + strFieldName + ">");
@@ -2533,6 +2545,11 @@ public class QueryChannel
       }
       
       return strXML.toString();
+   }
+      catch (Exception e) {
+    	     LogService.instance().log(LogService.ERROR, "Unknown error in QueryChannel:buildTimeDropXMLFile - " + e.toString(), e);
+    	     return null;
+      }
    }
    
    /**

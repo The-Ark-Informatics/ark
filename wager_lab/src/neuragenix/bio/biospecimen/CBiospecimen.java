@@ -2240,7 +2240,7 @@ else {
 				CriteriaDAO gd = new CriteriaDAO();
 				Criteria c = gd.findById(new BigDecimal(1));
 				List<Group> groups = c.getGroups();
-				
+				bd.findFieldsinGroupWithData(1665483,groups.get(0));
 				transformer.setXML(bd.getBioData(groups));	
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				transformer.setXSL("biodata.xsl");
