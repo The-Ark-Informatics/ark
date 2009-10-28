@@ -27,6 +27,7 @@ public class Field implements java.io.Serializable {
 	private String format;
 	private String fieldname;
 	private String studykey;
+	private String lovtype;
 	private Set<Data> datas = new HashSet<Data>(0);
 
 	public Field() {
@@ -83,6 +84,15 @@ public class Field implements java.io.Serializable {
 		this.unit = unit;
 	}
 
+	@Column(name="LOVTYPE", length=50)
+	public String getLovtype() {
+		return this.lovtype;
+	}
+	
+	public void setLovtype(String lovtype) {
+		this.lovtype = lovtype;
+	}
+	
 	@Column(name = "FORMAT", length = 20)
 	public String getFormat() {
 		return this.format;

@@ -6,12 +6,15 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;
+
 import javax.naming.*;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.transaction.Transaction;
 import javax.transaction.UserTransaction;
 
 import org.apache.commons.logging.Log;
@@ -23,25 +26,29 @@ import org.apache.commons.logging.LogFactory;
  * @author Hibernate Tools
  */
 
-public class DataHome {
+public class DataDAO {
 
-	private static final Log log = LogFactory.getLog(DataHome.class);
+	private static final Log log = LogFactory.getLog(DataDAO.class);
 
 	
 	private EntityManager entityManager;
 
-	public DataHome() {
+	public DataDAO() {
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("labPersistence");
 		entityManager = emf.createEntityManager();
 
 	}
 	
-	
+
 	public void persist(Data transientInstance) {
 		log.debug("persisting Data instance");
 		try {
+			EntityTransaction tx = entityManager.getTransaction();
+			tx.begin();
 			entityManager.persist(transientInstance);
+			tx.commit();
 			log.debug("persist successful");
+			
 		} catch (RuntimeException re) {
 			log.error("persist failed", re);
 			throw re;

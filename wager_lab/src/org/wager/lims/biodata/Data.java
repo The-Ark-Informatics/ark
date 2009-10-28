@@ -7,9 +7,11 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,7 +26,7 @@ import javax.persistence.UniqueConstraint;
 public class Data implements java.io.Serializable {
 
 	private BigDecimal biospecimenkey;
-	private BigDecimal biodatakey;
+	private Long biodatakey;
 	private Field field;
 	private Date dateCollected;
 	private String stringValue;
@@ -57,12 +59,14 @@ public class Data implements java.io.Serializable {
 	}
 	
 	@Id
+	@GeneratedValue(generator="DataSeq")
+    @SequenceGenerator(name="DataSeq",sequenceName="IX_BIODATA_BIODATAKEY_SEQ", allocationSize=1)
 	@Column(name = "BIODATAKEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public BigDecimal getBiodatakey() {
+	public Long getBiodatakey() {
 		return this.biodatakey;
 	}
 
-	public void setBiodatakey(BigDecimal biodatakey) {
+	public void setBiodatakey(Long biodatakey) {
 		this.biodatakey = biodatakey;
 	}
 	

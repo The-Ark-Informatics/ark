@@ -82,10 +82,14 @@ public class GroupDAO {
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> findFieldsinGroupWithData(int biokey, Group g) {
-		Query q = entityManager.createQuery("select f,d from Field f left join f.datas as d where d.biospecimenkey = :biokey and f in (:grouplist)");
+		Query q = entityManager.createQuery("select f,d from Field f left join f.datas as d with d.biospecimenkey = :biokey where f in (:grouplist)");
 		q.setParameter("biokey", new BigDecimal(biokey));
-		q.setParameter("grouplist",g.getFields());
+		List<Field> fields= g.getFields();
+		log.debug("***** Field size: " +fields.size());
+		q.setParameter("grouplist",fields);
+	
 		List<Object[]> objectList = q.getResultList();
+		
 		log.debug("Fields with/without data: " + objectList.size());
 		return objectList;
 		

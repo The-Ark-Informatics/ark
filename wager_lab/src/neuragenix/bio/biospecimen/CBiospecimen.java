@@ -26,7 +26,7 @@ import org.wager.barcode.BarcodeManager;
 import org.wager.lims.biodata.Criteria;
 import org.wager.lims.biodata.CriteriaDAO;
 import org.wager.lims.biodata.Data;
-import org.wager.lims.biodata.DataHome;
+import org.wager.lims.biodata.DataDAO;
 import org.wager.lims.biodata.Group;
 import org.wager.lims.biodata.GroupDAO;
 import org.xml.sax.ContentHandler;
@@ -35,6 +35,8 @@ import org.jasig.portal.security.*;
 import org.jasig.portal.services.LogService;
 
 import org.jasig.portal.PropertiesManager;
+
+import com.hp.hpl.jena.util.Log;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -895,7 +897,7 @@ else {
 						.getParameter("BIOSPECIMEN_intPatientID");
 				String strInternalBiospecimenParentKey = runtimeData
 						.getParameter("BIOSPECIMEN_intParentID");
-
+				
 				try {
 					if (strInternalBiospecimenParentKey != null) {
 						if (lckBiospecimen == null) {
@@ -932,7 +934,7 @@ else {
 				// System.out.println("strInternalBiospecParent: " +
 				// strInternalBiospecimenParentKey);
 				int intPatientKey = 0;
-
+				
 				rp.clearXML();
 				if (checkPermission(BiospecimenCore.ACTION_BIOSPECIMEN_ADD, rp
 						.getAuthToken())) {
@@ -2229,19 +2231,25 @@ else {
 		AuthToken authToken = rp.getAuthToken();
 		// Default to single biospecimen if no other choice is made a priori.
 		String strModule = runtimeData.getParameter("module");
-
+//TODO: Move this AJAX handling code somewhere else - perhaps into another channel.
 		if (strModule != null && strModule.equalsIgnoreCase("AJAX")) {
 			try {
-				String strParentType = runtimeData.getParameter("parentType");
+				
 				rp.clearXML();
-				String xml = "<bioform><fieldset><field><key>23</key><label>DNA Concentration</label><type>number</type><value>130.0</value><length>5</length></field><field><key>34</key><label>OD 230/260</label><type>number</type><value>1.6</value><length>5</length></field></fieldset><fieldset><field><key>56</key><label>Sample Date</label><type>date</type><length>5</length></field><field><key>67</key><label>Anticoagulant</label><type>dropdown</type><value >EDTA</value><value selected='1'>Lithium Heparin</value></field></fieldset></bioform>";
+				
 				XSLT transformer = new XSLT(this);
 				BioDataHandler bd = new BioDataHandler();
 				CriteriaDAO gd = new CriteriaDAO();
 				Criteria c = gd.findById(new BigDecimal(1));
 				List<Group> groups = c.getGroups();
-				bd.findFieldsinGroupWithData(1665483,groups.get(0));
-				transformer.setXML(bd.getBioData(groups));	
+				String biospecimenkey = runtimeData.getParameter("BIOSPECIMEN_intBiospecimenID");
+				if (biospecimenkey == null) {
+					transformer.setXML(bd.getBioFields(groups));
+				}else {
+					int intbiospecimenid = Integer.parseInt(biospecimenkey);
+						transformer.setXML(bd.getBioData(groups,intbiospecimenid));	
+				}
+				
 				ByteArrayOutputStream out = new ByteArrayOutputStream();
 				transformer.setXSL("biodata.xsl");
 				transformer.setTarget(out);
@@ -2252,7 +2260,6 @@ else {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			String xml = rp.getXML();
 			rp.clearXML();
 			return null;
 		}

@@ -51,7 +51,6 @@ public class BiospecimenCore {
 	private static boolean showQuantityForTopLevelBio = true;
 
 	private static boolean showInventoryForTopLevelBio = true;
-	
 
 	// Load the properties needed in this class when the class is loaded for the
 	// first time
@@ -186,11 +185,11 @@ public class BiospecimenCore {
 	private static final String DELETE_SPECIMEN_HAS_CHILDREN = "Unable to delete this biospecimen as it has sub specimens";
 
 	private static final String SPECIMEN_UPDATE_FAILURE = "A system failure has prevented this action.  Please contact your system administrator.";
-	
+
 	private static final String SPECIMEN_OFF_SITE = "You cannot edit this biospecimen as it is currently off-site.";
 
 	private static final String SPECIMEN_NO_PERMISSION = "You do not have permission to edit this biospecimen. Please contact your system administrator.";
-	
+
 	// tree objects
 
 	private DefaultMutableTreeNode treeSearchResults = null;
@@ -235,31 +234,39 @@ public class BiospecimenCore {
 		String sourceField = null;
 		String sourceDomain = null;
 		String seqno = null;
-		
+
 		String studyCode = null;
 		System.err.println("Running barcodeGenerator!!!!!!!");
 		try {
-			//First we need to find encounter that matches, and hence the substudy to which it belongs.
-			query.setDomain("ADMISSIONS",null,null,null);
-			query.setDomain("SUBSTUDY","SUBSTUDY_intSubStudyID", "ADMISSIONS_intSubStudyID","INNER JOIN");
-			query.setDomain("STUDY","STUDY_intStudyID","ADMISSIONS_intStudyID","INNER JOIN");
-			query.setWhere(null,0,"ADMISSIONS_intPatientID","=",""+patientkey,0,DALQuery.WHERE_HAS_VALUE );
-			query.setWhere("AND",0,"ADMISSIONS_strAdmissionID","=",encounter,0,DALQuery.WHERE_HAS_VALUE );
-			query.setWhere("AND",0,"ADMISSIONS_intStudyID","=",""+studykey,0,DALQuery.WHERE_HAS_VALUE );
-			query.setWhere("AND",0,"ADMISSIONS_intDeleted","=","0",0,DALQuery.WHERE_HAS_VALUE);
-			query.setField("SUBSTUDY_strBarCode",null);
-			query.setField("STUDY_strBarcodeSource",null);
-			
-			/*query.setDomain("STUDY", null, null, null);
-			query.setField("STUDY_strBarcodeSource", null);
-			query.setField("STUDY_strStudyCode", null);
-			query.setWhere(null, 0, "STUDY_intDeleted", "=", "0", 0,
+			// First we need to find encounter that matches, and hence the
+			// substudy to which it belongs.
+			query.setDomain("ADMISSIONS", null, null, null);
+			query.setDomain("SUBSTUDY", "SUBSTUDY_intSubStudyID",
+					"ADMISSIONS_intSubStudyID", "INNER JOIN");
+			query.setDomain("STUDY", "STUDY_intStudyID",
+					"ADMISSIONS_intStudyID", "INNER JOIN");
+			query.setWhere(null, 0, "ADMISSIONS_intPatientID", "=", ""
+					+ patientkey, 0, DALQuery.WHERE_HAS_VALUE);
+			query.setWhere("AND", 0, "ADMISSIONS_strAdmissionID", "=",
+					encounter, 0, DALQuery.WHERE_HAS_VALUE);
+			query.setWhere("AND", 0, "ADMISSIONS_intStudyID", "=", ""
+					+ studykey, 0, DALQuery.WHERE_HAS_VALUE);
+			query.setWhere("AND", 0, "ADMISSIONS_intDeleted", "=", "0", 0,
 					DALQuery.WHERE_HAS_VALUE);
-			query.setWhere("AND", 0, "STUDY_intStudyID", "=", "" + studykey, 0,
-					DALQuery.WHERE_HAS_VALUE);*/
+			query.setField("SUBSTUDY_strBarCode", null);
+			query.setField("STUDY_strBarcodeSource", null);
+
+			/*
+			 * query.setDomain("STUDY", null, null, null);
+			 * query.setField("STUDY_strBarcodeSource", null);
+			 * query.setField("STUDY_strStudyCode", null); query.setWhere(null,
+			 * 0, "STUDY_intDeleted", "=", "0", 0, DALQuery.WHERE_HAS_VALUE);
+			 * query.setWhere("AND", 0, "STUDY_intStudyID", "=", "" + studykey,
+			 * 0, DALQuery.WHERE_HAS_VALUE);
+			 */
 			System.err.println(query.convertSelectQueryToString());
 			ResultSet resultset = query.executeSelect();
-			
+
 			DALQuery idquery = new DALQuery();
 			if (resultset.next()) {
 				barcodeSource = resultset.getString("STUDY_strBarcodeSource");
@@ -271,8 +278,7 @@ public class BiospecimenCore {
 				seqno = encounter;
 				if (encounter == null)
 					return null;
-			}
-			else if (barcodeSource.equals("ADMISSIONKEY")) {
+			} else if (barcodeSource.equals("ADMISSIONKEY")) {
 				barcodeSource = "ADMISSIONKEY";
 				idquery.setDomain("ADMISSIONS", null, null, null);
 				idquery.setField("ADMISSIONS_intAdmissionkey", null);
@@ -292,8 +298,8 @@ public class BiospecimenCore {
 				sourceField = "PATIENT_strPatientID";
 				idquery.setDomain("PATIENT", null, null, null);
 				idquery.setField("PATIENT_strPatientID", null);
-				idquery.setWhere(null, 0, "PATIENT_intInternalPatientID", "=", ""
-						+ patientkey, 0, DALQuery.WHERE_HAS_VALUE);
+				idquery.setWhere(null, 0, "PATIENT_intInternalPatientID", "=",
+						"" + patientkey, 0, DALQuery.WHERE_HAS_VALUE);
 				idquery.setWhere("AND", 0, "PATIENT_intDeleted", "=", "0", 0,
 						DALQuery.WHERE_HAS_VALUE);
 				ResultSet rs = idquery.executeSelect();
@@ -315,16 +321,18 @@ public class BiospecimenCore {
 				SimpleDateFormat formatter = new SimpleDateFormat("yy");
 				String twoyear = formatter.format(new Date());
 				if (seqno.length() < 5) {
-					//Pad to five.
+					// Pad to five.
 					seqno = BiospecimenUtilities.padLeft(seqno, 5, '0');
 				}
-				
+
 				String biospecimenid = new String("");
-				if (barcodeSource == null || barcodeSource.equals("ADMISSIONID"))
+				if (barcodeSource == null
+						|| barcodeSource.equals("ADMISSIONID"))
 					biospecimenid = twoyear + seqno + sampleCode;
 				else
-				 biospecimenid = twoyear + studyCode + seqno + sampleCode;
-					System.out.println("Biospecimen ID starting at "+ biospecimenid);
+					biospecimenid = twoyear + studyCode + seqno + sampleCode;
+				System.out.println("Biospecimen ID starting at "
+						+ biospecimenid);
 				return BiospecimenUtilities.getNewSubBiospecimenStringID(query,
 						biospecimenid, 0);
 
@@ -346,7 +354,7 @@ public class BiospecimenCore {
 
 	// TODO: Exception handling
 	// TODO: Locking
-	
+
 	/**
 	 * Saves a biospecimen back to the db. NEW VERSION
 	 * 
@@ -360,20 +368,23 @@ public class BiospecimenCore {
 				.getFormFields("cbiospecimen_save_biospecimen");
 		DALSecurityQuery dsqSaveBiospecimen = null;
 		String strInternalBiospecimenID = runtimeData
-		.getParameter("BIOSPECIMEN_intBiospecimenID");
+				.getParameter("BIOSPECIMEN_intBiospecimenID");
 		// check whether this user has permission to add new bio
 		try {
 			dsqSaveBiospecimen = new DALSecurityQuery("biospecimen_add",
 					authToken);
 			if (strInternalBiospecimenID != null) {
-			int sitekey = InventoryUtilities.getSiteKeyforBiospecimen(new Integer(strInternalBiospecimenID).intValue());
-			Integer ISitekey = new Integer(sitekey);
-			if (!authToken.getSiteList().contains(ISitekey) && sitekey != -1 ) {
-				return SPECIMEN_OFF_SITE;
-				
+				int sitekey = InventoryUtilities
+						.getSiteKeyforBiospecimen(new Integer(
+								strInternalBiospecimenID).intValue());
+				Integer ISitekey = new Integer(sitekey);
+				if (!authToken.getSiteList().contains(ISitekey)
+						&& sitekey != -1) {
+					return SPECIMEN_OFF_SITE;
+
+				}
 			}
-			}
-			} catch (Exception e) {
+		} catch (Exception e) {
 			System.err
 					.println("[BiospecimenCore] : Failure when saving biospecimen");
 			e.printStackTrace();
@@ -435,407 +446,456 @@ public class BiospecimenCore {
 					vtSaveBiospecimenFields, runtimeData)) == null)
 					&& ((strErrors = QueryChannel.checkRequiredFields(
 							vtSaveBiospecimenFields, runtimeData)) == null)) {
-				
-				
-			String strBiospecimenID = null;
-			int intParentBioSpecID = 0;
-			strInternalBiospecimenID = runtimeData
-					.getParameter("BIOSPECIMEN_intBiospecimenID");
-			strBiospecimenID = runtimeData
-					.getParameter("BIOSPECIMEN_strBiospecimenID");
-			
-			// This line set fields for query - need to set Biospecimen ID beforehand, if necessary (ie if we are NOT updating)
-			//dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
-				//	runtimeData);
-			//
-			// if strInternalBiospecimenID is not null then we have an
-			// update
-			if (strInternalBiospecimenID != null && strErrors == null) {
 
-				// got an update action
-				dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
-						runtimeData);
-				strErrors = QueryChannel.checkDuplicatesWhenUpdate(
-						vtSaveBiospecimenFields, runtimeData,
-						"BIOSPECIMEN_strBiospecimenID", strBiospecimenID);
+				String strBiospecimenID = null;
+				int intParentBioSpecID = 0;
+				strInternalBiospecimenID = runtimeData
+						.getParameter("BIOSPECIMEN_intBiospecimenID");
+				strBiospecimenID = runtimeData
+						.getParameter("BIOSPECIMEN_strBiospecimenID");
+
+				// This line set fields for query - need to set Biospecimen ID
+				// beforehand, if necessary (ie if we are NOT updating)
+				// dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
+				// runtimeData);
+				//
+				// if strInternalBiospecimenID is not null then we have an
+				// update
+				if (strInternalBiospecimenID != null && strErrors == null) {
+
+					// got an update action
+					dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
+							runtimeData);
+					strErrors = QueryChannel.checkDuplicatesWhenUpdate(
+							vtSaveBiospecimenFields, runtimeData,
+							"BIOSPECIMEN_strBiospecimenID", strBiospecimenID);
 					if (strErrors != null) {
 
 						return strErrors;
 					}
-				dsqSaveBiospecimen.setWhere(null, 0,
-						"BIOSPECIMEN_intBiospecimenID", "=",
-						strInternalBiospecimenID, 0,
-						DALQuery.WHERE_HAS_VALUE);
+					dsqSaveBiospecimen.setWhere(null, 0,
+							"BIOSPECIMEN_intBiospecimenID", "=",
+							strInternalBiospecimenID, 0,
+							DALQuery.WHERE_HAS_VALUE);
 
-				// get the result from update query
-				boolean blResult = dsqSaveBiospecimen.executeUpdate();
-				if (blResult) {
+					// get the result from update query
+					boolean blResult = dsqSaveBiospecimen.executeUpdate();
+					if (blResult) {
 
-					// Update Flag Manager
-					String strIsFlagged = null;
-					String strWasFlagged = runtimeData
-							.getParameter("wasFlagged")
-							+ "";
-					if (runtimeData.getParameter("isFlagged") != null) {
-						strIsFlagged = runtimeData
-								.getParameter("isFlagged");
+						// Update Flag Manager
+						String strIsFlagged = null;
+						String strWasFlagged = runtimeData
+								.getParameter("wasFlagged")
+								+ "";
+						if (runtimeData.getParameter("isFlagged") != null) {
+							strIsFlagged = runtimeData
+									.getParameter("isFlagged");
 
-					} else {
-						strIsFlagged = "false";
-					}
-
-					// if the flag changed
-					if ((strWasFlagged.equalsIgnoreCase("true") && strIsFlagged
-							.equalsIgnoreCase("false"))
-							|| (strWasFlagged.equalsIgnoreCase("false") && strIsFlagged
-									.equalsIgnoreCase("true"))) {
-
-						FlagManager.toggleFlag(Integer
-								.parseInt(strInternalBiospecimenID),
-								DOMAIN_BIOSPECIMEN, authToken
-										.getUserIdentifier());
-					}
-
-					this.intLastBiospecimenAddedID = Integer
-							.parseInt(strInternalBiospecimenID);
-				}
-			}
-
-			// adding new biospecimen
-			else{
-				
-		
-				// save a new specimen
-				dsqSaveBiospecimen.setManualCommit(true);
-				//   boolean blSaveResult = dsqSaveBiospecimen.executeInsert();
-                    
-                //    if (blSaveResult == false) {
-                //        System.err.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
-                 //       dsqSaveBiospecimen.cancelTransaction();
-                  //      return "Unable to save biospecimen!";
-                   // }
-                    
-                  //  this.intLastBiospecimenAddedID = dsqSaveBiospecimen.getInsertedRecordKey();
-
-				// grab the property for autogeneration
-				boolean blAutoGenerateID = false;
-				try {
-					blAutoGenerateID = PropertiesManager
-							.getPropertyAsBoolean("neuragenix.bio.AutoGenerateBiospecimenID");
-				} catch (Exception e) {
-					System.err
-							.println("[BiospecimenCore] : Unable to retreive property - neuragenix.bio.AutoGenerateBiospecimenID");
-					e.printStackTrace();
-				}
-
-				boolean blFromVialCal = false;
-
-				if (runtimeData.getParameter("blFromVialCalc") != null) {
-					blFromVialCal = true;
-				}
-
-				// if using auto generateID and make sure not overwrite
-				// existing strID e.g from vial calculation
-				if (blAutoGenerateID) {
-					// get the biospecimen ID.
-					String strNewBiospecimenID = "";
-					int intPatientid = new Integer(runtimeData.getParameter("BIOSPECIMEN_intPatientID")).intValue();
-//					System.err.println("Testing....");
-//					System.err.println(BiospecimenUtilities.getNewBiospecimenID
-//							(runtimeData.getParameter("BIOSPECIMEN_strEncounter"), 
-//							intPatientid,runtimeData,null));
-//					System.err.println("End Testing....");
-					
-					if (runtimeData.getParameter("BIOSPECIMEN_intParentID") != null
-							&& !runtimeData.getParameter(
-									"BIOSPECIMEN_intParentID").toString()
-									.equals("-1")) {
-						intParentBioSpecID = Integer
-								.parseInt(strInternalParentKey);
-						String strSampleType = runtimeData
-						.getParameter("BIOSPECIMEN_strSampleType");
-						DALSecurityQuery query = new DALSecurityQuery(
-								"biospecimen_add", authToken);
-						//System.err
-//								.println("GOT HERE!!!!!!!!!!!!!! - but why?"
-//										+ runtimeData
-//												.getParameter("BIOSPECIMEN_intParentID"));
-						int studykey = Integer.parseInt(runtimeData
-								.getParameter("BIOSPECIMEN_intStudyKey"));
-						
-						
-						strNewBiospecimenID = BiospecimenUtilities
-								.getNewSubBiospecimenStringID(
-										query,strSampleType, BiospecimenUtilities.getUserBiospecimenID(intParentBioSpecID),true,studykey);
-					} else {
-						//System.err.println("GOT HERE!!!!!!!!!!!!!!");
-						if (runtimeData.getParameter("BIOSPECIMEN_intParentID") == null ) {
-							runtimeData.setParameter("BIOSPECIMEN_intParentID","-1");
+						} else {
+							strIsFlagged = "false";
 						}
-						IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
-								.getBiospecimenIDGenerationInstance();
-						DALSecurityQuery query = new DALSecurityQuery(
-								"biospecimen_add", authToken);
-						// strNewBiospecimenID =
-						// idgGenerator.getBiospecimenID(intLastBiospecimenAddedID,
-						// dsqSaveBiospecimen, authToken);
-						int studykey = Integer.parseInt(runtimeData
-								.getParameter("BIOSPECIMEN_intStudyKey"));
-						int patientkey = Integer.parseInt(runtimeData
-								.getParameter("BIOSPECIMEN_intPatientID"));
+
+						// if the flag changed
+						if ((strWasFlagged.equalsIgnoreCase("true") && strIsFlagged
+								.equalsIgnoreCase("false"))
+								|| (strWasFlagged.equalsIgnoreCase("false") && strIsFlagged
+										.equalsIgnoreCase("true"))) {
+
+							FlagManager.toggleFlag(Integer
+									.parseInt(strInternalBiospecimenID),
+									DOMAIN_BIOSPECIMEN, authToken
+											.getUserIdentifier());
+						}
+
+						this.intLastBiospecimenAddedID = Integer
+								.parseInt(strInternalBiospecimenID);
 						
-						String strSampleType = runtimeData
-								.getParameter("BIOSPECIMEN_strSampleType");
-						/*strNewBiospecimenID = barcodeGenerator(
-								query,
-								BiospecimenUtilities.getClonedSuffix(null,
-										strSampleType),
-								studykey,
-								patientkey,
-								runtimeData
-										.getParameter("BIOSPECIMEN_strEncounter"),
-								null);*/
-						String encounter = runtimeData
-						.getParameter("BIOSPECIMEN_strEncounter");
-						String origSuffix = BiospecimenUtilities.getLastBioAddedSuffix(patientkey, encounter,strSampleType,intDepth);
-						String newSuffix = BiospecimenUtilities.getSuffixDB(origSuffix, strSampleType, false, studykey);
-						System.err.println("getSuffixDB returned: " + newSuffix);
-						if (newSuffix == null)  return "Unable to generate biospecimen ID";
-						strNewBiospecimenID = BiospecimenUtilities.getNewBiospecimenID(encounter, patientkey, runtimeData,null) + newSuffix;
-						strNewBiospecimenID = BiospecimenUtilities.getNewSubBiospecimenStringID(query,
-								strNewBiospecimenID, 0);
+
+						BioDataHandler bd = new BioDataHandler();
+						bd.processForm(runtimeData,
+								this.intLastBiospecimenAddedID);
 					}
-					runtimeData.setParameter("BIOSPECIMEN_strBiospecimenID", strNewBiospecimenID);
-					dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
-							runtimeData);
-					boolean blSaveResult = dsqSaveBiospecimen.executeInsert();
-					this.intLastBiospecimenAddedID = dsqSaveBiospecimen.getInsertedRecordKey();
-					// ensure we actually got a valid id
-					if (strNewBiospecimenID != null) {
-					//	String strValidation = BiospecimenUtilities
-					//			.checkForDuplicateIDs(dsqSaveBiospecimen,
-					//					strNewBiospecimenID,
-					//					BiospecimenUtilities.BIOSPECIMENID);
-
-					//	if (strValidation != null) {
-					//		dsqSaveBiospecimen.cancelTransaction();
-					//		System.err
-					//				.println("[BiospecimenCore] Update has failed as Duplicate ID was returned by ID Generator" + " -- " + strValidation);
-					//	}
-//
-	                    
-		                //    if (blSaveResult == false) {
-		                //        System.err.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
-		                 //       dsqSaveBiospecimen.cancelTransaction();
-		                  //      return "Unable to save biospecimen!";
-						
-						
-					//	dsqSaveBiospecimen.reset();
-                     //   dsqSaveBiospecimen.setDomain("BIOSPECIMEN", null, null, null);
-                      //  dsqSaveBiospecimen.setField("BIOSPECIMEN_strBiospecimenID", strNewBiospecimenID);
-                      //  dsqSaveBiospecimen.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID", "=", intLastBiospecimenAddedID + "", 0, DALQuery.WHERE_HAS_VALUE);
-                      // blSaveResult = dsqSaveBiospecimen.executeUpdate();
-                        if (blSaveResult == false) {
-                            dsqSaveBiospecimen.cancelTransaction();
-                            System.err.println("[BiospecimenCore] Unable to generate Biospecimen ID");
-                            return "Unable to generate biospecimen ID";
-                        }
-                        else {
-                            dsqSaveBiospecimen.commitTransaction();
-                        }
-
-						// System.err.println("GOT HERE!!!!!!!! -
-						// quantity");
 					
-                    /// Transaction has completed - now add quantity details for initial quantity.    
-                        runtimeData
-								.setParameter(
-										"BIOSPECIMEN_TRANSACTIONS_flQuantity",
-										runtimeData
-												.getParameter("BIOSPECIMEN_flQuantity"));
-						runtimeData.setParameter(
-								"BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
-						runtimeData.setParameter(
-								"BIOSPECIMEN_TRANSACTIONS_strReason",
-								"Initial Quantity");
-						runtimeData.setParameter(
-								"BIOSPECIMEN_TRANSACTIONS_strStatus",
-								"Available");
-						runtimeData
-								.setParameter(
-										"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
-										"" + this.intLastBiospecimenAddedID);
-						runtimeData
-								.setParameter(
-										"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
-										runtimeData
-												.getParameter("BIOSPECIMEN_dtSampleDate"));
+				}
+
+				// adding new biospecimen
+				else {
+
+					// save a new specimen
+					dsqSaveBiospecimen.setManualCommit(true);
+					// boolean blSaveResult =
+					// dsqSaveBiospecimen.executeInsert();
+
+					// if (blSaveResult == false) {
+					// System.err.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
+					// dsqSaveBiospecimen.cancelTransaction();
+					// return "Unable to save biospecimen!";
+					// }
+
+					// this.intLastBiospecimenAddedID =
+					// dsqSaveBiospecimen.getInsertedRecordKey();
+
+					// grab the property for autogeneration
+					boolean blAutoGenerateID = false;
+					try {
+						blAutoGenerateID = PropertiesManager
+								.getPropertyAsBoolean("neuragenix.bio.AutoGenerateBiospecimenID");
+					} catch (Exception e) {
 						System.err
-								.println("GOT HERE quantity 1 with "
-										+ intLastBiospecimenAddedID
-										+ " "
-										+ runtimeData
-												.getParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity"));
-						
-						
-//						/ check if biospecimenid has a parent...
+								.println("[BiospecimenCore] : Unable to retreive property - neuragenix.bio.AutoGenerateBiospecimenID");
+						e.printStackTrace();
+					}
+
+					boolean blFromVialCal = false;
+
+					if (runtimeData.getParameter("blFromVialCalc") != null) {
+						blFromVialCal = true;
+					}
+
+					// if using auto generateID and make sure not overwrite
+					// existing strID e.g from vial calculation
+					if (blAutoGenerateID) {
+						// get the biospecimen ID.
+						String strNewBiospecimenID = "";
+						int intPatientid = new Integer(runtimeData
+								.getParameter("BIOSPECIMEN_intPatientID"))
+								.intValue();
+						// System.err.println("Testing....");
+						// System.err.println(BiospecimenUtilities.getNewBiospecimenID
+						// (runtimeData.getParameter("BIOSPECIMEN_strEncounter"),
+						// intPatientid,runtimeData,null));
+						// System.err.println("End Testing....");
+
 						if (runtimeData.getParameter("BIOSPECIMEN_intParentID") != null
 								&& !runtimeData.getParameter(
 										"BIOSPECIMEN_intParentID").toString()
 										.equals("-1")) {
-							String intParentID = runtimeData.getParameter("BIOSPECIMEN_intParentID");
-							double flQuantityChild = new Double(runtimeData.getParameter("BIOSPECIMEN_flQuantity")).doubleValue();
-							String processingType = runtimeData.getParameter("BIOSPECIMEN_strProcessingType");
-							double flDNAConcChild = 0;
-							if (!processingType.equals("Processing")) {
-								flDNAConcChild = new Double(runtimeData.getParameter("BIOSPECIMEN_flDNAConc")).doubleValue();
+							intParentBioSpecID = Integer
+									.parseInt(strInternalParentKey);
+							String strSampleType = runtimeData
+									.getParameter("BIOSPECIMEN_strSampleType");
+							DALSecurityQuery query = new DALSecurityQuery(
+									"biospecimen_add", authToken);
+							// System.err
+							// .println("GOT HERE!!!!!!!!!!!!!! - but why?"
+							// + runtimeData
+							// .getParameter("BIOSPECIMEN_intParentID"));
+							int studykey = Integer.parseInt(runtimeData
+									.getParameter("BIOSPECIMEN_intStudyKey"));
+
+							strNewBiospecimenID = BiospecimenUtilities
+									.getNewSubBiospecimenStringID(
+											query,
+											strSampleType,
+											BiospecimenUtilities
+													.getUserBiospecimenID(intParentBioSpecID),
+											true, studykey);
+						} else {
+							// System.err.println("GOT HERE!!!!!!!!!!!!!!");
+							if (runtimeData
+									.getParameter("BIOSPECIMEN_intParentID") == null) {
+								runtimeData.setParameter(
+										"BIOSPECIMEN_intParentID", "-1");
+							}
+							IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
+									.getBiospecimenIDGenerationInstance();
+							DALSecurityQuery query = new DALSecurityQuery(
+									"biospecimen_add", authToken);
+							// strNewBiospecimenID =
+							// idgGenerator.getBiospecimenID(intLastBiospecimenAddedID,
+							// dsqSaveBiospecimen, authToken);
+							int studykey = Integer.parseInt(runtimeData
+									.getParameter("BIOSPECIMEN_intStudyKey"));
+							int patientkey = Integer.parseInt(runtimeData
+									.getParameter("BIOSPECIMEN_intPatientID"));
+
+							String strSampleType = runtimeData
+									.getParameter("BIOSPECIMEN_strSampleType");
+							/*
+							 * strNewBiospecimenID = barcodeGenerator( query,
+							 * BiospecimenUtilities.getClonedSuffix(null,
+							 * strSampleType), studykey, patientkey, runtimeData
+							 * .getParameter("BIOSPECIMEN_strEncounter"), null);
+							 */
+							String encounter = runtimeData
+									.getParameter("BIOSPECIMEN_strEncounter");
+							String origSuffix = BiospecimenUtilities
+									.getLastBioAddedSuffix(patientkey,
+											encounter, strSampleType, intDepth);
+							String newSuffix = BiospecimenUtilities
+									.getSuffixDB(origSuffix, strSampleType,
+											false, studykey);
+							System.err.println("getSuffixDB returned: "
+									+ newSuffix);
+							if (newSuffix == null)
+								return "Unable to generate biospecimen ID";
+							strNewBiospecimenID = BiospecimenUtilities
+									.getNewBiospecimenID(encounter, patientkey,
+											runtimeData, null)
+									+ newSuffix;
+							strNewBiospecimenID = BiospecimenUtilities
+									.getNewSubBiospecimenStringID(query,
+											strNewBiospecimenID, 0);
+						}
+						runtimeData.setParameter(
+								"BIOSPECIMEN_strBiospecimenID",
+								strNewBiospecimenID);
+						dsqSaveBiospecimen.setFields(vtSaveBiospecimenFields,
+								runtimeData);
+						boolean blSaveResult = dsqSaveBiospecimen
+								.executeInsert();
+						this.intLastBiospecimenAddedID = dsqSaveBiospecimen
+								.getInsertedRecordKey();
+						// ensure we actually got a valid id
+						if (strNewBiospecimenID != null) {
+							// String strValidation = BiospecimenUtilities
+							// .checkForDuplicateIDs(dsqSaveBiospecimen,
+							// strNewBiospecimenID,
+							// BiospecimenUtilities.BIOSPECIMENID);
+
+							// if (strValidation != null) {
+							// dsqSaveBiospecimen.cancelTransaction();
+							// System.err
+							// .println("[BiospecimenCore] Update has failed as Duplicate ID was returned by ID Generator"
+							// + " -- " + strValidation);
+							// }
+							//
+
+							// if (blSaveResult == false) {
+							// System.err.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
+							// dsqSaveBiospecimen.cancelTransaction();
+							// return "Unable to save biospecimen!";
+
+							// dsqSaveBiospecimen.reset();
+							// dsqSaveBiospecimen.setDomain("BIOSPECIMEN", null,
+							// null, null);
+							// dsqSaveBiospecimen.setField("BIOSPECIMEN_strBiospecimenID",
+							// strNewBiospecimenID);
+							// dsqSaveBiospecimen.setWhere(null, 0,
+							// "BIOSPECIMEN_intBiospecimenID", "=",
+							// intLastBiospecimenAddedID + "", 0,
+							// DALQuery.WHERE_HAS_VALUE);
+							// blSaveResult =
+							// dsqSaveBiospecimen.executeUpdate();
+							if (blSaveResult == false) {
+								dsqSaveBiospecimen.cancelTransaction();
+								System.err
+										.println("[BiospecimenCore] Unable to generate Biospecimen ID");
+								return "Unable to generate biospecimen ID";
+							} else {
+								dsqSaveBiospecimen.commitTransaction();
 							}
 
-							DALQuery dqGetParentDetails = new DALQuery();
-							dqGetParentDetails.setDomain("BIOSPECIMEN", null, null, null);
-							dqGetParentDetails.setField("BIOSPECIMEN_flDNAConc",
-									null);
-							dqGetParentDetails.setField("BIOSPECIMEN_flNumberRemoved",null);
-							dqGetParentDetails.setField("BIOSPECIMEN_flNumberCollected",null);
-							dqGetParentDetails.setWhere(null, 0,
-									"BIOSPECIMEN_intBiospecimenID", "=", intParentID, 0, DALQuery.WHERE_HAS_VALUE);
-							dqGetParentDetails.setWhere("AND", 0,
-									"BIOSPECIMEN_intDeleted", "=", "0", 0,
-									DALQuery.WHERE_HAS_VALUE);
-							ResultSet rsGetParentDetails = dqGetParentDetails
-							.executeSelect();
-							double flQuantityParentCollected = 0;
-							double flQuantityParentRemoved = 0;
-							double flDNAConcParent = 0;
-							double flQuantityParent = 0;
-							if (rsGetParentDetails.next()) {
+							// System.err.println("GOT HERE!!!!!!!! -
+							// quantity");
 
-								try {
-									flQuantityParentCollected  = new Double(rsGetParentDetails
-											.getString("BIOSPECIMEN_flNumberCollected")).doubleValue();
-								} catch (NullPointerException ne ) {
-									System.err.println("Null pointer exception here - collected");
-								}
-								try{
-									flQuantityParentRemoved  = new Double(rsGetParentDetails
-											.getString("BIOSPECIMEN_flNumberRemoved")).doubleValue();
-								} catch (NullPointerException ne ) {
-									System.err.println("Null pointer exception here - removed");
-								}
-								flQuantityParent = flQuantityParentCollected + flQuantityParentRemoved;
-								if (!processingType.equals("Processing")) {
-									flDNAConcParent  = new Double(rsGetParentDetails
-											.getString("BIOSPECIMEN_flDNAConc")).doubleValue();
-								}
-							}
-							double quantityRemoved = 0;
-							if (processingType.equals("Processing"))
-								quantityRemoved = flQuantityParent;
-							else
-								quantityRemoved = flQuantityChild * flDNAConcChild / flDNAConcParent;
-							if (quantityRemoved > flQuantityParent) 
-								return "Insufficient quantity of stock to create sample";
-							doSaveQuantity("" + this.intLastBiospecimenAddedID,
-									runtimeData);
-							System.err.println("Saving quantity to parent with volume change: " + (-quantityRemoved));
-							ChannelRuntimeData removeData = new ChannelRuntimeData();
-							removeData
-							.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_flQuantity",
-									-quantityRemoved + "");
-							removeData.setParameter(
+							// / Transaction has completed - now add quantity
+							// details for initial quantity.
+							runtimeData
+									.setParameter(
+											"BIOSPECIMEN_TRANSACTIONS_flQuantity",
+											runtimeData
+													.getParameter("BIOSPECIMEN_flQuantity"));
+							runtimeData.setParameter(
 									"BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
-							removeData.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_strType",
-							"Sub-aliquot: "+strNewBiospecimenID);
-							removeData.setParameter(
+							runtimeData.setParameter(
+									"BIOSPECIMEN_TRANSACTIONS_strReason",
+									"Initial Quantity");
+							runtimeData.setParameter(
 									"BIOSPECIMEN_TRANSACTIONS_strStatus",
-							"Delivered");
-							removeData
-							.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
-									"" + intParentID);
-							removeData
-							.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
-									runtimeData
-									.getParameter("BIOSPECIMEN_dtSampleDate"));
+									"Available");
+							runtimeData
+									.setParameter(
+											"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
+											"" + this.intLastBiospecimenAddedID);
+							runtimeData
+									.setParameter(
+											"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
+											runtimeData
+													.getParameter("BIOSPECIMEN_dtSampleDate"));
+							System.err
+									.println("GOT HERE quantity 1 with "
+											+ intLastBiospecimenAddedID
+											+ " "
+											+ runtimeData
+													.getParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity"));
 
-							doSaveQuantity(""+intParentID, removeData);
+							// / check if biospecimenid has a parent...
+							if (runtimeData
+									.getParameter("BIOSPECIMEN_intParentID") != null
+									&& !runtimeData.getParameter(
+											"BIOSPECIMEN_intParentID")
+											.toString().equals("-1")) {
+								String intParentID = runtimeData
+										.getParameter("BIOSPECIMEN_intParentID");
+								double flQuantityChild = new Double(runtimeData
+										.getParameter("BIOSPECIMEN_flQuantity"))
+										.doubleValue();
+								String processingType = runtimeData
+										.getParameter("BIOSPECIMEN_strProcessingType");
+								double flDNAConcChild = 0;
+								if (!processingType.equals("Processing")) {
+									flDNAConcChild = new Double(
+											runtimeData
+													.getParameter("BIOSPECIMEN_flDNAConc"))
+											.doubleValue();
+								}
 
+								DALQuery dqGetParentDetails = new DALQuery();
+								dqGetParentDetails.setDomain("BIOSPECIMEN",
+										null, null, null);
+								dqGetParentDetails.setField(
+										"BIOSPECIMEN_flDNAConc", null);
+								dqGetParentDetails.setField(
+										"BIOSPECIMEN_flNumberRemoved", null);
+								dqGetParentDetails.setField(
+										"BIOSPECIMEN_flNumberCollected", null);
+								dqGetParentDetails.setWhere(null, 0,
+										"BIOSPECIMEN_intBiospecimenID", "=",
+										intParentID, 0,
+										DALQuery.WHERE_HAS_VALUE);
+								dqGetParentDetails.setWhere("AND", 0,
+										"BIOSPECIMEN_intDeleted", "=", "0", 0,
+										DALQuery.WHERE_HAS_VALUE);
+								ResultSet rsGetParentDetails = dqGetParentDetails
+										.executeSelect();
+								double flQuantityParentCollected = 0;
+								double flQuantityParentRemoved = 0;
+								double flDNAConcParent = 0;
+								double flQuantityParent = 0;
+								if (rsGetParentDetails.next()) {
+
+									try {
+										flQuantityParentCollected = new Double(
+												rsGetParentDetails
+														.getString("BIOSPECIMEN_flNumberCollected"))
+												.doubleValue();
+									} catch (NullPointerException ne) {
+										System.err
+												.println("Null pointer exception here - collected");
+									}
+									try {
+										flQuantityParentRemoved = new Double(
+												rsGetParentDetails
+														.getString("BIOSPECIMEN_flNumberRemoved"))
+												.doubleValue();
+									} catch (NullPointerException ne) {
+										System.err
+												.println("Null pointer exception here - removed");
+									}
+									flQuantityParent = flQuantityParentCollected
+											+ flQuantityParentRemoved;
+									if (!processingType.equals("Processing")) {
+										flDNAConcParent = new Double(
+												rsGetParentDetails
+														.getString("BIOSPECIMEN_flDNAConc"))
+												.doubleValue();
+									}
+								}
+								double quantityRemoved = 0;
+								if (processingType.equals("Processing"))
+									quantityRemoved = flQuantityParent;
+								else
+									quantityRemoved = flQuantityChild
+											* flDNAConcChild / flDNAConcParent;
+								if (quantityRemoved > flQuantityParent)
+									return "Insufficient quantity of stock to create sample";
+								doSaveQuantity(""
+										+ this.intLastBiospecimenAddedID,
+										runtimeData);
+								System.err
+										.println("Saving quantity to parent with volume change: "
+												+ (-quantityRemoved));
+								ChannelRuntimeData removeData = new ChannelRuntimeData();
+								removeData.setParameter(
+										"BIOSPECIMEN_TRANSACTIONS_flQuantity",
+										-quantityRemoved + "");
+								removeData.setParameter(
+										"BIOSPECIMEN_TRANSACTIONS_strUnity",
+										"ml");
+								removeData.setParameter(
+										"BIOSPECIMEN_TRANSACTIONS_strType",
+										"Sub-aliquot: " + strNewBiospecimenID);
+								removeData.setParameter(
+										"BIOSPECIMEN_TRANSACTIONS_strStatus",
+										"Delivered");
+								removeData
+										.setParameter(
+												"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
+												"" + intParentID);
+								removeData
+										.setParameter(
+												"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
+												runtimeData
+														.getParameter("BIOSPECIMEN_dtSampleDate"));
+
+								doSaveQuantity("" + intParentID, removeData);
+
+							} else {
+								doSaveQuantity(""
+										+ this.intLastBiospecimenAddedID,
+										runtimeData);
+							}
+
+							BioDataHandler bd = new BioDataHandler();
+							bd.processForm(runtimeData,
+									this.intLastBiospecimenAddedID);
 
 						} else {
-							doSaveQuantity("" + this.intLastBiospecimenAddedID,
-								runtimeData);
+							// invalid id returned from generator
+							System.err
+									.println("[BiospecimenCore] Unable to create biospecimen ID");
+							dsqSaveBiospecimen.cancelTransaction();
+							return "Unable to generate biospecimen ID";
 						}
-						
-						
-						
-					} else {
-						// invalid id returned from generator
-						System.err
-								.println("[BiospecimenCore] Unable to create biospecimen ID");
-						dsqSaveBiospecimen.cancelTransaction();
-						return "Unable to generate biospecimen ID";
+
 					}
+					/**
+					 * else { dsqSaveBiospecimen.commitTransaction(); //
+					 * System.err.println("GOT HERE!!!!!!!!"); runtimeData
+					 * .setParameter( "BIOSPECIMEN_TRANSACTIONS_flQuantity",
+					 * runtimeData .getParameter("BIOSPECIMEN_flQuantity"));
+					 * runtimeData.setParameter(
+					 * "BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
+					 * runtimeData.setParameter(
+					 * "BIOSPECIMEN_TRANSACTIONS_strReason",
+					 * "Initial Quantity"); runtimeData.setParameter(
+					 * "BIOSPECIMEN_TRANSACTIONS_strStatus", "Available");
+					 * runtimeData.setParameter(
+					 * "BIOSPECIMEN_TRANSACTIONS_intBiospecimenID", "" +
+					 * this.intLastBiospecimenAddedID); runtimeData
+					 * .setParameter(
+					 * "BIOSPECIMEN_TRANSACTIONS_dtTransactionDate", runtimeData
+					 * .getParameter("BIOSPECIMEN_dtSampleDate")); System.err
+					 * .println("GOT HERE quantity 2 with " +
+					 * intLastBiospecimenAddedID + " " + runtimeData
+					 * .getParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity"));
+					 * doSaveQuantity("" + this.intLastBiospecimenAddedID,
+					 * runtimeData);
+					 * 
+					 * }
+					 **/
+					// set the flag if possible
+					if (runtimeData.getParameter("isFlagged") != null) {
 
-				} /**else {
-					dsqSaveBiospecimen.commitTransaction();
-					// System.err.println("GOT HERE!!!!!!!!");
-					runtimeData
-							.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_flQuantity",
-									runtimeData
-											.getParameter("BIOSPECIMEN_flQuantity"));
-					runtimeData.setParameter(
-							"BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
-					runtimeData.setParameter(
-							"BIOSPECIMEN_TRANSACTIONS_strReason",
-							"Initial Quantity");
-					runtimeData.setParameter(
-							"BIOSPECIMEN_TRANSACTIONS_strStatus",
-							"Available");
-					runtimeData.setParameter(
-							"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID", ""
-									+ this.intLastBiospecimenAddedID);
-					runtimeData
-							.setParameter(
-									"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
-									runtimeData
-											.getParameter("BIOSPECIMEN_dtSampleDate"));
-					System.err
-							.println("GOT HERE quantity 2 with "
-									+ intLastBiospecimenAddedID
-									+ " "
-									+ runtimeData
-											.getParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity"));
-					doSaveQuantity("" + this.intLastBiospecimenAddedID,
-							runtimeData);
+						FlagManager.toggleFlag(this.intLastBiospecimenAddedID,
+								DOMAIN_BIOSPECIMEN, authToken
+										.getUserIdentifier());
+					}
+					// Create transaction automatically for new sample.
 
+					return null; // everything ok
 				}
-				 **/
-				// set the flag if possible
-				if (runtimeData.getParameter("isFlagged") != null) {
 
-					FlagManager.toggleFlag(this.intLastBiospecimenAddedID,
-							DOMAIN_BIOSPECIMEN, authToken
-									.getUserIdentifier());
-				}
-				// Create transaction automatically for new sample.
-
-				return null; // everything ok
 			}
 
-			
-
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
 		}
+		return strErrors;
 
-	} catch (Exception e) {
-		e.printStackTrace(System.err);
 	}
-	return strErrors;
-	
-	}
+
 	/**
 	 * Saves a biospecimen back to the db.
 	 * 
@@ -1004,15 +1064,17 @@ public class BiospecimenCore {
 
 					// save a new specimen
 					dsqSaveBiospecimen.setManualCommit(true);
-					   boolean blSaveResult = dsqSaveBiospecimen.executeInsert();
-	                    
-	                    if (blSaveResult == false) {
-	                        System.err.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
-	                        dsqSaveBiospecimen.cancelTransaction();
-	                        return "Unable to save biospecimen!";
-	                    }
-	                    
-	                    this.intLastBiospecimenAddedID = dsqSaveBiospecimen.getInsertedRecordKey();
+					boolean blSaveResult = dsqSaveBiospecimen.executeInsert();
+
+					if (blSaveResult == false) {
+						System.err
+								.println("[BiospecimenCore] Unable to save biospecimen - Database did not insert");
+						dsqSaveBiospecimen.cancelTransaction();
+						return "Unable to save biospecimen!";
+					}
+
+					this.intLastBiospecimenAddedID = dsqSaveBiospecimen
+							.getInsertedRecordKey();
 
 					// grab the property for autogeneration
 					boolean blAutoGenerateID = false;
@@ -1046,18 +1108,21 @@ public class BiospecimenCore {
 							int studykey = Integer.parseInt(runtimeData
 									.getParameter("BIOSPECIMEN_intStudyKey"));
 							String strSampleType = runtimeData
-							.getParameter("BIOSPECIMEN_strSampleType");
+									.getParameter("BIOSPECIMEN_strSampleType");
 							DALSecurityQuery query = new DALSecurityQuery(
 									"biospecimen_add", authToken);
 							System.err
 									.println("GOT HERE!!!!!!!!!!!!!! - but why?"
 											+ runtimeData
 													.getParameter("BIOSPECIMEN_intParentID"));
-							
-							
+
 							strNewBiospecimenID = BiospecimenUtilities
 									.getNewSubBiospecimenStringID(
-											query,strSampleType, BiospecimenUtilities.getUserBiospecimenID(intParentBioSpecID),true, studykey);
+											query,
+											strSampleType,
+											BiospecimenUtilities
+													.getUserBiospecimenID(intParentBioSpecID),
+											true, studykey);
 						} else {
 							System.err.println("GOT HERE!!!!!!!!!!!!!!");
 
@@ -1098,18 +1163,24 @@ public class BiospecimenCore {
 								return "Unable to generate an appropriate ID for this specimen";
 							}
 							dsqSaveBiospecimen.reset();
-                            dsqSaveBiospecimen.setDomain("BIOSPECIMEN", null, null, null);
-                            dsqSaveBiospecimen.setField("BIOSPECIMEN_strBiospecimenID", strNewBiospecimenID);
-                            dsqSaveBiospecimen.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID", "=", intLastBiospecimenAddedID + "", 0, DALQuery.WHERE_HAS_VALUE);
-                            blSaveResult = dsqSaveBiospecimen.executeUpdate();
-                            if (blSaveResult == false) {
-                                dsqSaveBiospecimen.cancelTransaction();
-                                System.err.println("[BiospecimenCore] Unable to generate Biospecimen ID");
-                                return "Unable to generate biospecimen ID";
-                            }
-                            else {
-                                dsqSaveBiospecimen.commitTransaction();
-                            }
+							dsqSaveBiospecimen.setDomain("BIOSPECIMEN", null,
+									null, null);
+							dsqSaveBiospecimen.setField(
+									"BIOSPECIMEN_strBiospecimenID",
+									strNewBiospecimenID);
+							dsqSaveBiospecimen.setWhere(null, 0,
+									"BIOSPECIMEN_intBiospecimenID", "=",
+									intLastBiospecimenAddedID + "", 0,
+									DALQuery.WHERE_HAS_VALUE);
+							blSaveResult = dsqSaveBiospecimen.executeUpdate();
+							if (blSaveResult == false) {
+								dsqSaveBiospecimen.cancelTransaction();
+								System.err
+										.println("[BiospecimenCore] Unable to generate Biospecimen ID");
+								return "Unable to generate biospecimen ID";
+							} else {
+								dsqSaveBiospecimen.commitTransaction();
+							}
 
 							// System.err.println("GOT HERE!!!!!!!! -
 							// quantity");
@@ -1143,14 +1214,7 @@ public class BiospecimenCore {
 													.getParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity"));
 							doSaveQuantity("" + this.intLastBiospecimenAddedID,
 									runtimeData);
-							
-							
-							
-							
-							
-							
-							
-							
+
 						} else {
 							// invalid id returned from generator
 							System.err
@@ -1215,17 +1279,18 @@ public class BiospecimenCore {
 				/*
 				 * int intStudyKey = -1; try { if
 				 * (runtimeData.getParameter("BIOSPECIMEN_intStudyKey") != null)
-				 * intStudyKey =
-				 * Integer.parseInt(runtimeData.getParameter("BIOSPECIMEN_intStudyKey")); }
-				 * catch (Exception e) { // no need to display - we dont care. }
-				 * //use the if
-				 * (SmartformManager.checkForBiospecimenParticipant(this.intLastBiospecimenAddedID,
-				 * intStudyKey) == false) {
+				 * intStudyKey =Integer.parseInt(runtimeData.getParameter(
+				 * "BIOSPECIMEN_intStudyKey")); } catch (Exception e) { // no
+				 * need to display - we dont care. } //use the if
+				 * (SmartformManager
+				 * .checkForBiospecimenParticipant(this.intLastBiospecimenAddedID
+				 * , intStudyKey) == false) {
 				 * System.out.println(intLastBiospecimenAddedID + " - " +
 				 * intStudyKey);
 				 * 
-				 * SmartformManager.addBiospecimenSmartformParticipant(intStudyKey,
-				 * this.intLastBiospecimenAddedID , authToken); }
+				 * 
+				 * SmartformManager.addBiospecimenSmartformParticipant(intStudyKey
+				 * , this.intLastBiospecimenAddedID , authToken); }
 				 */
 
 			}
@@ -1235,14 +1300,15 @@ public class BiospecimenCore {
 		}
 		return strErrors;
 	}
-	
+
 	/**
 	 * Clone a biospecimen details, except the inventory information return null
 	 * of sucessfully, otherwise return non tagged error message
 	 * 
 	 */
 
-	public String cloneBiospecimen2(int intBiospecimenID, ChannelRuntimeData runtimeData) {
+	public String cloneBiospecimen2(int intBiospecimenID,
+			ChannelRuntimeData runtimeData) {
 
 		Vector vtViewBiospecimenFormFields = DatabaseSchema
 				.getFormFields("cbiospecimen_clone_biospecimen");
@@ -1270,7 +1336,6 @@ public class BiospecimenCore {
 							.get(i);
 					String strFieldValue = rsResultSet.getString(strFieldName);
 
-					
 					if (strFieldValue != null) {
 						if (DatabaseSchema.getDBMSType() == DBMSTypes.ORACLE) {
 							DBField field = null;
@@ -1323,108 +1388,107 @@ public class BiospecimenCore {
 			boolean blSaveResult = false;
 			/**
 			 * String encounter = runtimeData
-						.getParameter("BIOSPECIMEN_strEncounter");
-						String origSuffix = BiospecimenUtilities.getLastBioAddedSuffix(patientkey, encounter,strSampleType,intDepth);
-						String newSuffix = BiospecimenUtilities.getSuffixDB(origSuffix, strSampleType, false, studykey);
-						System.err.println("getSuffixDB returned: " + newSuffix);
-						if (newSuffix == null)  return "Unable to generate biospecimen ID";
-						strNewBiospecimenID = BiospecimenUtilities.getNewBiospecimenID(encounter, patientkey, runtimeData) + newSuffix;
-						strNewBiospecimenID = BiospecimenUtilities.getNewSubBiospecimenStringID(query,
-								strNewBiospecimenID, 0);
+			 * .getParameter("BIOSPECIMEN_strEncounter"); String origSuffix =
+			 * BiospecimenUtilities.getLastBioAddedSuffix(patientkey,
+			 * encounter,strSampleType,intDepth); String newSuffix =
+			 * BiospecimenUtilities.getSuffixDB(origSuffix, strSampleType,
+			 * false, studykey); System.err.println("getSuffixDB returned: " +
+			 * newSuffix); if (newSuffix == null) return
+			 * "Unable to generate biospecimen ID"; strNewBiospecimenID =
+			 * BiospecimenUtilities.getNewBiospecimenID(encounter, patientkey,
+			 * runtimeData) + newSuffix; strNewBiospecimenID =
+			 * BiospecimenUtilities.getNewSubBiospecimenStringID(query,
+			 * strNewBiospecimenID, 0);
 			 */
-			String sampleType = (String) htBiospecimenDetails.get("BIOSPECIMEN_strSampleType");
-			String oldBiospecimenId = (String) htBiospecimenDetails.get("BIOSPECIMEN_strBiospecimenID");
-			String encounter = (String) htBiospecimenDetails.get("BIOSPECIMEN_strEncounter");
-			String strPatientkey = (String) htBiospecimenDetails.get("BIOSPECIMEN_intPatientID");
-			int patientkey=Integer.parseInt(strPatientkey);
-			String strDepth = (String) htBiospecimenDetails.get("BIOSPECIMEN_intDepth");
-			int intDepth=Integer.parseInt(strDepth);
-			String strStudykey = (String) htBiospecimenDetails.get("BIOSPECIMEN_intStudyKey");
-			int studykey=Integer.parseInt(strStudykey);
-			String origSuffix = BiospecimenUtilities.getLastBioAddedSuffix(patientkey, encounter,sampleType,intDepth);
-			String newSuffix = BiospecimenUtilities.getSuffixDB(origSuffix, sampleType, false, studykey);
-			
-			String strNewBiospecimenID = BiospecimenUtilities.getNewBiospecimenID(encounter, patientkey, null,htBiospecimenDetails );
-			
-			
-			
+			String sampleType = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_strSampleType");
+			String oldBiospecimenId = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_strBiospecimenID");
+			String encounter = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_strEncounter");
+			String strPatientkey = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_intPatientID");
+			int patientkey = Integer.parseInt(strPatientkey);
+			String strDepth = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_intDepth");
+			int intDepth = Integer.parseInt(strDepth);
+			String strStudykey = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_intStudyKey");
+			int studykey = Integer.parseInt(strStudykey);
+			String origSuffix = BiospecimenUtilities.getLastBioAddedSuffix(
+					patientkey, encounter, sampleType, intDepth);
+			String newSuffix = BiospecimenUtilities.getSuffixDB(origSuffix,
+					sampleType, false, studykey);
+
+			String strNewBiospecimenID = BiospecimenUtilities
+					.getNewBiospecimenID(encounter, patientkey, null,
+							htBiospecimenDetails);
+
 			// ensure we actually got a valid id
 			if (strNewBiospecimenID != null
 					&& !strNewBiospecimenID.equalsIgnoreCase("-1")) {
-				
-				strNewBiospecimenID = BiospecimenUtilities.getNewSubBiospecimenStringID(query,
-						strNewBiospecimenID+newSuffix, 0);
-				
+
+				strNewBiospecimenID = BiospecimenUtilities
+						.getNewSubBiospecimenStringID(query,
+								strNewBiospecimenID + newSuffix, 0);
+
 				String strValidation = BiospecimenUtilities
 						.checkForDuplicateIDs(query, strNewBiospecimenID,
 								BiospecimenUtilities.BIOSPECIMENID);
-			
-				
-			// Put in a temp value for the ID, until updated by the ID
-			// generation process
-		
-			if (blAutoGenerateID == true) {
-				htBiospecimenDetails.put("BIOSPECIMEN_strBiospecimenID",
-						strNewBiospecimenID);
-			}
-			query.setManualCommit(true);
-			
-			query.clearDomains();
-			query.clearFields();
-			query.clearWhere();
-			query.setDomain("BIOSPECIMEN", null, null, null);
-			query.setFields(vtViewBiospecimenFormFields, htBiospecimenDetails);
-			blSaveResult = query.executeInsert();
-			intLastBiospecimenAddedID = query.getInsertedRecordKey();
-			
-			if (blSaveResult == false) {
-				query.cancelTransaction();
-				System.err
-						.println("[BiospecimenCore] Unable to generate Biospecimen ID");
-				return "Unable to generate biospecimen ID";
-			} else {
-				query.commitTransaction();
-			}
-			
-			
-		//	SmartformManager.addBiospecimenSmartformParticipant(intStudyID,
-			//		intLastBiospecimenAddedID, authToken);
 
-			// Add quantity record for cloned biospecimen.
-			ChannelRuntimeData data = new ChannelRuntimeData();
-			data
-			.setParameter(
-					"BIOSPECIMEN_TRANSACTIONS_flQuantity",
-					(String) htBiospecimenDetails.get("BIOSPECIMEN_flQuantity"));
-	data.setParameter(
-			"BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
-	data.setParameter(
-			"BIOSPECIMEN_TRANSACTIONS_strReason",
-			"Initial Quantity");
-	data.setParameter(
-			"BIOSPECIMEN_TRANSACTIONS_strStatus",
-			"Available");
-	data
-			.setParameter(
-					"BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
-					"" + this.intLastBiospecimenAddedID);
-	data
-			.setParameter(
-					"BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
-					(String) htBiospecimenDetails.get("BIOSPECIMEN_dtSampleDate"));
-	System.err
-			.println("GOT HERE quantity 1 with "
-					+ intLastBiospecimenAddedID
-					+ " "
-					+ htBiospecimenDetails.get("BIOSPECIMEN_flQuantity"));
-	doSaveQuantity("" + this.intLastBiospecimenAddedID,
-			data);
-			
-			
-			
-			
-			return null;
-			} else return "Unable to generate biospecimen ID";
+				// Put in a temp value for the ID, until updated by the ID
+				// generation process
+
+				if (blAutoGenerateID == true) {
+					htBiospecimenDetails.put("BIOSPECIMEN_strBiospecimenID",
+							strNewBiospecimenID);
+				}
+				query.setManualCommit(true);
+
+				query.clearDomains();
+				query.clearFields();
+				query.clearWhere();
+				query.setDomain("BIOSPECIMEN", null, null, null);
+				query.setFields(vtViewBiospecimenFormFields,
+						htBiospecimenDetails);
+				blSaveResult = query.executeInsert();
+				intLastBiospecimenAddedID = query.getInsertedRecordKey();
+
+				if (blSaveResult == false) {
+					query.cancelTransaction();
+					System.err
+							.println("[BiospecimenCore] Unable to generate Biospecimen ID");
+					return "Unable to generate biospecimen ID";
+				} else {
+					query.commitTransaction();
+				}
+
+				// SmartformManager.addBiospecimenSmartformParticipant(intStudyID,
+				// intLastBiospecimenAddedID, authToken);
+
+				// Add quantity record for cloned biospecimen.
+				ChannelRuntimeData data = new ChannelRuntimeData();
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_flQuantity",
+						(String) htBiospecimenDetails
+								.get("BIOSPECIMEN_flQuantity"));
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_strUnity", "ml");
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_strReason",
+						"Initial Quantity");
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_strStatus",
+						"Available");
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_intBiospecimenID",
+						"" + this.intLastBiospecimenAddedID);
+				data.setParameter("BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
+						(String) htBiospecimenDetails
+								.get("BIOSPECIMEN_dtSampleDate"));
+				System.err.println("GOT HERE quantity 1 with "
+						+ intLastBiospecimenAddedID + " "
+						+ htBiospecimenDetails.get("BIOSPECIMEN_flQuantity"));
+				doSaveQuantity("" + this.intLastBiospecimenAddedID, data);
+
+				return null;
+			} else
+				return "Unable to generate biospecimen ID";
 		} catch (Exception e) {
 			LogService.instance().log(
 					LogService.ERROR,
@@ -1435,8 +1499,6 @@ public class BiospecimenCore {
 		}
 
 	}
-	
-	
 
 	/**
 	 * Clone a biospecimen details, except the inventory information return null
@@ -1523,7 +1585,8 @@ public class BiospecimenCore {
 
 			// Put in a temp value for the ID, until updated by the ID
 			// generation process
-			String oldBiospecimenId = (String) htBiospecimenDetails.get("BIOSPECIMEN_strBiospecimenID");
+			String oldBiospecimenId = (String) htBiospecimenDetails
+					.get("BIOSPECIMEN_strBiospecimenID");
 			if (blAutoGenerateID == true) {
 				htBiospecimenDetails.put("BIOSPECIMEN_strBiospecimenID",
 						Integer.toString(intLastBiospecimenAddedID));
@@ -1540,16 +1603,19 @@ public class BiospecimenCore {
 			String strNewBiospecimenID;
 
 			if (blAutoGenerateID == true) {
-								// get the biospecimen ID.
-				//strNewBiospecimenID = "";
-				//IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
-					//	.getBiospecimenIDGenerationInstance();
-				//strNewBiospecimenID = idgGenerator.getBiospecimenID(
-					//	intLastBiospecimenAddedID, query, authToken);
-				
-				String sampleType = (String) htBiospecimenDetails.get("BIOSPECIMEN_strSampleType");
-								
-				strNewBiospecimenID = BiospecimenUtilities.getNewSubBiospecimenStringID(query, sampleType, oldBiospecimenId,false,intStudyID);
+				// get the biospecimen ID.
+				// strNewBiospecimenID = "";
+				// IBiospecimenIDGenerator idgGenerator = IDGenerationFactory
+				// .getBiospecimenIDGenerationInstance();
+				// strNewBiospecimenID = idgGenerator.getBiospecimenID(
+				// intLastBiospecimenAddedID, query, authToken);
+
+				String sampleType = (String) htBiospecimenDetails
+						.get("BIOSPECIMEN_strSampleType");
+
+				strNewBiospecimenID = BiospecimenUtilities
+						.getNewSubBiospecimenStringID(query, sampleType,
+								oldBiospecimenId, false, intStudyID);
 				// ensure we actually got a valid id
 				if (strNewBiospecimenID != null
 						&& !strNewBiospecimenID.equalsIgnoreCase("-1")) {
@@ -2051,17 +2117,16 @@ public class BiospecimenCore {
 							.calculateClinicalAge(vtViewBiospecimen,
 									runtimeData);
 				}
-				int intStudyID = StudyUtilities.getStudyKeyFromPatient(intPatientKey);
+				int intStudyID = StudyUtilities
+						.getStudyKeyFromPatient(intPatientKey);
 				vtViewBiospecimen.remove("BIOSPECIMEN_strSampleSubType");
 				if (blUseSubTypeLR) {
 					vtViewBiospecimen.remove("BIOSPECIMEN_strSubTypeLR");
 				}
 				System.err.println("Study ID is : " + intStudyID);
 				strXML.append(QueryChannel.buildViewXMLFile(vtViewBiospecimen,
-						runtimeData,intStudyID));
+						runtimeData, intStudyID));
 
-				
-				
 				if (strSampleType == null) {
 					// try to get the default sample value
 					DBField field = (DBField) DatabaseSchema.getFields().get(
@@ -2177,64 +2242,74 @@ public class BiospecimenCore {
 				strXML.append(strBioParentKey);
 				strXML.append("</BIOSPECIMEN_strParentID>");
 				strXML.append("<BIOSPECIMEN_intStudyKey>");
-				strXML.append(runtimeData.getParameter("BIOSPECIMEN_strStudyKey"));
+				strXML.append(runtimeData
+						.getParameter("BIOSPECIMEN_strStudyKey"));
 				strXML.append("</BIOSPECIMEN_intStudyKey>");
-		
+
 				strXML.append(getTransactionDetailsXML(Integer
 						.parseInt(strBioParentKey)));
 
-				//Ok so we want to know the basic details regarding the parent biospecimen.
-				
+				// Ok so we want to know the basic details regarding the parent
+				// biospecimen.
+
 				DALSecurityQuery parentquery = new DALSecurityQuery();
-				parentquery.setDomain("BIOSPECIMEN", null,null,null);
+				parentquery.setDomain("BIOSPECIMEN", null, null, null);
 				parentquery.setField("BIOSPECIMEN_flDNAConc", null);
 				parentquery.setField("BIOSPECIMEN_strSampleType", null);
-				parentquery.setField("BIOSPECIMEN_flNumberRemoved",null);
-				parentquery.setField("BIOSPECIMEN_flNumberCollected",null);
-				parentquery.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID", "=",
-						strBioParentKey, 0, DALQuery.WHERE_HAS_VALUE);
-				parentquery.setWhere("AND", 0, "BIOSPECIMEN_intDeleted", "=", 0 + "",
-						0, DALQuery.WHERE_HAS_VALUE);
+				parentquery.setField("BIOSPECIMEN_flNumberRemoved", null);
+				parentquery.setField("BIOSPECIMEN_flNumberCollected", null);
+				parentquery.setWhere(null, 0, "BIOSPECIMEN_intBiospecimenID",
+						"=", strBioParentKey, 0, DALQuery.WHERE_HAS_VALUE);
+				parentquery.setWhere("AND", 0, "BIOSPECIMEN_intDeleted", "=",
+						0 + "", 0, DALQuery.WHERE_HAS_VALUE);
 				ResultSet parent_rs = parentquery.executeSelect();
-				String parentSampleType="";
+				String parentSampleType = "";
 				Double parentDNAConc = null;
 				double flQuantityParentCollected = 0;
 				double flQuantityParentRemoved = 0;
 				double flDNAConcParent = 0;
 				double flQuantityParent = 0;
 				if (parent_rs.next()) {
-					parentSampleType = parent_rs.getString("BIOSPECIMEN_strSampleType");
-					parentDNAConc = new Double(parent_rs.getDouble("BIOSPECIMEN_flDNAConc"));
+					parentSampleType = parent_rs
+							.getString("BIOSPECIMEN_strSampleType");
+					parentDNAConc = new Double(parent_rs
+							.getDouble("BIOSPECIMEN_flDNAConc"));
 
-						try {
-							flQuantityParentCollected  = new Double(parent_rs
-									.getString("BIOSPECIMEN_flNumberCollected")).doubleValue();
-						} catch (NullPointerException ne ) {
-							System.err.println("Null pointer exception here - collected");
-						}
-						try{
-							flQuantityParentRemoved  = new Double(parent_rs
-									.getString("BIOSPECIMEN_flNumberRemoved")).doubleValue();
-						} catch (NullPointerException ne ) {
-							System.err.println("Null pointer exception here - removed");
-						}
-						flQuantityParent = flQuantityParentCollected + flQuantityParentRemoved;
-					
-				strXML.append("<parent_strSampleType>");
-				strXML.append(parentSampleType);
-				strXML.append("</parent_strSampleType>");
-				strXML.append("<parent_flDNAConc>");
-				strXML.append(parentDNAConc);
-				strXML.append("</parent_flDNAConc>");
-				strXML.append("<parent_flQuantity>"+flQuantityParent+"</parent_flQuantity>");
-				strXML.append("<BIOSPECIMEN_strProcessingType>");
-				if (parent_rs.getDouble("BIOSPECIMEN_flDNAConc") != 0) {
-				strXML.append("<type>Sub-aliquot</type>");
+					try {
+						flQuantityParentCollected = new Double(parent_rs
+								.getString("BIOSPECIMEN_flNumberCollected"))
+								.doubleValue();
+					} catch (NullPointerException ne) {
+						System.err
+								.println("Null pointer exception here - collected");
+					}
+					try {
+						flQuantityParentRemoved = new Double(parent_rs
+								.getString("BIOSPECIMEN_flNumberRemoved"))
+								.doubleValue();
+					} catch (NullPointerException ne) {
+						System.err
+								.println("Null pointer exception here - removed");
+					}
+					flQuantityParent = flQuantityParentCollected
+							+ flQuantityParentRemoved;
+
+					strXML.append("<parent_strSampleType>");
+					strXML.append(parentSampleType);
+					strXML.append("</parent_strSampleType>");
+					strXML.append("<parent_flDNAConc>");
+					strXML.append(parentDNAConc);
+					strXML.append("</parent_flDNAConc>");
+					strXML.append("<parent_flQuantity>" + flQuantityParent
+							+ "</parent_flQuantity>");
+					strXML.append("<BIOSPECIMEN_strProcessingType>");
+					if (parent_rs.getDouble("BIOSPECIMEN_flDNAConc") != 0) {
+						strXML.append("<type>Sub-aliquot</type>");
+					}
+					strXML.append("<type>Processing</type>");
+					strXML.append("</BIOSPECIMEN_strProcessingType>");
 				}
-				strXML.append("<type>Processing</type>");
-				strXML.append("</BIOSPECIMEN_strProcessingType>");
-				}
-				
+
 			} else {
 				strXML.append("<BIOSPECIMEN_intParentID>");
 				strXML.append("-1");
@@ -2514,7 +2589,7 @@ public class BiospecimenCore {
 		try {
 			strXML.append(QueryChannel.buildFormLabelXMLFile(vtFields));
 			strXML.append(QueryChannel.buildAddFormXMLFile(vtFields));
-			strXML.append(StudyUtilities.getListOfStudiesXML(authToken,true));
+			strXML.append(StudyUtilities.getListOfStudiesXML(authToken, true));
 		} catch (Exception e) {
 			// //System.out.println ("Get search criteria XML failed");
 			e.printStackTrace();
@@ -2546,9 +2621,7 @@ public class BiospecimenCore {
 		} catch (Exception e) {
 			return null;
 		}
-		
-		
-		
+
 		// properties calls
 
 		try {
@@ -2576,7 +2649,7 @@ public class BiospecimenCore {
 		}
 
 		strXML.append(getBiospecimenDetailsXML(intBiospecimenKey, runtimeData));
-		//strXML.append(getBiospecimenWADBXML(intBiospecimenKey, runtimeData));
+		// strXML.append(getBiospecimenWADBXML(intBiospecimenKey, runtimeData));
 		// System.out.println(strXML.toString());
 		int depth = BiospecimenUtilities.getDepthFromKey(
 				intBiospecimenKey + "", null);
@@ -2598,13 +2671,13 @@ public class BiospecimenCore {
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
-		
-		int sitekey = InventoryUtilities.getSiteKeyforBiospecimen(new Integer(intBiospecimenKey).intValue());
-			Integer ISitekey = new Integer(sitekey);
-			if (!authToken.getSiteList().contains(ISitekey) && sitekey != -1 ) {
-				strXML.append("<bioOffSite>1</bioOffSite>");
-			}
-		
+
+		int sitekey = InventoryUtilities.getSiteKeyforBiospecimen(new Integer(
+				intBiospecimenKey).intValue());
+		Integer ISitekey = new Integer(sitekey);
+		if (!authToken.getSiteList().contains(ISitekey) && sitekey != -1) {
+			strXML.append("<bioOffSite>1</bioOffSite>");
+		}
 
 		if (blShowInventoryForCollections && blShowInventory) {
 			// if the depth = 1 and show inv for the top level, or depth != 1
@@ -2650,9 +2723,10 @@ public class BiospecimenCore {
 				.getPropertyAsBoolean("neuragenix.bio.Biospecimen.showNonConsentedStudies");
 		boolean blShowExpiredStudies = PropertiesManager
 				.getPropertyAsBoolean("neuragenix.bio.Biospecimen.showExpiredStudies");
-		strXML.append(StudyUtilities.getListOfStudiesXML(authToken,blShowExpiredStudies,
-				blShowNonConsentedStudies, intBiospecimenKey,
-				StudyUtilities.DOMAIN_BIOSPECIMEN, "biospecimen"));
+		strXML.append(StudyUtilities.getListOfStudiesXML(authToken,
+				blShowExpiredStudies, blShowNonConsentedStudies,
+				intBiospecimenKey, StudyUtilities.DOMAIN_BIOSPECIMEN,
+				"biospecimen"));
 
 		// output the patient details if allowed to do so
 		try {
@@ -2902,12 +2976,13 @@ public class BiospecimenCore {
 					.get("BIOSPECIMEN_intPatientID"));
 			htSearchCriteria.remove("BIOSPECIMEN_intPatientID");
 		}
-		
-		 if (htSearchCriteria.containsKey("BIOSPECIMEN_intStudyKey")) {
-		 htKeyCriteria.put("BIOSPECIMEN_intStudyKey",
-		 htSearchCriteria.get("BIOSPECIMEN_intStudyKey"));
-		 htSearchCriteria.remove("BIOSPECIMEN_intStudyKey"); }
-		
+
+		if (htSearchCriteria.containsKey("BIOSPECIMEN_intStudyKey")) {
+			htKeyCriteria.put("BIOSPECIMEN_intStudyKey", htSearchCriteria
+					.get("BIOSPECIMEN_intStudyKey"));
+			htSearchCriteria.remove("BIOSPECIMEN_intStudyKey");
+		}
+
 		if (htSearchCriteria.containsKey("BIOSPECIMEN_dtSampleDate")) {
 			htKeyCriteria.put("BIOSPECIMEN_dtSampleDate", htSearchCriteria
 					.get("BIOSPECIMEN_dtSampleDate"));
@@ -2972,11 +3047,11 @@ public class BiospecimenCore {
 			String strEqualityCondition = getSearchEqualityCondition();
 			try {
 				dalChildQuery.setDomain("BIOSPECIMEN", null, null, null);
-				//if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
-					dalChildQuery.setDomain("PATIENT",
-							"PATIENT_intInternalPatientID",
-							"BIOSPECIMEN_intPatientID", "INNER JOIN");
-				//}
+				// if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
+				dalChildQuery.setDomain("PATIENT",
+						"PATIENT_intInternalPatientID",
+						"BIOSPECIMEN_intPatientID", "INNER JOIN");
+				// }
 				dalChildQuery.setFields(vtFormFields, null);
 				dalChildQuery.setWhere(null, 0, "BIOSPECIMEN_intDeleted", "=",
 						"0", 0, DALQuery.WHERE_HAS_VALUE);
@@ -2998,9 +3073,10 @@ public class BiospecimenCore {
 						true);
 				System.err.println(dalChildQuery.convertSelectQueryToString());
 				double timenow1 = System.currentTimeMillis();
-				
+
 				rs = dalChildQuery.executeSelect();
-				System.err.println("Execute select time: "+ (System.currentTimeMillis() - timenow1 )/ 1000.0);
+				// System.err.println("Execute select time: "+
+				// (System.currentTimeMillis() - timenow1 )/ 1000.0);
 				System.err.println(dalChildQuery.convertSelectQueryToString());
 
 				rs.beforeFirst();
@@ -3021,10 +3097,12 @@ public class BiospecimenCore {
 					}
 
 				}
-				System.err.println("Execute hash time: "+ (System.currentTimeMillis() - timenow1 )/ 1000.0);
+				// System.err.println("Execute hash time: "+
+				// (System.currentTimeMillis() - timenow1 )/ 1000.0);
 				establishSearchChildren(htChildrenCheck, htSearchCriteria,
 						htKeyCriteria);
-				System.err.println("Execute search children time: "+ (System.currentTimeMillis() - timenow1 )/ 1000.0);
+				// System.err.println("Execute search children time: "+
+				// (System.currentTimeMillis() - timenow1 )/ 1000.0);
 
 				rs.close();
 			} catch (Exception e) {
@@ -3061,20 +3139,21 @@ public class BiospecimenCore {
 
 			try {
 				dsqQuery.setDomain("BIOSPECIMEN", null, null, null);
-				//if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
-					dsqQuery.setDomain("PATIENT",
-							"PATIENT_intInternalPatientID",
-							"BIOSPECIMEN_intPatientID", "INNER JOIN");
-				//}
+				// if ((CLIENT != null) && (CLIENT.equalsIgnoreCase("CCIA"))) {
+				dsqQuery.setDomain("PATIENT", "PATIENT_intInternalPatientID",
+						"BIOSPECIMEN_intPatientID", "INNER JOIN");
+				// }
 				// dsqQuery.setDomain("CELL", "CELL_intBiospecimenID",
 				// "BIOSPECIMEN_intBiospecimenID", "LEFT JOIN");
-				
+
 				dsqQuery.setFields(vtFormFields, null);
 				dsqQuery.setOrderBy("BIOSPECIMEN_strBiospecimenID", "ASC");
 
 				dsqQuery.setWhere(null, 0, "BIOSPECIMEN_intDeleted", "=", "0",
 						0, DALQuery.WHERE_HAS_VALUE);
-				dsqQuery.setWhere("AND",0,"BIOSPECIMEN_intStudyKey", "IN", StudyUtilities.getStudyIDSQLString(authToken.getStudyList()),0,DALQuery.WHERE_HAS_VALUE);
+				dsqQuery.setWhere("AND", 0, "BIOSPECIMEN_intStudyKey", "IN",
+						StudyUtilities.getStudyIDSQLString(authToken
+								.getStudyList()), 0, DALQuery.WHERE_HAS_VALUE);
 
 				// reset the patient key with the internal key
 
@@ -3104,8 +3183,8 @@ public class BiospecimenCore {
 				}
 
 				/*
-				 * DALQuery dalPrevQuery = dsqQuery; DALQuery dalPrevCloneQuery =
-				 * new DALQuery(dsqQuery);
+				 * DALQuery dalPrevQuery = dsqQuery; DALQuery dalPrevCloneQuery
+				 * = new DALQuery(dsqQuery);
 				 * 
 				 * for (int i = 2; i <= intMaxSearchDepth; i++) { DALQuery
 				 * dalTempClone = null; DALQuery dalDepthQuery = new DALQuery();
@@ -3160,7 +3239,8 @@ public class BiospecimenCore {
 				// true);
 				double timenow2 = System.currentTimeMillis();
 				rs = dsqQuery.executeSelect();
-				System.err.println("Execute select time: "+ (System.currentTimeMillis() - timenow2 )/ 1000.0);
+				System.err.println("Execute select time: "
+						+ (System.currentTimeMillis() - timenow2) / 1000.0);
 				// put the data, within the paging set into a tree
 				if (treeSearchResults != null || blNewSearch == true) {
 
@@ -3211,34 +3291,37 @@ public class BiospecimenCore {
 						// //System.out.println("Got null from the query channel
 						// the for the hash of results.");
 					}
-					
+
 				}
-				//intCurrentSearchAmount = rs.getRow();
+				// intCurrentSearchAmount = rs.getRow();
 				rs.close();
-				System.err.println("Execute hash time: "+ (System.currentTimeMillis() - timenow2 )/ 1000.0);
+				System.err.println("Execute hash time: "
+						+ (System.currentTimeMillis() - timenow2) / 1000.0);
 				dsqQuery.clearLimitOffset();
 				dsqQuery.clearFields();
-               
-                dsqQuery.setCountField("BIOSPECIMEN_intBiospecimenID", false);
-                rs = dsqQuery.executeSelect();
-                if (rs.first())
-                {
-                   intCurrentSearchAmount = rs.getInt(1);
-                }
 
-               // intCurrentSearchAmount = rs.getRow();
+				dsqQuery.setCountField("BIOSPECIMEN_intBiospecimenID", false);
+				rs = dsqQuery.executeSelect();
+				if (rs.first()) {
+					intCurrentSearchAmount = rs.getInt(1);
+				}
+
+				// intCurrentSearchAmount = rs.getRow();
 				// counting the number of result
-				//ResultSet rsCountResult = dsqQuery.executeSelect();
-				System.err.println("Execute count select  time: "+ (System.currentTimeMillis() - timenow2 )/ 1000.0);
-				//rsCountResult.last();
-				System.err.println("Execute count time: "+ (System.currentTimeMillis() - timenow2 )/ 1000.0);
-			//
-				//intCurrentSearchAmount = rsCountResult.getRow();
-				//rsCountResult.close();
+				// ResultSet rsCountResult = dsqQuery.executeSelect();
+				System.err.println("Execute count select  time: "
+						+ (System.currentTimeMillis() - timenow2) / 1000.0);
+				// rsCountResult.last();
+				System.err.println("Execute count time: "
+						+ (System.currentTimeMillis() - timenow2) / 1000.0);
+				//
+				// intCurrentSearchAmount = rsCountResult.getRow();
+				// rsCountResult.close();
 
 				establishSearchChildren(htChildrenCheck, htSearchCriteria,
 						htKeyCriteria);
-				System.err.println("Execute child time: "+ (System.currentTimeMillis() - timenow2 )/ 1000.0);
+				System.err.println("Execute child time: "
+						+ (System.currentTimeMillis() - timenow2) / 1000.0);
 				// the below will check for children for the query
 
 			} catch (Exception e) {
@@ -3247,8 +3330,9 @@ public class BiospecimenCore {
 
 		}
 		double timenow = System.currentTimeMillis();
-				this.rebuildSearchIndex();
-System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 1000.0);
+		this.rebuildSearchIndex();
+		System.err.println("Rebuild took: "
+				+ (System.currentTimeMillis() - timenow) / 1000.0);
 		// //System.out.println ("point 2");
 
 		Enumeration enumTreeStructure = treeSearchResults.preorderEnumeration();
@@ -3319,7 +3403,8 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 				}
 
 			}
-			System.err.println("Tree Search results took: "+ (System.currentTimeMillis() - timenow )/ 1000.0);
+			System.err.println("Tree Search results took: "
+					+ (System.currentTimeMillis() - timenow) / 1000.0);
 			// append the paging details
 
 			// TODO: discover a way under the new dal to get the total number of
@@ -3342,9 +3427,12 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 			switch (intCallingDomain) {
 			case DOMAIN_PATIENT:
 				strXML.append("<callingDomain>patient</callingDomain>");
-				String strPatientKey = (String) htKeyCriteria.get("BIOSPECIMEN_intPatientID");
+				String strPatientKey = (String) htKeyCriteria
+						.get("BIOSPECIMEN_intPatientID");
 				int intPatientKey = Integer.parseInt(strPatientKey);
-				strXML.append("<intStudyID>"+StudyUtilities.getStudyKeyFromPatient(intPatientKey)+"</intStudyID>");
+				strXML.append("<intStudyID>"
+						+ StudyUtilities.getStudyKeyFromPatient(intPatientKey)
+						+ "</intStudyID>");
 				strXML.append(PatientUtilities.getPatientDetailsXML(
 						(String) htKeyCriteria.get("BIOSPECIMEN_intPatientID"),
 						authToken));
@@ -3385,15 +3473,15 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 	 * Warning - This method operates by reference, and WILL update the children
 	 * hashtable
 	 * 
-	 * @param htChildrenCheck -
-	 *            Hashtable of <biospecimen key>, <hashtable that has been used
-	 *            as the user object in tree>
-	 * @param htSearchCriteria -
-	 *            Hashtable of <search field>, <criteria>. Equality based on
+	 * @param htChildrenCheck
+	 *            - Hashtable of <biospecimen key>, <hashtable that has been
+	 *            used as the user object in tree>
+	 * @param htSearchCriteria
+	 *            - Hashtable of <search field>, <criteria>. Equality based on
 	 *            system properties
-	 * @param htKeyCriteria -
-	 *            Hashtable the same as search criteria, however as it has keys,
-	 *            equality rules are "=" only
+	 * @param htKeyCriteria
+	 *            - Hashtable the same as search criteria, however as it has
+	 *            keys, equality rules are "=" only
 	 * 
 	 */
 
@@ -3644,7 +3732,8 @@ System.err.println("Rebuild took: "+ (System.currentTimeMillis() - timenow )/ 10
 					intBiospecimenKey + "", 0, DALQuery.WHERE_HAS_VALUE);
 			query.setWhere("AND", 0, "BIOSPECIMEN_TRANSACTIONS_intDeleted",
 					"=", "0", 0, DALQuery.WHERE_HAS_VALUE);
-			query.setOrderBy("BIOSPECIMEN_TRANSACTIONS_dtTransactionDate", "DESC");
+			query.setOrderBy("BIOSPECIMEN_TRANSACTIONS_dtTransactionDate",
+					"DESC");
 			rs = query.executeSelect();
 			strXML.append(QueryChannel.buildSearchXMLFile("search_trans", rs,
 					vtSearchBioTransactions));
