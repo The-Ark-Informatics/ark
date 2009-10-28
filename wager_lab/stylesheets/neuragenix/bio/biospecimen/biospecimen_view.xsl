@@ -10,6 +10,7 @@
     <xsl:variable name="funcpanelImagePath">media/neuragenix/funcpanel</xsl:variable>
     <xsl:param name="baseWorkerURL"></xsl:param>
         <xsl:param name="barcodeURL"></xsl:param>
+                <xsl:param name="ajaxURL"></xsl:param>
     <xsl:variable name="spacerImagePath">media/neuragenix/infopanel/spacer.gif</xsl:variable>
     <xsl:param name="baseActionURL">baseActionURL_false</xsl:param>
     <xsl:param name="smartformChannelTabOrder">smartformChannelTabOrder</xsl:param>
@@ -371,7 +372,34 @@
         <xsl:variable name="BIOSPECIMEN_dtExtractedDate" select="BIOSPECIMEN_dtExtractedDate"/>
         <xsl:call-template name="javascript_code"/>
         <link rel="stylesheet" type="text/css" href="stylesheets/neuragenix/bio/xmlsideTree.css"/>
+        		<link href="htmlarea/dijit/themes/nihilo/nihilo.css" rel="stylesheet" type="text/css" />
+        <link href="htmlarea/dojo/resources/dojo.css" rel="stylesheet" type="text/css" />
+		
+	<script src="htmlarea/dojo/dojo.js" type="text/javascript" djConfig="parseOnLoad: true" />
+		<script src="htmlarea/dijit/dijit.js" type="text/javascript" djConfig="parseOnLoad: true" />
+
+		<script src="htmlarea/lert.js" type="text/javascript"/>
+		
+		<script src="htmlarea/biodata.js" type="text/javascript"/>
+		<script type="text/javascript">
+			dojo.require("dijit.Dialog");
+			dojo.require("dijit.form.TextBox");
+			dojo.require("dojo.parser");
+			dojo.require("dijit.form.TimeTextBox");
+			dojo.require("dijit.form.Button");
+			dojo.require("dijit.form.DateTextBox");
+				dojo.require("dijit.form.NumberTextBox");
+		
+		</script>
+			 <script type="text/javascript">
+   var varAjaxURL = "<xsl:value-of select="$ajaxURL"/>?module=AJAX&amp;BIOSPECIMEN_intBiospecimenID=<xsl:value-of select="BIOSPECIMEN_intBiospecimenID"/>";
+  </script>
         <script language="javascript">
+        window.onload = function() {
+        
+        ajaxDiv();
+        
+        }
 	<!--window.onload = function()
 {
                 var toggle = document.biospecimen_form.BIOSPECIMEN_strSampleType;
@@ -1490,8 +1518,14 @@ comments.value = commentsval;
                                     id="neuragenix-required-header" align="left" colspan="8"> * = Required fields
 				</td>
 			    </tr>
+			    </table>
+			    <hr/>
+			<div id="bioData" width="100%"/>
+			    
+			    
+			    
                             <xsl:if test="not(bioOffSite)">
-                            <tr>
+               			 <table>           <tr>
                                 <td align="left" colspan="4">
                                     <a class="button" href="#" onclick="this.blur(); javascript:confirmDelete('{$baseActionURL}?current=biospecimen_view&amp;module=core&amp;action=delete_biospecimen&amp;BIOSPECIMEN_intBiospecimenID={$intBiospecimenID}&amp;target=biospecimen');"><span><img src="/wagerlab/media/neuragenix/icons/delete.png" height="14" align="top" border="0"/> Delete</span></a>
                                    <!-- <input type="button" name="delete" value="Delete" tabindex="44"
@@ -1536,14 +1570,9 @@ comments.value = commentsval;
                                    </td></tr>
                                     </table>
                                 </td>
-                            </tr>
+                            </tr></table>
                             </xsl:if>
-                            <tr>
-                                <td colspan="8">
-                                    <hr/>
-                                </td>
-                            </tr>
-                        </table>
+                           
                     </form>
                     
                     <!-- end of biospecimen form -->
@@ -2301,12 +2330,9 @@ comments.value = commentsval;
     <!--xsl:template match="(count(addpatientbutton)=1)"/-->
     <xsl:template match="addpatientbutton"/>
     <xsl:template match="currentPage"/>
-    <xsl:template match="intInternalPatientID"/>
-    <xsl:template match="intStudyID"/>
-    <xsl:template match="strBiospecSampleType"/>
-    <xsl:template match="strBiospecSampleSubType"/>
+
     <xsl:template match="intBiospecParentID"/>
-    <xsl:template match="dtBiospecSampleDate"/>
+
     <xsl:template match="intBiospecNumCollected"/>
     <xsl:template match="intBiospecNumRemoved"/>
     <xsl:template match="PATIENT_Timestamp"/>
@@ -2315,13 +2341,12 @@ comments.value = commentsval;
     <xsl:template match="strFirstName"/>
     <xsl:template match="dtDob"/>
     <xsl:template match="strHospitalUR"/>
-    <xsl:template match="intInternalPatientID"/>
+  
     <xsl:template match="strSurnameDisplay"/>
     <xsl:template match="strPatientIDDisplay"/>
     <xsl:template match="strFirstNameDisplay"/>
     <xsl:template match="dtDobDisplay"/>
     <xsl:template match="strHospitalURDisplay"/>
-    <xsl:template match="intInternalPatientIDDisplay"/>
     <xsl:template match="BIOSPECIMEN_TRANSACTIONS_intBiospecimenIDDisplay"/>
     <xsl:template match="BIOSPECIMEN_TRANSACTIONS_dtTransactionDateDisplay"/>
     <xsl:template match="BIOSPECIMEN_TRANSACTIONS_strTreatmentDisplay"/>

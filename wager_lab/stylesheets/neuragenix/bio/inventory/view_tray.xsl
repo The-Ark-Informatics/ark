@@ -346,9 +346,11 @@
                                                 </select>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr><xsl:variable name="intTrayType"><xsl:value-of select="TRAY_intTrayType"/></xsl:variable>
                                             <td width="20%" class="uportal-label">
-                                                <xsl:value-of select="$boxorplate"/> : </td>
+                                                <xsl:value-of select="$boxorplate"/> : 
+                                                <input type="hidden" name="TRAY_intTrayType" value="{$intTrayType}"/>
+                                                </td>
                                             <td width="25%">
                                                 <input type="text" name="TRAY_strTrayName"
                                                   value="{$TRAY_strTrayName}" size="22"

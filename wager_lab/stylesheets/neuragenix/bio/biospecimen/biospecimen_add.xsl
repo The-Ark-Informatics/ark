@@ -84,6 +84,7 @@
 
 		<script src="htmlarea/lert.js" type="text/javascript"/>
 		<script src="htmlarea/add_biospecimen.js" type="text/javascript"/>
+		<script src="htmlarea/biodata.js" type="text/javascript"/>
 		
 		<table  width="100%" cellpadding="0" cellspacing="0" border="0"   >
 			<tr><td colspan="3">

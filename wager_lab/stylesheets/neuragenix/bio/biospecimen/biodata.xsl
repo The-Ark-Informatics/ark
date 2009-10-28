@@ -67,7 +67,7 @@
                     <xsl:choose>
                             <xsl:when test="type='dropdown'">
                                 <select dojoType="{$dojoType}" name = "field_{$field_key}">
-                                    <xsl:for-each select="value">
+                                    <xsl:for-each select="values/value">
                                         <option>
                                             <xsl:if test="@selected">
                                                 <xsl:attribute name="selected">1</xsl:attribute>
