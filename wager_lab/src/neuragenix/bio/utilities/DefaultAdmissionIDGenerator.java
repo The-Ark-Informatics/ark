@@ -8,9 +8,17 @@ package neuragenix.bio.utilities;
 
 import java.util.Vector;
 import neuragenix.security.AuthToken;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
+
 import org.jasig.portal.PropertiesManager;
 import neuragenix.dao.DALQuery;         // for access to the database
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;              // for access to data from queries
+import java.sql.SQLException;
 import java.text.*;
 
 /**
@@ -28,7 +36,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
         
     }
     
-    public String getAdmissionID(int intSequenceKey, int intStudyKey, int intSubStudyKey, AuthToken authToken) 
+    public String oldgetAdmissionID(int intSequenceKey, int intStudyKey, int intSubStudyKey, AuthToken authToken) 
     {
         String newStrAdminID = "0";
         String currentStrAdminID = "0";
@@ -63,6 +71,56 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
         return null;
     }
     
+    
+    
+    public  String getAdmissionID(int intSequenceKey, int intStudyKey, int intSubStudyKey, AuthToken authToken) {
+    	String query = "select last_number from ix_admission_counts where substudykey=? for update";
+        Connection conn;
+      
+		try {
+			conn = DriverManager.getConnection("jdbc:poolman://oracle");
+			PreparedStatement s = conn.prepareStatement(query);
+		
+			s.setInt(1,intSubStudyKey);
+			ResultSet rs = s.executeQuery();
+			 if (rs.next())
+	            {
+				 int currentID = rs.getInt(1);
+				 currentID++;
+					PreparedStatement updateStatement =  conn.prepareStatement("update ix_admission_counts set last_number = last_number+1 where substudykey=?");
+					updateStatement.setInt(1, intSubStudyKey);
+					updateStatement.execute();
+					return generateID(currentID,intStudyKey,intSubStudyKey);
+	            }
+			 else {
+				 // No counts entered for this substudy - reset to 0;
+				  System.err.println ("[DefaultAdmissionIDGenerator::getAdmissionID] *** Reinitalising Patient ID counter for substudy: '" + intSubStudyKey + "'");
+				PreparedStatement insertStatement =  conn.prepareStatement("insert into ix_admission_counts (substudykey,last_number) values (?,1)");
+				insertStatement.setInt(1, intSubStudyKey);
+				
+				insertStatement.execute();
+				return generateID(1,intStudyKey,intSubStudyKey);
+				
+			 }
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	return null;
+
+    	
+    	
+    }
+    
+    
+    private static String generateID(int seqno, int intStudyKey, int intSubStudyKey) {
+    	 DecimalFormat df = new DecimalFormat("00000");
+
+         String studyCode = StudyUtilities.getStudyCode(intStudyKey,intSubStudyKey);
+         System.err.println("Study Code is : " + studyCode);
+         String newStrAdminID =  studyCode+df.format(seqno);
+         return newStrAdminID;
+    }
     //--------------------------------------------------------------------------
     // Get the current maximum Admission ID
     // Function attempts to:
@@ -84,7 +142,7 @@ public class DefaultAdmissionIDGenerator implements IAdmissionIDGenerator
             queryMaxAdminID.setWhere(null,0,"ADMISSIONS_intStudyID", "=", ""+intStudyKey, 0, DALQuery.WHERE_HAS_VALUE);
             queryMaxAdminID.setWhere("AND",0,"ADMISSIONS_intSubStudyID","=",""+intSubStudyKey,0,DALQuery.WHERE_HAS_VALUE);
             java.sql.ResultSet rs = queryMaxAdminID.executeSelect();
-            System.err.println(queryMaxAdminID.convertSelectQueryToString());
+            //System.err.println(queryMaxAdminID.convertSelectQueryToString());
             if (rs.next())
             {
                 
