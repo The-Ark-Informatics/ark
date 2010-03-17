@@ -1,7 +1,0 @@
-Pattern fieldIdPattern = Pattern.compile("field_(\\d)+");
-Matcher m = fieldIdPattern.matcher("field_56");
-while (m.find()) {
-    String s = m.group(1);
-    // s now contains "BAR"
-}
-System.out.println(s);
