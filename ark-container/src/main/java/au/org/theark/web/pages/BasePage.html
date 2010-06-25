@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html>
+	<head>
+		<title>
+		  Welcome To ETA: Base Page
+		</title>
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<link rel="stylesheet" type="text/css" href="panel.css"/>
+	</head>
+	<body>
+		<!--  Common Banner with context based -->
+		<div id="header">
+  			<div><img wicket:id="hostedByImage"></img><img wicket:id="productImage"></img></div>
+  		</div>		
+
+		<!--  Login/Logout Welcome Panel must be made a re-usable panel-->
+		<div id="welcomePanel_left">&nbsp;</div>
+		<div id="welcomePanel_right">
+				<div>Welcome&nbsp<span wicket:id=loggedInUser id="loggedInUser"></span>&nbsp<a wicket:id="logoutLink" href="#">Logout</a></div>
+		</div>
+		<div> <wicket:child /></div>
+		
+        <!--  DIV to enclose the Child Pages -->
+	</body>	
+</html>
+
