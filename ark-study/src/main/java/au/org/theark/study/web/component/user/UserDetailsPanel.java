@@ -1,0 +1,255 @@
+package au.org.theark.study.web.component.user;
+
+import java.util.List;
+
+import javax.naming.InvalidNameException;
+
+import org.apache.shiro.util.StringUtils;
+import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.core.vo.RoleVO;
+import au.org.theark.core.vo.StudyVO;
+import au.org.theark.core.util.UIHelper;
+import au.org.theark.study.service.IUserService;
+import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.form.UserForm;
+
+
+/**
+ * A Component that will have the user details. This component should be a standalone component and used in any page or panel that requires it.
+ * @author nivedann
+ */
+public class UserDetailsPanel extends Panel{
+
+	private transient Logger log = LoggerFactory.getLogger(UserDetailsPanel.class);
+
+	@SpringBean( name = "userService")
+	private IUserService userService;
+
+	private SearchUserPanel searchPanel;
+	private UserForm userForm;
+	private AppRoleAccordion appRoleAccordion;
+
+	
+	/**
+	 * Setters and Getters for private members
+	 * @return
+	 */
+	public SearchUserPanel getSearchPanel() {
+		return searchPanel;
+	}
+
+	public void setSearchPanel(SearchUserPanel searchPanel) {
+		this.searchPanel = searchPanel;
+	}
+
+	public UserForm getUserForm() {
+		return userForm;
+	}
+
+	public void setUserForm(UserForm userForm) {
+		this.userForm = userForm;
+	}
+
+	/**
+	 * Overloaded constructor.
+	 * @param id
+	 * @param userVO
+	 */
+	public UserDetailsPanel(String id, EtaUserVO userVO){
+		
+		super(id);
+		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
+			private static final long serialVersionUID = 6077699021177330917L;
+			//Do an update
+			protected  void onSave(EtaUserVO userVO){
+				//Update the user details TODO
+				try {
+					//forcing update of password
+					userVO.setChangePassword(true);
+					userService.updateLdapUser(userVO);
+				} catch (ArkSystemException arkSystemException) {
+					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
+					//add custom error message to feedback panel. 
+				}catch(Exception ex){
+					//Handle all other type of exceptions
+					log.error("Exception occured when saving user details " + ex.getMessage());
+				}
+			}
+			
+			protected void onCancel(){
+				log.info("\n -----------------onCancel Clicked hide UserDetailsPanel-----------------\n");
+				this.setVisible(false);
+			}
+			
+			protected void onDelete(EtaUserVO userVO){
+				log.info("Delete the user details from ldap");
+				try{
+					userService.deleteLdapUser(userVO);	
+				}catch(ArkSystemException arkSystemException){
+					log.error("Exception occured while performing a delete on the user details in LDAP " + arkSystemException.getMessage());
+				}catch(Exception ex){
+					log.error("Exception occured when saving user details " + ex.getMessage());
+				}
+			}
+		};
+		
+		if(userVO.getMode() == Constants.MODE_EDIT){
+			userForm.getUserNameTxtField().setEnabled(false);
+		}
+		add(userForm);
+	}
+	
+	
+	private String customValidation(PasswordTextField password, PasswordTextField confirmPassword){
+		String error ="";
+		if(!StringUtils.hasText(password.getModelObject()) &&  !StringUtils.hasText(confirmPassword.getModelObject())){
+			error ="Password fields are required.";//Resource bundle to add this error message
+		}
+		return error;
+	}
+	
+	/**
+	 * Constructor that has a reference to SearchUserPanel
+	 * @param id
+	 * @param userVO
+	 * @param searchPanel
+	 * @throws InvalidNameException 
+	 */
+	public UserDetailsPanel(String id, EtaUserVO userVO, final SearchUserPanel searchPanel)  {
+		
+		super(id);
+		setSearchPanel(searchPanel);
+		
+		userForm  = new UserForm(Constants.USER_DETAILS_FORM, new EtaUserVO()){
+			
+			private static final long serialVersionUID = 6077699021177330917L;
+			
+			/**
+			 * When user clicks on save the VO is validated and then passed to the backend.
+			 */
+			protected  void onSave(EtaUserVO userVO){
+				
+				try {
+					
+					if(userVO.getMode() == Constants.MODE_NEW){
+						
+						boolean isValidRoles = AppRoleAccordion.validateRoles(this);
+						//Run custom validations
+						if(isValidRoles){
+							AppRoleAccordion.getSelectedAppRoles(this, userVO);
+							mapToSystemValues(userVO);
+							//Get the study in context
+							//TODO and set the study into the user vo
+							StudyVO studyVO = new StudyVO();
+							studyVO.setStudyName("demo");
+							studyVO.setModules(userVO.getModules());
+							userVO.setStudyVO(studyVO);
+							
+							userService.createLdapUser(userVO);	
+							userForm.info(userVO.getUserName() + " was added successfully.");
+							this.groupPasswordContainer.setVisible(false);
+							this.userNameTxtField.setEnabled(false);
+							this.userPasswordField.setRequired(false);
+							this.confirmPasswordField.setRequired(false);
+						}else{
+							this.error("The user has not been assigned a role.");
+						}
+					   
+					}else if(userVO.getMode() == Constants.MODE_EDIT){
+						
+						//Map any display values into system and set the VO before calling update
+						//.e.g Module and Role names need to be mapped to System equivalent.
+						boolean isValidRoles = AppRoleAccordion.validateRoles(this);
+						if(isValidRoles){
+							AppRoleAccordion.getSelectedAppRoles(this, userVO);
+							mapToSystemValues(userVO);
+							userService.updateLdapUser(userVO);
+							userForm.info("Update was successful.");
+							this.groupPasswordContainer.setVisible(false);
+							this.userNameTxtField.setEnabled(false);
+						}else{
+							this.error("The user has not been assigned a role.");
+						}
+					}
+					
+					//Accordion will have its own form object
+					List<ModuleVO> modules = userService.getModules(true);
+					userForm.remove(appRoleAccordion);
+					userVO.setMode(Constants.MODE_EDIT);
+					appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, userVO, modules);
+					userForm.add(appRoleAccordion);
+				}catch (InvalidNameException e) {
+					//e.printStackTrace();
+					log.error("Exception occured while performing an update on the user details in LDAP " + e.getMessage());
+					userForm.info(userVO.getUserName() + " could not be added or updated. There seems to be a problem with the server. Please try again later");
+				}catch(UserNameExistsException userNameExists){
+					userForm.error(userNameExists.getMessage());
+				}
+				catch(Exception ex){
+					log.error("Exception occured when saving user details " + ex.getMessage());
+					userForm.info("A System error has occured. We will have someone contact you.");
+				}
+			}
+			protected void onCancel(){
+				log.info("\n -----------------onCancel Clicked hide UserDetailsPanel-----------------\n");
+				log.info("SearchPanel.isVisible()" + searchPanel.isVisible() );
+				searchPanel.setDetailsPanelVisible(false);
+			}
+			
+			protected void onDelete(EtaUserVO userVO){
+				log.info("Delete the user details from ldap");
+				try{
+					userService.deleteLdapUser(userVO);	
+				}catch(ArkSystemException arkSystemException){
+					log.error("Exception occured while performing a delete on the user details in LDAP " + arkSystemException.getMessage());
+				}catch(Exception ex){
+					log.error("Exception occured when saving user details " + ex.getMessage());
+				}
+			}
+			
+			
+		};
+
+		add(userForm);
+		try {
+			List<ModuleVO> modules = userService.getModules(true);
+			appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, userVO, modules);
+			//Accordion will have its own form object
+			userForm.add(appRoleAccordion);
+			
+		} catch (ArkSystemException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * A common method that maps all display values to system. Add the logic here as required
+	 * 1. One of the usage is to map Module Names from Display to System 
+	 * 2. Map Display Role names to system role names
+	 * If any other lists or items are required to be mapped to system values place them here.
+	 * This method should be called before invoking the service layer. 
+	 * @param userVO
+	 */
+	private void mapToSystemValues(EtaUserVO userVO){
+		List<ModuleVO> modules = userVO.getModules();
+		
+		for (ModuleVO moduleVO : modules) {
+			moduleVO.setModule(UIHelper.getSystemModuleName(moduleVO.getModule()));
+			
+			List<RoleVO> roles = moduleVO.getRole();
+			for( RoleVO roleVO: roles){
+				roleVO.setRole( UIHelper.getSystemRoleName(roleVO.getRole()));
+			}
+		}
+	}
+
+}

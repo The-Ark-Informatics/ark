@@ -1,0 +1,114 @@
+<wicket:panel>
+	&nbsp;
+	 <html>
+	 	<title>User Details Panel Create User</title>
+	 		<body>
+	 			<form wicket:id="studyForm">
+	 					
+	 					<div id="panelContentLeft">&nbsp;</div>
+ 						<div id="fldLabel">
+ 							<div class="label">
+ 								<label for="studyKey"><wicket:message key="study.studykey">Study Id:</wicket:message></label>
+ 							</div> 
+ 						</div>
+ 						<div id="fldControl">
+							<div class="label">
+								<input wicket:id="studyKey"  type="text" />
+							</div>
+						</div>
+ 						<div  id="panelMargin">&nbsp;</div>
+ 						<div id="fldLabel">
+ 							<div class="label">
+ 								<label for="studyName"><wicket:message key="study.studyName">Name:</wicket:message></label>
+ 							</div> 
+ 						</div>
+ 						<div id="fldControl">
+							<div class="label">
+								<input wicket:id="name"  type="text" />
+							</div>
+						</div>
+						<div id="searchPanelContentRight">&nbsp;</div>
+						<div id="searchPanelBreaker">&nbsp;</div>	
+							
+	    		   		<div id="panelContentLeft">&nbsp;</div>	
+						<div id="fldLabel">
+							<div class="label">
+			       					<label for="lastName">
+			       						<label for="description"><wicket:message key="study.description">Description:</wicket:message></label>
+			       					</label>
+		       			</div>
+	       				</div>
+						<div id="fldControl">
+			       				<div class="label">
+			       					<input wicket:id="description"  type="text" />
+			       				</div>
+			       		</div>
+			       		<div  id="panelMargin">&nbsp;</div>
+			       		<div id="fldLabel">
+							<div class="label">
+			       					<label for="lastName">
+			       						<label for="email"><wicket:message key="emailKey">Email:</wicket:message></label>
+			       					</label>
+		       			</div>
+	       				</div>
+						<div id="fldControl">
+			       				<div class="label">
+			       					<input wicket:id="email"  type="text" />
+			       				</div>
+			       		</div>
+			       		<div id="searchPanelContentRight">&nbsp;</div>
+						<div id="searchPanelBreaker">&nbsp;</div>		
+	    		   		<div id="panelContentLeft">&nbsp;</div>	
+			       		<div wicket:id="groupPasswordContainer">
+				       		
+				       		
+				       		<div id="fldLabel">
+				       				<div class="label">
+				       					<label for="password"><wicket:message key="passwordKey">Password:</wicket:message></label>
+				       				</div>
+				       		</div>
+				       		<div id="fldControl">
+				       				<div class="label">
+				       					<input wicket:id="password"  type="password" />
+				       				</div>
+				       		</div>
+				       		<div  id="panelMargin">&nbsp;</div>
+				       		<div id="fldLabel">
+				       				<div class="label">
+				       					<label for="confirmPassword"><wicket:message key="confirmPasswordKey">Password:</wicket:message></label>
+				       				</div>
+				       		</div>
+				       		<div id="fldControl">
+				       				<div class="label">
+				       					<input wicket:id="confirmPassword"  type="password" />
+				       				</div>
+				       		</div>
+			       		</div>
+			       		
+			       		<div id="searchPanelBreaker">&nbsp;</div>
+			       		<div id="panelContentLeft">&nbsp;</div>
+			       			
+			       		<!-- Accordion Component is a custom accordion  that will contain the Applications and associated Roles -->	
+			       		<div wicket:id="appRoleAccordion"></div>
+			       		<!----->
+			       		
+			       		<div id="searchPanelContentRight">&nbsp;</div>
+			       		<div id="searchPanelBreaker">&nbsp;</div>
+			       		
+			       		<div id="panelContentLeft">&nbsp;</div>
+						<div id="fldLabel">&nbsp;</div>
+						<div id="fldControl">&nbsp;</div>
+						<div id="panelMargin">&nbsp;</div>
+						<div id="actionButtons">&nbsp;
+							<div class="label">
+			       				<input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+			       				<div  id="panelMargin">&nbsp;</div>
+			       				<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
+			       				<div  id="panelMargin">&nbsp;</div>
+			 					<input wicket:id="cancel" type="submit" wicket:message="value:page.cancel" />
+							</div>
+						</div>
+	 			</form>
+	</body>
+  </html>
+</wicket:panel>

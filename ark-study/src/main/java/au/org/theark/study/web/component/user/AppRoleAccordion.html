@@ -1,0 +1,37 @@
+<wicket:panel>
+<html>
+<body>
+	<form wicket:id="appRoleForm">
+		<div id="accordionLeft"></div>
+  		<div id="accordionContent">
+	  		<div wicket:id="accordion">
+		  		<div wicket:id="accordionSection"> <!--  This will be a List View -->
+		     		<h3><a href="#div1"><span wicket:id="accordionSectionNameLbl"/></a></h3>
+					<div id="div1">
+						<div wicket:id="ajaxContainer">
+						    <div id="labelBold" >
+								<wicket:message key="accordion.label.roles.available"></wicket:message>
+								<wicket:message key="accordion.label.roles.selected"></wicket:message>
+							</div>
+							<div class="label" >
+							    <select wicket:id="availableRolesLMC" multiple="multiple" style="width:25%">
+									<option>[Values will be inserted here]</option>
+							    </select>
+							    <input wicket:id="addSelected" type="submit" value="Add"></input>
+							    <input wicket:id="removeSelected" type="submit" value="Remove"></input>
+							    <select wicket:id="selectedRolesLMC" multiple="multiple"  style="width:25%">
+									<option>[Values will be inserted here]</option>
+								</select>
+						    </div>
+							<input wicket:id="addAllBtn" type="submit" value="Add All"></input>
+							<input wicket:id="removeAllBtn" type="submit" value="Remove All"></input>    
+						</div>
+					</div>
+				</div>
+			</div>
+  		</div>
+ 		<div id="accordionLeft"></div>
+	</form>
+</body>
+</html>
+</wicket:panel>

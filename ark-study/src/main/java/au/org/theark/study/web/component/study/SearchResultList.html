@@ -1,0 +1,89 @@
+<wicket:panel>
+&nbsp
+<html>
+	<title></title>
+		<body>
+		    <table width="10%" cellspacing="0"></table>
+			<table width="80%" cellspacing="0" class="dataview">
+				<tr>
+					<th width="5%">
+			 		 	&nbsp
+			 		</th>
+					<th width="15%>
+						<label for="userId"><wicket:message key="study.studykey">Study ID:</wicket:message></label>
+					</th>
+					<th width="5%">
+			 		 	&nbsp
+			 		</th>
+					<th width="15%">
+						<label for="firstName"><wicket:message key="study.studyName">Name:</wicket:message></label>
+					</th>
+					<th width="5%">
+			 		 	&nbsp
+			 		</th>
+					<th width="15%">
+					<label for="lastName"><wicket:message key="study.studyStatus">Principal Contact:</wicket:message></label>
+						
+					</th>
+					<th width="5%">
+			 		 	&nbsp
+			 		</th>
+					<th width="15%">
+						<label for="email"><wicket:message key="study.dateOfApplication">Date of Application:</wicket:message></label>
+					</th>
+				</tr>
+				
+				<tr wicket:id="studyList">
+					<td width="5%">
+			 		 	
+			 		</td>
+					<td width="15%">
+						<span wicket:id="studyKey">Study Key</span>
+                    </td>
+                    <td width="5%">
+			 		 	&nbsp
+			 		</td>
+					<td width="15%">
+						<a href="#" wicket:id="studyName"><span wicket:id="studyNameLink"></span></a>
+                    </td>
+                    <td width="5%">
+			 		 	&nbsp
+			 		</td>
+					<td width="15%">
+						<span wicket:id="contact">Principal Contact</span>
+                    </td>
+                    <td width="5%">
+			 		 	&nbsp
+			 		</td>
+					<td width="15%">
+						<span wicket:id="dateOfApplication">Application Date</span>
+                    </td>
+				</tr>
+				<tr>
+					<td width="5%">
+						&nbsp
+					</td>
+					<td width="15%">
+						<span wicket:id="navigator" class="a"></span>
+					</td>
+					<td width="15%">&nbsp</td>
+					<td width="5%">
+					 		 	&nbsp
+					</td>
+					<td width="15%">
+								&nbsp
+					</td>
+					<td width="5%">
+					 		 	&nbsp
+					</td>
+					<td width="15%">
+								&nbsp
+					</td>
+				</tr>
+			</table>
+			<table width="10%" cellspacing="0"></table>
+	</body>
+</html>
+
+</wicket:panel>
+
