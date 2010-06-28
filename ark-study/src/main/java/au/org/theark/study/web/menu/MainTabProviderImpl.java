@@ -7,8 +7,6 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.core.security.ArkSecurityManager;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.study.web.Constants;
 
@@ -39,19 +37,12 @@ public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 	
 	
 	public ITab createTab(String tabName) {
-		// TODO Auto-generated method stub
 		return  new AbstractTab(new Model(tabName)) {
 		
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public boolean isVisible(){
-				ArkSecurityManager asm = ArkSecurityManager.getInstance();
-				return asm.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN);
-			}
-			@Override
 			public Panel getPanel(String pid) {
-				System.out.println("Panel ID in getPanel " + pid);
 				return new StudySubMenuTab(pid);//The sub menus Study 
 			}
 			
