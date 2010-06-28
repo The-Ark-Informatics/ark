@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
@@ -32,9 +33,6 @@ public class StudySubMenuTab extends Panel {
 	
 	transient SecurityManager securityManager =  ThreadContext.getSecurityManager();
 	transient Subject currentUser = SecurityUtils.getSubject();
-	boolean isSuperAdmin = securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN);
-	boolean isStudyAdmin = securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN);
-
 	
 	public StudySubMenuTab(String id) {
 		super(id);
@@ -106,6 +104,24 @@ public class StudySubMenuTab extends Panel {
 			moduleSubTabsList.add( new AbstractTab(new Model(getLocalizer().getString(moduleName.getResourceKey(), StudySubMenuTab.this, moduleName.getModuleName())) )
 			{
 				private static final long serialVersionUID = 1L;
+				
+				public boolean isVisible(){
+					
+					boolean flag = false;
+					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
+						PrincipalCollection principalCollection = currentUser.getPrincipals();
+						 if((securityManager.hasRole(principalCollection, RoleConstants.ARK_SUPER_ADMIN))){
+							 //check if the user is a SA for ETA
+							 flag =  currentUser.isAuthenticated();	 
+						 }else{
+							 flag = false;
+						 }
+					}else{
+						flag=true;
+					}
+					return flag;
+				}
+				
 				@Override
 				public Panel getPanel(String panelId) 
 				{
