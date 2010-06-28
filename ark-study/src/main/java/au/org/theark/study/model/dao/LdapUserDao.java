@@ -683,7 +683,7 @@ public class LdapUserDao implements ILdapUserDao{
 				//Iterate the List of roles for the module in context
 				for (RoleVO roleVO : moduleRoleList) {
 
-					log.info("Role Name:" + moduleVO.getModule());
+					log.info("Role Name:" + roleVO.getRole());
 					log.info("Base DN: " + getBaseGroupDn());
 					//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
 					LdapName dn;
