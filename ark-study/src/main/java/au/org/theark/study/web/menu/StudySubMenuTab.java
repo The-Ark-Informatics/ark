@@ -110,6 +110,7 @@ public class StudySubMenuTab extends Panel {
 					boolean flag = false;
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
 						PrincipalCollection principalCollection = currentUser.getPrincipals();
+						
 						 if((securityManager.hasRole(principalCollection, RoleConstants.ARK_SUPER_ADMIN))){
 							 //check if the user is a SA for ETA
 							 flag =  currentUser.isAuthenticated();	 
@@ -155,7 +156,7 @@ public class StudySubMenuTab extends Panel {
 			});
 		}
 		
-		TabbedPanel moduleTabbedPanel = new TabbedPanel("studySubMenus", moduleSubTabsList);
+		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 }
