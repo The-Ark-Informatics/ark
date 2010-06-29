@@ -3,6 +3,7 @@ package au.org.theark.study.model.dao;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
@@ -236,24 +237,20 @@ public class LdapUserDao implements ILdapUserDao{
 	
 		isMemberof(listOfAllModules, userVO);
 		
-		return userVO;
-	}
-	
-	public void getUserRole(EtaUserVO etaUserVO, List<ModuleVO> listOfAllModules) throws ArkSystemException {
+		moduleList = userVO.getModules();
 		
-		List<String> roles = new ArrayList<String>();
-		etaUserVO.setUserRoleList(roles);
-		isMemberof(listOfAllModules, etaUserVO);
+		for (ModuleVO moduleVO : moduleList) {
 			
-	}
-	
-	public void getUserRole(EtaUserVO etaUserVO, String moduleName) throws ArkSystemException{
-
-		List<ModuleVO> moduleList = new ArrayList<ModuleVO>();
-		etaUserVO.setModules(moduleList);
-		List<String> roles = new ArrayList<String>();
-		etaUserVO.setUserRoleList(roles);
-		isMemberof(UIHelper.getSystemModuleName(moduleName), etaUserVO);
+			for (RoleVO roleVO : moduleVO.getRole()) {
+					log.info("Role :" + roleVO.getRole());
+					String s = roleVO.getRole();
+					Pattern pattern = Pattern.compile(moduleVO.getModule() + "_");
+					String[] splitContents = pattern.split(roleVO.getRole());
+					roleVO.setRole(splitContents[1]);
+			}
+			
+		}
+		return userVO;
 	}
 	
 	
@@ -478,6 +475,7 @@ public class LdapUserDao implements ILdapUserDao{
 	public void isMemberof(List<ModuleVO> moduleVOlist,EtaUserVO userVO) throws ArkSystemException{
 		
 		for (ModuleVO moduleVO : moduleVOlist) {
+			log.info("\n Module Name: "+ moduleVO.getModule());
 			isMemberof(moduleVO.getModule(), userVO);
 		}
 	}
@@ -516,6 +514,7 @@ public class LdapUserDao implements ILdapUserDao{
 			if(etaUserVO.getStudyVO() != null && etaUserVO.getStudyVO().getStudyName() != null){
 				dn.add(new Rdn("cn", etaUserVO.getStudyVO().getStudyName()));//Add the study as a filter too
 				isStudyAvailable = true;
+				log.info("\nStudy is available" + etaUserVO.getStudyVO().getStudyName());
 			}
 			List<?> userGroups =  ldapTemplate.search(dn,moduleFilter.encode(),SearchControls.ONELEVEL_SCOPE, new AttributesMapper(){
 				
