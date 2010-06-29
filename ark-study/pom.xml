@@ -21,13 +21,15 @@
 	</licenses>
 	<dependencies>
 	
-		<!--  Ark Dependencies -->
+	
+			<!--  Ark Common Module -->
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
 		  <version>1.0-SNAPSHOT</version>
 		</dependency>
 	
+		
 		<!--  WICKET DEPENDENCIES -->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
