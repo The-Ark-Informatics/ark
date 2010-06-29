@@ -78,6 +78,9 @@ public class Constants {
 	public static final String STUDY_SUB_BIOSPECIMENT_PREFIX="subStudyBiospecimenPrefix";
 	public static final String STUDY_MAIN_TAB="Study";
 	
+	public static final String MY_DETAILS_PANEL ="myDetailsPanel";
+	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
+	
 	/*Spring Bean names*/
 	public static final String STUDY_SERVICE= "studyService";
 	public static final String STUDY_DAO ="studyDao";
