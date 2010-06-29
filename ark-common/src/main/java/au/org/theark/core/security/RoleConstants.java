@@ -6,8 +6,8 @@ public class RoleConstants {
 	public static final String STUDY_ADMIN="study_administrator";
 	public static final String GENERAL_USER="ordinary_person";
 	/* Module based roles, module name prefix and role name suffix*/
-	public static final String ARK_SUPER_ADMIN="ark_super_administrator";
-	public static final String ARK_ORDINARY_USER="ark_ordinary_user";
+	public static final String ARK_SUPER_ADMIN="ARK_super_administrator";
+	public static final String ARK_ORDINARY_USER="ARK_ordinary_user";
 	public static final String LIMS_SUPER_ADMIN=	"wager_lab_super_administrator";
 	public static final String LIMS_ORDINARY_USER=	"wager_lab_ordinary_user";
 	public static final String GWAS_SUPER_ADMIN	="gwas_super_administrator";
