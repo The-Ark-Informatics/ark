@@ -31,6 +31,16 @@ public class UserForm extends Form<EtaUserVO>{
 	protected PasswordTextField confirmPasswordField = new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected PasswordTextField oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
+	protected Button deleteButton;
+	public Button getDeleteButton() {
+		return deleteButton;
+	}
+
+
+	public void setDeleteButton(Button deleteButton) {
+		this.deleteButton = deleteButton;
+	}
+
 
 	protected WebMarkupContainerWithAssociatedMarkup appRoleAcoAccordion  = new WebMarkupContainerWithAssociatedMarkup("appRoleAccordion");
 	
@@ -146,7 +156,7 @@ public class UserForm extends Form<EtaUserVO>{
 			
 		};
 		
-		Button deleteButton = new Button(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+		deleteButton = new Button(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
 		{
 			public void onSubmit()
 			{
