@@ -1,5 +1,8 @@
 package au.org.theark.study.service;
 
+/**
+ * Add Copyright header
+ */
 import java.util.List;
 
 import javax.naming.InvalidNameException;
@@ -80,28 +83,9 @@ public class UserServiceImpl implements IUserService {
 		user.setUserPassword(userVO.getPassword());
 		return user;
 	}
-
-	public EtaUserVO getUserRole(String username) throws ArkSystemException{
-		EtaUserVO userVO = null;
-		userVO = iLdapUserDao.getUserRole(username);
-		return userVO;
-	}
-	
-	public void getUserRole(EtaUserVO etaUserVO, String moduleName) throws ArkSystemException{
-		iLdapUserDao.getUserRole(etaUserVO, moduleName);
-	}
-	
-	public void getUserRole(EtaUserVO etaUserVO, List<ModuleVO> listOfAllModules) throws ArkSystemException{
-		iLdapUserDao.getUserRole(etaUserVO,listOfAllModules);
-	}
 	
 	public List<ModuleVO> getUserRoles(EtaUserVO etaUserVO, String studyName) throws ArkSystemException{
 		return iLdapUserDao.getUserRoles(etaUserVO, studyName);
-	}
-
-	public EtaUser getCurrentUser() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/**
@@ -141,6 +125,10 @@ public class UserServiceImpl implements IUserService {
 	
 	public void deleteLdapUser(EtaUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException{
 		 iLdapUserDao.delete(etaUserVO);
+	}
+
+	public EtaUserVO getCurrentUser(String username) throws ArkSystemException{
+		return iLdapUserDao.getUser(username);
 	}
 
 }
