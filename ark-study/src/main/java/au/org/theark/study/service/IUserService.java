@@ -17,12 +17,6 @@ public interface IUserService {
 	
 	public EtaUser getUser(String userName) throws ArkSystemException;
 	
-	public EtaUserVO getUserRole(String username) throws ArkSystemException;
-	
-	public void getUserRole(EtaUserVO etaUserVO, List<ModuleVO> listOfAllModules) throws ArkSystemException;
-	
-	public void getUserRole(EtaUserVO etaUserVO, String moduleName) throws ArkSystemException;
-
 	public List<ModuleVO> getUserRoles(EtaUserVO etaUserVO, String studyName) throws ArkSystemException;
 	
 	public Person createPerson(Person personEntity);
@@ -48,8 +42,6 @@ public interface IUserService {
 	
 	public void deleteLdapUser(EtaUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException;
 
-	public EtaUser getCurrentUser();
-	
 	public List<ModuleVO> getModules(boolean isForDisplay) throws ArkSystemException;
 	
 	public List<String> getModuleRoles(String moduleId) throws ArkSystemException;
@@ -71,5 +63,6 @@ public interface IUserService {
 	public List<Person> searchPerson(Person personVO) throws PersonNotFoundException;
 	
 	
+	public EtaUserVO getCurrentUser(String username) throws ArkSystemException;	
 
 }
