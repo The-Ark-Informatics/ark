@@ -60,17 +60,7 @@ public interface ILdapUserDao {
 	
 	
 	public List<ModuleVO> getUserRoles(EtaUserVO etaUserVO, String studyName) throws ArkSystemException;
-	/**
-	 * Interface that sets the list of roles in the EtaUserVO object for a given module
-	 * @param etaUserVO
-	 * @param moduleName
-	 * @throws InvalidNameException
-	 */
-	public void getUserRole(EtaUserVO etaUserVO, String moduleName) throws ArkSystemException;
 	
-	
-	
-	public void getUserRole(EtaUserVO etaUserVO, List<ModuleVO> listOfAllModules) throws ArkSystemException;
 	/**
 	 * Interface that retrieves all the modules that integrate with ETA
 	 */
