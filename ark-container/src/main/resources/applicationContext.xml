@@ -41,9 +41,12 @@
     <context:component-scan base-package="au.org.theark.security"/>
     
 	<!-- Belongs to the Ark Study Module -->
-    <context:component-scan base-package="au.org.theark.study.model.dao"/> 
-    <context:component-scan base-package="au.org.theark.study.service"/>
+    <!-- context:component-scan base-package="au.org.theark.study.model.dao"/> 
+    <context:component-scan base-package="au.org.theark.study.service"/-->
     
+    <!-- Imports the sub-module contexts (dynamically) -->
+	<!-- If they're in a JAR in WEB-INF/lib the following will work: -->
+	<import resource="classpath*:/META-INF/services/sub-module.ctx.xml" />
 
     <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
