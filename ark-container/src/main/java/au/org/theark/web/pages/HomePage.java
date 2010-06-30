@@ -6,7 +6,6 @@ import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
-import org.apache.wicket.markup.html.basic.Label;
 
 import au.org.theark.gdmi.web.menu.GDMITabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
@@ -17,9 +16,6 @@ import au.org.theark.study.web.menu.MainTabProviderImpl;
 public class HomePage extends BasePage {
 
 	private static final long serialVersionUID = 1L;
-
-	// TODO Add any page properties or variables here
-
     /**
 	 * Constructor that is invoked when page is invoked without a session.
 	 * 
@@ -44,6 +40,7 @@ public class HomePage extends BasePage {
         for(ITab itab: gdmiTabsList){
         	moduleTabsList.add(itab);	
         }
+        
         TabbedPanel moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList); 
         add(moduleTabbedPanel);
 	}
