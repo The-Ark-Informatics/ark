@@ -8,6 +8,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.basic.Label;
 
+import au.org.theark.gdmi.web.menu.GDMITabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
@@ -37,10 +38,12 @@ public class HomePage extends BasePage {
 		List<ITab> moduleTabsList  = new ArrayList<ITab>();
 		MainTabProviderImpl studyMainTabProvider = new MainTabProviderImpl("study");
 		moduleTabsList = studyMainTabProvider.buildTabs();
-	        
-		//	        for(ITab itab: subTabsList){
-		//	        	moduleTabsList.add(itab);	
-		//	        }
+		
+		GDMITabProviderImpl gdmiTabs = new GDMITabProviderImpl("gdmi");
+		List<ITab> gdmiTabsList =  gdmiTabs.buildTabs();
+        for(ITab itab: gdmiTabsList){
+        	moduleTabsList.add(itab);	
+        }
         TabbedPanel moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList); 
         add(moduleTabbedPanel);
 	}
