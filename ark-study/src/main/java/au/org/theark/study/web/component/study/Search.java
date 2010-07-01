@@ -15,8 +15,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.entity.Study;
@@ -25,11 +23,8 @@ import au.org.theark.study.web.Constants;
 
 public class Search extends Panel {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	private transient Logger log = LoggerFactory.getLogger(Search.class);
+	
 	private SearchResultList searchResults;
 	private Details detailsPanel;
 	private FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
@@ -66,7 +61,6 @@ public class Search extends Panel {
 
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(Study study){
-				log.info("Look up the user");
 				setDetailsPanelVisible(false);//Set the User Details panel to false/hide it
 				List<Study> resultList = service.getStudy(study);
 				if(resultList != null && resultList.size() == 0){
@@ -84,13 +78,7 @@ public class Search extends Panel {
 		//Add the Form to the Panel. The Form object that will contain the child or UI components that will be part of the search or be affected by the search.
 		add(searchForm);
 		add(feedBackPanel); //Add feedback panel
-		/*
-		 * Create an instance of the Details panel. When the mode is in lookup hide the panel.
-		 * The details panel is only visible when user navigates an item via the ResultsList or when creating a New User.
-		 */
-		 /* Add the UserDetailsPanel into the scope of the SearchUserForm instance*/
 		searchForm.add(detailsPanel);
-		
 		//Just an empty list
 		List<Study> studyList = new ArrayList<Study>();
 		Study study = new Study();
@@ -102,9 +90,6 @@ public class Search extends Panel {
 	
 	public class SearchForm extends Form<Study>{
 
-		/**
-		 * 
-		 */
 		private static final long serialVersionUID = 1L;
 		TextField<String> studyIdTxtField =new TextField<String>(Constants.STUDY_KEY);
 		TextField<String> studyNameTxtField = new TextField<String>(Constants.STUDY_NAME);
