@@ -5,13 +5,12 @@
 	<artifactId>ark-gdmi</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<!-- TODO project name  -->
-	<name>gdmi</name>
-	<description></description>
-	<!--
-		TODO <organization> <name>company name</name> <url>company url</url>
-		</organization>
-	-->
+	<name>Ark GDMI</name>
+	<description>Module that contains all Genotypic related functionality.</description>
+	<organization>
+		<name>The Ark</name>
+	</organization>
+	<url>http://the-ark.org.au/</url>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
