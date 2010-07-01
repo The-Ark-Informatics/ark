@@ -59,6 +59,11 @@ public class Search extends Panel {
 		
 		// Uses an entirely new VO for the search so each time the search panel is loaded. The values provided will be refreshed.
 		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, new Study(), id){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(Study study){
 				log.info("Look up the user");
@@ -67,6 +72,7 @@ public class Search extends Panel {
 				if(resultList != null && resultList.size() == 0){
 					this.info("Study with the specified criteria does not exist in the system.");	
 				}
+				
 				//Render the Search Results
 				//TODO NN Removing the panel is not efficient, I need to use another technique (Ajax)
 				remove(searchResults);//Since we already have the panel.We need to partially update the list the panel uses  rather than action it at the panel level
@@ -96,6 +102,10 @@ public class Search extends Panel {
 	
 	public class SearchForm extends Form<Study>{
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		TextField<String> studyIdTxtField =new TextField<String>(Constants.STUDY_KEY);
 		TextField<String> studyNameTxtField = new TextField<String>(Constants.STUDY_NAME);
 		TextField<String> studyStatusTxtField = new TextField<String>(Constants.STUDY_STATUS);
@@ -119,6 +129,11 @@ public class Search extends Panel {
 			
 			add(new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void onSubmit()
 				{
 					
@@ -128,6 +143,10 @@ public class Search extends Panel {
 			
 			add(new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
 			{
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 				public void onSubmit()
 				{
 					//Go to Search users page
