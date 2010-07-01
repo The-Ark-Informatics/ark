@@ -5,16 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
+import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.EtaUserVO;
 import au.org.theark.study.web.Constants;
@@ -30,9 +28,6 @@ import au.org.theark.study.web.component.user.UserContainerPanel;
 public class StudySubMenuTab extends Panel {
 	
 	List<ITab> tabList;
-	
-	transient SecurityManager securityManager =  ThreadContext.getSecurityManager();
-	transient Subject currentUser = SecurityUtils.getSubject();
 	
 	public StudySubMenuTab(String id) {
 		super(id);
@@ -109,9 +104,13 @@ public class StudySubMenuTab extends Panel {
 					
 					boolean flag = false;
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
-						PrincipalCollection principalCollection = currentUser.getPrincipals();
 						
-						 if((securityManager.hasRole(principalCollection, RoleConstants.ARK_SUPER_ADMIN))){
+						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
+						//SecurityManager securityManager =  ThreadContext.getSecurityManager();
+						Subject currentUser = SecurityUtils.getSubject();
+						//PrincipalCollection principalCollection = currentUser.getPrincipals();
+						
+						 if((arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN))){
 							 //check if the user is a SA for ETA
 							 flag =  currentUser.isAuthenticated();	 
 						 }else{
@@ -147,6 +146,8 @@ public class StudySubMenuTab extends Panel {
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_COMPONENTS)){
 						panelToReturn = new StudyComponentContainerPanel(panelId);
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAILS)){
+						
+						Subject currentUser = SecurityUtils.getSubject();
 						panelToReturn = new MyDetailsContainer(panelId,new EtaUserVO(),currentUser );
 					}
 					
