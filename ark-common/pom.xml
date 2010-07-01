@@ -5,13 +5,12 @@
 	<artifactId>ark-common</artifactId>
 	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<!-- TODO project name  -->
-	<name>quickstart</name>
-	<description></description>
-	<!--
-		TODO <organization> <name>company name</name> <url>company url</url>
-		</organization>
-	-->
+	<name>Ark Common</name>
+	<description>The top level container web application that will contain other sub-modules.</description>
+	<organization>
+		<name>The Ark</name>
+	</organization>
+	<url>http://the-ark.org.au/</url>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -19,7 +18,6 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	
 	<dependencies>
 		<!--  WICKET DEPENDENCIES -->
 		<dependency>
@@ -27,53 +25,54 @@
 			<artifactId>wicket</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-		
-		<dependency> <groupId>org.apache.wicket</groupId>
+
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version> 
+			<version>${wicket.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
 			<version>1.0-incubating-SNAPSHOT</version>
 		</dependency>
-	 
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-web</artifactId>
 			<version>1.0-incubating-SNAPSHOT</version>
 		</dependency>
-	 
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-spring</artifactId>
 			<version>1.0-incubating-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
-	      <groupId>org.springframework</groupId>
-	      <artifactId>spring</artifactId>
-	      <version>2.5.6</version>
-	    </dependency> 
+			<groupId>org.springframework</groupId>
+			<artifactId>spring</artifactId>
+			<version>2.5.6</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
 			<artifactId>spring-ldap-core</artifactId>
 			<version>1.3.0.RELEASE</version>
 		</dependency>
-		
+
 		<!--  Hibernate Dependencies -->
 		<dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>3.3.1.GA</version>
-        </dependency>
-	
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>3.3.1.GA</version>
+		</dependency>
+
 		<dependency>
-		    <groupId>org.hibernate</groupId>
-		    <artifactId>hibernate-annotations</artifactId>
-		    <version>3.4.0.GA</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-annotations</artifactId>
+			<version>3.4.0.GA</version>
 		</dependency>
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
@@ -174,4 +173,4 @@
 		<wicket.version>1.4.9</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 	</properties>
-	</project>
+</project>
