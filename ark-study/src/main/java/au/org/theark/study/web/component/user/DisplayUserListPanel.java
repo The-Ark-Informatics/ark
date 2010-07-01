@@ -19,6 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.EtaUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyVO;
@@ -26,7 +27,6 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.AppRoleForm;
 import au.org.theark.study.web.form.UserForm;
-import au.org.theark.core.util.UIHelper;
 
 public class DisplayUserListPanel extends Panel{
 
@@ -100,8 +100,8 @@ public class DisplayUserListPanel extends Panel{
 				
 				SecurityManager securityManager =  ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();
-//				
-//				//If the selected record belongs to Subject or if the logged in user is an Administrator then allow edit
+				
+				//If the selected record belongs to Subject or if the logged in user is an Administrator then allow edit
 				String subject = (String)currentUser.getPrincipal();
 				if(subject.equals(etaUserVO.getUserName()) 	||	securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) 
 															||  securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN) )
@@ -119,18 +119,8 @@ public class DisplayUserListPanel extends Panel{
 				{
 					updateFormState(userForm, false);
 				}
-				
-				//userForm = userDetailsPanel.getUserForm();
-				//userForm.getUserNameTxtField().setEnabled(false);
-				//userForm.getFirstNameTxtField().setEnabled(false);
-				//userForm.getLastNameTxtField().setEnabled(false);
-				//userForm.getEmailTxtField().setEnabled(false);
-				//Add a container for password fields and set that to false
-				//userForm.getGroupPasswordContainer().setVisible(false);
 				etaUserVO.setMode(Constants.MODE_EDIT);
 				userForm.setModelObject(etaUserVO);
-				//userDetailsPanel.getUserForm().setEnabled(false);//Set the whole form to disable, as opposed to setting each field 
-				//userDetailsPanel.getUserForm().setModelObject(etaUserVO);
 				userDetailsPanel.setVisible(true);
 				//Create the UserDetailsPanel.
 				//Gain access to the existing accordion control in UserForm
@@ -140,7 +130,7 @@ public class DisplayUserListPanel extends Panel{
 				try {
 					
 					//Get the study in context
-					//Testing
+					//TODO NN Remove this once we have Study Module Testing
 					StudyVO studyVO = new StudyVO();
 					studyVO.setStudyName("demo");
 					etaUserVO.setStudyVO(studyVO);
@@ -156,7 +146,6 @@ public class DisplayUserListPanel extends Panel{
 					
 
 				} catch (ArkSystemException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				//Accordion will have its own form object
