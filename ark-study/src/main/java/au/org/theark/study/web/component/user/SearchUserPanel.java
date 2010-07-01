@@ -33,7 +33,7 @@ import au.org.theark.study.web.Constants;
  */
 public class SearchUserPanel extends Panel{
 
-	private transient Logger log = LoggerFactory.getLogger(SearchUserPanel.class);
+	//private transient Logger log = LoggerFactory.getLogger(SearchUserPanel.class);
 	
 	/* 
 	 * Spring injected reference for User service implementation. Use it to look up users or persist using the userService
@@ -86,7 +86,7 @@ public class SearchUserPanel extends Panel{
 			
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(EtaUserVO userVO){
-				log.info("Look up the user");
+				//log.info("Look up the user");
 				try {
 					setDetailsPanelVisible(false);//Set the User Details panel to false/hide it
 					List<EtaUserVO> userResultList = userService.searchUser(userVO);
@@ -98,13 +98,11 @@ public class SearchUserPanel extends Panel{
 					//TODO NN Removing the panel is not efficient, I need to use another technique (Ajax)
 					remove(displayUserListPanel);//Since we already have the panel.We need to partially update the list the panel uses  rather than action it at the panel level
 					displayUserListPanel = new DisplayUserListPanel("displayUserListPanel", userResultList,detailsPanel);
-					//Temp TODO remove this once Layouts are corrected
 					add(displayUserListPanel);
-					
 					//Provide the list as an argument into the results rendering panel
 				}
 				catch (ArkSystemException e) {
-					log.error("Exception occured when looking up a user in LDAP" + e.getMessage());
+					//log.error("Exception occured when looking up a user in LDAP" + e.getMessage());
 				}
 			}
 		};
@@ -112,19 +110,11 @@ public class SearchUserPanel extends Panel{
 		//Add the Form to the Panel. The Form object that will contain the child or UI components that will be part of the search or be affected by the search.
 		add(searchUserForm);
 		add(feedBackPanel); //Add feedback panel
-		/*
-		 * Create an instance of the Details panel. When the mode is in lookup hide the panel.
-		 * The details panel is only visible when user navigates an item via the ResultsList or when creating a New User.
-		 */
-		/* Add the UserDetailsPanel into the scope of the SearchUserForm instance*/
-		
 		searchUserForm.add(detailsPanel);
-		
 		//Just an empty list
 		List<EtaUserVO> userList = new ArrayList<EtaUserVO>();
 		EtaUserVO user = new EtaUserVO();
 		userList.add(user);
-		//TODO Remove comments after testing layouts
 		displayUserListPanel = new DisplayUserListPanel("displayUserListPanel", userList,detailsPanel);
 		searchUserForm.add(displayUserListPanel);
 	}
