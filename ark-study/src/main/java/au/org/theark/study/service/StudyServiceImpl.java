@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import au.org.theark.study.model.dao.StudyDao;
+import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.web.Constants;
 
@@ -14,14 +14,14 @@ import au.org.theark.study.web.Constants;
 @Service(Constants.STUDY_SERVICE)
 public class StudyServiceImpl implements IStudyService{
 	
-	private StudyDao studyDao;
+	private IStudyDao studyDao;
 
 	@Autowired
-	public void setStudyDao(StudyDao studyDao) {
+	public void setStudyDao(IStudyDao studyDao) {
 		this.studyDao = studyDao;
 	}
 
-	public StudyDao getStudyDao() {
+	public IStudyDao getStudyDao() {
 		return studyDao;
 	}
 
