@@ -1,89 +1,36 @@
 <wicket:panel>
-&nbsp
-<html>
-	<title></title>
-		<body>
-		    <table width="10%" cellspacing="0"></table>
-			<table width="80%" cellspacing="0" class="dataview">
-				<tr>
-					<th width="5%">
-			 		 	&nbsp
-			 		</th>
-					<th width="15%>
-						<label for="userId"><wicket:message key="userIdKey">User ID:</wicket:message></label>
-					</th>
-					<th width="5%">
-			 		 	&nbsp
-			 		</th>
-					<th width="15%">
-						<label for="lastName"><wicket:message key="lastNameKey">Last Name:</wicket:message></label>
-					</th>
-					<th width="5%">
-			 		 	&nbsp
-			 		</th>
-					<th width="15%">
-						<label for="firstName"><wicket:message key="firstNameKey">FirstName:</wicket:message></label>
-					</th>
-					<th width="5%">
-			 		 	&nbsp
-			 		</th>
-					<th width="15%">
-						<label for="email"><wicket:message key="emailKey">Email:</wicket:message></label>
-					</th>
-				</tr>
-				
-				<tr wicket:id="userList">
-					<td width="5%">
-			 		 	
-			 		</td>
-					<td width="15%">
-						<!-- <span wicket:id="userName">User Name</span>  -->
-						<a href="#" wicket:id="userName"><span wicket:id="userNameLink"></span></a>
-                    </td>
-                    <td width="5%">
-			 		 	&nbsp
-			 		</td>
-					<td width="15%">
-						<span wicket:id="lastName">Last Name</span>
-                    </td>
-                    <td width="5%">
-			 		 	&nbsp
-			 		</td>
-					<td width="15%">
-						<span wicket:id="firstName">First Name</span>
-                    </td>
-                    <td width="5%">
-			 		 	&nbsp
-			 		</td>
-					<td width="15%">
-						<span wicket:id="email">Email</span>
-                    </td>
-				</tr>
-				<tr>
-					<td width="5%">
-						&nbsp
-					</td>
-					<td width="15%">
-						<span wicket:id="navigator" class="a"></span>
-					</td>
-					<td width="15%">&nbsp</td>
-					<td width="5%">
-					 		 	&nbsp
-					</td>
-					<td width="15%">
-								&nbsp
-					</td>
-					<td width="5%">
-					 		 	&nbsp
-					</td>
-					<td width="15%">
-								&nbsp
-					</td>
-				</tr>
-			</table>
-			<table width="10%" cellspacing="0"></table>
-	</body>
-</html>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="5%">&nbsp;</th>
+			<th width="15%"><label for="userId"><wicket:message key="userIdKey">User ID:</wicket:message></label></th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%"><label for="lastName"><wicket:message key="lastNameKey">Last Name:</wicket:message></label></th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%"><label for="firstName"><wicket:message key="firstNameKey">FirstName:</wicket:message></label></th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%"><label for="email"><wicket:message key="emailKey">Email:</wicket:message></label></th>
+		</tr>
 
+		<tr wicket:id="userList">
+			<td width="5%"></td>
+			<td width="15%">
+				<a href="#" wicket:id="userName"><span wicket:id="userNameLink"></span></a>
+			</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="lastName">Last Name</span></td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="firstName">First Name</span></td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="email">Email</span></td>
+		</tr>
+		<tr>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="navigator" class="a"></span></td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+		</tr>
+	</table>
 </wicket:panel>
-
