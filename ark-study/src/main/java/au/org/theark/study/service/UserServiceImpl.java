@@ -18,7 +18,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IUserDao;
@@ -77,14 +77,14 @@ public class UserServiceImpl implements IUserService {
 		
 		log.info("\n -- getUser() invoked");
 		EtaUser user = null;
-		EtaUserVO userVO= iLdapUserDao.getUser(userName);
+		ArkUserVO userVO= iLdapUserDao.getUser(userName);
 		user = new EtaUser();
 		user.setUserName(userVO.getUserName());
 		user.setUserPassword(userVO.getPassword());
 		return user;
 	}
 	
-	public List<ModuleVO> getUserRoles(EtaUserVO etaUserVO, String studyName) throws ArkSystemException{
+	public List<ModuleVO> getUserRoles(ArkUserVO etaUserVO, String studyName) throws ArkSystemException{
 		return iLdapUserDao.getUserRoles(etaUserVO, studyName);
 	}
 
@@ -97,7 +97,7 @@ public class UserServiceImpl implements IUserService {
 		return userDAO.getUser(id);
 	}
 
-	public void createLdapUser(EtaUserVO userVO) throws  InvalidNameException,UserNameExistsException,Exception {
+	public void createLdapUser(ArkUserVO userVO) throws  InvalidNameException,UserNameExistsException,Exception {
 		log.info("UserServiceImpl.createLdapUser() ");
 		iLdapUserDao.create(userVO);		
 	}
@@ -111,11 +111,11 @@ public class UserServiceImpl implements IUserService {
 		return iLdapUserDao.getModuleRoles(moduleId);
 	}
 	
-	public List<EtaUserVO> searchUser(EtaUserVO user) throws  ArkSystemException{
+	public List<ArkUserVO> searchUser(ArkUserVO user) throws  ArkSystemException{
 		return iLdapUserDao.searchUser(user);
 	}
 	
-	public void updateLdapUser(EtaUserVO userVO) throws ArkSystemException{
+	public void updateLdapUser(ArkUserVO userVO) throws ArkSystemException{
 		iLdapUserDao.update(userVO);
 	}
 	
@@ -123,11 +123,11 @@ public class UserServiceImpl implements IUserService {
 		return userDAO.searchPerson(person);
 	}
 	
-	public void deleteLdapUser(EtaUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException{
+	public void deleteLdapUser(ArkUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException{
 		 iLdapUserDao.delete(etaUserVO);
 	}
 
-	public EtaUserVO getCurrentUser(String username) throws ArkSystemException{
+	public ArkUserVO getCurrentUser(String username) throws ArkSystemException{
 		return iLdapUserDao.getUser(username);
 	}
 
