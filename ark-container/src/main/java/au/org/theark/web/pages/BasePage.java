@@ -25,8 +25,8 @@ public abstract class BasePage extends WebPage{
 	private Label userNameLbl;
 	public BasePage(){
 		
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/uwa-logo.gif"));
-		ContextImage productImage = new ContextImage("productImage", new Model("images/obiba-logo.png"));
+		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model("images/"+Constants.PRODUCT_IMAGE));
 		//add(pageTitleLbl);
 		Subject currentUser = SecurityUtils.getSubject();
 
