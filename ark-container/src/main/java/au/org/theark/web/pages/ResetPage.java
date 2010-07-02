@@ -11,7 +11,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.service.ContainerService;
 
 public class ResetPage<T> extends WebPage{
@@ -77,7 +77,7 @@ public class ResetPage<T> extends WebPage{
 	class ResetForm extends StatelessForm<T>{
 		@SuppressWarnings("unchecked")
 		public ResetForm(String id) {
-			super(id, new CompoundPropertyModel(new EtaUserVO()));
+			super(id, new CompoundPropertyModel(new ArkUserVO()));
 			
 			this.add(emailAddressId);
 			this.add(resetButton);

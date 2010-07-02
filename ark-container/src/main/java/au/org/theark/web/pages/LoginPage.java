@@ -25,7 +25,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.web.component.FormFeedbackBorder;
 
 public class LoginPage<T> extends WebPage {
@@ -127,20 +127,20 @@ public class LoginPage<T> extends WebPage {
 		/* Constructor */
 		public LoginForm(String id) {
 			//Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
- 			super(id, new CompoundPropertyModel(new EtaUserVO()));
+ 			super(id, new CompoundPropertyModel(new ArkUserVO()));
 		}
 		
 		
 		@Override
 		public void onSubmit(){
-			EtaUserVO user = (EtaUserVO) getModel().getObject();
+			ArkUserVO user = (ArkUserVO) getModel().getObject();
 			if(authenticate(user)){
 				setResponsePage(HomePage.class);//Should be a common or index page that can eventually display all the modules ETA,Study Manager, GWAS etc.. and using proper
 				//security to hide/un-hide tabs based on role.Clicking on the Module tabs then should render the Home page for each module with next level of context sensitive sub menus.
 			}
 		}
 		
-		public final boolean authenticate(EtaUserVO user){
+		public final boolean authenticate(ArkUserVO user){
 			
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(),user.getPassword(),false);//Disable Remember me
