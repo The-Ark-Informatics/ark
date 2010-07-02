@@ -19,10 +19,10 @@ import au.org.theark.study.service.IUserService;
  * @author nivedann
  *
  */
-public class Container extends Panel{
+public class UserContainer extends Panel{
 	
 	private static final long serialVersionUID = 1L;
-	private transient Logger log = LoggerFactory.getLogger(Container.class);
+	private transient Logger log = LoggerFactory.getLogger(UserContainer.class);
 
 	/**
 	 * Child components
@@ -55,7 +55,7 @@ public class Container extends Panel{
 	 * Constructor
 	 * @param id
 	 */
-	public Container(String id) {
+	public UserContainer(String id) {
 		super(id);
 		searchUserPanel = new Search("searchUserPanel");
 		add(searchUserPanel);
@@ -66,7 +66,7 @@ public class Container extends Panel{
 	 * @param id
 	 * @param userVO
 	 */
-	public Container(String id, EtaUserVO userVO) {
+	public UserContainer(String id, EtaUserVO userVO) {
 		
 		super(id);
 		searchUserPanel = new Search("searchUserPanel");
