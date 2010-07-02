@@ -13,14 +13,13 @@ import au.org.theark.study.web.Constants;
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the
  * Tab menu which forms the entry point into Study module. As part of the main Tab that it contributes 
- * it will also contain the sub-menu tabs.
+ * it will also contain the sub-menu tabs.This more like a plugin class.
  * @author nivedann
  *
  */
+@SuppressWarnings("serial")
 public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 
-	private static final long serialVersionUID = 1L;
-	
 	List<ITab> moduleTabsList;
 	public MainTabProviderImpl(String panelId){
 		super(panelId);
@@ -34,22 +33,15 @@ public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 		return moduleTabsList;
 	}
 	
-	
-	
 	public ITab createTab(String tabName) {
-		return  new AbstractTab(new Model(tabName)) {
 		
-			private static final long serialVersionUID = 1L;
-
+		return  new AbstractTab(new Model<String>(tabName)) {
 			@Override
 			public Panel getPanel(String pid) {
-				return new StudySubMenuTab(pid);//The sub menus Study 
+				return new StudySubMenuTab(pid);//The sub menus for Study 
 			}
 			
 		};
 	}
-
-
-
 
 }
