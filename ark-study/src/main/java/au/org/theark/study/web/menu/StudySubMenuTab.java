@@ -25,6 +25,7 @@ import au.org.theark.study.web.component.user.UserContainerPanel;
 
 
 
+@SuppressWarnings("serial")
 public class StudySubMenuTab extends Panel {
 	
 	List<ITab> tabList;
@@ -35,6 +36,7 @@ public class StudySubMenuTab extends Panel {
 		buildTabs();
 	}
 	
+
 	private class MenuModule implements Serializable{
 		
 		public MenuModule(){
