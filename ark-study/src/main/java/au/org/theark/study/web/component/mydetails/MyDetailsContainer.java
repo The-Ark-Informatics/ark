@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
@@ -32,7 +32,7 @@ public class MyDetailsContainer extends Panel{
 	 * @param userVO
 	 * @param subject
 	 */
-	public MyDetailsContainer(String id, EtaUserVO userVO, Subject subject) {
+	public MyDetailsContainer(String id, ArkUserVO userVO, Subject subject) {
 		super(id);
 		//Create a Form instance and send in the currently logged in  user details
 		userVO.setUserName(subject.getPrincipal().toString());

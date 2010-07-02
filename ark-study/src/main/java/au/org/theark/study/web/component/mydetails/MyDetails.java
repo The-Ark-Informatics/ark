@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.UserForm;
@@ -24,13 +24,13 @@ public class MyDetails extends Panel{
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	public MyDetails(String id, EtaUserVO userVO) {
+	public MyDetails(String id, ArkUserVO userVO) {
 		
 		super(id);
 		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
 			private static final long serialVersionUID = 6077699021177330917L;
 			//Do an update
-			protected  void onSave(EtaUserVO userVO){
+			protected  void onSave(ArkUserVO userVO){
 				//Update the user details TODO
 				try {
 					//forcing update of password
