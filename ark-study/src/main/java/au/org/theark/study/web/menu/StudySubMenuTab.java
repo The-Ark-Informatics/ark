@@ -21,7 +21,7 @@ import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.study.web.component.site.SiteContainerPanel;
 import au.org.theark.study.web.component.study.StudyContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
-import au.org.theark.study.web.component.user.Container;
+import au.org.theark.study.web.component.user.UserContainer;
 
 
 
@@ -126,7 +126,7 @@ public class StudySubMenuTab extends Panel {
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
-						panelToReturn = new Container(panelId, new EtaUserVO());//Note the constructor
+						panelToReturn = new UserContainer(panelId, new EtaUserVO());//Note the constructor
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_DETAILS)){
 						panelToReturn = new StudyContainerPanel(panelId);
