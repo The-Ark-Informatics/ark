@@ -7,7 +7,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 /**
  * A top level container that will have members like a Search control component and a 
@@ -66,7 +66,7 @@ public class UserContainer extends Panel{
 	 * @param id
 	 * @param userVO
 	 */
-	public UserContainer(String id, EtaUserVO userVO) {
+	public UserContainer(String id, ArkUserVO userVO) {
 		
 		super(id);
 		searchUserPanel = new Search("searchUserPanel");
@@ -79,18 +79,18 @@ public class UserContainer extends Panel{
 	 * 
 	 * @author nivedann
 	 */
-	public class UserPanelForm extends Form<EtaUserVO>{
+	public class UserPanelForm extends Form<ArkUserVO>{
 
 		
-		protected  void onSave(EtaUserVO userVO){}
+		protected  void onSave(ArkUserVO userVO){}
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 
-		public UserPanelForm(String id, EtaUserVO userVO) {
+		public UserPanelForm(String id, ArkUserVO userVO) {
 			
-			super(id, new CompoundPropertyModel<EtaUserVO>(userVO));
+			super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
 			
 			searchUserPanel = new Search("searchUserPanel");
 			add(searchUserPanel);

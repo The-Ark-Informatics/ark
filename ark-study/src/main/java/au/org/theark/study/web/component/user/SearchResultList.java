@@ -20,7 +20,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.util.UIHelper;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyVO;
 import au.org.theark.study.service.IUserService;
@@ -31,13 +31,13 @@ import au.org.theark.study.web.form.UserForm;
 public class SearchResultList extends Panel{
 
 
-	private List<EtaUserVO> userList;
+	private List<ArkUserVO> userList;
 	private Details detailsPanel;
 	
 	@SpringBean( name = "userService")
 	private transient IUserService userService;
 	
-	public SearchResultList(String id, List<EtaUserVO> userVOList, Component component) {
+	public SearchResultList(String id, List<ArkUserVO> userVOList, Component component) {
 		super(id);
 		userList = userVOList;
 		detailsPanel = (Details) component;
@@ -51,13 +51,13 @@ public class SearchResultList extends Panel{
 
 	
 	@SuppressWarnings("unchecked")
-	public PageableListView buildUserPageableListView(List<EtaUserVO> userVOList, int rowsPerPage){
+	public PageableListView buildUserPageableListView(List<ArkUserVO> userVOList, int rowsPerPage){
 		
 		PageableListView  pageableListView = new PageableListView("userList", userVOList, rowsPerPage){
 
 			@Override
 			protected void populateItem(final ListItem item) {
-				EtaUserVO userVO = (EtaUserVO) item.getModelObject();
+				ArkUserVO userVO = (ArkUserVO) item.getModelObject();
 
 				Link userNameLink = buildUserNameLink(item, detailsPanel);
 				/* Build the caption for the Link*/
@@ -89,7 +89,7 @@ public class SearchResultList extends Panel{
 	@SuppressWarnings("unchecked")
 	private Link buildUserNameLink(final ListItem item, final Component detailsPanel) {
 		
-		final EtaUserVO etaUserVO = (EtaUserVO) item.getModelObject();
+		final ArkUserVO etaUserVO = (ArkUserVO) item.getModelObject();
 
 		return new Link("userName", item.getModel()) {
 			@Override
