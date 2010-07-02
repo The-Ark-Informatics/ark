@@ -27,13 +27,13 @@ public class UserContainerPanel extends Panel{
 	/**
 	 * Child components
 	 */
-	private SearchUserPanel searchUserPanel;
+	private Search searchUserPanel;
 	/**
 	 * Method for toggling the components visible state.
 	 * @param isVisible
 	 * @param searchPanel
 	 */
-	private void setSearchVisible(boolean isVisible, SearchUserPanel searchPanel){
+	private void setSearchVisible(boolean isVisible, Search searchPanel){
 		searchPanel.setVisible(isVisible);
 	}
 
@@ -57,7 +57,7 @@ public class UserContainerPanel extends Panel{
 	 */
 	public UserContainerPanel(String id) {
 		super(id);
-		searchUserPanel = new SearchUserPanel("searchUserPanel");
+		searchUserPanel = new Search("searchUserPanel");
 		add(searchUserPanel);
 	}
 	
@@ -69,7 +69,7 @@ public class UserContainerPanel extends Panel{
 	public UserContainerPanel(String id, EtaUserVO userVO) {
 		
 		super(id);
-		searchUserPanel = new SearchUserPanel("searchUserPanel");
+		searchUserPanel = new Search("searchUserPanel");
 		add(searchUserPanel);
 	}
 
@@ -92,7 +92,7 @@ public class UserContainerPanel extends Panel{
 			
 			super(id, new CompoundPropertyModel<EtaUserVO>(userVO));
 			
-			searchUserPanel = new SearchUserPanel("searchUserPanel");
+			searchUserPanel = new Search("searchUserPanel");
 			add(searchUserPanel);
 			//Add the details panel for an ordinary user
 			

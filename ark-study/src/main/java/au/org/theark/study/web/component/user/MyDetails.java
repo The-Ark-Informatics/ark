@@ -16,15 +16,15 @@ import au.org.theark.study.web.form.UserForm;
  * @author nivedann
  *
  */
-public class MyDetailsPanel extends Panel{
+public class MyDetails extends Panel{
 	
-	private transient Logger log = LoggerFactory.getLogger(MyDetailsPanel.class);
+	private transient Logger log = LoggerFactory.getLogger(MyDetails.class);
 	private UserForm userForm;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	public MyDetailsPanel(String id, EtaUserVO userVO) {
+	public MyDetails(String id, EtaUserVO userVO) {
 		
 		super(id);
 		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
@@ -46,7 +46,7 @@ public class MyDetailsPanel extends Panel{
 			}
 			
 			protected void onCancel(){
-				log.info("\n -----------------onCancel Clicked hide UserDetailsPanel-----------------\n");
+				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
 				this.setVisible(false);
 			}
 			

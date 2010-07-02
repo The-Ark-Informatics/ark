@@ -27,14 +27,15 @@ import au.org.theark.study.web.form.UserForm;
  * A Component that will have the user details. This component should be a standalone component and used in any page or panel that requires it.
  * @author nivedann
  */
-public class UserDetailsPanel extends Panel{
+@SuppressWarnings("serial")
+public class Details extends Panel{
 
-	private transient Logger log = LoggerFactory.getLogger(UserDetailsPanel.class);
+	private transient Logger log = LoggerFactory.getLogger(Details.class);
 
 	@SpringBean( name = "userService")
 	private IUserService userService;
 
-	private SearchUserPanel searchPanel;
+	private Search searchPanel;
 	private UserForm userForm;
 	private AppRoleAccordion appRoleAccordion;
 
@@ -43,11 +44,11 @@ public class UserDetailsPanel extends Panel{
 	 * Setters and Getters for private members
 	 * @return
 	 */
-	public SearchUserPanel getSearchPanel() {
+	public Search getSearchPanel() {
 		return searchPanel;
 	}
 
-	public void setSearchPanel(SearchUserPanel searchPanel) {
+	public void setSearchPanel(Search searchPanel) {
 		this.searchPanel = searchPanel;
 	}
 
@@ -64,7 +65,7 @@ public class UserDetailsPanel extends Panel{
 	 * @param id
 	 * @param userVO
 	 */
-	public UserDetailsPanel(String id, EtaUserVO userVO){
+	public Details(String id, EtaUserVO userVO){
 		
 		super(id);
 		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
@@ -86,7 +87,7 @@ public class UserDetailsPanel extends Panel{
 			}
 			
 			protected void onCancel(){
-				log.info("\n -----------------onCancel Clicked hide UserDetailsPanel-----------------\n");
+				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
 				this.setVisible(false);
 			}
 			
@@ -118,13 +119,13 @@ public class UserDetailsPanel extends Panel{
 	}
 	
 	/**
-	 * Constructor that has a reference to SearchUserPanel
+	 * Constructor that has a reference to Search
 	 * @param id
 	 * @param userVO
 	 * @param searchPanel
 	 * @throws InvalidNameException 
 	 */
-	public UserDetailsPanel(String id, EtaUserVO userVO, final SearchUserPanel searchPanel)  {
+	public Details(String id, EtaUserVO userVO, final Search searchPanel)  {
 		
 		super(id);
 		setSearchPanel(searchPanel);
@@ -200,7 +201,7 @@ public class UserDetailsPanel extends Panel{
 				}
 			}
 			protected void onCancel(){
-				log.info("\n -----------------onCancel Clicked hide UserDetailsPanel-----------------\n");
+				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
 				log.info("SearchPanel.isVisible()" + searchPanel.isVisible() );
 				searchPanel.setDetailsPanelVisible(false);
 			}

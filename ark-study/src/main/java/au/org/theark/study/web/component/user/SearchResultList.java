@@ -28,19 +28,19 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.AppRoleForm;
 import au.org.theark.study.web.form.UserForm;
 
-public class DisplayUserListPanel extends Panel{
+public class SearchResultList extends Panel{
 
 
 	private List<EtaUserVO> userList;
-	private UserDetailsPanel detailsPanel;
+	private Details detailsPanel;
 	
 	@SpringBean( name = "userService")
 	private transient IUserService userService;
 	
-	public DisplayUserListPanel(String id, List<EtaUserVO> userVOList, Component component) {
+	public SearchResultList(String id, List<EtaUserVO> userVOList, Component component) {
 		super(id);
 		userList = userVOList;
-		detailsPanel = (UserDetailsPanel) component;
+		detailsPanel = (Details) component;
 		PageableListView pageableUserList = buildUserPageableListView(userList, 10);
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableUserList);
 		add(pageNavigator);
@@ -95,7 +95,7 @@ public class DisplayUserListPanel extends Panel{
 			@Override
 			public void onClick() {
 				//If the selected record is the same as the logged in user then allow for an edit
-				UserDetailsPanel userDetailsPanel = (UserDetailsPanel)detailsPanel;
+				Details userDetailsPanel = (Details)detailsPanel;
 				UserForm userForm = userDetailsPanel.getUserForm();
 				
 				SecurityManager securityManager =  ThreadContext.getSecurityManager();
@@ -122,7 +122,7 @@ public class DisplayUserListPanel extends Panel{
 				etaUserVO.setMode(Constants.MODE_EDIT);
 				userForm.setModelObject(etaUserVO);
 				userDetailsPanel.setVisible(true);
-				//Create the UserDetailsPanel.
+				//Create the Details.
 				//Gain access to the existing accordion control in UserForm
 				AppRoleAccordion appRoleAccordion = (AppRoleAccordion) userForm.get("appRoleAccordion");
 				AppRoleForm appRoleForm = (AppRoleForm) appRoleAccordion.get(Constants.APP_ROLE_FORM);

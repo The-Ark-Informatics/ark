@@ -17,8 +17,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.security.RoleConstants;
@@ -31,10 +29,8 @@ import au.org.theark.study.web.Constants;
  * @author nivedann
  *
  */
-public class SearchUserPanel extends Panel{
-
-	//private transient Logger log = LoggerFactory.getLogger(SearchUserPanel.class);
-	
+@SuppressWarnings("serial")
+public class Search extends Panel{
 	/* 
 	 * Spring injected reference for User service implementation. Use it to look up users or persist using the userService
 	 * userService.create(EtaUserVo user);
@@ -42,24 +38,21 @@ public class SearchUserPanel extends Panel{
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	
-	private String panelId;
-	
 	/* Will contain the Search results */
-	private DisplayUserListPanel displayUserListPanel;
+	private SearchResultList displayUserListPanel;
 	
 	private FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
 	
-	public DisplayUserListPanel getDisplayUserListPanel() {
+	public SearchResultList getDisplayUserListPanel() {
 		return displayUserListPanel;
 	}
 
-	public void setDisplayUserListPanel(DisplayUserListPanel displayUserListPanel) {
+	public void setDisplayUserListPanel(SearchResultList displayUserListPanel) {
 		this.displayUserListPanel = displayUserListPanel;
 	}
 
 	/* The detailed view of the person */
-	private UserDetailsPanel detailsPanel;
+	private Details detailsPanel;
 
 	/**
 	 * Pass in a boolean value to toggle the visibility status of User Details panel.
@@ -73,11 +66,11 @@ public class SearchUserPanel extends Panel{
 	 * Standard Constructor for the Search Panel 
 	 * @param id
 	 */
-	public SearchUserPanel(String id) {
+	public Search(String id) {
 		super(id);
 		
 		//Create a new instance of the details panel with empty user object
-		detailsPanel = new UserDetailsPanel("userDetailsPanel", new EtaUserVO(), this);
+		detailsPanel = new Details("userDetailsPanel", new EtaUserVO(), this);
 		//Hide it since we have not looked up a user as yet
 		setDetailsPanelVisible(false);
 		
@@ -97,7 +90,7 @@ public class SearchUserPanel extends Panel{
 					//Render the Search Results
 					//TODO NN Removing the panel is not efficient, I need to use another technique (Ajax)
 					remove(displayUserListPanel);//Since we already have the panel.We need to partially update the list the panel uses  rather than action it at the panel level
-					displayUserListPanel = new DisplayUserListPanel("displayUserListPanel", userResultList,detailsPanel);
+					displayUserListPanel = new SearchResultList("displayUserListPanel", userResultList,detailsPanel);
 					add(displayUserListPanel);
 					//Provide the list as an argument into the results rendering panel
 				}
@@ -115,7 +108,7 @@ public class SearchUserPanel extends Panel{
 		List<EtaUserVO> userList = new ArrayList<EtaUserVO>();
 		EtaUserVO user = new EtaUserVO();
 		userList.add(user);
-		displayUserListPanel = new DisplayUserListPanel("displayUserListPanel", userList,detailsPanel);
+		displayUserListPanel = new SearchResultList("displayUserListPanel", userList,detailsPanel);
 		searchUserForm.add(displayUserListPanel);
 	}
 

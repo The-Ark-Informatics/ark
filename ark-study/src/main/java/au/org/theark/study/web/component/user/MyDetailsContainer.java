@@ -12,7 +12,7 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 /**
- * A class that will contain UserDetailsPanel component.
+ * A class that will contain Details component.
  * @author nivedann
  *
  */
@@ -42,7 +42,7 @@ public class MyDetailsContainer extends Panel{
 			log.error("Exception occured :" + ine.getMessage());
 		}
 		//Add the details panel into the container
-		add(new MyDetailsPanel(Constants.MY_DETAILS_PANEL, userVO));
+		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO));
 	}
 
 }
