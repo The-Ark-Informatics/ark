@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -19,12 +20,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		Criteria studyCritera =  getSession().createCriteria(Study.class);
 		
-		studyCritera.add(Restrictions.isNotNull("studyKey"));
-		studyCritera.add(Restrictions.eq("studyKey",study.getStudyKey()));
-		studyCritera.add(Restrictions.ilike("name", study.getName(), MatchMode.ANYWHERE));
+		if(study.getStudyKey() != null){
+			studyCritera.add(Restrictions.eq("studyKey",study.getStudyKey()));	
+		}
 		
-		//studyCritera.add(Restrictions.ilike("name",study.getName(),MatchMode.ANYWHERE));
-		//studyCritera.addOrder(Order.asc("name"));
+		if(study.getName() != null){
+			studyCritera.add(Restrictions.ilike("name", study.getName(), MatchMode.ANYWHERE));	
+		}
+		
+		if(study.getDateOfApplication() != null){
+			studyCritera.add(Restrictions.eq("dateOfApplication", study.getDateOfApplication()));
+		}
+		
+		if(study.getEstimatedYearOfCompletion() != null){
+			studyCritera.add(Restrictions.eq("estimatedYearOfCompletion", study.getEstimatedYearOfCompletion()));
+		}
+
+		if(study.getChiefInvestigator() != null){
+			studyCritera.add(Restrictions.ilike("chiefInvestigator", study.getChiefInvestigator(),MatchMode.ANYWHERE));
+		}
+
+		if(study.getContactPerson() != null){
+			studyCritera.add(Restrictions.ilike("contactPerson", study.getContactPerson(), MatchMode.ANYWHERE));
+		}
+
+		studyCritera.addOrder(Order.asc("name"));
 		List<Study> studyList  = studyCritera.list();
 		return studyList;
 	}
