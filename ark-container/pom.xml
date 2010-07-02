@@ -36,6 +36,7 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 
+		<!-- Ark GDMI Module -->
 		<dependency>
 			<groupId>au.org.theark.gdmi</groupId>
 			<artifactId>ark-gdmi</artifactId>
