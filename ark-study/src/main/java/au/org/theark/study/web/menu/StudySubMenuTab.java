@@ -27,6 +27,7 @@ import au.org.theark.study.web.component.user.UserContainerPanel;
 
 public class StudySubMenuTab extends Panel {
 	
+	private static final long serialVersionUID = 1L;
 	List<ITab> tabList;
 	
 	public StudySubMenuTab(String id) {
@@ -36,7 +37,7 @@ public class StudySubMenuTab extends Panel {
 	}
 	
 	private class MenuModule implements Serializable{
-		
+		private static final long serialVersionUID = 1L;
 		public MenuModule(){
 			super();
 		}
@@ -96,7 +97,7 @@ public class StudySubMenuTab extends Panel {
 		
 		for(final MenuModule moduleName : moduleTabs)
 		{
-			moduleSubTabsList.add( new AbstractTab(new Model(getLocalizer().getString(moduleName.getResourceKey(), StudySubMenuTab.this, moduleName.getModuleName())) )
+			moduleSubTabsList.add( new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), StudySubMenuTab.this, moduleName.getModuleName())) )
 			{
 				private static final long serialVersionUID = 1L;
 				
@@ -104,18 +105,13 @@ public class StudySubMenuTab extends Panel {
 					
 					boolean flag = false;
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
-						
 						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
-						//SecurityManager securityManager =  ThreadContext.getSecurityManager();
 						Subject currentUser = SecurityUtils.getSubject();
-						//PrincipalCollection principalCollection = currentUser.getPrincipals();
-						
-						 if((arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN))){
-							 //check if the user is a SA for ETA
+						if((arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN))){
 							 flag =  currentUser.isAuthenticated();	 
-						 }else{
+						}else{
 							 flag = false;
-						 }
+						}
 					}else{
 						flag=true;
 					}
