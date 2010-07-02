@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.service.ContainerService;
 
 
@@ -58,7 +58,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	//System.out.println("\n -----In ArkLdapRealm:doGetAuthenticationInfo");
     	log.info(" in  doGetAuthenticationInfo()");
     	SimpleAuthenticationInfo sai = null;
-    	EtaUserVO userVO = null;
+    	ArkUserVO userVO = null;
     	UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         try{
         	userVO = iArkCommonService.getUser(token.getUsername().trim());//Example to use core services to get user
