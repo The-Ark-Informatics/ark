@@ -1,70 +1,133 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="da" lang="da">
 	<head>
-		<title><wicket:message key="page.title"> Page Title will be inserted here</wicket:message></title>
+		<title><wicket:message key="page.title">Page Title will be inserted here</wicket:message></title>
 		<link rel="stylesheet" type="text/css" href="style.css" />
-		<link rel="stylesheet" type="text/css" href="panel.css"/> 
+		<link rel="stylesheet" type="text/css" href="panel.css"/>
+		<!--[if lte IE 6]>
+		        <style type="text/css">
+		                html, body{
+		                        height:100%;
+		                        overflow:hidden;
+		                }
+		
+		                #outer {
+		                        overflow:auto;
+		                        height:99.9%;
+		                        background-color: yellow;
+		                }
+		
+		                #contain-all{
+		                        position:absolute;
+		                        overflow:auto;
+		                        width:100%;
+		                        height:100%;
+		                }
+		
+		                /* add margin to footer to avoid
+		                obscuring the scroll-bar */
+		                #footer-inner {
+		                        margin-right:17px;
+		                }
+		        </style>
+		<![endif]-->
 	</head>
 	<body>
-		
-		<!--  Header -->
-		<div id="header">
-  			<div><img wicket:id="hostedByImage"></img><img wicket:id="productImage"></img></div>
-  		</div>
-  		
-  		<!--  Left Top Zone -->
-  		<div id="leftZoneTop"></div>
-		
-		<!-- Informational and Error Feedback zone-->
-		<div id="feedbackZone">
-		</div>
-		<div id="LoginFeedbackZone">
-			<span wicket:id="feedbackMessage" class="feedbackPanelERROR"></span> 
-		</div>
-
-		<!--  Right Top Zone -->
-		<div id="rightZoneTop"></div>
-		
-		<!--  Page Left Zone -->	
-		<div id="leftZone"></div>
-		<div id="contentZone_1"></div>	
-		<!-- Content Zone -->
-		<div id="contentZone">
-		 
-			<form wicket:id="loginForm" >
-				
-				<div class="label" >
-					<wicket:message key="page.label.emailId"></wicket:message>
-				</div>
-				
-				<div class="label">
-					<input wicket:id="userName" type="text"></input>
-				</div>
-				
-				<div class="label"><wicket:message key="page.label.passwordTxt">
-					</wicket:message>
-				</div>
-				
-				<div class="label">
-					<input wicket:id="password" type="password" ></input>
-				</div>
-				
-				<div class="label">
-					<input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" />
-				</div>
+		<!-- Start div wrap -->
+		<div id="wrap">
+			<!--  Page header -->
+			<div id="header" class="header">
+				<table width="100%">
+					<tr>
+						<td width="50%" align="left">
+							<div id="hostedby"><img wicket:id="hostedByImage"></img></div>
+						</td>
+						<td width="50%" align="right">
+							<div id="product"><img wicket:id="productImage"></img></div>
+						</td>
+					</tr>
+	  			</table>
+	  		</div>
+	  		
+	  		<!-- Start div main -->
+	  		<div id="main">
+	  		
+	  			<table border="0" width="100%">
+					<tr height="20%">
+						<td width="20%" align="left">
+			  				<!--  Page Left Top Zone -->
+			  				<div id="leftZoneTop">&nbsp;</div>
+						</td>
+						
+						<td width="60%" align="center">
+							<!-- Page Informational and Error Feedback zone-->
+							<div id="feedbackZone">&nbsp;</div>
+					
+							<!-- Page Login Feedback zone-->
+							<div id="LoginFeedbackZone">
+								<span wicket:id="feedbackMessage" class="feedbackPanelERROR"></span>
+							</div>
+						</td>
 			
-			</form>
-			
-			<div>
-				<a wicket:id="resetPasswordLink" href="#" ><wicket:message key="page.forgotpassword.link"></wicket:message></a>
+						<td width="20%" align="right">
+							<!--  Right Top Zone -->
+							<div id="rightZoneTop">&nbsp;</div>
+						</td>
+					</tr>
+					
+					<tr height="80%">
+						<td width="20%" align="left">
+							<!--  Page Left Zone -->
+							<div id="leftZone">&nbsp;</div>
+						</td>
+						
+						<td width="60%" align="center">
+							<!-- Content Zone Left -->
+							<div id="contentZoneLeft">&nbsp;</div>
+								
+							<!-- Content Zone Right -->
+							<div id="contentZoneRight">
+								<table border="0" width="100%" height="100" cellpadding="15">
+									<!-- Row 1 -->
+									<tr>
+										<td width="35%">&nbsp;</td>
+										<td width="30%">
+											<form wicket:id="loginForm" >
+												<div class="label" ><wicket:message key="page.label.emailId"></wicket:message></div>
+												<div class="text"><input wicket:id="userName" type="text" class="text"></input></div>
+												<div class="label"><wicket:message key="page.label.passwordTxt"></wicket:message></div>
+												<div class="text"><input wicket:id="password" type="password"></input></div>
+												<div class="label"><input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" /></div>
+											</form>
+										</td>
+										<td width="35%">&nbsp;</td>
+									</tr>
+									<tr>
+										<td width="35%"></td>
+										<td width="30%">
+											<div>
+												<a wicket:id="resetPasswordLink" href="#" ><wicket:message key="page.forgotpassword.link"></wicket:message></a>
+											</div>
+										</td>
+										<td width="35%">&nbsp;</td>
+									</tr>
+								</table>
+							</div>
+						</td>
+						
+						<td width="20%" align="right">						
+							<!--  Page right Zone -->
+							<div id="rightZone">&nbsp;</div>
+						</td>
+					</tr>
+				</table>
 			</div>
-			 
-		</div>
-		<!--  Page right Zone -->
-		<div id="rightZone"></div>
-		<div id="footer">
-			<div></div>
+			<!-- End div main -->
+		<!-- End div wrap -->	
 		</div>
 		
+		<!--  Page footer -->
+		<div id="footer" class="footer">Copyright&nbsp;&copy; the-ark.org.au 2010</div>
      </body>
 </html>
