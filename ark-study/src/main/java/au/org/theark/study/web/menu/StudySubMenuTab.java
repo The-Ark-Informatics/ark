@@ -27,7 +27,6 @@ import au.org.theark.study.web.component.user.UserContainerPanel;
 
 public class StudySubMenuTab extends Panel {
 	
-	private static final long serialVersionUID = 1L;
 	List<ITab> tabList;
 	
 	public StudySubMenuTab(String id) {
@@ -37,7 +36,7 @@ public class StudySubMenuTab extends Panel {
 	}
 	
 	private class MenuModule implements Serializable{
-		private static final long serialVersionUID = 1L;
+		
 		public MenuModule(){
 			super();
 		}
@@ -99,7 +98,7 @@ public class StudySubMenuTab extends Panel {
 		{
 			moduleSubTabsList.add( new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), StudySubMenuTab.this, moduleName.getModuleName())) )
 			{
-				private static final long serialVersionUID = 1L;
+				
 				
 				public boolean isVisible(){
 					
