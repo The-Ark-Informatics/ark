@@ -14,7 +14,8 @@ vertical margins (top and bottom) to add spacing, else those margins get added t
 and your footer gets pushed down a bit more, creating vertical scroll bars in the browser */
 
 html,body {
-	height: 100%;
+	/* 98% allows footer to be seen ok,at all times */
+	height: 98%;
 }
 
 #wrap {
