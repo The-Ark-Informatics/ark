@@ -20,7 +20,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 /**
@@ -70,19 +70,19 @@ public class Search extends Panel{
 		super(id);
 		
 		//Create a new instance of the details panel with empty user object
-		detailsPanel = new Details("userDetailsPanel", new EtaUserVO(), this);
+		detailsPanel = new Details("userDetailsPanel", new ArkUserVO(), this);
 		//Hide it since we have not looked up a user as yet
 		setDetailsPanelVisible(false);
 		
 		// Uses an entirely new VO for the search so each time the search panel is loaded. The values provided will be refreshed.
-		SearchUserForm searchUserForm = new SearchUserForm(Constants.SEARCH_USER_FORM, new EtaUserVO(), id){
+		SearchUserForm searchUserForm = new SearchUserForm(Constants.SEARCH_USER_FORM, new ArkUserVO(), id){
 			
 			/*When user has clicked on the Search Button*/
-			protected  void onSearch(EtaUserVO userVO){
+			protected  void onSearch(ArkUserVO userVO){
 				//log.info("Look up the user");
 				try {
 					setDetailsPanelVisible(false);//Set the User Details panel to false/hide it
-					List<EtaUserVO> userResultList = userService.searchUser(userVO);
+					List<ArkUserVO> userResultList = userService.searchUser(userVO);
 					if(userResultList != null && userResultList.size() == 0){
 						this.info("A user with the specified criteria does not exist in the system.");	
 					}
@@ -105,8 +105,8 @@ public class Search extends Panel{
 		add(feedBackPanel); //Add feedback panel
 		searchUserForm.add(detailsPanel);
 		//Just an empty list
-		List<EtaUserVO> userList = new ArrayList<EtaUserVO>();
-		EtaUserVO user = new EtaUserVO();
+		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
+		ArkUserVO user = new ArkUserVO();
 		userList.add(user);
 		displayUserListPanel = new SearchResultList("displayUserListPanel", userList,detailsPanel);
 		searchUserForm.add(displayUserListPanel);
@@ -115,7 +115,7 @@ public class Search extends Panel{
 	/**
 	 * The Form object for the Search.
 	 */
-	public class SearchUserForm extends Form<EtaUserVO>{
+	public class SearchUserForm extends Form<ArkUserVO>{
 
 		TextField<String> userNameTxtField =new TextField<String>(Constants.USER_NAME);
 		TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
@@ -131,9 +131,9 @@ public class Search extends Panel{
 		private static final long serialVersionUID = 1L;
 
 		/* Form Constructor */
-		public SearchUserForm(String id, EtaUserVO userVO, String panelId) {
+		public SearchUserForm(String id, ArkUserVO userVO, String panelId) {
 		
-			super(id, new CompoundPropertyModel<EtaUserVO>(userVO));
+			super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
 			initFormFields();
 			/* Add the look up fields */
 			add(userNameTxtField);
@@ -146,7 +146,7 @@ public class Search extends Panel{
 				public void onSubmit()
 				{
 					
-					onSearch((EtaUserVO) getForm().getModelObject());
+					onSearch((ArkUserVO) getForm().getModelObject());
 				}
 			});
 			
@@ -159,7 +159,7 @@ public class Search extends Panel{
 				{
 					//Go to Search users page
 					//The mode will be new here
-					EtaUserVO etaUserVO = new EtaUserVO();
+					ArkUserVO etaUserVO = new ArkUserVO();
 					etaUserVO.setMode(Constants.MODE_NEW);
 					onNew(etaUserVO);
 				}
@@ -181,10 +181,10 @@ public class Search extends Panel{
 		}
 
 		/* Processing logic for search */
-		protected  void onSearch(EtaUserVO userVO){}
+		protected  void onSearch(ArkUserVO userVO){}
 		
 		/* Processing logic for New User */
-		protected void onNew(EtaUserVO etaUserVO){
+		protected void onNew(ArkUserVO etaUserVO){
 			//Set the Model Object for the existing Form object in DetailsPanel
 			detailsPanel.getUserForm().getGroupPasswordContainer().setVisible(true);
 			detailsPanel.getUserForm().setModelObject(etaUserVO);

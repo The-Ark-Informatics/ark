@@ -20,7 +20,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.odlabs.wiquery.ui.accordion.Accordion;
 
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.study.web.Constants;
@@ -29,13 +29,13 @@ import au.org.theark.core.util.UIHelper;
 
 public class AppRoleAccordion extends Panel{
 
-	private EtaUserVO etaUserVO;
+	private ArkUserVO etaUserVO;
 	private static final long serialVersionUID = 1L;
 	private List<ModuleVO> membershipModules;
 	
 	
 	@SuppressWarnings("unchecked")
-	public AppRoleAccordion(String id, EtaUserVO etaUserVO, List<ModuleVO> moduleList){
+	public AppRoleAccordion(String id, ArkUserVO etaUserVO, List<ModuleVO> moduleList){
 		super(id);
 		this.etaUserVO = etaUserVO;//Set the private instance of etaUserVO
 		membershipModules = etaUserVO.getModules();//List of Applications the user is a member of
@@ -306,7 +306,7 @@ public class AppRoleAccordion extends Panel{
 	/**
 	 * A helper that returns the selected applications and roles in a class
 	 */
-	public static void getSelectedAppRoles(Form parentForm, EtaUserVO etaUserVO){
+	public static void getSelectedAppRoles(Form parentForm, ArkUserVO etaUserVO){
 		
 		List<ModuleVO> moduleVOlist = new ArrayList<ModuleVO>();
 		etaUserVO.setModules(moduleVOlist);

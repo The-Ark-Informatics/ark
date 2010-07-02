@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UserNameExistsException;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
@@ -65,13 +65,13 @@ public class Details extends Panel{
 	 * @param id
 	 * @param userVO
 	 */
-	public Details(String id, EtaUserVO userVO){
+	public Details(String id, ArkUserVO userVO){
 		
 		super(id);
 		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
 			private static final long serialVersionUID = 6077699021177330917L;
 			//Do an update
-			protected  void onSave(EtaUserVO userVO){
+			protected  void onSave(ArkUserVO userVO){
 				//Update the user details TODO
 				try {
 					//forcing update of password
@@ -91,7 +91,7 @@ public class Details extends Panel{
 				this.setVisible(false);
 			}
 			
-			protected void onDelete(EtaUserVO userVO){
+			protected void onDelete(ArkUserVO userVO){
 				log.info("Delete the user details from ldap");
 				try{
 					userService.deleteLdapUser(userVO);	
@@ -125,19 +125,19 @@ public class Details extends Panel{
 	 * @param searchPanel
 	 * @throws InvalidNameException 
 	 */
-	public Details(String id, EtaUserVO userVO, final Search searchPanel)  {
+	public Details(String id, ArkUserVO userVO, final Search searchPanel)  {
 		
 		super(id);
 		setSearchPanel(searchPanel);
 		
-		userForm  = new UserForm(Constants.USER_DETAILS_FORM, new EtaUserVO()){
+		userForm  = new UserForm(Constants.USER_DETAILS_FORM, new ArkUserVO()){
 			
 			private static final long serialVersionUID = 6077699021177330917L;
 			
 			/**
 			 * When user clicks on save the VO is validated and then passed to the backend.
 			 */
-			protected  void onSave(EtaUserVO userVO){
+			protected  void onSave(ArkUserVO userVO){
 				
 				try {
 					
@@ -206,7 +206,7 @@ public class Details extends Panel{
 				searchPanel.setDetailsPanelVisible(false);
 			}
 			
-			protected void onDelete(EtaUserVO userVO){
+			protected void onDelete(ArkUserVO userVO){
 				log.info("Delete the user details from ldap");
 				try{
 					userService.deleteLdapUser(userVO);	
@@ -240,7 +240,7 @@ public class Details extends Panel{
 	 * This method should be called before invoking the service layer. 
 	 * @param userVO
 	 */
-	private void mapToSystemValues(EtaUserVO userVO){
+	private void mapToSystemValues(ArkUserVO userVO){
 		List<ModuleVO> modules = userVO.getModules();
 		
 		for (ModuleVO moduleVO : modules) {
