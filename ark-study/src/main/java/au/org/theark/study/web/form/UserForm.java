@@ -13,11 +13,11 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.web.Constants;
 
 
-public class UserForm extends Form<EtaUserVO>{
+public class UserForm extends Form<ArkUserVO>{
 	
 	/**
 	 * 
@@ -98,9 +98,9 @@ public class UserForm extends Form<EtaUserVO>{
 	private int mode = 3;
 	
 	
-	protected  void onSave(EtaUserVO userVO){}
+	protected  void onSave(ArkUserVO userVO){}
 	protected  void onCancel(){}
-	protected void  onDelete(EtaUserVO etaUserVO){}
+	protected void  onDelete(ArkUserVO etaUserVO){}
 		
 	private void initFormFields(){
 		userNameTxtField.setRequired(true);
@@ -115,9 +115,9 @@ public class UserForm extends Form<EtaUserVO>{
 		userPasswordField.setRequired(false);
 		confirmPasswordField.setRequired(false);
 	}
-	public UserForm(String id, EtaUserVO userVO) {
+	public UserForm(String id, ArkUserVO userVO) {
 			
-		super(id, new CompoundPropertyModel<EtaUserVO>(userVO));
+		super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
 		
 		initFormFields();
 		
@@ -141,7 +141,7 @@ public class UserForm extends Form<EtaUserVO>{
 		{
 			public void onSubmit()
 			{
-				onSave((EtaUserVO) getForm().getModelObject());
+				onSave((ArkUserVO) getForm().getModelObject());
 			}
 		}; 
 		
@@ -161,7 +161,7 @@ public class UserForm extends Form<EtaUserVO>{
 			public void onSubmit()
 			{
 				//Go to Search users page
-				onDelete((EtaUserVO) getForm().getModelObject());
+				onDelete((ArkUserVO) getForm().getModelObject());
 			}
 			
 		};

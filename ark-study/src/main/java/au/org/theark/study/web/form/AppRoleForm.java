@@ -4,7 +4,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.odlabs.wiquery.ui.accordion.Accordion;
 
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 
 public class AppRoleForm extends Form{
 
@@ -20,7 +20,7 @@ public class AppRoleForm extends Form{
 		this.accordion = accordion;
 	}
 
-	public AppRoleForm(String id, EtaUserVO etaUserVO) {
+	public AppRoleForm(String id, ArkUserVO etaUserVO) {
 		super(id, new CompoundPropertyModel(etaUserVO));
 	
 	}
