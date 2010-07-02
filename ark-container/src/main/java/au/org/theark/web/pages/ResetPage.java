@@ -11,7 +11,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import au.org.theark.core.vo.EtaUserVO;
 import au.org.theark.service.ContainerService;
 
@@ -27,7 +26,6 @@ public class ResetPage<T> extends WebPage{
 		return containerService;
 	}
 
-
 	public void setContainerService(ContainerService containerService) {
 		this.containerService = containerService;
 	}
@@ -38,7 +36,6 @@ public class ResetPage<T> extends WebPage{
 	public String getUserId() {
 		return userId;
 	}
-
 
 	public void setUserId(String userId) {
 		this.userId = userId;
@@ -54,37 +51,60 @@ public class ResetPage<T> extends WebPage{
 		this.emailAddress = emailAddress;
 	}
 
-
+	@SuppressWarnings("serial")
 	public ResetPage(){
 		log.info("ResetPage() constructor");
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/uwa-logo.gif"));
-		ContextImage productImage = new ContextImage("productImage", new Model("images/obiba-logo.png"));
-		ResetForm resetForm = new ResetForm("resetForm");
-		add(resetForm);
+		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
+		
 		add(contextHostedByImage);
 		add(productImage);
+		
+		ResetForm resetForm = new ResetForm("resetForm"){
+			
+			protected void onCancel(){
+				setResponsePage(LoginPage.class);
+			}
+			
+			protected void onReset(){
+				log.info("onReset() invoked on Reset Password page");
+			}
+		};
+		add(resetForm);
 	}
 	
+	@SuppressWarnings("serial")
 	class ResetForm extends StatelessForm<T>{
-
-		
-		TextField<String> emailAddressId = new TextField<String>("email");
-		Button subButton =  new Button("submitBtn");
-		
-		
+		@SuppressWarnings("unchecked")
 		public ResetForm(String id) {
 			super(id, new CompoundPropertyModel(new EtaUserVO()));
 			
-			// TODO Auto-generated constructor stub
 			this.add(emailAddressId);
-			this.add(subButton);
+			this.add(resetButton);
+			this.add(cancelButton);
 		}
-		
-		@Override
-		public void onSubmit(){
-			log.info("onSubmit invoked on Reset Password page");
-		}
-	}
-	
 
+		protected void onCancel(){};
+		protected void onReset(){};
+
+		TextField<String> emailAddressId = new TextField<String>("email");
+
+		Button resetButton =  new Button("resetButton")
+		{
+			public void onSubmit()
+			{
+				// Reset user password
+				onReset();
+			}
+		};
+		
+		Button cancelButton = new Button("cancelButton")
+		{
+			public void onSubmit()
+			{
+				// Go to Login page
+				onCancel();
+			}		
+		};
+	}
 }
