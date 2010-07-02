@@ -85,9 +85,10 @@ public class LoginPage<T> extends WebPage {
 		form.add(subButton);
 		
 		//Create an new form object and add it to the Page
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/uwa-logo.gif"));
-		ContextImage productImage = new ContextImage("productImage", new Model("images/obiba-logo.png"));
+		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model("images/"+Constants.PRODUCT_IMAGE));
 		//ContextImage footerImage = new ContextImage("footerImage", new Model("images/obiba-logo.png"));
+		
 		 this.add( new Link("resetPasswordLink"){
 			@Override
 			public void onClick() {
