@@ -24,7 +24,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.util.UIHelper;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 /**
@@ -89,14 +89,14 @@ public class LdapPersonDao implements ILdapPersonDao{
 		this.ldapTemplate = ldapTemplate;
 	}
 	
-	public EtaUserVO getUser(String username) throws ArkSystemException {
-		EtaUserVO userVO = new EtaUserVO();
+	public ArkUserVO getUser(String username) throws ArkSystemException {
+		ArkUserVO userVO = new ArkUserVO();
 		try{
 
 			LdapName ldapName = new LdapName(basePeopleDn);
 			ldapName.add(new Rdn("cn",username));
 			Name nameObj = (Name)ldapName;
-			userVO = (EtaUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());	
+			userVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());	
 		
 		}catch(InvalidNameException ne){
 			
@@ -113,7 +113,7 @@ public class LdapPersonDao implements ILdapPersonDao{
 			
 			DirContextAdapter context = (DirContextAdapter) ctx;
 			
-			EtaUserVO etaUserVO = new EtaUserVO();
+			ArkUserVO etaUserVO = new ArkUserVO();
 			etaUserVO.setUserName(context.getStringAttribute("cn"));
 			etaUserVO.setFirstName(context.getStringAttribute("givenName"));
 			etaUserVO.setLastName(context.getStringAttribute("sn"));
@@ -130,7 +130,7 @@ public class LdapPersonDao implements ILdapPersonDao{
 	 */
 	public List<String> getUserRole(String username) throws ArkSystemException {
 		
-		EtaUserVO  userVO = getUser(username);
+		ArkUserVO  userVO = getUser(username);
 
 		List<ModuleVO> moduleList = new ArrayList<ModuleVO>();
 		userVO.setModules(moduleList);
@@ -169,7 +169,7 @@ public class LdapPersonDao implements ILdapPersonDao{
 		
 	}
 	
-	public void isMemberof(List<ModuleVO> moduleVOlist,EtaUserVO userVO) throws ArkSystemException{
+	public void isMemberof(List<ModuleVO> moduleVOlist,ArkUserVO userVO) throws ArkSystemException{
 		
 		for (ModuleVO moduleVO : moduleVOlist) {
 			isMemberof(moduleVO.getModule(), userVO);
@@ -184,7 +184,7 @@ public class LdapPersonDao implements ILdapPersonDao{
 	 * @param username
 	 * @return
 	 */
-	public void isMemberof(String moduleName, EtaUserVO etaUserVO) throws ArkSystemException{
+	public void isMemberof(String moduleName, ArkUserVO etaUserVO) throws ArkSystemException{
 		/* Given Module Id and Role Name we can determine 1. If the user is a member of the module 2. If he has a particular role*/
 		log.info("\n --- isMemberof = " + moduleName);
 				

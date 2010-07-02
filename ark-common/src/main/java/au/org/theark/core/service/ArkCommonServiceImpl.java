@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 /**
  * The implementation of IArkCommonService. We want to auto-wire and hence use the @Service annotation.
  * 
@@ -29,7 +29,7 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	}
 
 
-	public EtaUserVO getUser(String name) throws ArkSystemException {
+	public ArkUserVO getUser(String name) throws ArkSystemException {
 		return ldapInterface.getUser(name);
 	}
 	
