@@ -17,11 +17,9 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.web.Constants;
 
 
+@SuppressWarnings("serial")
 public class UserForm extends Form<ArkUserVO>{
 	
-	/**
-	 * 
-	 */
 	protected TextField<String> userNameTxtField  =new TextField<String>(Constants.USER_NAME);
 	protected TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 	protected TextField<String> lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
@@ -31,24 +29,22 @@ public class UserForm extends Form<ArkUserVO>{
 	protected PasswordTextField confirmPasswordField = new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected PasswordTextField oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
+
 	protected Button deleteButton;
+
 	public Button getDeleteButton() {
 		return deleteButton;
 	}
-
 
 	public void setDeleteButton(Button deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
-
 	protected WebMarkupContainerWithAssociatedMarkup appRoleAcoAccordion  = new WebMarkupContainerWithAssociatedMarkup("appRoleAccordion");
-	
-	
+
 	public WebMarkupContainerWithAssociatedMarkup getAppRoleAcoAccordion() {
 		return appRoleAcoAccordion;
 	}
-
 
 	public void setAppRoleAcoAccordion(
 			WebMarkupContainerWithAssociatedMarkup appRoleAcoAccordion) {
@@ -88,15 +84,12 @@ public class UserForm extends Form<ArkUserVO>{
 		return confirmPasswordField;
 	}
 	
+	private int mode = 3;
+	
 	public int getMode() {
 		return mode;
 	}
 
-
-	private static final long serialVersionUID = 1L;
-	
-	private int mode = 3;
-	
 	
 	protected  void onSave(ArkUserVO userVO){}
 	protected  void onCancel(){}

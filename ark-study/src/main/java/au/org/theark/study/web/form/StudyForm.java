@@ -9,6 +9,7 @@ import org.apache.wicket.model.StringResourceModel;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.web.Constants;
 
+@SuppressWarnings("serial")
 public class StudyForm extends Form<Study>{
 	
 	TextField<String> studyIdTxtField =new TextField<String>(Constants.STUDY_KEY);
@@ -31,8 +32,8 @@ public class StudyForm extends Form<Study>{
 	public StudyForm(String id, Study study) {
 		
 		super(id, new CompoundPropertyModel<Study>(study));
-		initFormFields();
 		
+		initFormFields();
 		
 		Button saveButton = new Button(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
@@ -42,7 +43,6 @@ public class StudyForm extends Form<Study>{
 			}
 		}; 
 		
-	
 		Button cancelButton = new Button(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
 			public void onSubmit()
@@ -63,6 +63,17 @@ public class StudyForm extends Form<Study>{
 			
 		};
 		
+		add(studyIdTxtField);
+		add(studyNameTxtField);
+		add(studyDescriptionTxtField);
+		add(yearOfCompletionTxtField);
+		add(studyStatusTxtField);
+		add(dateOfApplicationTxtField);
+		add(principalContactPhone);
+		add(principalContactTxtField);
+		add(saveButton);
+		add(cancelButton);
+		add(deleteButton);
 		
 	}
 
