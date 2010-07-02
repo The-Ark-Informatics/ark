@@ -38,7 +38,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
@@ -144,9 +144,9 @@ public class LdapUserDao implements ILdapUserDao{
 	 * If the user exists under a particular role ignore it and continue with the rest of the roles
 	 *
 	 */
-	public void create(EtaUserVO userVO) throws UserNameExistsException, ArkSystemException{
+	public void create(ArkUserVO userVO) throws UserNameExistsException, ArkSystemException{
 		
-		log.info("\n create(EtaUserVO " + userVO + ")");
+		log.info("\n create(ArkUserVO " + userVO + ")");
 		try{
 			
 			DirContextAdapter dirContextAdapter = new DirContextAdapter();
@@ -199,15 +199,15 @@ public class LdapUserDao implements ILdapUserDao{
 	 * getUserAccountInfo - userdetails, applications and roles linked to the user
 	 * Returns the person details of the current user. 
 	 */
-	public EtaUserVO getUser(String username) throws ArkSystemException {
+	public ArkUserVO getUser(String username) throws ArkSystemException {
 		
-		EtaUserVO etaUserVO = null;
+		ArkUserVO etaUserVO = null;
 		log.info("\n getUser ");
 		try{
 			LdapName ldapName = new LdapName(basePeopleDn);
 			ldapName.add(new Rdn("cn",username));
 			Name nameObj = (Name)ldapName;
-			etaUserVO = (EtaUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());	
+			etaUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());	
 			log.info("\n etauserVO " + etaUserVO);
 			
 		}catch(InvalidNameException ne){
@@ -222,9 +222,9 @@ public class LdapUserDao implements ILdapUserDao{
 	 * Fetches a user from LDAP based on username
 	 * Invokes a method isMemberof to populate a list of modules/groups and roles.
 	 */
-	public EtaUserVO getUserRole(String username) throws ArkSystemException {
+	public ArkUserVO getUserRole(String username) throws ArkSystemException {
 		
-		EtaUserVO  userVO = getUser(username);
+		ArkUserVO  userVO = getUser(username);
 
 		List<ModuleVO> moduleList = new ArrayList<ModuleVO>();
 		userVO.setModules(moduleList);
@@ -266,7 +266,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * the method will look up all the applications that have this study name and if a match is found
 	 * will return the list of roles the user is a member of.
 	 */
-	public List<ModuleVO> getUserRoles(EtaUserVO etaUserVO, String studyName) throws ArkSystemException {
+	public List<ModuleVO> getUserRoles(ArkUserVO etaUserVO, String studyName) throws ArkSystemException {
 		
 		
 		List<ModuleVO> userModulesAndRoles = new ArrayList<ModuleVO>(); //The list that will be returned
@@ -341,7 +341,7 @@ public class LdapUserDao implements ILdapUserDao{
 			log.info("\n PersonContext Mapper...");
 			DirContextAdapter context = (DirContextAdapter) ctx;
 			
-			EtaUserVO etaUserVO = new EtaUserVO();
+			ArkUserVO etaUserVO = new ArkUserVO();
 			etaUserVO.setUserName(context.getStringAttribute("cn"));
 			etaUserVO.setFirstName(context.getStringAttribute("givenName"));
 			etaUserVO.setLastName(context.getStringAttribute("sn"));
@@ -472,7 +472,7 @@ public class LdapUserDao implements ILdapUserDao{
 	
 	
 	
-	public void isMemberof(List<ModuleVO> moduleVOlist,EtaUserVO userVO) throws ArkSystemException{
+	public void isMemberof(List<ModuleVO> moduleVOlist,ArkUserVO userVO) throws ArkSystemException{
 		
 		for (ModuleVO moduleVO : moduleVOlist) {
 			log.info("\n Module Name: "+ moduleVO.getModule());
@@ -489,7 +489,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * @param username
 	 * @return
 	 */
-	public void isMemberof(String moduleName, EtaUserVO etaUserVO) throws ArkSystemException{
+	public void isMemberof(String moduleName, ArkUserVO etaUserVO) throws ArkSystemException{
 		/* Given Module Id and Role Name we can determine 1. If the user is a member of the module 2. If he has a particular role*/
 		log.info("\n --- isMemberof = " + moduleName);
 				
@@ -593,11 +593,11 @@ public class LdapUserDao implements ILdapUserDao{
 	 * @return
 	 * @throws InvalidNameException
 	 */
-	public List<EtaUserVO> searchAllUsers(EtaUserVO userCriteriaVO) throws ArkSystemException{
+	public List<ArkUserVO> searchAllUsers(ArkUserVO userCriteriaVO) throws ArkSystemException{
 	
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		List<EtaUserVO> userList = new ArrayList<EtaUserVO>();
+		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
 		
 		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
 			
@@ -664,12 +664,12 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 	}
 	
-	private List<EtaUserVO> searchGroupMembers(EtaUserVO userCriteriaVO, String currentUser) throws ArkSystemException{
+	private List<ArkUserVO> searchGroupMembers(ArkUserVO userCriteriaVO, String currentUser) throws ArkSystemException{
 		log.info("In searchGroupMembers()");
-		List<EtaUserVO> userResultsList = new ArrayList<EtaUserVO>();	
+		List<ArkUserVO> userResultsList = new ArrayList<ArkUserVO>();	
 		try{
 			//The the Modules and Roles the current user is linked to as part of the currentUserDetails
-			EtaUserVO currentUserDetails = getUserRole(currentUser);
+			ArkUserVO currentUserDetails = getUserRole(currentUser);
 			//Get a List of Modules
 			List<ModuleVO> moduleList = currentUserDetails.getModules();
 			ArrayList<String> memberList = new ArrayList<String>();
@@ -709,17 +709,17 @@ public class LdapUserDao implements ILdapUserDao{
 	
 	/**
 	 * Retrieves a sub-set of users from LDAP. The memberCnList List<String> contains 
-	 * the list of userNames or CN, and EtaUserVO acts as a criteria that will be applied when
+	 * the list of userNames or CN, and ArkUserVO acts as a criteria that will be applied when
 	 * looking up the user. Not all users in the memberCnList will be returned, it also depends
 	 * if the criteria matches with the sub-set of users.
 	 * @param memberCnList
 	 * @param userCriteriaVO
 	 * @return
 	 */
-	public List<EtaUserVO> getPersonsByCn(List<String> memberCnList, EtaUserVO userCriteriaVO) {
+	public List<ArkUserVO> getPersonsByCn(List<String> memberCnList, ArkUserVO userCriteriaVO) {
 		
 		if (memberCnList == null || memberCnList.size() < 0) {
-			return new ArrayList<EtaUserVO>();
+			return new ArrayList<ArkUserVO>();
 		}
 
 		AndFilter filter = new AndFilter();
@@ -778,11 +778,11 @@ public class LdapUserDao implements ILdapUserDao{
 		return ldapTemplate.search(getBasePeopleDn(), filter.encode(),new PersonContextMapper());
 	}
 	
-	public List<EtaUserVO> searchUser(EtaUserVO userVO) throws  ArkSystemException{
+	public List<ArkUserVO> searchUser(ArkUserVO userVO) throws  ArkSystemException{
 		
 		String userName = null;
 		//This is only when you want all the users.
-		List<EtaUserVO> userList = new ArrayList<EtaUserVO>();	
+		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();	
 		/**
 		 * Determine  the role of the user and return results based on role
 		 */
@@ -803,7 +803,7 @@ public class LdapUserDao implements ILdapUserDao{
 		return userList;
 	}
 	
-	public void update(EtaUserVO userVO) throws ArkSystemException {
+	public void update(ArkUserVO userVO) throws ArkSystemException {
 		log.info("update() invoked: Updating user details in LDAP");
 		try{
 			//Assuming that all validation is already done update the attributes in LDAP
@@ -845,7 +845,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * @param List<ModuleVO> selectedModuleVOList will contain a list of ModuleVO that contains a list of associated roles the
 	 *                       user has been assigned from the front end.
 	 */
-	public void updateGroupRoles(EtaUserVO etaUserVO) throws ArkSystemException{
+	public void updateGroupRoles(ArkUserVO etaUserVO) throws ArkSystemException{
 		
 		List<ModuleVO> moduleVOListToAdd = new ArrayList<ModuleVO>();
 		List<ModuleVO> moduleVOListToRemove = new ArrayList<ModuleVO>();
@@ -1035,7 +1035,7 @@ public class LdapUserDao implements ILdapUserDao{
 	/**
 	 * 
 	 */
-	public void createStudy(StudyVO studyVO, String applicationName, EtaUserVO etaUserVO) throws ArkSystemException {
+	public void createStudy(StudyVO studyVO, String applicationName, ArkUserVO etaUserVO) throws ArkSystemException {
 
 		try{
 
@@ -1074,7 +1074,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * @param etaUserVO
 	 * @throws ArkSystemException
 	 */
-	private void addUserToStudyMembersList(StudyVO studyVO, String applicationName,EtaUserVO etaUserVO) throws ArkSystemException{
+	private void addUserToStudyMembersList(StudyVO studyVO, String applicationName,ArkUserVO etaUserVO) throws ArkSystemException{
 		try{
 
 			String personPath = buildPersonDN(etaUserVO.getUserName());
@@ -1101,7 +1101,7 @@ public class LdapUserDao implements ILdapUserDao{
 	}
 	
 	
-	private void addUserToRolesMemberList(StudyVO studyVO, String applicationName,  List<RoleVO> roles, EtaUserVO etaUserVO) throws ArkSystemException {
+	private void addUserToRolesMemberList(StudyVO studyVO, String applicationName,  List<RoleVO> roles, ArkUserVO etaUserVO) throws ArkSystemException {
 		
 		try{
 			
@@ -1132,7 +1132,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * The method will add the user as a member of the given Study under the application.
 	 * Will associate the user to the various roles assigned for this study.
 	 */
-	public void addUserToStudy(StudyVO studyVO, String applicationName, List<RoleVO> roles, EtaUserVO etaUserVO) throws ArkSystemException{
+	public void addUserToStudy(StudyVO studyVO, String applicationName, List<RoleVO> roles, ArkUserVO etaUserVO) throws ArkSystemException{
 
 			addUserToStudyMembersList(studyVO, applicationName,etaUserVO);
 			addUserToRolesMemberList(studyVO, applicationName, roles, etaUserVO);
@@ -1143,7 +1143,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * @throws UnAuthorizedOperation 
 	 * 
 	 */
-	public void delete(EtaUserVO etaUserVO) throws ArkSystemException, UnAuthorizedOperation{
+	public void delete(ArkUserVO etaUserVO) throws ArkSystemException, UnAuthorizedOperation{
 		
 		try{
 			/*Logged in user*/
@@ -1229,13 +1229,13 @@ public class LdapUserDao implements ILdapUserDao{
 	
 	/**
 	 * The method that will get a list of roles for a given module and study name and set it on the
-	 * EtaUserVO instance.
+	 * ArkUserVO instance.
 	 * @param etaUserVO
 	 * @param moduleName
 	 * @param studyVO
 	 * @throws ArkSystemException
 	 */
-	private void getUserStudyRole(EtaUserVO etaUserVO, String moduleName, StudyVO studyVO) throws ArkSystemException {
+	private void getUserStudyRole(ArkUserVO etaUserVO, String moduleName, StudyVO studyVO) throws ArkSystemException {
 		
 		String groupBase = "ou=groups";
 		AndFilter moduleFilter = new AndFilter();
@@ -1294,12 +1294,12 @@ public class LdapUserDao implements ILdapUserDao{
 	
 	/**
 	 * The method that builds a list of all studies and associated roles for a given application/module name.
-	 * The EtaUserVO instance's List<ModuleVO> modules is set with the result.
+	 * The ArkUserVO instance's List<ModuleVO> modules is set with the result.
 	 * @param etaUserVO
 	 * @param moduleName
 	 * @throws ArkSystemException 
 	 */
-	private void getUserModuleMembership(EtaUserVO etaUserVO, String moduleName) throws ArkSystemException{
+	private void getUserModuleMembership(ArkUserVO etaUserVO, String moduleName) throws ArkSystemException{
 		
 		String groupBase = "ou=groups";
 		AndFilter moduleFilter = new AndFilter();
