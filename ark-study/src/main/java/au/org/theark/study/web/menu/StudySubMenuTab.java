@@ -14,7 +14,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.core.vo.EtaUserVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
@@ -126,7 +126,7 @@ public class StudySubMenuTab extends Panel {
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
-						panelToReturn = new UserContainer(panelId, new EtaUserVO());//Note the constructor
+						panelToReturn = new UserContainer(panelId, new ArkUserVO());//Note the constructor
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_DETAILS)){
 						panelToReturn = new StudyContainerPanel(panelId);
@@ -145,7 +145,7 @@ public class StudySubMenuTab extends Panel {
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAILS)){
 						
 						Subject currentUser = SecurityUtils.getSubject();
-						panelToReturn = new MyDetailsContainer(panelId,new EtaUserVO(),currentUser );
+						panelToReturn = new MyDetailsContainer(panelId,new ArkUserVO(),currentUser );
 					}
 					
 					
