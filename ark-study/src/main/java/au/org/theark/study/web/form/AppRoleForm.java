@@ -6,11 +6,10 @@ import org.odlabs.wiquery.ui.accordion.Accordion;
 
 import au.org.theark.core.vo.ArkUserVO;
 
-public class AppRoleForm extends Form{
+@SuppressWarnings("serial")
+public class AppRoleForm extends Form<ArkUserVO>{
 
 	protected Accordion accordion;
-	
-	
 	
 	public Accordion getAccordion() {
 		return accordion;
@@ -20,8 +19,8 @@ public class AppRoleForm extends Form{
 		this.accordion = accordion;
 	}
 
-	public AppRoleForm(String id, ArkUserVO etaUserVO) {
-		super(id, new CompoundPropertyModel(etaUserVO));
+	public AppRoleForm(String id, ArkUserVO arkUserVO) {
+		super(id, new CompoundPropertyModel<ArkUserVO>(arkUserVO));
 	
 	}
 
