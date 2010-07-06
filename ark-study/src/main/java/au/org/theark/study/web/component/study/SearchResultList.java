@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.study.model.entity.Study;
 
@@ -33,6 +34,8 @@ public class SearchResultList extends Panel{
 		
 		PageableListView pageableListView = buildPageableListView(studyList, 10);//Rows per page to be in properties file
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		ThemeUiHelper.componentRounded(pageableListView);
+		ThemeUiHelper.componentRounded(pageNavigator);
 		add(pageNavigator);
 		add(pageableListView);
 	}
