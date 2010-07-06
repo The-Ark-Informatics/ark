@@ -38,7 +38,7 @@
 					
 							<!-- Page Login Feedback zone-->
 							<div id="LoginFeedbackZone">
-								<span wicket:id="feedbackMessage" class="feedbackPanelERROR"></span>
+								<span wicket:id="feedbackMessage"></span>
 							</div>
 						</td>
 			
@@ -67,9 +67,9 @@
 										<td width="30%">
 											<form wicket:id="loginForm" >
 												<div class="label" ><wicket:message key="page.label.emailId"></wicket:message></div>
-												<div class="text"><input wicket:id="userName" type="text" class="text"></input></div>
+												<div class="text"><input wicket:id="userName" type="text" ></input></div>
 												<div class="label"><wicket:message key="page.label.passwordTxt"></wicket:message></div>
-												<div class="text"><input wicket:id="password" type="password"></input></div>
+												<div class="text"><input wicket:id="password" type="password" ></input></div>
 												<div class="label"><input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" /></div>
 											</form>
 										</td>
