@@ -129,7 +129,7 @@ public class Search extends Panel {
 			add(studyStatusDpChoices);
 			add(searchButton);
 			add(newButton);
-			add(resetButton);
+			//add(resetButton);
 		}
 		
 		
@@ -177,7 +177,7 @@ public class Search extends Panel {
 				}
 			};
 			
-			resetButton = new Button("resetSearchFormBtn", new StringResourceModel("page.form.reset.button", this, null) ){
+			resetButton = new Button("reset", new StringResourceModel("page.form.reset.button", this, null) ){
 				public void onSubmit(){
 					onReset();
 				}
