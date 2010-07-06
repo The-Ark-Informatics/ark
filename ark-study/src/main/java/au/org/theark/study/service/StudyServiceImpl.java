@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.web.Constants;
 
 @Transactional
@@ -31,5 +32,9 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public List<Study> getStudy(Study study){
 		return studyDao.getStudy(study);
+	}
+	
+	public List<StudyStatus> getListOfStudyStatus(){
+		return studyDao.getListOfStudyStatus();
 	}
 }
