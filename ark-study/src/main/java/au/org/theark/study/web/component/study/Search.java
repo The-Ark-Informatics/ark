@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.study;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -8,22 +9,27 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.odlabs.wiquery.ui.datepicker.DatePicker;
+import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
+@SuppressWarnings("serial")
 public class Search extends Panel {
-	
-	private static final long serialVersionUID = 1L;
 	
 	private SearchResultList searchResults;
 	private Details detailsPanel;
@@ -42,7 +48,8 @@ public class Search extends Panel {
 	}
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService service;
+	private IStudyService studyService;
+	
 	
 	public Search(String id) {
 		
@@ -54,15 +61,10 @@ public class Search extends Panel {
 		
 		// Uses an entirely new VO for the search so each time the search panel is loaded. The values provided will be refreshed.
 		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, new Study(), id){
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(Study study){
 				setDetailsPanelVisible(false);//Set the User Details panel to false/hide it
-				List<Study> resultList = service.getStudy(study);
+				List<Study> resultList = studyService.getStudy(study);
 				if(resultList != null && resultList.size() == 0){
 					this.info("Study with the specified criteria does not exist in the system.");	
 				}
@@ -72,6 +74,15 @@ public class Search extends Panel {
 				remove(searchResults);//Since we already have the panel.We need to partially update the list the panel uses  rather than action it at the panel level
 				searchResults = new SearchResultList("searchResults", resultList,detailsPanel);
 				add(searchResults);
+			}
+			
+			protected void onNew(){
+				
+			}
+			
+			protected void onReset(){
+				//Clear the search form TODO 
+				
 			}
 		};
 
@@ -90,54 +101,66 @@ public class Search extends Panel {
 	
 	public class SearchForm extends Form<Study>{
 
-		private static final long serialVersionUID = 1L;
-		TextField<String> studyIdTxtField =new TextField<String>(Constants.STUDY_KEY);
-		TextField<String> studyNameTxtField = new TextField<String>(Constants.STUDY_NAME);
-		TextField<String> studyStatusTxtField = new TextField<String>(Constants.STUDY_STATUS);
-		TextField<String> dateOfApplicationTxtField = new TextField<String>(Constants.STUDY_DATE_OF_APPLICATION);//Change this to a calendar
-		TextField<String> principalContactTxtField = new TextField<String>(Constants.STUDY_CONTACT);
+		TextField<String> studyIdTxtFld =new TextField<String>(Constants.STUDY_KEY);
+		TextField<String> studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
+		DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>("dateOfApplication");
+		TextField<String> principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT);
+		DropDownChoice<StudyStatus> studyStatusDpChoices;
 		
+		Button searchButton;
+		Button newButton;
+		Button resetButton;
 		
-		private void initFormFields(){
-			//TODO
+		private void decorateComponents(){
+			ThemeUiHelper.componentRounded(studyNameTxtFld);
+			ThemeUiHelper.componentRounded(studyIdTxtFld);
+			ThemeUiHelper.componentRounded(dateOfApplicationDp);
+			ThemeUiHelper.componentRounded(principalContactTxtFld);
+			ThemeUiHelper.buttonRoundedFocused(searchButton);
+			ThemeUiHelper.buttonRounded(newButton);
+			ThemeUiHelper.componentRounded(studyStatusDpChoices);
 		}
 		
+		private void addComponentsToForm(){
+			add(studyIdTxtFld);
+			add(studyNameTxtFld);
+			add(dateOfApplicationDp);
+			add(principalContactTxtFld);
+			add(studyStatusDpChoices);
+			add(searchButton);
+			add(newButton);
+			add(resetButton);
+		}
+		
+		
+		@SuppressWarnings("unchecked")
+		private void initStudyStatusDropDown(Study study){
+			
+			List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
+			ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer("name", "studyStatusKey");
+			PropertyModel propertyModel = new PropertyModel(study, "studyStatus");
+			studyStatusDpChoices = new DropDownChoice("studyChoice",propertyModel,studyStatusList,defaultChoiceRenderer);
+		}
 		
 		public SearchForm(String id, Study study, String panelId){
 
 			super(id, new CompoundPropertyModel<Study>(study));
-			add(studyIdTxtField);
-			add(studyNameTxtField);
-			add(studyStatusTxtField);
-			add(dateOfApplicationTxtField);
-			add(principalContactTxtField);
-			
-			add(new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
-			{
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
 
+			
+			searchButton  = new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
+			{
 				public void onSubmit()
 				{
 					
 					onSearch((Study) getForm().getModelObject());
 				}
-			});
-			
-			add(new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
+			};
+
+			newButton =  new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
 			{
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
 				public void onSubmit()
 				{
-					//Go to Search users page
-					//The mode will be new here
-					Study study = new Study();
-					onNew(study);
+					onNew();
 				}
 				@Override
 				public boolean isVisible(){
@@ -152,21 +175,27 @@ public class Search extends Panel {
 					//if it is a Super or Study admin then make the new available
 					return flag;
 				}
+			};
 			
-			});
+			resetButton = new Button("resetSearchFormBtn", new StringResourceModel("page.form.reset.button", this, null) ){
+				public void onSubmit(){
+					onReset();
+				}
+			};
 			
+			initStudyStatusDropDown(study);
+			decorateComponents();
+			addComponentsToForm();
 
 		}
 		
 		protected void onSearch(Study Study){
-			
 		}
 		
-		protected void onNew(Study study){
-			detailsPanel.setVisible(true);
-			detailsPanel.getStudyForm().setModelObject(study);
-			searchResults.setVisible(false);
+		protected void onNew(){
 		}
+		
+		protected void onReset(){}
 	}
 
 
