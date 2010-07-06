@@ -8,9 +8,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
@@ -21,12 +19,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.time.Duration;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.web.component.FormFeedbackBorder;
 
 public class LoginPage<T> extends WebPage {
 	
@@ -34,26 +31,6 @@ public class LoginPage<T> extends WebPage {
 
 	FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");	
 	
-	String userName;
-	String password;
-	
-	//Validators
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	/**
 	 * Page Constructor
 	 */
@@ -61,83 +38,77 @@ public class LoginPage<T> extends WebPage {
 
 		log.info("LoginPage() constructor");
 		
-		LoginForm form = new LoginForm("loginForm");
+		
 		feedBackPanel.setOutputMarkupId(true);
+		
+		LoginForm form = new LoginForm("loginForm");
 		
 		this.add(form);
 		this.add(feedBackPanel);//Add the Feedback panel to the form
 		
-		//Declare the form components here
-	
-		TextField<String> userNameTxtFld = new TextField<String>("userName");
-		PasswordTextField passwordTxtFld = new PasswordTextField("password");
-		Button subButton =  new Button("submitBtn", new StringResourceModel("submit",form, null));
-		userNameTxtFld.setOutputMarkupId(true);//added now to see if we get the * next to the field.
-		userNameTxtFld.setRequired(true);
-		userNameTxtFld.add( EmailAddressValidator.getInstance());
-		
-		//addWithBorder(form, userNameTxtFld, "userNameBorder");
 		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
-		
-		//Add rest of the forms
-		form.add(userNameTxtFld);
-		form.add(passwordTxtFld);
-		form.add(subButton);
-		
 		//Create an new form object and add it to the Page
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/"+Constants.HOSTED_BY_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model("images/"+Constants.PRODUCT_IMAGE));
-		//ContextImage footerImage = new ContextImage("footerImage", new Model("images/obiba-logo.png"));
+		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
 		
 		 this.add( new Link("resetPasswordLink"){
 			@Override
 			public void onClick() {
-				// TODO Auto-generated method stub
 				setResponsePage(ResetPage.class);
 			}
 		 });
 		 
 		 add(contextHostedByImage);//hosted by image
 		 add(productImage);
-		 //add(footerImage);
+		 
 	}
 	
-	
-	Border addWithBorder(LoginForm form, FormComponent component, String   borderId){
-		//Custom border class with its own mark up
-		FormFeedbackBorder border = new FormFeedbackBorder(borderId);
-		
-		//FormComponentFeedbackBorder border = new FormComponentFeedbackBorder(borderId);
-		border.setOutputMarkupId(true);
-		border.add(component);
-		form.add(border);
-		return border;
-	}
-
 	
 	/**
 	 * The form class that the LoginPage will use to capture input.
 	 */
-	class LoginForm extends StatelessForm<T>{
+	@SuppressWarnings("serial")
+	class LoginForm extends StatelessForm<ArkUserVO>{
 
-		private static final long serialVersionUID = 1L;
-		/* Form Input Wicket Controls */
+		TextField<String> userNameTxtFld = new TextField<String>("userName");
+		PasswordTextField passwordTxtFld = new PasswordTextField("password");	
+		Button subButton;
 		
-		//GeneralBorder border = new GeneralBorder("loginBorder");
-		/* Constructor */
-		public LoginForm(String id) {
-			//Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
- 			super(id, new CompoundPropertyModel(new ArkUserVO()));
+		
+		private void decorateComponents(){
+			ThemeUiHelper.buttonRoundedFocused(subButton);
+			ThemeUiHelper.componentRounded(userNameTxtFld);
+			ThemeUiHelper.componentRounded(passwordTxtFld);
 		}
 		
+		private void addComponentsToForm(){
+			add(userNameTxtFld);
+			add(passwordTxtFld);
+			add(subButton);
+		}
 		
-		@Override
-		public void onSubmit(){
-			ArkUserVO user = (ArkUserVO) getModel().getObject();
-			if(authenticate(user)){
-				setResponsePage(HomePage.class);//Should be a common or index page that can eventually display all the modules ETA,Study Manager, GWAS etc.. and using proper
-				//security to hide/un-hide tabs based on role.Clicking on the Module tabs then should render the Home page for each module with next level of context sensitive sub menus.
-			}
+		/* Constructor */
+		public LoginForm(String id) {
+			
+			//Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
+ 			
+			super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
+			
+			subButton =  new Button("submitBtn", new StringResourceModel("submit",null)){
+			
+				@Override
+				public void onSubmit()
+				{
+					ArkUserVO user = (ArkUserVO)getForm().getModelObject();
+					if(authenticate(user))
+					{
+						setResponsePage(HomePage.class);
+					}
+				}
+			};
+			
+			decorateComponents();
+			addComponentsToForm();
 		}
 		
 		public final boolean authenticate(ArkUserVO user){
@@ -175,6 +146,6 @@ public class LoginPage<T> extends WebPage {
 			return false;
 		}
 		
+		
 	}
-
 }
