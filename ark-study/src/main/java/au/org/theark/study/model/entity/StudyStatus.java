@@ -43,6 +43,11 @@ public class StudyStatus implements java.io.Serializable {
 		this.description = description;
 		this.studies = studies;
 	}
+	
+	public StudyStatus(Long studyStatusKey, String name){
+		this.studyStatusKey = studyStatusKey;
+		this.name = name;
+	}
 
 	// Property accessors
 	@Id
