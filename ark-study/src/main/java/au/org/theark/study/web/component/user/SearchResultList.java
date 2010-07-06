@@ -28,6 +28,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.AppRoleForm;
 import au.org.theark.study.web.form.UserForm;
 
+@SuppressWarnings("serial")
 public class SearchResultList extends Panel{
 
 
@@ -41,33 +42,31 @@ public class SearchResultList extends Panel{
 		super(id);
 		userList = userVOList;
 		detailsPanel = (Details) component;
-		PageableListView pageableUserList = buildUserPageableListView(userList, 10);
+		PageableListView<ArkUserVO> pageableUserList = buildUserPageableListView(userList, 10);
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableUserList);
 		add(pageNavigator);
 		add(pageableUserList);
 		
 	}
 
-
-	
-	@SuppressWarnings("unchecked")
-	public PageableListView buildUserPageableListView(List<ArkUserVO> userVOList, int rowsPerPage){
+	public PageableListView<ArkUserVO> buildUserPageableListView(List<ArkUserVO> userVOList, int rowsPerPage){
 		
-		PageableListView  pageableListView = new PageableListView("userList", userVOList, rowsPerPage){
+		PageableListView<ArkUserVO>  pageableListView = new PageableListView<ArkUserVO>("userList", userVOList, rowsPerPage){
 
 			@Override
-			protected void populateItem(final ListItem item) {
-				ArkUserVO userVO = (ArkUserVO) item.getModelObject();
+			protected void populateItem(final ListItem<ArkUserVO> item) {
+				
+				ArkUserVO arkUserVO =  item.getModelObject();
 
 				Link userNameLink = buildUserNameLink(item, detailsPanel);
 				/* Build the caption for the Link*/
-				Label userNameLinkLabel = new Label("userNameLink", userVO.getUserName());
+				Label userNameLinkLabel = new Label("userNameLink", arkUserVO.getUserName());
 				userNameLink.add(userNameLinkLabel);
 				item.add(userNameLink);
 				
-				item.add(new Label("lastName", userVO.getLastName()));//the ID here must match the ones in mark-up
-				item.add(new Label("firstName", userVO.getFirstName()));
-				item.add(new Label("email", userVO.getEmail()));
+				item.add(new Label("lastName", arkUserVO.getLastName()));//the ID here must match the ones in mark-up
+				item.add(new Label("firstName", arkUserVO.getFirstName()));
+				item.add(new Label("email", arkUserVO.getEmail()));
 				
 				//If we used DataView then can override newItem and return a Wicket Extension module back. EvenorOdd
 				//For a PageableListView we will implement the even odd logic
@@ -84,12 +83,11 @@ public class SearchResultList extends Panel{
 		return pageableListView;
 		
 	}
-	
 
 	@SuppressWarnings("unchecked")
-	private Link buildUserNameLink(final ListItem item, final Component detailsPanel) {
+	private Link buildUserNameLink(final ListItem<ArkUserVO> item, final Component detailsPanel) {
 		
-		final ArkUserVO etaUserVO = (ArkUserVO) item.getModelObject();
+		final ArkUserVO etaUserVO = item.getModelObject();
 
 		return new Link("userName", item.getModel()) {
 			@Override
