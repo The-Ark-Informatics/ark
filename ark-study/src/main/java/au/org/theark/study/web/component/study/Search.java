@@ -80,10 +80,6 @@ public class Search extends Panel {
 				
 			}
 			
-			protected void onReset(){
-				//Clear the search form TODO 
-				
-			}
 		};
 
 		//Add the Form to the Panel. The Form object that will contain the child or UI components that will be part of the search or be affected by the search.
@@ -118,7 +114,9 @@ public class Search extends Panel {
 			ThemeUiHelper.componentRounded(principalContactTxtFld);
 			ThemeUiHelper.buttonRoundedFocused(searchButton);
 			ThemeUiHelper.buttonRounded(newButton);
+			ThemeUiHelper.buttonRounded(resetButton);
 			ThemeUiHelper.componentRounded(studyStatusDpChoices);
+			
 		}
 		
 		private void addComponentsToForm(){
@@ -129,7 +127,7 @@ public class Search extends Panel {
 			add(studyStatusDpChoices);
 			add(searchButton);
 			add(newButton);
-			//add(resetButton);
+			add(resetButton.setDefaultFormProcessing(false));
 		}
 		
 		
@@ -179,14 +177,14 @@ public class Search extends Panel {
 			
 			resetButton = new Button("reset", new StringResourceModel("page.form.reset.button", this, null) ){
 				public void onSubmit(){
-					onReset();
+					clearInput();
+					updateFormComponentModels();
 				}
 			};
 			
 			initStudyStatusDropDown(study);
 			decorateComponents();
 			addComponentsToForm();
-
 		}
 		
 		protected void onSearch(Study Study){
