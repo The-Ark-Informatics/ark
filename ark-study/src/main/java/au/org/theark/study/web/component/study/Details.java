@@ -2,19 +2,15 @@ package au.org.theark.study.web.component.study;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.StudyForm;
 
+@SuppressWarnings("serial")
 public class Details extends Panel{
 
-	private static final long serialVersionUID = 1L;
-
-	//private transient Logger log = LoggerFactory.getLogger(Details.class);
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService service;
@@ -38,30 +34,41 @@ public class Details extends Panel{
 		this.studyForm = studyForm;
 	}
 
-	public Details(String id, Study study, Search searchPanel) {
+	/**
+	 * Constructor
+	 * @param id
+	 * @param study
+	 * @param searchPanel
+	 */
+	public Details(String id, Study study, final Search searchPanel) {
+		
 		super(id);
 		setSearchPanel(searchPanel);
 		
 		studyForm = new StudyForm("studyForm", study){
-			private static final long serialVersionUID = 1L;
-			
-			
-			protected  void onSave(Study study){
+			protected void onSave(Study study){
 				
-				//New
 				try{
 					if(study.getStudyKey() == null){
-						//Validate if all is good then save it
 						service.createStudy(study);
+					}else{
+							//Update
 					}
 				}catch(Exception ex){
-					
+						
 				}
 			}
-			
-			
+		
+			protected void onDelete(Study study){
+				System.out.println("onDelete invoked.");
+			}
+		
+			protected void onCancel(){
+				searchPanel.setDetailsPanelVisible(false);
+			}
 		};
 		
+		add(studyForm); //Add the form to the panel
 	}
 
 }
