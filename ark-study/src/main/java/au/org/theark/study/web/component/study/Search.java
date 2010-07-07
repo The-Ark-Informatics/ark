@@ -116,7 +116,6 @@ public class Search extends Panel {
 			ThemeUiHelper.buttonRounded(newButton);
 			ThemeUiHelper.buttonRounded(resetButton);
 			ThemeUiHelper.componentRounded(studyStatusDpChoices);
-			
 		}
 		
 		private void addComponentsToForm(){
@@ -158,7 +157,7 @@ public class Search extends Panel {
 			{
 				public void onSubmit()
 				{
-					onNew();
+					onNew(new Study());
 				}
 				@Override
 				public boolean isVisible(){
@@ -190,7 +189,10 @@ public class Search extends Panel {
 		protected void onSearch(Study Study){
 		}
 		
-		protected void onNew(){
+		protected void onNew(Study study){
+			detailsPanel.getStudyForm().setModelObject(study);
+			detailsPanel.setVisible(true);
+			searchResults.setVisible(false);
 		}
 		
 		protected void onReset(){}
