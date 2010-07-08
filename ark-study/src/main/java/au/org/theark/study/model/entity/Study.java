@@ -36,13 +36,13 @@ public class Study implements java.io.Serializable {
 	private Long estimatedYearOfCompletion;
 	private String chiefInvestigator;
 	private String coInvestigator;
-	private boolean autoGenerateSubjectKey;
+	private Boolean autoGenerateSubjectKey;
 	private Long subjectKeyStart;
 	private String subjectIdPrefix;
 	private String contactPerson;
 	private String contactPersonPhone;
 	private String ldapGroupName;
-	private boolean autoConsent;
+	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
 	private Set<LinkStudySubstudy> linkStudySubstudiesForStudyKey = new HashSet<LinkStudySubstudy>(
 			0);
@@ -77,10 +77,10 @@ public class Study implements java.io.Serializable {
 	public Study(Long studyKey, StudyStatus studyStatus, String name,
 			String description, Date dateOfApplication,
 			Long estimatedYearOfCompletion, String chiefInvestigator,
-			String coInvestigator, boolean autoGenerateSubjectKey,
+			String coInvestigator, Boolean autoGenerateSubjectKey,
 			Long subjectKeyStart, String subjectIdPrefix, String contactPerson,
 			String contactPersonPhone, String ldapGroupName,
-			boolean autoConsent, String subStudyBiospecimenPrefix,
+			Boolean autoConsent, String subStudyBiospecimenPrefix,
 			Set<LinkStudySubstudy> linkStudySubstudiesForStudyKey,
 			Set<LinkStudyStudysite> linkStudyStudysites,
 			Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds,
@@ -197,11 +197,11 @@ public class Study implements java.io.Serializable {
 	}
 
 	@Column(name = "AUTO_GENERATE_SUBJECT_KEY", precision = 1, scale = 0)
-	public boolean getAutoGenerateSubjectKey() {
+	public Boolean getAutoGenerateSubjectKey() {
 		return this.autoGenerateSubjectKey;
 	}
 
-	public void setAutoGenerateSubjectKey(boolean autoGenerateSubjectKey) {
+	public void setAutoGenerateSubjectKey(Boolean autoGenerateSubjectKey) {
 		this.autoGenerateSubjectKey = autoGenerateSubjectKey;
 	}
 
@@ -251,11 +251,11 @@ public class Study implements java.io.Serializable {
 	}
 
 	@Column(name = "AUTO_CONSENT", precision = 1, scale = 0)
-	public boolean getAutoConsent() {
+	public Boolean getAutoConsent() {
 		return this.autoConsent;
 	}
 
-	public void setAutoConsent(boolean autoConsent) {
+	public void setAutoConsent(Boolean autoConsent) {
 		this.autoConsent = autoConsent;
 	}
 
