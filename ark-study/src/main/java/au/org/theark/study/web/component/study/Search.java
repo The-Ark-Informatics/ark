@@ -34,7 +34,6 @@ public class Search extends Panel {
 	private SearchResultList searchResults;
 	private Details detailsPanel;
 	private FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
-
 	public SearchResultList getSearchResults() {
 		return searchResults;
 	}
@@ -102,7 +101,6 @@ public class Search extends Panel {
 		DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>("dateOfApplication");
 		TextField<String> principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT);
 		DropDownChoice<StudyStatus> studyStatusDpChoices;
-		
 		Button searchButton;
 		Button newButton;
 		Button resetButton;
@@ -116,6 +114,7 @@ public class Search extends Panel {
 			ThemeUiHelper.buttonRounded(newButton);
 			ThemeUiHelper.buttonRounded(resetButton);
 			ThemeUiHelper.componentRounded(studyStatusDpChoices);
+			
 		}
 		
 		private void addComponentsToForm(){
@@ -191,13 +190,12 @@ public class Search extends Panel {
 		
 		protected void onNew(Study study){
 			detailsPanel.getStudyForm().setModelObject(study);
+			detailsPanel.getStudyForm().getStudyIdTxtFld().setEnabled(false);
 			detailsPanel.setVisible(true);
 			searchResults.setVisible(false);
 		}
 		
 		protected void onReset(){}
 	}
-
-
 
 }
