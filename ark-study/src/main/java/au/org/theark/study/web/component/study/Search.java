@@ -27,6 +27,7 @@ import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.form.StudyForm;
 
 @SuppressWarnings("serial")
 public class Search extends Panel {
@@ -74,11 +75,6 @@ public class Search extends Panel {
 				searchResults = new SearchResultList("searchResults", resultList,detailsPanel);
 				add(searchResults);
 			}
-			
-			protected void onNew(){
-				
-			}
-			
 		};
 
 		//Add the Form to the Panel. The Form object that will contain the child or UI components that will be part of the search or be affected by the search.
@@ -156,7 +152,7 @@ public class Search extends Panel {
 			{
 				public void onSubmit()
 				{
-					onNew(new Study());
+					onNew();
 				}
 				@Override
 				public boolean isVisible(){
@@ -188,9 +184,12 @@ public class Search extends Panel {
 		protected void onSearch(Study Study){
 		}
 		
-		protected void onNew(Study study){
-			detailsPanel.getStudyForm().setModelObject(study);
-			detailsPanel.getStudyForm().getStudyIdTxtFld().setEnabled(false);
+		protected void onNew(){
+			StudyForm form = detailsPanel.getStudyForm();
+			form.clearInput();
+			//StudyForm studyForm = new StudyForm("studyForm", new Study());
+			form.getStudyIdTxtFld().setEnabled(false);
+			detailsPanel.setStudyForm(form);
 			detailsPanel.setVisible(true);
 			searchResults.setVisible(false);
 		}
