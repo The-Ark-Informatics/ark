@@ -152,6 +152,7 @@ public class Search extends Panel {
 			{
 				public void onSubmit()
 				{
+					
 					onNew();
 				}
 				@Override
@@ -186,7 +187,15 @@ public class Search extends Panel {
 		
 		protected void onNew(){
 			StudyForm form = detailsPanel.getStudyForm();
-			form.clearInput();
+			Study study = (Study)form.getModelObject();
+			
+			if(study != null  && study.getStudyKey() != null && study.getStudyKey().longValue() > 0){
+				study = null;
+				study = new Study();
+				form.setModelObject(study);
+				form.clearInput();
+			}
+			
 			//StudyForm studyForm = new StudyForm("studyForm", new Study());
 			form.getStudyIdTxtFld().setEnabled(false);
 			detailsPanel.setStudyForm(form);
