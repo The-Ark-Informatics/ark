@@ -75,9 +75,13 @@ public class Constants {
 	public static final String SUBJECT_ID_PREFIX = "subjectIdPrefix";
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
 	public static final String STUDY_ATUO_CONSENT="autoConsent";
-	public static final String STUDY_SUB_BIOSPECIMENT_PREFIX="subStudyBiospecimenPrefix";
+	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="subStudyBiospecimenPrefix";
 	public static final String STUDY_MAIN_TAB="Study";
-	
+	public static final String STUDY_STATUS_KEY="studyStatusKey";
+	public static final String STUDY_DROP_DOWN_CHOICE ="studyChoice";
+	public static final String YES="Yes";
+	public static final String NO="No";
+	public static final String NAME ="name";
 	public static final String MY_DETAILS_PANEL ="myDetailsPanel";
 	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
 	
