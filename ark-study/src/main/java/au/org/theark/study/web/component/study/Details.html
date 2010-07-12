@@ -212,15 +212,16 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="subjectIdPrefix">
-						<wicket:message	key="study.subjectid.prefix">SubjectID Prefix:</wicket:message>
+					<label for="autoConsentSubject">
+						<wicket:message	key="study.autoconsent.subjects">Auto consent:</wicket:message>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
-				<div class="label">
-					<input wicket:id="subjectIdPrefix" type="text"/>
-				</div>
+				<span wicket:id="autoConsent">
+					<input type="radio">Yes</input>
+				  	<input type="radio">No</input>
+				</span>
 			</div>
 			
 			<div id="searchPanelContentRight">&nbsp;</div>
@@ -228,7 +229,71 @@
 			<div id="searchPanelBreaker">&nbsp;</div>
 			<!--  Row 6 Ends -->
 		
-			<!--  Row7 Action Buttons -->
+			<!--  Row 7 Subject Key Start At & Auto Consent -->
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="subjectIdStartAt">
+						<wicket:message	key="study.subjectid.start.at">Start Subject ID at:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="text">
+					<input wicket:id="subjectKeyStart" type="text"/>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			<div id="fldLabel">
+				<label for="subjectIdPrefix">
+					<wicket:message	key="study.subjectid.prefix">SubjectID Prefix:</wicket:message>
+				</label>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="subjectIdPrefix" type="text"/>
+				</div>
+			</div>
+			<div id="searchPanelContentRight">&nbsp;</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+			<!--  Row 7 Ends -->
+			
+			<!--  Row 8 Sub Study Prefix -->
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="substudyPrefix">
+						<wicket:message	key="study.biospecimen.prefix">Biospecimen Prefix:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="text">
+					<input wicket:id="subStudyBiospecimenPrefix" type="text"/>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				&nbsp;
+			</div>
+			<div id="fldControl">
+				&nbsp;				
+			</div>
+			<div id="searchPanelContentRight">&nbsp;</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+			<!--  Row 7 Ends -->
+		
+		
+			<!--  Row 8 Action Buttons -->
 			
 			<div id="panelContentLeft">&nbsp;</div>
 			
