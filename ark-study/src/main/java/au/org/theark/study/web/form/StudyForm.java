@@ -4,21 +4,28 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.util.UIHelper;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.IStudyService;
@@ -41,12 +48,17 @@ public class StudyForm extends Form<Study>{
 	TextField<String> subjectIdPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
 	TextField<String> subjectIdStartAtTxtFld = new TextField<String>(Constants.SUBJECT_KEY_START);
 	TextField<String> bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
+	
 	DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
-	
 	DropDownChoice<StudyStatus> studyStatusDpChoices;
-	
 	RadioChoice<Boolean> autoGenSubIdRdChoice;
 	RadioChoice<Boolean> autoConsentRdChoice;
+
+	WebMarkupContainer listMultipleChoiceContainer;//A container that will house the ListMultipleChoice controls
+	ListMultipleChoice<String> availableApplicationsLmc;
+	ListMultipleChoice selectedApplicationsLmc;
+	AjaxButton addButton;
+	AjaxButton removeButton;
 	
 	Button saveButton;
 	Button cancelButton;
@@ -93,6 +105,7 @@ public class StudyForm extends Form<Study>{
 		initStudyStatusDropDown(study);
 		autoGenSubIdRdChoice = initRadioButtonChoice(study,Constants.STUDY_AUTO_GENERATE_SUBJECT_KEY,"autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(study,Constants.STUDY_ATUO_CONSENT,"autoConsent");
+		listMultipleChoiceContainer = initLMCContainer();
 	}
 	
 	private void decorateComponents(){
@@ -109,6 +122,10 @@ public class StudyForm extends Form<Study>{
 		ThemeUiHelper.componentRounded(subjectIdPrefixTxtFld);
 		ThemeUiHelper.componentRounded(subjectIdStartAtTxtFld);
 		ThemeUiHelper.componentRounded(bioSpecimenPrefixTxtFld);
+		ThemeUiHelper.componentRounded(availableApplicationsLmc);
+		ThemeUiHelper.componentRounded(selectedApplicationsLmc);
+		ThemeUiHelper.buttonRounded(addButton);
+		ThemeUiHelper.buttonRounded(removeButton);
 		ThemeUiHelper.buttonRounded(saveButton);
 		ThemeUiHelper.buttonRounded(cancelButton);
 		ThemeUiHelper.buttonRounded(deleteButton);
@@ -130,6 +147,7 @@ public class StudyForm extends Form<Study>{
 		add(bioSpecimenPrefixTxtFld);
 		add(autoGenSubIdRdChoice);
 		add(autoConsentRdChoice);
+		add(listMultipleChoiceContainer);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 		add(deleteButton);
@@ -187,5 +205,75 @@ public class StudyForm extends Form<Study>{
 		addComponents();
 		
 	}
+	
+	private WebMarkupContainer initLMCContainer(){
+		
+		listMultipleChoiceContainer = new WebMarkupContainer(Constants.LMC_AJAX_CONTAINER);
+		listMultipleChoiceContainer.setOutputMarkupId(true);	//Ensures that the html markup for components under this container are all refreshed along with their current state.
+		
+		/*Initialise the selected application List first*/
+		List<String> selectedApps = new ArrayList<String>();
+		selectedApps.add("Ark");
+		selectedApplicationsLmc = new ListMultipleChoice(Constants.LMC_SELECTED_APPS, new Model(), selectedApps);
+		
+		
+		/*Initialise the available application list*/
+		List<String> availableApps = new ArrayList<String>();
+		availableApps.add("Ark");
+		availableApps.add("Genotypic");;
+		availableApps.add("Phenotypic");
+		
+		availableApplicationsLmc = new ListMultipleChoice<String>(Constants.LMC_AVAILABLE_APPS, new Model(), availableApps);
+		
+		//Attach a Ajax Behavior to update the Selected Applications control
+		availableApplicationsLmc.add( new AjaxFormComponentUpdatingBehavior("ondblclick") {
+			
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				List<String> selectedItems = (List<String>) availableApplicationsLmc.getModelObject();
+				UIHelper.addSelectedItems(selectedItems, selectedApplicationsLmc);
+				target.addComponent(listMultipleChoiceContainer);
+			}
+		});
+		
+		addButton = initialiseAddButton(listMultipleChoiceContainer,availableApplicationsLmc,selectedApplicationsLmc);
+		removeButton = initialiseRemoveButton(listMultipleChoiceContainer,selectedApplicationsLmc);
+		
+		listMultipleChoiceContainer.add(selectedApplicationsLmc);
+		listMultipleChoiceContainer.add(availableApplicationsLmc);
+		listMultipleChoiceContainer.add(addButton);
+		listMultipleChoiceContainer.add(removeButton);
+		return listMultipleChoiceContainer;
+	}
+	
+	private AjaxButton initialiseAddButton(final WebMarkupContainer container, final ListMultipleChoice availableAppsLMC, final ListMultipleChoice targetMLC){
+		
+		addButton = new AjaxButton(Constants.ADD_SELECTED){
+				@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				List<String> selectedChoice = new ArrayList<String>();
+				//Get the items selected from the control's MODEL
+				selectedChoice = (List<String>)availableAppsLMC.getModelObject();
+				UIHelper.addSelectedItems(selectedChoice, targetMLC);
+				target.addComponent(container);
+			}
+		};
+		addButton.setModel(new StringResourceModel("addSelectedTxt",this,null));
+		return addButton;
+	}
+	
+	private AjaxButton initialiseRemoveButton(final WebMarkupContainer container, final ListMultipleChoice targetMLC){
+		
+		removeButton = new AjaxButton(Constants.REMOVE_SELECTED_BUTTON){
+			@Override
+			protected void onSubmit(AjaxRequestTarget requestTarget, Form<?> arg1) {
+				List<String> selectedItems = (List<String>)targetMLC.getChoices();
+				targetMLC.getChoices().remove(selectedItems);
+				requestTarget.addComponent(container);
+			}
+		};
+		removeButton.setModel(new StringResourceModel("removeSelectedTxt",this,null));
+		return removeButton;
+	}	
 
 }
