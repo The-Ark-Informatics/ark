@@ -263,7 +263,6 @@
 			<!--  Row 7 Ends -->
 			
 			<!--  Row 8 Sub Study Prefix -->
-			
 			<div id="panelContentLeft">&nbsp;</div>
 			
 			<div id="fldLabel">
@@ -290,7 +289,47 @@
 			<div id="searchPanelContentRight">&nbsp;</div>
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
-			<!--  Row 7 Ends -->
+			<!--  Row 8 Ends -->
+			
+			<!--  Row 9 Sub Study Prefix -->
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="availableApplication">
+						<wicket:message	key="study.available.applications">Available Applications:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+			   <div wicket:id="lmcAjaxContainer">
+				<div class="text">
+					<select wicket:id="lmcAvailableApps" multiple="multiple">
+						<option>[Values will be inserted here]</option>
+					</select>
+					<input wicket:id="addSelected" type="submit" value="Add"></input>&nbsp;
+					<input wicket:id="removeSelected" type="submit" value="Remove"></input>
+					<select wicket:id="lmcSelectedApps" multiple="multiple">
+						<option>[Values will be inserted here]</option>
+					</select>
+				</div>
+			   </div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				&nbsp;
+			</div>
+			<div id="fldControl">
+				&nbsp;				
+			</div>
+			<div id="searchPanelContentRight">&nbsp;</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+			<!--  Row 9 Ends -->
+			
+			
 		
 		
 			<!--  Row 8 Action Buttons -->
