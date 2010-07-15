@@ -1,6 +1,7 @@
 package au.org.theark.study.web.form;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -58,7 +59,10 @@ public class StudyForm extends Form<Study>{
 	ListMultipleChoice<String> availableApplicationsLmc;
 	ListMultipleChoice selectedApplicationsLmc;
 	AjaxButton addButton;
+	AjaxButton addAllButton;
 	AjaxButton removeButton;
+	AjaxButton removeAllButton;
+	
 	
 	Button saveButton;
 	Button cancelButton;
@@ -125,7 +129,9 @@ public class StudyForm extends Form<Study>{
 		ThemeUiHelper.componentRounded(availableApplicationsLmc);
 		ThemeUiHelper.componentRounded(selectedApplicationsLmc);
 		ThemeUiHelper.buttonRounded(addButton);
+		ThemeUiHelper.buttonRounded(addAllButton);
 		ThemeUiHelper.buttonRounded(removeButton);
+		ThemeUiHelper.buttonRounded(removeAllButton);
 		ThemeUiHelper.buttonRounded(saveButton);
 		ThemeUiHelper.buttonRounded(cancelButton);
 		ThemeUiHelper.buttonRounded(deleteButton);
@@ -213,9 +219,7 @@ public class StudyForm extends Form<Study>{
 		
 		/*Initialise the selected application List first*/
 		List<String> selectedApps = new ArrayList<String>();
-		selectedApps.add("Ark");
-		selectedApplicationsLmc = new ListMultipleChoice(Constants.LMC_SELECTED_APPS, new Model(), selectedApps);
-		
+		selectedApplicationsLmc = new ListMultipleChoice<String>(Constants.LMC_SELECTED_APPS, new Model(), selectedApps);
 		
 		/*Initialise the available application list*/
 		List<String> availableApps = new ArrayList<String>();
@@ -236,44 +240,70 @@ public class StudyForm extends Form<Study>{
 			}
 		});
 		
-		addButton = initialiseAddButton(listMultipleChoiceContainer,availableApplicationsLmc,selectedApplicationsLmc);
-		removeButton = initialiseRemoveButton(listMultipleChoiceContainer,selectedApplicationsLmc);
+		addButton = initialiseAddButton(	listMultipleChoiceContainer, availableApplicationsLmc,
+											selectedApplicationsLmc, Constants.ADD_SELECTED, 
+											addButton,	Constants.ACTION_ADD_SELECTED);
+		
+		addAllButton = initialiseAddButton(	listMultipleChoiceContainer, availableApplicationsLmc,
+											selectedApplicationsLmc,	Constants.ADD_ALL_BUTTON,
+											addAllButton,	Constants.ACTION_ADD_ALL);
+		
+		removeButton = initialiseRemoveButton(	listMultipleChoiceContainer,selectedApplicationsLmc,
+												Constants.REMOVE_SELECTED_BUTTON,removeButton,
+												Constants.ACTION_REMOVE_SELECTED);
+		
+		removeAllButton = initialiseRemoveButton(	listMultipleChoiceContainer,	selectedApplicationsLmc,
+													Constants.REMOVE_ALL_BUTTON,removeAllButton,
+													Constants.ACTION_REMOVE_ALL);
 		
 		listMultipleChoiceContainer.add(selectedApplicationsLmc);
 		listMultipleChoiceContainer.add(availableApplicationsLmc);
 		listMultipleChoiceContainer.add(addButton);
+		listMultipleChoiceContainer.add(addAllButton);
 		listMultipleChoiceContainer.add(removeButton);
+		listMultipleChoiceContainer.add(removeAllButton);
 		return listMultipleChoiceContainer;
 	}
 	
-	private AjaxButton initialiseAddButton(final WebMarkupContainer container, final ListMultipleChoice availableAppsLMC, final ListMultipleChoice targetMLC){
+	private AjaxButton initialiseAddButton(final WebMarkupContainer container, final ListMultipleChoice<String> availableAppsLMC, final ListMultipleChoice<String> targetMLC, String buttonId, Button button, final String action){
 		
-		addButton = new AjaxButton(Constants.ADD_SELECTED){
+		button =(AjaxButton) new AjaxButton(buttonId){
 				@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				List<String> selectedChoice = new ArrayList<String>();
 				//Get the items selected from the control's MODEL
-				selectedChoice = (List<String>)availableAppsLMC.getModelObject();
+				if(action.equalsIgnoreCase(Constants.ACTION_ADD_SELECTED)){
+					selectedChoice = (List<String>)availableAppsLMC.getModelObject();	
+				}else{
+					selectedChoice = (List<String>)availableAppsLMC.getChoices();
+				}
 				UIHelper.addSelectedItems(selectedChoice, targetMLC);
 				target.addComponent(container);
 			}
 		};
-		addButton.setModel(new StringResourceModel("addSelectedTxt",this,null));
-		return addButton;
+		button.setModel(new StringResourceModel("addSelectedTxt",this,null));
+		return (AjaxButton)button;
 	}
 	
-	private AjaxButton initialiseRemoveButton(final WebMarkupContainer container, final ListMultipleChoice targetMLC){
+	
+	private AjaxButton initialiseRemoveButton(final WebMarkupContainer container, final ListMultipleChoice<String> targetMLC, String buttonId, Button button, final String action){
 		
-		removeButton = new AjaxButton(Constants.REMOVE_SELECTED_BUTTON){
+		button = (AjaxButton)new AjaxButton(buttonId){
 			@Override
 			protected void onSubmit(AjaxRequestTarget requestTarget, Form<?> arg1) {
-				List<String> selectedItems = (List<String>)targetMLC.getChoices();
-				targetMLC.getChoices().remove(selectedItems);
+				List<String> selectedItems = new ArrayList<String>(); 
+				if(action.equalsIgnoreCase(Constants.ACTION_REMOVE_SELECTED)){
+					selectedItems = (List<String>) targetMLC.getModelObject();
+					targetMLC.getChoices().removeAll(selectedItems);
+				}else{
+					selectedItems =(List<String>)targetMLC.getChoices();
+					targetMLC.getChoices().removeAll(selectedItems);
+				}
 				requestTarget.addComponent(container);
 			}
 		};
-		removeButton.setModel(new StringResourceModel("removeSelectedTxt",this,null));
-		return removeButton;
+		button.setModel(new StringResourceModel("removeSelectedTxt",this,null));
+		return(AjaxButton) button;
 	}	
 
 }
