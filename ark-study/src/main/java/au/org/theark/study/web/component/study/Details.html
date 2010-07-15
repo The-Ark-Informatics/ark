@@ -290,49 +290,107 @@
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
 			<!--  Row 8 Ends -->
-			
-			<!--  Row 9 Sub Study Prefix -->
+	
+			<!--  Row 9 Multi select control Top level labels -->
 			<div id="panelContentLeft">&nbsp;</div>
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="availableApplication">
-						<wicket:message	key="study.available.applications">Available Applications:</wicket:message>
+					<label for="applications">
+						&nbsp;
 					</label>
 				</div>
 			</div>
+			<!--  <div id="fldC1">
+				
+			</div>-->
 			<div id="fldControl">
-			   <div wicket:id="lmcAjaxContainer">
-				<div class="text">
-					<select wicket:id="lmcAvailableApps" multiple="multiple">
-						<option>[Values will be inserted here]</option>
-					</select>
-					<input wicket:id="addSelected" type="submit" value="Add"></input>&nbsp;
-					<input wicket:id="removeSelected" type="submit" value="Remove"></input>
-					<select wicket:id="lmcSelectedApps" multiple="multiple">
+				Available Applications
+			</div>
+			<div id="panelMargin">&nbsp;</div>
+			<div id="fldLabel">
+				<div class="label">
+					Selected Applications
+				</div>
+			</div>
+			<div id="fldControl">
+				&nbsp;
+			</div>
+			<!--  			
+			<div id="fldLabelAndCtrl">
+				&nbsp;
+			</div>
+			-->
+			<div id="searchPanelContentRight">&nbsp;</div>
+
+			<!--  Row 9 Multi select Controls -->
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div wicket:id="lmcAjaxContainer">
+				<div id="fldLabel">
+					<div class="label">
+						<label for="LinkStudy2Application">
+							Link Study with:
+						</label>
+					</div>
+				</div>
+			
+				<div id="fldControl">
+					<select wicket:id="lmcAvailableApps" multiple="multiple" size="5" style="width:80%">
 						<option>[Values will be inserted here]</option>
 					</select>
 				</div>
-			   </div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+			
+				<div class="label">
+					<label for="LinkStudy2Application">
+						&nbsp;
+					</label>
+				</div>
+			
+				<div id="fldControl">
+						<select wicket:id="lmcSelectedApps" multiple="multiple"size="5" style="width:80%">
+							<option>[Values will be inserted here]</option>
+						</select>
+				</div>
+				<div id="searchPanelContentRight">&nbsp;</div>				
+
+				<div id="searchPanelBreaker">&nbsp;</div>
+
+				<div id="panelContentLeft">&nbsp;</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="applications">
+							&nbsp;
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<input wicket:id="addSelectedBtn" 	type="submit" value="Add"></input>&nbsp;
+					<input wicket:id="addAllBtn" 	type="submit" value="Add All"></input>
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="applications">
+							&nbsp;
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<input wicket:id="removeSelectedBtn" type="submit" value="Remove"></input>&nbsp;
+					<input wicket:id="removeAllBtn" type="submit" value="Remove All"></input>
+				</div>
+				<div id="searchPanelContentRight">&nbsp;</div>
 			</div>
 			
-			<div id="panelMargin">&nbsp;</div>
-			
-			<div id="fldLabel">
-				&nbsp;
-			</div>
-			<div id="fldControl">
-				&nbsp;				
-			</div>
-			<div id="searchPanelContentRight">&nbsp;</div>
-			
-			<div id="searchPanelBreaker">&nbsp;</div>
-			<!--  Row 9 Ends -->
-			
-			
-		
-		
-			<!--  Row 8 Action Buttons -->
+	
+			<!--  Row 10 Action Buttons -->
 			
 			<div id="panelContentLeft">&nbsp;</div>
 			
@@ -345,8 +403,9 @@
 					<div id="panelMargin">&nbsp;</div>
 					<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
 					<div id="panelMargin">&nbsp;</div>
-					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" /></div>
+					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 				</div>
 			</div>
+		</div>
 	</form>
 </wicket:panel>
