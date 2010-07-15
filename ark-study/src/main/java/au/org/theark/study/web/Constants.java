@@ -43,9 +43,9 @@ public class Constants {
 	
 	/*Buttons*/
 	public static final String ADD_ALL_BUTTON ="addAllBtn";
-	public static final String ADD_SELECTED="addSelected";
-	public static final String REMOE_ALL_BUTTON ="removeAllBtn";	
-	public static final String REMOVE_SELECTED_BUTTON="removeSelected";
+	public static final String ADD_SELECTED="addSelectedBtn";
+	public static final String REMOVE_ALL_BUTTON ="removeAllBtn";	
+	public static final String REMOVE_SELECTED_BUTTON="removeSelectedBtn";
 	/*Accordion Constants*/
 	public static final String ACCORDION ="accordion";
 	public static final String ACCORDION_SECTION ="accordionSection";
@@ -90,6 +90,11 @@ public class Constants {
 	/*Spring Bean names*/
 	public static final String STUDY_SERVICE= "studyService";
 	public static final String STUDY_DAO ="studyDao";
+	
+	public static final String ACTION_ADD_SELECTED="addSelected";
+	public static final String ACTION_ADD_ALL="addAll";
+	public static final String ACTION_REMOVE_SELECTED="removeSelected";
+	public static final String ACTION_REMOVE_ALL="removeAll";
 	
 			 
 }
