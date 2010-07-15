@@ -120,6 +120,7 @@ public class SearchResultList extends Panel{
 				etaUserVO.setMode(Constants.MODE_EDIT);
 				userForm.setModelObject(etaUserVO);
 				userDetailsPanel.setVisible(true);
+				userDetailsPanel.getUserForm().getUserNameTxtField().setEnabled(false);
 				//Create the Details.
 				//Gain access to the existing accordion control in UserForm
 				AppRoleAccordion appRoleAccordion = (AppRoleAccordion) userForm.get("appRoleAccordion");
