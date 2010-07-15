@@ -196,7 +196,7 @@ public class AppRoleAccordion extends Panel{
 		AjaxButton ajaxButton = new AjaxButton(Constants.REMOVE_SELECTED_BUTTON){
 			@Override
 			protected void onSubmit(AjaxRequestTarget requestTarget, Form<?> arg1) {
-				List<String> selectedItems = (List<String>)targetMLC.getChoices();
+				List<String> selectedItems = (List<String>) targetMLC.getModelObject();
 				targetMLC.getChoices().removeAll(selectedItems);
 				requestTarget.addComponent(container);
 			}
@@ -239,7 +239,7 @@ public class AppRoleAccordion extends Panel{
 	
 	private AjaxButton initialiseRemoveAllButton(Form form, final ListMultipleChoice selectedRolesLMC, final WebMarkupContainer container){
 		
-		AjaxButton removeAllAjaxButton = new AjaxButton(Constants.REMOE_ALL_BUTTON, form){
+		AjaxButton removeAllAjaxButton = new AjaxButton(Constants.REMOVE_ALL_BUTTON, form){
 			
 			private static final long serialVersionUID = 1L;
 
@@ -258,7 +258,7 @@ public class AppRoleAccordion extends Panel{
 			}
 		};
 		
-		removeAllAjaxButton.setModel(new StringResourceModel(Constants.REMOE_ALL_BUTTON,form,null));
+		removeAllAjaxButton.setModel(new StringResourceModel(Constants.REMOVE_ALL_BUTTON,form,null));
 		return removeAllAjaxButton;
 		
 	}
