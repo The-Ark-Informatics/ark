@@ -24,7 +24,11 @@ public class UIHelper {
 			
 			ldapRoleName = Constants.ROLE_STUDY_ADMIN;
 		
-		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_ORDINARY_USER)){
+		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_SUPER_ADMIN)){
+
+			ldapRoleName = Constants.ROLE_SUPER_ADMIN;
+		}
+		else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_ORDINARY_USER)){
 		
 			ldapRoleName = Constants.ROLE_ORDINARY_USER;
 		
@@ -69,6 +73,9 @@ public class UIHelper {
 		}else if(roleName.equalsIgnoreCase(Constants.ROLE_WADB_PERSON)){
 			
 			displayName = Constants.DISPLAY_ROLE_WADB_PERSON;
+		}else if(roleName.equalsIgnoreCase(Constants.ROLE_SUPER_ADMIN)){
+	
+			displayName = Constants.DISPLAY_ROLE_SUPER_ADMIN;
 		}
 		
 		return displayName;
@@ -103,6 +110,14 @@ public class UIHelper {
 		}
 	}
 	
+	public static void getDisplayModuleNameList(List<ModuleVO> moduleVoList,List<String> listOfModuleName){
+		for(ModuleVO module: moduleVoList){
+			listOfModuleName.add(getDisplayModuleName(module.getModule()));
+		}
+	}
+	
+	
+	
 	public static String getSystemModuleName(String moduleName){
 		
 		if(moduleName.equals(Constants.DISP_MODULE_ARK)){
@@ -130,6 +145,12 @@ public class UIHelper {
 			if(!targetMLC.getChoices().contains(item)){
 				targetMLC.getChoices().add(item);
 			}
+		}
+	}
+	
+	public static void removeSelectedItems(List<String> selectedItemsToRemove, ListMultipleChoice targetMLC){
+		for (String item : selectedItemsToRemove) {
+				targetMLC.getChoices().remove(item);
 		}
 	}
 	
