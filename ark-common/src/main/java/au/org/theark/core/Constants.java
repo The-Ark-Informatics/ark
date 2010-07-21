@@ -10,8 +10,10 @@ public class Constants {
 	public static final String DISPLAY_ROLE_LAB_PERSON="Lab Person";
 	public static final String DISPLAY_ROLE_WADB_ADMNIN="WADB Admin";
 	public static final String DISPLAY_ROLE_WADB_PERSON="WADB Person";
+	public static final String DISPLAY_ROLE_SUPER_ADMIN="Super Admin";
 	
 	public static final String ROLE_STUDY_ADMIN="study_administrator";
+	public static final String ROLE_SUPER_ADMIN="super_administrator";
 	public static final String ROLE_ORDINARY_USER="ordinary_user";
 	public static final String ROLE_POWER_USER ="power_user";
 	public static final String ROLE_LAB_PERSON="lab_person";
@@ -31,6 +33,7 @@ public class Constants {
 	public static final String MODULE_WAGER_LAB="wager_lab";
 	public static final String MODULE_GWAS ="gwas";
 	public static final String MODULE_DATA_ANALYSIS ="data_analysis";
+	
 			 
 	/*Common Service Names */
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
