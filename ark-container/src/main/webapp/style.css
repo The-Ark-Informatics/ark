@@ -71,11 +71,15 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	font-weight: bold;
 }
 
-#multiSelect {
-	float: left;
-	background-color: #F2F2FA;
-	width: 30%;
-	height: 10%;
+#lmcarea{
+	background-color:#FF0000;
+	width: 100%;
+	height: 5%;
+	float:left;
+}
+#listmultiSelect {
+	width:80%;
+	height:5%;
 }
 
 #multiSelectBr {
@@ -262,7 +266,8 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 
 #panelMargin {
 	float: left;
-	width: 5%;
+	width: 10%;
+	height: 5%;
 }
 
 #fldLabel {
@@ -273,9 +278,24 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 
 #fldControl {
 	float: left;
-	width: 20%;
+	width: 25%;
 	height: 5%;
 }
+
+#multiSelect{
+}
+
+#fldC1{
+	float: left;
+	width: 35%;
+	height: 5%;
+}
+#fldLabelAndCtrl{
+	float: left;
+	width: 35%;
+	height: 5%;
+}
+
 
 #userContainerPanel {
 	background-color: #E7E4C1;
