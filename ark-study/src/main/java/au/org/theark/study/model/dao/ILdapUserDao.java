@@ -5,6 +5,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.vo.ArkUserVO;
@@ -75,14 +76,16 @@ public interface ILdapUserDao {
 	 * @return
 	 */
 	public List<ArkUserVO> searchUser(ArkUserVO userVO) throws  ArkSystemException;
-	
 	/**
-	 * Interface that creates an LDAP entry for a Study.
-	 * @param studyVO
-	 * @throws InvalidNameException
+	 * Create a new Study (group) for each of the given applications.
+	 * The method is responsible to get a list of pre-defined roles for each application and add them to the study group.
+	 * The default member of the new study and each role would be a system user.
+	 * @param studyName
+	 * @param applications
+	 * @param userName
+	 * @throws ArkSystemException
 	 */
-	public void createStudy(StudyVO studyVO, String applicationName, ArkUserVO etaUserVO) throws ArkSystemException;
-	
+	public void createStudy(String studyName, List<String> applications, String userName) throws ArkSystemException,EntityExistsException;
 	/**
 	 * An interface that adds the provided user to the member list of the application if he does not exist in it and then
 	 * add's the user to the specified study member's list and finally links the user to one or more roles within the specified study.
