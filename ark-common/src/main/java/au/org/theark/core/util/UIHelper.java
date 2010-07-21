@@ -1,6 +1,5 @@
 package au.org.theark.core.util;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
