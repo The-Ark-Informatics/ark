@@ -31,7 +31,7 @@ import au.org.theark.study.web.form.StudyForm;
 
 @SuppressWarnings("serial")
 public class Search extends Panel {
-	
+	private StudyModel studyModel;
 	private SearchResultList searchResults;
 	private Details detailsPanel;
 	private FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
@@ -55,7 +55,9 @@ public class Search extends Panel {
 		
 		super(id);
 		//Create a new instance of the details panel
-		detailsPanel = new Details("detailsPanel", new Study(), this);
+		studyModel = new StudyModel();
+		studyModel.setStudy(new Study());
+		detailsPanel = new Details("detailsPanel",studyModel, this);
 		//Hide it since we have not looked up as yet
 		setDetailsPanelVisible(false);
 		
@@ -92,10 +94,10 @@ public class Search extends Panel {
 	
 	public class SearchForm extends Form<Study>{
 
-		TextField<String> studyIdTxtFld =new TextField<String>(Constants.STUDY_KEY);
-		TextField<String> studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
-		DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>("dateOfApplication");
-		TextField<String> principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT);
+		TextField<String> studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
+		TextField<String> studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
+		DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_SEARCH_DOA);
+		TextField<String> principalContactTxtFld = new TextField<String>(Constants.STUDY_SEARCH_CONTACT);
 		DropDownChoice<StudyStatus> studyStatusDpChoices;
 		Button searchButton;
 		Button newButton;
@@ -129,9 +131,9 @@ public class Search extends Panel {
 		private void initStudyStatusDropDown(Study study){
 			
 			List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
-			ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer("name", "studyStatusKey");
-			PropertyModel propertyModel = new PropertyModel(study, "studyStatus");
-			studyStatusDpChoices = new DropDownChoice("studyChoice",propertyModel,studyStatusList,defaultChoiceRenderer);
+			ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
+			PropertyModel propertyModel = new PropertyModel(study,Constants.STUDY_STATUS);
+			studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,propertyModel,studyStatusList,defaultChoiceRenderer);
 		}
 		
 		public SearchForm(String id, Study study, String panelId){
@@ -187,13 +189,17 @@ public class Search extends Panel {
 		
 		protected void onNew(){
 			StudyForm form = detailsPanel.getStudyForm();
-			Study study = (Study)form.getModelObject();
-			
-			if(study != null  && study.getStudyKey() != null && study.getStudyKey().longValue() > 0){
-				study = null;
-				study = new Study();
-				form.setModelObject(study);
-				form.clearInput();
+			StudyModel studyModel;
+			if(form != null && form.getModelObject() != null){
+				studyModel = form.getModelObject();
+				Study study =  studyModel.getStudy();
+				if(study !=null  && study.getStudyKey() != null && study.getStudyKey().longValue() > 0){
+					study = null;
+					study = new Study();
+					studyModel.setStudy(study);
+					form.setModelObject(studyModel);
+					form.clearInput();
+				}
 			}
 			
 			//StudyForm studyForm = new StudyForm("studyForm", new Study());
