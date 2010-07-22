@@ -35,6 +35,7 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.security.RoleConstants;
@@ -279,6 +280,9 @@ public class LdapUserDao implements ILdapUserDao{
 			AndFilter moduleFilter = new AndFilter();
 			moduleFilter.and(new EqualsFilter("objectClass","groupOfNames"));
 			String personDn =  buildPersonDN(etaUserVO.getUserName());
+			//Can be refactored to this one below
+			//LdapUtility.buildPersonDN(etaUserVO.getUserName(), baseDC);
+			
 			moduleFilter.and(new EqualsFilter("member",personDn));
 			
 			for(ModuleVO module: listOfAllModules){
@@ -1357,6 +1361,68 @@ public class LdapUserDao implements ILdapUserDao{
 				log.info(sb.toString());
 				throw new ArkSystemException("A system exception has occured");
 		}		
+	}
+	
+	
+	/**
+	 * Creates a study in LDAP for the given set of Applications. It also adds the pre-defined roles for each application below the study as a sub-group.
+	 * As part of creating the structure it adds a default user to the Study and Roles.
+	 * 
+	 */
+	public void createStudy(String studyName, List<String> applications,String userName) throws ArkSystemException, EntityExistsException {
+		log.debug("Inside createStudy(studyName, applications, userName)");
+		try{
+			
+			String personPath = LdapUtility.buildPersonDN(userName,baseDC);
+			
+			for (String applicationName : applications) {
+
+				String systemApplicationName = UIHelper.getSystemModuleName(applicationName);
+				//Create the study if it does not exist
+				DirContextAdapter dirContextAdapter = new DirContextAdapter();
+				String[] members = {personPath};
+				LdapUtility.mapToGroupContext(dirContextAdapter, studyName, members);
+				
+				LdapName ldapName = new LdapName(getBaseGroupDn());
+				ldapName.add( new Rdn("cn",systemApplicationName));
+				ldapName.add( new Rdn("cn",studyName));
+				Name nameObj = ldapName;
+				ldapTemplate.bind(nameObj,dirContextAdapter, null);
+				List<String> applicationRolesList = getModuleRoles(systemApplicationName);
+				for (String role : applicationRolesList) {
+					
+					String systemRoleName = UIHelper.getSystemRoleName(role);
+					LdapUtility.mapToGroupContext(dirContextAdapter,systemRoleName , members);
+					ldapName = new LdapName(getBaseGroupDn());
+					ldapName.add( new Rdn("cn",systemApplicationName));
+					ldapName.add( new Rdn("cn",studyName));
+					ldapName.add(new Rdn("cn", systemRoleName));
+					nameObj=ldapName;
+					ldapTemplate.bind(nameObj,dirContextAdapter, null);
+				}
+			}
+
+		}catch(org.springframework.ldap.NameAlreadyBoundException nabe){
+			log.error("A Study with that name is present in the system.  " + nabe.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append(studyName  + " already exists in the system.");
+			error.append(studyName);
+			throw new EntityExistsException( error.toString());
+		}
+		catch(InvalidNameException ine){
+			log.error("An exception occured while creating a new study. " + ine.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append("A system error occured while creating the Study ");
+			error.append(studyName);
+			throw new ArkSystemException( error.toString());
+		}catch(Exception ex){
+			log.error("An exception occured while creating a new study. " + ex.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append("A system error occured while creating the Study ");
+			error.append(studyName);
+			throw new ArkSystemException( error.toString());
+		}
+		
 	}
 
 }
