@@ -1,9 +1,11 @@
 package au.org.theark.study.web.component.study;
 
+import java.util.List;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.Study;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.StudyForm;
@@ -40,26 +42,33 @@ public class Details extends Panel{
 	 * @param study
 	 * @param searchPanel
 	 */
-	public Details(String id, Study study, final Search searchPanel) {
+	public Details(String id, StudyModel studyModel, final Search searchPanel) {
 		
 		super(id);
 		setSearchPanel(searchPanel);
 		
-		studyForm = new StudyForm("studyForm", study){
-			protected void onSave(Study study){
+		studyForm = new StudyForm("studyForm", studyModel){
+			
+			protected void onSave(StudyModel studyModel){
 				
 				try{
-					if(study.getStudyKey() == null){
-						service.createStudy(study);
+					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
+						List<String> itemsSelected = studyModel.getLmcSelectedApps();
+						service.createStudy(studyModel.getStudy(),itemsSelected);
+						
 					}else{
 							//Update
 					}
-				}catch(Exception ex){
-						
+				}
+				catch(ArkSystemException arkSystemExeption){
+					this.error(arkSystemExeption.getMessage());
+				}catch(Exception generalException){
+					generalException.getStackTrace();
+					this.error(generalException.getMessage());
 				}
 			}
 		
-			protected void onDelete(Study study){
+			protected void onDelete(StudyModel studyModel){
 				System.out.println("onDelete invoked.");
 			}
 		
