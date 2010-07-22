@@ -1,7 +1,6 @@
 package au.org.theark.study.web.form;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -23,34 +22,44 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.util.UIHelper;
-import au.org.theark.study.model.entity.Study;
+import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.study.StudyModel;
 
 @SuppressWarnings("serial")
-public class StudyForm extends Form<Study>{
+public class StudyForm extends Form<StudyModel>{
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+
+	@SpringBean( name = "userService")
+	private IUserService userService;
+
 	
 	TextField<String> studyIdTxtFld =new TextField<String>(Constants.STUDY_KEY);
-	TextField<String> studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
-	TextArea<String> studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
-	TextField<String> estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);
-	TextField<String> principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT);
-	TextField<String> principalContactPhoneTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PHONE);
-	TextField<String> chiefInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CHIEF_INVESTIGATOR);
-	TextField<String> coInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CO_INVESTIGATOR);
-	TextField<String> subjectIdPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
-	TextField<String> subjectIdStartAtTxtFld = new TextField<String>(Constants.SUBJECT_KEY_START);
-	TextField<String> bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
+	TextField<String> studyNameTxtFld = new TextField<String>("study.name");
+	TextArea<String> studyDescriptionTxtArea = new TextArea<String>("study.description");
+	TextField<String> estYearOfCompletionTxtFld = new TextField<String>("study.estimatedYearOfCompletion");
+	TextField<String> principalContactTxtFld = new TextField<String>("study.contactPerson");
+	TextField<String> principalContactPhoneTxtFld = new TextField<String>("study.contactPersonPhone");
+	TextField<String> chiefInvestigatorTxtFld = new TextField<String>("study.chiefInvestigator");
+	TextField<String> coInvestigatorTxtFld = new TextField<String>("study.coInvestigator");
+	TextField<String> subjectKeyPrefixTxtFld = new TextField<String>("study.subjectIdPrefix");
+	TextField<Integer> subjectKeyStartAtTxtFld = new TextField<Integer>("study.subjectKeyStart", Integer.class);
+	TextField<String> bioSpecimenPrefixTxtFld = new TextField<String>("study.subStudyBiospecimenPrefix");
 	
-	DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
+	DatePicker<Date> dateOfApplicationDp = new DatePicker<Date>("study.dateOfApplication");
 	DropDownChoice<StudyStatus> studyStatusDpChoices;
 	RadioChoice<Boolean> autoGenSubIdRdChoice;
 	RadioChoice<Boolean> autoConsentRdChoice;
@@ -67,22 +76,29 @@ public class StudyForm extends Form<Study>{
 	Button saveButton;
 	Button cancelButton;
 	Button deleteButton;
+	
+	List<ModuleVO> modules;
 
 	public TextField<String> getStudyIdTxtFld() {
 		return studyIdTxtFld;
 	}
 	
-	protected  void onSave(Study study){}
+	protected  void onSave(StudyModel studyModel){}
 	protected  void onCancel(){}
-	protected void  onDelete(Study study){}
+	protected void  onDelete(StudyModel studyModel){}
 	
-	private void initFormFields(Study study){
+	private void initFormFields(StudyModel studyModel) throws ArkSystemException{
 		
 		saveButton = new Button(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 			public void onSubmit()
 			{
-				onSave((Study) getForm().getModelObject());
+				List<String> selectedItems = (List<String>)selectedApplicationsLmc.getChoices();
+				System.out.println("\n -----------------------------------");
+				System.out.println("\n Selected Application Items" + selectedItems.size());
+				StudyModel studyModel = (StudyModel) getForm().getModelObject();
+				studyModel.setLmcSelectedApps(selectedItems);
+				onSave(studyModel);
 			}
 		}; 
 		
@@ -101,15 +117,35 @@ public class StudyForm extends Form<Study>{
 			public void onSubmit()
 			{
 				//Go to Search users page
-				onDelete((Study) getForm().getModelObject());
+				onDelete((StudyModel) getForm().getModelObject());
 			}
 			
 		};
 		
-		initStudyStatusDropDown(study);
-		autoGenSubIdRdChoice = initRadioButtonChoice(study,Constants.STUDY_AUTO_GENERATE_SUBJECT_KEY,"autoGenSubId");
-		autoConsentRdChoice = initRadioButtonChoice(study,Constants.STUDY_ATUO_CONSENT,"autoConsent");
+		initStudyStatusDropDown(studyModel);
+		autoGenSubIdRdChoice = initRadioButtonChoice(studyModel,"study.autoGenerateSubjectKey","autoGenSubId");
+		autoConsentRdChoice = initRadioButtonChoice(studyModel,"study.autoConsent","autoConsent");
 		listMultipleChoiceContainer = initLMCContainer();
+		
+		attachValidation();
+		
+		
+	}
+	
+	private void attachValidation(){
+	
+		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model("Name")));
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255));//TODO Have to stop the validator posting the content with the error message
+		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required",this, new Model("Status")));
+		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel( new StringResourceModel("error.study.doa.max.range",this, null));
+		//Can be only today
+		//Estimate year of completion - should be a valid year. Must be less than dateOfApplication
+		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.chief",this,new Model("Chief Investigator")));
+		chiefInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50));
+		
+		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3,50)).setLabel(new StringResourceModel("error.study.co.investigator",this, new Model("Co Investigator")));
+		selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
+		subjectKeyStartAtTxtFld.add( new RangeValidator<Integer>(1,Integer.MAX_VALUE)).setLabel( new StringResourceModel("error.study.subject.key.prefix", this, null));
 	}
 	
 	private void decorateComponents(){
@@ -123,8 +159,8 @@ public class StudyForm extends Form<Study>{
 		ThemeUiHelper.componentRounded(principalContactTxtFld);
 		ThemeUiHelper.componentRounded(chiefInvestigatorTxtFld);
 		ThemeUiHelper.componentRounded(coInvestigatorTxtFld);
-		ThemeUiHelper.componentRounded(subjectIdPrefixTxtFld);
-		ThemeUiHelper.componentRounded(subjectIdStartAtTxtFld);
+		ThemeUiHelper.componentRounded(subjectKeyPrefixTxtFld);
+		ThemeUiHelper.componentRounded(subjectKeyStartAtTxtFld);
 		ThemeUiHelper.componentRounded(bioSpecimenPrefixTxtFld);
 		ThemeUiHelper.componentRounded(availableApplicationsLmc);
 		ThemeUiHelper.componentRounded(selectedApplicationsLmc);
@@ -148,8 +184,8 @@ public class StudyForm extends Form<Study>{
 		add(principalContactTxtFld);
 		add(chiefInvestigatorTxtFld);
 		add(coInvestigatorTxtFld);
-		add(subjectIdPrefixTxtFld);
-		add(subjectIdStartAtTxtFld);
+		add(subjectKeyPrefixTxtFld);
+		add(subjectKeyStartAtTxtFld);
 		add(bioSpecimenPrefixTxtFld);
 		add(autoGenSubIdRdChoice);
 		add(autoConsentRdChoice);
@@ -160,10 +196,10 @@ public class StudyForm extends Form<Study>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void initStudyStatusDropDown(Study study){
+	private void initStudyStatusDropDown(StudyModel study){
 		List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
-		PropertyModel propertyModel = new PropertyModel(study,Constants.STUDY_STATUS);
+		PropertyModel propertyModel = new PropertyModel(study.getStudy(), Constants. STUDY_STATUS);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,propertyModel,studyStatusList,defaultChoiceRenderer);
 	}
 	/**
@@ -173,7 +209,7 @@ public class StudyForm extends Form<Study>{
 	 * @param radioChoiceId
 	 * @return
 	 */
-	private RadioChoice<Boolean> initRadioButtonChoice(Study study, String propertyModelExpr,String radioChoiceId){
+	private RadioChoice<Boolean> initRadioButtonChoice(StudyModel study, String propertyModelExpr,String radioChoiceId){
 	
 		List<Boolean> list = new ArrayList<Boolean>();
 		list.add(Boolean.TRUE);
@@ -184,8 +220,9 @@ public class StudyForm extends Form<Study>{
 			public Object getDisplayValue(final Boolean choice){
 				
 				String displayValue=Constants.NO;
+				
 				if(choice !=null && choice.booleanValue()){
-					displayValue = Constants.NO;
+					displayValue = Constants.YES;
 				}
 				return displayValue;
 			}
@@ -200,32 +237,41 @@ public class StudyForm extends Form<Study>{
 	}
 	
 	
-	public StudyForm(String id, Study study) {
+	public StudyForm(String id, StudyModel studyModel) {
 		
-		super(id, new CompoundPropertyModel<Study>(study));
+		super(id, new CompoundPropertyModel<StudyModel>(studyModel));
 		
-		initFormFields(study);
+		try{
+
+			initFormFields(studyModel);
+			decorateComponents();
+			addComponents();
 		
-		decorateComponents();
-		
-		addComponents();
+		}catch(ArkSystemException ase){
+			
+		}
 		
 	}
-	
-	private WebMarkupContainer initLMCContainer(){
+	/**
+	 * Method that initialises a WebMarkupContainer that in turn holds the ListMultipleChoice controls and related Add/Remove buttons
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	private WebMarkupContainer initLMCContainer() throws ArkSystemException{
 		
 		listMultipleChoiceContainer = new WebMarkupContainer(Constants.LMC_AJAX_CONTAINER);
-		listMultipleChoiceContainer.setOutputMarkupId(true);	//Ensures that the html markup for components under this container are all refreshed along with their current state.
+		listMultipleChoiceContainer.setOutputMarkupId(true);//Ensures that the html markup for components under this container are all refreshed along with their current state.
 		
 		/*Initialise the selected application List first*/
 		List<String> selectedApps = new ArrayList<String>();
+		
+		modules = userService.getModules(true);
+		
 		selectedApplicationsLmc = new ListMultipleChoice<String>(Constants.LMC_SELECTED_APPS, new Model(), selectedApps);
 		
 		/*Initialise the available application list*/
 		List<String> availableApps = new ArrayList<String>();
-		availableApps.add("Ark");
-		availableApps.add("Genotypic");;
-		availableApps.add("Phenotypic");
+		UIHelper.getDisplayModuleNameList(modules,availableApps);
 		
 		availableApplicationsLmc = new ListMultipleChoice<String>(Constants.LMC_AVAILABLE_APPS, new Model(), availableApps);
 		
@@ -265,20 +311,25 @@ public class StudyForm extends Form<Study>{
 		return listMultipleChoiceContainer;
 	}
 	
-	private AjaxButton initialiseAddButton(final WebMarkupContainer container, final ListMultipleChoice<String> availableAppsLMC, final ListMultipleChoice<String> targetMLC, String buttonId, Button button, final String action){
+	private AjaxButton initialiseAddButton(	final WebMarkupContainer container, final ListMultipleChoice<String> availableAppsLMC, 
+											final ListMultipleChoice<String> targetMLC, String buttonId, Button button, final String action){
 		
 		button =(AjaxButton) new AjaxButton(buttonId){
-				@Override
+			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				List<String> selectedChoice = new ArrayList<String>();
 				//Get the items selected from the control's MODEL
 				if(action.equalsIgnoreCase(Constants.ACTION_ADD_SELECTED)){
-					selectedChoice = (List<String>)availableAppsLMC.getModelObject();	
+					selectedChoice = (List<String>)availableAppsLMC.getModelObject();
 				}else{
 					selectedChoice = (List<String>)availableAppsLMC.getChoices();
 				}
 				UIHelper.addSelectedItems(selectedChoice, targetMLC);
 				target.addComponent(container);
+			}
+			@Override	
+			protected void onError(AjaxRequestTarget target, Form<?> form){
+				System.out.println("onError called on Add Button");
 			}
 		};
 		button.setModel(new StringResourceModel("addSelectedTxt",this,null));
@@ -286,7 +337,8 @@ public class StudyForm extends Form<Study>{
 	}
 	
 	
-	private AjaxButton initialiseRemoveButton(final WebMarkupContainer container, final ListMultipleChoice<String> targetMLC, String buttonId, Button button, final String action){
+	private AjaxButton initialiseRemoveButton(	final WebMarkupContainer container,	final ListMultipleChoice<String> targetMLC, 
+												String buttonId, Button button, final String action){
 		
 		button = (AjaxButton)new AjaxButton(buttonId){
 			@Override
@@ -294,7 +346,8 @@ public class StudyForm extends Form<Study>{
 				List<String> selectedItems = new ArrayList<String>(); 
 				if(action.equalsIgnoreCase(Constants.ACTION_REMOVE_SELECTED)){
 					selectedItems = (List<String>) targetMLC.getModelObject();
-					targetMLC.getChoices().removeAll(selectedItems);
+					targetMLC.getChoices().removeAll(selectedItems);	
+										
 				}else{
 					selectedItems =(List<String>)targetMLC.getChoices();
 					targetMLC.getChoices().removeAll(selectedItems);
