@@ -60,22 +60,31 @@ public class Constants {
 	
 	
 	/* Study */
-	public static final String STUDY_KEY = "studyKey";
-	public static final String STUDY_NAME="name";
-	public static final String STUDY_DESCRIPTION="description";
+	
+	public static final String STUDY_SEARCH_KEY="studyKey";
+	public static final String STUDY_SEARCH_NAME="name";
+	public static final String STUDY_SEARCH_DOA="dateOfApplication";
+	public static final String STUDY_SEARCH_CONTACT="contactPerson";
+	
+	
+	
+	public static final String STUDY_KEY = "study.studyKey";
+	
+	public static final String STUDY_NAME="study.name";
+	public static final String STUDY_DESCRIPTION="study.description";
 	public static final String STUDY_STATUS = "studyStatus";
-	public static final String STUDY_DATE_OF_APPLICATION ="dateOfApplication";
-	public static final String STUDY_CONTACT="contactPerson";
-	public static final String STUDY_CONTACT_PHONE ="contactPersonPhone";
-	public static final String STUDY_ESTIMATED_YEAR_OF_COMPLETION="estimatedYearOfCompletion";
-	public static final String STUDY_CHIEF_INVESTIGATOR ="chiefInvestigator";
-	public static final String STUDY_CO_INVESTIGATOR ="coInvestigator";
-	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "autoGenerateSubjectKey";
-	public static final String SUBJECT_KEY_START="subjectKeyStart";
-	public static final String SUBJECT_ID_PREFIX = "subjectIdPrefix";
+	public static final String STUDY_DATE_OF_APPLICATION ="study.dateOfApplication";
+	public static final String STUDY_CONTACT="study.contactPerson";
+	public static final String STUDY_CONTACT_PHONE ="study.contactPersonPhone";
+	public static final String STUDY_ESTIMATED_YEAR_OF_COMPLETION="study.estimatedYearOfCompletion";
+	public static final String STUDY_CHIEF_INVESTIGATOR ="study.chiefInvestigator";
+	public static final String STUDY_CO_INVESTIGATOR ="study.coInvestigator";
+	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "study.autoGenerateSubjectKey";
+	public static final String SUBJECT_KEY_START="study.subjectKeyStart";
+	public static final String SUBJECT_ID_PREFIX = "study.subjectIdPrefix";
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
-	public static final String STUDY_AUTO_CONSENT="autoConsent";
-	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="subStudyBiospecimenPrefix";
+	public static final String STUDY_AUTO_CONSENT="study.autoConsent";
+	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="study.subStudyBiospecimenPrefix";
 	public static final String STUDY_MAIN_TAB="Study";
 	public static final String STUDY_STATUS_KEY="studyStatusKey";
 	public static final String STUDY_DROP_DOWN_CHOICE ="studyChoice";
