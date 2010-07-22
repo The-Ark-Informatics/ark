@@ -10,6 +10,7 @@ public class Constants {
 	public static final int ADD=1;
 	public static final int REMOVE=2;
 	public static final int UPDATE=3;
+	public static final String ARK_SYSTEM_USER="arksystemuser@the-ark.org.au";
 	
 	
 	
