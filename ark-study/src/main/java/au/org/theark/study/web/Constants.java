@@ -74,7 +74,7 @@ public class Constants {
 	public static final String SUBJECT_KEY_START="subjectKeyStart";
 	public static final String SUBJECT_ID_PREFIX = "subjectIdPrefix";
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
-	public static final String STUDY_ATUO_CONSENT="autoConsent";
+	public static final String STUDY_AUTO_CONSENT="autoConsent";
 	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="subStudyBiospecimenPrefix";
 	public static final String STUDY_MAIN_TAB="Study";
 	public static final String STUDY_STATUS_KEY="studyStatusKey";
