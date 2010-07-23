@@ -40,7 +40,7 @@ public class SearchResultList extends Panel{
 		add(pageableListView);
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "serial" })
 	public PageableListView buildPageableListView(List<Study> list, int rowsPerPage){
 		
 		PageableListView  pageableListView = new PageableListView("studyList", studyList, rowsPerPage){
@@ -69,13 +69,13 @@ public class SearchResultList extends Panel{
 				}
 				
 				
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/mm/yyyy");
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				String dateOfApplication ="";
 				if(study.getDateOfApplication() != null){
-					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());	
-				}
-				if(dateOfApplication != null){
-					item.add(new Label("dateOfApplication",dateOfApplication));	
+					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());
+					item.add(new Label("dateOfApplication",dateOfApplication));
+				}else{
+					item.add(new Label("dateOfApplication",dateOfApplication));
 				}
 				
 				//item.add(new Label("vitalStatus", person.getVitalStatus()));
@@ -95,7 +95,7 @@ public class SearchResultList extends Panel{
 		return pageableListView;
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "serial" })
 	private Link buildLink(final ListItem item) {
 		
 		final Study study= (Study) item.getModelObject();
