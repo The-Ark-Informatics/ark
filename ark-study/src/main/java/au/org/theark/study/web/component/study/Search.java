@@ -190,12 +190,9 @@ public class Search extends Panel {
 		
 		protected void onNew(){
 			StudyForm form = detailsPanel.getStudyForm();
-			StudyModel studyModel;
+		
 			if(form != null && form.getModelObject() != null){
-				studyModel = form.getModelObject();
-				studyModel.setStudy(new Study());
-				form.setModelObject(studyModel);
-				form.modelChanged();
+				form.setModelObject(new StudyModel());
 				form.clearInput();
 			}
 			form.getStudyIdTxtFld().setEnabled(false);
