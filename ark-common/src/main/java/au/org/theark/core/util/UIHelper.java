@@ -1,6 +1,7 @@
 package au.org.theark.core.util;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 
@@ -139,7 +140,7 @@ public class UIHelper {
 		 return moduleName;
 	}
 	
-	public static void addSelectedItems(List<String> selectedItems, ListMultipleChoice targetMLC) {
+	public static void addSelectedItems(Set<String> selectedItems, ListMultipleChoice targetMLC) {
 		for (String item : selectedItems) {
 			if(!targetMLC.getChoices().contains(item)){
 				targetMLC.getChoices().add(item);
