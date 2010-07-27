@@ -58,6 +58,7 @@ public class Search extends Panel {
 		studyModel = new StudyModel();
 		studyModel.setStudy(new Study());
 		detailsPanel = new Details("detailsPanel",studyModel, this);
+		detailsPanel.initialiseForm();
 		//Hide it since we have not looked up as yet
 		setDetailsPanelVisible(false);
 		
@@ -201,8 +202,6 @@ public class Search extends Panel {
 					form.clearInput();
 				}
 			}
-			
-			//StudyForm studyForm = new StudyForm("studyForm", new Study());
 			form.getStudyIdTxtFld().setEnabled(false);
 			detailsPanel.setStudyForm(form);
 			detailsPanel.setVisible(true);
