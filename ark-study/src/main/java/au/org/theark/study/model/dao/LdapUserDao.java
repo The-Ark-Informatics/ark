@@ -3,6 +3,7 @@ package au.org.theark.study.model.dao;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
@@ -1369,7 +1370,7 @@ public class LdapUserDao implements ILdapUserDao{
 	 * As part of creating the structure it adds a default user to the Study and Roles.
 	 * 
 	 */
-	public void createStudy(String studyName, List<String> applications,String userName) throws ArkSystemException, EntityExistsException {
+	public void createStudy(String studyName, Set<String> applications,String userName) throws ArkSystemException, EntityExistsException {
 		log.debug("Inside createStudy(studyName, applications, userName)");
 		try{
 			
