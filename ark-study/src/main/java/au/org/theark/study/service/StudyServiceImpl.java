@@ -1,6 +1,7 @@
 package au.org.theark.study.service;
 
 import java.util.List;
+import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -55,16 +56,15 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getListOfStudyStatus();
 	}
 
-	public void createStudy(Study studyEntity, List<String> selectedApplications) throws ArkSystemException, EntityExistsException, UnAuthorizedOperation{
+	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws ArkSystemException, EntityExistsException, UnAuthorizedOperation{
 		try{
-			//Create the study in the back-end database
-			//studyDao.create(studyEntity);
 			//Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
 			SecurityManager securityManager =  ThreadContext.getSecurityManager();
 			Subject currentUser = SecurityUtils.getSubject();
 			
 			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
-				iLdapUserDao.createStudy(studyEntity.getName(), selectedApplications, au.org.theark.study.service.Constants.ARK_SYSTEM_USER);	
+				studyDao.create(studyEntity);
+				iLdapUserDao.createStudy(studyEntity.getName(), selectedApplications, au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
 			}else{
 			 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
 			}
