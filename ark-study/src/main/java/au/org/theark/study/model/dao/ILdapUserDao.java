@@ -1,6 +1,7 @@
 package au.org.theark.study.model.dao;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -85,7 +86,7 @@ public interface ILdapUserDao {
 	 * @param userName
 	 * @throws ArkSystemException
 	 */
-	public void createStudy(String studyName, List<String> applications, String userName) throws ArkSystemException,EntityExistsException;
+	public void createStudy(String studyName, Set<String> applications, String userName) throws ArkSystemException,EntityExistsException;
 	/**
 	 * An interface that adds the provided user to the member list of the application if he does not exist in it and then
 	 * add's the user to the specified study member's list and finally links the user to one or more roles within the specified study.
