@@ -1,6 +1,7 @@
 package au.org.theark.study.service;
 
 import java.util.List;
+import java.util.Set;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
@@ -15,7 +16,7 @@ public interface IStudyService {
 	 * @param selectedApplications
 	 * @throws ArkSystemException
 	 */
-	public void createStudy(Study studyEntity, List<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
+	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
 	public List<Study> getStudy(Study study);
 	
