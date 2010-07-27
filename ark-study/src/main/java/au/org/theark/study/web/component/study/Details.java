@@ -6,16 +6,24 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.StudyForm;
 
 @SuppressWarnings("serial")
 public class Details extends Panel{
 
+	private StudyModel studyModel;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService service;
+	
+	@SpringBean( name = "userService")
+	private IUserService userService;
+	
+	
 	private StudyForm studyForm;
 	private Search searchPanel;
 	
@@ -43,9 +51,12 @@ public class Details extends Panel{
 	 * @param searchPanel
 	 */
 	public Details(String id, StudyModel studyModel, final Search searchPanel) {
-		
 		super(id);
 		setSearchPanel(searchPanel);
+		this.studyModel = studyModel;
+	}
+	
+	public void initialiseForm(){
 		
 		studyForm = new StudyForm("studyForm", studyModel){
 			
@@ -53,8 +64,10 @@ public class Details extends Panel{
 				
 				try{
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
-						List<String> itemsSelected = studyModel.getLmcSelectedApps();
-						service.createStudy(studyModel.getStudy(),itemsSelected);
+						
+						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
+						
+						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 						
 					}else{
 							//Update
@@ -76,6 +89,15 @@ public class Details extends Panel{
 				searchPanel.setDetailsPanelVisible(false);
 			}
 		};
+		try {
+			
+			List<ModuleVO> modules = userService.getModules(true);
+			ApplicationSelector applicationSelector = new ApplicationSelector("applicationSelector", studyForm.getModelObject(), modules);
+			applicationSelector.setupSelector();
+			studyForm.add(applicationSelector);
+		} catch (ArkSystemException e) {
+			e.printStackTrace();
+		}
 		
 		add(studyForm); //Add the form to the panel
 	}
