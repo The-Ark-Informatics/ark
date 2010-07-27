@@ -193,14 +193,10 @@ public class Search extends Panel {
 			StudyModel studyModel;
 			if(form != null && form.getModelObject() != null){
 				studyModel = form.getModelObject();
-				Study study =  studyModel.getStudy();
-				if(study !=null  && study.getStudyKey() != null && study.getStudyKey().longValue() > 0){
-					study = null;
-					study = new Study();
-					studyModel.setStudy(study);
-					form.setModelObject(studyModel);
-					form.clearInput();
-				}
+				studyModel.setStudy(new Study());
+				form.setModelObject(studyModel);
+				form.modelChanged();
+				form.clearInput();
 			}
 			form.getStudyIdTxtFld().setEnabled(false);
 			detailsPanel.setStudyForm(form);
