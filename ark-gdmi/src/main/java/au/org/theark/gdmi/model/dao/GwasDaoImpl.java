@@ -7,7 +7,9 @@ import java.sql.Blob;
 import java.text.SimpleDateFormat;
 
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.lob.BlobImpl;
 import org.springframework.stereotype.Repository;
@@ -24,6 +26,7 @@ import au.org.theark.gdmi.model.entity.Marker;
 import au.org.theark.gdmi.model.entity.MarkerGroup;
 import au.org.theark.gdmi.model.entity.MarkerType;
 import au.org.theark.gdmi.model.entity.Status;
+//TODO: Use logger (see Study)
 
 @Repository("gwasDao")
 public class GwasDaoImpl extends HibernateSessionDao implements IGwasDao
@@ -35,25 +38,30 @@ public class GwasDaoImpl extends HibernateSessionDao implements IGwasDao
         // getSession().save(metaData);
         MetaDataType mdt = getMetaDataType("Number");
         System.out.println("Tried to get MetaDataType(\"Number\"): " + mdt);
-//        Date dateNow = new Date(System.currentTimeMillis());
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-//        String nowStr = sdf.format(dateNow);
-//
-//        MetaDataField mdf = new MetaDataField();
-//        mdf.setName("Mass");
-//        mdf.setDescription("kg");
-//        System.out.println("Now: " + nowStr);
-//        mdf.setStudyPk(new Long(1));
-//        mdf.setUserId("elam");
-//        mdf.setInsertTime(dateNow);
-//        mdf.setMetaDataType(mdt);
-//        
-//        metaData.setUserId("elam");
-//        metaData.setInsertTime(dateNow);
-//        metaData.setMetaDataField(mdf);
-//        System.out.println("metaData.setMetaDataField: "+ mdf);
-//        
-//        getSession().save(metaData);
+        Date dateNow = new Date(System.currentTimeMillis());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String nowStr = sdf.format(dateNow);
+
+        MetaDataField mdf = new MetaDataField();
+        mdf.setName("Mass");
+        mdf.setDescription("kg");
+        System.out.println("Now: " + nowStr);
+        mdf.setStudyId(new Long(1));
+        mdf.setUserId("elam");
+        mdf.setInsertTime(dateNow);
+        mdf.setMetaDataType(mdt);
+        
+        metaData.setUserId("elam");
+        metaData.setInsertTime(dateNow);
+        //TODO FIX STATUS AND COLLECTION
+//        Status stat = ;
+//        Collection colEn = new Collection();
+//        colEn.setStudyId(100);
+//        colEn.setStatus()
+        metaData.setMetaDataField(mdf);
+        System.out.println("metaData.setMetaDataField: "+ mdf);
+//        Session s = getSession();
+//        s.save(metaData);
 //        System.out.println("Tried to create a MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
 
 //        Person p = new Person();
@@ -61,8 +69,8 @@ public class GwasDaoImpl extends HibernateSessionDao implements IGwasDao
 //        p.setLastName("Name");
 //        p.setMiddleName("M");
 //        getSession().save(p);
-        //getSession().delete(metaData);
-        //System.out.println("Tried to delete the newly created MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
+//        s.delete(metaData);
+//        System.out.println("Tried to delete the newly created MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
     }
 
     public void createMetaData(MetaDataField mdf, String value)
@@ -195,19 +203,13 @@ public class GwasDaoImpl extends HibernateSessionDao implements IGwasDao
 
     	ed.setSubjectId(0);
     	ed.setCollection(col);
-    	
-    	Blob blobbo = ed.getEncodedBit1();
     	try
     	{
-	    	OutputStream out = blobbo.setBinaryStream(0);
 	    	InputStream in = new FileInputStream("/home/elam/w2003R2Entx32_disk1.iso");
-	    	while (in.available() > 0)
-	    	{
-	    		byte[] buf = new byte[512*1024];
-	    		in.read(buf);
-	    		out.write(buf);
-	    	}
-	    	ed.setEncodedBit1(blobbo);
+        	Blob blobbo = Hibernate.createBlob(in);
+	    	//ed.setEncodedBit1(blobbo);
+	    	//ed.setEncodedBit2(blobbo);
+	    	in.close();
     	} catch (Exception ex) {
     		System.out.println("Something went horribly wrong with the file storage...\n" + ex);
 		}
