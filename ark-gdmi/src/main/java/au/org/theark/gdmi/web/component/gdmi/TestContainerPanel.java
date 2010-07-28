@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.gdmi.model.entity.EncodedData;
+import au.org.theark.gdmi.model.entity.MetaData;
 import au.org.theark.gdmi.service.ServiceInterface;
 
 public class TestContainerPanel extends Panel{
@@ -28,8 +29,10 @@ public class TestContainerPanel extends Panel{
 			public void onSubmit()
 			{
 				System.out.println("WTF you hit me");
-				EncodedData ed = new EncodedData();
-				serviceInterface.createEncodedData(ed);
+				//EncodedData ed = new EncodedData();
+				//serviceInterface.createEncodedData(ed);
+				MetaData md = new MetaData();
+				serviceInterface.create(md);
 			}
 		});
 		add(testForm);
