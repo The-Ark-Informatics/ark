@@ -1,16 +1,22 @@
 package au.org.theark.gdmi.model.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
@@ -26,9 +32,9 @@ public class MetaData implements java.io.Serializable {
 	private Collection collection;
 	private String value;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 	private Set<SubjectMarkerMetaData> subjectMarkerMetaDatas = new HashSet<SubjectMarkerMetaData>(
 			0);
 	private Set<MarkerMetaData> markerMetaDatas = new HashSet<MarkerMetaData>(0);
@@ -43,7 +49,7 @@ public class MetaData implements java.io.Serializable {
 
 	/** minimal constructor */
 	public MetaData(long id, MetaDataField metaDataField,
-			Collection collection, String userId, String insertTime) {
+			Collection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataField = metaDataField;
 		this.collection = collection;
@@ -54,7 +60,7 @@ public class MetaData implements java.io.Serializable {
 	/** full constructor */
 	public MetaData(long id, MetaDataField metaDataField,
 			Collection collection, String value, String userId,
-			String insertTime, String updateUserId, String updateTime,
+			Date insertTime, String updateUserId, Date updateTime,
 			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas,
 			Set<MarkerMetaData> markerMetaDatas,
 			Set<SubjectMetaData> subjectMetaDatas) {
@@ -73,6 +79,8 @@ public class MetaData implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="MetaData_PK_Seq",sequenceName="GDMI.META_DATA_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="MetaData_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public long getId() {
 		return this.id;
@@ -119,13 +127,14 @@ public class MetaData implements java.io.Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
+	
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -138,12 +147,13 @@ public class MetaData implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

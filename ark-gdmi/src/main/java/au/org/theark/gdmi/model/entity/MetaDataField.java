@@ -1,16 +1,22 @@
 package au.org.theark.gdmi.model.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * MetaDataField entity. @author MyEclipse Persistence Tools
@@ -32,9 +38,9 @@ public class MetaDataField implements java.io.Serializable {
 	private String maxValue;
 	private String discreteValues;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 	private Set<MetaData> metaDatas = new HashSet<MetaData>(0);
 
 	// Constructors
@@ -45,7 +51,7 @@ public class MetaDataField implements java.io.Serializable {
 
 	/** minimal constructor */
 	public MetaDataField(long id, MetaDataType metaDataType, long studyId, String name,
-			String userId, String insertTime) {
+			String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataType = metaDataType;
 		this.studyId = studyId;
@@ -58,7 +64,7 @@ public class MetaDataField implements java.io.Serializable {
 	public MetaDataField(long id, MetaDataType metaDataType, long studyId, String name,
 			String description, String units, long seqNum, String minValue,
 			String maxValue, String discreteValues, String userId,
-			String insertTime, String updateUserId, String updateTime,
+			Date insertTime, String updateUserId, Date updateTime,
 			Set<MetaData> metaDatas) {
 		this.id = id;
 		this.metaDataType = metaDataType;
@@ -79,6 +85,8 @@ public class MetaDataField implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="MetaDataField_PK_Seq",sequenceName="GDMI.META_DATA_FIELD_PK_SEQ")
+    @GeneratedValue(strategy=GenerationType.AUTO,generator="MetaDataField_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public long getId() {
 		return this.id;
@@ -179,12 +187,13 @@ public class MetaDataField implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -197,12 +206,13 @@ public class MetaDataField implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATE_TIME")
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
