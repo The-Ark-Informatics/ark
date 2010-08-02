@@ -3,12 +3,10 @@ package au.org.theark.study.web.component.user;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.study.service.IUserService;
 /**
  * A top level container that will have members like a Search control component and a 
  * User Details panel.
@@ -28,28 +26,6 @@ public class UserContainer extends Panel{
 	 * Child components
 	 */
 	private Search searchUserPanel;
-	/**
-	 * Method for toggling the components visible state.
-	 * @param isVisible
-	 * @param searchPanel
-	 */
-	private void setSearchVisible(boolean isVisible, Search searchPanel){
-		searchPanel.setVisible(isVisible);
-	}
-
-	/**
-	 * Set this mode to true or false based on user's action by clicking of a button 
-	 * in a child object or on the container.
-	 */
-	private boolean isEditMode = false;
-	
-	
-	/**
-	 * The spring injected reference to a UserService implementation
-	 */
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
 	
 	/**
 	 * Constructor
