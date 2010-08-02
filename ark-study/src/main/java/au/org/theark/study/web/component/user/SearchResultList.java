@@ -23,6 +23,8 @@ import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyVO;
+import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.AppRoleForm;
@@ -37,6 +39,9 @@ public class SearchResultList extends Panel{
 	
 	@SpringBean( name = "userService")
 	private transient IUserService userService;
+	
+	@SpringBean( name = Constants.STUDY_SERVICE)
+	private IStudyService studyService;
 	
 	public SearchResultList(String id, List<ArkUserVO> userVOList, Component component) {
 		super(id);
@@ -92,64 +97,72 @@ public class SearchResultList extends Panel{
 		return new Link("userName", item.getModel()) {
 			@Override
 			public void onClick() {
-				//If the selected record is the same as the logged in user then allow for an edit
-				Details userDetailsPanel = (Details)detailsPanel;
-				UserForm userForm = userDetailsPanel.getUserForm();
 				
-				SecurityManager securityManager =  ThreadContext.getSecurityManager();
-				Subject currentUser = SecurityUtils.getSubject();
-				
-				//If the selected record belongs to Subject or if the logged in user is an Administrator then allow edit
-				String subject = (String)currentUser.getPrincipal();
-				if(subject.equals(etaUserVO.getUserName()) 	||	securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) 
-															||  securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN) )
-				{
-					updateFormState(userForm, true);
-					
-					if(subject.equals(etaUserVO.getUserName())){
-						userForm.getGroupPasswordContainer().setVisible(true);	
-					}else{
-						userForm.getGroupPasswordContainer().setVisible(false);
-					}
-					
-				
-				}else
-				{
-					updateFormState(userForm, false);
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId == null ){
+					info("There is no study in context.Please select a study from Study Module to view the user details");
 				}
-				etaUserVO.setMode(Constants.MODE_EDIT);
-				userForm.setModelObject(etaUserVO);
-				userDetailsPanel.setVisible(true);
-				userDetailsPanel.getUserForm().getUserNameTxtField().setEnabled(false);
-				//Create the Details.
-				//Gain access to the existing accordion control in UserForm
-				AppRoleAccordion appRoleAccordion = (AppRoleAccordion) userForm.get("appRoleAccordion");
-				AppRoleForm appRoleForm = (AppRoleForm) appRoleAccordion.get(Constants.APP_ROLE_FORM);
-				//Rebuild the accordion and attach it to the Form
-				try {
-					
-					//Get the study in context
-					//TODO NN Remove this once we have Study Module Testing
-					StudyVO studyVO = new StudyVO();
-					studyVO.setStudyName("demo");
-					etaUserVO.setStudyVO(studyVO);
-					userForm.remove(appRoleAccordion);
-					List<ModuleVO> modules = userService.getModules(false);//List of all available modules and list of roles define under these modules and which will apply for studies under this module
-					
-					List<ModuleVO> userModules = userService.getUserRoles(etaUserVO, studyVO.getStudyName());
-					etaUserVO.setModules(userModules);
-					//userService.getUserRole(etaUserVO,modules);//Gets a list of currents roles for the given study for each of the module
-					
-					UIHelper.getDisplayModuleName(modules);
-					appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, etaUserVO, modules);
-					
+				else{
 
-				} catch (ArkSystemException e) {
-					e.printStackTrace();
+					//If the selected record is the same as the logged in user then allow for an edit
+					Details userDetailsPanel = (Details)detailsPanel;
+					UserForm userForm = userDetailsPanel.getUserForm();
+					
+					SecurityManager securityManager =  ThreadContext.getSecurityManager();
+					Subject currentUser = SecurityUtils.getSubject();
+					
+					//If the selected record belongs to Subject or if the logged in user is an Administrator then allow edit
+					String subject = (String)currentUser.getPrincipal();
+					if(subject.equals(etaUserVO.getUserName()) 	||	securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) 
+																||  securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN) )
+					{
+						updateFormState(userForm, true);
+						
+						if(subject.equals(etaUserVO.getUserName())){
+							userForm.getGroupPasswordContainer().setVisible(true);	
+						}else{
+							userForm.getGroupPasswordContainer().setVisible(false);
+						}
+						
+					
+					}else
+					{
+						updateFormState(userForm, false);
+					}
+					etaUserVO.setMode(Constants.MODE_EDIT);
+					userForm.setModelObject(etaUserVO);
+					userDetailsPanel.setVisible(true);
+					userDetailsPanel.getUserForm().getUserNameTxtField().setEnabled(false);
+					//Create the Details.
+					//Gain access to the existing accordion control in UserForm
+					AppRoleAccordion appRoleAccordion = (AppRoleAccordion) userForm.get("appRoleAccordion");
+					AppRoleForm appRoleForm = (AppRoleForm) appRoleAccordion.get(Constants.APP_ROLE_FORM);
+					//Rebuild the accordion and attach it to the Form
+					try {
+						//Lookup this study
+						Study study = studyService.getStudy(sessionStudyId);
+						StudyVO studyVO = new StudyVO();
+						studyVO.setStudyName(study.getName());
+						etaUserVO.setStudyVO(studyVO);
+						userForm.remove(appRoleAccordion);
+						List<ModuleVO> modules = userService.getModules(false);//List of all available modules and list of roles define under these modules and which will apply for studies under this module
+						
+						List<ModuleVO> userModules = userService.getUserRoles(etaUserVO, studyVO.getStudyName());
+						etaUserVO.setModules(userModules);
+						//userService.getUserRole(etaUserVO,modules);//Gets a list of currents roles for the given study for each of the module
+						
+						UIHelper.getDisplayModuleName(modules);
+						appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, etaUserVO, modules);
+						
+
+					} catch (ArkSystemException e) {
+						e.printStackTrace();
+					}
+					//Accordion will have its own form object
+					userForm.add(appRoleAccordion);
 				}
-				//Accordion will have its own form object
-				userForm.add(appRoleAccordion);
-			}
+					
+				}
 		};
 		
 	}
