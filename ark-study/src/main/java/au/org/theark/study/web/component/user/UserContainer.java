@@ -1,10 +1,6 @@
 package au.org.theark.study.web.component.user;
 
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkUserVO;
 /**
@@ -20,22 +16,11 @@ import au.org.theark.core.vo.ArkUserVO;
 public class UserContainer extends Panel{
 	
 	private static final long serialVersionUID = 1L;
-	private transient Logger log = LoggerFactory.getLogger(UserContainer.class);
 
 	/**
 	 * Child components
 	 */
 	private Search searchUserPanel;
-	
-	/**
-	 * Constructor
-	 * @param id
-	 */
-	public UserContainer(String id) {
-		super(id);
-		searchUserPanel = new Search("searchUserPanel");
-		add(searchUserPanel);
-	}
 	
 	/**
 	 * 
@@ -47,32 +32,6 @@ public class UserContainer extends Panel{
 		super(id);
 		searchUserPanel = new Search("searchUserPanel");
 		add(searchUserPanel);
-	}
-
-	/**
-	 * The main panel's form for users that will allow us to add child panels like the search/search results
-	 * and the details panel.
-	 * 
-	 * @author nivedann
-	 */
-	public class UserPanelForm extends Form<ArkUserVO>{
-
-		
-		protected  void onSave(ArkUserVO userVO){}
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-
-		public UserPanelForm(String id, ArkUserVO userVO) {
-			
-			super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
-			
-			searchUserPanel = new Search("searchUserPanel");
-			add(searchUserPanel);
-			//Add the details panel for an ordinary user
-			
-		}
 	}
 
 }
