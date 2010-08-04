@@ -15,8 +15,6 @@ import au.org.theark.study.web.form.StudyForm;
 @SuppressWarnings("serial")
 public class Details extends Panel{
 
-	private StudyModel studyModel;
-
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService service;
 	
@@ -26,7 +24,6 @@ public class Details extends Panel{
 	
 	private StudyForm studyForm;
 	private Search searchPanel;
-	
 	
 	public Search getSearchPanel() {
 		return searchPanel;
@@ -43,6 +40,7 @@ public class Details extends Panel{
 	public void setStudyForm(StudyForm studyForm) {
 		this.studyForm = studyForm;
 	}
+	private int mode;
 
 	/**
 	 * Constructor
@@ -50,13 +48,13 @@ public class Details extends Panel{
 	 * @param study
 	 * @param searchPanel
 	 */
-	public Details(String id, StudyModel studyModel, final Search searchPanel) {
+	public Details(String id, final Search searchPanel, int mode) {
 		super(id);
 		setSearchPanel(searchPanel);
-		this.studyModel = studyModel;
+		this.mode = mode;
 	}
 	
-	public void initialiseForm(){
+	public void initialiseForm(StudyModel studyModel){
 		
 		studyForm = new StudyForm("studyForm", studyModel){
 			
@@ -66,11 +64,12 @@ public class Details extends Panel{
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
 						
 						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
-						
 						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 						
 					}else{
-							//Update
+						//Update
+						service.updateStudy(studyModel.getStudy(), null);
+						this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 					}
 				}
 				catch(ArkSystemException arkSystemExeption){
@@ -85,12 +84,12 @@ public class Details extends Panel{
 				System.out.println("onDelete invoked.");
 			}
 		
-			protected void onCancel(){
+			protected void onCancel(StudyModel studyModel){
+				studyModel = new StudyModel();
 				searchPanel.setDetailsPanelVisible(false);
 			}
 		};
 		try {
-			
 			List<ModuleVO> modules = userService.getModules(true);
 			ApplicationSelector applicationSelector = new ApplicationSelector("applicationSelector", studyForm.getModelObject(), modules);
 			applicationSelector.setupSelector();
