@@ -21,5 +21,21 @@ public interface IStudyService {
 	public List<Study> getStudy(Study study);
 	
 	public List<StudyStatus> getListOfStudyStatus();
+	
+	public Study getStudy(Long id);
+	
+	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
+	
+	/**
+	 * Fetch the list of applications/modules the study is currently associated with from LDAP.
+	 * @param studyNameCN
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException;
+	
+	
+	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
+	
 
 }
