@@ -37,6 +37,7 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 	private AjaxButton removeAllButton;
 	private List<ModuleVO> modules;
 	
+	
 	/**
 	 * Constructor
 	 * @param id
@@ -47,6 +48,7 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 		
 		super(id, new CompoundPropertyModel<StudyModel>(model));
 		this.modules = modules;
+		
 	}
 	
 	/**
@@ -59,9 +61,17 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 		listMultipleChoiceContainer = new WebMarkupContainer(Constants.LMC_AJAX_CONTAINER);
 		listMultipleChoiceContainer.setOutputMarkupId(true);
 		
-		/*Initialise the selected application List first*/
+		/*Initialise the selected application List first as an empty one or from what the backedn returned*/
 		List<String> selectedApps = new ArrayList<String>();
+		StudyModel model = getModelObject();
+		if(model != null && model.getLmcSelectedApps() != null){
+			for (String string : model.getLmcSelectedApps()) {
+				selectedApps.add(string);
+			}
+		}
+		
 		selectedItemsLmc = new ListMultipleChoice<String>(Constants.LMC_SELECTED_APPS, selectedApps);
+		
 		/*Initialise the available application list*/
 		List<String> availableApps = new ArrayList<String>();
 		UIHelper.getDisplayModuleNameList(modules,availableApps);
@@ -120,9 +130,6 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 		ThemeUiHelper.buttonRounded(addAllButton);
 		ThemeUiHelper.buttonRounded(removeButton);
 		ThemeUiHelper.buttonRounded(removeAllButton);
-
-		
-		
 		return listMultipleChoiceContainer;
 	}
 	
