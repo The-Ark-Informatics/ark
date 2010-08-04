@@ -56,8 +56,11 @@ public class Search extends Panel{
 	 * @param id
 	 */
 	public Search(String id) {
-
 		super(id);
+	}
+	
+	public void process(String id){
+
 		//Create a new instance of the details panel with empty user object
 		detailsPanel = new Details("userDetailsPanel", new ArkUserVO(), this);
 		//Hide it since we have not looked up a user as yet
@@ -110,5 +113,7 @@ public class Search extends Panel{
 		userList.add(user);
 		displayUserListPanel = new SearchResultList("displayUserListPanel", userList,detailsPanel);
 		searchUserForm.add(displayUserListPanel);
+
+		
 	}
 }
