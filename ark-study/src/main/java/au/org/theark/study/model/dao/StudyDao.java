@@ -67,5 +67,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
+	public Study getStudy(Long id){
+		
+		Study study =  (Study)getSession().get(Study.class, id);
+		StudyStatus studyStatus = study.getStudyStatus();
+		study.setStudyStatus(studyStatus);
+		return study;
+	}
 	
+	public void updateStudy(Study studyEntity){
+		getSession().update(studyEntity);
+	}
 }
