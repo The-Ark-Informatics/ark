@@ -1,6 +1,7 @@
 package au.org.theark.study.model.dao;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
+import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -1425,5 +1427,80 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 		
 	}
+	
+	/**
+	 * The method will return a list of applications/modules in which the study group(studyName)
+	 * exists.
+	 * @param studyNameCN
+	 * @return
+	 * @throws InvalidNameException 
+	 */
+	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException{
+		
+		Set<String> linkedApplications = new HashSet<String>();
+		try{
+			
+			/* Get a List of All System Modules and their available roles. */
+			List<ModuleVO> listOfAllModules = getModules(false); 
+			String moduleName = "";
+			String groupBase = "ou=groups";
+			AndFilter moduleFilter = new AndFilter();
+			moduleFilter.and(new EqualsFilter("objectClass","groupOfNames"));
+
+			for(ModuleVO module: listOfAllModules)
+			{
+				//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
+				moduleName = module.getModule();
+				LdapName dn = new LdapName(groupBase);
+				dn.add(new Rdn("cn",moduleName));
+				dn.add(new Rdn("cn",studyNameCN));
+				try{
+					
+					List<?> studyGroup =  ldapTemplate.search(dn,moduleFilter.encode(),SearchControls.OBJECT_SCOPE, new AttributesMapper()
+					{
+						
+						public Object mapFromAttributes(Attributes attrs){
+							try {
+									Object returnObject = attrs.get("cn").get();
+									return returnObject;
+							} catch (NamingException e) {
+								
+									e.printStackTrace();
+							}
+								return attrs;
+						}
+					});
+					
+					if(studyGroup.size() > 0){
+						linkedApplications.add(moduleName);
+					}
+				
+				}catch(Exception e){
+					log.error(e.getMessage());
+				}
+					
+			}
+			
+		}catch(InvalidNameException ine){
+			log.error(ine.getMessage());
+			throw new ArkSystemException("Exception occured while getting modules linked to the study");
+		}
+
+		return linkedApplications;
+	}
+		
+	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
+		Set<String> linkedApplications  = getModulesLinkedToStudy(studyNameCN);
+		Set<String> linkedAppsForDisplay = new HashSet<String>();
+		if(isForDisplay){
+			for (String moduleName : linkedApplications) {
+					moduleName = UIHelper.getDisplayModuleName(moduleName);
+					linkedAppsForDisplay.add(moduleName);
+			}
+		}
+		
+		return linkedAppsForDisplay;
+	}
+	
 
 }
