@@ -73,4 +73,29 @@ public class StudyServiceImpl implements IStudyService{
 		}
 		
 	}
+	
+	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException{
+
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+			studyDao.updateStudy(studyEntity);
+			//TODO update the Study association in LDAP 
+		}else{
+		 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
+		}
+	}
+	
+	public Study getStudy(Long id){
+		return studyDao.getStudy(id);
+	}
+	
+	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException{
+		
+		return iLdapUserDao.getModulesLinkedToStudy(studyNameCN);
+	}
+	
+	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
+		return iLdapUserDao.getModulesLinkedToStudy(studyNameCN, isForDisplay);
+	}
 }
