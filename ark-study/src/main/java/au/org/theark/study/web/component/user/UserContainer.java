@@ -31,6 +31,7 @@ public class UserContainer extends Panel{
 		
 		super(id);
 		searchUserPanel = new Search("searchUserPanel");
+		searchUserPanel.process("searchUserPanel");
 		add(searchUserPanel);
 	}
 
