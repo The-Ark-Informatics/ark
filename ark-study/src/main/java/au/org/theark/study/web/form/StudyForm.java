@@ -36,6 +36,33 @@ public class StudyForm extends Form<StudyModel>{
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	private int mode;
+	
+	public int getMode() {
+		return mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
+
+	public StudyForm(String id, StudyModel studyModel) {
+		
+		super(id, new CompoundPropertyModel<StudyModel>(studyModel));
+		
+		try{
+
+			initFormFields(studyModel);
+			decorateComponents();
+			addComponents();
+		
+		}catch(ArkSystemException ase){
+			
+		}
+	}
+	
+	private StudyModel studyModel;
+	
 
 	TextField<String> studyIdTxtFld =new TextField<String>(Constants.STUDY_KEY);
 	TextField<String> studyNameTxtFld = new TextField<String>("study.name");
@@ -64,8 +91,18 @@ public class StudyForm extends Form<StudyModel>{
 		return studyIdTxtFld;
 	}
 	
+	public TextField<String> getStudyNameTxtFld() {
+		return studyNameTxtFld;
+	}
+	
+	
+	
 	protected  void onSave(StudyModel studyModel){}
-	protected  void onCancel(){}
+	protected  void onCancel(StudyModel studyModel){
+		studyModel = new StudyModel();
+		updateFormComponentModels();
+		
+	}
 	protected void  onDelete(StudyModel studyModel){}
 	
 	private void initFormFields(StudyModel studyModel) throws ArkSystemException{
@@ -84,7 +121,11 @@ public class StudyForm extends Form<StudyModel>{
 			public void onSubmit()
 			{
 				//Go to Search users page
-				onCancel();
+				StudyModel studyModel = (StudyModel) getForm().getModelObject();
+				studyModel = new StudyModel();
+				
+				
+				onCancel(studyModel);
 			}
 			
 		};
@@ -103,6 +144,13 @@ public class StudyForm extends Form<StudyModel>{
 		autoGenSubIdRdChoice = initRadioButtonChoice(studyModel,"study.autoGenerateSubjectKey","autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(studyModel,"study.autoConsent","autoConsent");
 		attachValidation();
+		
+		if(mode == Constants.MODE_NEW){
+			studyIdTxtFld.setEnabled(false);
+		}else{
+			studyIdTxtFld.setEnabled(false);
+			studyNameTxtFld.setEnabled(false);
+		}
 	}
 	
 	private void attachValidation(){
@@ -123,6 +171,7 @@ public class StudyForm extends Form<StudyModel>{
 	
 	private void decorateComponents(){
 		ThemeUiHelper.componentRounded(studyIdTxtFld);
+		
 		ThemeUiHelper.componentRounded(studyNameTxtFld);
 		ThemeUiHelper.componentRounded(studyDescriptionTxtArea);
 		ThemeUiHelper.componentRounded(estYearOfCompletionTxtFld);
@@ -201,21 +250,16 @@ public class StudyForm extends Form<StudyModel>{
 		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(study,propertyModelExpr);
 		return new RadioChoice<Boolean>(radioChoiceId,propertyModel,list,radioChoiceRender);
 	}
-	
-	
-	public StudyForm(String id, StudyModel studyModel) {
-		
-		super(id, new CompoundPropertyModel<StudyModel>(studyModel));
-		
-		try{
 
-			initFormFields(studyModel);
-			decorateComponents();
-			addComponents();
-		
-		}catch(ArkSystemException ase){
-			
-		}
+	public StudyModel getStudyModel() {
+		return studyModel;
 	}
+
+	public void setStudyModel(StudyModel studyModel) {
+		this.studyModel = studyModel;
+	}
+	
+	
+	
 
 }
