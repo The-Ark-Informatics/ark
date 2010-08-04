@@ -97,5 +97,16 @@ public interface ILdapUserDao {
 	 */
 	public void addUserToStudy(StudyVO studyVO, String applicationName, List<RoleVO> roles, ArkUserVO etaUserVO ) throws ArkSystemException;
 	
+	/**
+	 * Given a study name the interface will return a Set of applications its linked to.
+	 * @param studyNameCN
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	
+	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException;
+	
+	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
+	
 
 }
