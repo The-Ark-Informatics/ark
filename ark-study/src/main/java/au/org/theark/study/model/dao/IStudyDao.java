@@ -18,4 +18,8 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<StudyStatus> getListOfStudyStatus();
+	
+	public Study getStudy(Long id);
+	
+	public void updateStudy(Study study);
 }
