@@ -18,7 +18,7 @@ public class StudyContainerPanel extends Panel{
 		super(id);
 		log.info("StudyContainerPanel Constructor invoked.");
 		searchStudyPanel = new Search("searchStudyPanel");
-		searchStudyPanel.process("searchStudyPanel");
+		searchStudyPanel.initialise("searchStudyPanel");
 		add(searchStudyPanel);
 	}
 
