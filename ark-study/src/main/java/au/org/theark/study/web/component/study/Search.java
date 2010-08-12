@@ -111,6 +111,8 @@ public class Search extends Panel {
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(AjaxRequestTarget target){
 				
+				Study searchCriteria = cpm.getObject().getStudy();
+				
 				List<Study> resultList = studyService.getStudy(cpm.getObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
 					this.info("Study with the specified criteria does not exist in the system.");	
@@ -118,10 +120,12 @@ public class Search extends Panel {
 				
 				this.setModelObject(new StudyModel());
 				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();////reset the original one
-				cpm.getObject().setStudyList(resultList);
+				
+				cpm.getObject().setStudyList(resultList);//Place the results into the model
+				cpm.getObject().setStudy(searchCriteria);///Set the search criteria object back in order for status to be filled in the next submit/search
 				listView.removeAll();
-				listContainer.setVisible(true);
-				target.addComponent(listContainer);
+				listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
+				target.addComponent(listContainer);//For ajax this is required so it knows which element on the page must be refreshed/repainted.
 			}
 			
 			protected void onNew(AjaxRequestTarget target){
