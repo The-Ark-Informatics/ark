@@ -20,7 +20,7 @@
 						
 					<div id="fldControl">
 						<div class="label">
-							<input wicket:id="studyKey"  type="text" />
+							<input wicket:id="study.studyKey"  type="text" />
 						</div>
 					</div>
 						
@@ -35,7 +35,7 @@
 		 			</div> 			       			
 					<div id="fldControl">
 						<div class="label">
-							<input wicket:id="name"  type="text" />
+							<input wicket:id="study.name"  type="text" />
 						</div>
 					</div>
 					
@@ -69,7 +69,7 @@
 						
 					<div id="fldControl">
 						<div class="label">
-							<input wicket:id="dateOfApplication"  type="text" />
+							<input wicket:id="study.dateOfApplication"  type="text" />
 						</div>
 					</div>
 				
@@ -85,7 +85,7 @@
 		       		</div>
 					<div id="fldControl">
 		       				<div class="label">
-		       					<input wicket:id="contactPerson"  type="text" />
+		       					<input wicket:id="study.contactPerson"  type="text" />
 		       				</div>
 		       		</div>
 		       		<div id="panelMargin">&nbsp;</div>
@@ -113,13 +113,18 @@
 							<input wicket:id="search" type="submit" wicket:message="value:page.search" />&nbsp;
 							<input wicket:id="reset" type="submit" wicket:message="value:study.search.reset.button" />&nbsp;
 							<input wicket:id="new" type="submit" wicket:message="value:page.new" />
-							<input wicket:id="refresh" type="submit" wicket:message="value:page.refresh" />
 					</div>
 					</div>
 					<div id="searchPanelBreaker">&nbsp;</div>
 				</div>
-					<div wicket:id="searchResults"></div>
-					<div wicket:id="detailsPanel"></div> 
+				
+				 <div wicket:id="resultListContainer">
+				 
+				   <div wicket:id="searchResults"></div>
+				 
+				 </div>
+					
+				<div wicket:id="detailsPanel"></div> 
 			</form>
        </div><!-- Container-->
 </wicket:panel>
