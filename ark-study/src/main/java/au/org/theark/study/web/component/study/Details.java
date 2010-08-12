@@ -2,7 +2,9 @@ package au.org.theark.study.web.component.study;
 
 import java.util.List;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -11,10 +13,14 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.StudyForm;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 
 @SuppressWarnings("serial")
 public class Details extends Panel{
 
+	//A container for SearchResults
+	WebMarkupContainer listContainer;
+	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService service;
 	
@@ -22,43 +28,33 @@ public class Details extends Panel{
 	private IUserService userService;
 	
 	
-	private StudyForm studyForm;
-	private Search searchPanel;
+	/* A reference of the Model from the Container in this case Search Panel */
+	private CompoundPropertyModel<StudyModel> cpm;
 	
-	public Search getSearchPanel() {
-		return searchPanel;
+	public CompoundPropertyModel<StudyModel> getCpm() {
+		return cpm;
 	}
 
-	public void setSearchPanel(Search searchPanel) {
-		this.searchPanel = searchPanel;
+	public void setCpm(CompoundPropertyModel<StudyModel> cpm) {
+		this.cpm = cpm;
 	}
-
-	public StudyForm getStudyForm() {
-		return studyForm;
-	}
-
-	public void setStudyForm(StudyForm studyForm) {
-		this.studyForm = studyForm;
-	}
-	private int mode;
-
+	
 	/**
-	 * Constructor
+	 * Sets the id and the container reference for the search results.
 	 * @param id
-	 * @param study
-	 * @param searchPanel
+	 * @param listContainer
 	 */
-	public Details(String id, final Search searchPanel, int mode) {
+	public Details(String id, final WebMarkupContainer listContainer) {
 		super(id);
-		setSearchPanel(searchPanel);
-		this.mode = mode;
+		this.listContainer = listContainer;
 	}
+
 	
-	public void initialiseForm(StudyModel studyModel){
+	public void initialiseForm(){
 		
-		studyForm = new StudyForm("studyForm", studyModel){
+		StudyForm studyForm = new StudyForm("studyForm", this, listContainer){
 			
-			protected void onSave(StudyModel studyModel){
+			protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
 				
 				try{
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
@@ -80,20 +76,20 @@ public class Details extends Panel{
 				}
 			}
 		
-			protected void onDelete(StudyModel studyModel){
-				System.out.println("onDelete invoked.");
+			protected void onCancel(AjaxRequestTarget target){
+				
 			}
-		
-			protected void onCancel(StudyModel studyModel){
-				studyModel = new StudyModel();
-				searchPanel.setDetailsPanelVisible(false);
+			
+			protected void onDelete(AjaxRequestTarget target){
+				
 			}
 		};
+		//TODO Add the application selector multi select pallete
 		try {
 			List<ModuleVO> modules = userService.getModules(true);
 			ApplicationSelector applicationSelector = new ApplicationSelector("applicationSelector", studyForm.getModelObject(), modules);
-			applicationSelector.setupSelector();
-			studyForm.add(applicationSelector);
+			//applicationSelector.setupSelector();
+			//studyForm.add(applicationSelector);
 		} catch (ArkSystemException e) {
 			e.printStackTrace();
 		}
