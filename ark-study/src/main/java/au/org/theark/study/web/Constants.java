@@ -30,6 +30,7 @@ public class Constants {
 	public static final String SEARCH_FORM ="searchForm";
 	public static final String SEARCH="search";
 	public static final String NEW="new";
+	public static final String RESET="reset";
 	public static final String PREFERRED_NAME="preferredName";
 	public static final String VITAL_STATUS ="vitalStatus";
 	public static final String PERSON_KEY="personKey";
@@ -61,10 +62,10 @@ public class Constants {
 	
 	/* Study */
 	
-	public static final String STUDY_SEARCH_KEY="studyKey";
-	public static final String STUDY_SEARCH_NAME="name";
-	public static final String STUDY_SEARCH_DOA="dateOfApplication";
-	public static final String STUDY_SEARCH_CONTACT="contactPerson";
+	public static final String STUDY_SEARCH_KEY="study.studyKey";
+	public static final String STUDY_SEARCH_NAME="study.name";
+	public static final String STUDY_SEARCH_DOA="study.dateOfApplication";
+	public static final String STUDY_SEARCH_CONTACT="study.contactPerson";
 	
 	
 	
