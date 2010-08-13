@@ -77,7 +77,7 @@ public class Search extends Panel {
 		
 		//The Model is defined here
 		cpm = new CompoundPropertyModel<StudyModel>(new StudyModel());
-		
+		Study tStudy = cpm.getObject().getStudy();
 		//The wrapper for ResultsList panel that will contain a ListView
 		listContainer = new WebMarkupContainer("resultListContainer");
 		listContainer.setOutputMarkupPlaceholderTag(true);
@@ -121,8 +121,10 @@ public class Search extends Panel {
 				this.setModelObject(new StudyModel());
 				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();////reset the original one
 				
+				//To see if the studyStatus is null
+				searchCriteria = cpm.getObject().getStudy();
 				cpm.getObject().setStudyList(resultList);//Place the results into the model
-				cpm.getObject().setStudy(searchCriteria);///Set the search criteria object back in order for status to be filled in the next submit/search
+				//cpm.getObject().setStudy(searchCriteria);///Set the search criteria object back in order for status to be filled in the next submit/search
 				listView.removeAll();
 				listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
 				target.addComponent(listContainer);//For ajax this is required so it knows which element on the page must be refreshed/repainted.
