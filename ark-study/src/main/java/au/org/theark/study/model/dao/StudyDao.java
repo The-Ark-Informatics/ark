@@ -39,7 +39,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 
 		if(study.getChiefInvestigator() != null){
-			studyCriteria.add(Restrictions.ilike("chiefInvestigatorTxtFld", study.getChiefInvestigator(),MatchMode.ANYWHERE));
+			studyCriteria.add(Restrictions.ilike("chiefInvestigator", study.getChiefInvestigator(),MatchMode.ANYWHERE));
 		}
 
 		if(study.getContactPerson() != null){
