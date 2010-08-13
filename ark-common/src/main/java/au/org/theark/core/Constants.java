@@ -37,4 +37,6 @@ public class Constants {
 			 
 	/*Common Service Names */
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
+	
+	public static final String STUDY_CONTEXT_ID="studyId";
 }
