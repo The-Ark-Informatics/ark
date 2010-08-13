@@ -21,13 +21,13 @@ public class ApplicationSelector extends Panel{
 		this.studyModel =studyModel;
 	}
 	
-	public void setupSelector() throws ArkSystemException{
-		
-		form = new ListMultipleChoiceForm("appSelectorForm", studyModel, modules);
-		WebMarkupContainer container = form.initLMCContainer();
-		form.add(container);
-		this.add(form);
-	}
+//	public void setupSelector() throws ArkSystemException{
+//		
+//		form = new ListMultipleChoiceForm("appSelectorForm", studyModel, modules);
+//		WebMarkupContainer container = form.initLMCContainer();
+//		form.add(container);
+//		this.add(form);
+//	}
 	
 	public void getSelectedItems(){
 		
