@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
-import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -42,12 +41,12 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
 import au.org.theark.study.service.Constants;
-import au.org.theark.core.util.UIHelper;
 
 @Repository("ldapUserDao")
 public class LdapUserDao implements ILdapUserDao{
