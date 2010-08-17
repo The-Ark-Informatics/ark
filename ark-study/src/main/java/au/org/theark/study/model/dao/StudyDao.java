@@ -12,9 +12,9 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.web.Constants;
+import au.org.theark.study.service.Constants;
 
-@Repository(Constants.STUDY_DAO)
+@Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<Study> getStudy(Study study)
@@ -23,34 +23,34 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
 		if(study.getStudyKey() != null){
-			studyCriteria.add(Restrictions.eq("studyKey",study.getStudyKey()));	
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getStudyKey()));	
 		}
 		
 		if(study.getName() != null){
-			studyCriteria.add(Restrictions.ilike("name", study.getName(), MatchMode.ANYWHERE));	
+			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, study.getName(), MatchMode.ANYWHERE));	
 		}
 		
 		if(study.getDateOfApplication() != null){
-			studyCriteria.add(Restrictions.eq("dateOfApplication", study.getDateOfApplication()));
+			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, study.getDateOfApplication()));
 		}
 		
 		if(study.getEstimatedYearOfCompletion() != null){
-			studyCriteria.add(Restrictions.eq("estimatedYearOfCompletion", study.getEstimatedYearOfCompletion()));
+			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, study.getEstimatedYearOfCompletion()));
 		}
 
 		if(study.getChiefInvestigator() != null){
-			studyCriteria.add(Restrictions.ilike("chiefInvestigator", study.getChiefInvestigator(),MatchMode.ANYWHERE));
+			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, study.getChiefInvestigator(),MatchMode.ANYWHERE));
 		}
 
 		if(study.getContactPerson() != null){
-			studyCriteria.add(Restrictions.ilike("contactPerson", study.getContactPerson(), MatchMode.ANYWHERE));
+			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, study.getContactPerson(), MatchMode.ANYWHERE));
 		}
 		
 		if(study.getStudyStatus() != null){
-			studyCriteria.add(Restrictions.eq("studyStatus", study.getStudyStatus()));
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
 		}
 
-		studyCriteria.addOrder(Order.asc("name"));
+		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		List<Study> studyList  = studyCriteria.list();
 		return studyList;
 	}
