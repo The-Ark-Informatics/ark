@@ -20,6 +20,7 @@ import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.study.StudyModel;
@@ -84,8 +85,14 @@ public class SearchStudyForm extends Form<StudyModel>{
 				onReset();
 			}
 		};
-	
-		initStudyStatusDropDown(model.getObject());
+		
+		
+		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)getModel();
+		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
+		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
+		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study
+		PropertyModel<StudyStatus> pmStudyStatus = new PropertyModel<StudyStatus>(pm,"studyStatus");
+		initStudyStatusDropDown(pmStudyStatus);
 		decorateComponents();
 		addComponentsToForm();
 
@@ -128,10 +135,9 @@ public class SearchStudyForm extends Form<StudyModel>{
 	
 	
 	@SuppressWarnings("unchecked")
-	private void initStudyStatusDropDown(StudyModel studyModel){
+	private void initStudyStatusDropDown(PropertyModel<StudyStatus> pmStudyStatus){
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
-		PropertyModel propertyModel = new PropertyModel(studyModel.getStudy(),Constants.STUDY_STATUS);
-		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,propertyModel,studyStatusList,defaultChoiceRenderer);
+		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,pmStudyStatus,studyStatusList,defaultChoiceRenderer);
 	}
 
 }
