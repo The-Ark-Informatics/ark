@@ -66,6 +66,7 @@ public class Search extends Panel {
 	}
 	
 	public void processDetail(AjaxRequestTarget target){
+		detailsPanel.setCpm(cpm);
 		detailsPanel.setVisible(true);
 		listContainer.setVisible(false);
 		target.addComponent(detailsPanel);
@@ -77,7 +78,6 @@ public class Search extends Panel {
 		
 		//The Model is defined here
 		cpm = new CompoundPropertyModel<StudyModel>(new StudyModel());
-		Study tStudy = cpm.getObject().getStudy();
 		//The wrapper for ResultsList panel that will contain a ListView
 		listContainer = new WebMarkupContainer("resultListContainer");
 		listContainer.setOutputMarkupPlaceholderTag(true);
@@ -111,7 +111,6 @@ public class Search extends Panel {
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(AjaxRequestTarget target){
 				
-				Study searchCriteria = cpm.getObject().getStudy();
 				
 				List<Study> resultList = studyService.getStudy(cpm.getObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
@@ -120,11 +119,7 @@ public class Search extends Panel {
 				
 				this.setModelObject(new StudyModel());
 				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();////reset the original one
-				
-				//To see if the studyStatus is null
-				searchCriteria = cpm.getObject().getStudy();
 				cpm.getObject().setStudyList(resultList);//Place the results into the model
-				//cpm.getObject().setStudy(searchCriteria);///Set the search criteria object back in order for status to be filled in the next submit/search
 				listView.removeAll();
 				listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
 				target.addComponent(listContainer);//For ajax this is required so it knows which element on the page must be refreshed/repainted.
@@ -132,8 +127,8 @@ public class Search extends Panel {
 			
 			protected void onNew(AjaxRequestTarget target){
 				this.setModelObject(new StudyModel());
-				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();//reset the original one
-			 	processDetail(target);
+				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();//reset the original one.Turn it on if its really needed
+				processDetail(target);
 			}
 			
 		};
@@ -143,7 +138,6 @@ public class Search extends Panel {
 		searchForm.add(detailsPanel);
 		add(searchForm);
 		add(feedBackPanel); //Add feedback panel
-		add(searchForm);
 	}
 
 }
