@@ -20,6 +20,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public List<Study> getStudy(Study study)
 	{
 		
+		
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
 		if(study.getStudyKey() != null){
@@ -52,6 +53,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		List<Study> studyList  = studyCriteria.list();
+		
 		return studyList;
 	}
 
@@ -68,10 +70,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public Study getStudy(Long id){
-		
 		Study study =  (Study)getSession().get(Study.class, id);
-		StudyStatus studyStatus = study.getStudyStatus();
-		study.setStudyStatus(studyStatus);
 		return study;
 	}
 	
