@@ -83,7 +83,6 @@ public class StudyForm extends Form<StudyModel>{
 	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container){
 		
 		super(id);
-		
 		listContainer = container;
 		details = detailsPanel;
 		
@@ -122,23 +121,24 @@ public class StudyForm extends Form<StudyModel>{
 		};
 		
 		studyIdTxtFld =new TextField<String>(Constants.STUDY_KEY);
-		studyNameTxtFld = new TextField<String>("study.name");
-		studyDescriptionTxtArea = new TextArea<String>("study.description");
-		estYearOfCompletionTxtFld = new TextField<String>("study.estimatedYearOfCompletion");
-		principalContactTxtFld = new TextField<String>("study.contactPerson");
-		principalContactPhoneTxtFld = new TextField<String>("study.contactPersonPhone");
-		chiefInvestigatorTxtFld = new TextField<String>("study.chiefInvestigator");
-		coInvestigatorTxtFld = new TextField<String>("study.coInvestigator");
-		subjectKeyPrefixTxtFld = new TextField<String>("study.subjectIdPrefix");
-		subjectKeyStartAtTxtFld = new TextField<Integer>("study.subjectKeyStart", Integer.class);
-		bioSpecimenPrefixTxtFld = new TextField<String>("study.subStudyBiospecimenPrefix");
-		dateOfApplicationDp = new DatePicker<Date>("study.dateOfApplication");
+		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME); 
+		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
+		estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);
+		principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PERSON);
+		principalContactPhoneTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PERSON_PHONE);
+		chiefInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CHIEF_INVESTIGATOR);
+		coInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CO_INVESTIGATOR);
+		subjectKeyPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
+		subjectKeyStartAtTxtFld = new TextField<Integer>(Constants.SUBJECT_KEY_START, Integer.class);
+		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
+		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
 		
-		CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
-		
-		initStudyStatusDropDown(detailsCpm.getObject());
-		autoGenSubIdRdChoice = initRadioButtonChoice(detailsCpm.getObject(),"study.autoGenerateSubjectKey","autoGenSubId");
-		autoConsentRdChoice = initRadioButtonChoice(detailsCpm.getObject(),"study.autoConsent","autoConsent");
+		CompoundPropertyModel<StudyModel> studyCmpModel = details.getCpm();
+		initStudyStatusDropDown(studyCmpModel);
+
+		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
+		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
+		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
 		attachValidation();
 		
 		if(mode == Constants.MODE_NEW){
@@ -231,11 +231,10 @@ public class StudyForm extends Form<StudyModel>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void initStudyStatusDropDown(StudyModel study){
+	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModel> studyCmpModel){
 		List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
-		PropertyModel propertyModel = new PropertyModel(study.getStudy(), Constants. STUDY_STATUS);
-		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,propertyModel,studyStatusList,defaultChoiceRenderer);
+		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS,studyStatusList,defaultChoiceRenderer);
 	}
 	/**
 	 * A common method that can be used to render Yes/No using RadioChoice controls
@@ -244,7 +243,7 @@ public class StudyForm extends Form<StudyModel>{
 	 * @param radioChoiceId
 	 * @return
 	 */
-	private RadioChoice<Boolean> initRadioButtonChoice(StudyModel study, String propertyModelExpr,String radioChoiceId){
+	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Study> pm, String propertyModelExpr,String radioChoiceId){
 	
 		List<Boolean> list = new ArrayList<Boolean>();
 		list.add(Boolean.TRUE);
@@ -267,7 +266,7 @@ public class StudyForm extends Form<StudyModel>{
 			}
 		};
 		
-		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(study,propertyModelExpr);
+		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm,propertyModelExpr);
 		return new RadioChoice<Boolean>(radioChoiceId,propertyModel,list,radioChoiceRender);
 	}
 
