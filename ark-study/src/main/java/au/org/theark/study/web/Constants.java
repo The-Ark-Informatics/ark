@@ -73,10 +73,10 @@ public class Constants {
 	
 	public static final String STUDY_NAME="study.name";
 	public static final String STUDY_DESCRIPTION="study.description";
-	public static final String STUDY_STATUS = "studyStatus";
+	public static final String STUDY_STATUS = "study.studyStatus";
 	public static final String STUDY_DATE_OF_APPLICATION ="study.dateOfApplication";
-	public static final String STUDY_CONTACT="study.contactPerson";
-	public static final String STUDY_CONTACT_PHONE ="study.contactPersonPhone";
+	public static final String STUDY_CONTACT_PERSON="study.contactPerson";
+	public static final String STUDY_CONTACT_PERSON_PHONE ="study.contactPersonPhone";
 	public static final String STUDY_ESTIMATED_YEAR_OF_COMPLETION="study.estimatedYearOfCompletion";
 	public static final String STUDY_CHIEF_INVESTIGATOR ="study.chiefInvestigator";
 	public static final String STUDY_CO_INVESTIGATOR ="study.coInvestigator";
