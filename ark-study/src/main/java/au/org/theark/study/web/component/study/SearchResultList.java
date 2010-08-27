@@ -93,10 +93,8 @@ public class SearchResultList extends Panel{
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getStudyKey());
 				//Based on the user type navigate to another panel (Summary of study or the View panel)
-				
 				StudyModel studyModel  = cpm.getObject();
 				studyModel.setStudy(study);
-				detailsPanel.setCpm(cpm);
 				detailsPanel.setVisible(true);
 				//TODO make the ID and Name field disabled
 				searchContainer.setVisible(false);
