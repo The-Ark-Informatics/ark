@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.naming.InvalidNameException;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
@@ -108,5 +109,22 @@ public interface ILdapUserDao {
 	
 	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
 	
-
+	/**
+	 * Add or remove the study from one or more Application/Module
+	 * @param studyName
+	 * @param selectedApplication
+	 * @param userName
+	 * @throws ArkSystemException
+	 * @throws EntityExistsException
+	 */
+	public void updateStudyApplication(String studyName,Set<String> selectedApplication, String userName)  throws ArkSystemException, EntityExistsException, EntityCannotBeRemoved;
+	
+	/**
+	 * Removes a Study and its sub-ordinate objects for the selected set of Applications. If there are any members that in the study, the removal is aborted.
+	 * @param studyName
+	 * @param appsToDelinkFrom
+	 * @throws EntityCannotBeRemoved
+	 * @throws ArkSystemException
+	 */
+	public void removeStudy(String studyName,Set<String> applications) throws EntityCannotBeRemoved, ArkSystemException;
 }
