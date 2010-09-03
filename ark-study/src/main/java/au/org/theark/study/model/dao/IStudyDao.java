@@ -9,6 +9,8 @@ public interface IStudyDao {
 
 	public void create(Study study);
 	
+	public void delete(Study study);
+	
 	public List<Study> getStudy(Study study);
 	
 	/**
