@@ -44,7 +44,7 @@ public class LoginPage<T> extends WebPage {
 		LoginForm form = new LoginForm("loginForm");
 		
 		this.add(form);
-		this.add(feedBackPanel);//Add the Feedback panel to the form
+		this.add(feedBackPanel);//Add the Feedback panel
 		
 		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
 		//Create an new form object and add it to the Page
