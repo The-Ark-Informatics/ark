@@ -10,6 +10,7 @@ import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import au.org.theark.gdmi.web.menu.GDMITabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
+
 /**
  * Homepage aka Index page of ETA
  */
@@ -40,9 +41,9 @@ public class HomePage extends BasePage {
         for(ITab itab: gdmiTabsList){
         	moduleTabsList.add(itab);	
         }
-        
         TabbedPanel moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList); 
         add(moduleTabbedPanel);
+        
 	}
 
 	@Override
