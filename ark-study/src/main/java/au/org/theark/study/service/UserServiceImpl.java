@@ -3,7 +3,10 @@ package au.org.theark.study.service;
 /**
  * Add Copyright header
  */
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -24,6 +27,7 @@ import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IUserDao;
 import au.org.theark.study.model.entity.EtaUser;
 import au.org.theark.study.model.entity.Person;
+import au.org.theark.study.web.form.ModuleVo;
 
 
 @Transactional
@@ -130,5 +134,19 @@ public class UserServiceImpl implements IUserService {
 	public ArkUserVO getCurrentUser(String username) throws ArkSystemException{
 		return iLdapUserDao.getUser(username);
 	}
+	
+	public Collection<ModuleVo> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
+		
+		Set<String> modules = iLdapUserDao.getModulesLinkedToStudy(studyNameCN, isForDisplay);
+		Collection<ModuleVo> modulesLinkedToStudy = new ArrayList<ModuleVo>();
+		for (String moduleName : modules) {
+			ModuleVo moduleVo = new ModuleVo();
+			moduleVo.setModuleName(moduleName);
+			modulesLinkedToStudy.add(moduleVo);
+		}
+		return modulesLinkedToStudy;
+	}
+	
+	
 
 }
