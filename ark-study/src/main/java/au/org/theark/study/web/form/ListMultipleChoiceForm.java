@@ -23,6 +23,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.study.ApplicationSelector;
+import au.org.theark.study.web.component.study.Details;
 import au.org.theark.study.web.component.study.StudyModel;
 
 @SuppressWarnings("serial")
@@ -36,6 +38,10 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 	private AjaxButton removeButton;
 	private AjaxButton removeAllButton;
 	private List<ModuleVO> modules;
+	//Study Details Panel
+	Details details;
+	
+	ApplicationSelector applicationSelectorPanel;
 	
 	
 	/**
@@ -51,6 +57,12 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 		
 	}
 	
+	public ListMultipleChoiceForm(String id, ApplicationSelector appSelectorPanel, List<ModuleVO> modules) {
+		super(id);
+		this.modules = modules;
+		applicationSelectorPanel = appSelectorPanel;
+	}
+	
 	/**
 	 * Invoke this method on the Form instance rather than invoking it as part of the Form's constructor
 	 * @return
@@ -61,22 +73,28 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 		listMultipleChoiceContainer = new WebMarkupContainer(Constants.LMC_AJAX_CONTAINER);
 		listMultipleChoiceContainer.setOutputMarkupId(true);
 		
-		/*Initialise the selected application List first as an empty one or from what the backedn returned*/
+		/*Initialise the selected application List first as an empty one or from what the back-end returned*/
 		List<String> selectedApps = new ArrayList<String>();
-		StudyModel model = getModelObject();
-		if(model != null && model.getLmcSelectedApps() != null){
-			for (String string : model.getLmcSelectedApps()) {
+		
+		//StudyModel model = getModelObject();
+		
+		final CompoundPropertyModel<StudyModel>  cpmModel = applicationSelectorPanel.getCpm();
+
+		//Convert form Set to String
+		if(cpmModel != null && cpmModel.getObject().getLmcSelectedApps() != null){
+			for (String string : cpmModel.getObject().getLmcSelectedApps()) {
 				selectedApps.add(string);
 			}
 		}
 		
-		selectedItemsLmc = new ListMultipleChoice<String>(Constants.LMC_SELECTED_APPS, selectedApps);
+		//provide the model's property as the id for the LMC and provide the list of choices
+		selectedItemsLmc = new ListMultipleChoice<String>("lmcSelectedApps", selectedApps);
 		
 		/*Initialise the available application list*/
 		List<String> availableApps = new ArrayList<String>();
 		UIHelper.getDisplayModuleNameList(modules,availableApps);
 		
-		availableItemsLmc = new ListMultipleChoice<String>(Constants.LMC_AVAILABLE_APPS,availableApps);
+		availableItemsLmc = new ListMultipleChoice<String>("lmcAvailableApps",availableApps);
 		
 		//Attach a Ajax Behavior to update the Selected Applications control
 		availableItemsLmc.add( new AjaxFormComponentUpdatingBehavior("ondblclick") {
@@ -84,19 +102,23 @@ public class ListMultipleChoiceForm extends Form<StudyModel>{
 			
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				Set<String> selectedItems = (HashSet<String>) availableItemsLmc.getModelObject();
+				//The model will contain the items the user has selected
+				Set<String> selectedItems = (HashSet<String>) availableItemsLmc.getModelObject();//the model linked to availableItems
+				
+				//Add the items selected from available list to the selected list 
 				UIHelper.addSelectedItems(selectedItems, selectedItemsLmc);
+				
 				List<String> choices = selectedItemsLmc.getChoices();
 
-				Collection model = getModelObject().getLmcSelectedApps();
+				Collection model = cpmModel.getObject().getLmcSelectedApps();//getModelObject().getLmcSelectedApps();
 				Iterator it = choices.iterator();
 				while (it.hasNext())
 				{
 					String selectedChoice = (String)it.next();
 					model.add(selectedChoice);
 				}
-				modelChanged();
-				((IModel<Object>) getDefaultModel()).setObject(model);
+				//modelChanged();
+				//((IModel<Object>) getDefaultModel()).setObject(model);
 				
 				target.addComponent(listMultipleChoiceContainer);
 			}
