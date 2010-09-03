@@ -1,11 +1,16 @@
 package au.org.theark.study.web.form;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -14,11 +19,13 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -45,6 +52,10 @@ public class StudyForm extends Form<StudyModel>{
 	WebMarkupContainer  listContainer;
 	private int mode;
 	private TextField<String> studyIdTxtFld;
+	public void setStudyNameTxtFld(TextField<String> studyNameTxtFld) {
+		this.studyNameTxtFld = studyNameTxtFld;
+	}
+
 	private TextField<String> studyNameTxtFld;
 	private TextArea<String> studyDescriptionTxtArea;
 	private TextField<String> estYearOfCompletionTxtFld;
@@ -59,7 +70,8 @@ public class StudyForm extends Form<StudyModel>{
 	private DropDownChoice<StudyStatus> studyStatusDpChoices;
 	private RadioChoice<Boolean> autoGenSubIdRdChoice;
 	private RadioChoice<Boolean> autoConsentRdChoice;
-	
+	//Application Select Palette
+	private Palette	appPalette;
 	AjaxButton saveButton;
 	AjaxButton cancelButton;
 	AjaxButton deleteButton;
@@ -70,7 +82,7 @@ public class StudyForm extends Form<StudyModel>{
 	
 	protected  void onCancel(AjaxRequestTarget target){}
 	
-	protected void  onDelete(AjaxRequestTarget target){}
+	protected void  onDelete(StudyModel studyModel,AjaxRequestTarget target){}
 	
 
 	
@@ -80,9 +92,11 @@ public class StudyForm extends Form<StudyModel>{
 	 * @param detailsPanel The panel that is linked to this Form instance
 	 * @param container The WebMarkupContainer that will wrap the SearchResults
 	 */
-	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container){
+	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container, final FeedbackPanel feedBackPanel){
 		
 		super(id);
+		
+		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
 		listContainer = container;
 		details = detailsPanel;
 		
@@ -104,9 +118,21 @@ public class StudyForm extends Form<StudyModel>{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{	//Access the model associated using a reference to details panel
 				CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
+				
 				StudyModel model = detailsCpm.getObject();
+				Collection<ModuleVo> moduleVoCollection = model.getModulesSelected(); 
+				//Convert to Set<String> this can be removed later by changing the interface
+				Set<String> moduleList = new HashSet<String>();
+				for (ModuleVo moduleVo : moduleVoCollection) {
+					moduleList.add(moduleVo.getModuleName());
+				}
+				model.setLmcSelectedApps(moduleList);
 				target.addComponent(details);
 				onSave(model,target);
+			}
+			
+			protected void onError(AjaxRequestTarget target, Form<?> form){
+				target.addComponent(feedBackPanel);
 			}
 		}; 
 		
@@ -115,8 +141,10 @@ public class StudyForm extends Form<StudyModel>{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				//Go to Search users page
+				CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
+				StudyModel model = detailsCpm.getObject();
 				target.addComponent(details);
-				onDelete(target);
+				onDelete(model, target);
 			}
 		};
 		
@@ -133,6 +161,8 @@ public class StudyForm extends Form<StudyModel>{
 		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
 		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
 		
+		initPalette();
+		
 		CompoundPropertyModel<StudyModel> studyCmpModel = details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
@@ -140,19 +170,27 @@ public class StudyForm extends Form<StudyModel>{
 		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
 		attachValidation();
-		
-		if(mode == Constants.MODE_NEW){
-			studyIdTxtFld.setEnabled(false);
-		}else{
-			studyIdTxtFld.setEnabled(false);
-			studyNameTxtFld.setEnabled(false);
-		}
-		
+		studyIdTxtFld.setEnabled(false);
 		decorateComponents();
 		addComponents();
 		
 	}
 	
+	private void initPalette(){
+		
+		CompoundPropertyModel<StudyModel> sm  = details.getCpm();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("moduleName", "moduleName");
+		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesSelected");
+		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesAvailable");
+		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,true);	
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModel> studyCmpModel){
+		List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
+		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS,studyStatusList,defaultChoiceRenderer);
+	}
 
 	public TextField<String> getStudyIdTxtFld() {
 		return studyIdTxtFld;
@@ -225,17 +263,13 @@ public class StudyForm extends Form<StudyModel>{
 		add(bioSpecimenPrefixTxtFld);
 		add(autoGenSubIdRdChoice);
 		add(autoConsentRdChoice);
+		add(appPalette);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 		add(deleteButton);
 	}
 	
-	@SuppressWarnings("unchecked")
-	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModel> studyCmpModel){
-		List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
-		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS,studyStatusList,defaultChoiceRenderer);
-	}
+
 	/**
 	 * A common method that can be used to render Yes/No using RadioChoice controls
 	 * @param study
@@ -268,6 +302,10 @@ public class StudyForm extends Form<StudyModel>{
 		
 		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm,propertyModelExpr);
 		return new RadioChoice<Boolean>(radioChoiceId,propertyModel,list,radioChoiceRender);
+	}
+
+	public StudyForm getDetailsForm() {
+		return this;
 	}
 
 
