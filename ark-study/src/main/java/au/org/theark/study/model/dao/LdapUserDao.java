@@ -1,6 +1,7 @@
 package au.org.theark.study.model.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +38,7 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
@@ -674,7 +676,7 @@ public class LdapUserDao implements ILdapUserDao{
 		log.info("In searchGroupMembers()");
 		List<ArkUserVO> userResultsList = new ArrayList<ArkUserVO>();	
 		try{
-			//The the Modules and Roles the current user is linked to as part of the currentUserDetails
+			//The Modules and Roles the current user is linked to as part of the currentUserDetails
 			ArkUserVO currentUserDetails = getUserRole(currentUser);
 			//Get a List of Modules
 			List<ModuleVO> moduleList = currentUserDetails.getModules();
@@ -780,7 +782,7 @@ public class LdapUserDao implements ILdapUserDao{
 				filter.and(new EqualsFilter(Constants.EMAIL,userCriteriaVO.getEmail()));
 			}
 		}
-		//TODO NN User a lite version of PersonContextMapper, dont need to map password details.
+		//TODO NN User a light version of PersonContextMapper, dont need to map password details.
 		return ldapTemplate.search(getBasePeopleDn(), filter.encode(),new PersonContextMapper());
 	}
 	
@@ -1501,5 +1503,111 @@ public class LdapUserDao implements ILdapUserDao{
 		return linkedAppsForDisplay;
 	}
 	
+	
+	public void removeStudy(String studyName, Set<String > appsToDelinkFrom ) throws EntityCannotBeRemoved, ArkSystemException{
+		
+		try{
+			for(String appToDelink : appsToDelinkFrom){
+				
+				String[] membersOfStudy = getStudyMembers(studyName,UIHelper.getSystemModuleName(appToDelink));
+				//Check if there are more than 1 member in the study, if not then process it.
+				if(membersOfStudy != null && membersOfStudy.length <= 1){
+					
+					//Get the Roles linked to each application
+					List<String> applicationRolesList = getModuleRoles(UIHelper.getSystemModuleName(appToDelink));
+					//Iterate each role and unbind it.
+					for (String studyRole : applicationRolesList) {
+						LdapName ldapName = new LdapName(getBaseGroupDn());
+						ldapName.add(new Rdn(Constants.CN, UIHelper.getSystemModuleName(appToDelink)));
+						ldapName.add(new Rdn(Constants.CN,studyName));
+						ldapName.add(new Rdn(Constants.CN,UIHelper.getSystemRoleName(studyRole)));
+						ldapTemplate.unbind(ldapName);
+					}
+					//TODO: Unbind the Study from Sites if the study was linked to any Site.After the Site use case is completed.
+					//Unbind the Study from the Application
+					LdapName ldapName = new LdapName(getBaseGroupDn());
+					ldapName.add(new Rdn(Constants.CN, UIHelper.getSystemModuleName(appToDelink)));
+					ldapName.add(new Rdn(Constants.CN,studyName));
+					ldapTemplate.unbind(ldapName);
+					
+				}else{
+					//throw a business exception that the study has currently users linked to it and that it cannot be removed.
+					log.warn("\nThe study cannot be removed. There are users linked to the study");
+					throw new EntityCannotBeRemoved("The given Study cannot be removed from Application:" + " "
+							+ appToDelink + ".There are users/subjects linked to this study.");
+				}
+				
+			}
+		}catch(InvalidNameException ine){
+			log.error("An exception occured while creating a new study. " + ine.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append("A system error occured while creating the Study ");
+			error.append(studyName);
+			throw new ArkSystemException( error.toString());
+		}
+	}
+	/**
+	 * Add's the study to one or more of the applications if the study is not in that list of selected application.
+	 * 
+	 * @param studyName
+	 * @param selectedApplication
+	 */
+	public void updateStudyApplication(String studyName,Set<String> selectedApplicationList, String userName) throws ArkSystemException, 
+																											EntityExistsException,EntityCannotBeRemoved{
+
+		//Get the given study's list of applications it is currently linked to
+		Set<String> currentAppsLinked = getModulesLinkedToStudy(studyName, true);
+		
+		Set<String> newAppsToLink = new HashSet<String>();//Will contain the applications the study must be linked to
+		
+		//Determine the applications the study should be linked to
+		for (String selectedApp : selectedApplicationList) {
+			if(!currentAppsLinked.contains(selectedApp)){
+				newAppsToLink.add(selectedApp);
+			}
+		}
+		//Determine the applications the study must be removed from
+		Set<String> appsToDelink = new HashSet<String>();
+		for(String currentApplication : currentAppsLinked){
+			if(!selectedApplicationList.contains(currentApplication)){
+				appsToDelink.add(currentApplication);
+			}
+		}
+		
+		if(appsToDelink != null && appsToDelink.size() > 0){
+			removeStudy(studyName,appsToDelink);
+		}
+		//Associate the study with the list of applications that must be linked to
+		if(newAppsToLink.size() > 0){
+			createStudy(studyName,newAppsToLink,userName);	
+		}
+	}
+	
+	//Returns the Member attribute value of a group
+	private static class GroupContextMapper implements ContextMapper {
+		public Object mapFromContext(Object ctx) {
+			DirContextAdapter context = (DirContextAdapter) ctx;
+			String[] members = context.getStringAttributes("member");
+			return members;
+		}
+	}
+	/**
+	 * Returns a list of users who are members of the study group.
+	 * Study here represents a group in LDAP
+	 * Member is a LDAP member attribute.
+	 * @param studyName
+	 * @return
+	 * @throws InvalidNameException 
+	 */
+	public String[] getStudyMembers(String studyName, String appName) throws InvalidNameException{
+		
+		LdapName ldapName = new LdapName(getBaseGroupDn());
+		ldapName.add(new Rdn(Constants.CN,appName));
+		ldapName.add(new Rdn(Constants.CN, studyName));
+		Name nameObj = ldapName;
+		String[] listOfMembers = (String[])ldapTemplate.lookup(nameObj, new GroupContextMapper());
+		
+		return listOfMembers;
+	}
 
 }
