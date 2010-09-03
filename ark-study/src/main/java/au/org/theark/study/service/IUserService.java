@@ -1,6 +1,8 @@
 package au.org.theark.study.service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
@@ -12,6 +14,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.EtaUser;
 import au.org.theark.study.model.entity.Person;
+import au.org.theark.study.web.form.ModuleVo;
 
 public interface IUserService {
 	
@@ -64,5 +67,16 @@ public interface IUserService {
 	
 	
 	public ArkUserVO getCurrentUser(String username) throws ArkSystemException;	
+	
+	/**
+	 * Returns a Collection of module names linked to a study. The module name is encapsulated in ModuleVo
+	 * object.
+	 * @param studyNameCN
+	 * @param isForDisplay
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public Collection<ModuleVo> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
+	
 
 }
