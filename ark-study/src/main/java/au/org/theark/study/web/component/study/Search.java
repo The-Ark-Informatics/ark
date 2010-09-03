@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.study;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -13,10 +14,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.form.ModuleVo;
 import au.org.theark.study.web.form.SearchStudyForm;
 
 @SuppressWarnings("serial")
@@ -30,18 +35,20 @@ public class Search extends Panel {
 		super(id);
 	}
 	
-	private FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
+	private FeedbackPanel feedBackPanel;
 	
 	private SearchResultList searchResults;
 	private PageableListView<Study> listView;
 	private Details detailsPanel;
 	private CompoundPropertyModel<StudyModel> cpm;
 	private WebMarkupContainer listContainer;
+	
 	private IModel<Object> iModel;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
-	
+	@SpringBean( name = "userService")
+	private IUserService userService;
 	
 	private void initialiseSearchResults(){
 		
@@ -65,7 +72,9 @@ public class Search extends Panel {
 		target.addComponent(listContainer);
 	}
 	
-	public void processDetail(AjaxRequestTarget target){
+	public void processDetail(AjaxRequestTarget target, int mode){
+		
+		detailsPanel.getStudyForm().getStudyNameTxtFld().setEnabled(true);
 		detailsPanel.setCpm(cpm);
 		detailsPanel.setVisible(true);
 		listContainer.setVisible(false);
@@ -75,7 +84,8 @@ public class Search extends Panel {
 	
 	
 	public void initialise(String id){
-		
+		 feedBackPanel= new FeedbackPanel("feedbackMessage");
+		 feedBackPanel.setOutputMarkupId(true);
 		//The Model is defined here
 		cpm = new CompoundPropertyModel<StudyModel>(new StudyModel());
 		//The wrapper for ResultsList panel that will contain a ListView
@@ -84,11 +94,11 @@ public class Search extends Panel {
 		listContainer.setVisible(true);
 		
 		//Initialise the Details Panel	
-		detailsPanel = new Details("detailsPanel", listContainer);
+		detailsPanel = new Details("detailsPanel", listContainer,feedBackPanel);
 		detailsPanel.setCpm(cpm);
 		detailsPanel.initialiseForm();
 		
-		detailsPanel.setVisible(false);
+		detailsPanel.setVisible(true);
 		detailsPanel.setOutputMarkupPlaceholderTag(true);
 		
 		iModel = new LoadableDetachableModel<Object>() {
@@ -126,9 +136,27 @@ public class Search extends Panel {
 			}
 			
 			protected void onNew(AjaxRequestTarget target){
+				
 				this.setModelObject(new StudyModel());
 				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();//reset the original one.Turn it on if its really needed
-				processDetail(target);
+				
+				List<ModuleVO> modules;
+				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
+				try {
+					modules = userService.getModules(true);//source this from a static list or on application startup 
+					for (ModuleVO moduleVO : modules) {
+						ModuleVo moduleVo = new ModuleVo();
+						moduleVo.setModuleName(moduleVO.getModule());
+						moduleVoList.add(moduleVo);
+					}
+				} catch (ArkSystemException e) {
+					//log the error message and notify sys admin to take appropriate action
+					this.error("A system error has occured. Please try after some time.");
+				}
+				cpm.getObject().setModulesAvailable(moduleVoList);
+				detailsPanel.setCpm(cpm);
+				//If the selected side has items then its re-using the first object
+				processDetail(target, Constants.MODE_NEW);
 			}
 			
 		};
@@ -137,7 +165,7 @@ public class Search extends Panel {
 		searchForm.add(listContainer);
 		searchForm.add(detailsPanel);
 		add(searchForm);
-		add(feedBackPanel); //Add feedback panel
+		add(feedBackPanel);
 	}
 
 }
