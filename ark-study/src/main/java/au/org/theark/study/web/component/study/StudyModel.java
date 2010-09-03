@@ -2,11 +2,13 @@ package au.org.theark.study.web.component.study;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.web.form.ModuleVo;
 
 @SuppressWarnings("serial")
 public class StudyModel implements Serializable{
@@ -15,6 +17,8 @@ public class StudyModel implements Serializable{
 	private Set<String> lmcAvailableApps;
 	private Set<String> lmcSelectedApps;
 	private List<Study> studyList;
+	private Collection<ModuleVo> modulesAvailable;
+	private Collection<ModuleVo> modulesSelected;
 	
 	
 	public StudyModel(){
@@ -22,6 +26,8 @@ public class StudyModel implements Serializable{
 		lmcAvailableApps = new HashSet<String>();
 		lmcSelectedApps = new HashSet<String>();
 		studyList = new ArrayList<Study>();
+		modulesAvailable = new ArrayList<ModuleVo>();
+		modulesSelected = new ArrayList<ModuleVo>();
 	}
 	
 	public Study getStudy() {
@@ -51,6 +57,22 @@ public class StudyModel implements Serializable{
 
 	public void setStudyList(List<Study> studyList) {
 		this.studyList = studyList;
+	}
+
+	public Collection<ModuleVo> getModulesAvailable() {
+		return modulesAvailable;
+	}
+
+	public void setModulesAvailable(Collection<ModuleVo> modulesAvailable) {
+		this.modulesAvailable = modulesAvailable;
+	}
+
+	public Collection<ModuleVo> getModulesSelected() {
+		return modulesSelected;
+	}
+
+	public void setModulesSelected(Collection<ModuleVo> modulesSelected) {
+		this.modulesSelected = modulesSelected;
 	}
 	
 }
