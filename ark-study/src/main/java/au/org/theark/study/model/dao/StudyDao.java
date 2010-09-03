@@ -77,4 +77,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void updateStudy(Study studyEntity){
 		getSession().update(studyEntity);
 	}
+	
+	public void delete(Study study){
+		getSession().delete(study);
+	}
 }
