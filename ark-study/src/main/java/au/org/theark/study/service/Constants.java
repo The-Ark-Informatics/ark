@@ -19,6 +19,7 @@ public class Constants {
 	public static final String CHIEF_INVESTIGATOR ="chiefInvestigator";
 	public static final String CONTACT_PERSON ="contactPerson";
 	public static final String STUDY_STATUS="studyStatus";
+	public static final String STUDY_STATUS_ARCHIVE="Archive";
 	
 	
 	
