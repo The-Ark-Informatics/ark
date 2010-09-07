@@ -1,7 +1,6 @@
 package au.org.theark.study.model.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -1503,8 +1502,13 @@ public class LdapUserDao implements ILdapUserDao{
 		return linkedAppsForDisplay;
 	}
 	
-	
-	public void removeStudy(String studyName, Set<String > appsToDelinkFrom ) throws EntityCannotBeRemoved, ArkSystemException{
+	/**
+	 * Note this is a function that disassociates a study from an application. this is called as part of an update to a study definition.
+	 * As such the Ark system will not allow a user to Remove a study completely. The study will need to be moved into an archived state.
+	 * This function here allows a user to update the study association with applications. Useful if an error occured when associating applications to study.
+	 *  
+	 */
+	private void delinkStudyFromApp(String studyName, Set<String > appsToDelinkFrom ) throws EntityCannotBeRemoved, ArkSystemException{
 		
 		try{
 			for(String appToDelink : appsToDelinkFrom){
@@ -1575,7 +1579,7 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 		
 		if(appsToDelink != null && appsToDelink.size() > 0){
-			removeStudy(studyName,appsToDelink);
+			delinkStudyFromApp(studyName,appsToDelink);
 		}
 		//Associate the study with the list of applications that must be linked to
 		if(newAppsToLink.size() > 0){
