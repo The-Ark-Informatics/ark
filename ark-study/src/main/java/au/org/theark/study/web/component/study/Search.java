@@ -42,17 +42,19 @@ public class Search extends Panel {
 	private Details detailsPanel;
 	private CompoundPropertyModel<StudyModel> cpm;
 	private WebMarkupContainer listContainer;
-	
+	private WebMarkupContainer detailsContainer;
 	private IModel<Object> iModel;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
 	private void initialiseSearchResults(){
 		
-		searchResults = new SearchResultList("searchResults",detailsPanel);
+		//searchResults = new SearchResultList("searchResults",detailsPanel);
+		searchResults = new SearchResultList("searchResults",detailsContainer);
 		
 		//Set the Model reference into the results panel
 		searchResults.setCpm(cpm);
@@ -76,7 +78,8 @@ public class Search extends Panel {
 		
 		detailsPanel.getStudyForm().getStudyNameTxtFld().setEnabled(true);
 		detailsPanel.setCpm(cpm);
-		detailsPanel.setVisible(true);
+		detailsContainer.setVisible(true);
+		//detailsPanel.setVisible(true);
 		listContainer.setVisible(false);
 		target.addComponent(detailsPanel);
 		target.addComponent(listContainer);
@@ -93,14 +96,16 @@ public class Search extends Panel {
 		listContainer.setOutputMarkupPlaceholderTag(true);
 		listContainer.setVisible(true);
 		
+		
+		detailsContainer = new WebMarkupContainer("detailsContainer");
+		detailsContainer.setOutputMarkupPlaceholderTag(true);
+		detailsContainer.setVisible(false);
+		
 		//Initialise the Details Panel	
-		detailsPanel = new Details("detailsPanel", listContainer,feedBackPanel);
+		detailsPanel = new Details("detailsPanel", listContainer,feedBackPanel,detailsContainer);
 		detailsPanel.setCpm(cpm);
 		detailsPanel.initialiseForm();
-		
-		detailsPanel.setVisible(true);
-		detailsPanel.setOutputMarkupPlaceholderTag(true);
-		
+		detailsContainer.add(detailsPanel);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
@@ -163,7 +168,7 @@ public class Search extends Panel {
 
 		//Add the Form to the Panel. The Form object that will contain the child or UI components that will be part of the search or be affected by the search.
 		searchForm.add(listContainer);
-		searchForm.add(detailsPanel);
+		searchForm.add(detailsContainer);
 		add(searchForm);
 		add(feedBackPanel);
 	}
