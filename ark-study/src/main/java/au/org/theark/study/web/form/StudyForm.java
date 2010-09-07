@@ -73,17 +73,37 @@ public class StudyForm extends Form<StudyModel>{
 	//Application Select Palette
 	private Palette	appPalette;
 	AjaxButton saveButton;
-	AjaxButton cancelButton;
-	AjaxButton deleteButton;
 	
+
+	AjaxButton cancelButton;
+
+	AjaxButton archiveButton;
+	
+
 	List<ModuleVO> modules;
 	
-	protected void onSave(StudyModel studyModel, AjaxRequestTarget target){}
+	protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
+		
+	}
 	
-	protected  void onCancel(AjaxRequestTarget target){}
+	protected  void onCancel(AjaxRequestTarget target){
+		
+	}
 	
-	protected void  onDelete(StudyModel studyModel,AjaxRequestTarget target){}
-	
+	protected void  onArchive(StudyModel studyModel,AjaxRequestTarget target){
+		
+	}
+
+	public AjaxButton getArchiveButton() {
+		return archiveButton;
+	}
+
+	public AjaxButton getSaveButton() {
+		return saveButton;
+	}
+	public AjaxButton getCancelButton() {
+		return cancelButton;
+	}
 
 	
 	/**
@@ -92,7 +112,7 @@ public class StudyForm extends Form<StudyModel>{
 	 * @param detailsPanel The panel that is linked to this Form instance
 	 * @param container The WebMarkupContainer that will wrap the SearchResults
 	 */
-	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container, final FeedbackPanel feedBackPanel){
+	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container, final FeedbackPanel feedBackPanel, final WebMarkupContainer detailsContainer){
 		
 		super(id);
 		
@@ -105,8 +125,8 @@ public class StudyForm extends Form<StudyModel>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				listContainer.setVisible(false);
-				details.setVisible(false);
-				target.addComponent(details);
+				detailsContainer.setVisible(false);
+				target.addComponent(detailsContainer);
 				target.addComponent(listContainer);
 				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
@@ -127,7 +147,7 @@ public class StudyForm extends Form<StudyModel>{
 					moduleList.add(moduleVo.getModuleName());
 				}
 				model.setLmcSelectedApps(moduleList);
-				target.addComponent(details);
+				target.addComponent(detailsContainer);
 				onSave(model,target);
 			}
 			
@@ -136,15 +156,16 @@ public class StudyForm extends Form<StudyModel>{
 			}
 		}; 
 		
-		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+		archiveButton = new AjaxButton(Constants.ARCHIVE, new StringResourceModel("deleteKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				//Go to Search users page
 				CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
 				StudyModel model = detailsCpm.getObject();
-				target.addComponent(details);
-				onDelete(model, target);
+				target.addComponent(detailsContainer);
+				onArchive(model, target);
+				
 			}
 		};
 		
@@ -244,7 +265,7 @@ public class StudyForm extends Form<StudyModel>{
 		ThemeUiHelper.componentRounded(bioSpecimenPrefixTxtFld);
 		ThemeUiHelper.buttonRounded(saveButton);
 		ThemeUiHelper.buttonRounded(cancelButton);
-		ThemeUiHelper.buttonRounded(deleteButton);
+		ThemeUiHelper.buttonRounded(archiveButton);
 	}
 	
 	private void addComponents(){
@@ -266,7 +287,7 @@ public class StudyForm extends Form<StudyModel>{
 		add(appPalette);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
-		add(deleteButton);
+		add(archiveButton);
 	}
 	
 
