@@ -26,6 +26,7 @@ public class Constants {
 	public static final String SAVE ="save";
 	public static final String CANCEL ="cancel";
 	public static final String DELETE="delete";
+	public static final String ARCHIVE="archive";
 	public static final String SEARCH_USER_FORM ="searchUserForm";
 	public static final String SEARCH_FORM ="searchForm";
 	public static final String SEARCH="search";
