@@ -6,6 +6,7 @@ import java.util.Set;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -25,7 +26,7 @@ public interface IStudyService {
 	
 	public Study getStudy(Long id);
 	
-	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityExistsException,EntityCannotBeRemoved,UnAuthorizedOperation, ArkSystemException;
+	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved,EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
 	/**
 	 * Fetch the list of applications/modules the study is currently associated with from LDAP.
@@ -38,6 +39,6 @@ public interface IStudyService {
 	
 	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
 	
-	public void deleteStudy(Study studyEntity) throws EntityCannotBeRemoved,UnAuthorizedOperation,ArkSystemException;
+	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation,StatusNotAvailableException, ArkSystemException;
 
 }
