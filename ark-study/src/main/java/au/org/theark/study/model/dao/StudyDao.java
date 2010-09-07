@@ -7,9 +7,12 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.Constants;
@@ -17,6 +20,8 @@ import au.org.theark.study.service.Constants;
 @Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
+	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
+	
 	public List<Study> getStudy(Study study)
 	{
 		
@@ -49,7 +54,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		if(study.getStudyStatus() != null){
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
+			StudyStatus status  = getStudyStatus("Archive");
+			studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+		}else{
+			StudyStatus status  = getStudyStatus("Archive");
+			studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
 		}
+		
+		
 
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		List<Study> studyList  = studyCriteria.list();
@@ -69,6 +81,25 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
+	/**
+	 * Given a status name will return the StudyStatus object.
+	 */
+	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException{
+		StudyStatus studyStatus = new StudyStatus();
+		studyStatus.setName("Archive");
+		Example studyStatusExample = Example.create(studyStatus);
+		
+		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
+		if(studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0){
+			return (StudyStatus)studyStatusCriteria.list().get(0);	
+		}else{
+			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
+			System.out.println("Cannot locate a study status with " + statusName + " in the database");
+			throw new StatusNotAvailableException();
+		}
+		
+	}
+	
 	public Study getStudy(Long id){
 		Study study =  (Study)getSession().get(Study.class, id);
 		return study;
@@ -78,7 +109,4 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().update(studyEntity);
 	}
 	
-	public void delete(Study study){
-		getSession().delete(study);
-	}
 }
