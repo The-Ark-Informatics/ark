@@ -29,18 +29,19 @@ import au.org.theark.study.web.form.ModuleVo;
 @SuppressWarnings("serial")
 public class SearchResultList extends Panel{
 	
-	private Details detailsPanel;
+
+	private WebMarkupContainer detailsContainer;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	
 	/* A reference of the Model from the Container in this case Search Panel */
 	private CompoundPropertyModel<StudyModel> cpm;
 	
-	public SearchResultList(String id, Details details){
+	
+	public SearchResultList(String id, WebMarkupContainer  details){
 		super(id);
-		this.detailsPanel = details;
+		this.detailsContainer = details;
 	}
 	public CompoundPropertyModel<StudyModel> getCpm() {
 		return cpm;
@@ -104,7 +105,7 @@ public class SearchResultList extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getStudyKey());
-				//Based on the user type navigate to another panel (Summary of study or the View panel)
+
 				StudyModel studyModel  = cpm.getObject();
 				studyModel.setStudy(study);
 				
@@ -126,11 +127,10 @@ public class SearchResultList extends Panel{
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
 				}
-
-				detailsPanel.setVisible(true);
+				detailsContainer.setVisible(true);
 				//TODO make the ID and Name field disabled
 				searchContainer.setVisible(false);
-				target.addComponent(detailsPanel);
+				target.addComponent(detailsContainer);
 				target.addComponent(searchContainer);
 			}
 		};
