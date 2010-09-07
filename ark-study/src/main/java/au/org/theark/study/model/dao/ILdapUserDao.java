@@ -118,13 +118,5 @@ public interface ILdapUserDao {
 	 * @throws EntityExistsException
 	 */
 	public void updateStudyApplication(String studyName,Set<String> selectedApplication, String userName)  throws ArkSystemException, EntityExistsException, EntityCannotBeRemoved;
-	
-	/**
-	 * Removes a Study and its sub-ordinate objects for the selected set of Applications. If there are any members that in the study, the removal is aborted.
-	 * @param studyName
-	 * @param appsToDelinkFrom
-	 * @throws EntityCannotBeRemoved
-	 * @throws ArkSystemException
-	 */
-	public void removeStudy(String studyName,Set<String> applications) throws EntityCannotBeRemoved, ArkSystemException;
+
 }
