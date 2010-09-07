@@ -2,6 +2,7 @@ package au.org.theark.study.model.dao;
 
 import java.util.List;
 
+import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 
@@ -9,7 +10,6 @@ public interface IStudyDao {
 
 	public void create(Study study);
 	
-	public void delete(Study study);
 	
 	public List<Study> getStudy(Study study);
 	
@@ -24,4 +24,6 @@ public interface IStudyDao {
 	public Study getStudy(Long id);
 	
 	public void updateStudy(Study study);
+	
+	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException;
 }
