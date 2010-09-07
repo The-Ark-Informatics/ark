@@ -146,7 +146,7 @@ public class StudyServiceImpl implements IStudyService{
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation, StatusNotAvailableException, ArkSystemException
 	{
 		//For archive, set the status to Archived and then issue an update
-		StudyStatus status = studyDao.getStudyStatus("Archive");
+		StudyStatus status = studyDao.getStudyStatus(au.org.theark.study.service.Constants.STUDY_STATUS_ARCHIVE);
 		studyEntity.setStudyStatus(status);
 		studyDao.updateStudy(studyEntity);
 	}
