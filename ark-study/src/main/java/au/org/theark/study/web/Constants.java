@@ -68,6 +68,11 @@ public class Constants {
 	public static final String STUDY_SEARCH_DOA="study.dateOfApplication";
 	public static final String STUDY_SEARCH_CONTACT="study.contactPerson";
 	
+	/**
+	 * Site
+	 */
+	public static final String STUDY_SITE_KEY="studySite.studySiteKey";
+	public static final String STUDY_SITE_NAME="studySite.name";
 	
 	
 	public static final String STUDY_KEY = "study.studyKey";
@@ -106,6 +111,8 @@ public class Constants {
 	public static final String ACTION_ADD_ALL="addAll";
 	public static final String ACTION_REMOVE_SELECTED="removeSelected";
 	public static final String ACTION_REMOVE_ALL="removeAll";
+	
+	public static final String PERSON_LAST_NAME="lastName";
 	
 			 
 }
