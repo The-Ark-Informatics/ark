@@ -98,6 +98,9 @@ public class SearchSiteForm extends Form<SiteModel>{
 	private void decorateComponents(){
 		ThemeUiHelper.componentRounded(siteIdTxtFld);
 		ThemeUiHelper.componentRounded(siteNameTxtFld);
+		ThemeUiHelper.componentRounded(searchButton);
+		ThemeUiHelper.componentRounded(newButton);
+		ThemeUiHelper.componentRounded(resetButton);
 	}
 	
 	private void addComponentsToForm(){
