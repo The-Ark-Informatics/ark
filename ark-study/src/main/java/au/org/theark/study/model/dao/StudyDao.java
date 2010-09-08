@@ -54,11 +54,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		if(study.getStudyStatus() != null){
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
-			StudyStatus status  = getStudyStatus("Archive");
-			studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			try{
+				StudyStatus status  = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			}catch(StatusNotAvailableException notAvailable){
+				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+			}
 		}else{
-			StudyStatus status  = getStudyStatus("Archive");
-			studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			try{
+				StudyStatus status  = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+			}catch(StatusNotAvailableException notAvailable){
+				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+			}
+
 		}
 		
 		
