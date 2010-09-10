@@ -79,9 +79,8 @@ public class Search extends Panel {
 		detailsPanel.getStudyForm().getStudyNameTxtFld().setEnabled(true);
 		detailsPanel.setCpm(cpm);
 		detailsContainer.setVisible(true);
-		//detailsPanel.setVisible(true);
 		listContainer.setVisible(false);
-		target.addComponent(detailsPanel);
+		target.addComponent(detailsContainer);
 		target.addComponent(listContainer);
 	}
 	
