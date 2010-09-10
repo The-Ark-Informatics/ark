@@ -60,7 +60,7 @@ public class Details extends Panel{
 	
 	public void initialiseForm(){
 		
-		 studyForm = new StudyForm("studyForm", this, listContainer, feedBackPanel, detailsContainer){
+		 studyForm = new StudyForm("studyForm", this, listContainer, detailsContainer){
 			
 			protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
 				
@@ -87,6 +87,11 @@ public class Details extends Panel{
 					generalException.getStackTrace();
 					this.error(generalException.getMessage());
 				}
+				target.addComponent(feedBackPanel);
+			}
+			
+			protected void processErrors(AjaxRequestTarget target){
+				target.addComponent(feedBackPanel);
 			}
 		
 		
@@ -112,6 +117,7 @@ public class Details extends Panel{
 				} catch (UnAuthorizedOperation e) {
 					this.error(e.getMessage());
 				}
+				target.addComponent(feedBackPanel);
 			}
 		};
 		
