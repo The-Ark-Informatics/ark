@@ -19,7 +19,6 @@ import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -93,6 +92,10 @@ public class StudyForm extends Form<StudyModel>{
 	protected void  onArchive(StudyModel studyModel,AjaxRequestTarget target){
 		
 	}
+	
+	protected void processErrors(AjaxRequestTarget target){
+		
+	}
 
 	public AjaxButton getArchiveButton() {
 		return archiveButton;
@@ -112,7 +115,7 @@ public class StudyForm extends Form<StudyModel>{
 	 * @param detailsPanel The panel that is linked to this Form instance
 	 * @param container The WebMarkupContainer that will wrap the SearchResults
 	 */
-	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container, final FeedbackPanel feedBackPanel, final WebMarkupContainer detailsContainer){
+	public StudyForm(String id, Details detailsPanel, WebMarkupContainer container,  final WebMarkupContainer detailsContainer){
 		
 		super(id);
 		
@@ -151,9 +154,10 @@ public class StudyForm extends Form<StudyModel>{
 				onSave(model,target);
 			}
 			
-			protected void onError(AjaxRequestTarget target, Form<?> form){
-				target.addComponent(feedBackPanel);
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
 			}
+			
 		}; 
 		
 		archiveButton = new AjaxButton(Constants.ARCHIVE, new StringResourceModel("deleteKey", this, null))
