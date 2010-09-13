@@ -40,5 +40,7 @@ public interface IStudyService {
 	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
 	
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation,StatusNotAvailableException, ArkSystemException;
+	
+	public void createSite(String siteName, String description, List<String>  siteMembers) throws EntityExistsException,ArkSystemException; 
 
 }
