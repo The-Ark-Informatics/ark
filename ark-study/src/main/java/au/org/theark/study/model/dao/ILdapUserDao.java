@@ -118,5 +118,7 @@ public interface ILdapUserDao {
 	 * @throws EntityExistsException
 	 */
 	public void updateStudyApplication(String studyName,Set<String> selectedApplication, String userName)  throws ArkSystemException, EntityExistsException, EntityCannotBeRemoved;
+	
+	public void createSite(String siteName, String description, List<String> members) throws EntityExistsException,ArkSystemException; 	
 
 }
