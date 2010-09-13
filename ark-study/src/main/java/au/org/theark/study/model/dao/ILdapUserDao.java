@@ -14,6 +14,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
+import au.org.theark.study.web.component.site.SiteVo;
 
 /**
  * An interface that communicates with LDAP resource.
@@ -119,6 +120,14 @@ public interface ILdapUserDao {
 	 */
 	public void updateStudyApplication(String studyName,Set<String> selectedApplication, String userName)  throws ArkSystemException, EntityExistsException, EntityCannotBeRemoved;
 	
-	public void createSite(String siteName, String description, List<String> members) throws EntityExistsException,ArkSystemException; 	
+	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException; 
+	
+	public void updateSite(SiteVo siteVo)throws ArkSystemException;
+	
+	public List<SiteVo> getSite(SiteVo siteVo);
+	
+	
+	
+	
 
 }
