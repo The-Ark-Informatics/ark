@@ -18,15 +18,12 @@ import org.apache.wicket.model.PropertyModel;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.study.model.entity.LinkSiteContact;
 import au.org.theark.study.model.entity.Person;
-import au.org.theark.study.model.entity.StudySite;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.SiteModel;
 
 public class SearchSiteForm extends Form<SiteModel>{
 
-	private TextField<String> siteIdTxtFld; 
 	private TextField<String> siteNameTxtFld;
 	private DropDownChoice<Person> siteContactDDC;
 	
@@ -40,8 +37,8 @@ public class SearchSiteForm extends Form<SiteModel>{
 		
 		super(id,model);
 		
-		siteIdTxtFld =new TextField<String>(Constants.STUDY_SITE_KEY);
-		siteNameTxtFld = new TextField<String>(Constants.STUDY_SITE_NAME);
+		//siteIdTxtFld =new TextField<String>(Constants.STUDY_SITE_KEY);
+		siteNameTxtFld = new TextField<String>("siteVo.siteName");
 		availableContactList = availablePersons;
 		
 		newButton = new AjaxButton(Constants.NEW){
@@ -79,23 +76,11 @@ public class SearchSiteForm extends Form<SiteModel>{
 				onReset();
 			}
 		};
-		
-		
-		CompoundPropertyModel<SiteModel> siteCmpModel = (CompoundPropertyModel<SiteModel>)getModel();
-		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
-		PropertyModel<StudySite> pm = new PropertyModel<StudySite>(siteCmpModel,"studySite");
-		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study
-		PropertyModel<LinkSiteContact> listSiteContactPm = new PropertyModel<LinkSiteContact>(pm,"linkSiteContact");
-		PropertyModel<Person> personPropertyModel = new PropertyModel<Person>(listSiteContactPm,"person");
-		initContactDropDown(personPropertyModel);
 		decorateComponents();
 		addComponentsToForm();
 	}
 	
-	
-
 	private void decorateComponents(){
-		ThemeUiHelper.componentRounded(siteIdTxtFld);
 		ThemeUiHelper.componentRounded(siteNameTxtFld);
 		ThemeUiHelper.componentRounded(searchButton);
 		ThemeUiHelper.componentRounded(newButton);
@@ -103,7 +88,6 @@ public class SearchSiteForm extends Form<SiteModel>{
 	}
 	
 	private void addComponentsToForm(){
-		add(siteIdTxtFld);
 		add(siteNameTxtFld);
 		add(searchButton);
 		add(resetButton);
