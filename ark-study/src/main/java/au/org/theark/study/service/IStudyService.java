@@ -10,6 +10,7 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.web.component.site.SiteVo;
 
 public interface IStudyService {
 	/**
@@ -41,6 +42,10 @@ public interface IStudyService {
 	
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation,StatusNotAvailableException, ArkSystemException;
 	
-	public void createSite(String siteName, String description, List<String>  siteMembers) throws EntityExistsException,ArkSystemException; 
+	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException; 
+	
+	public List<SiteVo> getSite(SiteVo siteVo);
+	
+	public void updateSite(SiteVo siteVo) throws ArkSystemException;
 
 }
