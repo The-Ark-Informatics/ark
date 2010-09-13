@@ -48,6 +48,7 @@ import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
 import au.org.theark.study.service.Constants;
+import au.org.theark.study.web.component.site.SiteVo;
 
 @Repository("ldapUserDao")
 public class LdapUserDao implements ILdapUserDao{
@@ -198,7 +199,7 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 	}
 	
-	public void createSite(String siteName, String description, List<String> siteMemberList) throws EntityExistsException,ArkSystemException{
+	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException{
 		log.info("\n create a site in ldap");
 		try {
 			
@@ -206,30 +207,31 @@ public class LdapUserDao implements ILdapUserDao{
 			DirContextAdapter dirContextAdapter = new DirContextAdapter();
 			
 			List<String> list = new ArrayList<String>();
-			for (String siteMember : siteMemberList) {
+			
+			for (String siteMember : siteVo.getSiteMembers()) {
 				list.add(buildPersonDN(siteMember));
 			}
 			Object[] membersInSite = list.toArray(); 
 			dirContextAdapter.setAttributeValues("objectClass", new String[]{"groupOfNames","top"});
-			dirContextAdapter.setAttributeValue("cn", siteName);
+			dirContextAdapter.setAttributeValue("cn", siteVo.getSiteName());
 			dirContextAdapter.setAttributeValues("member",membersInSite);
-			dirContextAdapter.setAttributeValue("description", description);
-			ldapName.add(new Rdn(Constants.CN,siteName));
+			dirContextAdapter.setAttributeValue("description", siteVo.getSiteDescription());
+			ldapName.add(new Rdn(Constants.CN,siteVo.getSiteName()));
 			Name nameobj = ldapName;
 			ldapTemplate.bind(nameobj,dirContextAdapter,null);
 		}
 		catch(org.springframework.ldap.NameAlreadyBoundException nabe){
 			log.error("A with with that name is present in the system.  " + nabe.getMessage());
 			StringBuffer error = new StringBuffer();
-			error.append(siteName  + " already exists in the system.");
-			error.append(siteName);
+			error.append( siteVo.getSiteName()  + " already exists in the system.");
+			error.append( siteVo.getSiteName());
 			throw new EntityExistsException( error.toString());
 		}
 		catch(InvalidNameException ine){
 			log.error("An exception occured while creating a new Site. " + ine.getMessage());
 			StringBuffer error = new StringBuffer();
 			error.append("A system error occured while creating the Site ");
-			error.append(siteName);
+			error.append( siteVo.getSiteName());
 			throw new ArkSystemException( error.toString());
 		}
 		
@@ -405,6 +407,20 @@ public class LdapUserDao implements ILdapUserDao{
 			return etaUserVO;
 		}
 	}
+	
+	private static class LiteSiteContextMapper implements ContextMapper {
+		
+		public Object mapFromContext(Object ctx) {
+			log.info("\n LiteSiteContext Mapper...");
+			DirContextAdapter context = (DirContextAdapter) ctx;
+			SiteVo siteVo = new SiteVo();
+			siteVo.setSiteName(context.getStringAttribute("cn"));
+			siteVo.setSiteDescription(context.getStringAttribute("description"));
+			//If the schema has other attributes then set/add them here
+			return siteVo;
+		}
+	}
+	
 
 	/**
 	 * Gets a list of roles for a given moduleId/application name
@@ -1661,4 +1677,40 @@ public class LdapUserDao implements ILdapUserDao{
 		return listOfMembers;
 	}
 
+	public List<SiteVo> getSite(SiteVo siteVo){
+		
+		List<SiteVo> siteList = new ArrayList<SiteVo>();
+		//Within the Site group ou=site find a site with the given name. This lookup is a very basic one and is not linked to a Study in context.
+		
+		AndFilter filter = new AndFilter();
+		filter.and(new EqualsFilter("objectclass", "groupOfNames"));//We will need a custom objectClass of type Site
+		
+		
+		if(StringUtils.hasText(siteVo.getSiteName())){
+			filter.and(new EqualsFilter(Constants.CN,siteVo.getSiteName()));
+		}
+		
+		//We are not looking up based on description so it is excluded
+		//If other search attributes like address is needed then either we add these attributes to LDAp or maintain it in database and look up a site from backend and
+		//provide the address details.
+		
+		return ldapTemplate.search(getBaseSiteDn(), filter.encode(),new LiteSiteContextMapper());
+		
+	}
+	
+	public void updateSite(SiteVo siteVo)throws ArkSystemException{
+		
+		try{
+			LdapName ldapName = new LdapName(getBaseSiteDn());
+			ldapName.add(new Rdn("cn", siteVo.getSiteName()));		
+			//There is only one attribute we want to update
+			BasicAttribute siteDescription = new BasicAttribute("description", siteVo.getSiteDescription());
+			ModificationItem itemDescription = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, siteDescription);
+			ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] {itemDescription });
+			
+		}catch(InvalidNameException ine){
+			log.error("Exception occured when updating the Site on LDAP " + ine.getStackTrace());
+			throw new ArkSystemException("A System error has occured while trying to update the Site details.");
+		}
+	}
 }
