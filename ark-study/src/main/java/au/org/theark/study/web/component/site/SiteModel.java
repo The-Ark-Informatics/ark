@@ -1,34 +1,46 @@
 package au.org.theark.study.web.component.site;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudySite;
 
 public class SiteModel implements Serializable{
 	
 	public SiteModel(){
-		
+		 siteVo = new SiteVo();
+		 siteVoList = new ArrayList<SiteVo>();
 	}
 	/**
 	 * Maps to ldap properties
 	 */
-	private String siteName;
-	private String siteDescription;
-	
-	public String getSiteName() {
-		return siteName;
+	private SiteVo siteVo;
+	private List<SiteVo> siteVoList;
+	public int getMode() {
+		return mode;
 	}
 
-	public void setSiteName(String siteName) {
-		this.siteName = siteName;
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
+	private int mode;
+
+	public SiteVo getSiteVo() {
+		return siteVo;
 	}
 
-	public String getSiteDescription() {
-		return siteDescription;
+	public void setSiteVo(SiteVo siteVo) {
+		this.siteVo = siteVo;
 	}
 
-	public void setSiteDescription(String siteDescription) {
-		this.siteDescription = siteDescription;
+	public List<SiteVo> getSiteVoList() {
+		return siteVoList;
+	}
+
+	public void setSiteVoList(List<SiteVo> siteVoList) {
+		this.siteVoList = siteVoList;
 	}
 
 	public StudySite getStudySite() {
