@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.site.SiteVo;
 
 @Transactional
 @Service(Constants.STUDY_SERVICE)
@@ -58,8 +60,14 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getListOfStudyStatus();
 	}
 	
-	public void createSite(String siteName, String description, List<String> siteMembers) throws EntityExistsException,ArkSystemException{
-		iLdapUserDao.createSite(siteName, description, siteMembers);
+	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException{
+		iLdapUserDao.createSite(siteVo);
+	}
+	
+	public List<SiteVo> getSite(SiteVo siteVo){
+		
+		return iLdapUserDao.getSite(siteVo);
+		
 	}
 
 	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws ArkSystemException, EntityExistsException, UnAuthorizedOperation{
@@ -153,5 +161,9 @@ public class StudyServiceImpl implements IStudyService{
 		StudyStatus status = studyDao.getStudyStatus(au.org.theark.study.service.Constants.STUDY_STATUS_ARCHIVE);
 		studyEntity.setStudyStatus(status);
 		studyDao.updateStudy(studyEntity);
+	}
+	
+	public void updateSite(SiteVo siteVo)throws ArkSystemException{
+		iLdapUserDao.updateSite(siteVo);
 	}
 }
