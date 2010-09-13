@@ -11,6 +11,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.SiteForm;
 import java.util.*;
 
@@ -54,21 +55,35 @@ public class Details extends Panel{
 				//Build the list of users who will be linked to this site
 				List<String> siteMembers = new ArrayList<String>();
 				siteMembers.add(au.org.theark.study.service.Constants.ARK_SYSTEM_USER);//Add rest of the members
+				
 				try{
-					studyService.createSite(siteModel.getSiteName(), siteModel.getSiteDescription(), siteMembers);	
+					if(siteModel.getMode() == Constants.MODE_NEW){
+						/* This will change a bit when we get the members from the front end*/
+						siteModel.getSiteVo().setSiteMembers(siteMembers);
+						studyService.createSite(siteModel.getSiteVo());
+						cpm.getObject().setMode(Constants.MODE_EDIT);
+						this.info("The site " + siteModel.getSiteVo().getSiteName() + " was created sucessfully.");
+						processFeedback(target);
+					}else{
+						//When users are added to the site then update it
+						siteModel.getSiteVo().setSiteMembers(siteMembers);
+						studyService.updateSite(siteModel.getSiteVo());
+						this.info("The site " + siteModel.getSiteVo().getSiteName() + " was updated sucessfully.");
+						processFeedback(target);
+					}
 				}catch(EntityExistsException exits){
 					this.error("The site you entered already exists in the system.");
-					processErrors(target);
+					processFeedback(target);
 				}catch(ArkSystemException arksystem){
 					this.error("A system error has occured. Please try after some time.");
-					processErrors(target);
+					processFeedback(target);
 				}
 				
 				System.out.println("Site Name ");
 				target.addComponent(feedBackPanel);
 			}
 			
-			protected void processErrors(AjaxRequestTarget target){
+			protected void processFeedback(AjaxRequestTarget target){
 				target.addComponent(feedBackPanel);
 			}
 		};
