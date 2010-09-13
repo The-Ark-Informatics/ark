@@ -16,13 +16,14 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.Details;
 import au.org.theark.study.web.component.site.SiteModel;
+import au.org.theark.study.web.component.site.SiteVo;
 import au.org.theark.study.web.component.study.StudyModel;
 
 public class SiteForm extends Form<SiteModel>{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
-	private WebMarkupContainer  listContainer;
+	private WebMarkupContainer  resultListContainer;
 	
 	private AjaxButton saveButton;
 	private AjaxButton cancelButton;
@@ -36,7 +37,7 @@ public class SiteForm extends Form<SiteModel>{
 		
 		super(id);
 		
-		this.listContainer = listContainer;
+		this.resultListContainer = listContainer;
 		this.detailsPanel = details;
 		
 		/* Action buttons */
@@ -46,6 +47,11 @@ public class SiteForm extends Form<SiteModel>{
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				resultListContainer.setVisible(false);
+				detailsContainer.setVisible(false);
+				target.addComponent(detailsContainer);
+				target.addComponent(resultListContainer);
+				detailsPanel.getCpm().getObject().setSiteVo(new SiteVo());
 				onCancel(target);
 			}
 		};
@@ -62,15 +68,15 @@ public class SiteForm extends Form<SiteModel>{
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				processErrors(target);
+				processFeedback(target);
 			}
 		};
 	}
 	
 	public void initialiseForm(){
 		
-		siteNameTxtFld = new TextField<String>("siteName");
-		siteDescription = new TextArea<String>("siteDescription");
+		siteNameTxtFld = new TextField<String>("siteVo.siteName");
+		siteDescription = new TextArea<String>("siteVo.siteDescription");
 		attachValidators();
 		decorateComponents();
 		addComponents();
@@ -80,7 +86,7 @@ public class SiteForm extends Form<SiteModel>{
 		add(siteNameTxtFld);
 		add(siteDescription);
 		add(saveButton);
-		add(cancelButton);
+		add(cancelButton.setDefaultFormProcessing(false));
 		
 	}
 	
@@ -108,7 +114,7 @@ public class SiteForm extends Form<SiteModel>{
 		
 	}
 	
-	protected void processErrors(AjaxRequestTarget target){
+	protected void processFeedback(AjaxRequestTarget target){
 		
 	}
 
