@@ -57,6 +57,10 @@ public class StudyServiceImpl implements IStudyService{
 	public List<StudyStatus> getListOfStudyStatus(){
 		return studyDao.getListOfStudyStatus();
 	}
+	
+	public void createSite(String siteName, String description, List<String> siteMembers) throws EntityExistsException,ArkSystemException{
+		iLdapUserDao.createSite(siteName, description, siteMembers);
+	}
 
 	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws ArkSystemException, EntityExistsException, UnAuthorizedOperation{
 		try{
