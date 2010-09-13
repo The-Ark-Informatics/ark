@@ -59,12 +59,22 @@ public class LdapUserDao implements ILdapUserDao{
 	private String baseModuleDn;
 	private String baseGroupDn;
 	private String basePeopleDn;
+	private String baseSiteDn;
+	
+
 	/**
 	 * A property that reflects the value of the LDAP paths defined in
 	 * application context
 	 */
 	private String baseDC;
 	
+	public String getBaseSiteDn() {
+		return baseSiteDn;
+	}
+
+	public void setBaseSiteDn(String baseSiteDn) {
+		this.baseSiteDn = baseSiteDn;
+	}
 	public String getBaseModuleDn() {
 		return baseModuleDn;
 	}
@@ -186,6 +196,43 @@ public class LdapUserDao implements ILdapUserDao{
 			log.error("A system exception has occured when trying to add roles to the groups. Need to rollback the LDAP transaction. Remove the user from LDAP People collection " + exception.getMessage());	
 			throw new ArkSystemException("A System exception occured");
 		}
+	}
+	
+	public void createSite(String siteName, String description, List<String> siteMemberList) throws EntityExistsException,ArkSystemException{
+		log.info("\n create a site in ldap");
+		try {
+			
+			LdapName ldapName = new LdapName(baseSiteDn);
+			DirContextAdapter dirContextAdapter = new DirContextAdapter();
+			
+			List<String> list = new ArrayList<String>();
+			for (String siteMember : siteMemberList) {
+				list.add(buildPersonDN(siteMember));
+			}
+			Object[] membersInSite = list.toArray(); 
+			dirContextAdapter.setAttributeValues("objectClass", new String[]{"groupOfNames","top"});
+			dirContextAdapter.setAttributeValue("cn", siteName);
+			dirContextAdapter.setAttributeValues("member",membersInSite);
+			dirContextAdapter.setAttributeValue("description", description);
+			ldapName.add(new Rdn(Constants.CN,siteName));
+			Name nameobj = ldapName;
+			ldapTemplate.bind(nameobj,dirContextAdapter,null);
+		}
+		catch(org.springframework.ldap.NameAlreadyBoundException nabe){
+			log.error("A with with that name is present in the system.  " + nabe.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append(siteName  + " already exists in the system.");
+			error.append(siteName);
+			throw new EntityExistsException( error.toString());
+		}
+		catch(InvalidNameException ine){
+			log.error("An exception occured while creating a new Site. " + ine.getMessage());
+			StringBuffer error = new StringBuffer();
+			error.append("A system error occured while creating the Site ");
+			error.append(siteName);
+			throw new ArkSystemException( error.toString());
+		}
+		
 	}
 	
 	protected void mapToContext(String username,String firstName, String lastName, String email,  String password, DirContextOperations dirCtxOperations){
@@ -1067,7 +1114,7 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 	}
 	
-	private void mapStudyContext(DirContextOperations dirContext,String groupOrRoleName,String[] members){
+	private void mapStudyContext(DirContextOperations dirContext,String groupOrRoleName,Object[] members){
 		dirContext.setAttributeValues("objectClass", new String[]{"groupOfNames","top"});
 		dirContext.setAttributeValue("cn", groupOrRoleName);
 		dirContext.setAttributeValues("member",members);
