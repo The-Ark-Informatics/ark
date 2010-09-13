@@ -74,11 +74,6 @@ public class StudySubMenuTab extends Panel {
 		menuModule.setModuleName("Sites");
 		menuModule.setResourceKey("tab.module.sites");
 		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
-		menuModule.setModuleName("Consent Sections");
-		menuModule.setResourceKey("tab.module.consent.sections");
-		moduleTabs.add(menuModule);
 
 		menuModule = new MenuModule();
 		menuModule.setModuleName("Study Components");
@@ -126,22 +121,21 @@ public class StudySubMenuTab extends Panel {
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.USERS)){
+						
 						panelToReturn = new UserContainer(panelId, new ArkUserVO());//Note the constructor
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_DETAILS)){
-						panelToReturn = new StudyContainerPanel(panelId);
 					
-					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SUB_STUDIES)){
 						panelToReturn = new StudyContainerPanel(panelId);
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SITES)){
+						
 						panelToReturn = new SiteContainerPanel(panelId);
 					
-					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.CONSENT_SECTIONS)){
-						panelToReturn = new ConsentContainerPanel(panelId);
-					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_COMPONENTS)){
+					
 						panelToReturn = new StudyComponentContainerPanel(panelId);
+					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAILS)){
 						
 						Subject currentUser = SecurityUtils.getSubject();
