@@ -18,12 +18,13 @@ import au.org.theark.study.web.Constants;
 
 @SuppressWarnings("serial")
 public class SearchUserForm extends Form<ArkUserVO>{
-	
+	Long sessionStudyId;
 	TextField<String> userNameTxtField =new TextField<String>(Constants.USER_NAME);
 	TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 	TextField<String> lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
 	TextField<String> emailTxtField = new TextField<String>(Constants.EMAIL);
-	
+	Button searchBtn;
+	Button newBtn;
 	private void initFormFields(){
 		emailTxtField.add(EmailAddressValidator.getInstance());
 		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
@@ -35,6 +36,8 @@ public class SearchUserForm extends Form<ArkUserVO>{
 	public SearchUserForm(String id, ArkUserVO userVO, String panelId) {
 	
 		super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
+		
+		
 		initFormFields();
 		/* Add the look up fields */
 		add(userNameTxtField);
@@ -42,19 +45,18 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		add(lastNameTxtField);
 		add(emailTxtField);
 		
-		add(new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
+		searchBtn = new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
 		{
 			public void onSubmit()
 			{
 				
 				onSearch((ArkUserVO) getForm().getModelObject());
 			}
-		});
+		};
+		add(searchBtn);
 		
-		/**
-		 * Allow to create a New User
-		 */
-		add(new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
+		
+		newBtn = new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
 		{
 			public void onSubmit()
 			{
@@ -78,7 +80,25 @@ public class SearchUserForm extends Form<ArkUserVO>{
 				return flag;
 			}
 		
-		});
+		};
+		
+		add(newBtn);
+		
+		/* Secure the Action buttons if there is no study in context */
+		sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(sessionStudyId == null){
+			searchBtn.setEnabled(false);
+			newBtn.setEnabled(false);
+		}else{
+			newBtn.setEnabled(true);
+			searchBtn.setEnabled(true);
+		}
+		
+		
+		/**
+		 * Allow to create a New User
+		 */
+
 	}
 
 	/* Processing logic for search */
