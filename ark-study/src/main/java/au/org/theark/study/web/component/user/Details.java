@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.util.StringUtils;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -18,6 +19,8 @@ import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
 import au.org.theark.core.util.UIHelper;
+import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.UserForm;
@@ -34,6 +37,9 @@ public class Details extends Panel{
 
 	@SpringBean( name = "userService")
 	private IUserService userService;
+	
+	@SpringBean( name = Constants.STUDY_SERVICE)
+	private IStudyService studyService;
 
 	private Search searchPanel;
 	private UserForm userForm;
@@ -60,55 +66,6 @@ public class Details extends Panel{
 		this.userForm = userForm;
 	}
 
-	/**
-	 * Overloaded constructor.
-	 * @param id
-	 * @param userVO
-	 */
-	public Details(String id, ArkUserVO userVO){
-		
-		super(id);
-		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
-			private static final long serialVersionUID = 6077699021177330917L;
-			//Do an update
-			protected  void onSave(ArkUserVO userVO){
-				//Update the user details TODO
-				try {
-					//forcing update of password
-					userVO.setChangePassword(true);
-					userService.updateLdapUser(userVO);
-				} catch (ArkSystemException arkSystemException) {
-					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
-					//add custom error message to feedback panel. 
-				}catch(Exception ex){
-					//Handle all other type of exceptions
-					log.error("Exception occured when saving user details " + ex.getMessage());
-				}
-			}
-			
-			protected void onCancel(){
-				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
-				this.setVisible(false);
-			}
-			
-			protected void onDelete(ArkUserVO userVO){
-				log.info("Delete the user details from ldap");
-				try{
-					userService.deleteLdapUser(userVO);	
-				}catch(ArkSystemException arkSystemException){
-					log.error("Exception occured while performing a delete on the user details in LDAP " + arkSystemException.getMessage());
-				}catch(Exception ex){
-					log.error("Exception occured when saving user details " + ex.getMessage());
-				}
-			}
-		};
-		
-		if(userVO.getMode() == Constants.MODE_EDIT){
-			userForm.getUserNameTxtField().setEnabled(false);
-		}
-		add(userForm);
-	}
-	
 	
 	private String customValidation(PasswordTextField password, PasswordTextField confirmPassword){
 		String error ="";
@@ -150,17 +107,22 @@ public class Details extends Panel{
 							mapToSystemValues(userVO);
 							//Get the study in context
 							//TODO and set the study into the user vo
-							StudyVO studyVO = new StudyVO();
-							studyVO.setStudyName("demo");
-							studyVO.setModules(userVO.getModules());
-							userVO.setStudyVO(studyVO);
 							
-							userService.createLdapUser(userVO);	
-							userForm.info(userVO.getUserName() + " was added successfully.");
-							this.groupPasswordContainer.setVisible(false);
-							this.userNameTxtField.setEnabled(false);
-							this.userPasswordField.setRequired(false);
-							this.confirmPasswordField.setRequired(false);
+							Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+							if(sessionStudyId != null){
+								Study study = studyService.getStudy(sessionStudyId);
+								StudyVO studyVO = new StudyVO();
+								studyVO.setStudyName(study.getName());
+								studyVO.setModules(userVO.getModules());
+								userVO.setStudyVO(studyVO);
+								userService.createLdapUser(userVO);	
+								userForm.info(userVO.getUserName() + " was added successfully.");
+								this.groupPasswordContainer.setVisible(false);
+								this.userNameTxtField.setEnabled(false);
+								this.userPasswordField.setRequired(false);
+								this.confirmPasswordField.setRequired(false);
+							}
+							
 						}else{
 							this.error("The user has not been assigned a role.");
 						}
