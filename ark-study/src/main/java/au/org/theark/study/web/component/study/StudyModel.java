@@ -19,7 +19,7 @@ public class StudyModel implements Serializable{
 	private List<Study> studyList;
 	private Collection<ModuleVo> modulesAvailable;
 	private Collection<ModuleVo> modulesSelected;
-	
+	private String studySummaryLabel;
 	
 	public StudyModel(){
 		study = new Study();
@@ -73,6 +73,14 @@ public class StudyModel implements Serializable{
 
 	public void setModulesSelected(Collection<ModuleVo> modulesSelected) {
 		this.modulesSelected = modulesSelected;
+	}
+
+	public String getStudySummaryLabel() {
+		return study.getName();
+	}
+
+	public void setStudySummaryLabel(String studySummaryLabel) {
+		this.studySummaryLabel = studySummaryLabel;
 	}
 	
 }
