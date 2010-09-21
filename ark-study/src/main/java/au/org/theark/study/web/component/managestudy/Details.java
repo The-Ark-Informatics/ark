@@ -27,6 +27,7 @@ public class Details  extends Panel{
 	private WebMarkupContainer searchContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
+	private WebMarkupContainer detailFormContainer;
 	
 	
 	
@@ -59,7 +60,7 @@ public class Details  extends Panel{
 	 * @param listContainer
 	 */
 	public Details(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, 
-			WebMarkupContainer searchWebMarkupContainer, WebMarkupContainer saveArchBtnContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer detailSumContainer) {
+			WebMarkupContainer searchWebMarkupContainer, WebMarkupContainer saveArchBtnContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer detailSumContainer,WebMarkupContainer detailFormContainer) {
 		super(id);
 		this.listContainer = listContainer;
 		this.feedBackPanel = feedBackPanel;
@@ -68,12 +69,25 @@ public class Details  extends Panel{
 		this.saveArchivebuttonContainer = saveArchBtnContainer;
 		this.editbuttonContainer = editBtnContainer;
 		this.summaryContainer = detailSumContainer;
+		this.detailFormContainer = detailFormContainer;
 	}
 
+	
+	private void postSaveUpdate(AjaxRequestTarget target){
+		detailFormContainer.setEnabled(false);
+		saveArchivebuttonContainer.setVisible(false);
+		editbuttonContainer.setVisible(true);
+		summaryContainer.setVisible(true);
+		target.addComponent(detailFormContainer);
+		target.addComponent(feedBackPanel);
+		target.addComponent(saveArchivebuttonContainer);
+		target.addComponent(editbuttonContainer);
+		target.addComponent(summaryContainer);
+	}
 	public void initialisePanel(){
 
 		
-		detailForm = new DetailForm("detailForm", this, listContainer,detailsContainer,searchContainer,saveArchivebuttonContainer, editbuttonContainer, summaryContainer){
+		detailForm = new DetailForm("detailForm", this, listContainer,detailsContainer,searchContainer,saveArchivebuttonContainer, editbuttonContainer, summaryContainer,detailFormContainer){
 			
 			protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
 				
@@ -81,28 +95,13 @@ public class Details  extends Panel{
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
 						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
 						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
-						detailsContainer.setEnabled(false);
-						saveArchivebuttonContainer.setVisible(false);
-						editbuttonContainer.setVisible(false);
-						summaryContainer.setVisible(true);
-						target.addComponent(detailsContainer);
-						target.addComponent(feedBackPanel);
-						target.addComponent(saveArchivebuttonContainer);
-						target.addComponent(editbuttonContainer);
-						target.addComponent(summaryContainer);
+						postSaveUpdate(target);
+
 					}else{
 						//Update
 						service.updateStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps() );
 						this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
-						saveArchivebuttonContainer.setVisible(false);
-						editbuttonContainer.setVisible(true);
-						summaryContainer.setVisible(true);
-						detailsContainer.setEnabled(false);
-						target.addComponent(detailsContainer);
-						target.addComponent(feedBackPanel);
-						target.addComponent(saveArchivebuttonContainer);
-						target.addComponent(editbuttonContainer);
-						target.addComponent(summaryContainer);
+						postSaveUpdate(target);
 					}
 				}
 				catch(EntityExistsException eee){
@@ -127,9 +126,18 @@ public class Details  extends Panel{
 		
 		
 			protected void onCancel(AjaxRequestTarget target){
-				detailForm.getCancelButton().setEnabled(true);
-				detailForm.getSaveButton().setEnabled(true);
-				detailForm.getArchiveButton().setEnabled(true);
+				summaryContainer.setVisible(true);
+				detailFormContainer.setEnabled(false);
+				listContainer.setVisible(false);
+				detailsContainer.setVisible(false);
+				searchContainer.setVisible(true);
+				editbuttonContainer.setVisible(true);
+				target.addComponent(detailFormContainer);
+				target.addComponent(summaryContainer);
+				target.addComponent(detailsContainer);
+				target.addComponent(listContainer);
+				target.addComponent(searchContainer);
+				target.addComponent(editbuttonContainer);
 			}
 			
 			protected void onArchive(StudyModel studyModel,AjaxRequestTarget target){
