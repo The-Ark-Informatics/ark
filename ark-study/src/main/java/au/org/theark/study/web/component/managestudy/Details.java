@@ -6,7 +6,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -138,15 +137,16 @@ public class Details  extends Panel{
 				target.addComponent(listContainer);
 				target.addComponent(searchContainer);
 				target.addComponent(editbuttonContainer);
+				target.addComponent(feedBackPanel);
 			}
 			
 			protected void onArchive(StudyModel studyModel,AjaxRequestTarget target){
 				try{
-				
-					service.archiveStudy(studyModel.getStudy());
-					processArchive();
 					
-				
+					service.archiveStudy(studyModel.getStudy());
+					this.info("The study " + studyModel.getStudy().getName() + " has been archived. You cannot edit this study anymore.");
+					postSaveUpdate(target);
+					detailForm.getEditButton().setEnabled(false);
 				}catch(StatusNotAvailableException statusNotAvailable){
 					
 					this.error("The study cannot be archived at the moment.An administrator will get back to you.");
@@ -162,9 +162,4 @@ public class Details  extends Panel{
 		add(detailForm); //Add the form to the panel
 	}
 		
-	protected void processArchive(){
-		detailForm.getCancelButton().setEnabled(true);
-		detailForm.getSaveButton().setEnabled(false);
-		detailForm.getArchiveButton().setEnabled(false);
-	}
 }
