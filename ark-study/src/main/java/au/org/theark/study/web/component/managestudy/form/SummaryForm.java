@@ -2,7 +2,7 @@ package au.org.theark.study.web.component.managestudy.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.study.web.component.study.StudyModel;
+import au.org.theark.study.model.vo.StudyModel;
 
 public class SummaryForm extends BaseForm{
 

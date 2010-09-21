@@ -4,7 +4,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.study.web.component.study.StudyModel;
+import au.org.theark.study.model.vo.StudyModel;
 
 public class Summary extends Panel{
 	

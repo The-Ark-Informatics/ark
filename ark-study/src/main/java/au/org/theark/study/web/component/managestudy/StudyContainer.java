@@ -14,10 +14,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
-import au.org.theark.study.web.component.study.StudyModel;
 
 public class StudyContainer extends Panel{
 

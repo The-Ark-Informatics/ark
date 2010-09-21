@@ -22,8 +22,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IUserService;
-import au.org.theark.study.web.component.study.StudyModel;
 import au.org.theark.study.web.form.ModuleVo;
 
 public class SearchResults extends Panel{

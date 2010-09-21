@@ -13,10 +13,10 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
-import au.org.theark.study.web.component.study.StudyModel;
 
 public class Details  extends Panel{
 
