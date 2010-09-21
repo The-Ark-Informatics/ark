@@ -9,9 +9,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.vo.StudyModel;
@@ -23,7 +20,6 @@ public class StudyContainer extends Panel{
 
 
 	private static final long serialVersionUID = 1L;
-	private transient Logger log = LoggerFactory.getLogger(StudyContainer.class);
 	
 	/* Model */
 	private CompoundPropertyModel<StudyModel> cpm;
@@ -38,6 +34,7 @@ public class StudyContainer extends Panel{
 	//Child Components
 	private Search searchStudyPanel;
 	private WebMarkupContainer detailsContainer;
+	private WebMarkupContainer detailFormContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
@@ -69,6 +66,11 @@ public class StudyContainer extends Panel{
 		detailsContainer.setOutputMarkupPlaceholderTag(true);
 		detailsContainer.setVisible(false);
 
+		
+		detailFormContainer = new WebMarkupContainer("detailFormContainer");
+		detailFormContainer.setOutputMarkupPlaceholderTag(true);
+		detailFormContainer.setEnabled(false);
+		
 		//The wrapper for ResultsList panel that will contain a ListView
 		resultListContainer = new WebMarkupContainer("resultListContainer");
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
@@ -86,14 +88,27 @@ public class StudyContainer extends Panel{
 		summaryContainer.setOutputMarkupPlaceholderTag(true);
 		summaryContainer.setVisible(false);
 		
-		detailsPanel = new Details("detailsPanel", resultListContainer,feedBackPanel,detailsContainer,searchWebMarkupContainer,saveArchivebuttonContainer,editbuttonContainer, summaryContainer);//Need to pass feedback panle too
+		detailsPanel = new Details("detailsPanel", 
+									resultListContainer,
+									feedBackPanel,
+									detailsContainer,
+									searchWebMarkupContainer,
+									saveArchivebuttonContainer,
+									editbuttonContainer,
+									summaryContainer,
+									detailFormContainer);//Need to pass feedback panel
 		detailsPanel.setCpm(cpm);
 		detailsPanel.initialisePanel();
 		detailsContainer.add(detailsPanel);
 		
 		//Pass this to the SearchResultListView control that will use this to render its values.
 		//Also pass in the markup container for searchPanel i.e the searchContainer 
-		SearchResults searchResultsPanel = new SearchResults("resultsPanel",searchWebMarkupContainer,detailsContainer,saveArchivebuttonContainer,editbuttonContainer, summaryContainer);
+		SearchResults searchResultsPanel = new SearchResults("resultsPanel",
+															searchWebMarkupContainer,
+															detailsContainer,
+															saveArchivebuttonContainer,
+															editbuttonContainer, 
+															summaryContainer);
 		searchResultsPanel.setCpm(cpm);
 
 		
@@ -121,10 +136,10 @@ public class StudyContainer extends Panel{
 										resultListContainer,
 										searchWebMarkupContainer,
 										detailsContainer,
-										detailsPanel,saveArchivebuttonContainer,editbuttonContainer);
-		
-	
-		
+										detailsPanel,
+										saveArchivebuttonContainer,
+										editbuttonContainer,
+										detailFormContainer);
 		
 		searchStudyPanel.initialisePanel();
 		searchWebMarkupContainer.add(searchStudyPanel);
@@ -132,15 +147,11 @@ public class StudyContainer extends Panel{
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
 		
-		
 		resultListContainer.add(searchResultsPanel);
-		
-		
-		
 		//Add the search control into the searchContainer
 		containerForm.add(searchWebMarkupContainer);
 		containerForm.add(resultListContainer);
-		//containerForm.add(summaryWebMarkupContainer);
+	
 		//Add the details into the containerForm
 		containerForm.add(detailsContainer);
 		add(containerForm);
