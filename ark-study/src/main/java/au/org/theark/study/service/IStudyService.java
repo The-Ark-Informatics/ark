@@ -9,6 +9,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.web.component.site.SiteVo;
 
@@ -47,5 +48,12 @@ public interface IStudyService {
 	public List<SiteVo> getSite(SiteVo siteVo);
 	
 	public void updateSite(SiteVo siteVo) throws ArkSystemException;
+	
+	/**
+	 * Search for Study components with a certain criteria.
+	 * @param studyCompCriteria
+	 * @return
+	 */
+	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException;
 
 }
