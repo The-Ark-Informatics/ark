@@ -154,7 +154,9 @@ public class StudyContainer extends Panel{
 	
 		//Add the details into the containerForm
 		containerForm.add(detailsContainer);
+		containerForm.add(feedBackPanel);
 		add(containerForm);
+		
 	}
 
 }
