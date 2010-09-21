@@ -34,10 +34,10 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.study.Details;
-import au.org.theark.study.web.component.study.StudyModel;
 
 @SuppressWarnings("serial")
 public class StudyForm extends Form<StudyModel>{
