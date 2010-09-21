@@ -133,11 +133,15 @@ public class SearchResults extends Panel{
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
 				}
+				
 				searchResultsContainer.setVisible(false);//List view container
 				searchMarkupContainer.setVisible(false);//Hide the Search panel container
 				detailsMarkupContainer.setVisible(true);
+				//detailsMarkupContainer.setEnabled(false);
+				
 				saveBtnContainer.setVisible(false);
 				editBtnContainer.setVisible(true);
+				editBtnContainer.setEnabled(true);
 				detailSummaryContainer.setVisible(true);
 				
 				target.addComponent(searchMarkupContainer);
