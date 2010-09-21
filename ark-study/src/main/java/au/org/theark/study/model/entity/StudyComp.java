@@ -6,10 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -57,8 +60,9 @@ public class StudyComp implements java.io.Serializable {
 		this.documents = documents;
 	}
 
-	// Property accessors
 	@Id
+	@SequenceGenerator(name="studycomp_generator", sequenceName="STUDYCOMP_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "studycomp_generator")
 	@Column(name = "STUDY_COMP_KEY", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getStudyCompKey() {
 		return this.studyCompKey;
