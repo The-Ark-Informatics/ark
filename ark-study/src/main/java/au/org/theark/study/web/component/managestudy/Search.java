@@ -37,6 +37,7 @@ public class Search extends Panel{
 	private WebMarkupContainer searchContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer detailFormContainer;
 	private Details details;
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
@@ -63,7 +64,8 @@ public class Search extends Panel{
 					WebMarkupContainer detailsContainer, 
 					Details detailsPanel,
 					WebMarkupContainer saveArchBtnContainer,
-					WebMarkupContainer editBtnContainer) {
+					WebMarkupContainer editBtnContainer,
+					WebMarkupContainer detailFormCompContainer) {
 		
 		super(id);
 		this.studyStatusList = studyStatusList;
@@ -75,6 +77,7 @@ public class Search extends Panel{
 		details = detailsPanel;
 		saveArchivebuttonContainer = saveArchBtnContainer;
 		editButtonContainer = editBtnContainer;
+		detailFormContainer = detailFormCompContainer;
 	}
 	
 	public void initialisePanel(){
@@ -138,11 +141,13 @@ public class Search extends Panel{
 		saveArchivebuttonContainer.setVisible(true);
 		editButtonContainer.setVisible(false);
 		searchWebMarkupContainer.setVisible(false);
+		detailFormContainer.setEnabled(true);
 		target.addComponent(detailsWebMarkupContainer);
 		target.addComponent(listContainer);
 		target.addComponent(searchWebMarkupContainer);
 		target.addComponent(saveArchivebuttonContainer);
 		target.addComponent(editButtonContainer);
+		target.addComponent(detailFormContainer);
 	}
 
 }
