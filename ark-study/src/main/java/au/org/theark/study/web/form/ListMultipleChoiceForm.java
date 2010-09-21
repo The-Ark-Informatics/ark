@@ -22,10 +22,10 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.study.ApplicationSelector;
 import au.org.theark.study.web.component.study.Details;
-import au.org.theark.study.web.component.study.StudyModel;
 
 @SuppressWarnings("serial")
 public class ListMultipleChoiceForm extends Form<StudyModel>{
