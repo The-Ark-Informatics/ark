@@ -31,6 +31,7 @@ public class SearchResultList extends Panel{
 	
 
 	private WebMarkupContainer detailsContainer;
+	private Search studySearchPanel;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -39,9 +40,10 @@ public class SearchResultList extends Panel{
 	private CompoundPropertyModel<StudyModel> cpm;
 	
 	
-	public SearchResultList(String id, WebMarkupContainer  details){
+	public SearchResultList(String id, WebMarkupContainer  details, Search searchPanel){
 		super(id);
 		this.detailsContainer = details;
+		studySearchPanel = searchPanel;
 	}
 	public CompoundPropertyModel<StudyModel> getCpm() {
 		return cpm;
@@ -132,6 +134,7 @@ public class SearchResultList extends Panel{
 				searchContainer.setVisible(false);
 				target.addComponent(detailsContainer);
 				target.addComponent(searchContainer);
+				studySearchPanel.setVisible(false);
 			}
 		};
 		

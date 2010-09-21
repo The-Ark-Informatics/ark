@@ -54,7 +54,7 @@ public class Search extends Panel {
 	private void initialiseSearchResults(){
 		
 		//searchResults = new SearchResultList("searchResults",detailsPanel);
-		searchResults = new SearchResultList("searchResults",detailsContainer);
+		searchResults = new SearchResultList("searchResults",detailsContainer,this);
 		
 		//Set the Model reference into the results panel
 		searchResults.setCpm(cpm);
@@ -124,7 +124,6 @@ public class Search extends Panel {
 			
 			/*When user has clicked on the Search Button*/
 			protected  void onSearch(AjaxRequestTarget target){
-				
 				
 				List<Study> resultList = studyService.getStudy(cpm.getObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
