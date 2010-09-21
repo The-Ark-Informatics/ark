@@ -155,6 +155,9 @@ public class DetailForm extends Form<StudyModel>{
 				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
 			}
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
+			}
 		};
 		
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
@@ -192,6 +195,9 @@ public class DetailForm extends Form<StudyModel>{
 				onArchive(model, target);
 				
 			}
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
+			}
 		};
 		
 		editButton = new AjaxButton("edit", new StringResourceModel("deleteKey", this, null))
@@ -213,6 +219,10 @@ public class DetailForm extends Form<StudyModel>{
 				target.addComponent(editbuttonContainer);
 				target.addComponent(saveArchivebuttonContainer);
 			}
+			
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
+			}
 		};
 		
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("deleteKey", this, null))
@@ -221,6 +231,9 @@ public class DetailForm extends Form<StudyModel>{
 			{
 				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
+			}
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
 			}
 		};
 		
@@ -400,5 +413,13 @@ public class DetailForm extends Form<StudyModel>{
 
 	public DetailForm getDetailsForm() {
 		return this;
+	}
+
+	public AjaxButton getEditButton() {
+		return editButton;
+	}
+
+	public void setEditButton(AjaxButton editButton) {
+		this.editButton = editButton;
 	}
 }
