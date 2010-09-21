@@ -8,6 +8,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.form.ListMultipleChoiceForm;
 
 @SuppressWarnings("serial")
