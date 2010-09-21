@@ -152,17 +152,7 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//Show the Summary page
-				//summaryPanelContainer.setVisible(true);
-//				detailsFormContainer.setEnabled(false);
-//				listContainer.setVisible(false);
-//				detailsContainer.setVisible(false);
-//				searchContainer.setVisible(true);
 				details.getCpm().getObject().setStudy(new Study());
-//				target.addComponent(summaryPanelContainer);
-//				target.addComponent(detailsContainer);
-//				target.addComponent(listContainer);
-//				target.addComponent(searchContainer);
 				onCancel(target);
 			}
 		};
@@ -229,18 +219,6 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				
-//				details.getCpm().getObject().setStudy(new Study());
-				
-//				detailsContainer.setVisible(false);
-//				detailsFormContainer.setEnabled(false);
-//				editbuttonContainer.setVisible(true);
-//				searchContainer.setVisible(true);
-//				target.addComponent(detailsContainer);
-//				target.addComponent(detailsFormContainer);
-//				target.addComponent(searchContainer);
-//				target.addComponent(editbuttonContainer);
-				
 				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
 			}
@@ -351,11 +329,6 @@ public class DetailForm extends Form<StudyModel>{
 	}
 	
 	private void addComponents(){
-		
-//		detailFormContainer = new WebMarkupContainer("detailFormContainer");
-//		detailFormContainer.setOutputMarkupPlaceholderTag(true);
-//		detailFormContainer.setEnabled(false);
-		
 		detailsFormContainer.add(studyIdTxtFld);
 		detailsFormContainer.add(studyNameTxtFld);
 		detailsFormContainer.add(studyDescriptionTxtArea);
@@ -375,7 +348,6 @@ public class DetailForm extends Form<StudyModel>{
 		
 		//Summary related fields into another container
 		summaryPanelContainer.add(studySummaryLabel);
-		
 		
 		saveArchivebuttonContainer.add(archiveButton);
 		saveArchivebuttonContainer.add(saveButton);
