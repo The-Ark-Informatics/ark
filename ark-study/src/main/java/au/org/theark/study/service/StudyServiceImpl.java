@@ -21,6 +21,7 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.SiteVo;
@@ -165,5 +166,16 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void updateSite(SiteVo siteVo)throws ArkSystemException{
 		iLdapUserDao.updateSite(siteVo);
+	}
+	
+	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException{
+		/* Testing */
+		List<StudyComp> studyComponents = new ArrayList<StudyComp>();
+		StudyComp studyComp = new StudyComp();
+		studyComp.setName("Test Component");
+		studyComp.setDescription("Test Description");
+		studyComponents.add(studyComp);
+		return studyComponents;
+		
 	}
 }
