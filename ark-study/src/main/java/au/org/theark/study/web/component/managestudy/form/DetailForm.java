@@ -52,7 +52,7 @@ public class DetailForm extends Form<StudyModel>{
 	private Details details;
 	private WebMarkupContainer  listContainer;
 	
-	private WebMarkupContainer detailFormContainer;
+	private WebMarkupContainer detailsFormContainer;
 	private WebMarkupContainer summaryPanelContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
@@ -132,7 +132,7 @@ public class DetailForm extends Form<StudyModel>{
 	 */
 	public DetailForm(String id, Details detailsPanel, WebMarkupContainer container,
 					final WebMarkupContainer detailsContainer, WebMarkupContainer searchWebMarkupContainer,
-					WebMarkupContainer saveArchiveContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer sumContainer){
+					WebMarkupContainer saveArchiveContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer sumContainer,WebMarkupContainer detailFormContainer){
 		
 		super(id);
 	
@@ -143,6 +143,7 @@ public class DetailForm extends Form<StudyModel>{
 		saveArchivebuttonContainer = saveArchiveContainer;
 		editbuttonContainer = editBtnContainer;
 		summaryPanelContainer = sumContainer;
+		detailsFormContainer = detailFormContainer;
 		
 		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
 		
@@ -151,13 +152,17 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				listContainer.setVisible(false);
-				detailsContainer.setVisible(false);
-				target.addComponent(detailsContainer);
-				target.addComponent(listContainer);
-				searchContainer.setVisible(true);
-				target.addComponent(searchContainer);
+				//Show the Summary page
+				//summaryPanelContainer.setVisible(true);
+//				detailsFormContainer.setEnabled(false);
+//				listContainer.setVisible(false);
+//				detailsContainer.setVisible(false);
+//				searchContainer.setVisible(true);
 				details.getCpm().getObject().setStudy(new Study());
+//				target.addComponent(summaryPanelContainer);
+//				target.addComponent(detailsContainer);
+//				target.addComponent(listContainer);
+//				target.addComponent(searchContainer);
 				onCancel(target);
 			}
 		};
@@ -205,11 +210,16 @@ public class DetailForm extends Form<StudyModel>{
 			{
 				editbuttonContainer.setVisible(false);
 				saveArchivebuttonContainer.setVisible(true);
-				detailFormContainer.setEnabled(true);
+				detailsFormContainer.setEnabled(true);
 				getStudyNameTxtFld().setEnabled(false);
 				//summaryPanelContainer.setVisible(false);
 				//target.addComponent(summaryPanelContainer);
-				target.addComponent(detailFormContainer);
+				
+				target.addComponent(editbuttonContainer);
+				target.addComponent(saveArchivebuttonContainer);
+				target.addComponent(saveArchivebuttonContainer);
+				
+				target.addComponent(detailsFormContainer);
 				target.addComponent(editbuttonContainer);
 				target.addComponent(saveArchivebuttonContainer);
 			}
@@ -220,10 +230,17 @@ public class DetailForm extends Form<StudyModel>{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				
-				detailsContainer.setVisible(false);
-				searchContainer.setVisible(true);
-				target.addComponent(detailsContainer);
-				target.addComponent(searchContainer);
+//				details.getCpm().getObject().setStudy(new Study());
+				
+//				detailsContainer.setVisible(false);
+//				detailsFormContainer.setEnabled(false);
+//				editbuttonContainer.setVisible(true);
+//				searchContainer.setVisible(true);
+//				target.addComponent(detailsContainer);
+//				target.addComponent(detailsFormContainer);
+//				target.addComponent(searchContainer);
+//				target.addComponent(editbuttonContainer);
+				
 				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
 			}
@@ -335,26 +352,26 @@ public class DetailForm extends Form<StudyModel>{
 	
 	private void addComponents(){
 		
-		detailFormContainer = new WebMarkupContainer("detailFormContainer");
-		detailFormContainer.setOutputMarkupPlaceholderTag(true);
-		detailFormContainer.setEnabled(false);
+//		detailFormContainer = new WebMarkupContainer("detailFormContainer");
+//		detailFormContainer.setOutputMarkupPlaceholderTag(true);
+//		detailFormContainer.setEnabled(false);
 		
-		detailFormContainer.add(studyIdTxtFld);
-		detailFormContainer.add(studyNameTxtFld);
-		detailFormContainer.add(studyDescriptionTxtArea);
-		detailFormContainer.add(estYearOfCompletionTxtFld);
-		detailFormContainer.add(studyStatusDpChoices);
-		detailFormContainer.add(dateOfApplicationDp);
-		detailFormContainer.add(principalContactPhoneTxtFld);
-		detailFormContainer.add(principalContactTxtFld);
-		detailFormContainer.add(chiefInvestigatorTxtFld);
-		detailFormContainer.add(coInvestigatorTxtFld);
-		detailFormContainer.add(subjectKeyPrefixTxtFld);
-		detailFormContainer.add(subjectKeyStartAtTxtFld);
-		detailFormContainer.add(bioSpecimenPrefixTxtFld);
-		detailFormContainer.add(autoGenSubIdRdChoice);
-		detailFormContainer.add(autoConsentRdChoice);
-		detailFormContainer.add(appPalette);
+		detailsFormContainer.add(studyIdTxtFld);
+		detailsFormContainer.add(studyNameTxtFld);
+		detailsFormContainer.add(studyDescriptionTxtArea);
+		detailsFormContainer.add(estYearOfCompletionTxtFld);
+		detailsFormContainer.add(studyStatusDpChoices);
+		detailsFormContainer.add(dateOfApplicationDp);
+		detailsFormContainer.add(principalContactPhoneTxtFld);
+		detailsFormContainer.add(principalContactTxtFld);
+		detailsFormContainer.add(chiefInvestigatorTxtFld);
+		detailsFormContainer.add(coInvestigatorTxtFld);
+		detailsFormContainer.add(subjectKeyPrefixTxtFld);
+		detailsFormContainer.add(subjectKeyStartAtTxtFld);
+		detailsFormContainer.add(bioSpecimenPrefixTxtFld);
+		detailsFormContainer.add(autoGenSubIdRdChoice);
+		detailsFormContainer.add(autoConsentRdChoice);
+		detailsFormContainer.add(appPalette);
 		
 		//Summary related fields into another container
 		summaryPanelContainer.add(studySummaryLabel);
@@ -367,7 +384,7 @@ public class DetailForm extends Form<StudyModel>{
 		editbuttonContainer.add(editButton);
 		editbuttonContainer.add(editCancelButton);
 		
-		add(detailFormContainer);
+		add(detailsFormContainer);
 		add(saveArchivebuttonContainer);
 		add(editbuttonContainer);
 		add(summaryPanelContainer);
