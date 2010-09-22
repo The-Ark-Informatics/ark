@@ -33,16 +33,20 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer saveBtnContainer;
 	private WebMarkupContainer editBtnContainer;
 	private WebMarkupContainer detailSummaryContainer;
+	private WebMarkupContainer detailFormContainer;
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	public SearchResults(String id, WebMarkupContainer searchWebMarkupContainer, WebMarkupContainer detailsWebMarkupContainer,	WebMarkupContainer saveButtonContainer,	WebMarkupContainer editButtonContainer, WebMarkupContainer detailSumContainer){
+	public SearchResults(String id, WebMarkupContainer searchWebMarkupContainer, 
+						WebMarkupContainer detailsWebMarkupContainer,	WebMarkupContainer saveButtonContainer,
+						WebMarkupContainer editButtonContainer, WebMarkupContainer detailSumContainer,WebMarkupContainer detailFormCompContainer){
 		super(id);
 		searchMarkupContainer = searchWebMarkupContainer;
 		detailsMarkupContainer = detailsWebMarkupContainer;
 		saveBtnContainer =saveButtonContainer;
 		editBtnContainer = editButtonContainer;
 		detailSummaryContainer = detailSumContainer;
+		detailFormContainer = detailFormCompContainer;
 	}
 	
 	/* A reference of the Model from the Container in this case Search Panel */
@@ -137,8 +141,7 @@ public class SearchResults extends Panel{
 				searchResultsContainer.setVisible(false);//List view container
 				searchMarkupContainer.setVisible(false);//Hide the Search panel container
 				detailsMarkupContainer.setVisible(true);
-				//detailsMarkupContainer.setEnabled(false);
-				
+				detailFormContainer.setEnabled(false);
 				saveBtnContainer.setVisible(false);
 				editBtnContainer.setVisible(true);
 				editBtnContainer.setEnabled(true);
@@ -150,6 +153,7 @@ public class SearchResults extends Panel{
 				target.addComponent(saveBtnContainer);
 				target.addComponent(editBtnContainer);
 				target.addComponent(detailSummaryContainer);
+				target.addComponent(detailFormContainer);
 			}
 		};
 		
