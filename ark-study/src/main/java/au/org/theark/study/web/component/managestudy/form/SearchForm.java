@@ -25,7 +25,7 @@ import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.Constants;
 
-public class SearchForm extends BaseForm{
+public class SearchForm extends Form{
 
 	/* The Input Components that will be part of the Search Form */
 	private TextField<String> studyIdTxtFld; 
@@ -37,12 +37,12 @@ public class SearchForm extends BaseForm{
 	private AjaxButton newButton;
 	private Button resetButton;
 	private List<StudyStatus>  studyStatusList;
-
+	private  CompoundPropertyModel<StudyModel> cpmModel;
 	/* Constructor */
 	public SearchForm(String id, CompoundPropertyModel<StudyModel> model, List<StudyStatus>  statusList) {
 		
-		super(id, model);
-		
+		super(id);
+		cpmModel = model;
 		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
 		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_SEARCH_DOA);
@@ -88,7 +88,7 @@ public class SearchForm extends BaseForm{
 		};
 		
 		
-		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)getModel();
+		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)cpmModel;
 		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
 		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
 		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study
