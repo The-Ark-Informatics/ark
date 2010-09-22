@@ -126,12 +126,10 @@ public class Details  extends Panel{
 		
 			protected void onCancel(AjaxRequestTarget target){
 				summaryContainer.setVisible(true);
-				detailFormContainer.setEnabled(false);
 				listContainer.setVisible(false);
 				detailsContainer.setVisible(false);
 				searchContainer.setVisible(true);
 				editbuttonContainer.setVisible(true);
-				target.addComponent(detailFormContainer);
 				target.addComponent(summaryContainer);
 				target.addComponent(detailsContainer);
 				target.addComponent(listContainer);
