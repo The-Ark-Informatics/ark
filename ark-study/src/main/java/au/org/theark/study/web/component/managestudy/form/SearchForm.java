@@ -25,7 +25,7 @@ import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.Constants;
 
-public class SearchForm extends Form{
+public class SearchForm extends Form<StudyModel>{
 
 	/* The Input Components that will be part of the Search Form */
 	private TextField<String> studyIdTxtFld; 
