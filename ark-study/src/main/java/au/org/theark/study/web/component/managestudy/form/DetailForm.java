@@ -273,7 +273,7 @@ public class DetailForm extends Form<StudyModel>{
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("moduleName", "moduleName");
 		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesSelected");
 		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesAvailable");
-		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,true);	
+		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,false);	
 	}
 	
 	@SuppressWarnings("unchecked")
