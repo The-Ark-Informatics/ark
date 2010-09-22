@@ -208,8 +208,8 @@ public class DetailForm extends Form<StudyModel>{
 				saveArchivebuttonContainer.setVisible(true);
 				detailsFormContainer.setEnabled(true);
 				getStudyNameTxtFld().setEnabled(false);
-				//summaryPanelContainer.setVisible(false);
-				//target.addComponent(summaryPanelContainer);
+				summaryPanelContainer.setVisible(false);
+				target.addComponent(summaryPanelContainer);
 				
 				target.addComponent(editbuttonContainer);
 				target.addComponent(saveArchivebuttonContainer);
@@ -367,7 +367,7 @@ public class DetailForm extends Form<StudyModel>{
 		saveArchivebuttonContainer.add(cancelButton.setDefaultFormProcessing(false));
 		
 		editbuttonContainer.add(editButton);
-		editbuttonContainer.add(editCancelButton);
+		editbuttonContainer.add(editCancelButton.setDefaultFormProcessing(false));
 		
 		add(detailsFormContainer);
 		add(saveArchivebuttonContainer);
