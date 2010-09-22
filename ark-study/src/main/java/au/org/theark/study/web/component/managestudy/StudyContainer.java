@@ -66,7 +66,7 @@ public class StudyContainer extends Panel{
 		detailsContainer.setOutputMarkupPlaceholderTag(true);
 		detailsContainer.setVisible(false);
 
-		
+		//Contains the controls of the details
 		detailFormContainer = new WebMarkupContainer("detailFormContainer");
 		detailFormContainer.setOutputMarkupPlaceholderTag(true);
 		detailFormContainer.setEnabled(false);
@@ -108,7 +108,8 @@ public class StudyContainer extends Panel{
 															detailsContainer,
 															saveArchivebuttonContainer,
 															editbuttonContainer, 
-															summaryContainer);
+															summaryContainer,
+															detailFormContainer);
 		searchResultsPanel.setCpm(cpm);
 
 		
@@ -139,7 +140,8 @@ public class StudyContainer extends Panel{
 										detailsPanel,
 										saveArchivebuttonContainer,
 										editbuttonContainer,
-										detailFormContainer);
+										detailFormContainer,
+										feedBackPanel);
 		
 		searchStudyPanel.initialisePanel();
 		searchWebMarkupContainer.add(searchStudyPanel);
