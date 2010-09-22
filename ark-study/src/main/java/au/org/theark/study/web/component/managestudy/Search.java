@@ -34,7 +34,6 @@ public class Search extends Panel{
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer detailsWebMarkupContainer;
-	private WebMarkupContainer searchContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailFormContainer;
@@ -86,9 +85,8 @@ public class Search extends Panel{
 			
 			/*Event handler for user's search request*/
 			protected  void onSearch(AjaxRequestTarget target){
+				
 				resultList = studyService.getStudy(cpm.getObject().getStudy());
-				this.setModelObject(new StudyModel());
-				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();////reset the original one
 				cpm.getObject().setStudyList(resultList);//Place the results into the model
 				pageListView.removeAll();
 				listContainer.setVisible(true);
@@ -97,10 +95,7 @@ public class Search extends Panel{
 			}
 			
 			protected  void onNew(AjaxRequestTarget target){
-				
-				this.setModelObject(new StudyModel());
-				cpm = (CompoundPropertyModel<StudyModel>)this.getModel();//reset the original one.Turn it on if its really needed
-				
+				cpm.setObject(new StudyModel());
 				List<ModuleVO> modules;
 				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
 				try {
@@ -135,7 +130,6 @@ public class Search extends Panel{
 			//save archive container must be visible and edit must be disabled
 		}
 		details.getStudyForm().getStudyNameTxtFld().setEnabled(true);
-		details.setCpm(cpm);
 		detailsWebMarkupContainer.setVisible(true);
 		listContainer.setVisible(false);
 		saveArchivebuttonContainer.setVisible(true);
