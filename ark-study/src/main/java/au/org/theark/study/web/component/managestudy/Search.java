@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -29,7 +30,7 @@ public class Search extends Panel{
 	
 	private List<Study> resultList;
 	private List<StudyStatus> studyStatusList;
-	
+	private FeedbackPanel fbPanel;
 	PageableListView<Study> pageListView;
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
@@ -64,7 +65,8 @@ public class Search extends Panel{
 					Details detailsPanel,
 					WebMarkupContainer saveArchBtnContainer,
 					WebMarkupContainer editBtnContainer,
-					WebMarkupContainer detailFormCompContainer) {
+					WebMarkupContainer detailFormCompContainer,
+					FeedbackPanel feedbackpanel) {
 		
 		super(id);
 		this.studyStatusList = studyStatusList;
@@ -77,6 +79,7 @@ public class Search extends Panel{
 		saveArchivebuttonContainer = saveArchBtnContainer;
 		editButtonContainer = editBtnContainer;
 		detailFormContainer = detailFormCompContainer;
+		fbPanel = feedbackpanel;
 	}
 	
 	public void initialisePanel(){
@@ -85,13 +88,20 @@ public class Search extends Panel{
 			
 			/*Event handler for user's search request*/
 			protected  void onSearch(AjaxRequestTarget target){
-				
+				target.addComponent(fbPanel);
 				resultList = studyService.getStudy(cpm.getObject().getStudy());
-				cpm.getObject().setStudyList(resultList);//Place the results into the model
-				pageListView.removeAll();
-				listContainer.setVisible(true);
-				searchWebMarkupContainer.setVisible(false);
-				target.addComponent(listContainer);
+				
+				if(resultList != null && resultList.size() == 0){
+					cpm.getObject().setStudyList(resultList);//Place the results into the model
+					this.info("There are no records that matched your query. Please modify your filter");
+					target.addComponent(fbPanel);
+				}else{
+					cpm.getObject().setStudyList(resultList);//Place the results into the model
+					pageListView.removeAll();
+					listContainer.setVisible(true);
+					target.addComponent(listContainer);
+				}
+				
 			}
 			
 			protected  void onNew(AjaxRequestTarget target){
