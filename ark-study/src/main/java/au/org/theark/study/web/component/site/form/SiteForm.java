@@ -30,15 +30,16 @@ public class SiteForm extends Form<SiteModel>{
 	
 	private TextField<String> siteNameTxtFld;
 	private TextArea<String> siteDescription;
-	
+	private ContainerForm containerForm;
 	private Details detailsPanel;
 	
-	public SiteForm(String id, Details details, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer){
+	public SiteForm(String id, Details details, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm siteContainerForm){
 		
 		super(id);
 		
 		this.resultListContainer = listContainer;
 		this.detailsPanel = details;
+		this.containerForm = siteContainerForm;
 		
 		/* Action buttons */
 		
@@ -51,7 +52,7 @@ public class SiteForm extends Form<SiteModel>{
 				detailsContainer.setVisible(false);
 				target.addComponent(detailsContainer);
 				target.addComponent(resultListContainer);
-				detailsPanel.getCpm().getObject().setSiteVo(new SiteVo());
+				containerForm.getModelObject().setSiteVo(new SiteVo());
 				onCancel(target);
 			}
 		};
@@ -61,10 +62,11 @@ public class SiteForm extends Form<SiteModel>{
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				CompoundPropertyModel<SiteModel> cpm  = detailsPanel.getCpm();
-				SiteModel siteModel = cpm.getObject();
+				//CompoundPropertyModel<SiteModel> cpm  = detailsPanel.getCpm();
+				
+				//SiteModel siteModel = cpm.getObject();
 				target.addComponent(detailsContainer);
-				onSave(siteModel, target);
+				onSave(containerForm.getModelObject(), target);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
