@@ -45,7 +45,7 @@ public class Details extends Panel{
 	
 	public void initialisePanel(){
 		
-		siteForm = new SiteForm("siteForm",this,listContainer,detailsContainer){
+		siteForm = new SiteForm("siteForm",this,listContainer,detailsContainer,containerForm){
 			
 			protected void onSave(SiteModel siteModel, AjaxRequestTarget target){
 				//Invoke the service layer to save the Site details in LDAP
