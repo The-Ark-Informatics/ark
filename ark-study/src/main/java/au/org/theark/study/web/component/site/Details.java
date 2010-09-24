@@ -16,7 +16,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
-import au.org.theark.study.web.form.SiteForm;
+import au.org.theark.study.web.component.site.form.SiteForm;
 
 public class Details extends Panel{
 	
