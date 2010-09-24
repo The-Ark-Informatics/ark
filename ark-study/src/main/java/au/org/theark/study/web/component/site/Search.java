@@ -16,7 +16,7 @@ import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
-import au.org.theark.study.web.form.SearchSiteForm;
+import au.org.theark.study.web.component.site.form.SearchSiteForm;
 public class Search extends Panel{
 
 	private FeedbackPanel fbPanel;
