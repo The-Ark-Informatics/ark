@@ -1,0 +1,66 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="5%">&nbsp;</th>
+			<th width="15%>
+				<label for="studyComponentId">
+					<wicket:message	key="study.component.id">Component ID:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%">
+				<label for="studyCompName">
+					<wicket:message	key="study.component.name">Component Name:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%">
+				<label for="studyCompDescription">
+					<wicket:message	key="study.component.description">Contact</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="15%">
+				<label for="studyCompKeyword">
+					<wicket:message	key="study.component.keyword">Keyword:</wicket:message>
+				</label>
+			</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="studyCompList">
+			<td width="5%">&nbsp;</td>
+
+			<td width="15%">
+				<span wicket:id="studyComponent.studyCompKey">100</span>
+			</td>
+
+			<td width="5%"></td>
+
+			<td width="15%">
+			  <a href="#"wicket:id="studyComponent.name">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">
+				<span wicket:id="studyComponent.description">Description</span>
+			</td>
+		
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="navigator" class="a"></span></td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
+

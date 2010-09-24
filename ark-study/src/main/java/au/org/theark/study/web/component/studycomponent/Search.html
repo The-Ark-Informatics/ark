@@ -1,0 +1,99 @@
+<wicket:panel>
+	<div id="searchPanelContainer">
+		<div id="searchPanelFbContainer">
+			<div id="searchPanelFbLeft">&nbsp</div>
+			<div id="searchPanelFb">&nbsp;<span wicket:id="feedbackMessage"> </span></div>
+			<div id="searchPanelFbRight">&nbsp</div>
+		</div>
+		<form wicket:id="searchForm">
+		
+			<div id="searchPanelContent">
+				
+				<div id="searchPanelBreaker">&nbsp;</div>				
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="componentId"><wicket:message key="study.component.id">Component Id:</wicket:message></label>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label"> <!--  this will change to ID -->
+						<input wicket:id="studyComponent.studyCompKey"  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="componentId"><wicket:message key="study.component.name">Name:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="studyComponent.name"  type="text" />
+					</div>
+				</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="searchPanelBreaker">&nbsp;</div>		
+		       	<div id="panelContentLeft">&nbsp;</div>
+				<div id="fldLabel">
+					<div class="label">
+		       			<label for="keyword">
+		       				<label for="keyword"><wicket:message key="study.component.keyword">Keyword:</wicket:message></label>
+		       			</label>
+		       		</div>
+		       	</div>
+				<div id="fldControl">
+		       		<div class="label">
+		       			<textarea wicket:id="studyComponent.description"></textarea> 
+		       		</div>
+		       	</div>
+			       		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="searchPanelBreaker">&nbsp;</div>		
+				<!--  Defines the location for buttons -->			
+				<div id="panelContentLeft">&nbsp;</div>
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+				</div>
+			
+				  <div wicket:id="resultListContainer">
+				    <div wicket:id="searchResults"></div> 
+				  </div>
+				  <div wicket:id="detailsContainer">
+				  	<!--  <div wicket:id="detailsPanel"></div> -->
+				  </div>
+				
+				  
+			</form>
+       </div><!-- Container-->
+
+</wicket:panel>
