@@ -1,5 +1,8 @@
 package au.org.theark.study.web.component.site;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -12,15 +15,12 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.site.form.ContainerForm;
 import au.org.theark.study.web.form.SiteForm;
-import java.util.*;
 
 public class Details extends Panel{
 	
 	private CompoundPropertyModel<SiteModel> cpm;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
 	
 	@SpringBean(name ="studyService")
 	private IStudyService studyService;
@@ -30,20 +30,17 @@ public class Details extends Panel{
 	private FeedbackPanel feedBackPanel;
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
-	
-	public CompoundPropertyModel<SiteModel> getCpm() {
-		return cpm;
-	}
+	private WebMarkupContainer searchPanelContainer;
+	private ContainerForm containerForm;
 
-	public void setCpm(CompoundPropertyModel<SiteModel> cpm) {
-		this.cpm = cpm;
-	}
-
-	public Details(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer){
+	public Details(String id, final WebMarkupContainer resultListContainer, FeedbackPanel feedBackPanel,
+					WebMarkupContainer detailPanelContainer,WebMarkupContainer searchPanelContainer, ContainerForm siteContainerForm){
 		super(id);
 		this.feedBackPanel = feedBackPanel;
-		this.listContainer = listContainer;
-		this.detailsContainer = detailsContainer;
+		this.listContainer = resultListContainer;
+		this.detailsContainer = detailPanelContainer;
+		this.searchPanelContainer = searchPanelContainer;
+		containerForm = siteContainerForm;
 	}
 	
 	public void initialisePanel(){
@@ -61,7 +58,6 @@ public class Details extends Panel{
 						/* This will change a bit when we get the members from the front end*/
 						siteModel.getSiteVo().setSiteMembers(siteMembers);
 						studyService.createSite(siteModel.getSiteVo());
-						cpm.getObject().setMode(Constants.MODE_EDIT);
 						this.info("The site " + siteModel.getSiteVo().getSiteName() + " was created sucessfully.");
 						processFeedback(target);
 					}else{
@@ -81,6 +77,13 @@ public class Details extends Panel{
 				
 				System.out.println("Site Name ");
 				target.addComponent(feedBackPanel);
+			}
+			
+			protected void onCancel(AjaxRequestTarget target){
+				SiteModel siteModel = new SiteModel();
+				containerForm.setModelObject(siteModel);
+				searchPanelContainer.setVisible(true);
+				target.addComponent(searchPanelContainer);
 			}
 			
 			protected void processFeedback(AjaxRequestTarget target){

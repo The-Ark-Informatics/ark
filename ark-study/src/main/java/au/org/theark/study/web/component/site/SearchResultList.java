@@ -1,11 +1,5 @@
 package au.org.theark.study.web.component.site;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -19,19 +13,18 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.study.StudyModel;
-import au.org.theark.study.web.form.ModuleVo;
+import au.org.theark.study.web.component.site.form.ContainerForm;
 
+
+@SuppressWarnings("serial")
 public class SearchResultList extends Panel{
 	
 	
-	private WebMarkupContainer detailsContainer;
-	
+	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer searchPanelContainer;
+	private ContainerForm containerForm;
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
@@ -39,9 +32,11 @@ public class SearchResultList extends Panel{
 	private CompoundPropertyModel<SiteModel> cpm;
 	
 	
-	public SearchResultList(String id, WebMarkupContainer  details){
+	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm siteContainerForm){
 		super(id);
-		this.detailsContainer = details;
+		this.detailPanelContainer = detailPanelContainer;
+		this.searchPanelContainer = searchPanelContainer;
+		this.containerForm = siteContainerForm;
 	}
 	public CompoundPropertyModel<SiteModel> getCpm() {
 		return cpm;
@@ -52,7 +47,7 @@ public class SearchResultList extends Panel{
 	}
 	
 	
-	public PageableListView<SiteVo> buildPageableListView(IModel iModel, final WebMarkupContainer searchContainer){
+	public PageableListView<SiteVo> buildPageableListView(IModel iModel){
 		
 		PageableListView<SiteVo> sitePageableListView = new PageableListView<SiteVo>("siteVoList", iModel, 10) {
 			@Override
@@ -60,7 +55,7 @@ public class SearchResultList extends Panel{
 				
 				SiteVo site = item.getModelObject();
 
-				item.add(buildLink(site,searchContainer));
+				item.add(buildLink(site));
 				
 				if(site.getSiteDescription() != null){
 					item.add(new Label("siteDescription", site.getSiteDescription()));//the ID here must match the ones in mark-up	
@@ -82,7 +77,7 @@ public class SearchResultList extends Panel{
 	
 	
 	@SuppressWarnings({ "unchecked", "serial" })
-	private AjaxLink buildLink(final SiteVo site, final WebMarkupContainer searchContainer) {
+	private AjaxLink buildLink(final SiteVo site) {
 		
 		AjaxLink link = new AjaxLink("siteVo.siteName") {
 
@@ -92,11 +87,12 @@ public class SearchResultList extends Panel{
 				SiteModel sitetudyModel  = cpm.getObject();
 				sitetudyModel.setMode(Constants.MODE_EDIT);
 				sitetudyModel.setSiteVo(site);//Sets the selected sitevo into the model
-				detailsContainer.setVisible(true);
-				//TODO make the ID and Name field disabled
-				searchContainer.setVisible(false);
-				target.addComponent(detailsContainer);
-				target.addComponent(searchContainer);
+				containerForm.setModelObject(sitetudyModel);
+				detailPanelContainer.setVisible(true);
+				searchPanelContainer.setVisible(false);
+		
+				target.addComponent(detailPanelContainer);
+				target.addComponent(searchPanelContainer);
 			}
 		};
 		
