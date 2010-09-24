@@ -9,37 +9,36 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.entity.Person;
+import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteModel;
 
-public class SearchSiteForm extends Form<SiteModel>{
-
-	private TextField<String> siteNameTxtFld;
-	private DropDownChoice<Person> siteContactDDC;
-	
-	private List<Person> availableContactList;
+public class SearchStudyCompForm extends Form<StudyCompVo>{
 	
 	private AjaxButton searchButton;
 	private AjaxButton newButton;
 	private Button resetButton;
+	
+	private TextField<String> studyCompIdTxtFld;
+	private TextField<String> compNameTxtFld;
+	private TextArea descriptionTxtArea;
+	
+	//Field for uploading  a file
 
-	public SearchSiteForm(String id,CompoundPropertyModel<SiteModel> model, List<Person> availablePersons) {
+	public SearchStudyCompForm(String id,CompoundPropertyModel<StudyCompVo> model) {
 		
 		super(id,model);
 		
-		//siteIdTxtFld =new TextField<String>(Constants.STUDY_SITE_KEY);
-		siteNameTxtFld = new TextField<String>("siteVo.siteName");
-		availableContactList = availablePersons;
+		studyCompIdTxtFld = new TextField<String>("studyComponent.studyCompKey");
+		compNameTxtFld = new TextField<String>("studyComponent.name");
+		descriptionTxtArea = new TextArea("studyComponent.description");
 		
 		newButton = new AjaxButton(Constants.NEW){
 			@Override
@@ -81,14 +80,18 @@ public class SearchSiteForm extends Form<SiteModel>{
 	}
 	
 	private void decorateComponents(){
-		ThemeUiHelper.componentRounded(siteNameTxtFld);
+		ThemeUiHelper.componentRounded(studyCompIdTxtFld);
+		ThemeUiHelper.componentRounded(compNameTxtFld);
+		ThemeUiHelper.componentRounded(descriptionTxtArea);
 		ThemeUiHelper.componentRounded(searchButton);
 		ThemeUiHelper.componentRounded(newButton);
 		ThemeUiHelper.componentRounded(resetButton);
 	}
 	
 	private void addComponentsToForm(){
-		add(siteNameTxtFld);
+		add(studyCompIdTxtFld);
+		add(compNameTxtFld);
+		add(descriptionTxtArea);
 		add(searchButton);
 		add(resetButton);
 		add(newButton);
@@ -104,11 +107,6 @@ public class SearchSiteForm extends Form<SiteModel>{
 		updateFormComponentModels();
 		
 	}
-	
-	private void initContactDropDown(PropertyModel<Person> personPropertyModel){
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.PERSON_LAST_NAME, Constants.PERSON_KEY);
-		siteContactDDC = new DropDownChoice("personDDC",personPropertyModel,availableContactList, defaultChoiceRenderer);
-	}
-	
+
 
 }
