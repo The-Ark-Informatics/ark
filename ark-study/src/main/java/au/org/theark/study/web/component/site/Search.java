@@ -21,16 +21,13 @@ public class Search extends Panel{
 
 	private FeedbackPanel fbPanel;
 	private WebMarkupContainer searchMarkupContainer;
-	
-	private CompoundPropertyModel<SiteModel> cpm;
 	private PageableListView<SiteVo> listView;
-	
 	
 	//The container to wrap the Search Result List
 	private WebMarkupContainer listContainer;
 	//The Container to wrap the details panel
 	private WebMarkupContainer detailsContainer;
-	private Details detailsPanel;
+	
 	private ContainerForm containerForm;
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)

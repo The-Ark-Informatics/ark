@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.site;
 
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -8,12 +10,13 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
-import au.org.theark.study.web.component.site.Details;
 
 public class SiteContainerPanel extends Panel{
 
@@ -43,6 +46,10 @@ public class SiteContainerPanel extends Panel{
 	private ContainerForm siteContainerForm;	
 	//Search Site Panel
 	Search searchSitesPanel;
+	
+	
+	@SpringBean( name = Constants.STUDY_SERVICE)
+	private IStudyService studyService;
 	
 	private void initialiseMarkupContainers(){
 		
@@ -83,6 +90,11 @@ public class SiteContainerPanel extends Panel{
 	}
 	
 	private WebMarkupContainer initialiseSearchPanel(){
+		SiteVo siteVo = new SiteVo();
+		
+		List<SiteVo> resultList = studyService.getSite(siteVo);
+		//List<SiteVo> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
+		siteContainerForm.getModelObject().setSiteVoList(resultList);
 		searchSitesPanel = new Search("searchSitePanel",feedBackPanel,searchPanelContainer,listView, resultListContainer,detailPanelContainer,siteContainerForm);
 		searchSitesPanel.initialisePanel(siteModelCpm);
 		searchPanelContainer.add(searchSitesPanel);
@@ -98,17 +110,15 @@ public class SiteContainerPanel extends Panel{
 	
 
 	private WebMarkupContainer initialiseSearchResults(){
-		
+	
 		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,siteContainerForm);
-		//Set the Model reference into the results panel
-		searchResultPanel.setCpm(siteModelCpm);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Object load() {
-				return siteModelCpm.getObject().getSiteVoList();
+				return siteContainerForm.getModelObject().getSiteVoList();
 			}
 		};
 		

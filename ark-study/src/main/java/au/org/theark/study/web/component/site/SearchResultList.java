@@ -9,11 +9,8 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
 
@@ -25,12 +22,6 @@ public class SearchResultList extends Panel{
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private ContainerForm containerForm;
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	/* A reference of the Model from the Container in this case Search Panel */
-	private CompoundPropertyModel<SiteModel> cpm;
-	
 	
 	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm siteContainerForm){
 		super(id);
@@ -38,13 +29,7 @@ public class SearchResultList extends Panel{
 		this.searchPanelContainer = searchPanelContainer;
 		this.containerForm = siteContainerForm;
 	}
-	public CompoundPropertyModel<SiteModel> getCpm() {
-		return cpm;
-	}
 
-	public void setCpm(CompoundPropertyModel<SiteModel> cpm) {
-		this.cpm = cpm;
-	}
 	
 	
 	public PageableListView<SiteVo> buildPageableListView(IModel iModel){
@@ -84,10 +69,8 @@ public class SearchResultList extends Panel{
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
-				SiteModel sitetudyModel  = cpm.getObject();
-				sitetudyModel.setMode(Constants.MODE_EDIT);
-				sitetudyModel.setSiteVo(site);//Sets the selected sitevo into the model
-				containerForm.setModelObject(sitetudyModel);
+				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+				containerForm.getModelObject().setSiteVo(site);
 				detailPanelContainer.setVisible(true);
 				searchPanelContainer.setVisible(false);
 		
