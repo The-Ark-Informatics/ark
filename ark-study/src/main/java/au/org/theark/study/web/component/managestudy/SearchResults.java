@@ -24,6 +24,7 @@ import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IUserService;
+import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.form.ModuleVo;
 
 public class SearchResults extends Panel{
@@ -36,10 +37,15 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer detailFormContainer;
 	@SpringBean( name = "userService")
 	private IUserService userService;
-	
-	public SearchResults(String id, WebMarkupContainer searchWebMarkupContainer, 
-						WebMarkupContainer detailsWebMarkupContainer,	WebMarkupContainer saveButtonContainer,
-						WebMarkupContainer editButtonContainer, WebMarkupContainer detailSumContainer,WebMarkupContainer detailFormCompContainer){
+	private Container studyContainerForm;
+	public SearchResults(	String id, 
+							WebMarkupContainer searchWebMarkupContainer, 
+							WebMarkupContainer detailsWebMarkupContainer,
+							WebMarkupContainer saveButtonContainer,
+							WebMarkupContainer editButtonContainer, 
+							WebMarkupContainer detailSumContainer,
+							WebMarkupContainer detailFormCompContainer,
+							Container containerForm){
 		super(id);
 		searchMarkupContainer = searchWebMarkupContainer;
 		detailsMarkupContainer = detailsWebMarkupContainer;
@@ -47,20 +53,8 @@ public class SearchResults extends Panel{
 		editBtnContainer = editButtonContainer;
 		detailSummaryContainer = detailSumContainer;
 		detailFormContainer = detailFormCompContainer;
+		studyContainerForm = containerForm;
 	}
-	
-	/* A reference of the Model from the Container in this case Search Panel */
-	private CompoundPropertyModel<StudyModel> cpm;
-	
-	public CompoundPropertyModel<StudyModel> getCpm() {
-		return cpm;
-	}
-	
-	public void setCpm(CompoundPropertyModel<StudyModel> cpm) {
-		this.cpm = cpm;
-	}
-	
-	
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
 		
@@ -115,10 +109,7 @@ public class SearchResults extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getStudyKey());
-
-				StudyModel studyModel  = cpm.getObject();
-				studyModel.setStudy(study);
-				
+				studyContainerForm.getModelObject().setStudy(study);
 				List<ModuleVO> modules;
 				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
 				Collection<ModuleVo> modulesLinkedToStudy = new  ArrayList<ModuleVo>();
@@ -131,8 +122,8 @@ public class SearchResults extends Panel{
 					}
 					
 					modulesLinkedToStudy  = userService.getModulesLinkedToStudy(study.getName(), true);
-					studyModel.setModulesSelected(modulesLinkedToStudy);
-					studyModel.setModulesAvailable(moduleVoList);
+					studyContainerForm.getModelObject().setModulesSelected(modulesLinkedToStudy);
+					studyContainerForm.getModelObject().setModulesAvailable(moduleVoList);
 				} catch (ArkSystemException e) {
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
