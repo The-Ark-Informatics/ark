@@ -4,7 +4,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -15,6 +14,7 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
 public class Details  extends Panel{
@@ -27,22 +27,11 @@ public class Details  extends Panel{
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
 	private WebMarkupContainer detailFormContainer;
-	
+	private Container studyContainerForm;
 	
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService service;
-	
-	/* A reference of the Model from the Container in this case Search Panel */
-	private CompoundPropertyModel<StudyModel> cpm;
-	
-	public CompoundPropertyModel<StudyModel> getCpm() {
-		return cpm;
-	}
-
-	public void setCpm(CompoundPropertyModel<StudyModel> cpm) {
-		this.cpm = cpm;
-	}
 	
 	
 	public DetailForm getStudyForm() {
@@ -58,8 +47,16 @@ public class Details  extends Panel{
 	 * @param id
 	 * @param listContainer
 	 */
-	public Details(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, 
-			WebMarkupContainer searchWebMarkupContainer, WebMarkupContainer saveArchBtnContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer detailSumContainer,WebMarkupContainer detailFormContainer) {
+	public Details(	String id, 
+					final WebMarkupContainer listContainer, 
+					FeedbackPanel feedBackPanel, 
+					WebMarkupContainer detailsContainer, 
+					WebMarkupContainer searchWebMarkupContainer, 
+					WebMarkupContainer saveArchBtnContainer, 
+					WebMarkupContainer editBtnContainer,
+					WebMarkupContainer detailSumContainer,
+					WebMarkupContainer detailFormContainer,
+					Container studyContainerForm) {
 		super(id);
 		this.listContainer = listContainer;
 		this.feedBackPanel = feedBackPanel;
@@ -69,6 +66,7 @@ public class Details  extends Panel{
 		this.editbuttonContainer = editBtnContainer;
 		this.summaryContainer = detailSumContainer;
 		this.detailFormContainer = detailFormContainer;
+		this.studyContainerForm = studyContainerForm;
 	}
 
 	
@@ -83,10 +81,18 @@ public class Details  extends Panel{
 		target.addComponent(editbuttonContainer);
 		target.addComponent(summaryContainer);
 	}
+	
+	@SuppressWarnings("serial")
 	public void initialisePanel(){
 
 		
-		detailForm = new DetailForm("detailForm", this, listContainer,detailsContainer,searchContainer,saveArchivebuttonContainer, editbuttonContainer, summaryContainer,detailFormContainer){
+		detailForm = new DetailForm("detailForm", 
+									detailsContainer,
+									saveArchivebuttonContainer, 
+									editbuttonContainer, 
+									summaryContainer,
+									detailFormContainer,
+									studyContainerForm){
 			
 			protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
 				
@@ -125,6 +131,10 @@ public class Details  extends Panel{
 		
 		
 			protected void onCancel(AjaxRequestTarget target){
+				
+				//Reset the model object.This is very important at this event.
+				studyContainerForm.setModelObject(new StudyModel());
+				
 				summaryContainer.setVisible(true);
 				listContainer.setVisible(false);
 				detailsContainer.setVisible(false);
