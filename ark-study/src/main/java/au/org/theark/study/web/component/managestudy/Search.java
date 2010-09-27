@@ -19,6 +19,7 @@ import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.SearchForm;
 
 import au.org.theark.study.web.form.ModuleVo;
@@ -26,7 +27,8 @@ import au.org.theark.study.web.form.ModuleVo;
 public class Search extends Panel{
 
 	/* Search Results returned based on the search criteria */
-	private CompoundPropertyModel<StudyModel> cpm;
+	
+	private Container containerForm;
 	
 	private List<Study> resultList;
 	private List<StudyStatus> studyStatusList;
@@ -55,22 +57,22 @@ public class Search extends Panel{
 	}
 	
 	/* Constructor for Search */
-	public Search(	String id, 
-					List<StudyStatus> studyStatusList, 
-					CompoundPropertyModel<StudyModel> cpm, 
-					PageableListView<Study> pageableListView, 
+	public Search(	String id,
+					FeedbackPanel feedbackpanel,
+					List<StudyStatus> studyStatusList,
+					WebMarkupContainer searchMarkupContainer,
+					PageableListView<Study> pageableListView,
 					WebMarkupContainer resultListContainer,
-					WebMarkupContainer searchMarkupContainer, 
 					WebMarkupContainer detailsContainer, 
 					Details detailsPanel,
 					WebMarkupContainer saveArchBtnContainer,
 					WebMarkupContainer editBtnContainer,
 					WebMarkupContainer detailFormCompContainer,
-					FeedbackPanel feedbackpanel) {
+					Container containerForm
+					) {
 		
 		super(id);
 		this.studyStatusList = studyStatusList;
-		this.cpm = cpm;
 		pageListView = pageableListView;
 		listContainer = resultListContainer;
 		searchWebMarkupContainer = searchMarkupContainer;
@@ -80,23 +82,25 @@ public class Search extends Panel{
 		editButtonContainer = editBtnContainer;
 		detailFormContainer = detailFormCompContainer;
 		fbPanel = feedbackpanel;
+		this.containerForm = containerForm;
 	}
 	
 	public void initialisePanel(){
 		
-		SearchForm sform = new SearchForm("searchForm",cpm, studyStatusList){
+		SearchForm sform = new SearchForm("searchForm",(CompoundPropertyModel<StudyModel>)containerForm.getModel(), studyStatusList){
 			
 			/*Event handler for user's search request*/
 			protected  void onSearch(AjaxRequestTarget target){
+
 				target.addComponent(fbPanel);
-				resultList = studyService.getStudy(cpm.getObject().getStudy());
 				
+				resultList = studyService.getStudy(containerForm.getModelObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
-					cpm.getObject().setStudyList(resultList);//Place the results into the model
+					containerForm.getModelObject().setStudyList(resultList);
 					this.info("There are no records that matched your query. Please modify your filter");
 					target.addComponent(fbPanel);
 				}else{
-					cpm.getObject().setStudyList(resultList);//Place the results into the model
+					containerForm.getModelObject().setStudyList(resultList);
 					pageListView.removeAll();
 					listContainer.setVisible(true);
 					target.addComponent(listContainer);
@@ -105,7 +109,9 @@ public class Search extends Panel{
 			}
 			
 			protected  void onNew(AjaxRequestTarget target){
-				cpm.setObject(new StudyModel());
+				
+				containerForm.setModelObject(new StudyModel());
+
 				List<ModuleVO> modules;
 				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
 				try {
@@ -119,8 +125,8 @@ public class Search extends Panel{
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
 				}
-				cpm.getObject().setModulesAvailable(moduleVoList);
-				details.setCpm(cpm);
+				
+				containerForm.getModelObject().setModulesAvailable(moduleVoList);
 				//If the selected side has items then its re-using the first object
 				processDetail(target, Constants.MODE_NEW);
 			}
