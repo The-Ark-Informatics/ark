@@ -38,7 +38,6 @@ import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.Details;
 import au.org.theark.study.web.form.ModuleVo;
 
 public class DetailForm extends Form<StudyModel>{
@@ -47,11 +46,6 @@ public class DetailForm extends Form<StudyModel>{
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
-	
-	//Study Details Panel
-	private Details details;
-	private WebMarkupContainer  listContainer;
-	
 	private WebMarkupContainer detailsFormContainer;
 	private WebMarkupContainer summaryPanelContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
@@ -81,7 +75,7 @@ public class DetailForm extends Form<StudyModel>{
 	//Application Select Palette
 	private Palette	appPalette;
 
-	
+	private Container containerForm;
 	/* Summary Details */
 	
 	Label studySummaryLabel;
@@ -130,16 +124,17 @@ public class DetailForm extends Form<StudyModel>{
 	 * @param detailsPanel The panel that is linked to this Form instance
 	 * @param container The WebMarkupContainer that will wrap the SearchResults
 	 */
-	public DetailForm(String id, Details detailsPanel, WebMarkupContainer container,
-					final WebMarkupContainer detailsContainer, WebMarkupContainer searchWebMarkupContainer,
-					WebMarkupContainer saveArchiveContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer sumContainer,WebMarkupContainer detailFormContainer){
+	public DetailForm(	String id,
+						final WebMarkupContainer detailsContainer, 
+						WebMarkupContainer saveArchiveContainer, 
+						WebMarkupContainer editBtnContainer,
+						WebMarkupContainer sumContainer,
+						WebMarkupContainer detailFormContainer,
+						Container studyContainerForm){
 		
 		super(id);
-	
+		this.containerForm = studyContainerForm;
 		/* Set the Markup containers */
-		searchContainer = searchWebMarkupContainer;
-		listContainer = container;
-		details = detailsPanel;
 		saveArchivebuttonContainer = saveArchiveContainer;
 		editbuttonContainer = editBtnContainer;
 		summaryPanelContainer = sumContainer;
@@ -152,7 +147,6 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				details.getCpm().getObject().setStudy(new Study());
 				onCancel(target);
 			}
 			public void onError(AjaxRequestTarget target, Form<?> form){
@@ -163,11 +157,9 @@ public class DetailForm extends Form<StudyModel>{
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{	//Access the model associated using a reference to details panel
-				CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
-				
-				StudyModel model = detailsCpm.getObject();
-				Collection<ModuleVo> moduleVoCollection = model.getModulesSelected(); 
+			{	
+				StudyModel model = containerForm.getModelObject();
+				Collection<ModuleVo> moduleVoCollection = containerForm.getModelObject().getModulesSelected(); 
 				//Convert to Set<String> this can be removed later by changing the interface
 				Set<String> moduleList = new HashSet<String>();
 				for (ModuleVo moduleVo : moduleVoCollection) {
@@ -188,9 +180,7 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				//Go to Search users page
-				CompoundPropertyModel<StudyModel> detailsCpm = details.getCpm();
-				StudyModel model = detailsCpm.getObject();
+				StudyModel model =  containerForm.getModelObject();
 				target.addComponent(detailsContainer);
 				onArchive(model, target);
 				
@@ -228,8 +218,7 @@ public class DetailForm extends Form<StudyModel>{
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("deleteKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				details.getCpm().getObject().setStudy(new Study());
+			{	
 				onCancel(target);
 			}
 			public void onError(AjaxRequestTarget target, Form<?> form){
@@ -253,10 +242,10 @@ public class DetailForm extends Form<StudyModel>{
 	
 		initPalette();
 		
-		CompoundPropertyModel<StudyModel> studyCmpModel = details.getCpm();
+		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel> )containerForm.getModel(); //details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
-		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
+		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModel> )containerForm.getModel(),"study");
 		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
 		attachValidation();
@@ -269,7 +258,7 @@ public class DetailForm extends Form<StudyModel>{
 	
 	private void initPalette(){
 		
-		CompoundPropertyModel<StudyModel> sm  = details.getCpm();
+		CompoundPropertyModel<StudyModel> sm  = (CompoundPropertyModel<StudyModel> )containerForm.getModel(); //details.getCpm();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("moduleName", "moduleName");
 		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesSelected");
 		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesAvailable");
