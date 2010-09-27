@@ -87,7 +87,6 @@ public class SearchForm extends Form<StudyModel>{
 			}
 		};
 		
-		
 		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)cpmModel;
 		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
 		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
