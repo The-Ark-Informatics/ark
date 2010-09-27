@@ -20,9 +20,9 @@ public class StudyContainer extends Panel{
 
 
 	private static final long serialVersionUID = 1L;
-	
-	/* Model */
-	private CompoundPropertyModel<StudyModel> cpm;
+
+	private Container containerForm;
+
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -44,20 +44,8 @@ public class StudyContainer extends Panel{
 	
 	private FeedbackPanel feedBackPanel;
 	
-	public StudyContainer(String id) {
 	
-		super(id);
-
-		//The Model is defined here
-		cpm = new CompoundPropertyModel<StudyModel>(new StudyModel());
-
-		
-		feedBackPanel= new FeedbackPanel("feedbackMessage");
-		feedBackPanel.setOutputMarkupId(true);
-		
-		//Create the form that will hold the other controls
-		Container containerForm = new Container("containerForm",cpm);
-
+	private void initialiseMarkupContainers(){
 		/* The markup container for search panel */
 		searchWebMarkupContainer = new WebMarkupContainer("searchContainer");
 		searchWebMarkupContainer.setOutputMarkupPlaceholderTag(true);
@@ -87,7 +75,10 @@ public class StudyContainer extends Panel{
 		summaryContainer = new WebMarkupContainer("summaryPanel");
 		summaryContainer.setOutputMarkupPlaceholderTag(true);
 		summaryContainer.setVisible(false);
-		
+
+	}
+	
+	private WebMarkupContainer initialiseDetailPanel(){
 		detailsPanel = new Details("detailsPanel", 
 									resultListContainer,
 									feedBackPanel,
@@ -96,67 +87,91 @@ public class StudyContainer extends Panel{
 									saveArchivebuttonContainer,
 									editbuttonContainer,
 									summaryContainer,
-									detailFormContainer);//Need to pass feedback panel
-		detailsPanel.setCpm(cpm);
-		detailsPanel.initialisePanel();
-		detailsContainer.add(detailsPanel);
+									detailFormContainer,
+									containerForm);//Need to pass feedback panel
+				
+				detailsPanel.initialisePanel();
+				detailsContainer.add(detailsPanel);
+				return detailsContainer;
+	}
+	
+	private WebMarkupContainer initialiseSearchPanel(){
 		
-		//Pass this to the SearchResultListView control that will use this to render its values.
-		//Also pass in the markup container for searchPanel i.e the searchContainer 
-		SearchResults searchResultsPanel = new SearchResults("resultsPanel",
-															searchWebMarkupContainer,
-															detailsContainer,
-															saveArchivebuttonContainer,
-															editbuttonContainer, 
-															summaryContainer,
-															detailFormContainer);
-		searchResultsPanel.setCpm(cpm);
-
-		
-		//Initialise the Details Panel	
-		Study study = new Study();
-		cpm.getObject().setStudyList(studyService.getStudy(study));
-		
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Object load() {
-				return cpm.getObject().getStudyList();
-			}
-		};
-		
-		pageableListView = searchResultsPanel.buildPageableListView(iModel,resultListContainer);
-		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
-		
-		searchStudyPanel = new Search("searchStudyPanel",
+		searchStudyPanel = new Search(	"searchStudyPanel",
+										feedBackPanel,
 										studyService.getListOfStudyStatus(),
-										cpm,
+										searchWebMarkupContainer,
 										pageableListView,
 										resultListContainer,
-										searchWebMarkupContainer,
 										detailsContainer,
 										detailsPanel,
 										saveArchivebuttonContainer,
 										editbuttonContainer,
 										detailFormContainer,
-										feedBackPanel);
+										containerForm);
 		
 		searchStudyPanel.initialisePanel();
 		searchWebMarkupContainer.add(searchStudyPanel);
+		return searchWebMarkupContainer;
+	}
+	
+	private FeedbackPanel initialiseFeedBackPanel(){
+		/* Feedback Panel */
+		feedBackPanel= new FeedbackPanel("feedbackMessage");
+		feedBackPanel.setOutputMarkupId(true);
+		return feedBackPanel;
+	}
+	
+	private WebMarkupContainer initialiseSearchResults(){
 		
+		//Initialise with a default list of study	
+		Study study = new Study();
+		containerForm.getModelObject().setStudyList(studyService.getStudy(study));
+		//Pass this to the SearchResultListView control that will use this to render its values.
+		//Also pass in the markup container for searchPanel i.e the searchContainer 
+		SearchResults searchResultsPanel = new SearchResults(	"resultsPanel",
+																searchWebMarkupContainer,
+																detailsContainer,
+																saveArchivebuttonContainer,
+																editbuttonContainer, 
+																summaryContainer,
+																detailFormContainer,
+																containerForm);
+		iModel = new LoadableDetachableModel<Object>() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			protected Object load() {
+				return containerForm.getModelObject().getStudyList(); 
+			}
+		};
+		
+		pageableListView = searchResultsPanel.buildPageableListView(iModel,resultListContainer);
+		pageableListView.setReuseItems(true);
+		
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
 		
 		resultListContainer.add(searchResultsPanel);
-		//Add the search control into the searchContainer
-		containerForm.add(searchWebMarkupContainer);
-		containerForm.add(resultListContainer);
+		return resultListContainer;
+
+	}
 	
-		//Add the details into the containerForm
-		containerForm.add(detailsContainer);
-		containerForm.add(feedBackPanel);
+	
+	public StudyContainer(String id) {
+	
+		super(id);
+
+		initialiseMarkupContainers();
+		//Create the form that will hold the other controls
+		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModel>(new StudyModel()));
+		
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());		
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		
 		add(containerForm);
 		
 	}
