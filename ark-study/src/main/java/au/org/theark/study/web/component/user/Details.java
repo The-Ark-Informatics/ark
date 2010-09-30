@@ -6,7 +6,10 @@ import javax.naming.InvalidNameException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.util.StringUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -23,6 +26,8 @@ import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.site.SiteModel;
+import au.org.theark.study.web.component.user.form.ContainerForm;
 import au.org.theark.study.web.form.UserForm;
 
 
@@ -75,103 +80,40 @@ public class Details extends Panel{
 		return error;
 	}
 	
-	/**
-	 * Constructor that has a reference to Search
-	 * @param id
-	 * @param userVO
-	 * @param searchPanel
-	 * @throws InvalidNameException 
-	 */
-	public Details(String id, ArkUserVO userVO, final Search searchPanel)  {
+	
+	private FeedbackPanel feedBackPanel;
+	private WebMarkupContainer listContainer;
+	private WebMarkupContainer detailsContainer;
+	private WebMarkupContainer searchPanelContainer;
+	private ContainerForm containerForm;
+	
+	public Details(	String id,
+					final WebMarkupContainer resultListContainer, 
+					FeedbackPanel feedBackPanel,
+					WebMarkupContainer detailPanelContainer,
+					WebMarkupContainer searchPanelContainer,
+					ContainerForm containerForm){
 		
 		super(id);
-		setSearchPanel(searchPanel);
+		this.feedBackPanel = feedBackPanel;
+		this.listContainer = resultListContainer;
+		this.detailsContainer = detailPanelContainer;
+		this.searchPanelContainer = searchPanelContainer;
+		this.containerForm = containerForm;
 		
-		userForm  = new UserForm(Constants.USER_DETAILS_FORM, new ArkUserVO()){
+	}
+	
+	public void initialisePanel(){
+		
+		userForm = new UserForm(Constants.USER_DETAILS_FORM, listContainer, detailsContainer, containerForm){
 			
-			private static final long serialVersionUID = 6077699021177330917L;
-			
-			/**
-			 * When user clicks on save the VO is validated and then passed to the backend.
-			 */
-			protected  void onSave(ArkUserVO userVO){
-				
-				try {
-					
-					if(userVO.getMode() == Constants.MODE_NEW){
-						
-						boolean isValidRoles = AppRoleAccordion.validateRoles(this);
-						//Run custom validations
-						if(isValidRoles){
-							AppRoleAccordion.getSelectedAppRoles(this, userVO);
-							mapToSystemValues(userVO);
-							//Get the study in context
-							//TODO and set the study into the user vo
-							
-							Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-							if(sessionStudyId != null){
-								Study study = studyService.getStudy(sessionStudyId);
-								StudyVO studyVO = new StudyVO();
-								studyVO.setStudyName(study.getName());
-								studyVO.setModules(userVO.getModules());
-								userVO.setStudyVO(studyVO);
-								userService.createLdapUser(userVO);	
-								userForm.info(userVO.getUserName() + " was added successfully.");
-								this.groupPasswordContainer.setVisible(false);
-								this.userNameTxtField.setEnabled(false);
-								this.userPasswordField.setRequired(false);
-								this.confirmPasswordField.setRequired(false);
-							}
-							
-						}else{
-							this.error("The user has not been assigned a role.");
-						}
-					   
-					}else if(userVO.getMode() == Constants.MODE_EDIT){
-						
-						//Map any display values into system and set the VO before calling update
-						//.e.g Module and Role names need to be mapped to System equivalent.
-						boolean isValidRoles = AppRoleAccordion.validateRoles(this);
-						if(isValidRoles){
-							AppRoleAccordion.getSelectedAppRoles(this, userVO);
-							mapToSystemValues(userVO);
-							userService.updateLdapUser(userVO);
-							userForm.info("Update was successful.");
-							this.groupPasswordContainer.setVisible(false);
-							this.userNameTxtField.setEnabled(false);
-						}else{
-							this.error("The user has not been assigned a role.");
-						}
-					}
-					
-					//Accordion will have its own form object
-					List<ModuleVO> modules = userService.getModules(true);
-					userForm.remove(appRoleAccordion);
-					userVO.setMode(Constants.MODE_EDIT);
-					appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, userVO, modules);
-					userForm.add(appRoleAccordion);
-				}catch (InvalidNameException e) {
-					//e.printStackTrace();
-					log.error("Exception occured while performing an update on the user details in LDAP " + e.getMessage());
-					userForm.info(userVO.getUserName() + " could not be added or updated. There seems to be a problem with the server. Please try again later");
-				}catch(UserNameExistsException userNameExists){
-					userForm.error(userNameExists.getMessage());
-				}
-				catch(Exception ex){
-					log.error("Exception occured when saving user details " + ex.getMessage());
-					userForm.info("A System error has occured. We will have someone contact you.");
-				}
-			}
-			protected void onCancel(){
-				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
-				log.info("SearchPanel.isVisible()" + searchPanel.isVisible() );
-				searchPanel.setDetailsPanelVisible(false);
-			}
-			
-			protected void onDelete(ArkUserVO userVO){
+			protected void onDelete(ArkUserVO arkUserVO, AjaxRequestTarget target)
+			{
 				log.info("Delete the user details from ldap");
 				try{
-					userService.deleteLdapUser(userVO);	
+					userService.deleteLdapUser(arkUserVO);
+					this.info(arkUserVO.getUserName() + " was deleted successfully.");
+					processFeedback(target);
 				}catch(ArkSystemException arkSystemException){
 					log.error("Exception occured while performing a delete on the user details in LDAP " + arkSystemException.getMessage());
 				}catch(Exception ex){
@@ -179,20 +121,130 @@ public class Details extends Panel{
 				}
 			}
 			
+			protected void onSave(ArkUserVO arkUserVO, AjaxRequestTarget target){
+				
+				try{
+
+					if(arkUserVO.getMode() == Constants.MODE_NEW){
+						
+						processNew(arkUserVO,this);
+						
+						this.info(arkUserVO.getUserName() + " was added successfully.");
+						this.groupPasswordContainer.setVisible(false);
+						this.userNameTxtField.setEnabled(false);
+						this.userPasswordField.setRequired(false);
+						this.confirmPasswordField.setRequired(false);
+						processFeedback(target);
+						
+					}else if(arkUserVO.getMode() == Constants.MODE_EDIT){
+						
+						processUpdate(arkUserVO, this);
+						this.groupPasswordContainer.setVisible(false);
+						this.userNameTxtField.setEnabled(false);
+						processFeedback(target);
+						
+					}
+					
+					//Accordion will have its own form object
+					//List<ModuleVO> modules = userService.getModules(true);
+					
+					//userForm.remove(appRoleAccordion);
+					//arkUserVO.setMode(Constants.MODE_EDIT);
+					
+					//containerForm.getModelObject().setAvailableModules(modules);
+					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, containerForm.getModelObject(), modules);
+					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION,containerForm);
+					
+					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, arkUserVO, modules);
+					//userForm.add(appRoleAccordion);
+					
+					
+				}catch (InvalidNameException e) {
+
+					log.error("Exception occured while performing an update on the user details in LDAP " + e.getMessage());
+					//userForm.info(userVO.getUserName() + " could not be added or updated. There seems to be a problem with the server. Please try again later");
+				}catch(UserNameExistsException userNameExists){
+					//userForm.error(userNameExists.getMessage());
+				}catch(Exception ex){
+					log.error("Exception occured when saving user details " + ex.getMessage());
+					userForm.info("A System error has occured. We will have someone contact you.");
+				}
+				
+				target.addComponent(feedBackPanel);
+				
+			}
+			
+			protected  void onCancel(AjaxRequestTarget target)
+			{
+				ArkUserVO arkUserVO = new ArkUserVO();
+				containerForm.setModelObject(arkUserVO);
+				searchPanelContainer.setVisible(true);
+				detailsContainer.setVisible(false);
+				target.addComponent(searchPanelContainer);
+				target.addComponent(detailsContainer);
+			}
 			
 		};
-
-		add(userForm);
+		
+		
 		try {
+			/* Get A list of Module/Application names from the backend */
 			List<ModuleVO> modules = userService.getModules(true);
-			appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, userVO, modules);
+			containerForm.getModelObject().setAvailableModules(modules);
+			appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, containerForm.getModelObject(), modules);
+			//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION,containerForm);
 			//Accordion will have its own form object
 			userForm.add(appRoleAccordion);
 			
 		} catch (ArkSystemException e) {
 			e.printStackTrace();
 		}
+		
+		userForm.initialiseForm();
+		add(userForm);
+		
 	}
+	
+	
+	private void processUpdate(ArkUserVO arkUserVO, UserForm userForm) throws ArkSystemException{
+		boolean isValidRoles = AppRoleAccordion.validateRoles(userForm);
+		if(isValidRoles)
+		{
+			AppRoleAccordion.getSelectedAppRoles(userForm, arkUserVO);
+			mapToSystemValues(arkUserVO);
+			userService.updateLdapUser(arkUserVO);
+			userForm.info("Update was successful.");
+			
+		}else{
+			this.error("The user has not been assigned a role.");
+		}
+	}
+	
+	private void processNew(ArkUserVO arkUserVO, UserForm userForm) throws ArkSystemException, UserNameExistsException, Exception{
+		
+		boolean isValidRoles = AppRoleAccordion.validateRoles(userForm);
+		
+		if(isValidRoles)
+		{
+			AppRoleAccordion.getSelectedAppRoles(userForm, arkUserVO);
+			mapToSystemValues(arkUserVO);
+			Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			if(sessionStudyId != null){
+				Study study = studyService.getStudy(sessionStudyId);
+				StudyVO studyVO = new StudyVO();
+				studyVO.setStudyName(study.getName());
+				studyVO.setModules(arkUserVO.getModules());
+				arkUserVO.setStudyVO(studyVO);
+				userService.createLdapUser(arkUserVO);	
+			}
+		}
+		else
+		{
+			this.error("The user has not been assigned a role.");
+		}
+		
+	}
+
 	
 	/**
 	 * A common method that maps all display values to system. Add the logic here as required
