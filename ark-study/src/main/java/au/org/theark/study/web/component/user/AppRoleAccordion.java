@@ -20,12 +20,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.odlabs.wiquery.ui.accordion.Accordion;
 
+import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.form.AppRoleForm;
-import au.org.theark.core.util.UIHelper;
 
 public class AppRoleAccordion extends Panel{
 
@@ -33,10 +33,14 @@ public class AppRoleAccordion extends Panel{
 	private static final long serialVersionUID = 1L;
 	private List<ModuleVO> membershipModules;
 	
+	//private ContainerForm containerForm;
+	//Application Select Palette
 	
 	@SuppressWarnings("unchecked")
 	public AppRoleAccordion(String id, ArkUserVO etaUserVO, List<ModuleVO> moduleList){
+		
 		super(id);
+		
 		this.etaUserVO = etaUserVO;//Set the private instance of etaUserVO
 		membershipModules = etaUserVO.getModules();//List of Applications the user is a member of
 		final AppRoleForm appRoleForm = new AppRoleForm(Constants.APP_ROLE_FORM, etaUserVO);
@@ -83,6 +87,84 @@ public class AppRoleAccordion extends Panel{
 	}
 	
 	/**
+	 * Refactoring suspended for Palette
+	 * @param id
+	 * @param userContainerForm
+	 * @param moduleList
+	 */
+//	@SuppressWarnings("unchecked")
+//	public AppRoleAccordion(String id, ContainerForm userContainerForm){
+//		
+//		super(id);
+//		containerForm = userContainerForm;
+//		
+//		membershipModules = containerForm.getModelObject().getModules();//User's list of modules and roles
+//		
+//		final AppRoleForm appRoleForm = new AppRoleForm(Constants.APP_ROLE_FORM, containerForm.getModelObject());
+//		
+//		//Create an instance of Wiquery Accordion widget
+//		Accordion moduleAccordion = new Accordion(Constants.ACCORDION);
+//		
+//		//Build the sections dynamically for the Accordion
+//		ListView sectionListView = new ListView(Constants.ACCORDION_SECTION, containerForm.getModelObject().getAvailableModules()){
+//			/**
+//			 * 
+//			 */
+//			private static final long serialVersionUID = 1L;
+//
+//			@Override
+//			protected void populateItem(ListItem listItem) {
+//				
+//				ModuleVO availableModuleVO = ((ModuleVO)listItem.getDefaultModelObject());
+//				
+//				Label sectionName = new Label(Constants.ACCORDION_SECTION_NAME_LBL, availableModuleVO.getModule());
+//				listItem.setRenderBodyOnly(true);//Excludes excess tags on the markup
+//				listItem.add(sectionName);
+//
+//				//WebMarkupContainer groupSelectorContainer;
+//				String displayModule;
+//				ModuleVO selectedModuleVO = new ModuleVO();
+//				
+//				//Match the available Module name with the user associated module list
+//				for(ModuleVO userModule :membershipModules){
+//					 displayModule = UIHelper.getDisplayModuleName(userModule.getModule());
+//					if(displayModule.equals(availableModuleVO.getModule())){
+//						selectedModuleVO = userModule;
+//						break;
+//					}
+//				}
+//				
+//				Palette rolePalette = initialiseRolePalette(containerForm,selectedModuleVO,availableModuleVO);
+//				listItem.add(rolePalette);
+//			}
+//		};
+//		
+//		moduleAccordion.add(sectionListView);
+//		appRoleForm.add(moduleAccordion);//Add the accordion to the form
+//		add(appRoleForm);
+//	}
+	
+	
+//	private Palette initialiseRolePalette(ContainerForm containerForm, ModuleVO selectedModuleVO, ModuleVO availableModuleVO){
+//		
+//		CompoundPropertyModel<ArkUserVO> arkUserCpm = (CompoundPropertyModel<ArkUserVO>)containerForm.getModel();
+//		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("role", "role");
+//		Model availableRolesModel = new Model(availableModuleVO);
+//		PropertyModel<List<RoleVO>> availableRoleChoicesPM = new PropertyModel<List<RoleVO>>(availableRolesModel,"role");
+//		
+//		RoleVO roleVO = new RoleVO();
+//		roleVO.setRole("Test");
+//		selectedModuleVO.getRole().add(roleVO);
+//		
+//		Model selectedRolesModel = new Model(selectedModuleVO);
+//		PropertyModel<List<RoleVO>> selectedRolesPM = new PropertyModel<List<RoleVO>>(selectedRolesModel,"role");
+//		
+//		return new Palette("rolePalette", selectedRolesPM, availableRoleChoicesPM, renderer, 5, false);
+//		
+//	}
+	
+	
+	/**
 	 * This method will initialise the multi select controls and the buttons and then add it to the container.
 	 * 
 	 * @param form
@@ -103,6 +185,9 @@ public class AppRoleAccordion extends Panel{
 				selectedChoices.add(UIHelper.getDisplayRoleName(roleVO.getRole()));
 			}
 		}
+		//Add the Palette here
+		
+		
 		
 		ListMultipleChoice selectedRolesLMC = new ListMultipleChoice(Constants.SELECTED_ROLES_MLC, new Model(),selectedChoices);
 		container.add(selectedRolesLMC);
@@ -285,16 +370,28 @@ public class AppRoleAccordion extends Panel{
 				isValid = true;
 				return true;
 			}
-			List<String> selectedItems  = (List<String>)selectedRolesLMC.getChoices();
-			for (Iterator iterator2 = selectedItems.iterator(); iterator2
-					.hasNext();) {
-				String role = (String) iterator2.next();
-				System.out.println("Selected Roles: " + role);
-				
-			}
 		}
 		return isValid;
 	}
+	
+//	public static boolean validateRoles(Form form){
+//		
+//		boolean isValid = false;
+//		
+//		ListView sectionListView = getAccordionSections(form);
+//		
+//		for (Iterator iterator = sectionListView.iterator(); iterator.hasNext();) {
+//			ListItem listItem = (ListItem) iterator.next();
+//			
+//			Palette pal = (Palette)listItem.get("rolePalette");
+//			Iterator it  = pal.getSelectedChoices();
+//			if(it != null && it.hasNext()){
+//				return true;	
+//			}
+//		}
+//		return isValid;
+//	}
+	
 	
 	public static ListView getAccordionSections(Form parentForm){
 		AppRoleAccordion ma  = (AppRoleAccordion)parentForm.get(Constants.APP_ROLE_ACCORDION);
@@ -302,6 +399,60 @@ public class AppRoleAccordion extends Panel{
 		Accordion ac =  (Accordion)aForm.get(Constants.ACCORDION);
 		return  (ListView)ac.get(Constants.ACCORDION_SECTION);	
 	}
+	
+	
+//	public static void getSelectedAppRoles(Form parentForm, ArkUserVO etaUserVO){
+//		
+//		List<ModuleVO> moduleVOlist = new ArrayList<ModuleVO>();
+//		etaUserVO.setModules(moduleVOlist);
+//		
+//		/* The following code is redundant and should be moved into a helper, that will return the ListView instance*/
+//		ListView sectionListView = getAccordionSections(parentForm);
+//		
+//		for (Iterator iterator = sectionListView.iterator(); iterator.hasNext();) {
+//			
+//			ListItem listItem = (ListItem) iterator.next();
+//			//Application Name
+//			Label sectionName  = (Label)listItem.get(Constants.ACCORDION_SECTION_NAME_LBL);
+//			String lblName = sectionName.getDefaultModelObjectAsString();
+//			
+//			//WebMarkupContainer container = (WebMarkupContainer)listItem.get(Constants.AJAX_CONTAINER);
+//			Palette pal = (Palette)listItem.get("rolePalette");
+//			//Iterator palSelectedItemsIterator  = pal.getSelectedChoices();
+//			
+//			ModuleVO moduleVO = new ModuleVO();
+//			moduleVO.setModule("Study Manager");//The Module Name
+//			List<RoleVO> roleVOList = new ArrayList<RoleVO>();
+//			RoleVO roleVO = new RoleVO();
+//			roleVO.setRole("lab_person");
+//			roleVOList.add(roleVO);
+//			moduleVO.setRole(roleVOList);
+//			moduleVOlist.add(moduleVO);
+//			moduleVO = new ModuleVO();	
+//			break;
+			
+//			if(pal != null && pal.getSelectedChoices().hasNext()){
+//				
+//				ModuleVO moduleVO = new ModuleVO();
+//				moduleVO.setModule(lblName);//The Module Name
+//				
+//				List<RoleVO> roleVOList = new ArrayList<RoleVO>();
+//				//Get the list of Roles selected for this Module
+//				for( Iterator<RoleVO> selectedIterator = pal.getSelectedChoices(); selectedIterator.hasNext();){
+//					RoleVO roleVO = selectedIterator.next();
+//					//String role = (String) selectedIterator.next();
+//					//roleVO.setRole(role);
+//					roleVOList.add(roleVO);
+//				}
+//				moduleVO.setRole(roleVOList);
+//				moduleVOlist.add(moduleVO);
+//				moduleVO = new ModuleVO();	
+//			}else{
+//				System.out.println("The Palette is null. ");
+//			}
+//		}
+//}
+	
 	
 	/**
 	 * A helper that returns the selected applications and roles in a class
