@@ -4,13 +4,15 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
@@ -18,53 +20,49 @@ import au.org.theark.study.web.Constants;
 
 @SuppressWarnings("serial")
 public class SearchUserForm extends Form<ArkUserVO>{
+	
 	Long sessionStudyId;
 	TextField<String> userNameTxtField =new TextField<String>(Constants.USER_NAME);
 	TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 	TextField<String> lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
 	TextField<String> emailTxtField = new TextField<String>(Constants.EMAIL);
-	Button searchBtn;
-	Button newBtn;
+	AjaxButton searchBtn;
+	AjaxButton newBtn;
+	
 	private void initFormFields(){
 		emailTxtField.add(EmailAddressValidator.getInstance());
 		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
 		lastNameTxtField.add(StringValidator.lengthBetween(3, 50));
 		userNameTxtField.add(StringValidator.lengthBetween(3, 50));
 	}
-
-	/* Form Constructor */
-	public SearchUserForm(String id, ArkUserVO userVO, String panelId) {
 	
-		super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
+	/**
+	 * New Constructor that will be used.
+	 * @param id
+	 * @param model
+	 */
+	public SearchUserForm(String id, CompoundPropertyModel<ArkUserVO> model){
 		
+		super(id,model);
 		
 		initFormFields();
-		/* Add the look up fields */
-		add(userNameTxtField);
-		add(firstNameTxtField);
-		add(lastNameTxtField);
-		add(emailTxtField);
 		
-		searchBtn = new Button(Constants.SEARCH, new StringResourceModel("page.search", this, null))
+		searchBtn = new AjaxButton(Constants.SEARCH, new StringResourceModel("page.search", this, null))
 		{
-			public void onSubmit()
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				
-				onSearch((ArkUserVO) getForm().getModelObject());
+				onSearch(target);
 			}
 		};
-		add(searchBtn);
 		
 		
-		newBtn = new Button(Constants.NEW, new StringResourceModel("page.new", this, null))
+		
+		newBtn = new AjaxButton(Constants.NEW, new StringResourceModel("page.new", this, null))
 		{
-			public void onSubmit()
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				//Go to Search users page
-				//The mode will be new here
-				ArkUserVO etaUserVO = new ArkUserVO();
-				etaUserVO.setMode(Constants.MODE_NEW);
-				onNew(etaUserVO);
+				onNew(target);
 			}
 			@Override
 			public boolean isVisible(){
@@ -82,8 +80,6 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		
 		};
 		
-		add(newBtn);
-		
 		/* Secure the Action buttons if there is no study in context */
 		sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId == null){
@@ -94,18 +90,39 @@ public class SearchUserForm extends Form<ArkUserVO>{
 			searchBtn.setEnabled(true);
 		}
 		
-		
-		/**
-		 * Allow to create a New User
-		 */
-
+		decorateComponents();	
+		addComponentsToForm();
+	}
+	
+	private void decorateComponents(){
+		ThemeUiHelper.componentRounded(userNameTxtField);
+		ThemeUiHelper.componentRounded(firstNameTxtField);
+		ThemeUiHelper.componentRounded(lastNameTxtField);
+		ThemeUiHelper.componentRounded(emailTxtField);
+		ThemeUiHelper.componentRounded(searchBtn);
+		ThemeUiHelper.componentRounded(newBtn);
 	}
 
-	/* Processing logic for search */
-	protected  void onSearch(ArkUserVO userVO){}
+	private void addComponentsToForm(){
+		/* Add the look up fields */
+		add(userNameTxtField);
+		add(firstNameTxtField);
+		add(lastNameTxtField);
+		add(emailTxtField);
+		add(searchBtn);
+		add(newBtn);
+	}
 	
-	/* Processing logic for New User */
-	protected void onNew(ArkUserVO etaUserVO){}
+	// A non-ajax function
+	protected void onReset(){
+		clearInput();
+		updateFormComponentModels();
+	}
+	
+	
+	protected void onSearch(AjaxRequestTarget target){}
+	
+	protected void onNew(AjaxRequestTarget target){}
 	
 }
 

@@ -1,6 +1,8 @@
 package au.org.theark.study.web.form;
 
 import org.apache.shiro.util.StringUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainerWithAssociatedMarkup;
 import org.apache.wicket.markup.html.form.Button;
@@ -12,9 +14,13 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
+import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.site.SiteModel;
+import au.org.theark.study.web.component.site.SiteVo;
+import au.org.theark.study.web.component.user.form.ContainerForm;
 
 
 @SuppressWarnings("serial")
@@ -95,29 +101,107 @@ public class UserForm extends Form<ArkUserVO>{
 	protected  void onCancel(){}
 	protected void  onDelete(ArkUserVO etaUserVO){}
 		
-	private void initFormFields(){
+
+	
+	
+	
+	
+	private WebMarkupContainer  resultListContainer;
+	private WebMarkupContainer  detailsContainer;
+	private ContainerForm containerForm;
+	private AjaxButton cancelBtn;
+	private AjaxButton saveBtn;
+	private AjaxButton deleteBtn;
+	/**
+	 * New Constructor
+	 * @param id
+	 * @param listContainer
+	 * @param detailsContainer
+	 * @param userContainerForm
+	 */
+	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm userContainerForm){
+		
+		super(id);
+		
+		this.resultListContainer = listContainer;
+		this.detailsContainer = detailsContainer;
+		this.containerForm = userContainerForm;
+		
+		cancelBtn = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
+		{
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				resultListContainer.setVisible(false);
+				detailsContainer.setVisible(false);
+				target.addComponent(detailsContainer);
+				target.addComponent(resultListContainer);
+				containerForm.setModelObject(new ArkUserVO());
+				onCancel(target);
+			}
+		};
+		
+		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		{
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				target.addComponent(detailsContainer);
+				onSave(containerForm.getModelObject(), target);
+			}
+			
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processFeedback(target);
+			}
+		};
+		
+		deleteBtn = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				target.addComponent(detailsContainer);
+				onSave(containerForm.getModelObject(), target);
+			}
+		};
+
+	}
+	
+	public void initialiseForm(){
+		
 		userNameTxtField.setRequired(true);
-		userNameTxtField.add(EmailAddressValidator.getInstance());
 		firstNameTxtField.setRequired(true);
 		emailTxtField.setRequired(true);
 		emailTxtField.add(EmailAddressValidator.getInstance());
-		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
 		lastNameTxtField.setRequired(true);
-		lastNameTxtField.add(StringValidator.lengthBetween(3, 50));
-		userNameTxtField.add(StringValidator.lengthBetween(3, 50));
 		userPasswordField.setRequired(false);
 		confirmPasswordField.setRequired(false);
+		attachValidators();
+		decorateComponents();
+		addComponents();
 	}
-	public UserForm(String id, ArkUserVO userVO) {
-			
-		super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
+
+	
+	private void decorateComponents(){
 		
-		initFormFields();
-		
-		if(StringUtils.hasText(userPasswordField.getDefaultModelObjectAsString()) && 
-		   StringUtils.hasText(confirmPasswordField.getDefaultModelObjectAsString())){
-			add( new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
-		}
+		ThemeUiHelper.componentRounded(userNameTxtField);
+		ThemeUiHelper.componentRounded(firstNameTxtField);
+		ThemeUiHelper.componentRounded(emailTxtField);
+		ThemeUiHelper.componentRounded(lastNameTxtField);
+		ThemeUiHelper.componentRounded(userPasswordField);
+		ThemeUiHelper.componentRounded(confirmPasswordField);
+		ThemeUiHelper.componentRounded(deleteBtn);
+		ThemeUiHelper.componentRounded(saveBtn);
+		ThemeUiHelper.componentRounded(cancelBtn);
+	}
+	
+	private void attachValidators(){
+		userNameTxtField.add(EmailAddressValidator.getInstance());
+		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
+		lastNameTxtField.add(StringValidator.lengthBetween(3, 50));
+		userNameTxtField.add(StringValidator.lengthBetween(3, 50));
+	}
+	
+	private void addComponents(){
 		
 		add(userNameTxtField);
 		add(firstNameTxtField);
@@ -125,44 +209,87 @@ public class UserForm extends Form<ArkUserVO>{
 		add(emailTxtField);
 		groupPasswordContainer.add(userPasswordField);
 		groupPasswordContainer.add(confirmPasswordField);
-		//groupPasswordContainer.add(oldPasswordField); 
-		
 		add(groupPasswordContainer);
 		
-		
-		Button saveButton = new Button(Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
-			public void onSubmit()
-			{
-				onSave((ArkUserVO) getForm().getModelObject());
-			}
-		}; 
-		
+		add(cancelBtn.setDefaultFormProcessing(false));
+		add(saveBtn);
+		add(deleteBtn);
+	}
 	
-		Button cancelButton = new Button(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
-		{
-			public void onSubmit()
-			{
-				//Go to Search users page
-				onCancel();
-			}
-			
-		};
-		
-		deleteButton = new Button(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit()
-			{
-				//Go to Search users page
-				onDelete((ArkUserVO) getForm().getModelObject());
-			}
-			
-		};
-	
-		add(cancelButton.setDefaultFormProcessing(false));
-		add(saveButton);
-		add(deleteButton);
+	protected void onDelete(ArkUserVO arkUserVO, AjaxRequestTarget target){
 		
 	}
+	
+	protected void onSave(ArkUserVO arkUserVO, AjaxRequestTarget target){
+		
+	}
+	
+	protected  void onCancel(AjaxRequestTarget target){
+		
+	}
+	protected void processFeedback(AjaxRequestTarget target){
+		
+	}
+	
+	public UserForm(String id, ArkUserVO userVO) {
+		super(id);
+	}
+	
+//	public UserForm(String id, ArkUserVO userVO) {
+//			
+//		super(id, new CompoundPropertyModel<ArkUserVO>(userVO));
+//		
+//		initFormFields();
+//		
+//		if(StringUtils.hasText(userPasswordField.getDefaultModelObjectAsString()) && 
+//		   StringUtils.hasText(confirmPasswordField.getDefaultModelObjectAsString())){
+//			add( new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
+//		}
+//		
+//		add(userNameTxtField);
+//		add(firstNameTxtField);
+//		add(lastNameTxtField);
+//		add(emailTxtField);
+//		groupPasswordContainer.add(userPasswordField);
+//		groupPasswordContainer.add(confirmPasswordField);
+//		//groupPasswordContainer.add(oldPasswordField); 
+//		
+//		add(groupPasswordContainer);
+//		
+//		
+//		Button saveButton = new Button(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+//		{
+//			public void onSubmit()
+//			{
+//				onSave((ArkUserVO) getForm().getModelObject());
+//			}
+//		}; 
+//		
+//	
+//		Button cancelButton = new Button(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
+//		{
+//			public void onSubmit()
+//			{
+//				//Go to Search users page
+//				onCancel();
+//			}
+//			
+//		};
+//		
+//		deleteButton = new Button(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+//		{
+//			public void onSubmit()
+//			{
+//				//Go to Search users page
+//				onDelete((ArkUserVO) getForm().getModelObject());
+//			}
+//			
+//		};
+//	
+//		add(cancelButton.setDefaultFormProcessing(false));
+//		add(saveButton);
+//		add(deleteButton);
+//		
+//	}
 
 }
