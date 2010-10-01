@@ -42,6 +42,7 @@ public class MyDetailsContainer extends Panel{
 			log.error("Exception occured :" + ine.getMessage());
 		}
 		//Add the details panel into the container
+		userVO.setMode(Constants.MODE_EDIT);
 		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO));
 	}
 
