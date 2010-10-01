@@ -36,16 +36,17 @@ public class UserForm extends Form<ArkUserVO>{
 	protected PasswordTextField oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
 
-	protected Button deleteButton;
+	protected  void onSave(ArkUserVO userVO){}
+	protected  void onCancel(){}
+	protected void  onDelete(ArkUserVO etaUserVO){}
+	private WebMarkupContainer  resultListContainer;
+	private WebMarkupContainer  detailsContainer;
+	private ContainerForm containerForm;
+	private AjaxButton cancelBtn;
+	private AjaxButton saveBtn;
+	private AjaxButton deleteBtn;
 
-	public Button getDeleteButton() {
-		return deleteButton;
-	}
-
-	public void setDeleteButton(Button deleteButton) {
-		this.deleteButton = deleteButton;
-	}
-
+	
 	protected WebMarkupContainerWithAssociatedMarkup appRoleAcoAccordion  = new WebMarkupContainerWithAssociatedMarkup("appRoleAccordion");
 
 	public WebMarkupContainerWithAssociatedMarkup getAppRoleAcoAccordion() {
@@ -97,21 +98,9 @@ public class UserForm extends Form<ArkUserVO>{
 	}
 
 	
-	protected  void onSave(ArkUserVO userVO){}
-	protected  void onCancel(){}
-	protected void  onDelete(ArkUserVO etaUserVO){}
-		
-
-	
-	
-	
-	
-	private WebMarkupContainer  resultListContainer;
-	private WebMarkupContainer  detailsContainer;
-	private ContainerForm containerForm;
-	private AjaxButton cancelBtn;
-	private AjaxButton saveBtn;
-	private AjaxButton deleteBtn;
+	public UserForm(String id, ArkUserVO userVO) {
+		super(id);
+	}
 	/**
 	 * New Constructor
 	 * @param id
@@ -231,8 +220,14 @@ public class UserForm extends Form<ArkUserVO>{
 		
 	}
 	
-	public UserForm(String id, ArkUserVO userVO) {
-		super(id);
+
+
+	public AjaxButton getDeleteBtn() {
+		return deleteBtn;
+	}
+
+	public void setDeleteBtn(AjaxButton deleteBtn) {
+		this.deleteBtn = deleteBtn;
 	}
 	
 //	public UserForm(String id, ArkUserVO userVO) {
