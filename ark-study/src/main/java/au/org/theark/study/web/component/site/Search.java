@@ -3,7 +3,6 @@ package au.org.theark.study.web.component.site;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -17,12 +16,14 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
 import au.org.theark.study.web.component.site.form.SearchSiteForm;
+@SuppressWarnings("serial")
 public class Search extends Panel{
 
 	private FeedbackPanel fbPanel;
-	private WebMarkupContainer searchMarkupContainer;
+	
 	private PageableListView<SiteVo> listView;
 	
+	private WebMarkupContainer searchMarkupContainer;
 	//The container to wrap the Search Result List
 	private WebMarkupContainer listContainer;
 	//The Container to wrap the details panel
@@ -32,7 +33,6 @@ public class Search extends Panel{
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
-	
 	
 	
 	/*Constructor*/
@@ -48,14 +48,15 @@ public class Search extends Panel{
 	}
 	
 	
+	@SuppressWarnings("serial")
 	public void initialisePanel(CompoundPropertyModel<SiteModel> siteModelCpm){
 		
 		
 		//Get the study id from the session and get the study
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		//Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		List<Person> availablePersons = new ArrayList<Person>();
 		
-		SearchSiteForm searchSiteForm = new SearchSiteForm(Constants.SEARCH_FORM, siteModelCpm,availablePersons){
+		SearchSiteForm searchSiteForm = new SearchSiteForm(Constants.SEARCH_FORM, siteModelCpm, availablePersons){
 			
 			protected  void onSearch(AjaxRequestTarget target){
 				
