@@ -1,6 +1,6 @@
 <wicket:panel>
 	&nbsp;
-	<form wicket:id="siteForm">
+	<form wicket:id="detailsForm">
 		<div id="detailsPanelBorder">
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
@@ -11,13 +11,13 @@
 			<div id="fldLabel">
 				<div class="label">
 					<label for="studyKey">
-						<wicket:message key="site.name">Site Name:</wicket:message>
+						<wicket:message key="study.component.id">Component Id:</wicket:message>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="siteVo.siteName" type="text" />
+					<input wicket:id="studyComponent.studyCompKey" type="text" />
 				</div>
 			</div>
 			
@@ -25,18 +25,49 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="siteDescription"><wicket:message	key="site.description">Name:</wicket:message></label>
+					<label for="componentName"><wicket:message	key="study.component.name">Name:</wicket:message></label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<textarea wicket:id="siteVo.siteDescription"></textarea> 
+					<input wicket:id="studyComponent.name" type="text" /> 
 				</div>
 			</div>
 			
 			<div id="searchPanelContentRight">&nbsp;</div>
 		
 			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="studyKey">
+						<wicket:message key="study.component.description">Description:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="studyComponent.description" type="text" />
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					&nbsp;  <!--  <label for="componentName"><wicket:message	key="study.component.name">Name:</wicket:message></label> -->
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					&nbsp; <!--  <textarea wicket:id="siteVo.siteDescription"></textarea> --> 
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
 			
 			<!-- Row 1 Ends-->
 		

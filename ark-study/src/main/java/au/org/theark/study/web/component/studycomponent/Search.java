@@ -20,97 +20,76 @@ import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.site.SiteVo;
 import au.org.theark.study.web.component.studycomponent.SearchResultList;
+import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 import au.org.theark.study.web.form.SearchStudyCompForm;
 
 public class Search extends Panel{
 
-	public Search(String id) {
-		super(id);
-		// TODO Auto-generated constructor stub
-	}
-	
 	private FeedbackPanel feedBackPanel;
-	private CompoundPropertyModel<StudyCompVo> cpm;
-	private PageableListView<StudyComp> listView;
-	private SearchResultList searchResults;
-	
-	//The container to wrap the Search Result List
+	private WebMarkupContainer searchMarkupContainer;
 	private WebMarkupContainer listContainer;
-	//The Container to wrap the details panel
 	private WebMarkupContainer detailsContainer;
-	//private Details detailsPanel;
 	
-	//The type of object returned by the List
-	private IModel<Object> iModel;
+	private ContainerForm containerForm;
+	private PageableListView<StudyComp> listView;
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
-
-	public void initialise(){
+	
+	
+	/*Constructor*/
+	public Search(	String id, 
+					FeedbackPanel feedBackPanel, 
+					WebMarkupContainer searchMarkupContainer,
+					PageableListView<StudyComp> listView,  
+					WebMarkupContainer resultListContainer, 
+					WebMarkupContainer detailPanelContainer, 
+					ContainerForm studyCompContainerForm) {
 		
-		feedBackPanel= new FeedbackPanel("feedbackMessage");
-		feedBackPanel.setOutputMarkupId(true);
-		
-		cpm = new CompoundPropertyModel<StudyCompVo>(new StudyCompVo());
-		
-		//The wrapper for ResultsList panel that will contain a ListView
-		listContainer = new WebMarkupContainer("resultListContainer");
-		listContainer.setOutputMarkupPlaceholderTag(true);
-		listContainer.setVisible(true);
-		
-		detailsContainer = new WebMarkupContainer("detailsContainer");
-		detailsContainer.setOutputMarkupPlaceholderTag(true);
-		detailsContainer.setVisible(false);
-		
-		//Initialise the Details Panel	
-//		detailsPanel = new Details("detailsPanel", listContainer,feedBackPanel,detailsContainer);
-//		detailsPanel.setCpm(cpm);
-//		detailsPanel.initialisePanel();
-//		detailsContainer.add(detailsPanel);
-		
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
-
-			@Override
-			protected Object load() {
-				return cpm.getObject().getStudyCompList();
-			}
-		};
-		
-		initialiseSearchResults();
+		super(id);
+		this.searchMarkupContainer =  searchMarkupContainer;
+		this.listView = listView;
+		this.feedBackPanel = feedBackPanel;
+		listContainer = resultListContainer;
+		detailsContainer = detailPanelContainer;
+		containerForm = studyCompContainerForm;
+	}
+	
+	
+	
+	public void initialisePanel(CompoundPropertyModel<StudyCompVo> studyCompCpm){
 		
 		//Get the study id from the session and get the study
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		
-//		if(sessionStudyId != null){
-//			Study study = studyService.getStudy(sessionStudyId);
-//			//For the given study get a list of applications.
-//		}
-		
-		SearchStudyCompForm searchStudyCompForm = new SearchStudyCompForm(Constants.SEARCH_FORM, cpm){
+		SearchStudyCompForm searchStudyCompForm = new SearchStudyCompForm(Constants.SEARCH_FORM, studyCompCpm){
 			
 			protected  void onSearch(AjaxRequestTarget target){
 				
+				//Refresh the FB panel if there was an old message from previous search result
+				target.addComponent(feedBackPanel);
+				
 				//Get a list of StudyComponents with the given criteria
 				try{
-					List<StudyComp> resultList = studyService.searchStudyComp(cpm.getObject().getStudyComponent());
 					
+					List<StudyComp> resultList = studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent());
 					
 					if(resultList != null && resultList.size() == 0){
-						this.info("Site with the specified criteria does not exist in the system.");	
+						this.info("Study Component with the specified criteria does not exist in the system.");
+						target.addComponent(feedBackPanel);
+					}else{
+						containerForm.getModelObject().setStudyCompList(resultList);
+						listView.removeAll();
+						listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
+						target.addComponent(listContainer);//For ajax this is required so 
 					}
 					
-					this.setModelObject(new StudyCompVo());
-					cpm = (CompoundPropertyModel<StudyCompVo>)this.getModel();////reset the original one
-					cpm.getObject().setStudyCompList(resultList);//Place the results into the model
-					listView.removeAll();
-					listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
-					target.addComponent(listContainer);//For ajax this is required so 
 				}catch(ArkSystemException arkEx){
 					this.error("A system error has occured. Please try after sometime.");
 				}
@@ -121,44 +100,39 @@ public class Search extends Panel{
 				// Show the details panel name and description
 				StudyCompVo studyCompVo = new StudyCompVo();
 				studyCompVo.setMode(Constants.MODE_NEW);
-				this.setModelObject(studyCompVo);
-				cpm = (CompoundPropertyModel<StudyCompVo>)this.getModel();
-				//Any pre-population do it here
-				//detailsPanel.setCpm(cpm);
-				// List of users linked to the study
+				containerForm.setModelObject(studyCompVo);
 				processDetail(target, Constants.MODE_NEW);
 			}
 		};
-		
-		searchStudyCompForm.add(listContainer);
-		searchStudyCompForm.add(detailsContainer);
 		add(searchStudyCompForm);
-		add(feedBackPanel);
-		
 	}
 	
 	public void processDetail(AjaxRequestTarget target, int mode){
-		//Enable the name field of the site here
-		//detailsPanel.setCpm(cpm);
-		detailsContainer.setVisible(true);
+		//Hide the Search Panel before the Details Panel is made visible via the detailsContainer
+		searchMarkupContainer.setVisible(false);
+		//Hide the Search Result List 
 		listContainer.setVisible(false);
+		//Un-hide the Details Panel visible 
+		detailsContainer.setVisible(true);
+		//Attach the containers that need to be re-painted
+		target.addComponent(searchMarkupContainer);
 		target.addComponent(detailsContainer);
 		target.addComponent(listContainer);
 	}
 		
-	private void initialiseSearchResults(){
-		
-		searchResults = new SearchResultList("searchResults",detailsContainer);
-		searchResults.setCpm(cpm);
-
-		listView  = searchResults.buildPageableListView(iModel, listContainer);
-		listView.setReuseItems(true);
-
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
-		
-		searchResults.add(pageNavigator);
-		searchResults.add(listView);
-		listContainer.add(searchResults);
-	}
+//	private void initialiseSearchResults(){
+//		
+//		searchResults = new SearchResultList("searchResults",detailsContainer);
+//		searchResults.setCpm(cpm);
+//
+//		listView  = searchResults.buildPageableListView(iModel, listContainer);
+//		listView.setReuseItems(true);
+//
+//		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+//		
+//		searchResults.add(pageNavigator);
+//		searchResults.add(listView);
+//		listContainer.add(searchResults);
+//	}
 
 }

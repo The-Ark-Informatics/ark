@@ -17,33 +17,35 @@ import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 
 public class SearchResultList extends Panel{
 	
 	
-	private WebMarkupContainer detailsContainer;
+	private WebMarkupContainer detailsPanelContainer;
+	private WebMarkupContainer searchPanelContainer;
+	private ContainerForm containerForm;
+	
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-	/* A reference of the Model from the Container in this case Search Panel */
-	private CompoundPropertyModel<StudyCompVo> cpm;
 	
 	
-	public SearchResultList(String id, WebMarkupContainer  details){
+	
+	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer,ContainerForm studyCompContainerForm){
 		super(id);
-		this.detailsContainer = details;
-	}
-	public CompoundPropertyModel<StudyCompVo> getCpm() {
-		return cpm;
-	}
+		this.detailsPanelContainer = detailPanelContainer;
 
-	public void setCpm(CompoundPropertyModel<StudyCompVo> cpm) {
-		this.cpm = cpm;
 	}
-	
-	
-	public PageableListView<StudyComp> buildPageableListView(IModel iModel, final WebMarkupContainer searchContainer){
+		
+	/**
+	 * 
+	 * @param iModel
+	 * @param searchContainer
+	 * @return
+	 */
+	public PageableListView<StudyComp> buildPageableListView(IModel iModel){
 		
 		PageableListView<StudyComp> sitePageableListView = new PageableListView<StudyComp>("studyCompList", iModel, 10) {
 			@Override
@@ -59,7 +61,7 @@ public class SearchResultList extends Panel{
 					item.add(new Label("studyComponent.studyCompKey",""));
 				}
 				/* Component Name Link */
-				item.add(buildLink(studyComponent,searchContainer));
+				item.add(buildLink(studyComponent));
 				
 				//TODO when displaying text escape any special characters
 				/* Description */
@@ -87,21 +89,21 @@ public class SearchResultList extends Panel{
 	
 	
 	@SuppressWarnings({ "unchecked", "serial" })
-	private AjaxLink buildLink(final StudyComp studyComponent, final WebMarkupContainer searchContainer) {
+	private AjaxLink buildLink(final StudyComp studyComponent) {
 		
 		AjaxLink link = new AjaxLink("studyComponent.name") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
-				StudyCompVo studyCompVo  = cpm.getObject();
+				StudyCompVo studyCompVo  = containerForm.getModelObject();
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);//Sets the selected object into the model
-				detailsContainer.setVisible(true);
+				detailsPanelContainer.setVisible(true);
 				//TODO make the ID and Name field disabled
-				searchContainer.setVisible(false);
-				target.addComponent(detailsContainer);
-				target.addComponent(searchContainer);
+				searchPanelContainer.setVisible(false);
+				target.addComponent(detailsPanelContainer);
+				target.addComponent(searchPanelContainer);
 			}
 		};
 		

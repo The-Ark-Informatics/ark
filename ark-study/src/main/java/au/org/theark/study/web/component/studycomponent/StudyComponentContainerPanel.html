@@ -4,9 +4,24 @@
 	
 	<!-- Content Zone -->
 	<div id="contentZone">
-		<div id="searchPanel" wicket:id="searchComponentPanel"></div>
+		<form wicket:id="containerForm">
+		  <span wicket:id="feedbackMessage"> </span>
+
+		  <div wicket:id="searchContainer">
+			<div wicket:id="searchComponentPanel"></div>  
+		  </div>
+		  
+		  <div wicket:id="resultListContainer">
+			<div wicket:id="searchResults"></div>
+		  </div>
+		  
+		  <div wicket:id="detailsContainer">
+			<div wicket:id="detailsPanel"></div>
+		  </div>
+		</form>
 	</div>
 	
 	<!--  Page right Zone -->
 	<div id="rightZone">&nbsp;</div>
+	
 </wicket:panel>
