@@ -65,6 +65,8 @@ public interface ILdapUserDao {
 	
 	public List<ModuleVO> getUserRoles(ArkUserVO etaUserVO, String studyName) throws ArkSystemException;
 	
+	
+	public List<ModuleVO> getModulesAndRolesForStudy(String studyNameCn) throws ArkSystemException;
 	/**
 	 * Interface that retrieves all the modules that integrate with ETA
 	 */

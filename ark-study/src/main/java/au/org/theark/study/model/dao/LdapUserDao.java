@@ -26,6 +26,7 @@ import org.apache.shiro.util.StringUtils;
 import org.apache.shiro.util.ThreadContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.AttributesMapper;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
@@ -115,6 +116,18 @@ public class LdapUserDao implements ILdapUserDao{
 	
 	public void setLdapTemplate(LdapTemplate ldapTemplate) {
 		this.ldapTemplate = ldapTemplate;
+	}
+	
+	private IStudyDao studyDao;
+	
+	/*To access Hibernate Study Dao */
+	@Autowired
+	public void setStudyDao(IStudyDao studyDao) {
+		this.studyDao = studyDao;
+	}
+
+	public IStudyDao getStudyDao() {
+		return studyDao;
 	}
 	
 	/**
@@ -494,6 +507,21 @@ public class LdapUserDao implements ILdapUserDao{
 		
 	}
 	
+	public List<ModuleVO> getModules(Long studyId,boolean isForDisplay){
+		log.info("getModules()");
+		List<ModuleVO> listOfAllModules = getModules(false);
+		List<ModuleVO> modulesLinkedToStudy = new ArrayList<ModuleVO>();
+		String studyName = studyDao.getStudy(studyId).getName();
+		
+		AndFilter studyFilter = new AndFilter();
+		for (ModuleVO moduleVO : listOfAllModules) {
+			
+			//Check if the studyName as CN is present in the given module's group
+			
+		}
+		
+		return modulesLinkedToStudy;
+	}
 	private List<String> buildRoleNames(List<?> roles, boolean isForDisplay){
 		
 		List<String> displayRoleList = new ArrayList<String>();
@@ -1551,7 +1579,61 @@ public class LdapUserDao implements ILdapUserDao{
 
 		return linkedApplications;
 	}
+	
+	public List<ModuleVO> getModulesAndRolesForStudy(String studyNameCn) throws ArkSystemException{
 		
+		List<ModuleVO> linkedModules = new ArrayList<ModuleVO>();
+		try{
+			/* Get a List of All System Modules and their available roles. */
+			List<ModuleVO> listOfAllModules = getModules(false); 
+			String moduleName = "";
+			String groupBase = "ou=groups";
+			AndFilter moduleFilter = new AndFilter();
+			moduleFilter.and(new EqualsFilter("objectClass","groupOfNames"));
+
+			for(ModuleVO module: listOfAllModules)
+			{
+				//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
+				moduleName = module.getModule();
+				LdapName dn = new LdapName(groupBase);
+				dn.add(new Rdn("cn",moduleName));
+				dn.add(new Rdn("cn",studyNameCn));
+				try{
+					
+					List<?> studyGroup =  ldapTemplate.search(dn,moduleFilter.encode(),SearchControls.OBJECT_SCOPE, new AttributesMapper()
+					{
+						
+						public Object mapFromAttributes(Attributes attrs){
+							try {
+									Object returnObject = attrs.get("cn").get();
+									return returnObject;
+							} catch (NamingException e) {
+								
+									e.printStackTrace();
+							}
+								return attrs;
+						}
+					});
+					
+					if(studyGroup.size() > 0){
+						linkedModules.add(module);
+					}
+				
+				}catch(Exception e){
+					log.error(e.getMessage());
+				}
+					
+			}
+
+		}catch(InvalidNameException ine){
+			log.error(ine.getMessage());
+			throw new ArkSystemException("Exception occured while getting modules linked to the study");
+		}
+		
+		return linkedModules;
+		
+	}
+	
 	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
 		Set<String> linkedApplications  = getModulesLinkedToStudy(studyNameCN);
 		Set<String> linkedAppsForDisplay = new HashSet<String>();
