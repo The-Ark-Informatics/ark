@@ -106,6 +106,11 @@ public class UserServiceImpl implements IUserService {
 		iLdapUserDao.create(userVO);		
 	}
 
+	
+	public List<ModuleVO> getModules(String studyName) throws ArkSystemException{
+		return iLdapUserDao.getModulesAndRolesForStudy(studyName);
+	}	
+	
 	public List<ModuleVO> getModules(boolean isForDisplay) throws ArkSystemException {
 		
 		return iLdapUserDao.getModules(isForDisplay);
@@ -145,6 +150,11 @@ public class UserServiceImpl implements IUserService {
 			modulesLinkedToStudy.add(moduleVo);
 		}
 		return modulesLinkedToStudy;
+	}
+
+	public List<ModuleVO> getModulesAndRolesForStudy(String studyNameCn)
+			throws ArkSystemException {
+		return iLdapUserDao.getModulesAndRolesForStudy(studyNameCn);
 	}
 	
 	

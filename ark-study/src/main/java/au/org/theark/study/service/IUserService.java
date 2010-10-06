@@ -45,6 +45,17 @@ public interface IUserService {
 	
 	public void deleteLdapUser(ArkUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException;
 
+	/**
+	 * The interface that will return a list of Modules/Applications that the study is linked to. It is useful where
+	 * one has to do certain operations/management based on the linked applications such as assigning roles to user.
+	 * Where the user is restricted to assigning the roles only to the applications the study is linked to.
+	 * @param studyId
+	 * @param isForDisplay
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<ModuleVO> getModulesAndRolesForStudy(String studyNameCn) throws ArkSystemException;
+	
 	public List<ModuleVO> getModules(boolean isForDisplay) throws ArkSystemException;
 	
 	public List<String> getModuleRoles(String moduleId) throws ArkSystemException;
