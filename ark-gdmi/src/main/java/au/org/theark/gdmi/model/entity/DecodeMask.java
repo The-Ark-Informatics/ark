@@ -21,10 +21,10 @@ public class DecodeMask implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private Collection collection;
 	private Marker marker;
-	private long bitPosition;
+	private Long bitPosition;
 
 	// Constructors
 
@@ -33,7 +33,7 @@ public class DecodeMask implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public DecodeMask(long id, Marker marker, long bitPosition) {
+	public DecodeMask(Long id, Marker marker, Long bitPosition) {
 		this.id = id;
 		this.marker = marker;
 		this.bitPosition = bitPosition;
@@ -42,11 +42,11 @@ public class DecodeMask implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

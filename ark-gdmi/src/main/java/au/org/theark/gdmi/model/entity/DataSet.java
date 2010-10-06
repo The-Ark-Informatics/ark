@@ -21,7 +21,7 @@ public class DataSet implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private SnpFilter snpFilter;
 	private Collection collection;
 	private SubjectGroup subjectGroup;
@@ -40,7 +40,7 @@ public class DataSet implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public DataSet(long id, SnpFilter snpFilter, Collection collection,
+	public DataSet(Long id, SnpFilter snpFilter, Collection collection,
 			SubjectGroup subjectGroup, String userId, String insertTime) {
 		this.id = id;
 		this.snpFilter = snpFilter;
@@ -51,7 +51,7 @@ public class DataSet implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DataSet(long id, SnpFilter snpFilter, Collection collection,
+	public DataSet(Long id, SnpFilter snpFilter, Collection collection,
 			SubjectGroup subjectGroup, String name, String description,
 			String userId, String insertTime, String updateUserId,
 			String updateTime, Set<DataExtract> dataExtracts) {
@@ -71,11 +71,11 @@ public class DataSet implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

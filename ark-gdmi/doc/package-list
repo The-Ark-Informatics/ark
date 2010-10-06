@@ -1,0 +1,9 @@
+au.org.theark.gdmi
+au.org.theark.gdmi.exception
+au.org.theark.gdmi.model.dao
+au.org.theark.gdmi.model.entity
+au.org.theark.gdmi.service
+au.org.theark.gdmi.util
+au.org.theark.gdmi.web
+au.org.theark.gdmi.web.component.gdmi
+au.org.theark.gdmi.web.menu

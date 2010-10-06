@@ -27,13 +27,13 @@ public class MetaDataField implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private MetaDataType metaDataType;
-	private long studyId;
+	private Long studyId;
 	private String name;
 	private String description;
 	private String units;
-	private long seqNum;
+	private Long seqNum;
 	private String minValue;
 	private String maxValue;
 	private String discreteValues;
@@ -50,7 +50,7 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaDataField(long id, MetaDataType metaDataType, long studyId, String name,
+	public MetaDataField(Long id, MetaDataType metaDataType, Long studyId, String name,
 			String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataType = metaDataType;
@@ -61,8 +61,8 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MetaDataField(long id, MetaDataType metaDataType, long studyId, String name,
-			String description, String units, long seqNum, String minValue,
+	public MetaDataField(Long id, MetaDataType metaDataType, Long studyId, String name,
+			String description, String units, Long seqNum, String minValue,
 			String maxValue, String discreteValues, String userId,
 			Date insertTime, String updateUserId, Date updateTime,
 			Set<MetaData> metaDatas) {
@@ -88,11 +88,11 @@ public class MetaDataField implements java.io.Serializable {
 	@SequenceGenerator(name="MetaDataField_PK_Seq",sequenceName="GDMI.META_DATA_FIELD_PK_SEQ")
     @GeneratedValue(strategy=GenerationType.AUTO,generator="MetaDataField_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -107,11 +107,11 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public long getStudyId() {
+	public Long getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(long studyId) {
+	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
 
@@ -143,11 +143,11 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	@Column(name = "SEQ_NUM", precision = 22, scale = 0)
-	public long getSeqNum() {
+	public Long getSeqNum() {
 		return this.seqNum;
 	}
 
-	public void setSeqNum(long seqNum) {
+	public void setSeqNum(Long seqNum) {
 		this.seqNum = seqNum;
 	}
 

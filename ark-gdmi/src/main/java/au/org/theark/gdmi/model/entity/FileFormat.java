@@ -19,7 +19,7 @@ public class FileFormat implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<DataExtract> dataExtracts = new HashSet<DataExtract>(0);
 	private Set<Upload> uploads = new HashSet<Upload>(0);
@@ -31,12 +31,12 @@ public class FileFormat implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public FileFormat(long id) {
+	public FileFormat(Long id) {
 		this.id = id;
 	}
 
 	/** full constructor */
-	public FileFormat(long id, String name, Set<DataExtract> dataExtracts,
+	public FileFormat(Long id, String name, Set<DataExtract> dataExtracts,
 			Set<Upload> uploads) {
 		this.id = id;
 		this.name = name;
@@ -47,11 +47,11 @@ public class FileFormat implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

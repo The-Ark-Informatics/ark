@@ -20,8 +20,8 @@ public class SnpFilter implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
-	private long collectionId;
+	private Long id;
+	private Long collectionId;
 	private String name;
 	private String description;
 	private Clob rulesXml;
@@ -38,7 +38,7 @@ public class SnpFilter implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SnpFilter(long id, long collectionId, String userId,
+	public SnpFilter(Long id, Long collectionId, String userId,
 			String insertTime) {
 		this.id = id;
 		this.collectionId = collectionId;
@@ -47,7 +47,7 @@ public class SnpFilter implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SnpFilter(long id, long collectionId, String name,
+	public SnpFilter(Long id, Long collectionId, String name,
 			String description, Clob rulesXml, String userId,
 			String insertTime, String updateUser, String updateTime,
 			Set<DataSet> dataSets) {
@@ -66,20 +66,20 @@ public class SnpFilter implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "COLLECTION_ID", nullable = false, precision = 22, scale = 0)
-	public long getCollectionId() {
+	public Long getCollectionId() {
 		return this.collectionId;
 	}
 
-	public void setCollectionId(long collectionId) {
+	public void setCollectionId(Long collectionId) {
 		this.collectionId = collectionId;
 	}
 

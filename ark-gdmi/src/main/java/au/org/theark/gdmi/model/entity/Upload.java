@@ -1,15 +1,19 @@
 package au.org.theark.gdmi.model.entity;
 
+import java.sql.Blob;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -21,13 +25,18 @@ public class Upload implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private FileFormat fileFormat;
 	private String filename;
 	private Set<UploadMarkerGroup> uploadMarkerGroups = new HashSet<UploadMarkerGroup>(
 			0);
 	private Set<UploadCollection> uploadCollections = new HashSet<UploadCollection>(
 			0);
+	private Blob payload;
+	private String userId;
+	private String insertTime;
+	private String updateUserId;
+	private String updateTime;
 
 	// Constructors
 
@@ -36,13 +45,16 @@ public class Upload implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Upload(long id, FileFormat fileFormat) {
+	public Upload(Long id, FileFormat fileFormat, String userId,
+			String insertTime) {
 		this.id = id;
 		this.fileFormat = fileFormat;
+		this.userId = userId;
+		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public Upload(long id, FileFormat fileFormat, String filename,
+	public Upload(Long id, FileFormat fileFormat, String filename,
 			Set<UploadMarkerGroup> uploadMarkerGroups,
 			Set<UploadCollection> uploadCollections) {
 		this.id = id;
@@ -54,12 +66,14 @@ public class Upload implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Upload_PK_Seq",sequenceName="GDMI.UPLOAD_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -73,13 +87,58 @@ public class Upload implements java.io.Serializable {
 		this.fileFormat = fileFormat;
 	}
 
-	@Column(name = "FILENAME", length = 4000)
+	@Column(name = "FILENAME", length = 260)
 	public String getFilename() {
 		return this.filename;
 	}
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+	
+	@Column(name = "PAYLOAD")
+	public Blob getPayload() {
+		return this.payload;
+	}
+
+	public void setPayload(Blob payload) {
+		this.payload = payload;
+	}
+	
+	@Column(name = "USER_ID", nullable = false, length = 50)
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	@Column(name = "INSERT_TIME", nullable = false)
+	public String getInsertTime() {
+		return this.insertTime;
+	}
+
+	public void setInsertTime(String insertTime) {
+		this.insertTime = insertTime;
+	}
+
+	@Column(name = "UPDATE_USER_ID", length = 50)
+	public String getUpdateUserId() {
+		return this.updateUserId;
+	}
+
+	public void setUpdateUserId(String updateUserId) {
+		this.updateUserId = updateUserId;
+	}
+
+	@Column(name = "UPDATE_TIME")
+	public String getUpdateTime() {
+		return this.updateTime;
+	}
+
+	public void setUpdateTime(String updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "upload")

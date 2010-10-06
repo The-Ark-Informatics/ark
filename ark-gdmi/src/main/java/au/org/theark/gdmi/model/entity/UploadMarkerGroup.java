@@ -3,9 +3,12 @@ package au.org.theark.gdmi.model.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -17,7 +20,7 @@ public class UploadMarkerGroup implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private Upload upload;
 	private MarkerGroup markerGroup;
 	private String userId;
@@ -32,14 +35,14 @@ public class UploadMarkerGroup implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public UploadMarkerGroup(long id, Upload upload, MarkerGroup markerGroup) {
+	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup) {
 		this.id = id;
 		this.upload = upload;
 		this.markerGroup = markerGroup;
 	}
 
 	/** full constructor */
-	public UploadMarkerGroup(long id, Upload upload, MarkerGroup markerGroup,
+	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -53,12 +56,14 @@ public class UploadMarkerGroup implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Upload_Marker_PK_Seq",sequenceName="GDMI.UPLOAD_MARKER_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_Marker_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

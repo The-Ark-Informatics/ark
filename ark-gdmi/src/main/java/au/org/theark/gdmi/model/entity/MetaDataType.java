@@ -22,7 +22,7 @@ public class MetaDataType implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<MetaDataField> metaDataFields = new HashSet<MetaDataField>(0);
 
@@ -33,12 +33,12 @@ public class MetaDataType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaDataType(long id) {
+	public MetaDataType(Long id) {
 		this.id = id;
 	}
 
 	/** full constructor */
-	public MetaDataType(long id, String name, Set<MetaDataField> metaDataFields) {
+	public MetaDataType(Long id, String name, Set<MetaDataField> metaDataFields) {
 		this.id = id;
 		this.name = name;
 		this.metaDataFields = metaDataFields;
@@ -49,11 +49,11 @@ public class MetaDataType implements java.io.Serializable {
     @SequenceGenerator(name="MetaDataType_PK_Seq",sequenceName="GDMI.META_DATA_TYPE_PK_SEQ")
     @GeneratedValue(strategy=GenerationType.AUTO,generator="MetaDataType_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

@@ -19,7 +19,7 @@ public class ImportType implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
 			0);
@@ -31,12 +31,12 @@ public class ImportType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ImportType(long id) {
+	public ImportType(Long id) {
 		this.id = id;
 	}
 
 	/** full constructor */
-	public ImportType(long id, String name,
+	public ImportType(Long id, String name,
 			Set<CollectionImport> collectionImports) {
 		this.id = id;
 		this.name = name;
@@ -46,11 +46,11 @@ public class ImportType implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

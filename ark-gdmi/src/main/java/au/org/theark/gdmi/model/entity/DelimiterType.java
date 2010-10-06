@@ -19,7 +19,7 @@ public class DelimiterType implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
 			0);
@@ -31,12 +31,12 @@ public class DelimiterType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public DelimiterType(long id) {
+	public DelimiterType(Long id) {
 		this.id = id;
 	}
 
 	/** full constructor */
-	public DelimiterType(long id, String name,
+	public DelimiterType(Long id, String name,
 			Set<CollectionImport> collectionImports) {
 		this.id = id;
 		this.name = name;
@@ -46,11 +46,11 @@ public class DelimiterType implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

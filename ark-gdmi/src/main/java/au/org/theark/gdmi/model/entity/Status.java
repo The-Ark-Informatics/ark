@@ -19,7 +19,7 @@ public class Status implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private String name;
 	private Set<Collection> collections = new HashSet<Collection>(0);
 
@@ -30,12 +30,12 @@ public class Status implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Status(long id) {
+	public Status(Long id) {
 		this.id = id;
 	}
 
 	/** full constructor */
-	public Status(long id, String name, Set<Collection> collections) {
+	public Status(Long id, String name, Set<Collection> collections) {
 		this.id = id;
 		this.name = name;
 		this.collections = collections;
@@ -44,11 +44,11 @@ public class Status implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

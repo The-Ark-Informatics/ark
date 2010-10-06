@@ -17,11 +17,11 @@ public class DataExtract implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private FileFormat fileFormat;
 	private DataSet dataSet;
-	private long buildRev;
-	private long progress;
+	private Long buildRev;
+	private Long progress;
 	private String filename;
 	private String userId;
 	private String insertTime;
@@ -35,8 +35,8 @@ public class DataExtract implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public DataExtract(long id, FileFormat fileFormat, DataSet dataSet,
-			long buildRev, long progress, String filename, String userId,
+	public DataExtract(Long id, FileFormat fileFormat, DataSet dataSet,
+			Long buildRev, Long progress, String filename, String userId,
 			String insertTime) {
 		this.id = id;
 		this.fileFormat = fileFormat;
@@ -49,8 +49,8 @@ public class DataExtract implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DataExtract(long id, FileFormat fileFormat, DataSet dataSet,
-			long buildRev, long progress, String filename, String userId,
+	public DataExtract(Long id, FileFormat fileFormat, DataSet dataSet,
+			Long buildRev, Long progress, String filename, String userId,
 			String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.fileFormat = fileFormat;
@@ -67,11 +67,11 @@ public class DataExtract implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -96,20 +96,20 @@ public class DataExtract implements java.io.Serializable {
 	}
 
 	@Column(name = "BUILD_REV", nullable = false, precision = 22, scale = 0)
-	public long getBuildRev() {
+	public Long getBuildRev() {
 		return this.buildRev;
 	}
 
-	public void setBuildRev(long buildRev) {
+	public void setBuildRev(Long buildRev) {
 		this.buildRev = buildRev;
 	}
 
 	@Column(name = "PROGRESS", nullable = false, precision = 22, scale = 0)
-	public long getProgress() {
+	public Long getProgress() {
 		return this.progress;
 	}
 
-	public void setProgress(long progress) {
+	public void setProgress(Long progress) {
 		this.progress = progress;
 	}
 

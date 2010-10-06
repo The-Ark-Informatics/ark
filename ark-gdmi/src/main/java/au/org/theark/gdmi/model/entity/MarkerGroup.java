@@ -6,10 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -21,13 +24,13 @@ public class MarkerGroup implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private MarkerType markerType;
-	private long studyId;
-	private long uploadId;
+	private Long studyId;
+	private Long uploadId;
 	private String name;
 	private String description;
-	private long visible;
+	private Long visible;
 	private String userId;
 	private String insertTime;
 	private String updateUserId;
@@ -45,8 +48,8 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MarkerGroup(long id, MarkerType markerType, long studyId,
-			long uploadId, String userId, String insertTime) {
+	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
+			Long uploadId, String userId, String insertTime) {
 		this.id = id;
 		this.markerType = markerType;
 		this.studyId = studyId;
@@ -56,8 +59,8 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MarkerGroup(long id, MarkerType markerType, long studyId,
-			long uploadId, String name, String description, long visible,
+	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
+			Long uploadId, String name, String description, Long visible,
 			String userId, String insertTime, String updateUserId,
 			String updateTime, Set<CollectionImport> collectionImports,
 			Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
@@ -79,12 +82,14 @@ public class MarkerGroup implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Marker_Group_PK_Seq",sequenceName="GDMI.MARKER_GROUP_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Marker_Group_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -99,20 +104,20 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public long getStudyId() {
+	public Long getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(long studyId) {
+	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "UPLOAD_ID", nullable = false, precision = 22, scale = 0)
-	public long getUploadId() {
+	public Long getUploadId() {
 		return this.uploadId;
 	}
 
-	public void setUploadId(long uploadId) {
+	public void setUploadId(Long uploadId) {
 		this.uploadId = uploadId;
 	}
 
@@ -135,11 +140,11 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	@Column(name = "VISIBLE", precision = 1, scale = 0)
-	public long getVisible() {
+	public Long getVisible() {
 		return this.visible;
 	}
 
-	public void setVisible(long visible) {
+	public void setVisible(Long visible) {
 		this.visible = visible;
 	}
 

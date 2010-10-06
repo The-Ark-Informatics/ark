@@ -1,12 +1,19 @@
 package au.org.theark.gdmi.model.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * CollectionImport entity. @author MyEclipse Persistence Tools
@@ -17,17 +24,17 @@ public class CollectionImport implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private ImportType importType;
 	private DelimiterType delimiterType;
 	private MarkerGroup markerGroup;
 	private Collection collection;
-	private String startTime;
-	private String finishTime;
+	private Date startTime;
+	private Date finishTime;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 
 	// Constructors
 
@@ -36,10 +43,9 @@ public class CollectionImport implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public CollectionImport(long id, ImportType importType,
+	public CollectionImport(Long id, ImportType importType,
 			DelimiterType delimiterType, MarkerGroup markerGroup,
-			Collection collection, String startTime, String userId,
-			String insertTime) {
+			Collection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.importType = importType;
 		this.delimiterType = delimiterType;
@@ -51,11 +57,11 @@ public class CollectionImport implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public CollectionImport(long id, ImportType importType,
+	public CollectionImport(Long id, ImportType importType,
 			DelimiterType delimiterType, MarkerGroup markerGroup,
-			Collection collection, String startTime, String finishTime,
-			String userId, String insertTime, String updateUserId,
-			String updateTime) {
+			Collection collection, Date startTime, Date finishTime,
+			String userId, Date insertTime, String updateUserId,
+			Date updateTime) {
 		this.id = id;
 		this.importType = importType;
 		this.delimiterType = delimiterType;
@@ -71,12 +77,14 @@ public class CollectionImport implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Collection_Import_PK_Seq",sequenceName="GDMI.COLLECTION_IMPORT_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Collection_Import_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -120,21 +128,23 @@ public class CollectionImport implements java.io.Serializable {
 		this.collection = collection;
 	}
 
-	@Column(name = "START_TIME", nullable = false)
-	public String getStartTime() {
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "START_TIME")
+	public Date getStartTime() {
 		return this.startTime;
 	}
 
-	public void setStartTime(String startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FINISH_TIME")
-	public String getFinishTime() {
+	public Date getFinishTime() {
 		return this.finishTime;
 	}
 
-	public void setFinishTime(String finishTime) {
+	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
 	}
 
@@ -147,12 +157,13 @@ public class CollectionImport implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -165,12 +176,13 @@ public class CollectionImport implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

@@ -17,9 +17,9 @@ public class SubjectMetaData implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private MetaData metaData;
-	private long subjectId;
+	private Long subjectId;
 	private String userId;
 	private String insertTime;
 	private String updateUserId;
@@ -32,7 +32,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectMetaData(long id, MetaData metaData, long subjectId,
+	public SubjectMetaData(Long id, MetaData metaData, Long subjectId,
 			String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
@@ -42,7 +42,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectMetaData(long id, MetaData metaData, long subjectId,
+	public SubjectMetaData(Long id, MetaData metaData, Long subjectId,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -57,11 +57,11 @@ public class SubjectMetaData implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -76,11 +76,11 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	@Column(name = "SUBJECT_ID", nullable = false, precision = 22, scale = 0)
-	public long getSubjectId() {
+	public Long getSubjectId() {
 		return this.subjectId;
 	}
 
-	public void setSubjectId(long subjectId) {
+	public void setSubjectId(Long subjectId) {
 		this.subjectId = subjectId;
 	}
 

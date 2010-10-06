@@ -27,7 +27,7 @@ public class MetaData implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private MetaDataField metaDataField;
 	private Collection collection;
 	private String value;
@@ -48,7 +48,7 @@ public class MetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaData(long id, MetaDataField metaDataField,
+	public MetaData(Long id, MetaDataField metaDataField,
 			Collection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataField = metaDataField;
@@ -58,7 +58,7 @@ public class MetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MetaData(long id, MetaDataField metaDataField,
+	public MetaData(Long id, MetaDataField metaDataField,
 			Collection collection, String value, String userId,
 			Date insertTime, String updateUserId, Date updateTime,
 			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas,
@@ -82,11 +82,11 @@ public class MetaData implements java.io.Serializable {
 	@SequenceGenerator(name="MetaData_PK_Seq",sequenceName="GDMI.META_DATA_PK_SEQ")
 	@GeneratedValue(strategy=GenerationType.AUTO,generator="MetaData_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

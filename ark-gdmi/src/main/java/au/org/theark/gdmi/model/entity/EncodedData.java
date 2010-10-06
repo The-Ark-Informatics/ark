@@ -9,9 +9,12 @@ import java.sql.SQLException;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.apache.wicket.util.io.IOUtils;
@@ -26,9 +29,9 @@ public class EncodedData implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private Collection collection;
-	private long subjectId;
+	private Long subjectId;
 	private Blob encodedBit1;
 	private Blob encodedBit2;
 
@@ -39,14 +42,14 @@ public class EncodedData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EncodedData(long id, Collection collection, long subjectId) {
+	public EncodedData(Long id, Collection collection, Long subjectId) {
 		this.id = id;
 		this.collection = collection;
 		this.subjectId = subjectId;
 	}
 
 	/** full constructor */
-	private EncodedData(long id, Collection collection, long subjectId,
+	private EncodedData(Long id, Collection collection, Long subjectId,
 			Blob encodedBit1, Blob encodedBit2) {
 		this.id = id;
 		this.collection = collection;
@@ -57,12 +60,14 @@ public class EncodedData implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Encoded_Data_PK_Seq",sequenceName="GDMI.ENCODED_DATA_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Encoded_Data_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -77,11 +82,11 @@ public class EncodedData implements java.io.Serializable {
 	}
 
 	@Column(name = "SUBJECT_ID", nullable = false, precision = 22, scale = 0)
-	public long getSubjectId() {
+	public Long getSubjectId() {
 		return this.subjectId;
 	}
 
-	public void setSubjectId(long subjectId) {
+	public void setSubjectId(Long subjectId) {
 		this.subjectId = subjectId;
 	}
 	

@@ -3,9 +3,12 @@ package au.org.theark.gdmi.model.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -17,7 +20,7 @@ public class UploadCollection implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private Collection collection;
 	private Upload upload;
 	private String userId;
@@ -32,14 +35,14 @@ public class UploadCollection implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public UploadCollection(long id, Collection collection, Upload upload) {
+	public UploadCollection(Long id, Collection collection, Upload upload) {
 		this.id = id;
 		this.collection = collection;
 		this.upload = upload;
 	}
 
 	/** full constructor */
-	public UploadCollection(long id, Collection collection, Upload upload,
+	public UploadCollection(Long id, Collection collection, Upload upload,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -53,12 +56,14 @@ public class UploadCollection implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Upload_Collection_PK_Seq",sequenceName="GDMI.UPLOAD_COLLECTION_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_Collection_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

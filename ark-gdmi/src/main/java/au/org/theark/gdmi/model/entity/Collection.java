@@ -7,10 +7,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,17 +27,17 @@ public class Collection implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private Status status;
-	private long studyId;
+	private Long studyId;
 	private String name;
 	private String description;
 	private Date startDate;
 	private Date expiryDate;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 	private Set<MetaData> metaDatas = new HashSet<MetaData>(0);
 	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
 			0);
@@ -52,8 +55,8 @@ public class Collection implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Collection(long id, Status status, long studyId, String userId,
-			String insertTime) {
+	public Collection(Long id, Status status, Long studyId, String userId,
+			Date insertTime) {
 		this.id = id;
 		this.status = status;
 		this.studyId = studyId;
@@ -63,9 +66,9 @@ public class Collection implements java.io.Serializable {
 
 	/** full constructor 
 	 * @param decodeMasks */
-	public Collection(long id, Status status, long studyId, String name,
+	public Collection(Long id, Status status, Long studyId, String name,
 			String description, Date startDate, Date expiryDate, String userId,
-			String insertTime, String updateUserId, String updateTime,
+			Date insertTime, String updateUserId, Date updateTime,
 			Set<MetaData> metaDatas, Set<CollectionImport> collectionImports,
 			Set<EncodedData> encodedDatas, Set<DecodeMask> decodeMasks, 
 			Set<DataSet> dataSets, Set<SubjectGroup> subjectGroups,
@@ -92,12 +95,14 @@ public class Collection implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="Collection_PK_Seq",sequenceName="GDMI.COLLECTION_PK_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO,generator="Collection_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -112,11 +117,11 @@ public class Collection implements java.io.Serializable {
 	}
 
 	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public long getStudyId() {
+	public Long getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(long studyId) {
+	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
 
@@ -138,7 +143,7 @@ public class Collection implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "START_DATE", length = 7)
 	public Date getStartDate() {
 		return this.startDate;
@@ -148,7 +153,7 @@ public class Collection implements java.io.Serializable {
 		this.startDate = startDate;
 	}
 
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "EXPIRY_DATE", length = 7)
 	public Date getExpiryDate() {
 		return this.expiryDate;
@@ -167,12 +172,13 @@ public class Collection implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -185,12 +191,13 @@ public class Collection implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

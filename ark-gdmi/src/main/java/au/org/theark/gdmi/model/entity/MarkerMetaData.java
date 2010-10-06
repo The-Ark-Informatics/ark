@@ -17,7 +17,7 @@ public class MarkerMetaData implements java.io.Serializable {
 
 	// Fields
 
-	private long id;
+	private Long id;
 	private MetaData metaData;
 	private Marker marker;
 	private String userId;
@@ -32,7 +32,7 @@ public class MarkerMetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MarkerMetaData(long id, MetaData metaData, Marker marker,
+	public MarkerMetaData(Long id, MetaData metaData, Marker marker,
 			String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
@@ -42,7 +42,7 @@ public class MarkerMetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MarkerMetaData(long id, MetaData metaData, Marker marker,
+	public MarkerMetaData(Long id, MetaData metaData, Marker marker,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -57,11 +57,11 @@ public class MarkerMetaData implements java.io.Serializable {
 	// Property accessors
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public long getId() {
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
