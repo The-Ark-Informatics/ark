@@ -3,6 +3,8 @@ package au.org.theark.study.service;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.authorization.UnauthorizedActionException;
+
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
@@ -55,5 +57,8 @@ public interface IStudyService {
 	 * @return
 	 */
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException;
+	
+	
+	public void create(StudyComp sc) throws UnAuthorizedOperation, ArkSystemException;
 
 }

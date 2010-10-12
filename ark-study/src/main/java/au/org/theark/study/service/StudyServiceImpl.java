@@ -8,6 +8,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
+import au.org.theark.study.model.dao.StudyDao;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -29,6 +32,8 @@ import au.org.theark.study.web.component.site.SiteVo;
 @Transactional
 @Service(Constants.STUDY_SERVICE)
 public class StudyServiceImpl implements IStudyService{
+	
+	private static Logger log = LoggerFactory.getLogger(StudyServiceImpl.class);
 	
 	private IStudyDao studyDao;
 	private ILdapUserDao iLdapUserDao;
@@ -169,13 +174,22 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException{
-		/* Testing */
-		List<StudyComp> studyComponents = new ArrayList<StudyComp>();
-		StudyComp studyComp = new StudyComp();
-		studyComp.setName("Test Component");
-		studyComp.setDescription("Test Description");
-		studyComponents.add(studyComp);
-		return studyComponents;
+		return studyDao.searchStudyComp(studyCompCriteria);
+	}
+	
+	public void create(StudyComp studyComponent) throws UnAuthorizedOperation,ArkSystemException{
+		
+		
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
+			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
+		}
+
+		studyDao.create(studyComponent);
+		//Add Audit Log here
 		
 	}
 }
