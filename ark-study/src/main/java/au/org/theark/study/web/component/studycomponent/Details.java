@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.studycomponent;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -9,6 +10,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
@@ -36,7 +39,7 @@ public class Details extends Panel{
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private ContainerForm containerForm;
-
+	Study study;
 
 	public Details(	String id, 
 					final WebMarkupContainer listContainer, 
@@ -60,6 +63,20 @@ public class Details extends Panel{
 			protected void onSave(StudyCompVo studyCompVo, AjaxRequestTarget target){
 				//Do the save Persist the Study component and the attached documents to the backend/upload the files and persist the file payload
 				//Enable Unhide a panel that will display a list of Files that "have been uploaded along with a download option"
+				try {
+					Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					study =studyService.getStudy(studyId);
+					studyCompVo.getStudyComponent().setStudy(study);
+					studyService.create(studyCompVo.getStudyComponent());
+					this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was created successfully" );
+					processFeedback(target);
+				} catch (UnAuthorizedOperation e) {
+					 this.error("You are not authorised to manage study components for the given study " + study.getName());
+					 processFeedback(target);
+				} catch (ArkSystemException e) {
+					this.error("A System error occured, we will have someone contact you.");
+					processFeedback(target);
+				}
 				
 			}
 			
@@ -68,6 +85,7 @@ public class Details extends Panel{
 				containerForm.setModelObject(studyCompVo);
 				searchPanelContainer.setVisible(true);
 				target.addComponent(searchPanelContainer);
+				target.addComponent(feedBackPanel);
 			}
 
 			protected void processFeedback(AjaxRequestTarget target){
@@ -78,6 +96,14 @@ public class Details extends Panel{
 		
 		detailsForm.initialiseForm();
 		add(detailsForm);
+	}
+
+	public DetailsForm getDetailsForm() {
+		return detailsForm;
+	}
+
+	public void setDetailsForm(DetailsForm detailsForm) {
+		this.detailsForm = detailsForm;
 	}
 
 }
