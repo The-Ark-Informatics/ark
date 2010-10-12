@@ -15,6 +15,11 @@ public class StudyCompVo implements Serializable{
 	private List<StudyComp> studyCompList;
 	private int mode;
 	
+	public StudyCompVo(){
+		studyComponent = new StudyComp();
+		studyCompList = new ArrayList<StudyComp>();
+	}
+	
 	public int getMode() {
 		return mode;
 	}
