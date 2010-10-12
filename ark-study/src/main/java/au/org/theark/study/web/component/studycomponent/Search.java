@@ -31,7 +31,7 @@ public class Search extends Panel{
 	private WebMarkupContainer searchMarkupContainer;
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
-	
+	private Details detailPanel;
 	private ContainerForm containerForm;
 	private PageableListView<StudyComp> listView;
 	
@@ -48,7 +48,8 @@ public class Search extends Panel{
 					WebMarkupContainer searchMarkupContainer,
 					PageableListView<StudyComp> listView,  
 					WebMarkupContainer resultListContainer, 
-					WebMarkupContainer detailPanelContainer, 
+					WebMarkupContainer detailPanelContainer,
+					Details detailPanel,
 					ContainerForm studyCompContainerForm) {
 		
 		super(id);
@@ -57,6 +58,7 @@ public class Search extends Panel{
 		this.feedBackPanel = feedBackPanel;
 		listContainer = resultListContainer;
 		detailsContainer = detailPanelContainer;
+		this.detailPanel = detailPanel;
 		containerForm = studyCompContainerForm;
 	}
 	
@@ -114,6 +116,7 @@ public class Search extends Panel{
 		listContainer.setVisible(false);
 		//Un-hide the Details Panel visible 
 		detailsContainer.setVisible(true);
+		detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
 		//Attach the containers that need to be re-painted
 		target.addComponent(searchMarkupContainer);
 		target.addComponent(detailsContainer);
