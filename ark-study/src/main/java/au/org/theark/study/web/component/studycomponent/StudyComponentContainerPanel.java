@@ -154,6 +154,7 @@ public class StudyComponentContainerPanel extends Panel{
 											listView,
 											resultListContainer,
 											detailPanelContainer,
+											detailsPanel,
 											containerForm);
 		
 		searchComponentPanel.initialisePanel(studyCompModel);
