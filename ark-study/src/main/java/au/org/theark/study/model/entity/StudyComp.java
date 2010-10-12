@@ -29,6 +29,8 @@ public class StudyComp implements java.io.Serializable {
 	private Study study;
 	private String name;
 	private String description;
+	private String keyword;
+	
 	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
 			0);
 	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
@@ -48,13 +50,14 @@ public class StudyComp implements java.io.Serializable {
 
 	/** full constructor */
 	public StudyComp(Long studyCompKey, Study study, String name,
-			String description,
+			String description,String keyword,
 			Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkStudyStudycomp> linkStudyStudycomps, Set<Document> documents) {
 		this.studyCompKey = studyCompKey;
 		this.study = study;
 		this.name = name;
 		this.description = description;
+		this.keyword = keyword;
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 		this.linkStudyStudycomps = linkStudyStudycomps;
 		this.documents = documents;
@@ -98,6 +101,15 @@ public class StudyComp implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Column(name="KEYWORD")
+	public String getKeyword(){
+		return this.keyword;
+	}
+	
+	public void setKeyword(String keyword){
+		this.keyword = keyword;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyComp")
