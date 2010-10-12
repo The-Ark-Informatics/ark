@@ -1,7 +1,9 @@
 package au.org.theark.core.vo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
 
 public class ArkUserVO extends BaseVO{
 
@@ -17,13 +19,20 @@ public class ArkUserVO extends BaseVO{
 	private String phoneNumber;
 	private List<String> userRoleList;
 	private List<String> userModuleList;
-	private List<ModuleVO> modules;	
+	private List<ModuleVO> modules;	//Represents the user associated modules and their roles
+	private List<ModuleVO> availableModules;
 	private boolean changePassword;
 	private String availableRolesLMC;
 	private String addAllBtn;
 	private String selectedRolesLMC;
 	private StudyVO studyVO;
 
+	
+
+	
+	private List<ArkUserVO> userList;
+	
+	
 	public StudyVO getStudyVO() {
 		return studyVO;
 	}
@@ -209,5 +218,23 @@ public class ArkUserVO extends BaseVO{
 		
 		return sb.toString();
 	}
+
+	public List<ArkUserVO> getUserList() {
+		return userList;
+	}
+
+	public void setUserList(List<ArkUserVO> userList) {
+		this.userList = userList;
+	}
+
+	public List<ModuleVO> getAvailableModules() {
+		return availableModules;
+	}
+
+	public void setAvailableModules(List<ModuleVO> availableModules) {
+		this.availableModules = availableModules;
+	}
+
+	
 	
 }
