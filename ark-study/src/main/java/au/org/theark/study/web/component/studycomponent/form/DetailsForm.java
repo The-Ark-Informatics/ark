@@ -41,12 +41,14 @@ public class DetailsForm extends Form<StudyCompVo>{
 	private TextField<String> componentIdTxtFld;
 	private TextField<String> componentNameTxtFld;
 	private TextArea<String> componentDescription;
+	private TextArea<String> keywordTxtArea;
 	
 	public void initialiseForm(){
 		
 		componentIdTxtFld = new TextField<String>("studyComponent.studyCompKey");
 		componentNameTxtFld = new TextField<String>("studyComponent.name");
 		componentDescription = new TextArea<String>("studyComponent.description");
+		keywordTxtArea = new TextArea<String>("studyComponent.keyword");
 		attachValidators();
 		decorateComponents();
 		addComponents();
@@ -57,6 +59,7 @@ public class DetailsForm extends Form<StudyCompVo>{
 		add(componentIdTxtFld);
 		add(componentNameTxtFld);
 		add(componentDescription);
+		add(keywordTxtArea);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 	}
@@ -65,12 +68,15 @@ public class DetailsForm extends Form<StudyCompVo>{
 		ThemeUiHelper.componentRounded(componentIdTxtFld);
 		ThemeUiHelper.componentRounded(componentNameTxtFld);
 		ThemeUiHelper.componentRounded(componentDescription);
+		ThemeUiHelper.componentRounded(keywordTxtArea);
 	}
 	
 	private void attachValidators(){
 		
 		componentNameTxtFld.setRequired(true);
-		componentDescription.add(StringValidator.lengthBetween(1, 500));
+		componentNameTxtFld.add(StringValidator.lengthBetween(3, 100));
+		componentDescription.add(StringValidator.lengthBetween(5, 500));
+		keywordTxtArea.add(StringValidator.lengthBetween(1,255));
 	}
 	
 	
@@ -135,6 +141,14 @@ public class DetailsForm extends Form<StudyCompVo>{
 	
 	protected void processFeedback(AjaxRequestTarget target){
 		
+	}
+
+	public TextField<String> getComponentIdTxtFld() {
+		return componentIdTxtFld;
+	}
+
+	public void setComponentIdTxtFld(TextField<String> componentIdTxtFld) {
+		this.componentIdTxtFld = componentIdTxtFld;
 	}
 	
 
