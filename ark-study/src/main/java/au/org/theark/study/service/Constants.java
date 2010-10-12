@@ -21,6 +21,10 @@ public class Constants {
 	public static final String STUDY_STATUS="studyStatus";
 	public static final String STUDY_STATUS_ARCHIVE="Archive";
 	
+	public static final String STUDY_COMP_KEY="studyCompKey";
+	public static final String STUDY_COMP_NAME="name";
+	public static final String STUDY_COMP_KEYWORD="keyword";
+	
 	
 	
 
