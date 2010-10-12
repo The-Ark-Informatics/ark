@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.service.Constants;
 
@@ -116,6 +117,35 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void updateStudy(Study studyEntity){
 		getSession().update(studyEntity);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.study.model.dao.IStudyDao#create(au.org.theark.study.model.entity.StudyComp)
+	 */
+	public void create(StudyComp studyComponent) {
+		
+		getSession().save(studyComponent);
+		
+	}
+	
+	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria){
+		
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		
+		if(studyCompCriteria.getStudyCompKey() != null){
+			criteria.add(Restrictions.eq(Constants.STUDY_COMP_KEY,studyCompCriteria.getStudyCompKey()));	
+		}
+		
+		if(studyCompCriteria.getName() != null){
+			criteria.add(Restrictions.eq(Constants.STUDY_COMP_NAME,studyCompCriteria.getName()));
+		}
+		
+		if(studyCompCriteria.getKeyword() != null){
+		
+			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD,studyCompCriteria.getKeyword()));
+		}
+		List<StudyComp> list =  criteria.list();
+		return list;
 	}
 	
 }
