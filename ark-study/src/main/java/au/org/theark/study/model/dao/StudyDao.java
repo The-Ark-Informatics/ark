@@ -3,6 +3,7 @@ package au.org.theark.study.model.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -12,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
@@ -122,10 +124,24 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	/* (non-Javadoc)
 	 * @see au.org.theark.study.model.dao.IStudyDao#create(au.org.theark.study.model.entity.StudyComp)
 	 */
-	public void create(StudyComp studyComponent) {
+	public void create(StudyComp studyComponent) throws ArkSystemException {
+		try{
+			getSession().save(studyComponent);	
+		}catch(HibernateException hibException){
+			log.error("A hibernate exception occured. Cannot create the study component ID: " + studyComponent.getName() + " Cause " + hibException.getStackTrace());
+			throw new ArkSystemException("Cannot create Study component");
+		}
 		
-		getSession().save(studyComponent);
 		
+	}
+	
+	public void update(StudyComp studyComponent) throws ArkSystemException{
+		try{
+			getSession().update(studyComponent);	
+		}catch(HibernateException hibException){
+			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getStudyCompKey() + " Cause " + hibException.getStackTrace());
+			throw new ArkSystemException("Cannot update Study component due to system error");
+		}
 	}
 	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria){

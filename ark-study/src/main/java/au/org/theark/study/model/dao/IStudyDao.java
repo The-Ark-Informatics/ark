@@ -2,6 +2,7 @@ package au.org.theark.study.model.dao;
 
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
@@ -11,8 +12,9 @@ public interface IStudyDao {
 
 	public void create(Study study);
 	
-	public void create(StudyComp studyComponent);
+	public void create(StudyComp studyComponent) throws ArkSystemException;
 	
+	public void update(StudyComp studyComponent) throws ArkSystemException;
 	
 	public List<Study> getStudy(Study study);
 	
