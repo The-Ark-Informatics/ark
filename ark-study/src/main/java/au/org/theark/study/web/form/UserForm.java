@@ -1,16 +1,12 @@
 package au.org.theark.study.web.form;
 
-import org.apache.shiro.util.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebMarkupContainerWithAssociatedMarkup;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -18,8 +14,6 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteModel;
-import au.org.theark.study.web.component.site.SiteVo;
 import au.org.theark.study.web.component.user.form.ContainerForm;
 
 
