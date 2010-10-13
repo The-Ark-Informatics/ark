@@ -103,7 +103,7 @@ public class StudyComponentContainerPanel extends Panel{
 	
 	private WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm);
+		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm,resultListContainer,detailsPanel);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
