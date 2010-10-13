@@ -21,6 +21,7 @@ public class Phone implements java.io.Serializable {
 	private PhoneType phoneType;
 	private Person person;
 	private Long phoneNumber;
+	private Long areaCode;
 
 	// Constructors
 
@@ -35,11 +36,12 @@ public class Phone implements java.io.Serializable {
 
 	/** full constructor */
 	public Phone(Long phoneKey, PhoneType phoneType, Person person,
-			Long phoneNumber) {
+			Long phoneNumber,Long areaCode) {
 		this.phoneKey = phoneKey;
 		this.phoneType = phoneType;
 		this.person = person;
 		this.phoneNumber = phoneNumber;
+		this.areaCode = areaCode;
 	}
 
 	// Property accessors
@@ -80,6 +82,15 @@ public class Phone implements java.io.Serializable {
 
 	public void setPhoneNumber(Long phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	@Column(name = "AREA_CODE", precision = 22, scale = 0)
+	public Long getAreaCode() {
+		return this.areaCode;
+	}
+
+	public void setAreaCode(Long areaCode) {
+		this.areaCode = areaCode;
 	}
 
 }
