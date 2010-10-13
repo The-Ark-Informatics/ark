@@ -23,6 +23,7 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.dao.StudyDao;
+import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -202,5 +203,9 @@ public class StudyServiceImpl implements IStudyService{
 		}
 		studyDao.update(studyComponent);
 		//Add audit log
+	}
+	
+	public List<PhoneType> getListOfPhoneType(){
+		return studyDao.getListOfPhoneType();
 	}
 }

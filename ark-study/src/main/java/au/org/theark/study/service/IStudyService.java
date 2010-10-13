@@ -10,6 +10,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -61,5 +62,7 @@ public interface IStudyService {
 	
 	public void create(StudyComp sc) throws UnAuthorizedOperation, ArkSystemException;
 	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
+	
+	public List<PhoneType> getListOfPhoneType();
 
 }

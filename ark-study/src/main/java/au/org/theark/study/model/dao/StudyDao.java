@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -162,6 +163,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		List<StudyComp> list =  criteria.list();
 		return list;
+	}
+	
+	public List<PhoneType> getListOfPhoneType() {
+		Example phoneTypeExample = Example.create(new PhoneType());
+		Criteria criteria = getSession().createCriteria(PhoneType.class).add(phoneTypeExample);
+		return   criteria.list();
 	}
 	
 }

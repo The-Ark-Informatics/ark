@@ -4,6 +4,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
@@ -33,4 +34,11 @@ public interface IStudyDao {
 	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException;
 	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria);
+	
+	/**
+	 * A look up that returns a list of All Phone Types. Mobile, Land etc
+	 * In the event that there is a database/runtime error it is wrapped into a ArkSystemException and returned
+	 * @return List<PhoneType>
+	 */
+	public List<PhoneType> getListOfPhoneType();
 }
