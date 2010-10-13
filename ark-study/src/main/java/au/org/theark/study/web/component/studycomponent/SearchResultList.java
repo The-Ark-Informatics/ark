@@ -106,7 +106,6 @@ public class SearchResultList extends Panel{
 				studyCompVo.setStudyComponent(studyComponent);//Sets the selected object into the model
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);
-				//TODO make the ID and Name field disabled
 				searchPanelContainer.setVisible(false);
 				detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
 				target.addComponent(searchResultContainer);
