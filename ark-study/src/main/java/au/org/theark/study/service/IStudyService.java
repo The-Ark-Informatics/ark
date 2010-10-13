@@ -60,5 +60,6 @@ public interface IStudyService {
 	
 	
 	public void create(StudyComp sc) throws UnAuthorizedOperation, ArkSystemException;
+	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
 
 }

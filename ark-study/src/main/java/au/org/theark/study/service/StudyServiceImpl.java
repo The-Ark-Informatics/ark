@@ -179,7 +179,6 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void create(StudyComp studyComponent) throws UnAuthorizedOperation,ArkSystemException{
 		
-		
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
@@ -190,6 +189,18 @@ public class StudyServiceImpl implements IStudyService{
 
 		studyDao.create(studyComponent);
 		//Add Audit Log here
+	}
+	
+	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException{
 		
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+			log.warn("Unauthorised request to update study component by " + currentUser .getPrincipal());			
+			throw new UnAuthorizedOperation("The logged in user does not have the permission to update this Study Component.");
+		}
+		studyDao.update(studyComponent);
+		//Add audit log
 	}
 }
