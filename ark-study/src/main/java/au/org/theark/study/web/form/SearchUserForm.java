@@ -8,6 +8,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -85,6 +86,8 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		if(sessionStudyId == null){
 			searchBtn.setEnabled(false);
 			newBtn.setEnabled(false);
+			this.info("There is no study in context. You can only search or manage users based on a study.");
+			
 		}else{
 			newBtn.setEnabled(true);
 			searchBtn.setEnabled(true);
