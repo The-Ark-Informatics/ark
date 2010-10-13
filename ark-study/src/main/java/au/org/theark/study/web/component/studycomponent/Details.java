@@ -9,18 +9,13 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
-import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.form.SiteForm;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 import au.org.theark.study.web.component.studycomponent.form.DetailsForm;
-
-import java.util.*;
 
 public class Details extends Panel{
 	
