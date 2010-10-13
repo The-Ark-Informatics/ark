@@ -1,9 +1,7 @@
 package au.org.theark.study.web.component.user;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -16,7 +14,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteVo;
 import au.org.theark.study.web.component.user.form.ContainerForm;
 import au.org.theark.study.web.form.SearchUserForm;
 /**
