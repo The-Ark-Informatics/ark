@@ -28,7 +28,8 @@ public class SearchStudyCompForm extends Form<StudyCompVo>{
 	
 	private TextField<String> studyCompIdTxtFld;
 	private TextField<String> compNameTxtFld;
-	private TextArea descriptionTxtArea;
+	private TextArea<String> descriptionTxtArea;
+	private TextArea<String> keywordTxtArea;
 	
 	//Field for uploading  a file
 
@@ -38,8 +39,8 @@ public class SearchStudyCompForm extends Form<StudyCompVo>{
 		
 		studyCompIdTxtFld = new TextField<String>("studyComponent.studyCompKey");
 		compNameTxtFld = new TextField<String>("studyComponent.name");
-		descriptionTxtArea = new TextArea("studyComponent.description");
-		
+		descriptionTxtArea = new TextArea<String>("studyComponent.description");
+		keywordTxtArea = new TextArea<String>("studyComponent.keyword");
 		newButton = new AjaxButton(Constants.NEW){
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -75,6 +76,20 @@ public class SearchStudyCompForm extends Form<StudyCompVo>{
 				onReset();
 			}
 		};
+		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(sessionStudyId == null){
+			searchButton.setEnabled(false);
+			newButton.setEnabled(false);
+			resetButton.setEnabled(false);
+			this.error("There is no study in context. You can only search or manage study components based on a study.");
+			
+		}else{
+			newButton.setEnabled(true);
+			searchButton.setEnabled(true);
+			resetButton.setEnabled(true);
+		}
+		
 		decorateComponents();
 		addComponentsToForm();
 	}
@@ -82,7 +97,7 @@ public class SearchStudyCompForm extends Form<StudyCompVo>{
 	private void decorateComponents(){
 		ThemeUiHelper.componentRounded(studyCompIdTxtFld);
 		ThemeUiHelper.componentRounded(compNameTxtFld);
-		ThemeUiHelper.componentRounded(descriptionTxtArea);
+		ThemeUiHelper.componentRounded(keywordTxtArea);
 		ThemeUiHelper.componentRounded(searchButton);
 		ThemeUiHelper.componentRounded(newButton);
 		ThemeUiHelper.componentRounded(resetButton);
@@ -91,7 +106,7 @@ public class SearchStudyCompForm extends Form<StudyCompVo>{
 	private void addComponentsToForm(){
 		add(studyCompIdTxtFld);
 		add(compNameTxtFld);
-		add(descriptionTxtArea);
+		add(keywordTxtArea);
 		add(searchButton);
 		add(resetButton);
 		add(newButton);
