@@ -6,12 +6,9 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -20,8 +17,6 @@ import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteVo;
-import au.org.theark.study.web.component.studycomponent.SearchResultList;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 import au.org.theark.study.web.form.SearchStudyCompForm;
 
