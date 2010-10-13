@@ -67,9 +67,21 @@ public class Details extends Panel{
 					Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					study =studyService.getStudy(studyId);
 					studyCompVo.getStudyComponent().setStudy(study);
-					studyService.create(studyCompVo.getStudyComponent());
-					this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was created successfully" );
-					processFeedback(target);
+					
+					if(studyCompVo.getStudyComponent().getStudyCompKey() == null){
+						
+						studyService.create(studyCompVo.getStudyComponent());
+						this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was created successfully" );
+						processFeedback(target);
+					
+					}else{
+					
+						studyService.update(studyCompVo.getStudyComponent());
+						this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was updated successfully" );
+						processFeedback(target);
+						
+					}
+					
 				} catch (UnAuthorizedOperation e) {
 					 this.error("You are not authorised to manage study components for the given study " + study.getName());
 					 processFeedback(target);
