@@ -18,10 +18,7 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
-import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteModel;
-import au.org.theark.study.web.component.site.SiteVo;
 import au.org.theark.study.web.component.studycomponent.Details;
 
 /**
