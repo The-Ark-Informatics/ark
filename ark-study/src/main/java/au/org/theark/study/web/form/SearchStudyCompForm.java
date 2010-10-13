@@ -1,7 +1,5 @@
 package au.org.theark.study.web.form;
 
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -16,7 +14,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
 
