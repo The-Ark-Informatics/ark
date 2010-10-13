@@ -24,8 +24,9 @@ public class SearchResultList extends Panel{
 	
 	private WebMarkupContainer detailsPanelContainer;
 	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer searchResultContainer;
 	private ContainerForm containerForm;
-	
+	private Details detailPanel;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -33,9 +34,14 @@ public class SearchResultList extends Panel{
 	
 	
 	
-	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer,ContainerForm studyCompContainerForm){
+	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer,ContainerForm studyCompContainerForm,
+			WebMarkupContainer searchResultContainer, Details details){
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
+		this.containerForm = studyCompContainerForm;
+		this.searchPanelContainer = searchPanelContainer;
+		this.searchResultContainer = searchResultContainer;
+		this.detailPanel = details;
 
 	}
 		
@@ -100,8 +106,11 @@ public class SearchResultList extends Panel{
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);//Sets the selected object into the model
 				detailsPanelContainer.setVisible(true);
+				searchResultContainer.setVisible(false);
 				//TODO make the ID and Name field disabled
 				searchPanelContainer.setVisible(false);
+				detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
+				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);
 			}
