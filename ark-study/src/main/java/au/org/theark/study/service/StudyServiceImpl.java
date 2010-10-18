@@ -1,6 +1,7 @@
 package au.org.theark.study.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -23,10 +24,14 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.model.dao.StudyDao;
+import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.TitleType;
+import au.org.theark.study.model.entity.VitalStatus;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.SiteVo;
 
@@ -207,5 +212,21 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public List<PhoneType> getListOfPhoneType(){
 		return studyDao.getListOfPhoneType();
+	}
+	
+	public void create(Phone phone) throws ArkSystemException{
+		
+	}
+	
+	public Collection<TitleType> getTitleType(){
+		return studyDao.getTitleType();
+	}
+	
+	public Collection<VitalStatus> getVitalStatus(){
+		return studyDao.getVitalStatus();
+	}
+	
+	public Collection<GenderType> getGenderType(){
+		return studyDao.getGenderType();
 	}
 }

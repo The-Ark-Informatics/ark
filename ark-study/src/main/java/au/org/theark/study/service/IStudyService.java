@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -10,10 +11,14 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.TitleType;
+import au.org.theark.study.model.entity.VitalStatus;
 import au.org.theark.study.web.component.site.SiteVo;
 
 public interface IStudyService {
@@ -64,5 +69,13 @@ public interface IStudyService {
 	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
 	
 	public List<PhoneType> getListOfPhoneType();
+	
+	public void create(Phone phone) throws ArkSystemException;
+	
+	public Collection<TitleType> getTitleType();
+	
+	public Collection<VitalStatus> getVitalStatus();
+	
+	public Collection<GenderType> getGenderType();
 
 }
