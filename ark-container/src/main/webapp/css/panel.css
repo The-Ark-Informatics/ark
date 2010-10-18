@@ -34,7 +34,7 @@ table.palette td.buttons button {
 div.tabpanel div.tab-row {
 	float: left;
 	width: 100%;
-	background: #DAE0D2 url("bg.gif") repeat-x bottom;
+	background: #DAE0D2 url("../images/bg.gif") repeat-x bottom;
 	line-height: normal;
 }
 
@@ -46,18 +46,18 @@ div.tabpanel div.tab-row ul {
 
 div.tabpanel div.tab-row li {
 	float: left;
-	background: url("left.gif") no-repeat left top;
+	background: url("../images/left.gif") no-repeat left top;
 	margin: 0;
-	padding: 0 0 0 9px;
+	padding: 0 0 0 10px;
 }
 
 div.tabpanel div.tab-row a {
 	display: block;
-	background: url("right.gif") no-repeat right top;
+	background: url("../images/right.gif") no-repeat right top;
 	padding: 5px 15px 4px 6px;
 	text-decoration: none;
 	font-weight: bold;
-	color: #765;
+	color: #6F6F6F;
 	white-space: nowrap;
 }
 
@@ -66,11 +66,11 @@ div.tabpanel div.tab-row a:hover {
 }
 
 div.tabpanel div.tab-row li.selected {
-	background-image: url("lefton.gif");
+	background-image: url("../images/lefton.gif");
 }
 
 div.tabpanel div.tab-row li.selected a {
-	background-image: url("righton.gif");
+	background-image: url("../images/righton.gif");
 	color: #333;
 	padding-bottom: 5px;
 }

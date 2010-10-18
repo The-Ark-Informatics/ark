@@ -19,7 +19,7 @@ html,body {
 }
 
 #wrap {
-	min-height: 100%;
+	min-height: 50%;
 }
 
 #main {
@@ -27,12 +27,14 @@ html,body {
 	padding-bottom: 10px;
 }  /* must be same height as the footer */
 
+/*
 #footer {
 	position: relative;
-	margin-top: -10px; /* negative value of footer height */
+	margin-top: -125px;
 	height: 10px;
 	clear: both;
 }
+*/
 
 /*Opera Fix*/
 body:before { /* thanks to Maleika (Kohoutec)*/
@@ -52,18 +54,11 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	margin-bottom: 10px;
 }
 
-#hostedby {
-	text-align: left
-}
-
-#product {
-	text-align: right
-}
-
 #actionButtons {
 	float: left;
 	width: 20%;
 	height: 5%;
+	padding-bottom:10px;
 }
 
 #labelBold {
@@ -93,26 +88,6 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	background-color: #F2F2FA;
 	width: 15%;
 	height: 10%;
-}
-
-#welcomePanel_left {
-	float: left;
-	background-color: #F2F2FA;
-	width: 80%;
-	height: 3%;
-}
-
-#welcomePanel_right {
-	float: right;
-	background-color: #F2F2FA;
-	width: 20%;
-	height: 3%;
-}
-
-#header {
-	width: 100%;
-	height: 10%;
-	overflow: hidden;
 }
 
 #holder {
@@ -145,13 +120,18 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 
 #contentZoneLeft {
 	float: left;
-	width: 40%;
+	width: 20%;
+	height: 75%;
+}
+
+#contentZoneCenter {
+	width: 60%;
 	height: 75%;
 }
 
 #contentZoneRight {
-	float: left;
-	width: 40%;
+	float: right;
+	width: 20%;
 	height: 75%;
 }
 
@@ -177,6 +157,7 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	border-style: solid;
 	border-width: 1px;
 	border-color: #6F6F6F;
+	background-color:#EEEEEE;
 	float: left;
 	width: 100%;
 	height: 100%;
@@ -207,7 +188,6 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 }
 
 #searchPanelBreaker {
-	background-color: white;
 	float: left;
 	width: 100%;
 	height: 20%;
@@ -354,12 +334,18 @@ body {
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-position: 96% 96%;
-	color: #6F6F6F;
+	color: #000000;
 	font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
-	font-size: 9pt;
-	line-height: 1.8em;
+	font-size: 10pt;
+	line-height: 1.5em;
+	
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	
+	/*
 	padding: 10px 10px 10px 10px;
 	margin: 10px 10px 10px 10px;
+	*/
 }
 
 h1,h2,h3,h4,h5,h6,h7,h8 {
@@ -503,7 +489,7 @@ div.tabRowContent {
 
 table.dataview {
 	margin-bottom: 10px;
-	border-bottom: 1px solid #0079d6;
+	border-bottom: 1px solid #6F6F6F;
 	font-size: 1em;
 	font-family: arial;
 }
@@ -518,11 +504,11 @@ table.dataview tr {
 }
 
 table.dataview tr.even {
-	background-color: #ffebcd;
+	background-color: #EEEEEE;
 }
 
 table.dataview tr.odd {
-	background-color: #fff;
+	background-color: #FFFFFF;
 }
 
 table.dataview tr td {
@@ -532,13 +518,13 @@ table.dataview tr td {
 
 table.dataview tr th {
 	color: black;
-	padding-top: 3px;
-	padding-bottom: 3px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 	padding-left: 8px;
 	padding-right: 24px;
-	background-color: #c1e4ff;
-	border-bottom: 1px solid #0079d6;
-	border-top: 1px solid #0079d6;
+	background-color: #C0C0C0;
+	border-bottom: 1px solid #6F6F6F;
+	border-top: 1px solid #6F6F6F;
 	text-align: left;
 	white-space: nowrap;
 	vertical-align: middle;
@@ -573,6 +559,16 @@ table.dataview #message {
 
 table.dataview caption {
 	padding-bottom: 2px;
+}
+
+table.palette td.header {
+	background-color:#C0C0C0;
+	border-bottom: 1px solid #6F6F6F;
+	border-top: 1px solid #6F6F6F;
+	font-size: 10pt;
+	font-weight: bold;
+	padding: 2px;
+	text-align: center;
 }
 
 /* TAB PANEL STYLES */
