@@ -1,5 +1,6 @@
 package au.org.theark.study.model.entity;
 
+import java.awt.image.TileObserver;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +9,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,8 +32,9 @@ public class Person implements java.io.Serializable {
 	private String preferredName;
 	private String gender;
 	private Date dateOfBirth;
-	private String vitalStatus;
-	private String title;
+	
+	private VitalStatus vitalStatus;
+	private TitleType titleType;
 	private String personId;
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
 			0);
@@ -64,7 +68,7 @@ public class Person implements java.io.Serializable {
 	/** full constructor */
 	public Person(Long personKey, String firstName, String middleName,
 			String lastName, String preferredName, String gender,
-			Date dateOfBirth, String vitalStatus, String title,
+			Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType,
 			String personId, Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
@@ -78,7 +82,7 @@ public class Person implements java.io.Serializable {
 		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.vitalStatus = vitalStatus;
-		this.title = title;
+		this.titleType = titleType;
 		this.personId = personId;
 		this.linkSubjectStudies = linkSubjectStudies;
 		this.phones = phones;
@@ -155,22 +159,24 @@ public class Person implements java.io.Serializable {
 		this.dateOfBirth = dateOfBirth;
 	}
 
-	@Column(name = "VITAL_STATUS", length = 50)
-	public String getVitalStatus() {
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID")
+	public VitalStatus getVitalStatus() {
 		return this.vitalStatus;
 	}
 
-	public void setVitalStatus(String vitalStatus) {
+	public void setVitalStatus(VitalStatus vitalStatus) {
 		this.vitalStatus = vitalStatus;
 	}
-
-	@Column(name = "TITLE", length = 20)
-	public String getTitle() {
-		return this.title;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ID")
+	public TitleType getTitleType(){
+		return this.titleType;
 	}
-
-	public void setTitle(String title) {
-		this.title = title;
+	
+	public void setTitleType(TitleType titleType){
+		this.titleType = titleType;
 	}
 
 	@Column(name = "PERSON_ID", length = 50)
