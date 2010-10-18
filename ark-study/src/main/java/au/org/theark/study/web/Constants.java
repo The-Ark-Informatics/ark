@@ -103,6 +103,8 @@ public class Constants {
 	public static final String LMC_AJAX_CONTAINER="lmcAjaxContainer";
 	public static final String LMC_SELECTED_APPS="lmcSelectedApps";
 	public static final String LMC_AVAILABLE_APPS="lmcAvailableApps";
+	public static final String PHONE_TYPE_ID="phoneTypeKey";
+	
 	/*Spring Bean names*/
 	public static final String STUDY_SERVICE= "studyService";
 	public static final String STUDY_DAO ="studyDao";
