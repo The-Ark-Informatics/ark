@@ -1,6 +1,5 @@
 package au.org.theark.study.model.entity;
 
-import java.awt.image.TileObserver;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,11 +29,14 @@ public class Person implements java.io.Serializable {
 	private String middleName;
 	private String lastName;
 	private String preferredName;
-	private String gender;
-	private Date dateOfBirth;
 	
+	private GenderType genderType;
 	private VitalStatus vitalStatus;
 	private TitleType titleType;
+	
+	private Date dateOfBirth;
+	
+
 	private String personId;
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
 			0);
@@ -67,8 +69,7 @@ public class Person implements java.io.Serializable {
 
 	/** full constructor */
 	public Person(Long personKey, String firstName, String middleName,
-			String lastName, String preferredName, String gender,
-			Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType,
+			String lastName, String preferredName, 	Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType,GenderType genderType,
 			String personId, Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
@@ -79,10 +80,10 @@ public class Person implements java.io.Serializable {
 		this.middleName = middleName;
 		this.lastName = lastName;
 		this.preferredName = preferredName;
-		this.gender = gender;
 		this.dateOfBirth = dateOfBirth;
 		this.vitalStatus = vitalStatus;
 		this.titleType = titleType;
+		this.genderType = genderType;
 		this.personId = personId;
 		this.linkSubjectStudies = linkSubjectStudies;
 		this.phones = phones;
@@ -139,16 +140,17 @@ public class Person implements java.io.Serializable {
 	public void setPreferredName(String preferredName) {
 		this.preferredName = preferredName;
 	}
-
-	@Column(name = "GENDER", length = 20)
-	public String getGender() {
-		return this.gender;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "GENDER_ID")
+	public GenderType getGenderType() {
+		return this.genderType;
 	}
 
-	public void setGender(String gender) {
-		this.gender = gender;
+	public void setGenderType(GenderType genderType){
+		this.genderType = genderType;
 	}
-
+	
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_OF_BIRTH", length = 7)
 	public Date getDateOfBirth() {
@@ -161,7 +163,7 @@ public class Person implements java.io.Serializable {
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID")
+	@JoinColumn(name = "VITAL_STATUS_ID")
 	public VitalStatus getVitalStatus() {
 		return this.vitalStatus;
 	}
@@ -169,8 +171,9 @@ public class Person implements java.io.Serializable {
 	public void setVitalStatus(VitalStatus vitalStatus) {
 		this.vitalStatus = vitalStatus;
 	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID")
+	@JoinColumn(name = "TITLE_ID")
 	public TitleType getTitleType(){
 		return this.titleType;
 	}
