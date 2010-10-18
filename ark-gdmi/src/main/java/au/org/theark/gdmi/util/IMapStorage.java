@@ -3,6 +3,9 @@
  */
 package au.org.theark.gdmi.util;
 
+import au.org.theark.gdmi.exception.StorageIOException;
+import au.org.theark.gdmi.model.entity.MarkerGroup;
+
 /**
  * IMapStorage is an interface that should be implemented by a class to  
  * store map data provided by the GWASImport processMap(..) method.
@@ -12,10 +15,11 @@ package au.org.theark.gdmi.util;
  *
  */
 public interface IMapStorage {
+
 	/**
-	 * Called once a new set of marker data is ready to be accepted
+	 * Called each time a new set of marker data is ready to be accepted
 	 */
-	void init();
+	void init() throws StorageIOException;
 
 	//String getMarkerName();
 	/**
@@ -27,7 +31,7 @@ public interface IMapStorage {
 	/**
 	 * Called to accept the associated chromosome number
 	 */
-	void setChromoNum(long chromoNum);
+	void setChromosome(String chromoNum);
 	
 	//long getGeneDist();
 	/**
@@ -45,6 +49,6 @@ public interface IMapStorage {
 	 * Called when all data is provided and ready to be committed to storage.
 	 * If the commit fails, then the an exception can be thrown.
 	 */
-	void commit() throws Exception;
+	void commit() throws StorageIOException;
 	
 }

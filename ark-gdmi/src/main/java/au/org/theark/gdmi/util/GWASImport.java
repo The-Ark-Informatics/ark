@@ -1,28 +1,23 @@
 package au.org.theark.gdmi.util;
-/**
- * GWASImport shall support reading PED+MAP file format
- * and decoding the information into the relevant fields
- * to be updated into the database tables.
- * 
- * The main method process(..) is thread-safe.
- *    
- * @author elam
- */
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DecimalFormat;
-import java.util.Arrays;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import au.com.bytecode.opencsv.CSVReader;
+import au.org.theark.gdmi.exception.GDMISystemException;
+import au.org.theark.gdmi.exception.StorageIOException;
+
 
 /**
  * GWASImport provides support for importing PLINK compatible
- * ped and map files.  It features state-machine behaviour to 
+ * Ped and Map files.  It features state-machine behaviour to 
  * allow an external class to deal with how to store the data
  * pulled out of the files.
  *
@@ -43,7 +38,7 @@ public class GWASImport {
 	private long markerCount;
 	private double speed;
 	private long curPos;
-	private long fileSize = -1;	// -1 means nothing being processed
+	private long srcLength = -1;	// -1 means nothing being processed
 	private StopWatch timer = null;
 	private char mapDelimChr = '\t';	//default map file delimiter: TAB
 	private char pedDelimChr = ' ';		//default ped file delimiter: SPACE
@@ -51,51 +46,68 @@ public class GWASImport {
 	private IMapStorage mapStorage = null;
 	private IPedStorage pedStorage = null;
 	
+	static Logger log = LoggerFactory.getLogger(GWASImport.class);
+	
+	@Autowired
+	public void setMapStorage(IMapStorage mapStorage) {
+		this.mapStorage = mapStorage;
+	}
+
+	public IMapStorage getMapStorage() {
+		return mapStorage;
+	}
+	
+	@Autowired
+	public void setPedStorage(IPedStorage pedStorage) {
+		this.pedStorage = pedStorage;
+	}
+
+	public IPedStorage getPedStorage() {
+		return pedStorage;
+	}
+	
 	/**
 	 * 
 	 * @param mapStore is required for defining where the marker data is to go
 	 * @param pedStore is required for 
 	 */
-	public GWASImport(IMapStorage aMkrStore, IPedStorage aPedStore) {
-		
-		if (aMkrStore == null) {
-			throw new NullPointerException("Aborting: Must have a map storage object defined before calling.");
-		}
-		mapStorage = aMkrStore;
-		
-		if (aPedStore == null) {
-			throw new NullPointerException("Aborting: Must have a ped storage object defined before calling.");
-		}
-		pedStorage = aPedStore;
+	public GWASImport(IMapStorage aMapStore, IPedStorage aPedStore) {
+		setMapStorage(aMapStore);
+		setPedStorage(aPedStore);
 	}
 	
 	/**
-	 * Imports the PLINK compatible map file.
-	 * Default map file format assumed (i.e. 4 columns) as per:
+	 * Imports the PLINK compatible Map file.
+	 * Default Map file format assumed (i.e. 4 columns) as per:
 	 *  http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#map
 	 * 
-	 * @param mapFilePath is the file path to the map file
+	 * @param mapInputStream is the input stream of a map file
 	 * @throws IOException
+	 * @throws OutOfMemoryError
 	 */
-	public void processMap(String mapFilePath) throws IOException, OutOfMemoryError {
-			
-		File file = new File(mapFilePath);
+	public void processMap(InputStream mapInStream, long inLength) throws FileFormatException, GDMISystemException {
+		if (mapStorage == null) {
+			throw new GDMISystemException("Aborting: Must have a map storage object defined before calling.");
+		}
+		
+		//File file = new File(mapFilePath);
 		curPos = 0;
 
-		FileReader fr = null;
+		InputStreamReader isr = null;
 		CSVReader csvRdr = null;
 		
 		DecimalFormat twoPlaces = new DecimalFormat("0.00");
 
 		try {
-			fr = new FileReader(file);
-			csvRdr = new CSVReader(fr, mapDelimChr);
+			isr = new InputStreamReader(mapInStream);
+			csvRdr = new CSVReader(isr, mapDelimChr);
 			String[] newLine;
 			
-			fileSize = file.length();
-			if (fileSize <= 0) {
-				System.out.println("ERROR: The file size is less than or equal to 0: " + fileSize);
-				return;
+			//srcLength = file.length();
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+				//return;
 			}
 
 			timer = new StopWatch();
@@ -106,9 +118,9 @@ public class GWASImport {
 				// the variables defined above
 				try {
 					mapStorage.init();
-					if (newLine.length < 4) {
+					if (newLine.length < 3) {
 						// non-compliant map file
-						System.out.println("This record was skipped: " + Arrays.toString(newLine));
+						throw new FileFormatException("The specified file does not appear to conform to the Map file format.");
 					}
 					else
 					{
@@ -122,19 +134,8 @@ public class GWASImport {
 							*/
 							switch (i) {
 							case 0:
-								// first column should be the chromosome number
-								long chromoNum = -1;
-								if (cellData.trim().toUpperCase().equals("X"))
-									chromoNum = 23;
-								else if (cellData.trim().toUpperCase().equals("Y"))
-									chromoNum = 24;
-								else if (cellData.trim().toUpperCase().equals("XY"))
-									chromoNum = 25;
-								else if (cellData.trim().toUpperCase().equals("MT"))
-									chromoNum = 26;
-								else
-									chromoNum = Long.getLong(cellData);
-								mapStorage.setChromoNum(chromoNum);
+								// first column should be the chromosome
+								mapStorage.setChromosome(cellData);
 								break;
 							case 1:
 								// second column should be the marker id
@@ -142,57 +143,87 @@ public class GWASImport {
 								break;
 							case 2:
 								// third column should be the genetic distance (morgans)
-								mapStorage.setGeneDist(Long.getLong(cellData));
+								mapStorage.setGeneDist(Long.parseLong(cellData));
 								break;
 							case 3:
 								// fourth column should be the base-pair position (bp units)
-								mapStorage.setBpPos(Long.getLong(cellData));
+								mapStorage.setBpPos(Long.parseLong(cellData));
 								break;
 		
 							default:
 								// ignore any additional columns
-								break;
+								System.out.println("Warning: more than expected number of columns for a map file");
+								continue;
 							}
 								
 							curPos += cellData.length() + 1;	//update progress
 						}
 					}
+					markerCount++;
 					mapStorage.commit();
 				}
-				catch (Exception ex) {
-					System.out.println(ex);
+				catch (StorageIOException ex) {
+					//System.out.println(ex);
 				}
 				// Debug only - Show progress and speed 
 				//System.out.println("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
 			}
 		}
-		/*
-		 * Disabled local error handling because it shouldn't be necessary.
-		 * Only re-enable if there is anything special that needs to be done 
-		 * before the exception is thrown up to the previous level
-		 */
-//		catch (IOException ioe) {
-//			// Throw the exception up to the previous level
-//			throw ioe;
-//		}
+		catch (IOException ioe) {
+			log.error("processMap IOException stacktrace:", ioe);
+			throw new GDMISystemException("Unexpected I/O exception whilst reading the map data");
+		}
+		catch (Exception ex) {
+			log.error("processMap Exception stacktrace:", ex);
+			throw new GDMISystemException("Unexpected exception occurred when trying to process map data");			
+		}
 		finally {
 			// Clean up the IO objects
 			timer.stop();
 			System.out.println("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime()/1000.0) + " s");
-			System.out.println("Total file size: " + fileSize + " B or " + twoPlaces.format(fileSize / 1024.0 / 1024.0 ) + " MB");
+			System.out.println("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0 ) + " MB");
 			if (timer != null)
 				timer = null;
-			if (csvRdr != null)
-				csvRdr.close();
-			if (fr != null)
-				fr.close();
+			if (csvRdr != null) {
+				try {
+					csvRdr.close();					
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (isr != null) {
+				try {
+					isr.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}				
+			}
 			// Restore the state of variables
-			fileSize = -1;
+			srcLength = -1;
 		}
 		
 	}
 
+	/**
+	 * Imports the PLINK compatible Ped file.
+	 * Default Ped file format assumed (i.e. sixth column for phenotype 
+	 *  and subsequent columns for alleles) as per:
+	 *  http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#ped
+	 * 
+	 * @param pedFilePath is the file path to the map file
+	 * @throws IOException
+	 * @throws OutOfMemoryError
+	 */
+	public void processPed(String pedFilePath) throws IOException, OutOfMemoryError {
 
+		if (pedStorage == null) {
+			throw new NullPointerException("Must have a ped storage object defined before calling.");
+		}
+
+	}
+	
 	/**
 	 * Return the progress of the current process in %
 	 * 
@@ -202,8 +233,8 @@ public class GWASImport {
 	public double getProgress() {
 		double progress = -1; 
 		
-		if (fileSize > 0)
-			progress = curPos * 100.0 / fileSize;	// %
+		if (srcLength > 0)
+			progress = curPos * 100.0 / srcLength;	// %
 	
 		return progress;
 	}
@@ -217,7 +248,7 @@ public class GWASImport {
 	public double getSpeed() {
 		double speed = -1;
 		
-		if (fileSize > 0)
+		if (srcLength > 0)
 			speed = curPos / 1024 / (timer.getTime() / 1000.0);	// KB/s
 
 		return speed;

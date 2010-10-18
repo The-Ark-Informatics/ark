@@ -11,7 +11,11 @@ import org.hibernate.Hibernate;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.lob.BlobImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -31,6 +35,8 @@ import au.org.theark.gdmi.model.entity.Status;
 @Repository("gwasDao")
 public class GwasDao extends HibernateSessionDao implements IGwasDao
 {
+	static Logger log = LoggerFactory.getLogger(CollectionDao.class);
+	
 	//Testing the create of records
 	//Each FK reference for MetaData must exist (i.e. be saved) prior to use
 /*
@@ -132,5 +138,21 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
     public EncodedData getEncodedData(Long encodedDataId) {
     	EncodedData ed = (EncodedData)getSession().get(EncodedData.class, encodedDataId);
     	return ed;
+    }
+    
+    public MarkerType getMarkerType(String typeName) {
+        Criteria crit = getSession().createCriteria(MarkerType.class);
+    	crit.add(Restrictions.eq("name", typeName));
+        crit.addOrder(Order.asc("id"));
+        //@SuppressWarnings("unchecked")
+        List<MarkerType> mdtList = crit.list();
+		if (mdtList.size() > 0) {
+			if (mdtList.size() > 1) {
+				log.error("Backend database has non-unique MarkerType names, returned the first one");
+			}
+			return (mdtList.get(0));
+		}
+        else
+        	return null;
     }
 }

@@ -1,5 +1,6 @@
 package au.org.theark.gdmi.model.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -14,6 +15,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * MarkerGroup entity. @author MyEclipse Persistence Tools
@@ -32,9 +35,9 @@ public class MarkerGroup implements java.io.Serializable {
 	private String description;
 	private Long visible;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
 			0);
 	private Set<UploadMarkerGroup> uploadMarkerGroups = new HashSet<UploadMarkerGroup>(
@@ -49,7 +52,7 @@ public class MarkerGroup implements java.io.Serializable {
 
 	/** minimal constructor */
 	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
-			Long uploadId, String userId, String insertTime) {
+			Long uploadId, String userId, Date insertTime) {
 		this.id = id;
 		this.markerType = markerType;
 		this.studyId = studyId;
@@ -61,8 +64,8 @@ public class MarkerGroup implements java.io.Serializable {
 	/** full constructor */
 	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
 			Long uploadId, String name, String description, Long visible,
-			String userId, String insertTime, String updateUserId,
-			String updateTime, Set<CollectionImport> collectionImports,
+			String userId, Date insertTime, String updateUserId,
+			Date updateTime, Set<CollectionImport> collectionImports,
 			Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
 		this.id = id;
 		this.markerType = markerType;
@@ -157,12 +160,13 @@ public class MarkerGroup implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+    @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -175,12 +179,13 @@ public class MarkerGroup implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "UPDATE_TIME")
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

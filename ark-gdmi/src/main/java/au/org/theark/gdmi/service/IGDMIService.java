@@ -23,4 +23,5 @@ public interface IGDMIService {
 	public EncodedData getEncodedData(Long encodedDataId);
 	public void getEncodedBit(Long encodedDataId);
 	public Long newEncodedData(Collection col);
+	public void testGWASImport();
 }

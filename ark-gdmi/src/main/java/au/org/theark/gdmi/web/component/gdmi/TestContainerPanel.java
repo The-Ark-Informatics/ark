@@ -33,7 +33,6 @@ import au.org.theark.gdmi.model.entity.MetaData;
 import au.org.theark.gdmi.model.entity.MetaDataField;
 import au.org.theark.gdmi.model.entity.MetaDataType;
 import au.org.theark.gdmi.model.entity.Status;
-import au.org.theark.gdmi.util.GWASImport;
 import au.org.theark.gdmi.service.IGDMIService;
 
 public class TestContainerPanel extends Panel{
@@ -82,6 +81,14 @@ public class TestContainerPanel extends Panel{
 				}
 			}
 		});
+		testForm.add(new Button(au.org.theark.gdmi.web.Constants.NOAHTEST, new StringResourceModel("page.noahsRescue", this, null))
+		{
+			public void onSubmit()
+			{
+				System.out.println("Noah saves!");
+				serviceInterface.testGWASImport();
+			}
+		});
 		add(testForm);
 	}
 
@@ -119,7 +126,7 @@ public class TestContainerPanel extends Panel{
     	mrkGrp.setUploadId(new Long(0));
     	mrkGrp.setName("pretend dbSNP");
     	mrkGrp.setUserId("test");
-    	mrkGrp.setInsertTime(new Date().toString());
+    	mrkGrp.setInsertTime(new Date());
 
     	Marker mrk1 = new Marker();
     	mrk1.setName("BRCA1");
@@ -128,7 +135,7 @@ public class TestContainerPanel extends Panel{
     	mrk1.setUserId("test");
     	mrk1.setMajorAllele("G");
     	mrk1.setMinorAllele("A");
-    	mrk1.setInsertTime(new Date().toString());
+    	mrk1.setInsertTime(new Date());
 
     	Marker mrk2 = new Marker();
     	mrk2.setName("BRCA2");
@@ -137,7 +144,7 @@ public class TestContainerPanel extends Panel{
     	mrk2.setUserId("test");
     	mrk2.setMajorAllele("T");
     	mrk2.setMinorAllele("C");
-    	mrk2.setInsertTime(new Date().toString());
+    	mrk2.setInsertTime(new Date());
     	
     	DecodeMask dm1 = new DecodeMask();
     	dm1.setBitPosition(0);

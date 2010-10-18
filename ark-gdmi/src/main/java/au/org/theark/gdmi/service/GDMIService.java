@@ -1,5 +1,6 @@
 package au.org.theark.gdmi.service;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,8 +9,10 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
 
+import au.org.theark.gdmi.exception.GDMISystemException;
 import au.org.theark.gdmi.model.dao.ICollectionDao;
 import au.org.theark.gdmi.model.dao.IGwasDao;
+import au.org.theark.gdmi.model.dao.MarkerDao;
 import au.org.theark.gdmi.model.entity.Collection;
 import au.org.theark.gdmi.model.entity.CollectionImport;
 import au.org.theark.gdmi.model.entity.DecodeMask;
@@ -21,6 +24,9 @@ import au.org.theark.gdmi.model.entity.MetaData;
 import au.org.theark.gdmi.model.entity.MetaDataField;
 import au.org.theark.gdmi.model.entity.MetaDataType;
 import au.org.theark.gdmi.model.entity.Status;
+import au.org.theark.gdmi.util.FileFormatException;
+import au.org.theark.gdmi.util.GWASImport;
+import au.org.theark.gdmi.util.IMapStorage;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -42,6 +48,7 @@ public class GDMIService implements IGDMIService {
 
 	private ICollectionDao collectionDao;
 	private IGwasDao gwasDao;
+	private IMapStorage markerDao;
 
 	@Autowired
 	public void setCollectionDao(ICollectionDao collectionDao) {
@@ -60,6 +67,15 @@ public class GDMIService implements IGDMIService {
 
 	public IGwasDao getGwasDao() {
 		return gwasDao;
+	}
+
+	@Autowired
+	public void setMapStorage(IMapStorage markerDao) {
+		this.markerDao = markerDao;
+	}
+
+	public IMapStorage getMapStorage() {
+		return markerDao;
 	}
 
 	public void createCollection(Collection col) {
@@ -203,6 +219,49 @@ public class GDMIService implements IGDMIService {
 	
 	public Collection getCollection(Long collectionId) {
 		return collectionDao.getCollection(collectionId);
+	}
+
+	public void testGWASImport() {
+		String userId = "test12345";
+		Date dateNow = new Date(System.currentTimeMillis());
+
+		MarkerType markerType = gwasDao.getMarkerType("SNP");
+		MarkerGroup markerGroup = new MarkerGroup();
+		markerGroup.setStudyId(new Long(1));
+		markerGroup.setUploadId(new Long(1));
+		markerGroup.setMarkerType(markerType);
+		markerGroup.setUserId(userId);
+		markerGroup.setInsertTime(dateNow);
+		
+		// if whichever is the correct IMapStorage
+		// then pass this to GWASImport
+		// assuming Database is the target...
+		GWASImport gi = null;
+		if (true) {
+			((MarkerDao)markerDao).setup(markerGroup, userId);
+			gi = new GWASImport(markerDao, null);
+		}
+//		else {
+//			gi = new GWASImport(new MarkerFlatFile(), null);
+//		}
+		// MarkerDao md = new MarkerDao(markerGroup, userId);
+		// GWASImport gi = new GWASImport(md, null);
+		try {
+			File mapFile = new File("/home/elam/TestData/first100.map");
+			InputStream is = new FileInputStream(mapFile);
+			gi.processMap(is, mapFile.length());
+			((MarkerDao)markerDao).flush();
+		}
+		catch (IOException ioe) {
+			System.out.println("Well something didn't go right. " + ioe);
+		}
+		catch (FileFormatException ffe) {
+			System.out.println("Well something didn't go right. " + ffe);
+		}
+		catch (GDMISystemException gse) {
+			System.out.println("Well something didn't go right. " + gse);
+		}
+		
 	}
 	
 }
