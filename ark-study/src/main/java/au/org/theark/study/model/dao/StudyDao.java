@@ -1,5 +1,6 @@
 package au.org.theark.study.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -15,10 +16,14 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.TitleType;
+import au.org.theark.study.model.entity.VitalStatus;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
@@ -169,6 +174,32 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Example phoneTypeExample = Example.create(new PhoneType());
 		Criteria criteria = getSession().createCriteria(PhoneType.class).add(phoneTypeExample);
 		return   criteria.list();
+	}
+	
+	public void create(Phone phone) throws ArkSystemException{
+		try{
+			getSession().save(phone);	
+		}catch(HibernateException hibException){
+			log.error("A hibernate exception occured. Cannot create the Phone record. Cause: " + hibException.getStackTrace());
+			throw new ArkSystemException("Unable to create a Phone record.");
+		}
+	}
+	
+	public Collection<TitleType> getTitleType(){
+		Example example = Example.create(new TitleType());
+		Criteria criteria = getSession().createCriteria(TitleType.class).add(example);
+		return criteria.list();
+	}
+	public Collection<VitalStatus> getVitalStatus(){
+		Example example = Example.create(new VitalStatus());
+		Criteria criteria = getSession().createCriteria(VitalStatus.class).add(example);
+		return criteria.list();
+	}
+	
+	public Collection<GenderType> getGenderType(){
+		Example example = Example.create(new GenderType());
+		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
+		return criteria.list();
 	}
 	
 }

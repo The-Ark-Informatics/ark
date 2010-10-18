@@ -1,13 +1,18 @@
 package au.org.theark.study.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.TitleType;
+import au.org.theark.study.model.entity.VitalStatus;
 
 public interface IStudyDao {
 
@@ -41,4 +46,12 @@ public interface IStudyDao {
 	 * @return List<PhoneType>
 	 */
 	public List<PhoneType> getListOfPhoneType();
+	
+	public void create(Phone phone) throws ArkSystemException;
+	
+	public Collection<TitleType> getTitleType();
+	
+	public Collection<VitalStatus> getVitalStatus();
+	
+	public Collection<GenderType> getGenderType();
 }
