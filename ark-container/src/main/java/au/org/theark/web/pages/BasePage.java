@@ -17,6 +17,7 @@ import org.apache.wicket.model.Model;
  * @author nivedann
  *
  */
+@SuppressWarnings("unchecked")
 public abstract class BasePage extends WebPage{
 	
 	//private Tabs tabs;
@@ -25,12 +26,12 @@ public abstract class BasePage extends WebPage{
 	private Label userNameLbl;
 	public BasePage(){
 		
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model("images/"+Constants.HOSTED_BY_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model("images/"+Constants.PRODUCT_IMAGE));
-		//add(pageTitleLbl);
+		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
+		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
+		
 		Subject currentUser = SecurityUtils.getSubject();
 
-		
 		if(currentUser.getPrincipal() != null){
 			principal = (String) currentUser.getPrincipal();
 			userNameLbl = new Label("loggedInUser", new Model(principal));			
@@ -40,10 +41,11 @@ public abstract class BasePage extends WebPage{
 			userNameLbl = new Label("loggedInUser", new Model("Guest"));
 		}
 		
-		//return securityM
-		
-		add(contextHostedByImage);//hosted by image
+		// Add images
+		add(hostedByImage);
 		add(productImage);
+		add(bannerImage);
+		
 		add(userNameLbl);
 		add(new BookmarkablePageLink<Void>("logoutLink", LogoutPage.class));
 	}
@@ -57,7 +59,5 @@ public abstract class BasePage extends WebPage{
 	 */
 	protected abstract void buildTabMenu();
 	
-	
 	abstract String getTitle();
-
 }
