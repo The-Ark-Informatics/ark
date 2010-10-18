@@ -34,10 +34,10 @@ public class LoginPage<T> extends WebPage {
 	/**
 	 * Page Constructor
 	 */
+	@SuppressWarnings({ "serial", "unchecked" })
 	public LoginPage(){
 
 		log.info("LoginPage() constructor");
-		
 		
 		feedBackPanel.setOutputMarkupId(true);
 		
@@ -48,19 +48,21 @@ public class LoginPage<T> extends WebPage {
 		
 		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
 		//Create an new form object and add it to the Page
-		ContextImage contextHostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
+		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
-		 this.add( new Link("resetPasswordLink"){
+		this.add( new Link("resetPasswordLink"){
 			@Override
 			public void onClick() {
 				setResponsePage(ResetPage.class);
 			}
 		 });
 		 
-		 add(contextHostedByImage);//hosted by image
+		 // Add images
+		 add(hostedByImage);
 		 add(productImage);
-		 
+		 add(bannerImage);
 	}
 	
 	
@@ -145,7 +147,5 @@ public class LoginPage<T> extends WebPage {
 
 			return false;
 		}
-		
-		
 	}
 }
