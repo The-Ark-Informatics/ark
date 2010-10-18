@@ -40,6 +40,10 @@ public class VitalStatus implements Serializable{
 		this.id = id;
 	}
 	
+	public void setId(Long id){
+		this.id = id;
+	}
+	
 	@Id
 	@Column(name="ID",unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId(){
