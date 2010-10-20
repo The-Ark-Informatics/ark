@@ -26,16 +26,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.gdmi.exception.FileFormatException;
 import au.org.theark.gdmi.exception.GDMISystemException;
 import au.org.theark.gdmi.model.dao.GwasDao;
 import au.org.theark.gdmi.model.dao.IGwasDao;
+import au.org.theark.gdmi.model.dao.IMapStorage;
 import au.org.theark.gdmi.model.dao.MarkerDao;
 import au.org.theark.gdmi.model.dao.MarkerFlatFile;
 import au.org.theark.gdmi.model.entity.MarkerGroup;
 import au.org.theark.gdmi.model.entity.MarkerType;
-import au.org.theark.gdmi.util.FileFormatException;
 import au.org.theark.gdmi.util.GWASImport;
-import au.org.theark.gdmi.util.IMapStorage;
 
 
 /**
@@ -128,7 +128,7 @@ public class TestGWASImport extends AbstractTransactionalJUnit38SpringContextTes
 		// MarkerDao md = new MarkerDao(markerGroup, userId);
 		// GWASImport gi = new GWASImport(md, null);
 		try {
-			File mapFile = new File("/home/elam/TestData/first100.map");
+			File mapFile = new File("/home/ark/TestData/first100.map");
 			InputStream is = new FileInputStream(mapFile);
 			gi.processMap(is, mapFile.length());
 			((MarkerDao)markerDao).flush();

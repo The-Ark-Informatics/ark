@@ -4,7 +4,6 @@
 package au.org.theark.gdmi.model.dao;
 
 import au.org.theark.gdmi.exception.StorageIOException;
-import au.org.theark.gdmi.util.IMapStorage;
 
 /**
  * @author elam

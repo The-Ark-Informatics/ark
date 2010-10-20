@@ -1,9 +1,8 @@
 /**
  * 
  */
-package au.org.theark.gdmi.util;
+package au.org.theark.gdmi.exception;
 
-import au.org.theark.gdmi.exception.GDMIBaseException;
 
 /**
  * @author elam

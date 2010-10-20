@@ -15,7 +15,6 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.gdmi.exception.StorageIOException;
 import au.org.theark.gdmi.model.entity.*;
 import au.org.theark.gdmi.util.GWASImport;
-import au.org.theark.gdmi.util.IMapStorage;
 import au.org.theark.gdmi.util.IMarkerDao;
 
 /**

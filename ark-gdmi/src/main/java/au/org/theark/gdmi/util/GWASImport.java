@@ -10,9 +10,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import au.com.bytecode.opencsv.CSVReader;
+import com.csvreader.CsvReader;
+import au.org.theark.gdmi.exception.FileFormatException;
 import au.org.theark.gdmi.exception.GDMISystemException;
 import au.org.theark.gdmi.exception.StorageIOException;
+import au.org.theark.gdmi.model.dao.IMapStorage;
 
 
 /**
@@ -94,13 +96,13 @@ public class GWASImport {
 		curPos = 0;
 
 		InputStreamReader isr = null;
-		CSVReader csvRdr = null;
+		CsvReader csvRdr = null;
 		
 		DecimalFormat twoPlaces = new DecimalFormat("0.00");
 
 		try {
 			isr = new InputStreamReader(mapInStream);
-			csvRdr = new CSVReader(isr, mapDelimChr);
+			csvRdr = new CsvReader(isr, mapDelimChr);
 			String[] newLine;
 			
 			//srcLength = file.length();
@@ -113,9 +115,10 @@ public class GWASImport {
 			timer = new StopWatch();
 			timer.start();
 			
-			while((newLine = csvRdr.readNext()) != null) {
+			while(csvRdr.readRecord()) {
 				// do something with the newline to put the data into
 				// the variables defined above
+				newLine = csvRdr.getValues();
 				try {
 					mapStorage.init();
 					if (newLine.length < 3) {

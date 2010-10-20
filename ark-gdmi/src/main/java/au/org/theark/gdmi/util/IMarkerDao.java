@@ -1,5 +1,6 @@
 package au.org.theark.gdmi.util;
 
+import au.org.theark.gdmi.model.dao.IMapStorage;
 import au.org.theark.gdmi.model.entity.MarkerGroup;
 
 public interface IMarkerDao extends IMapStorage {

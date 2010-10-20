@@ -9,9 +9,11 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
 
+import au.org.theark.gdmi.exception.FileFormatException;
 import au.org.theark.gdmi.exception.GDMISystemException;
 import au.org.theark.gdmi.model.dao.ICollectionDao;
 import au.org.theark.gdmi.model.dao.IGwasDao;
+import au.org.theark.gdmi.model.dao.IMapStorage;
 import au.org.theark.gdmi.model.dao.MarkerDao;
 import au.org.theark.gdmi.model.entity.Collection;
 import au.org.theark.gdmi.model.entity.CollectionImport;
@@ -24,9 +26,7 @@ import au.org.theark.gdmi.model.entity.MetaData;
 import au.org.theark.gdmi.model.entity.MetaDataField;
 import au.org.theark.gdmi.model.entity.MetaDataType;
 import au.org.theark.gdmi.model.entity.Status;
-import au.org.theark.gdmi.util.FileFormatException;
 import au.org.theark.gdmi.util.GWASImport;
-import au.org.theark.gdmi.util.IMapStorage;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -127,7 +127,7 @@ public class GDMIService implements IGDMIService {
     	ed.setSubjectId(new Long(0));
     	ed.setCollection(col);
     	try {
-    		String filePath = "/home/elam/testException.txt";
+    		String filePath = "/home/ark/TestData/testException.txt";
     		FileInputStream fis = new FileInputStream(filePath);
         	Blob blobbo = Hibernate.createBlob(fis);
 	    	FileInputStream fis2 = new FileInputStream(filePath);
@@ -148,7 +148,7 @@ public class GDMIService implements IGDMIService {
 		EncodedData ed = getEncodedData(encodedDataId);
     	Blob aBlob = ed.getEncodedBit1();
     	try {
-    		String outFilePath = "/home/elam/blahOut.txt";
+    		String outFilePath = "/home/ark/TestData/blahOut.txt";
     		FileOutputStream fos = new FileOutputStream(outFilePath);
     		
     		InputStream blobis = aBlob.getBinaryStream();
@@ -222,6 +222,8 @@ public class GDMIService implements IGDMIService {
 	}
 
 	public void testGWASImport() {
+		// This will only test that the database integration is working correctly
+		// All transactions will be rolled back
 		String userId = "test12345";
 		Date dateNow = new Date(System.currentTimeMillis());
 
@@ -247,7 +249,7 @@ public class GDMIService implements IGDMIService {
 		// MarkerDao md = new MarkerDao(markerGroup, userId);
 		// GWASImport gi = new GWASImport(md, null);
 		try {
-			File mapFile = new File("/home/elam/TestData/first100.map");
+			File mapFile = new File("/home/ark/TestData/first100.map");
 			InputStream is = new FileInputStream(mapFile);
 			gi.processMap(is, mapFile.length());
 			((MarkerDao)markerDao).flush();
