@@ -63,8 +63,8 @@
 		</dependency>
 		<!-- opencsv Dependency -->
 		<dependency>
-			<groupId>net.sf.opencsv</groupId>
-			<artifactId>opencsv</artifactId>
+			<groupId>net.sourceforge.javacsv</groupId>
+			<artifactId>javacsv</artifactId>
 			<version>2.0</version>
 		</dependency>
 		
