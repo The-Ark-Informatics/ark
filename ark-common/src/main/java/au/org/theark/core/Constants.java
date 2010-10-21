@@ -39,4 +39,6 @@ public class Constants {
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
 	
 	public static final String STUDY_CONTEXT_ID="studyId";
+	
+	public static final String DATE_FORMAT="dd/MM/yyyy";
 }
