@@ -14,6 +14,8 @@ import au.org.theark.study.model.entity.Address;
 import au.org.theark.study.model.entity.EmailAccount;
 import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.entity.Phone;
+import au.org.theark.study.model.entity.Study;
+import au.org.theark.study.model.entity.SubjectStatus;
 
 /**
  * @author nivedann
@@ -26,6 +28,9 @@ public class SubjectVO implements Serializable{
 	protected Phone phone;
 	protected Address address;
 	protected EmailAccount emailAccount;
+	protected Study study;
+	
+	protected SubjectStatus subjectStatus;
 	
 	/** A List of phone numbers linked to this person/subject*/
 	protected List<Phone> phoneList;
@@ -102,6 +107,22 @@ public class SubjectVO implements Serializable{
 
 	public void setEmailAccountList(List<EmailAccount> emailAccountList) {
 		this.emailAccountList = emailAccountList;
+	}
+
+	public SubjectStatus getSubjectStatus() {
+		return subjectStatus;
+	}
+
+	public void setSubjectStatus(SubjectStatus subjectStatus) {
+		this.subjectStatus = subjectStatus;
+	}
+
+	public Study getStudy() {
+		return study;
+	}
+
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 }
