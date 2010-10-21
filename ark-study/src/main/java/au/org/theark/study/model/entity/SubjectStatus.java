@@ -57,7 +57,7 @@ public class SubjectStatus implements java.io.Serializable {
 		this.subjectStatusKey = subjectStatusKey;
 	}
 
-	@Column(name = "NAME", unique = true, length = 20)
+	@Column(name = "NAME", unique = true, length = 50)
 	public String getName() {
 		return this.name;
 	}
