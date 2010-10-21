@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 /**
  * MarkerGroup entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MarkerGroup")
 @Table(name = "MARKER_GROUP", schema = "GDMI")
 public class MarkerGroup implements java.io.Serializable {
 

@@ -52,7 +52,7 @@ public class TestContainerPanel extends Panel{
 		{
 			public void onSubmit()
 			{
-				System.out.println("WTF you hit me");
+				log.info("WTF you hit me");
 				Collection colEn = new Collection();
 		        colEn.setStudyId(new Long(100));
 		        serviceInterface.createCollection(colEn);
@@ -74,7 +74,7 @@ public class TestContainerPanel extends Panel{
 		{
 			public void onSubmit()
 			{
-				System.out.println("Noah save me!");
+				log.info("Noah save me!");
 				if (edID != null)
 				{
 					readEncodedData(edID);
@@ -85,7 +85,7 @@ public class TestContainerPanel extends Panel{
 		{
 			public void onSubmit()
 			{
-				System.out.println("Noah saves!");
+				log.info("Noah saves!");
 				serviceInterface.testGWASImport();
 			}
 		});

@@ -19,7 +19,7 @@ import javax.persistence.Table;
 /**
  * Upload entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.Upload")
 @Table(name = "UPLOAD", schema = "GDMI")
 public class Upload implements java.io.Serializable {
 

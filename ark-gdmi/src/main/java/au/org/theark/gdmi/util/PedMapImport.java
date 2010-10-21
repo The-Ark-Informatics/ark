@@ -13,8 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.csvreader.CsvReader;
 import au.org.theark.gdmi.exception.FileFormatException;
 import au.org.theark.gdmi.exception.GDMISystemException;
-import au.org.theark.gdmi.exception.StorageIOException;
-import au.org.theark.gdmi.model.dao.IMapStorage;
+import au.org.theark.gdmi.exception.DataAcceptorIOException;
 
 
 /**
@@ -25,7 +24,7 @@ import au.org.theark.gdmi.model.dao.IMapStorage;
  *
  * @author elam
  */
-public class GWASImport {
+public class PedMapImport {
 	
 	private char minorAllele;
 	private char majorAllele;
@@ -45,26 +44,24 @@ public class GWASImport {
 	private char mapDelimChr = '\t';	//default map file delimiter: TAB
 	private char pedDelimChr = ' ';		//default ped file delimiter: SPACE
 	
-	private IMapStorage mapStorage = null;
-	private IPedStorage pedStorage = null;
+	private IMapDataAcceptor mapPipe = null;
+	private IPedDataAcceptor pedStorage = null;
 	
-	static Logger log = LoggerFactory.getLogger(GWASImport.class);
+	static Logger log = LoggerFactory.getLogger(PedMapImport.class);
 	
-	@Autowired
-	public void setMapStorage(IMapStorage mapStorage) {
-		this.mapStorage = mapStorage;
+	public void setMapStorage(IMapDataAcceptor mapStorage) {
+		this.mapPipe = mapStorage;
 	}
 
-	public IMapStorage getMapStorage() {
-		return mapStorage;
+	public IMapDataAcceptor getMapStorage() {
+		return mapPipe;
 	}
 	
-	@Autowired
-	public void setPedStorage(IPedStorage pedStorage) {
+	public void setPedStorage(IPedDataAcceptor pedStorage) {
 		this.pedStorage = pedStorage;
 	}
 
-	public IPedStorage getPedStorage() {
+	public IPedDataAcceptor getPedStorage() {
 		return pedStorage;
 	}
 	
@@ -73,7 +70,7 @@ public class GWASImport {
 	 * @param mapStore is required for defining where the marker data is to go
 	 * @param pedStore is required for 
 	 */
-	public GWASImport(IMapStorage aMapStore, IPedStorage aPedStore) {
+	public PedMapImport(IMapDataAcceptor aMapStore, IPedDataAcceptor aPedStore) {
 		setMapStorage(aMapStore);
 		setPedStorage(aPedStore);
 	}
@@ -88,7 +85,7 @@ public class GWASImport {
 	 * @throws OutOfMemoryError
 	 */
 	public void processMap(InputStream mapInStream, long inLength) throws FileFormatException, GDMISystemException {
-		if (mapStorage == null) {
+		if (mapPipe == null) {
 			throw new GDMISystemException("Aborting: Must have a map storage object defined before calling.");
 		}
 		
@@ -120,7 +117,7 @@ public class GWASImport {
 				// the variables defined above
 				newLine = csvRdr.getValues();
 				try {
-					mapStorage.init();
+					mapPipe.init();
 					if (newLine.length < 3) {
 						// non-compliant map file
 						throw new FileFormatException("The specified file does not appear to conform to the Map file format.");
@@ -131,31 +128,31 @@ public class GWASImport {
 							String cellData = newLine[i];
 							/* Debug only - Show data
 							if (i < newLine.length - 1)
-								System.out.print(cellData + ",");
+								log.debug(cellData + ",");
 							else
-								System.out.println(cellData);
+								log.debug(cellData);
 							*/
 							switch (i) {
 							case 0:
 								// first column should be the chromosome
-								mapStorage.setChromosome(cellData);
+								mapPipe.setChromosome(cellData);
 								break;
 							case 1:
 								// second column should be the marker id
-								mapStorage.setMarkerName(cellData);
+								mapPipe.setMarkerName(cellData);
 								break;
 							case 2:
 								// third column should be the genetic distance (morgans)
-								mapStorage.setGeneDist(Long.parseLong(cellData));
+								mapPipe.setGeneDist(Long.parseLong(cellData));
 								break;
 							case 3:
 								// fourth column should be the base-pair position (bp units)
-								mapStorage.setBpPos(Long.parseLong(cellData));
+								mapPipe.setBpPos(Long.parseLong(cellData));
 								break;
 		
 							default:
 								// ignore any additional columns
-								System.out.println("Warning: more than expected number of columns for a map file");
+								log.debug("Warning: more than expected number of columns for a map file");
 								continue;
 							}
 								
@@ -163,13 +160,13 @@ public class GWASImport {
 						}
 					}
 					markerCount++;
-					mapStorage.commit();
+					mapPipe.sync();
 				}
-				catch (StorageIOException ex) {
-					//System.out.println(ex);
+				catch (DataAcceptorIOException ex) {
+					log.error("Failure during call to data acceptor: ", ex);
 				}
 				// Debug only - Show progress and speed 
-				//System.out.println("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
+				//log.debug("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
 			}
 		}
 		catch (IOException ioe) {
@@ -183,8 +180,8 @@ public class GWASImport {
 		finally {
 			// Clean up the IO objects
 			timer.stop();
-			System.out.println("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime()/1000.0) + " s");
-			System.out.println("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0 ) + " MB");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime()/1000.0) + " s");
+			log.info("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0 ) + " MB");
 			if (timer != null)
 				timer = null;
 			if (csvRdr != null) {
@@ -215,11 +212,11 @@ public class GWASImport {
 	 *  and subsequent columns for alleles) as per:
 	 *  http://pngu.mgh.harvard.edu/~purcell/plink/data.shtml#ped
 	 * 
-	 * @param pedFilePath is the file path to the map file
+	 * @param pedInStream is the input stream of a ped file
 	 * @throws IOException
 	 * @throws OutOfMemoryError
 	 */
-	public void processPed(String pedFilePath) throws IOException, OutOfMemoryError {
+	public void processPed(InputStream pedInStream, long inLength) throws FileFormatException, GDMISystemException {
 
 		if (pedStorage == null) {
 			throw new NullPointerException("Must have a ped storage object defined before calling.");

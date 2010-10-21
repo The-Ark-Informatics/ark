@@ -13,7 +13,7 @@ import javax.persistence.Table;
 /**
  * ImportType entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.ImportType")
 @Table(name = "IMPORT_TYPE", schema = "GDMI")
 public class ImportType implements java.io.Serializable {
 

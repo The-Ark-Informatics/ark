@@ -23,7 +23,7 @@ import org.hibernate.annotations.Cascade;
 /**
  * Marker entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.Marker")
 @Table(name = "MARKER", schema = "GDMI")
 public class Marker implements java.io.Serializable {
 

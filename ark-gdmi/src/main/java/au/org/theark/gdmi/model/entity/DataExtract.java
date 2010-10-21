@@ -11,7 +11,7 @@ import javax.persistence.Table;
 /**
  * DataExtract entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.DataExtract")
 @Table(name = "DATA_EXTRACT", schema = "GDMI")
 public class DataExtract implements java.io.Serializable {
 

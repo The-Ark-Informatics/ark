@@ -16,7 +16,7 @@ import javax.persistence.Table;
 /**
  * DataType entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MetaDataType")
 @Table(name = "META_DATA_TYPE", schema = "GDMI")
 public class MetaDataType implements java.io.Serializable {
 

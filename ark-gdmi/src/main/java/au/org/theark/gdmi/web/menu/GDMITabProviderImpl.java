@@ -44,7 +44,6 @@ public class GDMITabProviderImpl extends Panel implements IMainTabProvider {
 			}
 			@Override
 			public Panel getPanel(String pid) {
-				System.out.println("Panel ID in getPanel " + pid);
 				return new GDMISubMenuTab(pid);//The sub menus Study 
 			}
 			

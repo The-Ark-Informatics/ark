@@ -14,7 +14,7 @@ import javax.persistence.Table;
 /**
  * UploadMarkerGroup entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.UploadMarkerGroup")
 @Table(name = "UPLOAD_MARKER_GROUP", schema = "GDMI")
 public class UploadMarkerGroup implements java.io.Serializable {
 

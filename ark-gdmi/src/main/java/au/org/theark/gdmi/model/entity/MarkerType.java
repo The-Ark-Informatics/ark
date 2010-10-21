@@ -13,7 +13,7 @@ import javax.persistence.Table;
 /**
  * MarkerType entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MarkerType")
 @Table(name = "MARKER_TYPE", schema = "GDMI")
 public class MarkerType implements java.io.Serializable {
 

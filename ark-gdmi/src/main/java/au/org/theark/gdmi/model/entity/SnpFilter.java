@@ -14,7 +14,7 @@ import javax.persistence.Table;
 /**
  * SnpFilter entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.SnpFilter")
 @Table(name = "SNP_FILTER", schema = "GDMI")
 public class SnpFilter implements java.io.Serializable {
 

@@ -13,7 +13,7 @@ import javax.persistence.Table;
 /**
  * FileFormat entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.FileFormat")
 @Table(name = "FILE_FORMAT", schema = "GDMI")
 public class FileFormat implements java.io.Serializable {
 

@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 /**
  * MetaDataField entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MetaDataField")
 @Table(name = "META_DATA_FIELD", schema = "GDMI")
 public class MetaDataField implements java.io.Serializable {
 

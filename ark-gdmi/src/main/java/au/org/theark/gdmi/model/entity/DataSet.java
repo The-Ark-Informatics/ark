@@ -15,7 +15,7 @@ import javax.persistence.Table;
 /**
  * DataSet entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.DataSet")
 @Table(name = "DATA_SET", schema = "GDMI")
 public class DataSet implements java.io.Serializable {
 

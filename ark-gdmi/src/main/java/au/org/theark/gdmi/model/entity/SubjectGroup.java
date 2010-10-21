@@ -15,7 +15,7 @@ import javax.persistence.Table;
 /**
  * SubjectGroup entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.SubjectGroup")
 @Table(name = "SUBJECT_GROUP", schema = "GDMI")
 public class SubjectGroup implements java.io.Serializable {
 

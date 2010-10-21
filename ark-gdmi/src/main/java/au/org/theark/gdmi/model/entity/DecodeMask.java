@@ -15,7 +15,7 @@ import javax.persistence.Table;
 /**
  * DecodeMask entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.DecodeMask")
 @Table(name = "DECODE_MASK", schema = "GDMI")
 public class DecodeMask implements java.io.Serializable {
 

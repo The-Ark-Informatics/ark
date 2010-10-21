@@ -13,7 +13,7 @@ import javax.persistence.Table;
 /**
  * Status entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.Status")
 @Table(name = "STATUS", schema = "GDMI")
 public class Status implements java.io.Serializable {
 

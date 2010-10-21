@@ -1,25 +1,25 @@
 /**
  * 
  */
-package au.org.theark.gdmi.model.dao;
+package au.org.theark.gdmi.util;
 
-import au.org.theark.gdmi.exception.StorageIOException;
+import au.org.theark.gdmi.exception.DataAcceptorIOException;
 import au.org.theark.gdmi.model.entity.MarkerGroup;
 
 /**
- * IMapStorage is an interface that should be implemented by a class to  
- * store map data provided by the GWASImport processMap(..) method.
- * The motivation is to separate GWASImport from the back-end storage method.
+ * IMapDataAcceptor is an interface that should be implemented by a class to  
+ * accept PED data provided by the PedMapImport processMap(..) method.
+ * The motivation is to separate PedMapImport from the back-end storage method.
  * 
  * @author elam
  *
  */
-public interface IMapStorage {
+public interface IMapDataAcceptor {
 
 	/**
 	 * Called each time a new set of marker data is ready to be accepted
 	 */
-	void init() throws StorageIOException;
+	void init() throws DataAcceptorIOException;
 
 	//String getMarkerName();
 	/**
@@ -46,9 +46,10 @@ public interface IMapStorage {
 	void setBpPos(long bpPos);
 	
 	/**
-	 * Called when all data is provided and ready to be committed to storage.
+	 * Called when all data is provided and ready to be synchronised
+	 * (e.g. committed to database, written to file)
 	 * If the commit fails, then the an exception can be thrown.
 	 */
-	void commit() throws StorageIOException;
+	void sync() throws DataAcceptorIOException;
 	
 }

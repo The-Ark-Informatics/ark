@@ -15,7 +15,7 @@ import javax.persistence.TemporalType;
 /**
  * MarkerMetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MarkerMetaData")
 @Table(name = "MARKER_META_DATA", schema = "GDMI")
 public class MarkerMetaData implements java.io.Serializable {
 

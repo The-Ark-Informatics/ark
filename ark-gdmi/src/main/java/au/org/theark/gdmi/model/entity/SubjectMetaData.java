@@ -11,7 +11,7 @@ import javax.persistence.Table;
 /**
  * SubjectMetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.SubjectMetaData")
 @Table(name = "SUBJECT_META_DATA", schema = "GDMI")
 public class SubjectMetaData implements java.io.Serializable {
 

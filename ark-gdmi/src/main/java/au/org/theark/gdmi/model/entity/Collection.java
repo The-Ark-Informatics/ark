@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 /**
  * Collection entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.Collection")
 @Table(name = "COLLECTION", schema = "GDMI")
 public class Collection implements java.io.Serializable {
 

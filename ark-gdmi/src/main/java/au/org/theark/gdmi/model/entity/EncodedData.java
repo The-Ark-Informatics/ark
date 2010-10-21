@@ -23,7 +23,7 @@ import org.hibernate.Hibernate;
 /**
  * EncodedData entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.EncodedData")
 @Table(name = "ENCODED_DATA", schema = "GDMI")
 public class EncodedData implements java.io.Serializable {
 

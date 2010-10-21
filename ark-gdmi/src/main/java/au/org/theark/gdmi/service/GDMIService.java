@@ -9,15 +9,23 @@ import java.sql.Blob;
 import java.sql.SQLException;
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.wicket.util.io.IOUtils;
+import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import au.org.theark.gdmi.exception.DataAcceptorIOException;
 import au.org.theark.gdmi.exception.FileFormatException;
 import au.org.theark.gdmi.exception.GDMISystemException;
 import au.org.theark.gdmi.model.dao.ICollectionDao;
 import au.org.theark.gdmi.model.dao.IGwasDao;
-import au.org.theark.gdmi.model.dao.IMapStorage;
-import au.org.theark.gdmi.model.dao.MarkerDao;
 import au.org.theark.gdmi.model.entity.Collection;
 import au.org.theark.gdmi.model.entity.CollectionImport;
-import au.org.theark.gdmi.model.entity.DecodeMask;
 import au.org.theark.gdmi.model.entity.EncodedData;
 import au.org.theark.gdmi.model.entity.Marker;
 import au.org.theark.gdmi.model.entity.MarkerGroup;
@@ -26,19 +34,8 @@ import au.org.theark.gdmi.model.entity.MetaData;
 import au.org.theark.gdmi.model.entity.MetaDataField;
 import au.org.theark.gdmi.model.entity.MetaDataType;
 import au.org.theark.gdmi.model.entity.Status;
-import au.org.theark.gdmi.util.GWASImport;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
-import org.apache.wicket.util.io.IOUtils;
-import org.hibernate.Hibernate;
-import org.mortbay.io.EndPoint;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.batch.core.*;
+import au.org.theark.gdmi.util.IMapDataAcceptor;
+import au.org.theark.gdmi.util.PedMapImport;
 
 @Transactional
 @Service("gwasService")
@@ -48,7 +45,6 @@ public class GDMIService implements IGDMIService {
 
 	private ICollectionDao collectionDao;
 	private IGwasDao gwasDao;
-	private IMapStorage markerDao;
 
 	@Autowired
 	public void setCollectionDao(ICollectionDao collectionDao) {
@@ -67,15 +63,6 @@ public class GDMIService implements IGDMIService {
 
 	public IGwasDao getGwasDao() {
 		return gwasDao;
-	}
-
-	@Autowired
-	public void setMapStorage(IMapStorage markerDao) {
-		this.markerDao = markerDao;
-	}
-
-	public IMapStorage getMapStorage() {
-		return markerDao;
 	}
 
 	public void createCollection(Collection col) {
@@ -138,7 +125,7 @@ public class GDMIService implements IGDMIService {
 	    	fis.close();
 	    	fis2.close();
     	} catch (Exception ex) {
-    		System.out.println("Something went horribly wrong with the file storage...\n" + ex);
+    		log.error("Something went horribly wrong with the file storage...\n" + ex);
     	}
     	return ed.getId();
 	}
@@ -157,9 +144,9 @@ public class GDMIService implements IGDMIService {
     		blobis.close();
     		fos.close();
     	} catch (SQLException sqlex) {
-    		System.out.println("sqlex.State = " + sqlex.getSQLState() + "::" + sqlex.getErrorCode());    		
+    		log.error("sqlex.State = " + sqlex.getSQLState() + "::" + sqlex.getErrorCode());    		
     	} catch (Exception ex) {
-    		System.out.println("Something went horribly wrong with the file retrieval...\n" + ex);
+    		log.error("Something went horribly wrong with the file retrieval...\n" + ex);
     	}
 
 //		EncodedData data = getEncodedData(encodedDataId);
@@ -169,15 +156,15 @@ public class GDMIService implements IGDMIService {
 //		try {
 //			dataOfBytes = encodedDatabit.getBytes(1,5);
 //			if(dataOfBytes != null){
-//				System.out.println("Length = "  + dataOfBytes.length + " " + dataOfBytes.toString()); 
+//				log.debug("Length = "  + dataOfBytes.length + " " + dataOfBytes.toString()); 
 //				inputStream = encodedDatabit.getBinaryStream();
 //				
-//				System.out.println("input Stream= "  + inputStream.available());
+//				log.debug("input Stream= "  + inputStream.available());
 //			}else{
-//				System.out.println("Object is null" );
+//				log.debug("Object is null" );
 //			}
 //		} catch (SQLException e) {
-//			System.out.println("\n-- Exception occured" + e);// TODO Auto-generated catch block
+//			log.error("\n-- Exception occured" + e);// TODO Auto-generated catch block
 //			
 //		} catch (IOException e) {
 //			// TODO Auto-generated catch block
@@ -235,35 +222,116 @@ public class GDMIService implements IGDMIService {
 		markerGroup.setUserId(userId);
 		markerGroup.setInsertTime(dateNow);
 		
-		// if whichever is the correct IMapStorage
+		// if whichever is the correct IMapDataAcceptor
 		// then pass this to GWASImport
 		// assuming Database is the target...
-		GWASImport gi = null;
-		if (true) {
-			((MarkerDao)markerDao).setup(markerGroup, userId);
-			gi = new GWASImport(markerDao, null);
-		}
-//		else {
-//			gi = new GWASImport(new MarkerFlatFile(), null);
-//		}
-		// MarkerDao md = new MarkerDao(markerGroup, userId);
-		// GWASImport gi = new GWASImport(md, null);
+		MapPipeToMaker mapPipeToMarker = this.new MapPipeToMaker();
+
+		mapPipeToMarker.setup(markerGroup, userId);
+		PedMapImport gi = new PedMapImport(mapPipeToMarker, null);
+
 		try {
 			File mapFile = new File("/home/ark/TestData/first100.map");
 			InputStream is = new FileInputStream(mapFile);
 			gi.processMap(is, mapFile.length());
-			((MarkerDao)markerDao).flush();
+			log.info("Succeessfully executed processMap.");
 		}
 		catch (IOException ioe) {
-			System.out.println("Well something didn't go right. " + ioe);
+			log.error("Well something didn't go right. " + ioe);
 		}
 		catch (FileFormatException ffe) {
-			System.out.println("Well something didn't go right. " + ffe);
+			log.error("Well something didn't go right. " + ffe);
 		}
 		catch (GDMISystemException gse) {
-			System.out.println("Well something didn't go right. " + gse);
+			log.error("Well something didn't go right. " + gse);
 		}
 		
 	}
 	
+	/** 
+	 * This is an inner class that will accept the data from 
+	 * PedMapImport.processMap 
+	 */
+	private class MapPipeToMaker implements IMapDataAcceptor {
+
+		private MarkerGroup markerGroup;
+		private Marker marker;
+		private String userId;
+		private Date dateNow;
+		
+		/**
+		 * Called to setup the MarkerGroup id and user id for the storage 
+		 * @param markerGroupId
+		 * @param userId
+		 */
+		public void setup (MarkerGroup markerGroup, String userId) {
+			this.markerGroup = markerGroup;
+			this.marker = null;
+			this.userId = userId;
+			dateNow = new Date(System.currentTimeMillis());
+			
+		}
+		
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#init()
+		 */
+		public void init() throws DataAcceptorIOException {
+			marker = new Marker();
+			//getSession().save(markerGroup);
+			
+			marker.setMarkerGroup(markerGroup);
+			marker.setUserId(userId);
+			marker.setInsertTime(dateNow);
+		}
+
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#setChromoNum(long)
+		 */
+		public void setChromosome(String chromosome) {
+			marker.setChromosome(chromosome);
+
+		}
+
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#setMarkerName(java.lang.String)
+		 */
+		public void setMarkerName(String mkrName) {
+			marker.setName(mkrName);
+
+		}
+
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#setGeneDist(long)
+		 */
+		public void setGeneDist(long geneDist) {
+			/* ignored genetic distance because...
+			* rlawrence does not believe it is used much, except in the
+			* case of microsatellites (morgans will not be unique for   
+			* SNPs that are close - i.e. they overlap).  Also, for this
+			* reason it is not uncommon for this column to be zero.
+			*/
+		}
+
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#setBpPos(long)
+		 */
+		public void setBpPos(long bpPos) {
+			marker.setPosition(bpPos);
+		}
+
+		/* (non-Javadoc)
+		 * @see au.org.theark.gdmi.util.IMapDataAcceptor#commit()
+		 */
+		public void sync() throws DataAcceptorIOException {
+			try {
+				gwasDao.createMarker(marker);
+			}
+			catch (Exception ex) {
+				log.error("commit Exception stacktrace: ", ex);
+				throw new DataAcceptorIOException("Couldn't commit new marker record to database");
+			}
+			
+		}
+	}
+		
 }

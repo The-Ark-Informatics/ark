@@ -21,7 +21,7 @@ import javax.persistence.TemporalType;
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.MetaData")
 @Table(name = "META_DATA", schema = "GDMI")
 public class MetaData implements java.io.Serializable {
 

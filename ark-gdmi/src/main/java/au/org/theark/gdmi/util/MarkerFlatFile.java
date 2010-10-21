@@ -1,20 +1,20 @@
 /**
  * 
  */
-package au.org.theark.gdmi.model.dao;
+package au.org.theark.gdmi.util;
 
-import au.org.theark.gdmi.exception.StorageIOException;
+import au.org.theark.gdmi.exception.DataAcceptorIOException;
 
 /**
  * @author elam
  *
  */
-public class MarkerFlatFile implements IMapStorage {
+public class MarkerFlatFile implements IMapDataAcceptor {
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.gdmi.util.IMapStorage#commit()
 	 */
-	public void commit() throws StorageIOException {
+	public void sync() throws DataAcceptorIOException {
 		// TODO Auto-generated method stub
 
 	}
@@ -22,7 +22,7 @@ public class MarkerFlatFile implements IMapStorage {
 	/* (non-Javadoc)
 	 * @see au.org.theark.gdmi.util.IMapStorage#init()
 	 */
-	public void init() throws StorageIOException {
+	public void init() throws DataAcceptorIOException {
 		// TODO Auto-generated method stub
 
 	}

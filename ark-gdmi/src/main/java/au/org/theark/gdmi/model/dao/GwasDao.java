@@ -42,10 +42,10 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
 /*
     public void createMetaData(MetaData metaData)
     {
-        System.out.println("Create method invoked");
+        log.debug("Create method invoked");
         // getSession().save(metaData);
         MetaDataType mdt = getMetaDataType("Number");
-        System.out.println("Tried to get MetaDataType(\"Number\"): " + mdt);
+        log.debug("Tried to get MetaDataType(\"Number\"): " + mdt);
         Date dateNow = new Date(System.currentTimeMillis());
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String nowStr = sdf.format(dateNow);
@@ -55,7 +55,7 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
         MetaDataField mdf = new MetaDataField();
         mdf.setName("Mass");
         mdf.setDescription("kg");
-        System.out.println("Now: " + nowStr);
+        log.debug("Now: " + nowStr);
         mdf.setStudyId(new Long(1));
         mdf.setUserId("elam");
         mdf.setInsertTime(dateNow);
@@ -73,9 +73,9 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
         s.save(colEn);
         metaData.setCollection(colEn);
         metaData.setMetaDataField(mdf);
-        System.out.println("metaData.setMetaDataField: "+ mdf);
+        log.debug("metaData.setMetaDataField: "+ mdf);
         s.save(metaData);
-        System.out.println("Tried to create a MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
+        log.debug("Tried to create a MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
 
 //        Person p = new Person();
 //        p.setFirstName("A");
@@ -83,30 +83,30 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
 //        p.setMiddleName("M");
 //        getSession().save(p);
 //        s.delete(metaData);
-//        System.out.println("Tried to delete the newly created MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
+//        log.debug("Tried to delete the newly created MetaDataField(\"Number\", \"Mass\", \"kg\"): " + mdf);
     }
 
     public void createMetaData(MetaDataField mdf, String value)
     {
-        System.out.println("Invoked createMetaData...");
+        log.debug("Invoked createMetaData...");
         MetaData metaData = new MetaData();
         metaData.setMetaDataField(mdf);
         metaData.setValue(value);
         getSession().save(metaData);
-        System.out.println("Created new MetaData");
+        log.debug("Created new MetaData");
     }
 
     public void createMetaDataField(String dataType, String name,
             String description)
     {
-        System.out.println("Invoked createMetaDataField...");
+        log.debug("Invoked createMetaDataField...");
         MetaDataField mdf = new MetaDataField();
         MetaDataType mdt = getMetaDataType(dataType);
         mdf.setMetaDataType(mdt);
         mdf.setName(name);
         mdf.setDescription(description);
         getSession().save(mdf);
-        System.out.println("Created new MetaDataField");
+        log.debug("Created new MetaDataField");
     }
 
    
@@ -132,7 +132,7 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
     	session.save(ed);
     	session.flush();
     	session.refresh(ed);
-    	//TODO: flush() appears to guarantee upon return that the Blob will 
+    	//TODO: flush() appears to guarantee upon return that the Blob will be in the database
     }
     
     public EncodedData getEncodedData(Long encodedDataId) {
@@ -155,4 +155,9 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
         else
         	return null;
     }
+
+	public void createMarker(Marker marker) {
+    	Session session = getSession();
+    	session.save(marker);
+	}
 }

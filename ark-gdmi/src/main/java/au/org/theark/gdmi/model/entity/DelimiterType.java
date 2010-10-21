@@ -13,7 +13,7 @@ import javax.persistence.Table;
 /**
  * DelimiterType entity. @author MyEclipse Persistence Tools
  */
-@Entity
+@Entity(name="au.org.theark.gdmi.model.entity.DelimiterType")
 @Table(name = "DELIMITER_TYPE", schema = "GDMI")
 public class DelimiterType implements java.io.Serializable {
 
