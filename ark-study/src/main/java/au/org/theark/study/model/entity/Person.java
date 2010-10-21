@@ -58,11 +58,6 @@ public class Person implements java.io.Serializable {
 
 	/** default constructor */
 	public Person() {
-		personKey = new Long("0");
-		firstName = "";
-		middleName="";
-		lastName="";
-		preferredName="";
 	}
 
 	/** minimal constructor */
