@@ -6,10 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -52,6 +55,8 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="link_subject_study_generator", sequenceName="LINK_SUBJECT_STUDY_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "link_subject_study_generator")
 	@Column(name = "LINK_SUBJECT_STUDY_KEY", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getLinkSubjectStudyKey() {
 		return this.linkSubjectStudyKey;

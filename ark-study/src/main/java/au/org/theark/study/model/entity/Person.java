@@ -7,10 +7,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -96,6 +99,8 @@ public class Person implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="person_generator", sequenceName="PERSON_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "person_generator")
 	@Column(name = "PERSON_KEY", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getPersonKey() {
 		return this.personKey;
