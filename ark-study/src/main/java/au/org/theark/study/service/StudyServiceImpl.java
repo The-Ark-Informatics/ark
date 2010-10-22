@@ -1,6 +1,5 @@
 package au.org.theark.study.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -23,15 +22,16 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
-import au.org.theark.study.model.dao.StudyDao;
 import au.org.theark.study.model.entity.GenderType;
 import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.SubjectStatus;
 import au.org.theark.study.model.entity.TitleType;
 import au.org.theark.study.model.entity.VitalStatus;
+import au.org.theark.study.model.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.SiteVo;
 
@@ -101,7 +101,7 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved, UnAuthorizedOperation, ArkSystemException, EntityExistsException{
-
+		
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
@@ -229,4 +229,17 @@ public class StudyServiceImpl implements IStudyService{
 	public Collection<GenderType> getGenderType(){
 		return studyDao.getGenderType();
 	}
+	
+	public Collection<SubjectStatus> getSubjectStatus(){
+		return studyDao.getSubjectStatus();
+	}
+	
+	public void createSubject(SubjectVO subjectVO){
+		studyDao.createSubject(subjectVO);
+	}
+	
+	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
+		return studyDao.getSubject(subjectVO);
+	}
+		
 }
