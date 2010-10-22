@@ -14,81 +14,85 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
 
-public class LogoutPage<T> extends WebPage {
+@SuppressWarnings("unchecked")
+public class LogoutPage<T> extends WebPage
+{
 
-	public static final String REDIRECT_PAGE ="redirectPage";
-	
-	
-	  public LogoutPage(final CharSequence url)
-	  {
-	    doLogoutAndAddRedirect(url, 0);
-	  }
-	  
+	public static final String	REDIRECT_PAGE	= "redirectPage";
 
+	public LogoutPage(final CharSequence url)
+	{
+		doLogoutAndAddRedirect(url, 0);
+	}
 
-	  public LogoutPage( final PageParameters parameters ) {
-		  
-		  System.out.println("\n Constructor LogoutPage(final PageParameters param)");
-		  
-		  String page = parameters.getString(REDIRECT_PAGE);
-		  
-		  Class<? extends Page> pageClass;
-		  
-		  if ( page != null ) {
-		      try {
-		        pageClass = (Class<? extends Page>)Class.forName(page);
-		      }
-		      catch (ClassNotFoundException e) {
-		        throw new RuntimeException(e);
-		      }
-		  }
-		  else {
-			
-			  System.out.println("Send the user to LoginPage");
-		      pageClass = LoginPage.class; //getApplication().getHomePage();
-		  }
+	public LogoutPage(final PageParameters parameters)
+	{
 
-		this.setStatelessHint( true );
-	    setResponsePage( pageClass );
-	    // this should remove the cookie...
-	    Subject subject = SecurityUtils.getSubject();
-	    subject.logout();
-	    Session.get().invalidateNow(); // invalidate the wicket session
+		System.out.println("\n Constructor LogoutPage(final PageParameters param)");
+
+		String page = parameters.getString(REDIRECT_PAGE);
+
+		Class<? extends Page> pageClass;
+
+		if (page != null)
+		{
+			try
+			{
+				pageClass = (Class<? extends Page>) Class.forName(page);
+			}
+			catch (ClassNotFoundException e)
+			{
+				throw new RuntimeException(e);
+			}
+		}
+		else
+		{
+
+			System.out.println("Send the user to LoginPage");
+			pageClass = LoginPage.class; // getApplication().getHomePage();
+		}
+
+		this.setStatelessHint(true);
+		setResponsePage(pageClass);
+		// this should remove the cookie...
+		Subject subject = SecurityUtils.getSubject();
+		subject.logout();
+		Session.get().invalidateNow(); // invalidate the wicket session
 		return;
 	}
-	  
-	  private void doLogoutAndAddRedirect(final CharSequence url, final int waitBeforeRedirectInSeconds)
-	  {
+
+	private void doLogoutAndAddRedirect(final CharSequence url, final int waitBeforeRedirectInSeconds)
+	{
 		System.out.println("\n doLogoutAndAddRedirect() invoked");
-	    
-		this.setStatelessHint( true );
 
-	    // this should remove the cookie...
-	    Subject subject = SecurityUtils.getSubject();
-	    subject.logout();
+		this.setStatelessHint(true);
 
-	    final WebMarkupContainer redirect = new WebMarkupContainer("redirect");
-	    final String content = waitBeforeRedirectInSeconds + ";URL=" + url;
-	    redirect.add(new AttributeModifier("content", new Model<String>(content)));
-	    add(redirect);
+		// this should remove the cookie...
+		Subject subject = SecurityUtils.getSubject();
+		subject.logout();
 
-	    // invalidate the session
-	    Session.get().invalidateNow(); // invalidate the wicket session
+		final WebMarkupContainer redirect = new WebMarkupContainer("redirect");
+		final String content = waitBeforeRedirectInSeconds + ";URL=" + url;
+		redirect.add(new AttributeModifier("content", new Model<String>(content)));
+		add(redirect);
 
-	    // HYMMMM
-	    Cookie c = new Cookie( "rememberMe", "xxx" );
-	    c.setMaxAge(0);
-	    ((WebResponse)RequestCycle.get().getResponse()).addCookie( c );
-	  }
-	  
-	  @Override
-	  public boolean isVersioned()
-	  {
-	    return false;
-	  }
+		// invalidate the session
+		Session.get().invalidateNow(); // invalidate the wicket session
 
-	  public int getDelayTime()
-	  {
-	    return 0;
-	  }
+		// HYMMMM
+		Cookie c = new Cookie("rememberMe", "xxx");
+		c.setMaxAge(0);
+		((WebResponse) RequestCycle.get().getResponse()).addCookie(c);
+	}
+
+	@Override
+	public boolean isVersioned()
+	{
+		return false;
+	}
+
+	public int getDelayTime()
+	{
+		return 0;
+	}
 }
