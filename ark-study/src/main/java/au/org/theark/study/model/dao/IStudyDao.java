@@ -11,8 +11,10 @@ import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.SubjectStatus;
 import au.org.theark.study.model.entity.TitleType;
 import au.org.theark.study.model.entity.VitalStatus;
+import au.org.theark.study.model.vo.SubjectVO;
 
 public interface IStudyDao {
 
@@ -54,4 +56,11 @@ public interface IStudyDao {
 	public Collection<VitalStatus> getVitalStatus();
 	
 	public Collection<GenderType> getGenderType();
+	
+	public Collection<SubjectStatus> getSubjectStatus();
+	
+	public void createSubject(SubjectVO subjectVO);
+	
+	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
+
 }

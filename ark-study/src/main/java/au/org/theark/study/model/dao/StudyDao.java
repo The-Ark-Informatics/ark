@@ -1,5 +1,6 @@
 package au.org.theark.study.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -12,18 +13,22 @@ import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-
+import org.hibernate.Session;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.LinkSubjectStudy;
+import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.StudyStatus;
+import au.org.theark.study.model.entity.SubjectStatus;
 import au.org.theark.study.model.entity.TitleType;
 import au.org.theark.study.model.entity.VitalStatus;
+import au.org.theark.study.model.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
@@ -201,5 +206,58 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
 		return criteria.list();
 	}
+	
+	public void createSubject(SubjectVO subjectVO){
+	
+		Session session = getSession();
+		Person person  = subjectVO.getPerson();
+		//Add the person
+		session.save(person);
+		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+		linkSubjectStudy.setPerson(person);
+		linkSubjectStudy.setStudy(subjectVO.getStudy());
+		linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
+		session.save(linkSubjectStudy);
+		
+	}
+	
+	public Collection<SubjectStatus> getSubjectStatus(){
+		
+		Example example = Example.create(new SubjectStatus());
+		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
+		return criteria.list();
+	
+	}
+	
+	/**
+	 * Look up the Link Subject Study for subjects linked to a study
+	 * @param subjectVO
+	 * @return
+	 */
+	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
+
+		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		SubjectStatus subjectStatus = subjectVO.getSubjectStatus(); 
+		//If there is a status specified, create a filter based on it
+		if(subjectVO.getSubjectStatus() != null){
+			
+			linkSubjectStudyCriteria.add(Restrictions.eq("subjectStatus",subjectStatus));	
+		}
+		
+		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
+		Collection<SubjectVO> subjectList = new ArrayList<SubjectVO>();
+		for (LinkSubjectStudy linkSubjectStudy : listOfSubjects) {
+		
+			SubjectVO subject = new SubjectVO();
+			
+			subject.setPerson(linkSubjectStudy.getPerson());
+			subject.setSubjectStatus(linkSubjectStudy.getSubjectStatus());
+			
+			subject.setStudy(linkSubjectStudy.getStudy());
+			subjectList.add(subject);
+		}
+		return subjectList;
+	}
+	
 	
 }
