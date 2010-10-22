@@ -1,4 +1,4 @@
-package  au.org.theark.web.pages;
+package au.org.theark.web.pages;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,51 +9,66 @@ import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 
 import au.org.theark.gdmi.web.menu.GDMITabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
-
+import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 
 /**
  * Homepage aka Index page of ETA
  */
-public class HomePage extends BasePage {
+public class HomePage extends BasePage
+{
 
-	private static final long serialVersionUID = 1L;
-    /**
+	private static final long	serialVersionUID	= 1L;
+
+	/**
 	 * Constructor that is invoked when page is invoked without a session.
 	 * 
 	 * @param parameters
-	 *            Page parameters
+	 *           Page parameters
 	 */
-    public HomePage(final PageParameters parameters) {
+	public HomePage(final PageParameters parameters)
+	{
 
-        buildModuleTabs();
-        
-    }
+		buildModuleTabs();
+
+	}
 
 	@Override
-	protected void buildModuleTabs() {
-		
-		List<ITab> moduleTabsList  = new ArrayList<ITab>();
+	protected void buildModuleTabs()
+	{
+
+		List<ITab> moduleTabsList = new ArrayList<ITab>();
+
 		MainTabProviderImpl studyMainTabProvider = new MainTabProviderImpl("study");
 		moduleTabsList = studyMainTabProvider.buildTabs();
-		
+
+		PhenotypicTabProviderImpl phenotypicTabs = new PhenotypicTabProviderImpl("phenotypic");
+		List<ITab> phenotypicTabsList = phenotypicTabs.buildTabs();
+		for (ITab itab : phenotypicTabsList)
+		{
+			moduleTabsList.add(itab);
+		}
+
 		GDMITabProviderImpl gdmiTabs = new GDMITabProviderImpl("gdmi");
-		List<ITab> gdmiTabsList =  gdmiTabs.buildTabs();
-        for(ITab itab: gdmiTabsList){
-        	moduleTabsList.add(itab);	
-        }
-        TabbedPanel moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList); 
-        add(moduleTabbedPanel);
-        
+		List<ITab> gdmiTabsList = gdmiTabs.buildTabs();
+		for (ITab itab : gdmiTabsList)
+		{
+			moduleTabsList.add(itab);
+		}
+
+		TabbedPanel moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
+		add(moduleTabbedPanel);
 	}
 
 	@Override
-	protected void buildTabMenu() {
+	protected void buildTabMenu()
+	{
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
-	String getTitle() {
+	String getTitle()
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
