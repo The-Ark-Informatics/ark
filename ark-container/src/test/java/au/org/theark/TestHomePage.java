@@ -6,6 +6,7 @@ import org.apache.wicket.util.tester.WicketTester;
 /**
  * Simple test using the WicketTester
  */
+@SuppressWarnings("unused")
 public class TestHomePage extends TestCase
 {
 	private WicketTester tester;
