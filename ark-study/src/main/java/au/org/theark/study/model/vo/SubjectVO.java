@@ -8,6 +8,7 @@ package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.study.model.entity.Address;
@@ -24,11 +25,14 @@ import au.org.theark.study.model.entity.SubjectStatus;
 @SuppressWarnings("serial")
 public class SubjectVO implements Serializable{
 	
+	protected String subjectFullName;
 	protected Person person;
 	protected Phone phone;
 	protected Address address;
 	protected EmailAccount emailAccount;
 	protected Study study;
+	
+	protected Collection<SubjectVO> subjectList;
 	
 	protected SubjectStatus subjectStatus;
 	
@@ -124,5 +128,23 @@ public class SubjectVO implements Serializable{
 	public void setStudy(Study study) {
 		this.study = study;
 	}
+
+	public Collection<SubjectVO> getSubjectList() {
+		return subjectList;
+	}
+
+	public void setSubjectList(Collection<SubjectVO> subjectList) {
+		this.subjectList = subjectList;
+	}
+
+	public String getSubjectFullName() {
+		return subjectFullName;
+	}
+
+	public void setSubjectFullName(String subjectFullName) {
+		this.subjectFullName = subjectFullName;
+	}
+
+
 
 }
