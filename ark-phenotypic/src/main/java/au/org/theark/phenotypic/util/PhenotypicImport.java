@@ -5,8 +5,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.exception.StorageIOException;
-import au.org.theark.phenotypic.model.dao.IPhenotypicStorage;
+import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
+import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.study.model.entity.Person;
 
 import com.csvreader.CsvReader;
 import java.text.DateFormat;
@@ -23,203 +31,231 @@ import java.text.ParseException;
 
 import au.org.theark.core.Constants;
 
-
 /**
- * PhenotypicImport provides support for importing PLINK compatible
- * Ped and Map files.  It features state-machine behaviour to 
- * allow an external class to deal with how to store the data
- * pulled out of the files.
- *
+ * PhenotypicImport provides support for importing phenotypic matrix-formatted files. It features state-machine behaviour to allow an external class
+ * to deal with how to store the data pulled out of the files.
+ * 
  * @author cellis
  */
 @SuppressWarnings("unused")
-public class PhenotypicImport {
-	
-	
-	private String fieldName;
-	private long subjectCount;
-	private long fieldCount;
-	private double speed;
-	private long curPos;
-	private long srcLength = -1;	// -1 means nothing being processed
-	private StopWatch timer = null;
-	private char phenotypicDelimChr = ',';	//default phenotypic file delimiter: COMMA
-	
-	private IPhenotypicStorage phenotypicStorage = null;
-	
-	static Logger log = LoggerFactory.getLogger(PhenotypicImport.class);
-	
+public class PhenotypicImport
+{
+	private String				fieldName;
+	private long				subjectCount;
+	private long				fieldCount;
+	private double				speed;
+	private long				curPos;
+	private long				srcLength				= -1;															// -1 means nothing being processed
+	private StopWatch			timer						= null;
+	private char				phenotypicDelimChr	= ',';															// default phenotypic file delimiter: COMMA
+	private IPhenotypicDao	phenotypicDao			= null;
+	private Person				person;
+	private List<Field>		fieldList;
+	private Long				studyId;
+	static Logger				log						= LoggerFactory.getLogger(PhenotypicImport.class);
 
-	public void setPhenotypicStorage(IPhenotypicStorage phenotypicStorage) {
-		this.phenotypicStorage = phenotypicStorage;
-	}
-
-	public IPhenotypicStorage setPhenotypicStorage() {
-		return phenotypicStorage;
-	}
-	
 	/**
+	 * PhenotypicImport constructor
 	 * 
-	 * @param phenotypicStorage is required for defining where the phenotypic data is to go
+	 * @param phenotypicDao
+	 *           data access object perform select/insert/updates to the database
 	 */
-	public PhenotypicImport(IPhenotypicStorage phenotypicStorage) {
-		setPhenotypicStorage(phenotypicStorage);
+	public PhenotypicImport(IPhenotypicDao phenotypicDao)
+	{
+		this.phenotypicDao = phenotypicDao;
 	}
-	
+
 	/**
-	 * Imports the phenotypic data file
-	 * Default file format assumed:
-	 * SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
+	 * PhenotypicImport constructor
+	 * 
+	 * @param phenotypicDao
+	 *           data access object perform select/insert/updates to the database
+	 * @param studyId
+	 *           study identifier in context
+	 * @param collection
+	 *           phenotypic collection in context
+	 */
+	public PhenotypicImport(IPhenotypicDao phenotypicDao, Long studyId, Collection collection)
+	{
+		this.phenotypicDao = phenotypicDao;
+		this.studyId = studyId;
+	}
+
+	/**
+	 * Imports the phenotypic data file Default file format assumed: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
 	 * 
 	 * Where N is any number of columns
 	 * 
-	 * @param fileInputStream is the input stream of a file
+	 * @param fileInputStream
+	 *           is the input stream of a file
 	 * @throws IOException
+	 *           input/output Exception
 	 * @throws OutOfMemoryError
+	 *           out of memory Exception
 	 */
-	public void processFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException {
-		if (phenotypicStorage == null) {
+	public void processFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	{
+		if (phenotypicDao == null)
+		{
 			throw new PhenotypicSystemException("Aborting: Must have a phenotypic storage object defined before calling.");
 		}
-		
-		//File file = new File(mapFilePath);
+
 		curPos = 0;
 
 		InputStreamReader isr = null;
 		CsvReader csvRdr = null;
 		DecimalFormat twoPlaces = new DecimalFormat("0.00");
+		FieldData fieldDataEntity = new FieldData();
 
-		try {
+		try
+		{
 			isr = new InputStreamReader(fileInputStream);
 			csvRdr = new CsvReader(isr, phenotypicDelimChr);
 			String[] newLine;
-			
-			//srcLength = file.length();
+
+			// srcLength = file.length();
 			srcLength = inLength;
-			if (srcLength <= 0) {
+			if (srcLength <= 0)
+			{
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
-				//return;
+				// return;
 			}
 
 			timer = new StopWatch();
 			timer.start();
-			
-			
-			while(csvRdr.readRecord()) {
+
+			// Set field list (note 2th column to Nth column)
+			// SUBJECTID DATE_COLLECTED F1 F2 FN
+			// 0 1 2 3 N
+			String[] fieldNameArray = csvRdr.getHeaders();
+
+			while (csvRdr.readRecord())
+			{
 				// do something with the newline to put the data into
 				// the variables defined above
-				
 				newLine = csvRdr.getValues();
-				
-				try {
-					phenotypicStorage.init();
-					if (csvRdr.getColumnCount() < 2) {
-						// non-compliant map file
-						throw new FileFormatException("The specified file does not appear to conform to the expected phenotypic file format.");
-					}
-					else
-					{	
-						for (int i = 0; i < newLine.length; i++) {
-							String cellData = newLine[i];
-							/* Debug only - Show data
-							if (i < newLine.length - 1)
-								System.out.print(cellData + ",");
-							else
-								log.info(cellData);
-							*/
-							switch (i) {
-							case 0:
-								// first column should be the subjectid
-								phenotypicStorage.setSubjectId(cellData);
-								break;
-							case 1:
-								// second column should be date collected
-								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
-								Date cellDate = dateFormat.parse(cellData);
-								phenotypicStorage.setDateCollected(cellDate);
-								break;
-							default:
-								// any other columns are fields
-								phenotypicStorage.setFieldName(cellData);
-								continue;
-							}
-								
-							curPos += cellData.length() + 1;	//update progress
+
+				if (csvRdr.getColumnCount() < 2)
+				{
+					// non-compliant file
+					throw new FileFormatException("The specified file does not appear to conform to the expected phenotypic file format.");
+				}
+				else
+				{
+					for (int i = 0; i < newLine.length; i++)
+					{
+						// Store actual file cell data
+						String cellData = newLine[i];
+
+						switch (i)
+						{
+						case 0:
+							// TODO: studyService.getSubject(String subjectUid))
+							// First column should be the SubjectUID
+							// person = studyService.getSubject(String subjectUid));
+							// person = studyService.getSubject(cellData));
+
+							person = new Person(new Long(1));
+							fieldDataEntity.setPerson(person);
+							break;
+						case 1:
+							// second column should be date collected
+							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+							Date cellDate = dateFormat.parse(cellData);
+							fieldDataEntity.setDateCollected(cellDate);
+							break;
+						default:
+							// Set field
+							Field field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
+							fieldDataEntity.setField(field);
+
+							// Set fieldData values
+							fieldDataEntity.setValue(cellData);
+
+							continue;
 						}
+
+						phenotypicDao.createFieldData(fieldDataEntity);
+						curPos += cellData.length() + 1; // update progress
 					}
-					subjectCount++;
-					phenotypicStorage.commit();
 				}
-				catch (StorageIOException ex) {
-					//log.info(ex);
-				}
-				// Debug only - Show progress and speed 
-				//log.info("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
+				subjectCount++;
+
+				// Debug only - Show progress and speed
+				log.info("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
 			}
 		}
-		catch (IOException ioe) {
+		catch (IOException ioe)
+		{
 			log.error("processFile IOException stacktrace:", ioe);
 			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data");
 		}
-		catch (Exception ex) {
+		catch (Exception ex)
+		{
 			log.error("processFile Exception stacktrace:", ex);
-			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data");			
+			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data");
 		}
-		finally {
+		finally
+		{
 			// Clean up the IO objects
 			timer.stop();
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime()/1000.0) + " s");
-			log.info("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0 ) + " MB");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime() / 1000.0) + " s");
+			log.info("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
-			if (csvRdr != null) {
-				try {
-					csvRdr.close();					
+			if (csvRdr != null)
+			{
+				try
+				{
+					csvRdr.close();
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (isr != null) {
-				try {
+			if (isr != null)
+			{
+				try
+				{
 					isr.close();
 				}
-				catch (Exception ex) {
+				catch (Exception ex)
+				{
 					log.error("Cleanup operation failed: isr.close()", ex);
-				}				
+				}
 			}
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		
 	}
 
 	/**
 	 * Return the progress of the current process in %
 	 * 
-	 * @return if a process is actively running, then progress in %; or
-	 *         if no process running, then returns -1 
-	 */	
-	public double getProgress() {
-		double progress = -1; 
-		
+	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
+	 */
+	public double getProgress()
+	{
+		double progress = -1;
+
 		if (srcLength > 0)
-			progress = curPos * 100.0 / srcLength;	// %
-	
+			progress = curPos * 100.0 / srcLength; // %
+
 		return progress;
 	}
 
 	/**
 	 * Return the speed of the current process in KB/s
 	 * 
-	 * @return if a process is actively running, then speed in KB/s; or
-	 *         if no process running, then returns -1 
+	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
 	 */
-	public double getSpeed() {
+	public double getSpeed()
+	{
 		double speed = -1;
-		
+
 		if (srcLength > 0)
-			speed = curPos / 1024 / (timer.getTime() / 1000.0);	// KB/s
+			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
 
 		return speed;
 	}
