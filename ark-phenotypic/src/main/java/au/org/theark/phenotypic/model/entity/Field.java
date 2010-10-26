@@ -46,8 +46,7 @@ public class Field implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Field(Long id, FieldType fieldType, Long studyId, String name,
-			String userId, Date insertTime) {
+	public Field(Long id, FieldType fieldType, Long studyId, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.fieldType = fieldType;
 		this.studyId = studyId;
