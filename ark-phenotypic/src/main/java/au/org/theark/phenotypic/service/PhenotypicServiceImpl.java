@@ -30,10 +30,12 @@ import au.org.theark.phenotypic.util.PhenotypicImport;
 @SuppressWarnings("unused")
 public class PhenotypicServiceImpl implements IPhenotypicService
 {
+	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 
-	final Logger					log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
-
-	private IPhenotypicDao		phenotypicDao;
+	private IPhenotypicDao	phenotypicDao;
+	private Subject currentUser;
+	private Date dateNow;
+	private Long studyId; 
 
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao)
@@ -45,17 +47,26 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao;
 	}
-	
+
+	/**
+    * A Phenotypic collection is the data storage or grouping of a particular set set of data,
+    * containing subjects with fields with field data values for a particular date collected 
+    *
+    * @param col  the collection object to be created
+    */
 	public void createCollection(Collection col)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		Date dateNow = new Date(System.currentTimeMillis());
-		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
 
 		// Newly created collections must start with a Created status
 		Status status = phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
+		
+		log.info("StudyId was NULL, using 1 as default...");
 		if (studyId == null)
 			studyId = new Long(1);
+		
 		col.setName("New test");
 		col.setStatus(status);
 		col.setStudyId(studyId);
@@ -64,11 +75,17 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.createCollection(col);
 	}
 
+	/**
+    * A Phenotypic collection import is the job that runs to import the data into the database.
+    * It contains relevant metadata about the import, such as start time and finish time
+    *
+    * @param colImport  the collection import object to be created
+    */
 	public void createCollectionImport(CollectionImport colImport)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		Date dateNow = new Date(System.currentTimeMillis());
-		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
 
 		colImport.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		colImport.setInsertTime(dateNow);
@@ -77,8 +94,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void updateCollection(Collection colEntity)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		Date dateNow = new Date(System.currentTimeMillis());
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
 
 		colEntity.setUpdateUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		colEntity.setUpdateTime(dateNow);
@@ -87,14 +104,14 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void createField(Field field)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		Date dateNow = new Date(System.currentTimeMillis());
-		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
-		
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+
 		field.setStudyId(studyId);
 		field.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		field.setInsertTime(dateNow);
-		
+
 		phenotypicDao.createField(field);
 	}
 
@@ -117,7 +134,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.getCollection(collectionId);
 	}
-	
+
 	public void testPhenotypicImport()
 	{
 		log.info("testPhenotypicImport called");
@@ -126,31 +143,32 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void importPhenotypicDataFile()
 	{
 		Subject currentUser = SecurityUtils.getSubject();
-		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
-		Long collectionId =  (Long) currentUser.getSession().getAttribute("collectionId");
+		Long studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
 		// TODO: use collectionId from session
+		log.info("Using default collectionId of 1...need to utilise selected collectionId");
 		Collection collection = phenotypicDao.getCollection(new Long(1));
-		
+
 		PhenotypicImport pi = null;
 		pi = new PhenotypicImport(phenotypicDao, studyId, collection);
 
 		try
 		{
-			File file = new File("/home/ark/TestData/first100.map");
+			File file = new File(Constants.TEST_FILE);
 			InputStream is = new FileInputStream(file);
 			pi.processFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
-			log.error("IOException: Well something didn't go right. " + ioe);
+			log.error(Constants.IO_EXCEPTION + ioe);
 		}
 		catch (FileFormatException ffe)
 		{
-			log.error("FileFormatException: Well something didn't go right. " + ffe);
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
 		}
 		catch (PhenotypicSystemException pse)
 		{
-			log.error("PhenotypicSystemException: Well something didn't go right. " + pse);
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
 	}
 
