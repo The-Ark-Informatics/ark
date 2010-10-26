@@ -12,78 +12,102 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
-
+import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
 
 @SuppressWarnings("serial")
-public class PhenotypicSubMenuTab extends Panel {
+public class PhenotypicSubMenuTab extends Panel
+{
 
-	List<ITab> tabList;
-	
-	public PhenotypicSubMenuTab(String id) {
+	List<ITab>	tabList;
+
+	public PhenotypicSubMenuTab(String id)
+	{
 		super(id);
 		tabList = new ArrayList<ITab>();
 		buildTabs();
 	}
-	
-	private class MenuModule implements Serializable{
-		
-		public MenuModule(){
+
+	private class MenuModule implements Serializable
+	{
+
+		public MenuModule()
+		{
 			super();
 		}
-		private String moduleName;
-		private String resourceKey;
-		public String getModuleName() {
+
+		private String	moduleName;
+		private String	resourceKey;
+
+		public String getModuleName()
+		{
 			return moduleName;
 		}
-		public void setModuleName(String moduleName) {
+
+		public void setModuleName(String moduleName)
+		{
 			this.moduleName = moduleName;
 		}
-		public String getResourceKey() {
+
+		public String getResourceKey()
+		{
 			return resourceKey;
 		}
-		public void setResourceKey(String resourceKey) {
+
+		public void setResourceKey(String resourceKey)
+		{
 			this.resourceKey = resourceKey;
 		}
-		
+
 	}
 
-	public  void buildTabs(){
-		
+	public void buildTabs()
+	{
+
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
-		
-		//This way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
+
+		// This way we can get the menus from the back-end.
+		// We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName("SubPhenotypic");
-		menuModule.setResourceKey("tab.module.phenotypic.test");
+		menuModule.setModuleName(Constants.COLLECTION_SUBMENU);
+		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 
-		
-		for(final MenuModule moduleName : moduleTabs)
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TEST_SUBMENU);
+		menuModule.setResourceKey(Constants.TEST_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+
+		for (final MenuModule moduleName : moduleTabs)
 		{
-			moduleSubTabsList.add( new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), this, moduleName.getModuleName())) )
+			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), this, moduleName.getModuleName())))
 			{
-				
-				public boolean isVisible(){                                        
+				public boolean isVisible()
+				{
 					// Implement this if you want to secure this Tab
 					return true;
-				}  
-				
+				}
+
 				@Override
-				public Panel getPanel(String panelId) 
+				public Panel getPanel(String panelId)
 				{
-					
-					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
-					
-					if(moduleName.getModuleName().equalsIgnoreCase("SubPhenotypic")){
-						panelToReturn = new TestContainerPanel(panelId);
+
+					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
+
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.COLLECTION_SUBMENU))
+					{
+						panelToReturn = new CollectionContainer(panelId);
 					}
-					
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.TEST_SUBMENU))
+					{
+						panelToReturn = new TestContainerPanel(panelId); // Note the constructor
+					}
+
 					return panelToReturn;
 				};
 			});
 		}
-		
+
 		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}

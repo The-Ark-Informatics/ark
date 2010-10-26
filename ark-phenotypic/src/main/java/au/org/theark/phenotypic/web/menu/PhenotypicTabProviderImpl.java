@@ -11,8 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IMainTabProvider;
+import au.org.theark.phenotypic.web.Constants;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings("serial")
 public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 {
 
@@ -27,36 +28,24 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs()
-	{
-		ITab tab1 = createTab("Phenotypic");// Forms the Main Top level Tab
+	public  List<ITab> buildTabs(){
+		// Main tab
+		ITab tab1 = createTab(Constants.PHENOTYPIC_MAIN_TAB);
 		moduleTabsList.add(tab1);
 		return moduleTabsList;
 	}
 
 	public ITab createTab(String tabName)
 	{
-		// TODO Auto-generated method stub
-		return new AbstractTab(new Model(tabName))
+		return new AbstractTab(new Model<String>(tabName))
 		{
-
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			public boolean isVisible()
-			{
-				return true;
-				// ArkSecurityManager asm = ArkSecurityManager.getInstance();
-				// return asm.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN);
-			}
-
 			@Override
 			public Panel getPanel(String pid)
 			{
 				log.info("Panel ID in getPanel " + pid);
-				return new PhenotypicSubMenuTab(pid);// The sub menus Study
+				// The sub menu(s) for Phenotypic
+				return new PhenotypicSubMenuTab(pid);
 			}
-
 		};
 	}
 }
