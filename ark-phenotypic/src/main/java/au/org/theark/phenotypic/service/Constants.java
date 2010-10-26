@@ -5,4 +5,16 @@ public class Constants {
 	public static final String STATUS_ACTIVE = "Active"; 
 	public static final String STATUS_EXPIRED = "Expired"; 
 	public static final String STATUS_DISABLED = "Disabled"; 
+	
+	// Attributes
+	public static final String STUDY_ID = "studyId";
+	public static final String COLLECTION_ID = "collectionId";
+	
+	// Testing
+	public static final String TEST_FILE = "/home/ark/TestData/testPhenoData.txt";
+	
+	// Exception messages
+	public static final String IO_EXCEPTION = "IOException: Input error. ";
+	public static final String FILE_FORMAT_EXCEPTION = "File Format Exception: Input error. ";
+	public static final String PHENOTYPIC_SYSTEM_EXCEPTION = "Phenotypic System Exception: Input error. ";
 }
