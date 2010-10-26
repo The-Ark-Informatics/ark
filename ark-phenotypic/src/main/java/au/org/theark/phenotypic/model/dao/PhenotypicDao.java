@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.model.dao;
 
 import java.util.List;
 
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -17,91 +18,208 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.Status;
+import au.org.theark.phenotypic.model.entity.Upload;
+import au.org.theark.phenotypic.model.entity.UploadCollection;
 
-// TODO: Replace all hardcoded userIds with actual code from SecurityManager
-// See SearchStudyFrom.java in ark-common
-//Subject currentUser = SecurityUtils.getSubject();
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
 public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 {
-
 	static Logger	log	= LoggerFactory.getLogger(PhenotypicDao.class);
+	Subject			currentUser;
+	Long				studyId;
 
-	public List<Collection> getCollectionMatches(Collection colExample)
+	public List<Collection> getCollectionMatches(Collection collectionToMatch)
 	{
-		Criteria colCriteria = getSession().createCriteria(Collection.class);
+		Criteria collectionCriteria = getSession().createCriteria(Collection.class);
 
-		if (colExample.getId() != null)
+		if (collectionToMatch.getId() != null)
 		{
-			colCriteria.add(Restrictions.eq("id", colExample.getId()));
+			collectionCriteria.add(Restrictions.eq("id", collectionToMatch.getId()));
 		}
 
-		if (colExample.getName() != null)
+		if (collectionToMatch.getName() != null)
 		{
-			colCriteria.add(Restrictions.ilike("name", colExample.getName(), MatchMode.ANYWHERE));
+			collectionCriteria.add(Restrictions.ilike("name", collectionToMatch.getName(), MatchMode.ANYWHERE));
 		}
 
-		if (colExample.getStudyId() != null)
+		if (collectionToMatch.getStudyId() != null)
 		{
-			colCriteria.add(Restrictions.eq("studyId", colExample.getStudyId()));
+			collectionCriteria.add(Restrictions.eq("studyId", collectionToMatch.getStudyId()));
 		}
 
-		if (colExample.getInsertTime() != null)
+		if (collectionToMatch.getInsertTime() != null)
 		{
-			colCriteria.add(Restrictions.eq("insertTime", colExample.getInsertTime()));
+			collectionCriteria.add(Restrictions.eq("insertTime", collectionToMatch.getInsertTime()));
 		}
 
-		if (colExample.getUserId() != null)
+		if (collectionToMatch.getUserId() != null)
 		{
-			colCriteria.add(Restrictions.ilike("userId", colExample.getUserId(), MatchMode.ANYWHERE));
+			collectionCriteria.add(Restrictions.ilike("userId", collectionToMatch.getUserId(), MatchMode.ANYWHERE));
 		}
 
-		if (colExample.getUpdateTime() != null)
+		if (collectionToMatch.getUpdateTime() != null)
 		{
-			colCriteria.add(Restrictions.eq("updateTime", colExample.getUpdateTime()));
+			collectionCriteria.add(Restrictions.eq("updateTime", collectionToMatch.getUpdateTime()));
 		}
 
-		if (colExample.getUpdateUserId() != null)
+		if (collectionToMatch.getUpdateUserId() != null)
 		{
-			colCriteria.add(Restrictions.ilike("updateUserId", colExample.getUpdateUserId(), MatchMode.ANYWHERE));
+			collectionCriteria.add(Restrictions.ilike("updateUserId", collectionToMatch.getUpdateUserId(), MatchMode.ANYWHERE));
 		}
 
-		if (colExample.getStatus() != null)
+		if (collectionToMatch.getStatus() != null)
 		{
-			colCriteria.add(Restrictions.eq("status", colExample.getStatus()));
+			collectionCriteria.add(Restrictions.eq("status", collectionToMatch.getStatus()));
 		}
 
-		colCriteria.addOrder(Order.asc("name"));
-		List<Collection> colList = colCriteria.list();
-		return colList;
-	}
-
-	public void createCollection(Collection col)
-	{
-		getSession().save(col);
+		collectionCriteria.addOrder(Order.asc("name"));
+		List<Collection> collectionList = collectionCriteria.list();
+		return collectionList;
 	}
 
 	public Collection getCollection(Long id)
 	{
-
 		Collection col = (Collection) getSession().get(Collection.class, id);
 		return col;
 	}
 
-	public void updateCollection(Collection colEntity)
+	public void createCollection(Collection collection)
 	{
-		getSession().update(colEntity);
+		getSession().save(collection);
 	}
 
-	public void createField(Field f)
+	public void updateCollection(Collection collection)
 	{
-		getSession().save(f);
+		getSession().update(collection);
+	}
+	
+	public void deleteCollection(Collection collection)
+	{
+		getSession().delete(collection);
 	}
 
-	public void updateField(Field f)
+	public void createCollectionImport(CollectionImport collectionImport)
 	{
-		getSession().update(f);
+		getSession().save(collectionImport);
+	}
+
+	public void updateCollectionImport(CollectionImport collectionImport)
+	{
+		getSession().update(collectionImport);
+	}
+	
+	public void deleteCollectionImport(CollectionImport collectionImport)
+	{
+		getSession().delete(collectionImport);
+	}
+
+	public Field getField(Long id)
+	{
+		Field field = (Field) getSession().get(Field.class, id);
+		return field;
+	}
+	
+	public Field getFieldByName(String fieldName)
+	{
+		log.info("PhenotypicDao.getFieldName: " + fieldName);
+		Field field = (Field) getSession().get(Field.class, fieldName);
+		return field;
+	}
+	
+	public Field getFieldByName(Long studyId, String fieldName)
+	{
+		Criteria crit = getSession().createCriteria(Field.class);
+		crit.add(Restrictions.eq("name", fieldName));
+		crit.add(Restrictions.eq("studyId", this.studyId));
+		crit.addOrder(Order.asc("id"));
+		List<Field> fieldList = crit.list();
+		if (fieldList.size() > 0)
+		{
+			if (fieldList.size() > 1)
+			{
+				log.error("Backend database has non-unique field names, returned the first one");
+			}
+			return (fieldList.get(0));
+		}
+		else
+			return null;
+	}
+
+	public void createField(Field field)
+	{
+		getSession().save(field);
+	}
+
+	public void updateField(Field field)
+	{
+		getSession().update(field);
+	}
+	
+	public void deleteField(Field field)
+	{
+		getSession().delete(field);
+	}
+
+	public FieldType getFieldTypeByName(String fieldTypeName)
+	{
+		log.info("PhenotypicDao.getFieldTypeByName: " + fieldTypeName);
+		FieldType fieldType = (FieldType) getSession().get(FieldType.class, fieldTypeName);
+		return fieldType;
+	}
+	
+	public void createFieldType(FieldType fieldType)
+	{
+		getSession().save(fieldType);
+	}
+	
+	public void updateFieldType(FieldType fieldType)
+	{
+		getSession().update(fieldType);
+	}
+	
+	public void deleteFieldType(FieldType fieldType)
+	{
+		getSession().delete(fieldType);
+	}
+
+	public FieldData getFieldDataByName(String fieldName)
+	{
+		log.info("PhenotypicDao.setFieldDataByName: " + fieldName);
+		return null;
+	}
+
+	public void createFieldData(FieldData fieldData)
+	{
+		getSession().save(fieldData);
+	}
+	
+	public void updateFieldData(FieldData fieldData)
+	{
+		getSession().update(fieldData);
+	}
+
+	public void deleteFieldData(FieldData fieldData)
+	{
+		getSession().delete(fieldData);
+	}
+	
+	public Status getStatus(Long statusId)
+	{
+		Criteria crit = getSession().createCriteria(Status.class);
+		crit.add(Restrictions.eq("id", statusId));
+
+		List<Status> statusList = crit.list();
+		if (statusList.size() > 0)
+		{
+			if (statusList.size() > 1)
+			{
+				log.error("Backend database has non-unique Status names, returned the first one");
+			}
+			return (statusList.get(0));
+		}
+		else
+			return null;
 	}
 
 	public Status getStatusByName(String statusName)
@@ -121,115 +239,49 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		else
 			return null;
 	}
-
-	// TODO: Patch the Long studyId with a true study object?
-	// (it should already be in context)
-	public Field getFieldByName(Long studyId, String fieldName)
+	
+	public void createStatus(Status status)
 	{
-		Criteria crit = getSession().createCriteria(Field.class);
-		crit.add(Restrictions.eq("name", fieldName));
-		crit.add(Restrictions.eq("studyId", studyId));
-		crit.addOrder(Order.asc("id"));
-		List<Field> fieldList = crit.list();
-		if (fieldList.size() > 0)
-		{
-			if (fieldList.size() > 1)
-			{
-				log.error("Backend database has non-unique field names, returned the first one");
-			}
-			return (fieldList.get(0));
-		}
-		else
-			return null;
+		getSession().save(status);
+	}
+	
+	public void updateStatus(Status status)
+	{
+		getSession().update(status);
+	}
+	
+	public void deleteStatus(Status status)
+	{
+		getSession().delete(status);
 	}
 
-	// TODO: Patch the Long studyId with a true study object?
-	// (it should already be in context)
-	public Field getField(Long fieldId)
+	public void createUpload(Upload upload)
 	{
-		Field f = (Field) getSession().get(Field.class, fieldId);
-		return f;
+		getSession().save(upload);
 	}
 
-	public FieldType getMetaDataTypeByName(String typeName)
+	public void createUploadCollection(UploadCollection uploadCollection)
 	{
-		Criteria crit = getSession().createCriteria(FieldType.class);
-		crit.add(Restrictions.eq("name", typeName));
-		crit.addOrder(Order.asc("id"));
-		
-		List<FieldType> fieldTypeList = crit.list();
-		if (fieldTypeList.size() > 0)
-		{
-			if (fieldTypeList.size() > 1)
-			{
-				log.error("Backend database has non-unique field type names, returned the first one");
-			}
-			return (fieldTypeList.get(0));
-		}
-		else
-			return null;
+		getSession().save(uploadCollection);
 	}
 
-	public void createCollectionImport(CollectionImport colImport)
+	public void deleteUpload(Upload upload)
 	{
-		getSession().save(colImport);
+		getSession().delete(upload);
 	}
 
-	public FieldType getFieldTypeByName(String studyId, String fieldTypeName)
+	public void deleteUploadCollection(UploadCollection uploadCollection)
 	{
-		Criteria crit = getSession().createCriteria(FieldType.class);
-		crit.add(Restrictions.eq("name", fieldTypeName));
-		crit.add(Restrictions.eq("studyId", studyId));
-		crit.addOrder(Order.asc("id"));
-		List<FieldType> fieldList = crit.list();
-		if (fieldList.size() > 0)
-		{
-			if (fieldList.size() > 1)
-			{
-				log.error("Backend database has non-unique field names, returned the first one");
-			}
-			return (fieldList.get(0));
-		}
-		else
-			return null;
+		getSession().delete(uploadCollection);
 	}
 
-	public void updateFieldData(FieldData fieldData)
+	public void updateUpload(Upload upload)
 	{
-		getSession().update(fieldData);
+		getSession().update(upload);
 	}
 
-	public void createFieldData(FieldData fieldData)
+	public void updateUploadCollection(UploadCollection uploadCollection)
 	{
-		getSession().save(fieldData);
-	}
-
-	public void createFieldType(FieldType fieldType)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-
-	public FieldData getFieldDataByName(String field)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}	
-
-	public void updateFieldType(FieldType fieldType)
-	{
-		// TODO Auto-generated method stub
-	}
-
-	public Field getFieldByName(String fieldName)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public FieldType getFieldTypeByName(String fieldTypeName)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		getSession().update(uploadCollection);
 	}
 }
