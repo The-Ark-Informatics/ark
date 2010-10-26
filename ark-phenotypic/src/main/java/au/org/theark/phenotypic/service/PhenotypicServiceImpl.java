@@ -17,8 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.dao.IPhenotypicStorage;
-import au.org.theark.phenotypic.model.dao.PhenotypicStorage;
 import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -36,7 +34,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	final Logger					log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 
 	private IPhenotypicDao		phenotypicDao;
-	private IPhenotypicStorage	phenotypicStorage;
 
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao)
@@ -49,17 +46,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao;
 	}
 	
-	@Autowired
-	public void setPhenotypicStorage(IPhenotypicStorage phenotypicStorage)
-	{
-		this.phenotypicStorage = phenotypicStorage;
-	}
-
-	public IPhenotypicStorage getPhenotypicStorage()
-	{
-		return phenotypicStorage;
-	}
-
 	public void createCollection(Collection col)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
@@ -99,15 +85,17 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.updateCollection(colEntity);
 	}
 
-	public void createField(Field f)
+	public void createField(Field field)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
 		Date dateNow = new Date(System.currentTimeMillis());
-
-		f.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		f.setInsertTime(dateNow);
+		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
 		
-		phenotypicDao.createField(f);
+		field.setStudyId(studyId);
+		field.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+		field.setInsertTime(dateNow);
+		
+		phenotypicDao.createField(field);
 	}
 
 	public FieldType getFieldTypeByName(String fieldTypeName)
@@ -129,24 +117,22 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.getCollection(collectionId);
 	}
-
+	
 	public void testPhenotypicImport()
 	{
-		String userId = "test12345";
-		Date dateNow = new Date(System.currentTimeMillis());
+		log.info("testPhenotypicImport called");
+	}
 
-		FieldType fieldType = phenotypicDao.getFieldTypeByName("NUMBER");
-		Field field = new Field();
-		field.setStudyId(new Long(1));
-		field.setFieldType(fieldType);
-		field.setUserId(userId);
-		field.setInsertTime(dateNow);
-
-		// if whichever is the correct IPhenotypicStorage
-		// then pass this to PhenotypicImport
-		// assuming Database is the target...
+	public void importPhenotypicDataFile()
+	{
+		Subject currentUser = SecurityUtils.getSubject();
+		Long studyId = (Long) currentUser.getSession().getAttribute("studyId");
+		Long collectionId =  (Long) currentUser.getSession().getAttribute("collectionId");
+		// TODO: use collectionId from session
+		Collection collection = phenotypicDao.getCollection(new Long(1));
+		
 		PhenotypicImport pi = null;
-		pi = new PhenotypicImport(phenotypicStorage);
+		pi = new PhenotypicImport(phenotypicDao, studyId, collection);
 
 		try
 		{

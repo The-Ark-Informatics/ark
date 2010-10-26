@@ -21,7 +21,6 @@ public interface IPhenotypicService {
 	// FieldType
 	public FieldType getFieldTypeByName(String typeName);
 	
-	
 	// FieldData
 	public void createFieldData(FieldData fieldData);
 	
@@ -30,4 +29,7 @@ public interface IPhenotypicService {
 	
 	// Test stub
 	public void testPhenotypicImport();
+	
+	// Import phenotypic data file
+	public void importPhenotypicDataFile();
 }
