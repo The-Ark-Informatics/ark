@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.study.model.entity.Person;
+
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
@@ -28,8 +30,7 @@ public class FieldData implements java.io.Serializable {
 	private Field field;
 	private Collection collection;
 	private Date dateCollected;
-	//TODO: Refer to ark-common Subject class
-//	private Subject subject;
+	private Person person;
 	private String value;
 	private String userId;
 	private Date insertTime;
@@ -43,18 +44,18 @@ public class FieldData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, /*Subject subject,*/ String userId, Date insertTime) {
+	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, Person person, String userId, Date insertTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
 		this.dateCollected = dateCollected;
-		/*this.subject = subject;*/
+		this.setPerson(person);
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, /*Subject subject,*/ String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
+	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, Person person, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
@@ -63,7 +64,7 @@ public class FieldData implements java.io.Serializable {
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
 		this.updateTime = updateTime;
-//		this.subject = subject;
+		this.setPerson(person);
 	}
 
 	// Property accessors
@@ -108,17 +109,6 @@ public class FieldData implements java.io.Serializable {
 	public void setDateCollected(Date dateCollected) {
 		this.dateCollected = dateCollected;
 	}
-	
-	//TODO: Refer to ark-common Subject class
-	/*@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_ID", nullable = false)
-	public Subject getSubject() {
-		return this.subject;
-	}
-
-	public void setSubject(Subject subject) {
-		this.subject = subject;
-	}*/
 	
 	@Column(name = "VALUE", length = 2000)
 	public String getValue() {
@@ -165,5 +155,24 @@ public class FieldData implements java.io.Serializable {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @param person the person to set
+	 */
+	public void setPerson(Person person)
+	{
+		this.person = person;
+	}
+
+	/**
+	 * @return the person
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_ID")
+	// TODO: Change to PERSON_ID once MySQL database refactored 
+	public Person getPerson()
+	{
+		return person;
 	}
 }
