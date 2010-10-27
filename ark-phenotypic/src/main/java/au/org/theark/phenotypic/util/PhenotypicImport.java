@@ -23,6 +23,7 @@ import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.study.model.entity.Person;
+import au.org.theark.study.model.entity.VitalStatus;
 
 import com.csvreader.CsvReader;
 import java.text.DateFormat;
@@ -150,16 +151,29 @@ public class PhenotypicImport
 						switch (i)
 						{
 						case 0:
-							// TODO: studyService.getSubject(String subjectUid))
 							// First column should be the SubjectUID
-							// person = studyService.getSubject(String subjectUid));
-							// person = studyService.getSubject(cellData));
 
-							person = new Person(new Long(1));
+							try{
+								// Try to cast cellData to person/subject idenftifier
+								// TODO: studyService.getSubject(String subjectUid))
+								// eg: person = studyService.getSubject(cellData));
+								person = new Person(new Long(cellData));
+							}
+							catch (NumberFormatException nfe){
+								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
+							}
+							
+							// Set Vital status of person/subject
+							VitalStatus vitalStatus = new VitalStatus(new Long(1));
+							vitalStatus.setStatusName("Alive");
+							person.setVitalStatus(vitalStatus);
+							
+							// Set Person
 							fieldDataEntity.setPerson(person);
+							
 							break;
 						case 1:
-							// second column should be date collected
+							// Second column should be date collected
 							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
 							Date cellDate = dateFormat.parse(cellData);
 							fieldDataEntity.setDateCollected(cellDate);
