@@ -10,9 +10,9 @@ import au.org.theark.phenotypic.model.entity.Status;
 public interface IPhenotypicService {
 	
 	// Collection
-	public Collection getCollection(Long collectionId);
+	public Collection getCollection(Long id);
 	public void createCollection(Collection col);
-	public void createCollectionImport(CollectionImport colImport);
+	public void createCollectionImport(CollectionImport collectionImport);
 
 	// Field
 	public Field getField(Long fieldId);
