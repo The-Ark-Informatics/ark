@@ -28,4 +28,6 @@ public class Constants {
 	public static final String FIRETEST = "fireInTheHole";
 	public static final String WATERTEST = "theGreatFlood";
 	public static final String NOAHTEST = "noahsRescue";
+
+	public static final String	STUDY_ID	= "studyId";
 }
