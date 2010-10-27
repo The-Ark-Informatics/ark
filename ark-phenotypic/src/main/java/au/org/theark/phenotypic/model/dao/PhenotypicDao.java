@@ -163,8 +163,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public FieldType getFieldTypeByName(String fieldTypeName)
 	{
+		FieldType fieldType = new FieldType();
 		log.info("PhenotypicDao.getFieldTypeByName: " + fieldTypeName);
-		FieldType fieldType = (FieldType) getSession().get(FieldType.class, fieldTypeName);
+		
+		Criteria criteria = getSession().createCriteria(FieldType.class);
+		criteria.add(Restrictions.eq("name", fieldTypeName));
+		
+		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
+			fieldType = (FieldType)criteria.list().get(0);
+		}
+		else{
+			log.error("Field Type Table maybe out of synch. Please check if it has an entry for " + fieldTypeName + " status");
+			log.error("Cannot locate a study status with " + fieldTypeName + " in the database");
+		}
 		return fieldType;
 	}
 	
