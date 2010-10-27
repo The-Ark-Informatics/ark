@@ -2,13 +2,18 @@ package au.org.theark.phenotypic.web.menu;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
@@ -17,7 +22,10 @@ import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
 @SuppressWarnings("serial")
 public class PhenotypicSubMenuTab extends Panel
 {
-
+	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
+	private Subject currentUser;
+	private Date dateNow;
+	private Long studyId;
 	List<ITab>	tabList;
 
 	public PhenotypicSubMenuTab(String id)
@@ -62,7 +70,13 @@ public class PhenotypicSubMenuTab extends Panel
 
 	public void buildTabs()
 	{
-
+		log.info("In PhenotypicSubMenuTab");
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		
+		log.info("studyId: " + studyId);
+		
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 
