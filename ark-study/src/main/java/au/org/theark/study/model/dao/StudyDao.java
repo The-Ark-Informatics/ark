@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import org.hibernate.Session;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.GenderType;
 import au.org.theark.study.model.entity.LinkSubjectStudy;
@@ -221,6 +223,33 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
+	public void updateSubject(SubjectVO subjectVO){
+		
+		try{
+			
+			Session session = getSession();
+			
+			//Updat the Person Details
+			Person person  = subjectVO.getPerson();
+			session.update(person);//Personal Details of Subject updated
+			
+			//Get the LinkSubjectStudy reference based on the id
+			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(subjectVO.getLinkSubjectStudyId());	
+			//Update this linkSubjectStudy instance with any details the user may have changed from front end
+			linkSubjectStudy.setStudy(subjectVO.getStudy());
+			//No need to set Person here since, there would not be a change to the actual person ID primary key
+			linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
+			
+			//Update the instance
+			session.update(linkSubjectStudy);
+			
+		}catch(EntityNotFoundException entityNotFound){
+			log.error("The LinkSubjectStudy entity does not exist to update this subject " );
+			//Throw an appropriate exception to the user
+		}
+		
+	}
+	
 	public Collection<SubjectStatus> getSubjectStatus(){
 		
 		Example example = Example.create(new SubjectStatus());
@@ -236,27 +265,95 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 
-		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
-		SubjectStatus subjectStatus = subjectVO.getSubjectStatus(); 
-		//If there is a status specified, create a filter based on it
+		
+		StringBuffer hqlString =	new StringBuffer();
+		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study");
+		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
+		hqlString.append(" where linkSubStudy.study.studyKey = ");
+		hqlString.append( subjectVO.getStudy().getStudyKey());
+		
+		//TODO This should be the Subject UID or ID, this field will need to be in LinkSubjectStudy table
+		if(subjectVO.getPerson().getPersonKey() != null){
+			hqlString.append(" and linkSubStudy.person.personKey = ");
+			hqlString.append( subjectVO.getPerson().getPersonKey());
+		}
+		
+		if(subjectVO.getPerson().getFirstName() != null){
+			hqlString.append(" and linkSubStudy.person.firstName = ");
+			hqlString.append("\'");
+			hqlString.append(subjectVO.getPerson().getFirstName().trim());
+			hqlString.append("\'");
+		}
+		
+		if(subjectVO.getPerson().getMiddleName() != null){
+			hqlString.append(" and linkSubStudy.person.middleName = ");
+			hqlString.append("\'");
+			hqlString.append(subjectVO.getPerson().getMiddleName().trim());
+			hqlString.append("\'");
+		}
+							
+		if(subjectVO.getPerson().getLastName() != null){
+			hqlString.append(" and linkSubStudy.person.lastName = ");
+			hqlString.append("\'");
+			hqlString.append(subjectVO.getPerson().getLastName().trim());
+			hqlString.append("\'");
+		}
+		
+		if(subjectVO.getPerson().getGenderType() != null){
+			hqlString.append(" and linkSubStudy.person.genderType.id = ");
+			hqlString.append(subjectVO.getPerson().getGenderType().getId());
+		}
+		
+		if(subjectVO.getPerson().getVitalStatus() != null){
+			hqlString.append(" and linkSubStudy.person.vitalStatus.id = ");
+			hqlString.append(subjectVO.getPerson().getVitalStatus().getId());
+		}
+		
 		if(subjectVO.getSubjectStatus() != null){
-			
-			linkSubjectStudyCriteria.add(Restrictions.eq("subjectStatus",subjectStatus));	
+			hqlString.append(" and linkSubStudy.subjectStatus.subjectStatusKey = ");
+			hqlString.append(subjectVO.getSubjectStatus().getSubjectStatusKey());
 		}
 		
-		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
+		Query query = getSession().createQuery(hqlString.toString());
+		List<Object[]> list  = query.list();
+		
 		Collection<SubjectVO> subjectList = new ArrayList<SubjectVO>();
-		for (LinkSubjectStudy linkSubjectStudy : listOfSubjects) {
-		
-			SubjectVO subject = new SubjectVO();
+		if(list.size() > 0){
+			log.info("Number of rows fetched " + list.size());
 			
-			subject.setPerson(linkSubjectStudy.getPerson());
-			subject.setSubjectStatus(linkSubjectStudy.getSubjectStatus());
-			
-			subject.setStudy(linkSubjectStudy.getStudy());
-			subjectList.add(subject);
+			for (Object[] objects : list) {
+				if(objects.length > 0 && objects.length == 4){
+					
+					SubjectVO subject = new SubjectVO();
+					Person person =(Person) objects[0];
+					subject.setPerson(person);
+					
+					SubjectStatus status = (SubjectStatus) objects[1];
+					subject.setSubjectStatus(status);
+					
+					subject.setLinkSubjectStudyId((Long)objects[2]);
+					subjectList.add(subject);
+					
+					subject.setStudy((Study)objects[3]);
+				}
+				
+			}
+			log.info("Size : " + subjectList.size());
 		}
+
 		return subjectList;
+	}
+	
+	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
+		
+		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		linkSubjectStudyCriteria.add(Restrictions.eq("linkSubjectStudyKey",id));
+		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
+		if(listOfSubjects != null && listOfSubjects.size() > 0){
+			return listOfSubjects.get(0);
+		}else{
+			throw new EntityNotFoundException("The entity with id" + id.toString() +" cannot be found.");
+		}
 	}
 	
 	
