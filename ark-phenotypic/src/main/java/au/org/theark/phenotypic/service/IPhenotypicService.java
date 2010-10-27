@@ -19,7 +19,7 @@ public interface IPhenotypicService {
 	public void createField(Field field);
 	
 	// FieldType
-	public FieldType getFieldTypeByName(String typeName);
+	public FieldType getFieldTypeByName(String fieldTypeName);
 	
 	// FieldData
 	public void createFieldData(FieldData fieldData);
