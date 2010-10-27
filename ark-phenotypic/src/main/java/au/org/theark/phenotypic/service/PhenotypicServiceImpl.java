@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.phenotypic.exception.FileFormatException;
+import au.org.theark.phenotypic.exception.FileTypeNotAvailableException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.Collection;
@@ -130,9 +131,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.getField(fieldId);
 	}
 
-	public Collection getCollection(Long collectionId)
+	public Collection getCollection(Long id)
 	{
-		return phenotypicDao.getCollection(collectionId);
+		return phenotypicDao.getCollection(id);
 	}
 
 	public void testPhenotypicImport()
