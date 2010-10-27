@@ -157,7 +157,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			File file = new File(Constants.TEST_FILE);
 			InputStream is = new FileInputStream(file);
-			pi.processFile(is, file.length());
+			pi.processMatrixPhenoFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
