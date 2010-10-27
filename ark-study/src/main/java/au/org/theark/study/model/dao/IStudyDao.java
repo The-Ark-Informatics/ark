@@ -4,8 +4,10 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.study.model.entity.GenderType;
+import au.org.theark.study.model.entity.LinkSubjectStudy;
 import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.PhoneType;
 import au.org.theark.study.model.entity.Study;
@@ -61,6 +63,12 @@ public interface IStudyDao {
 	
 	public void createSubject(SubjectVO subjectVO);
 	
+	public void updateSubject(SubjectVO subjectVO);
+	
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
+	
+	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException;
+	
+	
 
 }
