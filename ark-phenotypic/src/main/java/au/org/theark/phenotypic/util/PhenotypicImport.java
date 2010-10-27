@@ -83,18 +83,18 @@ public class PhenotypicImport
 	}
 
 	/**
-	 * Imports the phenotypic data file Default file format assumed: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
+	 * Imports the phenotypic data file in the default "matrix" file format assumed: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
 	 * 
 	 * Where N is any number of columns
 	 * 
 	 * @param fileInputStream
 	 *           is the input stream of a file
 	 * @throws IOException
-	 *           input/output Exception
+	 *            input/output Exception
 	 * @throws OutOfMemoryError
-	 *           out of memory Exception
+	 *            out of memory Exception
 	 */
-	public void processFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	public void processMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
 		if (phenotypicDao == null)
 		{
@@ -153,24 +153,26 @@ public class PhenotypicImport
 						case 0:
 							// First column should be the SubjectUID
 
-							try{
-								// Try to cast cellData to person/subject idenftifier
+							try
+							{
+								// Try to cast cellData to person/subject identifier
 								// TODO: studyService.getSubject(String subjectUid))
 								// eg: person = studyService.getSubject(cellData));
 								person = new Person(new Long(cellData));
 							}
-							catch (NumberFormatException nfe){
+							catch (NumberFormatException nfe)
+							{
 								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
 							}
-							
+
 							// Set Vital status of person/subject
 							VitalStatus vitalStatus = new VitalStatus(new Long(1));
 							vitalStatus.setStatusName("Alive");
 							person.setVitalStatus(vitalStatus);
-							
+
 							// Set Person
 							fieldDataEntity.setPerson(person);
-							
+
 							break;
 						case 1:
 							// Second column should be date collected
@@ -201,13 +203,13 @@ public class PhenotypicImport
 		}
 		catch (IOException ioe)
 		{
-			log.error("processFile IOException stacktrace:", ioe);
-			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data");
+			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
+			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
 		}
 		catch (Exception ex)
 		{
-			log.error("processFile Exception stacktrace:", ex);
-			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data");
+			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
+			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
 		}
 		finally
 		{
