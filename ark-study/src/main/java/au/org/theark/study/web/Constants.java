@@ -124,11 +124,28 @@ public class Constants {
 	public static final String NO="No";
 	public static final String NAME ="name";
 	public static final String MY_DETAILS_PANEL ="myDetailsPanel";
-	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
 	public static final String LMC_AJAX_CONTAINER="lmcAjaxContainer";
 	public static final String LMC_SELECTED_APPS="lmcSelectedApps";
 	public static final String LMC_AVAILABLE_APPS="lmcAvailableApps";
 	public static final String PHONE_TYPE_ID="phoneTypeKey";
+	public static final String AUTO_GEN_SUBJECT_KEY ="autoGenerateSubjectKey";
+	public static final String AUTO_CONSENT ="autoConsent";
+	public static final String 	AUTO_GEN_SUB_ID ="autoGenSubId";
+	public static final String MODULE_NAME ="moduleName";
+	public static final String MODULES_SELECTED="modulesSelected";
+	public static final String MODULES_AVAILABLE="modulesAvailable";
+	
+	/* Error Messages and Fields references from Resource files */
+	public static final String ERROR_STUDY_NAME_REQUIRED ="error.study.name.required";
+	public static final String ERROR_STUDY_STATUS_REQUIRED="error.study.status.required";
+	public static final String ERROR_STUDY_CHIEF_INVESTIGATOR ="error.study.chiefInvestigator";
+	public static final String ERROR_STUDY_SUBJECT_KEY_PREFIX="error.study.subject.key.prefix";
+	public static final String ERROR_STUDY_DOA_MAX_RANGE = "error.study.doa.max.range";
+	public static final String CHIEF_INVESTIGATOR = "Chief Investigator";
+	public static final String ERROR_STUDY_CO_INVESTIGATOR = "error.study.co.investigator";
+	public static final String CO_INVESTIGATOR ="Co-Investigator";
+	public static final String STATUS ="Status";
+	public static final String ERROR_STUDY_NAME ="Study Name";
 	
 	/*Spring Bean names*/
 	public static final String STUDY_SERVICE= "studyService";
@@ -138,6 +155,16 @@ public class Constants {
 	public static final String ACTION_ADD_ALL="addAll";
 	public static final String ACTION_REMOVE_SELECTED="removeSelected";
 	public static final String ACTION_REMOVE_ALL="removeAll";
+	
+	/* General ones */
+	public static final String PAGE_SEARCH ="page.search";
+	public static final String PAGE_NEW ="page.new";
+	public static final String CANCEL_KEY ="cancelKey";
+	public static final String SAVE_KEY ="saveKey";
+	public static final String DELETE_KEY ="deleteKey";
+	public static final String STUDY ="study";
+	
+	
 	
 			 
 }
