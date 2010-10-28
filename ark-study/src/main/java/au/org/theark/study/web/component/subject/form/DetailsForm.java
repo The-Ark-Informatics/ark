@@ -23,7 +23,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.entity.SubjectStatus;
 import au.org.theark.study.model.entity.TitleType;
 import au.org.theark.study.model.entity.VitalStatus;
@@ -95,47 +94,44 @@ public class DetailsForm extends Form<SubjectVO>{
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(subjectContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				System.out.println("An Error occured");
+				processErrors(target);
 			}
 		};
-		
-		
 		
 	}
 	
 	public void initialiseForm(){
 		
-		subjectIdTxtFld = new TextField<String>("person.personKey");
-		firstNameTxtFld = new TextField<String>("person.firstName");
-		middleNameTxtFld = new TextField<String>("person.middleName");
-		lastNameTxtFld = new TextField<String>("person.lastName");
-		preferredNameTxtFld = new TextField<String>("person.preferredName");
-		dateOfBirth = new DatePicker<Date>("person.dateOfBirth");
+		subjectIdTxtFld = new TextField<String>(Constants.PERSON_KEY);
+		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
+		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
+		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
+		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
+		dateOfBirth = new DatePicker<Date>(Constants.PERSON_DOB);
 		
 		//Initialise Drop Down Choices 
 		//Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
 		Collection<TitleType> titleTypeList = studyService.getTitleType();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME,"id");
-		titleTypeDdc = new DropDownChoice<TitleType>("person.titleType",(List)titleTypeList,defaultChoiceRenderer);
+		ChoiceRenderer<TitleType> defaultChoiceRenderer = new ChoiceRenderer<TitleType>(Constants.NAME,Constants.ID);
+		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE,(List)titleTypeList,defaultChoiceRenderer);
 		
 		Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
-		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer("statusName", "id");
-		vitalStatusDdc = new DropDownChoice<VitalStatus>("person.vitalStatus",(List)vitalStatusList,vitalStatusRenderer);
+		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.STATUS_NAME, Constants.ID);
+		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
 		
 		Collection<GenderType> genderTypeList = studyService.getGenderType(); 
-		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME,"id");
-		genderTypeDdc = new DropDownChoice<GenderType>("person.genderType",(List)genderTypeList,genderTypeRenderer);
+		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
+		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
 		
 		Collection<SubjectStatus> subjectStatusList = studyService.getSubjectStatus();
-		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,"subjectStatusKey");
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>("subjectStatus",(List)subjectStatusList,subjectStatusRenderer);
+		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
+		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
 		
 		attachValidators();
 		addComponents();
@@ -176,6 +172,10 @@ public class DetailsForm extends Form<SubjectVO>{
 	}
 	
 	protected  void onCancel(AjaxRequestTarget target){
+		
+	}
+	
+	protected void processErrors(AjaxRequestTarget target){
 		
 	}
 
