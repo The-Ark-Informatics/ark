@@ -47,7 +47,7 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		
 		initFormFields();
 		
-		searchBtn = new AjaxButton(Constants.SEARCH, new StringResourceModel("page.search", this, null))
+		searchBtn = new AjaxButton(Constants.SEARCH, new StringResourceModel(Constants.PAGE_SEARCH, this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -58,7 +58,7 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		
 		
 		
-		newBtn = new AjaxButton(Constants.NEW, new StringResourceModel("page.new", this, null))
+		newBtn = new AjaxButton(Constants.NEW, new StringResourceModel(Constants.PAGE_NEW, this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -85,7 +85,7 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		if(sessionStudyId == null){
 			searchBtn.setEnabled(false);
 			newBtn.setEnabled(false);
-			this.info("There is no study in context. You can only search or manage users based on a study.");
+			this.error("There is no study in context. You can only search or manage users based on a study.");
 			
 		}else{
 			newBtn.setEnabled(true);
