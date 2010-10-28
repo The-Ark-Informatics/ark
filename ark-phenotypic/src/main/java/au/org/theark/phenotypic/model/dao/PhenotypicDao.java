@@ -148,9 +148,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 	
 	public Field getFieldByName(Long studyId, String fieldName)
-	{
-		log.info("PhenotypicDao.getFieldName(studyId, fieldName): " + studyId + "\t" + fieldName);
-		
+	{	
 		Field field = new Field();
 		field.setStudyId(studyId);
 		field.setName(fieldName);
@@ -218,7 +216,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public FieldData getFieldDataByName(String fieldName)
 	{
-		log.info("PhenotypicDao.setFieldDataByName: " + fieldName);
+		log.info("PhenotypicDao.getFieldDataByName: " + fieldName);
 		return null;
 	}
 
