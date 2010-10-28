@@ -34,7 +34,7 @@ public class Details extends Panel{
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private ContainerForm containerForm;
-	Study study;
+	private Study study;
 
 	public Details(	String id, 
 					final WebMarkupContainer listContainer, 
