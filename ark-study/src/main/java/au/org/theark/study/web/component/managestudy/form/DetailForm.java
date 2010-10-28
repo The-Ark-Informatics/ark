@@ -81,7 +81,6 @@ public class DetailForm extends Form<StudyModel>{
 	Label studySummaryLabel;
 	AjaxButton saveButton;
 	AjaxButton cancelButton;
-	AjaxButton archiveButton;
 	AjaxButton editButton;
 	AjaxButton editCancelButton;
 	List<ModuleVO> modules;
@@ -106,9 +105,6 @@ public class DetailForm extends Form<StudyModel>{
 		
 	}
 
-	public AjaxButton getArchiveButton() {
-		return archiveButton;
-	}
 
 	public AjaxButton getSaveButton() {
 		return saveButton;
@@ -176,19 +172,6 @@ public class DetailForm extends Form<StudyModel>{
 			
 		}; 
 		
-		archiveButton = new AjaxButton(Constants.ARCHIVE, new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				StudyModel model =  containerForm.getModelObject();
-				target.addComponent(detailsContainer);
-				onArchive(model, target);
-				
-			}
-			public void onError(AjaxRequestTarget target, Form<?> form){
-				processErrors(target);
-			}
-		};
 		
 		editButton = new AjaxButton("edit", new StringResourceModel("deleteKey", this, null))
 		{
@@ -294,7 +277,7 @@ public class DetailForm extends Form<StudyModel>{
 	
 		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
 		//TODO Have to stop the validator posting the content with the error message
-		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255));
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 1000));
 		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required",this, new Model<String>("Status")));
 		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel( new StringResourceModel("error.study.doa.max.range",this, null));
 		//Can be only today
@@ -324,7 +307,7 @@ public class DetailForm extends Form<StudyModel>{
 		ThemeUiHelper.componentRounded(bioSpecimenPrefixTxtFld);
 		ThemeUiHelper.buttonRounded(saveButton);
 		ThemeUiHelper.buttonRounded(cancelButton);
-		ThemeUiHelper.buttonRounded(archiveButton);
+		//ThemeUiHelper.buttonRounded(archiveButton);
 		ThemeUiHelper.buttonRounded(editButton);
 		ThemeUiHelper.buttonRounded(editCancelButton);
 		
@@ -351,7 +334,6 @@ public class DetailForm extends Form<StudyModel>{
 		//Summary related fields into another container
 		summaryPanelContainer.add(studySummaryLabel);
 		
-		saveArchivebuttonContainer.add(archiveButton);
 		saveArchivebuttonContainer.add(saveButton);
 		saveArchivebuttonContainer.add(cancelButton.setDefaultFormProcessing(false));
 		
