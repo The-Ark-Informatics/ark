@@ -27,6 +27,13 @@
 		  <version>1.0-SNAPSHOT</version>
 		</dependency>
 		
+		<!--  Ark Study Dependencies -->
+		<dependency>
+		  <groupId>au.org.theark.study</groupId>
+		  <artifactId>ark-study</artifactId>
+		  <version>1.0-SNAPSHOT</version>
+		</dependency>
+		
 		<!--  WICKET DEPENDENCIES -->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>

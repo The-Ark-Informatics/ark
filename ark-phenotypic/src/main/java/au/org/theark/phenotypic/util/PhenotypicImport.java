@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -51,6 +53,7 @@ public class PhenotypicImport
 	private char				phenotypicDelimChr	= ',';															// default phenotypic file delimiter: COMMA
 	private IPhenotypicDao	phenotypicDao			= null;
 	private Person				person;
+	private Collection		collection;
 	private List<Field>		fieldList;
 	private Long				studyId;
 	static Logger				log						= LoggerFactory.getLogger(PhenotypicImport.class);
@@ -64,6 +67,8 @@ public class PhenotypicImport
 	public PhenotypicImport(IPhenotypicDao phenotypicDao)
 	{
 		this.phenotypicDao = phenotypicDao;
+		this.collection = new Collection();
+		this.collection.setId(new Long(1));
 	}
 
 	/**
@@ -80,6 +85,7 @@ public class PhenotypicImport
 	{
 		this.phenotypicDao = phenotypicDao;
 		this.studyId = studyId;
+		this.collection = collection;
 	}
 
 	/**
@@ -103,66 +109,96 @@ public class PhenotypicImport
 
 		curPos = 0;
 
-		InputStreamReader isr = null;
-		CsvReader csvRdr = null;
-		DecimalFormat twoPlaces = new DecimalFormat("0.00");
-		FieldData fieldDataEntity = new FieldData();
-
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		FieldData fieldData = new FieldData();
+		
+		/* FieldData table requires:
+		COLLECTION_ID
+		PERSON_ID
+		DATE_COLLECTED
+		FIELD_ID
+		USER_ID
+		INSERT_TIME
+		*/
+		
+		Date dateCollected = new Date();
+		Field field = null;
+		
+		try {
+			log.info("phenotypicImport.processMatrixPhenoFile collection name: " + collection.getName());
+		}
+		catch (NullPointerException npe){
+			log.error("Error with Collection...no object instatiated...");
+			collection = phenotypicDao.getCollection(new Long(1));
+		}
+		
 		try
 		{
-			isr = new InputStreamReader(fileInputStream);
-			csvRdr = new CsvReader(isr, phenotypicDelimChr);
-			String[] newLine;
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, phenotypicDelimChr);
+			String[] stringLineArray;
 
-			// srcLength = file.length();
 			srcLength = inLength;
 			if (srcLength <= 0)
 			{
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
-				// return;
 			}
 
 			timer = new StopWatch();
 			timer.start();
 
 			// Set field list (note 2th column to Nth column)
-			// SUBJECTID DATE_COLLECTED F1 F2 FN
-			// 0 1 2 3 N
-			String[] fieldNameArray = csvRdr.getHeaders();
+			// SUBJECTID	DATE_COLLECTED F1	F2	FN
+			// 0 				1 					2 	3	N  
+			csvReader.readHeaders();
+			String[] fieldNameArray =  csvReader.getHeaders();
 
-			while (csvRdr.readRecord())
+			// Loop through all rows in file
+			while (csvReader.readRecord())
 			{
 				// do something with the newline to put the data into
 				// the variables defined above
-				newLine = csvRdr.getValues();
+				stringLineArray = csvReader.getValues();
 
-				if (csvRdr.getColumnCount() < 2)
+				if (csvReader.getColumnCount() < 2)
 				{
 					// non-compliant file
 					throw new FileFormatException("The specified file does not appear to conform to the expected phenotypic file format.");
 				}
 				else
 				{
-					for (int i = 0; i < newLine.length; i++)
+					fieldData = new FieldData();
+					fieldData.setCollection(this.collection);
+					
+					// Loop through all columns in current row in file
+					for (int i = 0; i < stringLineArray.length; i++)
 					{
 						// Store actual file cell data
-						String cellData = newLine[i];
+						String cellData = stringLineArray[i];
+						
+						// Print out column details
+						log.info(fieldNameArray[i] + "\t" + cellData);
 
 						switch (i)
 						{
 						case 0:
-							// First column should be the SubjectUID
-
+							// First column should be the Subject identifier
+							
+							/*
+							// TODO: studyService.getSubject(String subjectUid))
+							// eg: person = studyService.getSubject(cellData));
 							try
 							{
 								// Try to cast cellData to person/subject identifier
-								// TODO: studyService.getSubject(String subjectUid))
-								// eg: person = studyService.getSubject(cellData));
 								person = new Person(new Long(cellData));
 							}
 							catch (NumberFormatException nfe)
 							{
 								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
+								log.error("Using default PersonId of 1");
+								person = new Person(new Long(1));
 							}
 
 							// Set Vital status of person/subject
@@ -171,34 +207,63 @@ public class PhenotypicImport
 							person.setVitalStatus(vitalStatus);
 
 							// Set Person
-							fieldDataEntity.setPerson(person);
+							fieldData.setPerson(person);
+							*/
+							try
+							{
+								// Try to cast cellData to person/subject identifier
+								fieldData.setPersonId(new Long(cellData));
+							}
+							catch (NumberFormatException nfe)
+							{
+								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
+								log.error("Using default PersonId of 1");
+								fieldData.setPersonId(new Long(1));
+							}
 
 							break;
 						case 1:
 							// Second column should be date collected
 							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
-							Date cellDate = dateFormat.parse(cellData);
-							fieldDataEntity.setDateCollected(cellDate);
+							dateCollected = dateFormat.parse(cellData);
+							
+							fieldData.setDateCollected(dateCollected);
+							
 							break;
 						default:
-							// Set field
-							Field field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
-							fieldDataEntity.setField(field);
-
-							// Set fieldData values
-							fieldDataEntity.setValue(cellData);
+							try{
+								log.info("Creating new field data for: " + stringLineArray[0] + "\t" + stringLineArray[1] + "\t" + fieldNameArray[i] + "\t" + cellData);
+								
+								// Set field
+								field = new Field();
+								field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
+								fieldData.setField(field);
+								
+								// Set fieldData value
+								fieldData.setValue(cellData);
+								
+								// Try to create the field data
+								phenotypicDao.createFieldData(fieldData);
+							}
+							catch(org.hibernate.PropertyValueException pve){
+								log.error("Error with DAO: " + pve.getMessage());
+							}
+							catch(org.apache.wicket.WicketRuntimeException wre){
+								log.error("Error with Wicket: " + wre.getMessage());
+							}
 
 							continue;
 						}
 
-						phenotypicDao.createFieldData(fieldDataEntity);
 						curPos += cellData.length() + 1; // update progress
 					}
 				}
+				
+				log.info("\nNext line...");
 				subjectCount++;
 
 				// Debug only - Show progress and speed
-				log.info("progress: " + twoPlaces.format(getProgress()) + " % | speed: " + twoPlaces.format(getSpeed()) + " KB/sec");
+				log.info("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
 			}
 		}
 		catch (IOException ioe)
@@ -215,26 +280,26 @@ public class PhenotypicImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime() / 1000.0) + " s");
-			log.info("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.info("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
-			if (csvRdr != null)
+			if (csvReader != null)
 			{
 				try
 				{
-					csvRdr.close();
+					csvReader.close();
 				}
 				catch (Exception ex)
 				{
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (isr != null)
+			if (inputStreamReader != null)
 			{
 				try
 				{
-					isr.close();
+					inputStreamReader.close();
 				}
 				catch (Exception ex)
 				{
