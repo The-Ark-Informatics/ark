@@ -34,11 +34,9 @@ public interface IPhenotypicDao {
 	public Status getStatusByName(String statusName);
 	public void createStatus(Status status);
 	public void updateStatus(Status status);
-	public void deleteStatus(Status status);
 	
 	// Field
 	public Field getField(Long fieldId);
-	public Field getFieldByName(String fieldName);
 	public Field getFieldByName(Long studyId, String fieldName);
 	public void createField(Field field);
 	public void updateField(Field field);
@@ -48,7 +46,6 @@ public interface IPhenotypicDao {
 	public FieldType getFieldTypeByName(String fieldTypeName);
 	public void createFieldType(FieldType fieldType);
 	public void updateFieldType(FieldType fieldType);
-	public void deleteFieldType(FieldType fieldType);
 
 	// Field Data
 	public void createFieldData(FieldData fieldData);
