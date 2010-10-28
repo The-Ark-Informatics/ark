@@ -85,6 +85,8 @@ public interface IStudyService {
 	 */
 	public void createSubject(SubjectVO subjectVO);
 	
+	public void updateSubject(SubjectVO subjectVO);
+	
 	public Collection<SubjectStatus> getSubjectStatus();
 	
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
