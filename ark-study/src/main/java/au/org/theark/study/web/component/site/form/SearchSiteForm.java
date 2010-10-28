@@ -9,12 +9,10 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
@@ -103,11 +101,6 @@ public class SearchSiteForm extends Form<SiteModel>{
 		clearInput();
 		updateFormComponentModels();
 		
-	}
-	
-	private void initContactDropDown(PropertyModel<Person> personPropertyModel){
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.PERSON_LAST_NAME, Constants.PERSON_KEY);
-		siteContactDDC = new DropDownChoice("personDDC",personPropertyModel,availableContactList, defaultChoiceRenderer);
 	}
 	
 
