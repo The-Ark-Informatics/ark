@@ -1,7 +1,9 @@
 package au.org.theark.study.web.component.user;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -84,7 +86,7 @@ public class UserContainer extends Panel implements IArkComponent{
 	}
 	
 	public WebMarkupContainer initialiseSearchResults(){
-		
+
 		SearchResultList searchResultsPanel = new SearchResultList("resultsPanel",searchWebMarkupContainer,detailsContainer,containerForm,detailPanel);
 		
 		iModel = new LoadableDetachableModel<Object>() {
@@ -148,11 +150,18 @@ public class UserContainer extends Panel implements IArkComponent{
 
 	public WebMarkupContainer initialiseSearchPanel() {
 		
+		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		
+		
 		ArkUserVO arkUserVO = new ArkUserVO();
 		try{
-
-			List<ArkUserVO> userResultList = userService.searchUser(arkUserVO);
-		
+			List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
+			if(sessionStudyId != null && sessionStudyId > 0){
+				 userResultList = userService.searchUser(arkUserVO);	
+			}
+			
+			
 			containerForm.getModelObject().setUserList(userResultList);
 			searchUserPanel = new Search(	"searchUserPanel",
 											feedBackPanel,
