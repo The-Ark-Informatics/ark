@@ -99,13 +99,13 @@ public class Search extends Panel{
 					containerForm.getModelObject().setStudyList(resultList);
 					this.info("There are no records that matched your query. Please modify your filter");
 					target.addComponent(fbPanel);
-				}else{
-					containerForm.getModelObject().setStudyList(resultList);
-					pageListView.removeAll();
-					listContainer.setVisible(true);
-					target.addComponent(listContainer);
 				}
-				
+
+				containerForm.getModelObject().setStudyList(resultList);
+				pageListView.removeAll();
+				listContainer.setVisible(true);
+				target.addComponent(listContainer);
+								
 			}
 			
 			protected  void onNew(AjaxRequestTarget target){
