@@ -34,8 +34,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 
 	private IPhenotypicDao	phenotypicDao;
-	private Subject currentUser;
-	private Date dateNow;
 	private Long studyId; 
 
 	@Autowired
@@ -57,22 +55,21 @@ public class PhenotypicServiceImpl implements IPhenotypicService
     */
 	public void createCollection(Collection col)
 	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
+		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
 
 		// Newly created collections must start with a Created status
 		Status status = phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
 		
-		log.info("StudyId was NULL, using 1 as default...");
 		if (studyId == null)
+		{
+			log.error("StudyId was NULL, using 1 as default...");
 			studyId = new Long(1);
+		}
 		
-		col.setName("New test");
 		col.setStatus(status);
 		col.setStudyId(studyId);
-		col.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		col.setInsertTime(dateNow);
+
 		phenotypicDao.createCollection(col);
 	}
 
@@ -84,34 +81,20 @@ public class PhenotypicServiceImpl implements IPhenotypicService
     */
 	public void createCollectionImport(CollectionImport colImport)
 	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
-
-		colImport.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		colImport.setInsertTime(dateNow);
 		phenotypicDao.createCollectionImport(colImport);
 	}
 
 	public void updateCollection(Collection colEntity)
 	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		colEntity.setUpdateUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		colEntity.setUpdateTime(dateNow);
 		phenotypicDao.updateCollection(colEntity);
 	}
 
 	public void createField(Field field)
 	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
+		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
 
 		field.setStudyId(studyId);
-		field.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		field.setInsertTime(dateNow);
 
 		phenotypicDao.createField(field);
 	}
@@ -144,15 +127,30 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void importPhenotypicDataFile()
 	{
 		Subject currentUser = SecurityUtils.getSubject();
-		Long studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
-		// TODO: use collectionId from session
-		log.info("Using default collectionId of 1...need to utilise selected collectionId");
-		Collection collection = phenotypicDao.getCollection(new Long(1));
-
-		PhenotypicImport pi = null;
-		pi = new PhenotypicImport(phenotypicDao, studyId, collection);
-
+		Collection collection = null;
+		
+		if (collectionId == null){
+			// TODO: use collectionId from session
+			log.info("Using default collectionId of 1");
+			collection = phenotypicDao.getCollection(new Long(1));	
+		}
+		else{
+			log.info("Using collectionId in context");
+			collection = phenotypicDao.getCollection(collectionId);
+		}
+		
+		try {
+			log.info("phenotypicImport.collection: " + collection.getName());
+		}
+		catch (NullPointerException npe){
+			log.error("Error with Collection...no object instatiated...");
+		}
+		
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, studyId, collection);
+	
 		try
 		{
 			File file = new File(Constants.TEST_FILE);
@@ -175,11 +173,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void createFieldData(FieldData fieldData)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		Date dateNow = new Date(System.currentTimeMillis());
-
-		fieldData.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		fieldData.setInsertTime(dateNow);
 		phenotypicDao.createFieldData(fieldData);
 	}
 }
