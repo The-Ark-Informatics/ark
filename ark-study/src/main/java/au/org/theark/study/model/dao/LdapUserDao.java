@@ -309,7 +309,6 @@ public class LdapUserDao implements ILdapUserDao{
 			
 			for (RoleVO roleVO : moduleVO.getRole()) {
 					log.info("Role :" + roleVO.getRole());
-					String s = roleVO.getRole();
 					Pattern pattern = Pattern.compile(moduleVO.getModule() + "_");
 					String[] splitContents = pattern.split(roleVO.getRole());
 					roleVO.setRole(splitContents[1]);
@@ -507,21 +506,6 @@ public class LdapUserDao implements ILdapUserDao{
 		
 	}
 	
-	public List<ModuleVO> getModules(Long studyId,boolean isForDisplay){
-		log.info("getModules()");
-		List<ModuleVO> listOfAllModules = getModules(false);
-		List<ModuleVO> modulesLinkedToStudy = new ArrayList<ModuleVO>();
-		String studyName = studyDao.getStudy(studyId).getName();
-		
-		AndFilter studyFilter = new AndFilter();
-		for (ModuleVO moduleVO : listOfAllModules) {
-			
-			//Check if the studyName as CN is present in the given module's group
-			
-		}
-		
-		return modulesLinkedToStudy;
-	}
 	private List<String> buildRoleNames(List<?> roles, boolean isForDisplay){
 		
 		List<String> displayRoleList = new ArrayList<String>();
