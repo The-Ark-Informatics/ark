@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.studycomponent;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -136,14 +137,16 @@ public class StudyComponentContainerPanel extends Panel{
 	private WebMarkupContainer initialiseSearchPanel(){
 		StudyCompVo studyCompVo = new StudyCompVo();
 		
-		//Get a resultset by default
+		//Get a result-set by default
 		List<StudyComp> resultList = new ArrayList<StudyComp>();
-		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		try {
-			resultList = studyService.searchStudyComp(studyCompVo.getStudyComponent());
+			if(sessionStudyId != null && sessionStudyId > 0){
+				resultList = studyService.searchStudyComp(studyCompVo.getStudyComponent());	
+			}
+			
 		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.error("A System error occured  while initializing Search Panel");
 		}
 		
 		studyCompModel.getObject().setStudyCompList(resultList);
