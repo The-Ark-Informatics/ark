@@ -241,5 +241,9 @@ public class StudyServiceImpl implements IStudyService{
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 		return studyDao.getSubject(subjectVO);
 	}
+	
+	public void updateSubject(SubjectVO subjectVO){
+		studyDao.updateSubject(subjectVO);
+	}
 		
 }
