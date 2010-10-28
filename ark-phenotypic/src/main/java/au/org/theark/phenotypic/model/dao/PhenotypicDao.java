@@ -1,9 +1,12 @@
 package au.org.theark.phenotypic.model.dao;
 
+import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -26,8 +29,8 @@ import au.org.theark.phenotypic.model.entity.UploadCollection;
 public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 {
 	static Logger	log	= LoggerFactory.getLogger(PhenotypicDao.class);
-	Subject			currentUser;
-	Long				studyId;
+	private Subject currentUser;
+	private Date dateNow;
 
 	public List<Collection> getCollectionMatches(Collection collectionToMatch)
 	{
@@ -86,11 +89,23 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void createCollection(Collection collection)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		
+		collection.setInsertTime(dateNow);
+		collection.setUserId(currentUser.getPrincipal().toString());
+		
 		getSession().save(collection);
 	}
 
 	public void updateCollection(Collection collection)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		
+		collection.setUserId(currentUser.getPrincipal().toString());
+		collection.setUpdateTime(dateNow);
+		
 		getSession().update(collection);
 	}
 	
@@ -101,11 +116,23 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void createCollectionImport(CollectionImport collectionImport)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		collectionImport.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+		collectionImport.setInsertTime(dateNow);
+		
 		getSession().save(collectionImport);
 	}
 
 	public void updateCollectionImport(CollectionImport collectionImport)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		
+		collectionImport.setUserId(currentUser.getPrincipal().toString());
+		collectionImport.setUpdateTime(dateNow);
+		
 		getSession().update(collectionImport);
 	}
 	
@@ -120,39 +147,41 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return field;
 	}
 	
-	public Field getFieldByName(String fieldName)
-	{
-		log.info("PhenotypicDao.getFieldName: " + fieldName);
-		Field field = (Field) getSession().get(Field.class, fieldName);
-		return field;
-	}
-	
 	public Field getFieldByName(Long studyId, String fieldName)
 	{
-		Criteria crit = getSession().createCriteria(Field.class);
-		crit.add(Restrictions.eq("name", fieldName));
-		crit.add(Restrictions.eq("studyId", this.studyId));
-		crit.addOrder(Order.asc("id"));
-		List<Field> fieldList = crit.list();
-		if (fieldList.size() > 0)
-		{
-			if (fieldList.size() > 1)
-			{
-				log.error("Backend database has non-unique field names, returned the first one");
-			}
-			return (fieldList.get(0));
+		log.info("PhenotypicDao.getFieldName(studyId, fieldName): " + studyId + "\t" + fieldName);
+		
+		Field field = new Field();
+		field.setStudyId(studyId);
+		field.setName(fieldName);
+		Example example = Example.create(field);
+		Criteria criteria = getSession().createCriteria(Field.class).add(example);
+		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
+			return (Field)criteria.list().get(0);
 		}
-		else
+		else{
+			log.error("No field returned...");
 			return null;
+		}		
 	}
 
 	public void createField(Field field)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		field.setUserId(currentUser.getPrincipal().toString());
+		field.setInsertTime(dateNow);
+		
 		getSession().save(field);
 	}
 
 	public void updateField(Field field)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		field.setUpdateUserId(currentUser.getPrincipal().toString());
+		field.setUpdateTime(dateNow);
+		
 		getSession().update(field);
 	}
 	
@@ -164,8 +193,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public FieldType getFieldTypeByName(String fieldTypeName)
 	{
 		FieldType fieldType = new FieldType();
-		log.info("PhenotypicDao.getFieldTypeByName: " + fieldTypeName);
-		
 		Criteria criteria = getSession().createCriteria(FieldType.class);
 		criteria.add(Restrictions.eq("name", fieldTypeName));
 		
@@ -180,18 +207,13 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 	
 	public void createFieldType(FieldType fieldType)
-	{
+	{	
 		getSession().save(fieldType);
 	}
 	
 	public void updateFieldType(FieldType fieldType)
 	{
 		getSession().update(fieldType);
-	}
-	
-	public void deleteFieldType(FieldType fieldType)
-	{
-		getSession().delete(fieldType);
 	}
 
 	public FieldData getFieldDataByName(String fieldName)
@@ -202,11 +224,20 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void createFieldData(FieldData fieldData)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		fieldData.setUserId(currentUser.getPrincipal().toString());
+		fieldData.setInsertTime(dateNow);
+		
 		getSession().save(fieldData);
 	}
 	
 	public void updateFieldData(FieldData fieldData)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		fieldData.setUpdateTime(dateNow);
+		fieldData.setUpdateUserId(currentUser.getPrincipal().toString());
 		getSession().update(fieldData);
 	}
 
@@ -260,19 +291,24 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		getSession().update(status);
 	}
-	
-	public void deleteStatus(Status status)
-	{
-		getSession().delete(status);
-	}
 
 	public void createUpload(Upload upload)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		upload.setInsertTime(dateNow);
+		upload.setUserId(currentUser.getPrincipal().toString());
+		
 		getSession().save(upload);
 	}
 
 	public void createUploadCollection(UploadCollection uploadCollection)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		uploadCollection.setInsertTime(dateNow);
+		uploadCollection.setUserId(currentUser.getPrincipal().toString());
+		
 		getSession().save(uploadCollection);
 	}
 
@@ -288,11 +324,21 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void updateUpload(Upload upload)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		upload.setUpdateTime(dateNow);
+		upload.setUpdateUserId(currentUser.getPrincipal().toString());
+		
 		getSession().update(upload);
 	}
 
 	public void updateUploadCollection(UploadCollection uploadCollection)
 	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		uploadCollection.setUpdateTime(dateNow);
+		uploadCollection.setUpdateUserId(currentUser.getPrincipal().toString());
+		
 		getSession().update(uploadCollection);
 	}
 }
