@@ -13,6 +13,7 @@ import java.util.List;
 
 import au.org.theark.study.model.entity.Address;
 import au.org.theark.study.model.entity.EmailAccount;
+import au.org.theark.study.model.entity.LinkSubjectStudy;
 import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.Study;
@@ -31,9 +32,8 @@ public class SubjectVO implements Serializable{
 	protected Address address;
 	protected EmailAccount emailAccount;
 	protected Study study;
-	
+	protected Long linkSubjectStudyId;
 	protected Collection<SubjectVO> subjectList;
-	
 	protected SubjectStatus subjectStatus;
 	
 	/** A List of phone numbers linked to this person/subject*/
@@ -143,6 +143,15 @@ public class SubjectVO implements Serializable{
 
 	public void setSubjectFullName(String subjectFullName) {
 		this.subjectFullName = subjectFullName;
+	}
+
+
+	public Long getLinkSubjectStudyId() {
+		return linkSubjectStudyId;
+	}
+
+	public void setLinkSubjectStudyId(Long linkSubjectStudyId) {
+		this.linkSubjectStudyId = linkSubjectStudyId;
 	}
 
 
