@@ -1,6 +1,7 @@
 package au.org.theark.core.dao;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -202,15 +203,15 @@ public class LdapPersonDao implements ILdapPersonDao{
 			moduleFilter.and(new EqualsFilter("member",personDn));
 
 			//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
-			LdapName dn;
-			dn = new LdapName(groupBase);
-			dn.add(new Rdn("cn",moduleName.trim()));
+			LdapName moduleDn = new LdapName(groupBase);
+			moduleDn.add(new Rdn("cn",moduleName.trim()));
 				
 			if(etaUserVO.getStudyVO() != null && etaUserVO.getStudyVO().getStudyName() != null){
-				dn.add(new Rdn("cn", etaUserVO.getStudyVO().getStudyName()));//Add the study as a filter too
+				moduleDn.add(new Rdn("cn", etaUserVO.getStudyVO().getStudyName()));//Add the study as a filter too
 				isStudyAvailable = true;
 			}
-			List<?> userGroups =  ldapTemplate.search(dn,moduleFilter.encode(),SearchControls.ONELEVEL_SCOPE, new AttributesMapper(){
+			//For the given module, see if the user is member for any sub-groups. That is he can be a member of any study etc
+			List<?> userGroups =  ldapTemplate.search(moduleDn,moduleFilter.encode(),SearchControls.ONELEVEL_SCOPE, new AttributesMapper(){
 				
 				public Object mapFromAttributes(Attributes attrs){
 					try {
@@ -225,7 +226,8 @@ public class LdapPersonDao implements ILdapPersonDao{
 			});
 			
 			if(userGroups != null && userGroups.size() > 0){
-				//Add the module to userVO
+
+				//Add the module/groups the user is a member of into a Modulelist in userVO
 				ModuleVO moduleVO = new ModuleVO();
 				moduleVO.setModule(moduleName);
 				etaUserVO.getModules().add(moduleVO);	
@@ -233,12 +235,37 @@ public class LdapPersonDao implements ILdapPersonDao{
 				moduleVO.setRole(roleList);//Initialise the role arraylist
 				//Populate the Module.Roles collection. This structure of classifying roles against module allows us to maintain roles 
 				//without any conflict(roles are in the module namespace)
-				
-				String moduleRoleName = buildUserRoles(userGroups,moduleVO, isStudyAvailable);
-				//At present, I can see only a list of roles that can be stored into AuthorizationInfo and hence using a List<String>.This list is the one that will be set. 
-				//The above Module.Roles collection will still be required for the future or if we can override the Shiro AuthorizationInfo class
-				//TODO Re-visit the Shiro requirements and make sure this list is in synch with what is in back-end.
-				etaUserVO.getUserRoleList().add(moduleRoleName);
+				//Look up sub-groups for each userGroup returned to get to the roles if any
+				for (Object groupName : userGroups) {
+					LdapName subModuleDn = new LdapName(groupBase);
+					subModuleDn.add(new Rdn("cn",moduleName.trim()));
+					subModuleDn.add(new Rdn("cn",groupName.toString()));
+					
+					List<?> subGroupRoles = ldapTemplate.search(subModuleDn,moduleFilter.encode(),SearchControls.ONELEVEL_SCOPE, new AttributesMapper(){
+						
+						public Object mapFromAttributes(Attributes attrs){
+							try {
+									Object returnObject = attrs.get("cn").get();
+									return returnObject;
+							} catch (NamingException e) {
+								
+									e.printStackTrace();
+							}
+								return attrs;
+						}
+					});
+					//If the subGroup size had more than
+					if(subGroupRoles.size() > 0){
+						for (Object roleName : subGroupRoles) {
+							etaUserVO.getUserRoleList().add( roleName.toString());
+							//etaUserVO.getUserRoleList().add(moduleName + "_" + groupName.toString() + "_" + roleName.toString());
+						}
+					}else{
+						//Is a role itself and has not sub-groups.e.g. like Super_Administrator
+						etaUserVO.getUserRoleList().add(groupName.toString());
+						//etaUserVO.getUserRoleList().add(moduleName + "_" + groupName.toString());
+					}
+				}
 			}
 		}catch(InvalidNameException e){
 			e.printStackTrace();
@@ -349,25 +376,37 @@ public class LdapPersonDao implements ILdapPersonDao{
 		return displayRoleList;
 	}
 	
-	private String buildUserRoles(List<?> groupList, ModuleVO moduleVO, boolean isStudy){
-		String roleName ="ordinary_user";
-		for (Object group : groupList) {
-			//Check if user is part of the super_administrator group
-			if(group.toString().equalsIgnoreCase("super_administrator")){
-				roleName = moduleVO.getModule() + "_" + group.toString();
-			}
-			else if(!isStudy){
-				roleName = moduleVO.getModule() + "_" + roleName;
-				//This will be a sub-group under the application/module. Get a list of sub-groups which should be the actual grouping of roles.
-			}else{
-				roleName = group.toString();
-			}
-			RoleVO roleVO = new RoleVO();
-			roleVO.setRole(roleName);
-			moduleVO.getRole().add(roleVO );
-			break;
+//	private String buildUserRoles(List<?> groupList, ModuleVO moduleVO, boolean isStudy){
+//		String roleName ="ordinary_user";
+//		for (Object group : groupList) {
+//			//Check if user is part of the super_administrator group
+//			if(group.toString().equalsIgnoreCase("super_administrator")){
+//				roleName = moduleVO.getModule() + "_" + group.toString();
+//			}
+//			else if(!isStudy){
+//				roleName = moduleVO.getModule() + "_" + roleName;
+//				//This will be a sub-group under the application/module. Get a list of sub-groups which should be the actual grouping of roles.
+//			}else{
+//				roleName = group.toString();
+//			}
+//			RoleVO roleVO = new RoleVO();
+//			roleVO.setRole(roleName);
+//			moduleVO.getRole().add(roleVO );
+//			break;
+//		}
+//		return roleName;
+//	}
+	
+	private Collection<String> getRolesForGroup(List<?> groupList){
+		
+		for (Object subGroup : groupList) {
+			
+			
 		}
-		return roleName;
+		Collection<String> roleCollection = new ArrayList<String>();
+		
+		
+		return roleCollection;
 	}
 
 }
