@@ -19,14 +19,13 @@ import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
 import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
 
-@SuppressWarnings("serial")
+@SuppressWarnings( { "serial", "unused" })
 public class PhenotypicSubMenuTab extends Panel
 {
-	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
-	private Subject currentUser;
-	private Date dateNow;
-	private Long studyId;
-	List<ITab>	tabList;
+	private transient Logger	log	= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
+	private transient Subject	currentUser;
+	private transient Long		studyId;
+	List<ITab>						tabList;
 
 	public PhenotypicSubMenuTab(String id)
 	{
@@ -70,13 +69,6 @@ public class PhenotypicSubMenuTab extends Panel
 
 	public void buildTabs()
 	{
-		log.info("In PhenotypicSubMenuTab");
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
-		
-		log.info("studyId: " + studyId);
-		
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 
@@ -98,8 +90,32 @@ public class PhenotypicSubMenuTab extends Panel
 			{
 				public boolean isVisible()
 				{
+					boolean hasStudy = true;
+
+					/*
 					// Implement this if you want to secure this Tab
-					return true;
+					try
+					{
+						currentUser = SecurityUtils.getSubject();
+						studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+
+						// TODO: Disable main tab if studyId not selected (in context)
+						if (studyId != null)
+						{
+							hasStudy = true;
+						}
+						else
+						{
+							hasStudy = false;
+						}
+					}
+					catch (Exception ex)
+					{
+						log.error("PhenotypicSubMenuTab: General exception when determing tab visibility. " + ex.getMessage());
+					}
+					*/
+
+					return hasStudy;
 				}
 
 				@Override
