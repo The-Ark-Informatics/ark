@@ -8,6 +8,7 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -16,7 +17,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -32,7 +32,6 @@ public class Search extends Panel{
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer detailsWebMarkupContainer;
-	private WebMarkupContainer saveArchivebuttonContainer;
 	private ContainerForm containerForm;
 	private PageableListView<SubjectVO> pageableListView;
 	private FeedbackPanel fbPanel;
@@ -78,21 +77,27 @@ public class Search extends Panel{
 		SearchForm searchForm = new SearchForm("searchForm", (CompoundPropertyModel<SubjectVO>)containerForm.getModel()){
 			
 			protected  void onSearch(AjaxRequestTarget target){
-			
+				
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				containerForm.getModelObject().setStudy(studyService.getStudy(sessionStudyId));
 				//Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(fbPanel);
 				Collection<SubjectVO> subjects = studyService.getSubject(containerForm.getModelObject());
-				for (SubjectVO subjectVO : subjects) {
-					
-					Person person  = subjectVO.getPerson();
-					if(person != null){
-						System.out.println("Person " + person.getFirstName());
-					}
+				
+				if(subjects != null && subjects.size() == 0){
+					this.info("There are no subjects with the specified criteria.");
+					target.addComponent(fbPanel);
 				}
-				processDetail(target);
+				
+				containerForm.getModelObject().setSubjectList(subjects);
+				pageableListView.removeAll();
+				listContainer.setVisible(true);
+				target.addComponent(listContainer);
+				
 			}
 			
 			protected  void onNew(AjaxRequestTarget target){
+				containerForm.setModelObject(new SubjectVO());
 				processDetail(target);
 			}
 		};
