@@ -18,7 +18,7 @@ import au.org.theark.study.web.Constants;
  *
  */
 @SuppressWarnings("serial")
-public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
+	public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 
 	List<ITab> moduleTabsList;
 	public MainTabProviderImpl(String panelId){
@@ -36,6 +36,13 @@ public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 	public ITab createTab(String tabName) {
 		
 		return  new AbstractTab(new Model<String>(tabName)) {
+			/**
+			 * Implement this to secure the module
+			 */
+			public boolean isVisible(){
+				//If the logged in user is a member of this module then allow him to view this tab
+				return true;
+			}
 			@Override
 			public Panel getPanel(String pid) {
 				return new StudySubMenuTab(pid);//The sub menus for Study 
