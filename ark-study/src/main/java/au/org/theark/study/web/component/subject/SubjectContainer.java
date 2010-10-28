@@ -8,8 +8,8 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -20,8 +20,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -64,24 +62,16 @@ public class SubjectContainer extends Panel{
 	
 	private WebMarkupContainer initialiseSearchPanel(){
 		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Collection<SubjectVO> list = new ArrayList<SubjectVO>();
 		
-		/**
-		 * //Get a resultset by default
-		List<StudyComp> resultList = new ArrayList<StudyComp>();
-		
-		try {
-			resultList = studyService.searchStudyComp(studyCompVo.getStudyComponent());
-		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(sessionStudyId != null && sessionStudyId > 0){
+			
+			containerForm.getModelObject().setStudy(studyService.getStudy(sessionStudyId));
+			list = studyService.getSubject(containerForm.getModelObject());	
 		}
-		
-		studyCompModel.getObject().setStudyCompList(resultList);
-		 * 
-		 * 
-		 */
-		Collection<SubjectVO> list = studyService.getSubject(new SubjectVO());
 		containerForm.getModelObject().setSubjectList(list);
+		
 		searchPanel = new Search(	"searchPanel", 
 									feedBackPanel, 
 									searchWebMarkupContainer, 
