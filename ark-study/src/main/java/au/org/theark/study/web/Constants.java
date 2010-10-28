@@ -37,9 +37,11 @@ public class Constants {
 	public static final int MODE_READ =3;
 	
 	/* Person */
-	public static final String PREFERRED_NAME="person.preferredName";
+	public static final String PERSON_PREFERRED_NAME="person.preferredName";
 	public static final String PERSON_VITAL_STATUS ="person.vitalStatus";
 	public static final String PERSON_KEY="personKey";
+	public static final String PERSON_PERSON_KEY="person.personKey";
+	
 	public static final String PERSON_FIRST_NAME = "person.firstName";
 	public static final String PERSON_MIDDLE_NAME = "person.middleName";
 	public static final String PERSON_LAST_NAME = "person.lastName";
@@ -50,9 +52,18 @@ public class Constants {
 	public static final String SUBJECT_STATUS_KEY ="subjectStatusKey";
 	public static final String VITAL_STATUS="vitalStatus";
 	public static final String STATUS_NAME ="statusName";
-	
-	
-	
+	public static final String PERSON_DOB="person.dateOfBirth";
+	public static final String PERSON_TYTPE_TYPE = "person.titleType";
+	public static final String PERSON_GENDER_TYPE ="person.genderType";
+	public static final String PERSON_GENDER_TYPE_NAME ="person.genderType.name";
+	public static final String SUBJECT_FULL_NAME ="subjectFullName";
+	public static final String PERSON_VITAL_STATUS_NAME="person.vitalStatus.statusName";
+	public static final String SUBJECT_STATUS_NAME ="subjectStatus.name";
+	public static final String EVEN="even";
+	public static final String ODD="odd";
+	public static final String CLASS="class";
+	public static final String SUBJECT_KEY_LBL ="subjectKeyLbl";
+	public static final String SUBJECT_LIST ="subjectList";
 	/* Multiple choice List Controls */
 	public static final String AVAILABLE_ROLES_MLC ="availableRolesLMC";
 	public static final String SELECTED_ROLES_MLC="selectedRolesLMC";
