@@ -13,7 +13,6 @@ import java.util.List;
 
 import au.org.theark.study.model.entity.Address;
 import au.org.theark.study.model.entity.EmailAccount;
-import au.org.theark.study.model.entity.LinkSubjectStudy;
 import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.entity.Phone;
 import au.org.theark.study.model.entity.Study;
