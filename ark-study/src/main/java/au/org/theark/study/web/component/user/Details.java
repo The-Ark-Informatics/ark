@@ -129,7 +129,7 @@ public class Details extends Panel{
 						processNew(arkUserVO,this);
 						
 						this.info(arkUserVO.getUserName() + " was added successfully.");
-						this.groupPasswordContainer.setVisible(false);
+						this.groupPasswordContainer.setVisible(true);
 						this.userNameTxtField.setEnabled(false);
 						this.userPasswordField.setRequired(false);
 						this.confirmPasswordField.setRequired(false);
@@ -138,25 +138,13 @@ public class Details extends Panel{
 					}else if(arkUserVO.getMode() == Constants.MODE_EDIT){
 						
 						processUpdate(arkUserVO, this);
-						this.groupPasswordContainer.setVisible(false);
+						this.groupPasswordContainer.setVisible(true);
+						this.userNameTxtField.setEnabled(true);
+						this.userPasswordField.setRequired(false);
 						this.userNameTxtField.setEnabled(false);
 						processFeedback(target);
 						
 					}
-					
-					//Accordion will have its own form object
-					//List<ModuleVO> modules = userService.getModules(true);
-					
-					//userForm.remove(appRoleAccordion);
-					//arkUserVO.setMode(Constants.MODE_EDIT);
-					
-					//containerForm.getModelObject().setAvailableModules(modules);
-					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, containerForm.getModelObject(), modules);
-					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION,containerForm);
-					
-					//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, arkUserVO, modules);
-					//userForm.add(appRoleAccordion);
-					
 					
 				}catch (InvalidNameException e) {
 
