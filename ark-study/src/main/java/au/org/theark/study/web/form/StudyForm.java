@@ -123,7 +123,7 @@ public class StudyForm extends Form<StudyModel>{
 		listContainer = container;
 		details = detailsPanel;
 		
-		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
+		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel(Constants.CANCEL_KEY, this, null))
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -136,7 +136,7 @@ public class StudyForm extends Form<StudyModel>{
 			}
 		};
 		
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel(Constants.SAVE_KEY, this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{	//Access the model associated using a reference to details panel
@@ -160,7 +160,7 @@ public class StudyForm extends Form<StudyModel>{
 			
 		}; 
 		
-		archiveButton = new AjaxButton(Constants.ARCHIVE, new StringResourceModel("deleteKey", this, null))
+		archiveButton = new AjaxButton(Constants.ARCHIVE, new StringResourceModel(Constants.DELETE_KEY, this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -191,9 +191,9 @@ public class StudyForm extends Form<StudyModel>{
 		CompoundPropertyModel<StudyModel> studyCmpModel = details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
-		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
-		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
-		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
+		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,Constants.STUDY);
+		autoGenSubIdRdChoice = initRadioButtonChoice(pm,Constants.AUTO_GEN_SUBJECT_KEY,Constants.AUTO_GEN_SUB_ID);
+		autoConsentRdChoice = initRadioButtonChoice(pm,Constants.AUTO_CONSENT,Constants.AUTO_CONSENT);
 		attachValidation();
 		studyIdTxtFld.setEnabled(false);
 		decorateComponents();
@@ -204,10 +204,10 @@ public class StudyForm extends Form<StudyModel>{
 	private void initPalette(){
 		
 		CompoundPropertyModel<StudyModel> sm  = details.getCpm();
-		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("moduleName", "moduleName");
-		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesSelected");
-		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesAvailable");
-		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,true);	
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>(Constants.MODULE_NAME, Constants.MODULE_NAME);
+		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,Constants.MODULES_SELECTED);
+		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,Constants.MODULES_AVAILABLE);
+		appPalette = new Palette(Constants.MODULES_SELECTED, selectedModPm,lhsPm, renderer,5,true);	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -237,19 +237,19 @@ public class StudyForm extends Form<StudyModel>{
 	
 	private void attachValidation(){
 	
-		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
+		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_STUDY_NAME_REQUIRED, this, new Model<String>(Constants.STUDY_NAME)));
 		//TODO Have to stop the validator posting the content with the error message
-		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255));
-		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required",this, new Model<String>("Status")));
-		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel( new StringResourceModel("error.study.doa.max.range",this, null));
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 1000));
+		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_STUDY_STATUS_REQUIRED,this, new Model<String>(Constants.STATUS)));
+		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel( new StringResourceModel(Constants.ERROR_STUDY_DOA_MAX_RANGE,this, null));
 		//Can be only today
 		//Estimate year of completion - should be a valid year. Must be less than dateOfApplication
-		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.chief",this,new Model<String>("Chief Investigator")));
+		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel(Constants.ERROR_STUDY_CHIEF_INVESTIGATOR,this,new Model<String>(Constants.CHIEF_INVESTIGATOR)));
 		chiefInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50));
 		
-		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3,50)).setLabel(new StringResourceModel("error.study.co.investigator",this, new Model<String>("Co Investigator")));
+		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3,50)).setLabel(new StringResourceModel(Constants.ERROR_STUDY_CO_INVESTIGATOR,this, new Model<String>(Constants.CO_INVESTIGATOR)));
 		//selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
-		subjectKeyStartAtTxtFld.add( new RangeValidator<Integer>(1,Integer.MAX_VALUE)).setLabel( new StringResourceModel("error.study.subject.key.prefix", this, null));
+		subjectKeyStartAtTxtFld.add( new RangeValidator<Integer>(1,Integer.MAX_VALUE)).setLabel( new StringResourceModel(Constants.ERROR_STUDY_SUBJECT_KEY_PREFIX, this, null));
 	}
 	
 	private void decorateComponents(){
