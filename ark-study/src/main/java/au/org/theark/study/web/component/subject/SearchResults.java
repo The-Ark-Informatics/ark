@@ -18,6 +18,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 
 /**
@@ -53,7 +54,7 @@ public class SearchResults extends Panel{
 	
 	public PageableListView<SubjectVO> buildPageableListView(IModel iModel){
 		
-		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>("subjectList", iModel, 10){
+		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, 10){
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {
@@ -74,25 +75,25 @@ public class SearchResults extends Panel{
 					sb.append(subject.getPerson().getLastName());
 				}
 				subject.setSubjectFullName(sb.toString());
-				item.add(new Label("subjectFullName", subject.getSubjectFullName()));
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, subject.getSubjectFullName()));
 			
 				if(subject.getPerson().getPreferredName() != null){
-					item.add(new Label("person.preferredName",subject.getPerson().getPreferredName()));
+					item.add(new Label(Constants.PERSON_PREFERRED_NAME,subject.getPerson().getPreferredName()));
 				}else{
-					item.add(new Label("person.preferredName",""));
+					item.add(new Label(Constants.PERSON_PREFERRED_NAME,""));
 				}
 				
-				item.add(new Label("person.genderType.name",subject.getPerson().getGenderType().getName()));
+				item.add(new Label(Constants.PERSON_GENDER_TYPE_NAME,subject.getPerson().getGenderType().getName()));
 				
-				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getStatusName()));
+				item.add(new Label(Constants.PERSON_VITAL_STATUS_NAME,subject.getPerson().getVitalStatus().getStatusName()));
 				
-				item.add(new Label("subjectStatus.name",subject.getSubjectStatus().getName()));
+				item.add(new Label(Constants.SUBJECT_STATUS_NAME,subject.getSubjectStatus().getName()));
 				
 				
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
 					}
 				}));
 			}
@@ -102,23 +103,27 @@ public class SearchResults extends Panel{
 	
 	private AjaxLink buildLink(final SubjectVO subject){
 		
-		AjaxLink link = new AjaxLink("person.personKey") {
+		AjaxLink link = new AjaxLink(Constants.PERSON_PERSON_KEY) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
+				
 				SubjectVO subjectVO = subjectContainerForm.getModelObject();
+				subjectVO.setStudy(subject.getStudy());
 				subjectVO.setPerson(subject.getPerson());//The selected person on the containerForm's Model
 				subjectVO.setSubjectStatus(subject.getSubjectStatus());
+				subjectVO.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
+				
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-				//detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
+				//TODO detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);
 			}
 		};
 		
-		Label nameLinkLabel = new Label("subjectKeyLbl", subject.getPerson().getPersonKey().toString());
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getPerson().getPersonKey().toString());
 		link.add(nameLinkLabel);
 		return link;
 	}
