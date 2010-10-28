@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.managestudy;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -108,6 +109,10 @@ public class Details  extends Panel{
 						this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 						postSaveUpdate(target);
 					}
+					
+					SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getStudyKey());
+					studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
+
 				}
 				catch(EntityExistsException eee){
 					this.error(eee.getMessage());
