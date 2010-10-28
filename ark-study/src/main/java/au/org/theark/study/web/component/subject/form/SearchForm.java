@@ -26,7 +26,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.LinkSubjectStudy;
 import au.org.theark.study.model.entity.Person;
 import au.org.theark.study.model.entity.SubjectStatus;
 import au.org.theark.study.model.entity.VitalStatus;
@@ -108,6 +107,13 @@ public class SearchForm extends Form<SubjectVO>{
 			}
 		};
 		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(sessionStudyId == null){
+			newButton.setEnabled(false);
+			searchButton.setEnabled(false);
+			this.error("There is no study in context. You can only search or manage subjects based on a study.");
+		}
+		
 		initVitalStatusDdc();
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
@@ -116,31 +122,31 @@ public class SearchForm extends Form<SubjectVO>{
 	
 	private void initVitalStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,"person");
+		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
 		
-		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,"vitalStatus");
+		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
-		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer("statusName", "id");
-		vitalStatusDdc = new DropDownChoice<VitalStatus>("vitalStatus",vitalStatusPm,(List)vitalStatusList,vitalStatusRenderer);
+		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.STATUS_NAME, Constants.ID);
+		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS,vitalStatusPm,(List)vitalStatusList,vitalStatusRenderer);
 	}
 	
 	private void initSubjectStatusDdc(){
 		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(subjectCpm,"subjectStatus");
+		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(subjectCpm,Constants.SUBJECT_STATUS);
 		Collection<SubjectStatus> subjectStatusList = studyService.getSubjectStatus();
-		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,"subjectStatusKey");
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>("subjectStatus",subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
+		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
+		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
 	}
 	
 	private void initGenderTypeDdc(){
 		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,"person");
-		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,"genderType");
+		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
+		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,Constants.GENDER_TYPE);
 		Collection<GenderType> genderTypeList = studyService.getGenderType(); 
-		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME,"id");
-		genderTypeDdc = new DropDownChoice<GenderType>("genderType",genderTypePm, (List)genderTypeList,genderTypeRenderer);
+		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME,Constants.ID);
+		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE,genderTypePm, (List)genderTypeList,genderTypeRenderer);
 	}
 	
 	protected void onNew(AjaxRequestTarget target){}
@@ -164,14 +170,14 @@ public class SearchForm extends Form<SubjectVO>{
 		add(genderTypeDdc);
 		add(newButton);
 		add(searchButton);
-		add(resetButton);
+		add(resetButton.setDefaultFormProcessing(false));
 		
 	}
 	public void initialiseForm(){
-		subjectIdTxtFld = new TextField<String>("person.personKey");
-		firstNameTxtFld = new TextField<String>("person.firstName");
-		middleNameTxtFld = new TextField<String>("person.middleName");
-		lastNameTxtFld = new TextField<String>("person.lastName");
+		subjectIdTxtFld = new TextField<String>(Constants.PERSON_KEY);
+		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
+		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
+		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		
 		addComponents();
 	}
