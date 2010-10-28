@@ -41,4 +41,22 @@ public class Constants {
 	public static final String STUDY_CONTEXT_ID="studyId";
 	
 	public static final String DATE_FORMAT="dd/MM/yyyy";
+	
+	/* Tab Panel Keys */
+	public static final String TAB_MODULE_STUDY_DETAIL ="tab.module.study.details";
+	public static final String STUDY_DETAIL ="Study Detail";
+	public static final String SITE = "Site";
+	public static final String TAB_MODULE_SITE ="tab.module.sites";
+	public static final String STUDY_COMPONENT="Study Component";
+	public static final String TAB_MODULE_STUDY_COMPONENT ="tab.module.study.components";
+	public static final String USER="User";
+	public static final String TAB_MODULE_USER ="tab.module.users";
+	public static final String MY_DETAIL ="My Detail";
+	public static final String TAB_MODULE_MY_DETAIL="tab.module.mydetails";
+	public static final String SUBJECT="Subject";
+	public static final String TAB_MODULE_SUBJECT="tab.module.subject";
+	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
+	
+	
+	
 }
