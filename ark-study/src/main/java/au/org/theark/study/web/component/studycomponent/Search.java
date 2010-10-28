@@ -15,7 +15,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.study.model.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 import au.org.theark.study.web.form.SearchStudyCompForm;
@@ -33,8 +32,7 @@ public class Search extends Panel{
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
-	@SpringBean( name = "userService")
-	private IUserService userService;
+
 	
 	
 	/*Constructor*/
@@ -80,13 +78,13 @@ public class Search extends Panel{
 					if(resultList != null && resultList.size() == 0){
 						this.info("Study Component with the specified criteria does not exist in the system.");
 						target.addComponent(feedBackPanel);
-					}else{
-						containerForm.getModelObject().setStudyCompList(resultList);
-						listView.removeAll();
-						listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
-						target.addComponent(listContainer);//For ajax this is required so 
 					}
+					containerForm.getModelObject().setStudyCompList(resultList);
+					listView.removeAll();
+					listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
+					target.addComponent(listContainer);//For ajax this is required so 
 					
+					//processDetail(target);
 				}catch(ArkSystemException arkEx){
 					this.error("A system error has occured. Please try after sometime.");
 				}
@@ -98,13 +96,13 @@ public class Search extends Panel{
 				StudyCompVo studyCompVo = new StudyCompVo();
 				studyCompVo.setMode(Constants.MODE_NEW);
 				containerForm.setModelObject(studyCompVo);
-				processDetail(target, Constants.MODE_NEW);
+				processDetail(target);
 			}
 		};
 		add(searchStudyCompForm);
 	}
 	
-	public void processDetail(AjaxRequestTarget target, int mode){
+	public void processDetail(AjaxRequestTarget target){
 		//Hide the Search Panel before the Details Panel is made visible via the detailsContainer
 		searchMarkupContainer.setVisible(false);
 		//Hide the Search Result List 
