@@ -68,17 +68,22 @@ public class Details extends Panel {
 				Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				if(studyId == null){
 					//No study in context
+					this.error("There is no study in Context. Please select a study to manage a subject.");
 				}
-				study = studyService.getStudy(studyId);
-				
-				if(subjectVO.getPerson().getPersonKey() == null || subjectVO.getPerson().getPersonKey() == 0){
-					subjectVO.setStudy(study);
-					studyService.createSubject(subjectVO);
-				
-				}else{
-					//Update
+				else{
+					study = studyService.getStudy(studyId);
+					
+					if(subjectVO.getPerson().getPersonKey() == null || subjectVO.getPerson().getPersonKey() == 0){
+						subjectVO.setStudy(study);
+						studyService.createSubject(subjectVO);
+						this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+					}else{
+						studyService.updateSubject(subjectVO);
+						this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+					}
 				}
-				processFeedback(target);
+				target.addComponent(feedBackPanel);
+				
 				//Link the Subject with the study
 			}
 			
@@ -93,7 +98,7 @@ public class Details extends Panel {
 				target.addComponent(feedBackPanel);
 			}
 			
-			protected void processFeedback(AjaxRequestTarget target){
+			protected void processErrors(AjaxRequestTarget target){
 				target.addComponent(feedBackPanel);
 			}
 		};
