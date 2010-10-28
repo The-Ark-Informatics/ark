@@ -27,10 +27,12 @@ public class FieldData implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private Field field;
 	private Collection collection;
-	private Date dateCollected;
 	private Person person;
+	//TODO: Implement use of Person object rather than Long personId
+	private Long personId;
+	private Date dateCollected;
+	private Field field;
 	private String value;
 	private String userId;
 	private Date insertTime;
@@ -174,5 +176,21 @@ public class FieldData implements java.io.Serializable {
 	public Person getPerson()
 	{
 		return person;
+	}
+
+	/**
+	 * @param personId the personId to set
+	 */
+	public void setPersonId(Long personId)
+	{
+		this.personId = personId;
+	}
+
+	/**
+	 * @return the personId
+	 */
+	public Long getPersonId()
+	{
+		return personId;
 	}
 }
