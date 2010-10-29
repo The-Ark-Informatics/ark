@@ -86,11 +86,11 @@
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
         
         <property name="dataSource" ref="dataSource"/>
-        <!-- <property name="packagesToScan" value="au.org.theark.study.model.entity"/>  -->
         <property name="packagesToScan">
         	<list>
 				<value>au.org.theark.study.model.entity</value>
-				<value>au.org.theark.gdmi.model.entity</value>        		
+				<value>au.org.theark.phenotypic.model.entity</value>        		
+				<value>au.org.theark.gdmi.model.entity</value>
         	</list>
         </property>
         <property name="hibernateProperties">
