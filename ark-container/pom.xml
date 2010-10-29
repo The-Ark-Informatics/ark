@@ -35,6 +35,13 @@
 			<artifactId>ark-study</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		
+		<!-- Ark Phenotypic Module -->
+		<dependency>
+			<groupId>au.org.theark.phenotypic</groupId>
+			<artifactId>ark-phenotypic</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Ark GDMI Module -->
 		<dependency>
