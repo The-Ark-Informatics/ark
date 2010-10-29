@@ -90,7 +90,7 @@
         	<list>
 				<value>au.org.theark.study.model.entity</value>
 				<value>au.org.theark.phenotypic.model.entity</value>        		
-				<value>au.org.theark.gdmi.model.entity</value>
+				<value>au.org.theark.geno.model.entity</value>
         	</list>
         </property>
         <property name="hibernateProperties">

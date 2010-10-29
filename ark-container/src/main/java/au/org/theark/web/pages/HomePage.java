@@ -7,9 +7,9 @@ import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 
-import au.org.theark.gdmi.web.menu.GDMITabProviderImpl;
-import au.org.theark.study.web.menu.MainTabProviderImpl;
+import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
+import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
  * Homepage aka Index page of ETA
@@ -48,9 +48,9 @@ public class HomePage extends BasePage
 			moduleTabsList.add(itab);
 		}
 
-		GDMITabProviderImpl gdmiTabs = new GDMITabProviderImpl("gdmi");
-		List<ITab> gdmiTabsList = gdmiTabs.buildTabs();
-		for (ITab itab : gdmiTabsList)
+		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
+		List<ITab> genoTabsList = genoTabs.buildTabs();
+		for (ITab itab : genoTabsList)
 		{
 			moduleTabsList.add(itab);
 		}
