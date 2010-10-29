@@ -38,9 +38,11 @@ public class Constants {
 	/*Common Service Names */
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
 	
+	/* Global constants */
 	public static final String STUDY_CONTEXT_ID="studyId";
-	
 	public static final String DATE_FORMAT="dd/MM/yyyy";
+	public static final String SUBJECT_IDENTIFIER="SUBJECTID";
+	public static final String DATE_COLLECTED="DATE_COLLECTED";
 	
 	/* Tab Panel Keys */
 	public static final String TAB_MODULE_STUDY_DETAIL ="tab.module.study.details";
