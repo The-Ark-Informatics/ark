@@ -15,6 +15,7 @@ import org.apache.wicket.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
 import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
@@ -32,39 +33,6 @@ public class PhenotypicSubMenuTab extends Panel
 		super(id);
 		tabList = new ArrayList<ITab>();
 		buildTabs();
-	}
-
-	private class MenuModule implements Serializable
-	{
-
-		public MenuModule()
-		{
-			super();
-		}
-
-		private String	moduleName;
-		private String	resourceKey;
-
-		public String getModuleName()
-		{
-			return moduleName;
-		}
-
-		public void setModuleName(String moduleName)
-		{
-			this.moduleName = moduleName;
-		}
-
-		public String getResourceKey()
-		{
-			return resourceKey;
-		}
-
-		public void setResourceKey(String resourceKey)
-		{
-			this.resourceKey = resourceKey;
-		}
-
 	}
 
 	public void buildTabs()
