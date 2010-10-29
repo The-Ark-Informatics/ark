@@ -15,6 +15,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.MenuModule;
 import au.org.theark.geno.web.Constants;
 import au.org.theark.geno.web.component.geno.TestContainerPanel;
 
@@ -27,28 +28,6 @@ public class GenoSubMenuTab extends Panel {
 		super(id);
 		tabList = new ArrayList<ITab>();
 		buildTabs();
-	}
-	
-	private class MenuModule implements Serializable{
-		
-		public MenuModule(){
-			super();
-		}
-		private String moduleName;
-		private String resourceKey;
-		public String getModuleName() {
-			return moduleName;
-		}
-		public void setModuleName(String moduleName) {
-			this.moduleName = moduleName;
-		}
-		public String getResourceKey() {
-			return resourceKey;
-		}
-		public void setResourceKey(String resourceKey) {
-			this.resourceKey = resourceKey;
-		}
-		
 	}
 
 	public  void buildTabs(){
