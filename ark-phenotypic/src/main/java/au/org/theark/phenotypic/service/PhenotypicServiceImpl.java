@@ -56,7 +56,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createCollection(Collection col)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		// Newly created collections must start with a Created status
 		Status status = phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
@@ -92,7 +92,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createField(Field field)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		field.setStudyId(studyId);
 
@@ -127,7 +127,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void importPhenotypicDataFile()
 	{
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
 		Collection collection = null;
