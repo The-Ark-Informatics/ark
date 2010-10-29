@@ -7,7 +7,6 @@ public class Constants {
 	public static final String STATUS_DISABLED = "Disabled"; 
 	
 	// Attributes
-	public static final String STUDY_ID = "studyId";
 	public static final String COLLECTION_ID = "collectionId";
 	
 	// Testing
