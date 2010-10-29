@@ -112,7 +112,7 @@ public class PhenotypicImport
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		FieldData fieldData = new FieldData();
+		
 		
 		/* FieldData table requires:
 		COLLECTION_ID
@@ -154,6 +154,9 @@ public class PhenotypicImport
 			// 0 				1 					2 	3	N  
 			csvReader.readHeaders();
 			String[] fieldNameArray =  csvReader.getHeaders();
+			
+			// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
+			fieldCount = fieldNameArray.length - 2;
 
 			// Loop through all rows in file
 			while (csvReader.readRecord())
@@ -161,86 +164,61 @@ public class PhenotypicImport
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
-
-				if (csvReader.getColumnCount() < 2)
+				if(fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECT_IDENTIFIER)){
+					log.info("Subject Identifier: " + fieldNameArray[0]);
+				}
+						
+				//TODO: Move validation to separate class
+				/*
+				if (csvReader.getColumnCount() < 2) 
+						//|| !(fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECT_IDENTIFIER))
+						//|| !(fieldNameArray[0].equalsIgnoreCase(Constants.DATE_COLLECTED)))
 				{
-					// non-compliant file
-					throw new FileFormatException("The specified file does not appear to conform to the expected phenotypic file format.");
+					// Non-compliant file
+					StringBuffer stringBuffer = new StringBuffer();
+					stringBuffer = stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
+					stringBuffer = stringBuffer.append("The default format is as follows:\n");
+					stringBuffer = stringBuffer.append(Constants.SUBJECT_IDENTIFIER + "," + "DATE_COLLECTED,FIELDNAME1,FIELDNAME2,FIELDNAME3,FIELDNAMEX\n");
+					stringBuffer = stringBuffer.append("[subjectId],[dateCollected],[field1value],[field2value],[field3value],[fieldXvalue]\n");
+					stringBuffer = stringBuffer.append("[..,],[...],[...],[...],[...],[...]\n");
+					
+					throw new FileFormatException(stringBuffer.toString());
 				}
 				else
 				{
-					fieldData = new FieldData();
-					fieldData.setCollection(this.collection);
-					
-					// Loop through all columns in current row in file
+				*/
+					// Loop through columns in current row in file, starting from the 2th position
 					for (int i = 0; i < stringLineArray.length; i++)
 					{
-						// Store actual file cell data
-						String cellData = stringLineArray[i];
-						
-						// Print out column details
-						log.info(fieldNameArray[i] + "\t" + cellData);
-
-						switch (i)
-						{
-						case 0:
-							// First column should be the Subject identifier
+						// Field data actually the 2th colum onward
+						if(i > 1){
+							// Print out column details
+							log.info(fieldNameArray[i] + "\t" + stringLineArray[i]);
 							
-							/*
-							// TODO: studyService.getSubject(String subjectUid))
-							// eg: person = studyService.getSubject(cellData));
-							try
-							{
-								// Try to cast cellData to person/subject identifier
-								person = new Person(new Long(cellData));
-							}
-							catch (NumberFormatException nfe)
-							{
-								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
-								log.error("Using default PersonId of 1");
-								person = new Person(new Long(1));
-							}
-
-							// Set Vital status of person/subject
-							VitalStatus vitalStatus = new VitalStatus(new Long(1));
-							vitalStatus.setStatusName("Alive");
-							person.setVitalStatus(vitalStatus);
-
-							// Set Person
-							fieldData.setPerson(person);
-							*/
-							try
-							{
-								// Try to cast cellData to person/subject identifier
-								fieldData.setPersonId(new Long(cellData));
-							}
-							catch (NumberFormatException nfe)
-							{
-								log.error("PhenotypicImport: Tried to cast PersonId/SubjectUid to a number and failed.... " + nfe);
-								log.error("Using default PersonId of 1");
-								fieldData.setPersonId(new Long(1));
-							}
-
-							break;
-						case 1:
-							// Second column should be date collected
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
-							dateCollected = dateFormat.parse(cellData);
-							
-							fieldData.setDateCollected(dateCollected);
-							
-							break;
-						default:
 							try{
-								log.info("Creating new field data for: " + stringLineArray[0] + "\t" + stringLineArray[1] + "\t" + fieldNameArray[i] + "\t" + cellData);
+								log.info("Creating new field data for: SUBJECTID: " + stringLineArray[0] 
+								                                  + "\tDATE_COLLECTED: " + stringLineArray[1] 
+								                                  + "\tFIELD: " + fieldNameArray[i] 
+								                                  + "\tVALUE: " + stringLineArray[i]);
+								
+								FieldData fieldData = new FieldData();
+								
+								fieldData.setCollection(this.collection);
+								
+								// First/0th column should be the personId
+								fieldData.setPersonId(new Long(stringLineArray[0]));
+								
+								// Second/1th column should be date collected
+								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+								fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
 								
 								// Set field
 								field = new Field();
 								field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
 								fieldData.setField(field);
 								
-								// Set fieldData value
-								fieldData.setValue(cellData);
+								// Other/ith columns should be the field data value
+								fieldData.setValue(stringLineArray[i]);
 								
 								// Try to create the field data
 								phenotypicDao.createFieldData(fieldData);
@@ -251,19 +229,18 @@ public class PhenotypicImport
 							catch(org.apache.wicket.WicketRuntimeException wre){
 								log.error("Error with Wicket: " + wre.getMessage());
 							}
-
-							continue;
 						}
 
-						curPos += cellData.length() + 1; // update progress
+						// Update progress
+						curPos += stringLineArray[i].length() + 1; // update progress
+						
+						// Debug only - Show progress and speed
+						log.info("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
 					}
-				}
+				//}
 				
-				log.info("\nNext line...");
+				log.info("\n");
 				subjectCount++;
-
-				// Debug only - Show progress and speed
-				log.info("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
 			}
 		}
 		catch (IOException ioe)
@@ -309,6 +286,7 @@ public class PhenotypicImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
+		log.info("Inserted " + subjectCount * fieldCount + " rows of data");
 	}
 
 	/**
