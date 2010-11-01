@@ -88,7 +88,7 @@ public class StudyServiceImpl implements IStudyService{
 			SecurityManager securityManager =  ThreadContext.getSecurityManager();
 			Subject currentUser = SecurityUtils.getSubject();
 			
-			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 				studyDao.create(studyEntity);
 				iLdapUserDao.createStudy(studyEntity.getName(), selectedApplications, au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
 			}else{
@@ -104,7 +104,7 @@ public class StudyServiceImpl implements IStudyService{
 		
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 			studyDao.updateStudy(studyEntity);
 			iLdapUserDao.updateStudyApplication(studyEntity.getName(), selectedApplications,au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
 		}else{
@@ -188,7 +188,7 @@ public class StudyServiceImpl implements IStudyService{
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
-		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
 			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
 		}
@@ -202,7 +202,7 @@ public class StudyServiceImpl implements IStudyService{
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
-		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN)){
+		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 			log.warn("Unauthorised request to update study component by " + currentUser .getPrincipal());			
 			throw new UnAuthorizedOperation("The logged in user does not have the permission to update this Study Component.");
 		}
