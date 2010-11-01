@@ -113,45 +113,6 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	
-	private boolean validateDeleteStudy(Study studyEntity, StringBuffer messageBuffer){
-		int validationErrors =0;
-		boolean isDeletable = true;
-		/*Check if there are study components linked to the study */
-		if(studyEntity.getLinkStudyStudycomps().size() > 0){
-			messageBuffer.append("\nThe study is linked to Study Components.");
-			validationErrors++;
-		}
-		
-		/* Check if the study has Sites linked to the study in LDAP or Backend*/
-		if(studyEntity.getLinkStudyStudysites().size() > 0 ){
-			messageBuffer.append("\n The study is linked to Study Sites.");
-			validationErrors++;
-		}
-		
-		/*Check if the study has subjects linked via the backend database */
-		if(studyEntity.getLinkSubjectStudies().size() > 0){
-			messageBuffer.append("\n There are Subjects linked to the Study.");
-			validationErrors++;
-		}
-		
-		/* Check if the study is linked with Subjects via Contacts */
-		if(studyEntity.getLinkSubjectContacts().size() > 0){
-			messageBuffer.append("\n There are Contacts  linked to the Study via Subjects.");
-			validationErrors++;
-		}
-		
-		/* Check if the study has Sub-Study linked to the study*/
-		if(studyEntity.getLinkStudySubstudiesForStudyKey().size() > 0){
-			messageBuffer.append("\n There are sub-studies refering to this Registry study.");
-			validationErrors++;
-		}
-		
-		if(validationErrors > 0){
-			isDeletable = false;
-		}
-		return isDeletable;
-	}
-	
 	public Study getStudy(Long id){
 		return studyDao.getStudy(id);
 	}
