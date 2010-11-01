@@ -2,10 +2,6 @@ package au.org.theark.study.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-
-import javax.naming.InvalidNameException;
-
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
@@ -14,7 +10,6 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.EtaUser;
 import au.org.theark.study.model.entity.Person;
-import au.org.theark.study.web.form.ModuleVo;
 
 public interface IUserService {
 	
@@ -87,7 +82,7 @@ public interface IUserService {
 	 * @return
 	 * @throws ArkSystemException
 	 */
-	public Collection<ModuleVo> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
+	public Collection<ModuleVO> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
 	
 
 }
