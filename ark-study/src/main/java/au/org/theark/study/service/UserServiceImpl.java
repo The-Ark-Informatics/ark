@@ -27,7 +27,6 @@ import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IUserDao;
 import au.org.theark.study.model.entity.EtaUser;
 import au.org.theark.study.model.entity.Person;
-import au.org.theark.study.web.form.ModuleVo;
 
 
 @Transactional
@@ -140,13 +139,13 @@ public class UserServiceImpl implements IUserService {
 		return iLdapUserDao.getUser(username);
 	}
 	
-	public Collection<ModuleVo> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
+	public Collection<ModuleVO> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
 		
 		Set<String> modules = iLdapUserDao.getModulesLinkedToStudy(studyNameCN, isForDisplay);
-		Collection<ModuleVo> modulesLinkedToStudy = new ArrayList<ModuleVo>();
+		Collection<ModuleVO> modulesLinkedToStudy = new ArrayList<ModuleVO>();
 		for (String moduleName : modules) {
-			ModuleVo moduleVo = new ModuleVo();
-			moduleVo.setModuleName(moduleName);
+			ModuleVO moduleVo = new ModuleVO();
+			moduleVo.setModule(moduleName);
 			modulesLinkedToStudy.add(moduleVo);
 		}
 		return modulesLinkedToStudy;
