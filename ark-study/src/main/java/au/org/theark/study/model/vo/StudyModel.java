@@ -7,8 +7,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.web.form.ModuleVo;
 
 @SuppressWarnings("serial")
 public class StudyModel implements Serializable{
@@ -17,8 +17,8 @@ public class StudyModel implements Serializable{
 	private Set<String> lmcAvailableApps;
 	private Set<String> lmcSelectedApps;
 	private List<Study> studyList;
-	private Collection<ModuleVo> modulesAvailable;
-	private Collection<ModuleVo> modulesSelected;
+	private Collection<ModuleVO> modulesAvailable;
+	private Collection<ModuleVO> modulesSelected;
 	private String studySummaryLabel;
 	
 	public StudyModel(){
@@ -26,8 +26,8 @@ public class StudyModel implements Serializable{
 		lmcAvailableApps = new HashSet<String>();
 		lmcSelectedApps = new HashSet<String>();
 		studyList = new ArrayList<Study>();
-		modulesAvailable = new ArrayList<ModuleVo>();
-		modulesSelected = new ArrayList<ModuleVo>();
+		modulesAvailable = new ArrayList<ModuleVO>();
+		modulesSelected = new ArrayList<ModuleVO>();
 	}
 	
 	public Study getStudy() {
@@ -59,19 +59,19 @@ public class StudyModel implements Serializable{
 		this.studyList = studyList;
 	}
 
-	public Collection<ModuleVo> getModulesAvailable() {
+	public Collection<ModuleVO> getModulesAvailable() {
 		return modulesAvailable;
 	}
 
-	public void setModulesAvailable(Collection<ModuleVo> modulesAvailable) {
+	public void setModulesAvailable(Collection<ModuleVO> modulesAvailable) {
 		this.modulesAvailable = modulesAvailable;
 	}
 
-	public Collection<ModuleVo> getModulesSelected() {
+	public Collection<ModuleVO> getModulesSelected() {
 		return modulesSelected;
 	}
 
-	public void setModulesSelected(Collection<ModuleVo> modulesSelected) {
+	public void setModulesSelected(Collection<ModuleVO> modulesSelected) {
 		this.modulesSelected = modulesSelected;
 	}
 
