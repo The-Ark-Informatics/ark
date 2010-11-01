@@ -15,17 +15,14 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
-import au.org.theark.study.web.form.ModuleVo;
 
 public class SearchResults extends Panel{
 
@@ -110,20 +107,14 @@ public class SearchResults extends Panel{
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getStudyKey());
 				studyContainerForm.getModelObject().setStudy(study);
-				List<ModuleVO> modules;
-				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
-				Collection<ModuleVo> modulesLinkedToStudy = new  ArrayList<ModuleVo>();
+				List<ModuleVO> modules = new ArrayList<ModuleVO>();
+				Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
 				try {
 					modules = userService.getModules(true);//source this from a static list or on application startup 
-					for (ModuleVO moduleVO : modules) {
-						ModuleVo moduleVo = new ModuleVo();
-						moduleVo.setModuleName(moduleVO.getModule());
-						moduleVoList.add(moduleVo);
-					}
-					
 					modulesLinkedToStudy  = userService.getModulesLinkedToStudy(study.getName(), true);
 					studyContainerForm.getModelObject().setModulesSelected(modulesLinkedToStudy);
-					studyContainerForm.getModelObject().setModulesAvailable(moduleVoList);
+					studyContainerForm.getModelObject().setModulesAvailable(modules);
+					
 				} catch (ArkSystemException e) {
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
