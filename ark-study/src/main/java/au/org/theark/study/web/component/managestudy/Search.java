@@ -22,8 +22,6 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.SearchForm;
 
-import au.org.theark.study.web.form.ModuleVo;
-
 public class Search extends Panel{
 
 	/* Search Results returned based on the search criteria */
@@ -112,21 +110,16 @@ public class Search extends Panel{
 				
 				containerForm.setModelObject(new StudyModel());
 
-				List<ModuleVO> modules;
-				List<ModuleVo> moduleVoList = new ArrayList<ModuleVo>();
+				List<ModuleVO> modules = new ArrayList<ModuleVO>();
+				
 				try {
 					modules = userService.getModules(true);//source this from a static list or on application startup 
-					for (ModuleVO moduleVO : modules) {
-						ModuleVo moduleVo = new ModuleVo();
-						moduleVo.setModuleName(moduleVO.getModule());
-						moduleVoList.add(moduleVo);
-					}
 				} catch (ArkSystemException e) {
 					//log the error message and notify sys admin to take appropriate action
 					this.error("A system error has occured. Please try after some time.");
 				}
 				
-				containerForm.getModelObject().setModulesAvailable(moduleVoList);
+				containerForm.getModelObject().setModulesAvailable(modules);
 				//If the selected side has items then its re-using the first object
 				processDetail(target, Constants.MODE_NEW);
 			}
