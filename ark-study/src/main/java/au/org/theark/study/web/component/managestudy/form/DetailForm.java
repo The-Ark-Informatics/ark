@@ -38,7 +38,6 @@ import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.form.ModuleVo;
 
 public class DetailForm extends Form<StudyModel>{
 	
@@ -155,11 +154,11 @@ public class DetailForm extends Form<StudyModel>{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{	
 				StudyModel model = containerForm.getModelObject();
-				Collection<ModuleVo> moduleVoCollection = containerForm.getModelObject().getModulesSelected(); 
+				Collection<ModuleVO> moduleVoCollection = containerForm.getModelObject().getModulesSelected(); 
 				//Convert to Set<String> this can be removed later by changing the interface
 				Set<String> moduleList = new HashSet<String>();
-				for (ModuleVo moduleVo : moduleVoCollection) {
-					moduleList.add(moduleVo.getModuleName());
+				for (ModuleVO moduleVO : moduleVoCollection) {
+					moduleList.add(moduleVO.getModule());
 				}
 				model.setLmcSelectedApps(moduleList);
 				target.addComponent(detailsContainer);
@@ -242,9 +241,9 @@ public class DetailForm extends Form<StudyModel>{
 	private void initPalette(){
 		
 		CompoundPropertyModel<StudyModel> sm  = (CompoundPropertyModel<StudyModel> )containerForm.getModel(); //details.getCpm();
-		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("moduleName", "moduleName");
-		PropertyModel<Collection<ModuleVo>> selectedModPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesSelected");
-		PropertyModel<Collection<ModuleVo>> lhsPm = new PropertyModel<Collection<ModuleVo>>(sm,"modulesAvailable");
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("module", "module");
+		PropertyModel<Collection<ModuleVO>> selectedModPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesSelected");
+		PropertyModel<Collection<ModuleVO>> lhsPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesAvailable");
 		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,false);	
 	}
 	
