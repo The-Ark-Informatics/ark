@@ -59,6 +59,19 @@ public class Constants {
 	public static final String TAB_MODULE_SUBJECT="tab.module.subject";
 	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
 	
+	public static final String STUDY_KEY="studyKey";
+	public static final String STUDY_NAME="name";
+	public static final String DATE_OF_APPLICATION="dateOfApplication";
+	public static final String EST_YEAR_OF_COMPLETION="estimatedYearOfCompletion";
+	public static final String CHIEF_INVESTIGATOR ="chiefInvestigator";
+	public static final String CONTACT_PERSON ="contactPerson";
+	public static final String STUDY_STATUS="studyStatus";
+	public static final String STUDY_STATUS_ARCHIVE="Archive";
+	
+	public static final String STUDY_SERVICE= "studyService";
+	public static final String STUDY_DAO ="studyDao";
+
+	
 	
 	
 }
