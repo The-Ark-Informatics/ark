@@ -63,6 +63,16 @@ public class CollectionContainer extends Panel
 			}
 		});
 		
+		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.VALIDATE_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.validatePhenotypicDataFile", this, null))
+		{
+			public void onSubmit()
+			{
+				log.info("Validate Phenotypic Data File");
+				serviceInterface.validatePhenotypicDataFile();
+			}
+		});
+		
+		
 		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.IMPORT_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.importPhenotypicDataFile", this, null))
 		{
 			public void onSubmit()
