@@ -1,9 +1,12 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import au.org.theark.study.model.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyComp;
+
+;
 /**
  * A container for Study Component related function. 
  * @author nivedann
