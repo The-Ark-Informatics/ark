@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
+import au.org.theark.core.vo.SiteVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
 
@@ -32,13 +33,13 @@ public class SearchResultList extends Panel{
 
 	
 	
-	public PageableListView<SiteVo> buildPageableListView(IModel iModel){
+	public PageableListView<SiteVO> buildPageableListView(IModel iModel){
 		
-		PageableListView<SiteVo> sitePageableListView = new PageableListView<SiteVo>("siteVoList", iModel, 10) {
+		PageableListView<SiteVO> sitePageableListView = new PageableListView<SiteVO>("siteVoList", iModel, 10) {
 			@Override
-			protected void populateItem(final ListItem<SiteVo> item) {
+			protected void populateItem(final ListItem<SiteVO> item) {
 				
-				SiteVo site = item.getModelObject();
+				SiteVO site = item.getModelObject();
 
 				item.add(buildLink(site));
 				
@@ -62,7 +63,7 @@ public class SearchResultList extends Panel{
 	
 	
 	@SuppressWarnings({ "unchecked", "serial" })
-	private AjaxLink buildLink(final SiteVo site) {
+	private AjaxLink buildLink(final SiteVO site) {
 		
 		AjaxLink link = new AjaxLink("siteVo.siteName") {
 

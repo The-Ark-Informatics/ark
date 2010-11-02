@@ -12,15 +12,15 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
 import au.org.theark.study.web.component.site.form.SiteForm;
 
 public class Details extends Panel{
 	
-	private CompoundPropertyModel<SiteModel> cpm;
+	private CompoundPropertyModel<SiteModelVO> cpm;
 	
 	@SpringBean(name ="studyService")
 	private IStudyService studyService;
@@ -47,7 +47,7 @@ public class Details extends Panel{
 		
 		siteForm = new SiteForm("siteForm",this,listContainer,detailsContainer,containerForm){
 			
-			protected void onSave(SiteModel siteModel, AjaxRequestTarget target){
+			protected void onSave(SiteModelVO siteModel, AjaxRequestTarget target){
 				//Invoke the service layer to save the Site details in LDAP
 				//Build the list of users who will be linked to this site
 				List<String> siteMembers = new ArrayList<String>();
@@ -80,8 +80,8 @@ public class Details extends Panel{
 			}
 			
 			protected void onCancel(AjaxRequestTarget target){
-				SiteModel siteModel = new SiteModel();
-				containerForm.setModelObject(siteModel);
+				SiteModelVO siteModelVO = new SiteModelVO();
+				containerForm.setModelObject(siteModelVO);
 				searchPanelContainer.setVisible(true);
 				target.addComponent(searchPanelContainer);
 			}

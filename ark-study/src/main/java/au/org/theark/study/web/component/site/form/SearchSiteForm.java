@@ -15,12 +15,13 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.study.model.entity.Person;
+import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteModel;
 
-public class SearchSiteForm extends Form<SiteModel>{
+
+public class SearchSiteForm extends Form<SiteModelVO>{
 
 	private TextField<String> siteNameTxtFld;
 	private DropDownChoice<Person> siteContactDDC;
@@ -31,7 +32,7 @@ public class SearchSiteForm extends Form<SiteModel>{
 	private AjaxButton newButton;
 	private Button resetButton;
 
-	public SearchSiteForm(String id,CompoundPropertyModel<SiteModel> model, List<Person> availablePersons) {
+	public SearchSiteForm(String id,CompoundPropertyModel<SiteModelVO> model, List<Person> availablePersons) {
 		
 		super(id,model);
 		

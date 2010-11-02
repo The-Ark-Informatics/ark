@@ -6,20 +6,19 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.vo.SiteModelVO;
+import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.Details;
-import au.org.theark.study.web.component.site.SiteModel;
-import au.org.theark.study.web.component.site.SiteVo;
 
-public class SiteForm extends Form<SiteModel>{
+public class SiteForm extends Form<SiteModelVO>{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -52,7 +51,7 @@ public class SiteForm extends Form<SiteModel>{
 				detailsContainer.setVisible(false);
 				target.addComponent(detailsContainer);
 				target.addComponent(resultListContainer);
-				containerForm.getModelObject().setSiteVo(new SiteVo());
+				containerForm.getModelObject().setSiteVo(new SiteVO());
 				onCancel(target);
 			}
 		};
@@ -62,9 +61,9 @@ public class SiteForm extends Form<SiteModel>{
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//CompoundPropertyModel<SiteModel> cpm  = detailsPanel.getCpm();
+				//CompoundPropertyModel<SiteModelVO> cpm  = detailsPanel.getCpm();
 				
-				//SiteModel siteModel = cpm.getObject();
+				//SiteModelVO siteModel = cpm.getObject();
 				target.addComponent(detailsContainer);
 				onSave(containerForm.getModelObject(), target);
 			}
@@ -104,7 +103,7 @@ public class SiteForm extends Form<SiteModel>{
 	}
 	
 	
-	protected void onSave(SiteModel siteModel, AjaxRequestTarget target){
+	protected void onSave(SiteModelVO siteModel, AjaxRequestTarget target){
 		
 	}
 	
@@ -112,7 +111,7 @@ public class SiteForm extends Form<SiteModel>{
 		
 	}
 	
-	protected void  onArchive(StudyModel studyModel,AjaxRequestTarget target){
+	protected void  onArchive(StudyModelVO studyModel,AjaxRequestTarget target){
 		
 	}
 	

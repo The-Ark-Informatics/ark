@@ -11,7 +11,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.Person;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.vo.SiteModelVO;
+import au.org.theark.core.vo.SiteVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
@@ -21,7 +23,7 @@ public class Search extends Panel{
 
 	private FeedbackPanel fbPanel;
 	
-	private PageableListView<SiteVo> listView;
+	private PageableListView<SiteVO> listView;
 	
 	private WebMarkupContainer searchMarkupContainer;
 	//The container to wrap the Search Result List
@@ -36,7 +38,7 @@ public class Search extends Panel{
 	
 	
 	/*Constructor*/
-	public Search(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer,PageableListView<SiteVo> listView,  
+	public Search(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer,PageableListView<SiteVO> listView,  
 						 WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, ContainerForm siteContainerForm) {
 		super(id);
 		this.searchMarkupContainer =  searchMarkupContainer;
@@ -49,7 +51,7 @@ public class Search extends Panel{
 	
 	
 	@SuppressWarnings("serial")
-	public void initialisePanel(CompoundPropertyModel<SiteModel> siteModelCpm){
+	public void initialisePanel(CompoundPropertyModel<SiteModelVO> siteModelCpm){
 		
 		
 		//Get the study id from the session and get the study
@@ -62,7 +64,7 @@ public class Search extends Panel{
 				
 				//Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(fbPanel);
-				List<SiteVo> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
+				List<SiteVO> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
 				if(resultList != null && resultList.size() == 0){
 					this.info("Site with the specified criteria does not exist in the system.");
 					target.addComponent(fbPanel);
@@ -76,7 +78,7 @@ public class Search extends Panel{
 			
 			protected void onNew(AjaxRequestTarget target){
 				// Show the details panel name and description
-				SiteModel siteModel = new SiteModel();
+				SiteModelVO siteModel = new SiteModelVO();
 				siteModel.setMode(Constants.MODE_NEW);
 				containerForm.setModelObject(siteModel);
 				processDetail(target, Constants.MODE_NEW);

@@ -14,6 +14,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.vo.SiteModelVO;
+import au.org.theark.core.vo.SiteVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
@@ -28,7 +30,7 @@ public class SiteContainerPanel extends Panel{
 	private FeedbackPanel feedBackPanel;
 	
 	/*The object that will house the data for the site use case */
-	private CompoundPropertyModel<SiteModel> siteModelCpm;
+	private CompoundPropertyModel<SiteModelVO> siteModelCpm;
 	
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
@@ -36,7 +38,7 @@ public class SiteContainerPanel extends Panel{
 	
 	//The type of object returned by the List
 	private IModel<Object> iModel;
-	private PageableListView<SiteVo> listView;
+	private PageableListView<SiteVO> listView;
 	private SearchResultList searchResultPanel;
 	private WebMarkupContainer resultListContainer;
 	
@@ -90,10 +92,10 @@ public class SiteContainerPanel extends Panel{
 	}
 	
 	private WebMarkupContainer initialiseSearchPanel(){
-		SiteVo siteVo = new SiteVo();
+		SiteVO siteVo = new SiteVO();
 		
-		List<SiteVo> resultList = studyService.getSite(siteVo);
-		//List<SiteVo> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
+		List<SiteVO> resultList = studyService.getSite(siteVo);
+		//List<SiteVO> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
 		siteContainerForm.getModelObject().setSiteVoList(resultList);
 		searchSitesPanel = new Search("searchSitePanel",feedBackPanel,searchPanelContainer,listView, resultListContainer,detailPanelContainer,siteContainerForm);
 		searchSitesPanel.initialisePanel(siteModelCpm);
@@ -136,7 +138,7 @@ public class SiteContainerPanel extends Panel{
 		super(id);
 		
 		/*Initialise the CPM */
-		siteModelCpm = new CompoundPropertyModel<SiteModel>(new SiteModel());
+		siteModelCpm = new CompoundPropertyModel<SiteModelVO>(new SiteModelVO());
 		
 	
 		initialiseMarkupContainers();
