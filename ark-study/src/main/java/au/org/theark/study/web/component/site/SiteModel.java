@@ -4,8 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudySite;
+import au.org.theark.core.model.study.entity.StudySite;
 
 public class SiteModel implements Serializable{
 	
