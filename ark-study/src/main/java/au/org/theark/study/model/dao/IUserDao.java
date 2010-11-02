@@ -3,8 +3,9 @@ package au.org.theark.study.model.dao;
 import java.util.List;
 
 import au.org.theark.core.exception.PersonNotFoundException;
-import au.org.theark.study.model.entity.EtaUser;
-import au.org.theark.study.model.entity.Person;
+import au.org.theark.core.model.study.entity.EtaUser;
+import au.org.theark.core.model.study.entity.Person;
+;
 /*
  * Interface that works on the User object with Hibernate
  */

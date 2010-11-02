@@ -6,17 +6,18 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.LinkSubjectStudy;
-import au.org.theark.study.model.entity.Phone;
-import au.org.theark.study.model.entity.PhoneType;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyComp;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.entity.SubjectStatus;
-import au.org.theark.study.model.entity.TitleType;
-import au.org.theark.study.model.entity.VitalStatus;
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.SubjectVO;
+
 
 public interface IStudyDao {
 

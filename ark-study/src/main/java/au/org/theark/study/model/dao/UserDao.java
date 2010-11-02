@@ -8,8 +8,9 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.PersonNotFoundException;
-import au.org.theark.study.model.entity.EtaUser;
-import au.org.theark.study.model.entity.Person;
+import au.org.theark.core.model.study.entity.EtaUser;
+import au.org.theark.core.model.study.entity.Person;
+
 
 /**
  * 
