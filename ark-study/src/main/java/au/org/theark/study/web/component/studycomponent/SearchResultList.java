@@ -12,7 +12,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
