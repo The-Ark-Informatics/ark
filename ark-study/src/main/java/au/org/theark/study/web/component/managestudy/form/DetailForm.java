@@ -32,19 +32,24 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
-public class DetailForm extends Form<StudyModel>{
+public class DetailForm extends Form<StudyModelVO>{
 	
 
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	private WebMarkupContainer detailsFormContainer;
 	private WebMarkupContainer summaryPanelContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
@@ -84,11 +89,11 @@ public class DetailForm extends Form<StudyModel>{
 	AjaxButton editCancelButton;
 	List<ModuleVO> modules;
 	
-	protected void onEdit(StudyModel studyModel, AjaxRequestTarget target){
+	protected void onEdit(StudyModelVO studyModel, AjaxRequestTarget target){
 		
 	}
 	
-	protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
+	protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
 		
 	}
 	
@@ -96,7 +101,7 @@ public class DetailForm extends Form<StudyModel>{
 		
 	}
 	
-	protected void  onArchive(StudyModel studyModel,AjaxRequestTarget target){
+	protected void  onArchive(StudyModelVO studyModel,AjaxRequestTarget target){
 		
 	}
 	
@@ -153,7 +158,7 @@ public class DetailForm extends Form<StudyModel>{
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{	
-				StudyModel model = containerForm.getModelObject();
+				StudyModelVO model = containerForm.getModelObject();
 				Collection<ModuleVO> moduleVoCollection = containerForm.getModelObject().getModulesSelected(); 
 				//Convert to Set<String> this can be removed later by changing the interface
 				Set<String> moduleList = new HashSet<String>();
@@ -224,10 +229,10 @@ public class DetailForm extends Form<StudyModel>{
 	
 		initPalette();
 		
-		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel> )containerForm.getModel(); //details.getCpm();
+		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO> )containerForm.getModel(); //details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
-		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModel> )containerForm.getModel(),"study");
+		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModelVO> )containerForm.getModel(),"study");
 		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
 		attachValidation();
@@ -240,7 +245,7 @@ public class DetailForm extends Form<StudyModel>{
 	
 	private void initPalette(){
 		
-		CompoundPropertyModel<StudyModel> sm  = (CompoundPropertyModel<StudyModel> )containerForm.getModel(); //details.getCpm();
+		CompoundPropertyModel<StudyModelVO> sm  = (CompoundPropertyModel<StudyModelVO> )containerForm.getModel(); //details.getCpm();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("module", "module");
 		PropertyModel<Collection<ModuleVO>> selectedModPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesSelected");
 		PropertyModel<Collection<ModuleVO>> lhsPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesAvailable");
@@ -248,8 +253,8 @@ public class DetailForm extends Form<StudyModel>{
 	}
 	
 	@SuppressWarnings("unchecked")
-	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModel> studyCmpModel){
-		List<StudyStatus>  studyStatusList = studyService.getListOfStudyStatus();
+	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel){
+		List<StudyStatus>  studyStatusList = iArkCommonService.getListOfStudyStatus();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS,studyStatusList,defaultChoiceRenderer);
 	}

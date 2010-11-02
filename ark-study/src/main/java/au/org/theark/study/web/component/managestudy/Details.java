@@ -12,7 +12,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
@@ -95,7 +95,7 @@ public class Details  extends Panel{
 									detailFormContainer,
 									studyContainerForm){
 			
-			protected void onSave(StudyModel studyModel, AjaxRequestTarget target){
+			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
 				
 				try{
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
@@ -138,7 +138,7 @@ public class Details  extends Panel{
 			protected void onCancel(AjaxRequestTarget target){
 				
 				//Reset the model object.This is very important at this event.
-				studyContainerForm.setModelObject(new StudyModel());
+				studyContainerForm.setModelObject(new StudyModelVO());
 				
 				summaryContainer.setVisible(true);
 				listContainer.setVisible(false);
@@ -153,7 +153,7 @@ public class Details  extends Panel{
 				target.addComponent(feedBackPanel);
 			}
 			
-			protected void onArchive(StudyModel studyModel,AjaxRequestTarget target){
+			protected void onArchive(StudyModelVO studyModel,AjaxRequestTarget target){
 				try{
 					
 					service.archiveStudy(studyModel.getStudy());

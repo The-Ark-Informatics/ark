@@ -12,10 +12,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -40,8 +41,8 @@ public class Search extends Panel{
 	private WebMarkupContainer detailFormContainer;
 	private Details details;
 	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -85,14 +86,14 @@ public class Search extends Panel{
 	
 	public void initialisePanel(){
 		
-		SearchForm sform = new SearchForm("searchForm",(CompoundPropertyModel<StudyModel>)containerForm.getModel(), studyStatusList){
+		SearchForm sform = new SearchForm("searchForm",(CompoundPropertyModel<StudyModelVO>)containerForm.getModel(), studyStatusList){
 			
 			/*Event handler for user's search request*/
 			protected  void onSearch(AjaxRequestTarget target){
 
 				target.addComponent(fbPanel);
-				
-				resultList = studyService.getStudy(containerForm.getModelObject().getStudy());
+				resultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
+				//resultList = studyService.getStudy(containerForm.getModelObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
 					containerForm.getModelObject().setStudyList(resultList);
 					this.info("There are no records that matched your query. Please modify your filter");
@@ -108,7 +109,7 @@ public class Search extends Panel{
 			
 			protected  void onNew(AjaxRequestTarget target){
 				
-				containerForm.setModelObject(new StudyModel());
+				containerForm.setModelObject(new StudyModelVO());
 
 				List<ModuleVO> modules = new ArrayList<ModuleVO>();
 				

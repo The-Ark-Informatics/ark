@@ -19,13 +19,13 @@ import org.apache.wicket.model.PropertyModel;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.web.Constants;
 
-public class SearchForm extends Form<StudyModel>{
+public class SearchForm extends Form<StudyModelVO>{
 
 	/* The Input Components that will be part of the Search Form */
 	private TextField<String> studyIdTxtFld; 
@@ -37,9 +37,9 @@ public class SearchForm extends Form<StudyModel>{
 	private AjaxButton newButton;
 	private Button resetButton;
 	private List<StudyStatus>  studyStatusList;
-	private  CompoundPropertyModel<StudyModel> cpmModel;
+	private  CompoundPropertyModel<StudyModelVO> cpmModel;
 	/* Constructor */
-	public SearchForm(String id, CompoundPropertyModel<StudyModel> model, List<StudyStatus>  statusList) {
+	public SearchForm(String id, CompoundPropertyModel<StudyModelVO> model, List<StudyStatus>  statusList) {
 		
 		super(id);
 		cpmModel = model;
@@ -87,7 +87,7 @@ public class SearchForm extends Form<StudyModel>{
 			}
 		};
 		
-		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)cpmModel;
+		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>)cpmModel;
 		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
 		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
 		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study

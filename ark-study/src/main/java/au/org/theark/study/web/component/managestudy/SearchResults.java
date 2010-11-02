@@ -18,9 +18,10 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
@@ -75,7 +76,7 @@ public class SearchResults extends Panel{
 					item.add(new Label("contact", ""));//the ID here must match the ones in mark-up
 				}
 				
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);//TODO Change this to DATE_FORMAT_AU
 				String dateOfApplication ="";
 				if(study.getDateOfApplication() != null){
 					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());

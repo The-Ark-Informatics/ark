@@ -10,8 +10,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.vo.StudyModel;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
@@ -24,8 +25,11 @@ public class StudyContainer extends Panel{
 	private Container containerForm;
 
 	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
+//	@SpringBean( name = Constants.STUDY_SERVICE)
+//	private IStudyService studyService;
+	
+	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	private IModel<Object> iModel;
 	private PageableListView<Study> pageableListView;
@@ -99,7 +103,8 @@ public class StudyContainer extends Panel{
 		
 		searchStudyPanel = new Search(	"searchStudyPanel",
 										feedBackPanel,
-										studyService.getListOfStudyStatus(),
+										iArkCommonService.getListOfStudyStatus(),
+										//studyService.getListOfStudyStatus(),
 										searchWebMarkupContainer,
 										pageableListView,
 										resultListContainer,
@@ -126,7 +131,10 @@ public class StudyContainer extends Panel{
 		
 		//Initialise with a default list of study	
 		Study study = new Study();
-		containerForm.getModelObject().setStudyList(studyService.getStudy(study));
+		
+		//Invoke the Common Service to look up the Study
+		containerForm.getModelObject().setStudyList(iArkCommonService.getStudy(study));
+		
 		//Pass this to the SearchResultListView control that will use this to render its values.
 		//Also pass in the markup container for searchPanel i.e the searchContainer 
 		SearchResults searchResultsPanel = new SearchResults(	"resultsPanel",
@@ -165,7 +173,7 @@ public class StudyContainer extends Panel{
 
 		initialiseMarkupContainers();
 		//Create the form that will hold the other controls
-		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModel>(new StudyModel()));
+		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
 		
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());		
