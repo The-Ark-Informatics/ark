@@ -1,6 +1,7 @@
 package au.org.theark.core.vo;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModuleVO implements Serializable{
 
