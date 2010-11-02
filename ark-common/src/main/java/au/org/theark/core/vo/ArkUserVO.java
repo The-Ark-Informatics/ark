@@ -1,7 +1,6 @@
 package au.org.theark.core.vo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 
