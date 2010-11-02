@@ -47,9 +47,10 @@ import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
+import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.StudyVO;
 import au.org.theark.study.service.Constants;
-import au.org.theark.study.web.component.site.SiteVo;
+
 
 @Repository("ldapUserDao")
 public class LdapUserDao implements ILdapUserDao{
@@ -212,7 +213,7 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 	}
 	
-	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException{
+	public void createSite(SiteVO siteVo) throws EntityExistsException,ArkSystemException{
 		log.info("\n create a site in ldap");
 		try {
 			
@@ -425,7 +426,7 @@ public class LdapUserDao implements ILdapUserDao{
 		public Object mapFromContext(Object ctx) {
 			log.info("\n LiteSiteContext Mapper...");
 			DirContextAdapter context = (DirContextAdapter) ctx;
-			SiteVo siteVo = new SiteVo();
+			SiteVO siteVo = new SiteVO();
 			siteVo.setSiteName(context.getStringAttribute("cn"));
 			siteVo.setSiteDescription(context.getStringAttribute("description"));
 			//If the schema has other attributes then set/add them here
@@ -1743,9 +1744,9 @@ public class LdapUserDao implements ILdapUserDao{
 		return listOfMembers;
 	}
 
-	public List<SiteVo> getSite(SiteVo siteVo){
+	public List<SiteVO> getSite(SiteVO siteVo){
 		
-		List<SiteVo> siteList = new ArrayList<SiteVo>();
+		List<SiteVO> siteList = new ArrayList<SiteVO>();
 		//Within the Site group ou=site find a site with the given name. This lookup is a very basic one and is not linked to a Study in context.
 		
 		AndFilter filter = new AndFilter();
@@ -1764,7 +1765,7 @@ public class LdapUserDao implements ILdapUserDao{
 		
 	}
 	
-	public void updateSite(SiteVo siteVo)throws ArkSystemException{
+	public void updateSite(SiteVO siteVo)throws ArkSystemException{
 		
 		try{
 			LdapName ldapName = new LdapName(getBaseSiteDn());
