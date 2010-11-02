@@ -27,8 +27,8 @@ public interface IPhenotypicService {
 	// Status
 	public Status getStatusByName(String statusName);
 	
-	// Test stub
-	public void testPhenotypicImport();
+	// Validate phenotypic data file
+	public void validatePhenotypicDataFile();
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
