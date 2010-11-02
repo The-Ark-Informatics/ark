@@ -118,13 +118,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.getCollection(id);
 	}
-
-	public void testPhenotypicImport()
+	
+	public void createFieldData(FieldData fieldData)
 	{
-		log.info("testPhenotypicImport called");
+		phenotypicDao.createFieldData(fieldData);
 	}
-
-	public void importPhenotypicDataFile()
+	
+	public void validatePhenotypicDataFile()
 	{
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -133,9 +133,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		Collection collection = null;
 		
 		if (collectionId == null){
-			// TODO: use collectionId from session
 			log.info("Using default collectionId of 1");
-			collection = phenotypicDao.getCollection(new Long(1));	
+			collection = phenotypicDao.getCollection(new Long(1));
 		}
 		else{
 			log.info("Using collectionId in context");
@@ -155,7 +154,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			File file = new File(Constants.TEST_FILE);
 			InputStream is = new FileInputStream(file);
-			pi.processMatrixPhenoFile(is, file.length());
+			
+			log.info("Importing file");
+			pi.validateMatrixPhenoFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -171,8 +172,51 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		}
 	}
 
-	public void createFieldData(FieldData fieldData)
+	public void importPhenotypicDataFile()
 	{
-		phenotypicDao.createFieldData(fieldData);
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		
+		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
+		Collection collection = null;
+		
+		if (collectionId == null){
+			log.info("Using default collectionId of 1");
+			collection = phenotypicDao.getCollection(new Long(1));
+		}
+		else{
+			log.info("Using collectionId in context");
+			collection = phenotypicDao.getCollection(collectionId);
+		}
+		
+		try {
+			log.info("phenotypicImport.collection: " + collection.getName());
+		}
+		catch (NullPointerException npe){
+			log.error("Error with Collection...no object instatiated...");
+		}
+		
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, studyId, collection);
+	
+		try
+		{
+			File file = new File(Constants.TEST_FILE);
+			InputStream is = new FileInputStream(file);
+			
+			log.info("Importing file");
+			pi.importMatrixPhenoFile(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
 	}
 }
