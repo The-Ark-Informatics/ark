@@ -16,7 +16,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
-import au.org.theark.study.model.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.Details;
