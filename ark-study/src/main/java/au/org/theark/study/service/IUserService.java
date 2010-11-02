@@ -2,14 +2,17 @@ package au.org.theark.study.service;
 
 import java.util.Collection;
 import java.util.List;
+
+import javax.naming.InvalidNameException;
+
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.EtaUser;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
-import au.org.theark.study.model.entity.EtaUser;
-import au.org.theark.study.model.entity.Person;
 
 public interface IUserService {
 	

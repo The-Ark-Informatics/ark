@@ -19,21 +19,22 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
-import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.Phone;
-import au.org.theark.study.model.entity.PhoneType;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyComp;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.entity.SubjectStatus;
-import au.org.theark.study.model.entity.TitleType;
-import au.org.theark.study.model.entity.VitalStatus;
-import au.org.theark.study.model.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.site.SiteVo;
+
 
 @Transactional
 @Service(Constants.STUDY_SERVICE)
@@ -72,11 +73,11 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getListOfStudyStatus();
 	}
 	
-	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException{
+	public void createSite(SiteVO siteVo) throws EntityExistsException,ArkSystemException{
 		iLdapUserDao.createSite(siteVo);
 	}
 	
-	public List<SiteVo> getSite(SiteVo siteVo){
+	public List<SiteVO> getSite(SiteVO siteVo){
 		
 		return iLdapUserDao.getSite(siteVo);
 		
@@ -136,7 +137,7 @@ public class StudyServiceImpl implements IStudyService{
 		studyDao.updateStudy(studyEntity);
 	}
 	
-	public void updateSite(SiteVo siteVo)throws ArkSystemException{
+	public void updateSite(SiteVO siteVo)throws ArkSystemException{
 		iLdapUserDao.updateSite(siteVo);
 	}
 	

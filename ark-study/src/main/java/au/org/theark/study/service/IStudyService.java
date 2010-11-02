@@ -9,17 +9,20 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.Phone;
-import au.org.theark.study.model.entity.PhoneType;
-import au.org.theark.study.model.entity.Study;
-import au.org.theark.study.model.entity.StudyComp;
-import au.org.theark.study.model.entity.StudyStatus;
-import au.org.theark.study.model.entity.SubjectStatus;
-import au.org.theark.study.model.entity.TitleType;
-import au.org.theark.study.model.entity.VitalStatus;
-import au.org.theark.study.model.vo.SubjectVO;
-import au.org.theark.study.web.component.site.SiteVo;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.vo.SubjectVO;
+
+
+
 
 public interface IStudyService {
 	/**
@@ -51,11 +54,11 @@ public interface IStudyService {
 	
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation,StatusNotAvailableException, ArkSystemException;
 	
-	public void createSite(SiteVo siteVo) throws EntityExistsException,ArkSystemException; 
+	public void createSite(SiteVO siteVo) throws EntityExistsException,ArkSystemException; 
 	
-	public List<SiteVo> getSite(SiteVo siteVo);
+	public List<SiteVO> getSite(SiteVO siteVo);
 	
-	public void updateSite(SiteVo siteVo) throws ArkSystemException;
+	public void updateSite(SiteVO siteVo) throws ArkSystemException;
 	
 	/**
 	 * Search for Study components with a certain criteria.
