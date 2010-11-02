@@ -3,7 +3,9 @@ package au.org.theark.study.web.component.subject.form;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.vo.SubjectVO;
+
+
 
 /**
  * @author nivedann

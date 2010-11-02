@@ -22,11 +22,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
-import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.SubjectStatus;
-import au.org.theark.study.model.entity.TitleType;
-import au.org.theark.study.model.entity.VitalStatus;
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.Details;
@@ -108,7 +108,7 @@ public class DetailsForm extends Form<SubjectVO>{
 	
 	public void initialiseForm(){
 		
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_KEY);
+		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);

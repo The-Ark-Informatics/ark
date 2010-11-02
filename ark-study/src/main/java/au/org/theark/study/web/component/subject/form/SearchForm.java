@@ -24,12 +24,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.study.model.entity.GenderType;
-import au.org.theark.study.model.entity.Person;
-import au.org.theark.study.model.entity.SubjectStatus;
-import au.org.theark.study.model.entity.VitalStatus;
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -174,7 +174,7 @@ public class SearchForm extends Form<SubjectVO>{
 		
 	}
 	public void initialiseForm(){
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_KEY);
+		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);

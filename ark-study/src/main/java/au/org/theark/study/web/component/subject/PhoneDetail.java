@@ -6,14 +6,14 @@
  */
 package au.org.theark.study.web.component.subject;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.PhoneForm;

@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
-import au.org.theark.study.model.entity.Phone;
+import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.SubjectDetailForm;
 

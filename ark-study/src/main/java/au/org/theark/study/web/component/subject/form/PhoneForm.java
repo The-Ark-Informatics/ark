@@ -18,8 +18,8 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.study.model.entity.PhoneType;
-import au.org.theark.study.model.vo.SubjectVO;
+import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
