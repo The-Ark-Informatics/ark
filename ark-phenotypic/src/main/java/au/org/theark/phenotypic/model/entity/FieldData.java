@@ -15,7 +15,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import au.org.theark.study.model.entity.Person;
+import au.org.theark.core.model.study.entity.Person;
+
+//import au.org.theark.study.model.entity.Person;
+
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
