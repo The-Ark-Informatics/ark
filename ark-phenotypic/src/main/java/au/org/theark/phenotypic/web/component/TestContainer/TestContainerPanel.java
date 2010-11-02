@@ -69,7 +69,6 @@ public class TestContainerPanel extends Panel
 			public void onSubmit()
 			{
 				log.info("Noah saves!");
-				serviceInterface.testPhenotypicImport();
 			}
 		});
 		add(testForm);
