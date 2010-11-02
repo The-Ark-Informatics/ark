@@ -17,8 +17,6 @@ import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.study.entity.Person;
 
-//import au.org.theark.study.model.entity.Person;
-
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
@@ -74,7 +72,7 @@ public class FieldData implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="FieldData_PK_Seq",sequenceName="GDMI.META_DATA_PK_SEQ")
+	@SequenceGenerator(name="FieldData_PK_Seq",sequenceName="PHENOTYPIC.FIELD_DATA_PK_SEQ")
 	@GeneratedValue(strategy=GenerationType.AUTO,generator="FieldData_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
