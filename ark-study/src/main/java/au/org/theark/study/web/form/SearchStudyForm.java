@@ -20,13 +20,14 @@ import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.model.entity.Study;
 import au.org.theark.study.model.entity.StudyStatus;
 import au.org.theark.study.model.vo.StudyModel;
 import au.org.theark.study.web.Constants;
 
 @SuppressWarnings("serial")
-public class SearchStudyForm extends Form<StudyModel>{
+public class SearchStudyForm extends Form<StudyModelVO>{
 	
 	private TextField<String> studyIdTxtFld; 
 	private TextField<String> studyNameTxtFld;
@@ -38,7 +39,7 @@ public class SearchStudyForm extends Form<StudyModel>{
 	private Button resetButton;
 	private List<StudyStatus>  studyStatusList;
 	
-	public SearchStudyForm(String id, CompoundPropertyModel<StudyModel> model, List<StudyStatus>  studyStatusList){
+	public SearchStudyForm(String id, CompoundPropertyModel<StudyModelVO> model, List<StudyStatus>  studyStatusList){
 		
 		super(id,model);
 		
@@ -87,7 +88,7 @@ public class SearchStudyForm extends Form<StudyModel>{
 		};
 		
 		
-		CompoundPropertyModel<StudyModel> studyCmpModel = (CompoundPropertyModel<StudyModel>)getModel();
+		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>)getModel();
 		//Create a propertyModel to bind the components of this form, the root which is StudyContainer
 		PropertyModel<Study> pm = new PropertyModel<Study>(studyCmpModel,"study");
 		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study
