@@ -17,6 +17,7 @@ public class Constants {
 	// Buttons
 	public static final String NEW_COLLECTION = "newCollection";
 	public static final String NEW_FIELD = "newField";
+	public static final String VALIDATE_PHENOTYPIC_DATA_FILE = "validatePhenotypicDataFile";
 	public static final String IMPORT_PHENOTYPIC_DATA_FILE = "importPhenotypicDataFile";
 	
 	public static final String NEW_BUTTON = "newButton";
@@ -29,5 +30,5 @@ public class Constants {
 	public static final String WATERTEST = "theGreatFlood";
 	public static final String NOAHTEST = "noahsRescue";
 
-	public static final String	STUDY_ID	= "studyId";
+	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 }
