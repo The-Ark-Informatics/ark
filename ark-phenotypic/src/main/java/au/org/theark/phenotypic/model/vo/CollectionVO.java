@@ -3,11 +3,11 @@ package au.org.theark.phenotypic.model.vo;
 import java.io.Serializable;
 import java.util.List;
 
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
-import au.org.theark.study.model.entity.Person;
 
 /**
  * @author cellis
