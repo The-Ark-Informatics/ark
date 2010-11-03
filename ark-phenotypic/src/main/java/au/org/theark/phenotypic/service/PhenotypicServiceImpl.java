@@ -124,8 +124,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.createFieldData(fieldData);
 	}
 	
-	public void validatePhenotypicDataFile()
+	public java.util.Collection<String> validatePhenotypicDataFile()
 	{
+		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
@@ -156,7 +157,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			InputStream is = new FileInputStream(file);
 			
 			log.info("Importing file");
-			pi.validateMatrixPhenoFile(is, file.length());
+			validationMessages = pi.validateMatrixPhenoFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -170,6 +171,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
+		return validationMessages;
 	}
 
 	public void importPhenotypicDataFile()
