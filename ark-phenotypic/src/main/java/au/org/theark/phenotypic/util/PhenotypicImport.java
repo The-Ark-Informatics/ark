@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.time.StopWatch;
@@ -47,6 +49,7 @@ public class PhenotypicImport
 	private List<Field>		fieldList;
 	private Long				studyId;
 	static Logger				log						= LoggerFactory.getLogger(PhenotypicImport.class);
+	java.util.Collection<String> validationMessages = null;
 
 	/**
 	 * PhenotypicImport constructor
@@ -59,6 +62,7 @@ public class PhenotypicImport
 		this.phenotypicDao = phenotypicDao;
 		this.collection = new Collection();
 		this.collection.setId(new Long(1));
+		this.validationMessages = new ArrayList<String>();
 	}
 
 	/**
@@ -76,6 +80,7 @@ public class PhenotypicImport
 		this.phenotypicDao = phenotypicDao;
 		this.studyId = studyId;
 		this.collection = collection;
+		this.validationMessages = new ArrayList<String>();
 	}
 	
 	/**
@@ -90,15 +95,10 @@ public class PhenotypicImport
 	 * @throws OutOfMemoryError
 	 *            out of memory Exception
 	 */
-	public void validateMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	public java.util.Collection<String> validateMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{	
-		PhenotypicValidator phenotypicValidator = null;
-		
 		if (phenotypicDao == null){
 			throw new PhenotypicSystemException("Aborting: Must have a phenotypic dao object defined before calling.");
-		}
-		else{
-			phenotypicValidator = new PhenotypicValidator();
 		}
 
 		curPos = 0;
@@ -163,13 +163,13 @@ public class PhenotypicImport
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 				
-				if(fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECT_IDENTIFIER)){
+				/*if(fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECT_IDENTIFIER)){
 					log.info("VALIDATION: Subject Identifier: " + fieldNameArray[0]);
 				}
 				
 				if(fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED)){
 					log.info("VALIDATION: Date Collected: " + fieldNameArray[1]);
-				}
+				}*/
 						
 				if (csvReader.getColumnCount() < 2)
 				{
@@ -191,13 +191,13 @@ public class PhenotypicImport
 						// Field data actually the 2th colum onward
 						if(i > 1){
 							// Print out column details
-							log.info(fieldNameArray[i] + "\t" + stringLineArray[i]);
+							//log.info(fieldNameArray[i] + "\t" + stringLineArray[i]);
 							
 							try{
-								log.info("Validating new field data for: SUBJECTID: " + stringLineArray[0] 
+								/*log.info("Validating new field data for: SUBJECTID: " + stringLineArray[0] 
 								                                  + "\tDATE_COLLECTED: " + stringLineArray[1] 
 								                                  + "\tFIELD: " + fieldNameArray[i] 
-								                                  + "\tVALUE: " + stringLineArray[i]);
+								                                  + "\tVALUE: " + stringLineArray[i]);*/
 								
 								FieldData fieldData = new FieldData();
 								
@@ -219,9 +219,7 @@ public class PhenotypicImport
 								fieldData.setValue(stringLineArray[i]);
 								
 								// Validate the field data
-								if(phenotypicValidator.isValidFieldData(fieldData)){
-									log.info("Validated data OK");
-								}
+								PhenotypicValidator.validateFieldData(fieldData, validationMessages);
 							}
 							catch(org.hibernate.PropertyValueException pve){
 								log.error("Error with DAO: " + pve.getMessage());
@@ -241,6 +239,18 @@ public class PhenotypicImport
 				
 				log.info("\n");
 				subjectCount++;
+			}
+			
+			if(validationMessages.size() > 0){
+				log.info("Validation messages: " + validationMessages.size());
+				for (Iterator<String> iterator = validationMessages.iterator(); iterator.hasNext();)
+				{
+					String errorMessage = iterator.next();
+					log.info(errorMessage);
+				}
+			}
+			else{
+				log.info("Validation is ok");
 			}
 		}
 		catch (IOException ioe)
@@ -287,6 +297,7 @@ public class PhenotypicImport
 			srcLength = -1;
 		}
 		log.info("Validated " + subjectCount * fieldCount + " rows of data");
+		return validationMessages;
 	}
 	
 	/**
