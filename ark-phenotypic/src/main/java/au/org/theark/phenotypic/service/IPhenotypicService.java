@@ -28,7 +28,7 @@ public interface IPhenotypicService {
 	public Status getStatusByName(String statusName);
 	
 	// Validate phenotypic data file
-	public void validatePhenotypicDataFile();
+	public java.util.Collection<String> validatePhenotypicDataFile();
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
