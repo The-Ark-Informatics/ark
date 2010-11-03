@@ -70,8 +70,10 @@ public class Constants {
 	
 	public static final String STUDY_SERVICE= "studyService";
 	public static final String STUDY_DAO ="studyDao";
-
 	
 	
-	
+	public static final String FIELD_TYPE_NUMBER ="NUMBER";	
+	public static final String FIELD_TYPE_CHARACTER ="CHARACTER";
+	public static final String FIELD_TYPE_DATE ="DATE";
+	public static final String DISCRETE_RANGE_TOKEN =",";
 }
