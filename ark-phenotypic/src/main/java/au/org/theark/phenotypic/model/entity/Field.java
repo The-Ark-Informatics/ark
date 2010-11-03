@@ -25,8 +25,8 @@ public class Field implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private FieldType fieldType;
 	private Long studyId;
+	private FieldType fieldType;
 	private String name;
 	private String description;
 	private String units;
@@ -91,7 +91,7 @@ public class Field implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_TYPE_ID", nullable = false)
-	public FieldType getfieldType() {
+	public FieldType getFieldType() {
 		return this.fieldType;
 	}
 
