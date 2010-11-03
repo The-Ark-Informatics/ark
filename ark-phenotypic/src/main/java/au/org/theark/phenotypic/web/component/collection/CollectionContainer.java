@@ -15,7 +15,7 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
-@SuppressWarnings( { "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" ,"unused"})
 public class CollectionContainer extends Panel
 {
 
@@ -68,7 +68,10 @@ public class CollectionContainer extends Panel
 			public void onSubmit()
 			{
 				log.info("Validate Phenotypic Data File");
-				serviceInterface.validatePhenotypicDataFile();
+				
+				java.util.Collection<String> validationMessages = null;
+				//TODO Add placeholder to store the validation messages 
+				validationMessages = serviceInterface.validatePhenotypicDataFile();
 			}
 		});
 		
