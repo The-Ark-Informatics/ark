@@ -7,25 +7,25 @@
 package au.org.theark.core.web.form;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.security.RoleConstants;
 
 
 /**
+ * <p>
+ * An Abstract Form class for Search. This class contains common behaviour that the  sub-classes can inherit. 
+ * The sub-classes themselves can override the behaviour of the abstract but can also add more specific implementation if needed. 
+ * As part of this class we  have defined the New,Search and Reset button and their behaviour which will be common for all search functions.
  * @author nivedann
  * @param <T>
  *
  */
+@SuppressWarnings("serial")
 public abstract class AbstractSearchForm<T>  extends Form<T>{
 
 	protected AjaxButton searchButton;
