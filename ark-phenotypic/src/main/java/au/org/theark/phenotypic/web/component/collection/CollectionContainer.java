@@ -31,7 +31,7 @@ public class CollectionContainer extends Panel
 		log.info("CollectionContainer Constructor invoked.");
 		Form collectionForm = new Form("collectionForm");
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_COLLECTION, new StringResourceModel("page.newCollection", this, null))
+		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_BUTTON, new StringResourceModel("page.newCollection", this, null))
 		{
 			public void onSubmit()
 			{
@@ -48,40 +48,19 @@ public class CollectionContainer extends Panel
 			}
 		});
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_FIELD, new StringResourceModel("page.newField", this, null))
+		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.SAVE_BUTTON, new StringResourceModel("page.newField", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Create new field");
-				Field field = new Field();
-				FieldType fieldType = serviceInterface.getFieldTypeByName("NUMBER");
-				field.setName("BMI");
-				field.setFieldType(fieldType);
-				field.setDescription("Body Mass Index");
-				
-				serviceInterface.createField(field);
+				log.info("Save collection");
 			}
 		});
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.VALIDATE_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.validatePhenotypicDataFile", this, null))
+		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.EDIT_BUTTON, new StringResourceModel("page.newField", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Validate Phenotypic Data File");
-				
-				java.util.Collection<String> validationMessages = null;
-				//TODO Add placeholder to store the validation messages 
-				validationMessages = serviceInterface.validatePhenotypicDataFile();
-			}
-		});
-		
-		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.IMPORT_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.importPhenotypicDataFile", this, null))
-		{
-			public void onSubmit()
-			{
-				log.info("Import Phenotypic Data File");
-				serviceInterface.importPhenotypicDataFile();
+				log.info("Edit collection");
 			}
 		});
 		add(collectionForm);
