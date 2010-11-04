@@ -17,8 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.web.component.ReportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
 import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
+import au.org.theark.phenotypic.web.component.field.FieldContainer;
+import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
+import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
 
 @SuppressWarnings( { "serial", "unused" })
 public class PhenotypicSubMenuTab extends Panel
@@ -48,8 +52,18 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 
 		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TEST_SUBMENU);
-		menuModule.setResourceKey(Constants.TEST_RESOURCEKEY);
+		menuModule.setModuleName(Constants.FIELD_SUBMENU);
+		menuModule.setResourceKey(Constants.FIELD_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENOTYPIC_IMPORT_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_IMPORT_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.REPORT_SUBMENU);
+		menuModule.setResourceKey(Constants.REPORT_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 
 		for (final MenuModule moduleName : moduleTabs)
@@ -94,11 +108,20 @@ public class PhenotypicSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.COLLECTION_SUBMENU))
 					{
-						panelToReturn = new CollectionContainer(panelId);
+						panelToReturn = new CollectionContainer(panelId); // Note the constructor
 					}
-					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.TEST_SUBMENU))
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
 					{
-						panelToReturn = new TestContainerPanel(panelId); // Note the constructor
+						//panelToReturn = new FieldContainer(panelId); // Note the constructor
+						panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_IMPORT_SUBMENU))
+					{
+						panelToReturn = new PhenotypicImportContainer(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
+					{
+						panelToReturn = new ReportContainerPanel(panelId); // Note the constructor
 					}
 
 					return panelToReturn;
