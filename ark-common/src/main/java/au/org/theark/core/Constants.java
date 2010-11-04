@@ -76,4 +76,12 @@ public class Constants {
 	public static final String FIELD_TYPE_CHARACTER ="CHARACTER";
 	public static final String FIELD_TYPE_DATE ="DATE";
 	public static final String DISCRETE_RANGE_TOKEN =",";
+	
+	public static final String SEARCH="search";
+	public static final String NEW="new";
+	public static final String RESET="reset";
+	public static final String SAVE ="save";
+	public static final String CANCEL ="cancel";
+	public static final String DELETE="delete";
+
 }
