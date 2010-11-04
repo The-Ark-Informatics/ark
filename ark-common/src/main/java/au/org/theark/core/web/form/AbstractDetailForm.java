@@ -16,6 +16,11 @@ import org.apache.wicket.markup.html.form.Form;
 public abstract class AbstractDetailForm<T> extends Form<T>{
 
 	/**
+	 * TODO: Add common behaviour for Detail form
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * @param id
 	 */
 	public AbstractDetailForm(String id) {
