@@ -85,5 +85,8 @@ public class Constants {
 	public static final String DELETE="delete";
 	
 	public static final String SEARCH_FORM ="searchForm";
+	public static final int MODE_NEW = 1;
+	public static final int MODE_EDIT =2;
+	public static final int MODE_READ =3;
 
 }
