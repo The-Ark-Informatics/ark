@@ -93,7 +93,6 @@ public class Search extends Panel{
 
 				target.addComponent(fbPanel);
 				resultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
-				//resultList = studyService.getStudy(containerForm.getModelObject().getStudy());
 				if(resultList != null && resultList.size() == 0){
 					containerForm.getModelObject().setStudyList(resultList);
 					this.info("There are no records that matched your query. Please modify your filter");
