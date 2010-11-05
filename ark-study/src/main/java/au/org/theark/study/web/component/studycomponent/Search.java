@@ -2,7 +2,6 @@ package au.org.theark.study.web.component.studycomponent;
 
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -17,7 +16,7 @@ import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
-import au.org.theark.study.web.form.SearchStudyCompForm;
+import au.org.theark.study.web.component.studycomponent.form.SearchStudyCompForm;
 
 public class Search extends Panel{
 
@@ -58,9 +57,6 @@ public class Search extends Panel{
 	
 	
 	public void initialisePanel(CompoundPropertyModel<StudyCompVo> studyCompCpm){
-		
-		//Get the study id from the session and get the study
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		
 		SearchStudyCompForm searchStudyCompForm = new SearchStudyCompForm(Constants.SEARCH_FORM, studyCompCpm){
@@ -115,20 +111,5 @@ public class Search extends Panel{
 		target.addComponent(detailsContainer);
 		target.addComponent(listContainer);
 	}
-		
-//	private void initialiseSearchResults(){
-//		
-//		searchResults = new SearchResultList("searchResults",detailsContainer);
-//		searchResults.setCpm(cpm);
-//
-//		listView  = searchResults.buildPageableListView(iModel, listContainer);
-//		listView.setReuseItems(true);
-//
-//		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
-//		
-//		searchResults.add(pageNavigator);
-//		searchResults.add(listView);
-//		listContainer.add(searchResults);
-//	}
 
 }
