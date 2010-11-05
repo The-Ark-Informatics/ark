@@ -13,20 +13,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.StudyModelVO;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
 public class StudyContainer extends Panel{
 
 
 	private static final long serialVersionUID = 1L;
-
 	private Container containerForm;
-
-	
-//	@SpringBean( name = Constants.STUDY_SERVICE)
-//	private IStudyService studyService;
 	
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -104,7 +97,6 @@ public class StudyContainer extends Panel{
 		searchStudyPanel = new Search(	"searchStudyPanel",
 										feedBackPanel,
 										iArkCommonService.getListOfStudyStatus(),
-										//studyService.getListOfStudyStatus(),
 										searchWebMarkupContainer,
 										pageableListView,
 										resultListContainer,
