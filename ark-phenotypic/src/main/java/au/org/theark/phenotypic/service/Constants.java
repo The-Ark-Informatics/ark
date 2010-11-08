@@ -12,6 +12,9 @@ public class Constants {
 	// Testing
 	public static final String TEST_FILE = "/home/ark/TestData/testPhenoData.txt";
 	
+	// Services
+	public static final String PHENOTYPIC_SERVICE = "phenotypicService";
+	
 	// Exception messages
 	public static final String IO_EXCEPTION = "IOException: Input error. ";
 	public static final String FILE_FORMAT_EXCEPTION = "File Format Exception: Input error. ";
