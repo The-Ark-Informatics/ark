@@ -16,7 +16,7 @@ import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
-import au.org.theark.study.web.component.studycomponent.form.SearchStudyCompForm;
+import au.org.theark.study.web.component.studycomponent.form.SearchForm;
 
 public class Search extends Panel{
 
@@ -59,7 +59,7 @@ public class Search extends Panel{
 	public void initialisePanel(CompoundPropertyModel<StudyCompVo> studyCompCpm){
 		
 		
-		SearchStudyCompForm searchStudyCompForm = new SearchStudyCompForm(Constants.SEARCH_FORM, studyCompCpm){
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, studyCompCpm){
 			
 			protected  void onSearch(AjaxRequestTarget target){
 				
@@ -79,8 +79,6 @@ public class Search extends Panel{
 					listView.removeAll();
 					listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
 					target.addComponent(listContainer);//For ajax this is required so 
-					
-					//processDetail(target);
 				}catch(ArkSystemException arkEx){
 					this.error("A system error has occured. Please try after sometime.");
 				}
