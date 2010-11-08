@@ -26,7 +26,7 @@
 				
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="fielName"><wicket:message key="field.name">Name:</wicket:message></label>
+						<label for="fieldName"><wicket:message key="field.name">Name:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
@@ -37,33 +37,25 @@
 				</div>
 					
 				<div id="searchPanelContentRight">&nbsp;</div>
-				
-				<div id="searchPanelBreaker">&nbsp;</div>		
-		       	
+				<div id="searchPanelBreaker">&nbsp;</div>
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
-				
 				<div id="fldLabel">
-					<div class="label">
-		       			<label for="keyword">
-		       			<!-- 
-		       				<label for="keyword"><wicket:message key="field.keyword">Keyword:</wicket:message></label>
-		       			-->
-		       			&nbsp;
-		       			</label>
-		       		</div>
-		       	</div>
+		 			<div class="label">
+						<label for="fieldType"><wicket:message key="field.fieldType">Field Type:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
 				
 				<div id="fldControl">
-		       		<div class="label">
-		       			<!--
-		       			 <textarea wicket:id="field.keyword" rows="5" cols="35"></textarea>
-		       			-->
-		       			&nbsp;
+					<div class="label">
+						<select wicket:id="fieldType">
+		       				<option>Number</option>
+							<option>Character</option>
+							<option>Date</option>
+		       			</select>
 		       		</div>
-		       	</div>
-		       	
-			       		       			
+				</div>
+		       	   		       			
 		       	<div id="panelMargin">&nbsp;</div>
 						
 				<div id="fldLabel">

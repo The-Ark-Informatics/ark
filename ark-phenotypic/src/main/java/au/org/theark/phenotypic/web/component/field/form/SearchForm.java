@@ -6,25 +6,32 @@
  */
 package au.org.theark.phenotypic.web.component.field.form;
 
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
-import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "unchecked"})
 public class SearchForm extends AbstractSearchForm<FieldVO>
 {
-	// @SpringBean(name = Constants.STUDY_SERVICE)
-	// private IStudyService studyService;
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService phenotypicService;
 
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
@@ -41,22 +48,22 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		initialiseFieldForm();
 	}
 
-	// private void initVitalStatusDdc()
-	// {
-	// CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-	// PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm, Constants.PERSON);
-	//
-	// PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm, Constants.VITAL_STATUS);
-	// Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
-	// ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.STATUS_NAME, Constants.ID);
-	// vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS, vitalStatusPm, (List) vitalStatusList, vitalStatusRenderer);
-	// }
+	 private void initFieldTypeDdc()
+	 {
+		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldType();
+		 CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
+		 PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
+		 PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, "fieldType");
+		 //au.org.theark.phenotypic.web.Constants.FIELD_TYPE
+		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
+		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
+	 }
 
 	public void initialiseFieldForm()
 	{
-		fieldIdTxtFld = new TextField<String>(Constants.FIELD_ID);
-		fieldNameTxtFld = new TextField<String>(Constants.FIELD_NAME);
-
+		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_ID);
+		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_NAME);
+		initFieldTypeDdc();
 		addFieldComponents();
 	}
 
@@ -64,6 +71,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	{
 		add(fieldIdTxtFld);
 		add(fieldNameTxtFld);
+		add(fieldTypeDdc);
 	}
 
 	@Override
