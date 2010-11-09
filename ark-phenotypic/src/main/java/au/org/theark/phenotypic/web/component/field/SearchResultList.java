@@ -72,72 +72,71 @@ public class SearchResultList extends Panel
 				if (field.getId() != null)
 				{
 					// Add the id component here
-					item.add(new Label("field.id", field.getId().toString()));
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID, field.getId().toString()));
 				}
 				else
 				{
-					item.add(new Label("field.id", ""));
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID, ""));
 				}
 				
 				// Component Name Link
 				item.add(buildLink(field));
 				
-				/*
 				// TODO when displaying text escape any special characters
-				// Name 
-				if (field.getName() != null)
+				// Field Type
+				if (field.getFieldType() != null)
 				{
-					item.add(new Label("field.name", field.getName()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, field.getFieldType().getName()));// the ID here must match the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("field.name", ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, ""));// the ID here must match the ones in mark-up
 				}
-
+				
+				
 				// TODO when displaying text escape any special characters
 				// Description
 				if (field.getDescription() != null)
 				{
-					item.add(new Label("field.description", field.getDescription()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION, field.getDescription()));// the ID here must match the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("field.description", ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Units
 				if (field.getName() != null)
 				{
-					item.add(new Label("field.units", field.getUnits()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS, field.getUnits()));// the ID here must match the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("field.units", ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Min
 				if (field.getMinValue() != null)
 				{
-					item.add(new Label("field.minValue", field.getMinValue()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE, field.getMinValue()));// the ID here must match the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("field.minMalue", ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Max
 				if (field.getMinValue() != null)
 				{
-					item.add(new Label("field.maxValue", field.getMaxValue()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE, field.getMaxValue()));// the ID here must match the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("field.maxMalue", ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE, ""));// the ID here must match the ones in mark-up
 				}
-				*/
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
@@ -180,6 +179,7 @@ public class SearchResultList extends Panel
 		};
 
 		// Add the label for the link
+		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("nameLbl", field.getName());
 		link.add(nameLinkLabel);
 		return link;
