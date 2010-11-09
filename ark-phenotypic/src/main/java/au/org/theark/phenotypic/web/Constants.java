@@ -39,22 +39,74 @@ public class Constants {
 
 	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 	
-	// Common Search fields
+	// VO fields
+	public static final String COLLECTIONVO_FIELD_ID = "collection.field.id";
+	public static final String COLLECTIONVO_PERSON_ID = "collection.person.id";
+	public static final String COLLECTIONVO_FIELD_DATA_ID = "collection.fieldData.id";
+	public static final String FIELDVO_FIELD_ID = "field.id";
+	public static final String FIELDVO_FIELD_NAME = "field.name";
+	public static final String FIELDVO_FIELD_DESCRIPTION = "field.description";
+	public static final String FIELDVO_FIELD_FIELD_TYPE = "field.fieldType";
+	public static final String FIELDVO_FIELD_UNITS = "field.units";
+	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
+	public static final String	FIELDVO_FIELD_MIN_VALUE	= "field.minValue";
+	public static final String	FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
 	
-	//TODO Change to FIELDVO_FIELD_ID etc
+	// Entity fields
+	public static final String COLLECTION = "collection";
+	public static final String COLLECTION_ID = "id";
+	public static final String COLLECTION_STUDY = "study";
+	public static final String COLLECTION_NAME = "name";
+	public static final String COLLECTION_DESCRIPTION = "description";
+	public static final String COLLECTION_STATUS = "status";
+	public static final String COLLECTION_START_DATE = "startDate";
+	public static final String COLLECTION_EXPIRY_DATE= "expiryDate";
+	public static final String COLLECTION_USER = "user";
+	public static final String COLLECTION_INSERT_TIME = "insertTime";
+	public static final String COLLECTION_UPDATE_USER = "user";
+	public static final String COLLECTION_UPDATE_TIME = "updateTime";
+	
+	public static final String COLLECTION_IMPORT = "collectionImport";
+	public static final String COLLECTION_IMPORT_ID = "id";
+	public static final String COLLECTION_IMPORT_COLLECTION = "collection";
+	public static final String COLLECTION_IMPORT_TYPE = "importType";
+	public static final String COLLECTION_IMPORT_DELIMITER_TYPE = "delimiterType";
+	public static final String COLLECTION_IMPORT_START_TIME = "startTime";
+	public static final String COLLECTION_IMPORT_FINISH_TIME= "finishTime";
+	public static final String COLLECTION_IMPORT_USER = "user";
+	public static final String COLLECTION_IMPORT_INSERT_TIME = "insertTime";
+	public static final String COLLECTION_IMPORT_UPDATE_USER = "user";
+	public static final String COLLECTION_IMPORT_UPDATE_TIME = "updateTime";
+	
 	public static final String	FIELD	= "field";
-	public static final String FIELD_ID = "field.id";
-	public static final String FIELD_NAME = "field.name";
-	public static final String FIELD_DESCRIPTION = "field.description";
-	public static final String FIELD_FIELD_TYPE = "field.fieldType";
-	public static final String FIELD_UNITS = "field.units";
-	public static final String	FIELD_STUDY_ID	= "field.studyId";
-
+	public static final String	FIELD_ID	= "id";
+	public static final String	FIELD_STUDY	= "study";
+	public static final String FIELD_FIELD_TYPE = "fieldType";
+	public static final String FIELD_NAME = "name";
+	public static final String FIELD_DESCRIPTION = "description";
+	public static final String FIELD_UNITS = "units";
+	public static final String FIELD_SEQ_NUM = "seqNum";
+	public static final String FIELD_MIN_VALUE = "minValue";
+	public static final String FIELD_MAX_VALUE = "maxValue";
+	public static final String FIELD_DISCRETE_VALUES = "discreteValues";
+	public static final String FIELD_USER = "user";
+	public static final String FIELD_INSERT_TIME = "insertTime";
+	public static final String FIELD_UPDATE_USER = "user";
+	public static final String FIELD_UPDATE_TIME = "updateTime";
+	
 	public static final String FIELD_TYPE = "fieldType";
 	public static final String FIELD_TYPE_ID = "id";
 	public static final String FIELD_TYPE_NAME = "name";
-
-	public static final String	FIELD_STUDY	= "study";
-
 	
+	public static final String FIELD_DATA = "fieldData";
+	public static final String FIELD_DATA_ID = "id";
+	public static final String FIELD_DATA_COLLECTION = "collection";
+	public static final String FIELD_DATA_PERSON = "person";
+	public static final String FIELD_DATA_COLLECTED = "dateCollected";
+	public static final String FIELD_DATA_FIELD = "field";
+	public static final String FIELD_DATA_VALUE = "value";
+	public static final String FIELD_DATA_USER = "user";
+	public static final String FIELD_DATA_INSERT_TIME = "insertTime";
+	public static final String FIELD_DATA_UPDATE_USER = "user";
+	public static final String FIELD_DATA_UPDATE_TIME = "updateTime";
 }
