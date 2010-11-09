@@ -75,40 +75,27 @@ public class Search extends Panel
 
 		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<FieldVO>) containerForm.getModel())
 		{
-
 			protected void onSearch(AjaxRequestTarget target)
 			{
-				
 				// Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(feedBackPanel);
 
-				// Get a list of Fields with the given criteria
-				try
-				{
-					Study study = iArkCommonService.getStudy(sessionStudyId);
-					Field searchField = containerForm.getModelObject().getField();
-					searchField.setStudy(study);
-					
-					java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
+				// Get a list of all Fields for the Study in context
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				Field searchField = containerForm.getModelObject().getField();
+				searchField.setStudy(study);
+				
+				java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
 
-					if (fieldCollection != null && fieldCollection.size() == 0)
-					{
-						this.info("Fields with the specified criteria does not exist in the system.");
-						target.addComponent(feedBackPanel);
-					}
-					containerForm.getModelObject().setFieldCollection(fieldCollection);
-					listView.removeAll();
-					listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-					target.addComponent(listContainer);// For ajax this is required so
-
-				}
-				catch (NullPointerException npe)
+				if (fieldCollection != null && fieldCollection.size() == 0)
 				{
-					this.error("A system error has occured. Please try again after sometime.");
+					this.info("Fields with the specified criteria does not exist in the system.");
+					target.addComponent(feedBackPanel);
 				}
-				// catch(ArkSystemException arkEx){
-				// this.error("A system error has occured. Please try again after sometime.");
-				// }
+				containerForm.getModelObject().setFieldCollection(fieldCollection);
+				listView.removeAll();
+				listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+				target.addComponent(listContainer);// For ajax this is required so
 			}
 
 			protected void onNew(AjaxRequestTarget target)
