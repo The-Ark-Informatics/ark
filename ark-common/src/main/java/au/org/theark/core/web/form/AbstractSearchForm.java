@@ -102,7 +102,7 @@ public abstract class AbstractSearchForm<T>  extends Form<T>{
 	
 	protected void addComponentsToForm(){
 		add(searchButton);
-		add(resetButton);
+		add(resetButton.setDefaultFormProcessing(false));
 		add(newButton);
 	}
 	
