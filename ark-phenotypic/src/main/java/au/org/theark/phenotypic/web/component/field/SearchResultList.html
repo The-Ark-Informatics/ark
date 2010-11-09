@@ -17,6 +17,12 @@
 			</th>
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
+				<label for="fieldType">
+					<wicket:message	key="field.fieldType">Field Type:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
 				<label for="fieldDescription">
 					<wicket:message	key="field.description">Description:</wicket:message>
 				</label>
@@ -24,7 +30,7 @@
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
 				<label for="fieldUnits">
-					<wicket:message	key="field.ints">Units:</wicket:message>
+					<wicket:message	key="field.units">Units:</wicket:message>
 				</label>
 			</th>
 			<th width="5%">&nbsp;</th>
@@ -55,31 +61,23 @@
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-				<!-- 
+				<span wicket:id="field.fieldType">Field Type</span>
+			</td>
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
 				<span wicket:id="field.description">Description</span>
-				 -->
-				 &nbsp;
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-			<!--
 				<span wicket:id="field.units">Units</span>
-				 -->
-				 &nbsp;
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-			<!--
 				<span wicket:id="field.minValue">MinValue</span>
-				 -->
-				 &nbsp;
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-			<!-- 
 				<span wicket:id="field.maxValue">MaxValue</span>
-				 -->
-				 &nbsp;
 			</td>
 			<td width="5%">&nbsp;</td>
 		</tr>
