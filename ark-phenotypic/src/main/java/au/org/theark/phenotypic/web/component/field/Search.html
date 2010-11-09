@@ -1,7 +1,5 @@
-<wicket:panel>
-&nbsp;
+<wicket:panel>&nbsp;
 	<div id="searchPanelContainer">
-
 		<form wicket:id="searchForm">
 		
 			<div id="searchPanelContent">
@@ -37,7 +35,9 @@
 				</div>
 					
 				<div id="searchPanelContentRight">&nbsp;</div>
+				
 				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
@@ -60,6 +60,22 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
+						<label for="fieldDescription"><wicket:message key="field.description">Description:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="field.description"  type="text" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
 						<label for="fieldUnits"><wicket:message key="field.units">Units:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
@@ -67,6 +83,20 @@
 				<div id="fldControl">
 					<div class="label">
 						<input wicket:id="field.units"  type="text" />
+					</div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
 					</div>
 				</div>
 				
@@ -92,7 +122,7 @@
 				</div>
 				
 				<div id="searchPanelBreaker">&nbsp;</div>
-				</div>
-			</form>
-       </div>
+			</div>
+		</form>
+	</div>
 </wicket:panel>
