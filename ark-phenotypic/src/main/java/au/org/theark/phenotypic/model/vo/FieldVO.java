@@ -12,16 +12,18 @@ import au.org.theark.phenotypic.model.entity.Field;
  * @author cellis
  *
  */
+@SuppressWarnings("serial")
 public class FieldVO implements Serializable
 {
 	private Field field;
 	private java.util.Collection<Field> fieldCollection;
+	private int mode;
 	
 	public FieldVO(){
 		field = new Field();
 		fieldCollection = new ArrayList<Field>();
 	}
-
+	
 	public Field getField()
 	{
 		return field;
@@ -40,5 +42,21 @@ public class FieldVO implements Serializable
 	public void setFieldCollection(java.util.Collection<Field> fieldCollection)
 	{
 		this.fieldCollection = fieldCollection;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(int mode)
+	{
+		this.mode = mode;
+	}
+
+	/**
+	 * @return the mode
+	 */
+	public int getMode()
+	{
+		return mode;
 	}
 }

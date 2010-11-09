@@ -12,17 +12,32 @@ public interface IPhenotypicService {
 	// Collection
 	public Collection getCollection(Long id);
 	public void createCollection(Collection col);
+	public void updateCollection(Collection col);
+	public void deleteCollection(Collection col);
+	
+	// Collection Import
+	public CollectionImport getCollectionImport(Long id);
 	public void createCollectionImport(CollectionImport collectionImport);
+	public void updateCollectionImport(CollectionImport collectionImport);
+	public void deleteCollectionImport(CollectionImport collectionImport);
 
 	// Field
 	public Field getField(Long fieldId);
+	public java.util.Collection<Field> searchField(Field field);
+	public java.util.Collection<Field> getFieldByStudyId(Long studyId);
 	public void createField(Field field);
+	public void updateField(Field field);
+	public void deleteField(Field field);
 	
 	// FieldType
+	public FieldType getFieldType(Long id);
 	public FieldType getFieldTypeByName(String fieldTypeName);
+	public java.util.Collection<FieldType> getFieldTypes();
 	
 	// FieldData
 	public void createFieldData(FieldData fieldData);
+	public void updateFieldData(FieldData fieldData);
+	public void deleteFieldData(FieldData fieldData);
 	
 	// Status
 	public Status getStatusByName(String statusName);

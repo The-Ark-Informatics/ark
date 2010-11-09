@@ -87,7 +87,7 @@ public class TestContainerPanel extends Panel
 		Field field = new Field();
 		field.setName("Mass");
 		field.setDescription("kg");
-		field.setStudyId(studyId);
+		//field.setStudyId(studyId);
 		field.setFieldType(fieldType);
 		log.info("Creating a new Field: " + field);
 		serviceInterface.createField(field);

@@ -40,13 +40,21 @@ public class Constants {
 	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 	
 	// Common Search fields
+	
+	//TODO Change to FIELDVO_FIELD_ID etc
 	public static final String	FIELD	= "field";
 	public static final String FIELD_ID = "field.id";
 	public static final String FIELD_NAME = "field.name";
 	public static final String FIELD_DESCRIPTION = "field.description";
-	public static final String FIELD_TYPE = "field.fieldType";
+	public static final String FIELD_FIELD_TYPE = "field.fieldType";
 	public static final String FIELD_UNITS = "field.units";
+	public static final String	FIELD_STUDY_ID	= "field.studyId";
 
+	public static final String FIELD_TYPE = "fieldType";
 	public static final String FIELD_TYPE_ID = "id";
 	public static final String FIELD_TYPE_NAME = "name";
+
+	public static final String	FIELD_STUDY	= "study";
+
+	
 }

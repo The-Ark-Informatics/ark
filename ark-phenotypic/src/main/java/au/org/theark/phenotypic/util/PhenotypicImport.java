@@ -125,7 +125,7 @@ public class PhenotypicImport
 		}
 		catch (NullPointerException npe){
 			log.error("Error with Collection...no object instatiated...");
-			collection = phenotypicDao.getCollection(new Long(1));
+			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		}
 		
 		try
@@ -335,7 +335,7 @@ public class PhenotypicImport
 		}
 		catch (NullPointerException npe){
 			log.error("Error with Collection...no object instatiated...");
-			collection = phenotypicDao.getCollection(new Long(1));
+			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		}
 		
 		try

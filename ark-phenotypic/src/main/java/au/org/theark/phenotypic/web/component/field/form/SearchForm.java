@@ -36,6 +36,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
 	private DropDownChoice<FieldType>		fieldTypeDdc;
+	private TextField<String>					fieldUnitsTxtFld;
 	private CompoundPropertyModel<FieldVO>	cpmModel;
 
 	/**
@@ -50,11 +51,10 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 
 	 private void initFieldTypeDdc()
 	 {
-		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldType();
+		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
 		 CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
 		 PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
-		 PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, "fieldType");
-		 //au.org.theark.phenotypic.web.Constants.FIELD_TYPE
+		 PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, au.org.theark.phenotypic.web.Constants.FIELD_TYPE);
 		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
 		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
 	 }
@@ -63,6 +63,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	{
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_NAME);
+		fieldUnitsTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_UNITS);
 		initFieldTypeDdc();
 		addFieldComponents();
 	}
@@ -72,6 +73,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		add(fieldIdTxtFld);
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
+		add(fieldUnitsTxtFld);
 	}
 
 	@Override

@@ -6,14 +6,18 @@ import java.util.Collection;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
 
@@ -25,7 +29,7 @@ public class FieldContainerPanel extends Panel{
 	
 	//Panels
 	private Search searchComponentPanel;
-	//private SearchResultList searchResultPanel;
+	private SearchResultList searchResultPanel;
 	//private Details detailsPanel;
 	
 	private CompoundPropertyModel<FieldVO> fieldCpm;
@@ -41,8 +45,26 @@ public class FieldContainerPanel extends Panel{
 	
 	private ContainerForm containerForm;
 
-	//@SpringBean( name = Constants.STUDY_SERVICE)
-	//private IStudyService studyService;
+	@SpringBean( name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService phenotypicService;
+	
+	public FieldContainerPanel(String id) {
+		super(id);
+		
+		/*Initialise the CPM */
+		fieldCpm = new CompoundPropertyModel<FieldVO>(new FieldVO());
+	
+		initialiseMarkupContainers();
+		
+		/*Bind the CPM to the Form */
+		containerForm = new ContainerForm("containerForm", fieldCpm);
+		containerForm.add(initialiseFeedBackPanel());
+		//containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		
+		add(containerForm);
+	}
 	
 	private void initialiseMarkupContainers(){
 		
@@ -65,30 +87,6 @@ public class FieldContainerPanel extends Panel{
 	
 	}
 	
-	public FieldContainerPanel(String id) {
-		super(id);
-		
-		/*Initialise the CPM */
-		fieldCpm = new CompoundPropertyModel<FieldVO>(new FieldVO());
-		
-	
-		initialiseMarkupContainers();
-		
-		/*Bind the CPM to the Form */
-		containerForm = new ContainerForm("containerForm", fieldCpm);
-		
-		containerForm.add(initialiseFeedBackPanel());
-	
-		//containerForm.add(initialiseDetailPanel());
-	
-		//containerForm.add(initialiseSearchResults());
-		
-		containerForm.add(initialiseSearchPanel());
-		
-		add(containerForm);
-		
-	}
-	
 	private WebMarkupContainer initialiseFeedBackPanel(){
 		/* Feedback Panel */
 		feedBackPanel= new FeedbackPanel("feedbackMessage");
@@ -97,16 +95,19 @@ public class FieldContainerPanel extends Panel{
 	}
 	
 	
-	/*private WebMarkupContainer initialiseSearchResults(){
+	private WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm,resultListContainer,detailsPanel);
+		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm,resultListContainer
+				//TODO Implement detailsPanel
+				//,detailsPanel
+				);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Object load() {
-				return containerForm.getModelObject().getStudyCompList();
+				return containerForm.getModelObject().getFieldCollection();
 			}
 		};
 
@@ -119,7 +120,7 @@ public class FieldContainerPanel extends Panel{
 		return resultListContainer;
 	}
 	
-	
+	/*
 	
 	private WebMarkupContainer initialiseDetailPanel(){
 		
@@ -132,39 +133,38 @@ public class FieldContainerPanel extends Panel{
 	*/
 	
 	private WebMarkupContainer initialiseSearchPanel(){
-		FieldVO fieldVo = new FieldVO();
+		//FieldVO fieldVo = new FieldVO();
 		
 		//Get a result-set by default
-		Collection<Field> resultCollection = new ArrayList<Field>();
+		Collection<Field> fieldCollection = new ArrayList<Field>();
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		/*
+		
 		try {
 			if(sessionStudyId != null && sessionStudyId > 0){
-				//resultList = studyService.searchStudyComp(fieldVo.getStudyComponent());	
+				fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());	
 			}
 			
-		} catch (ArkSystemException e) {
+		//} catch (ArkSystemException e) {
+		} catch (Exception e) {
 			this.error("A System error occured  while initializing Search Panel");
 		}
-		*/
 		
-		fieldCpm.getObject().setFieldCollection(resultCollection);
+		
+		//fieldCpm.getObject().setFieldCollection(fieldCollection);
+		containerForm.getModelObject().setFieldCollection(fieldCollection);
 		
 		searchComponentPanel = new Search("searchComponentPanel", 
 											feedBackPanel, 
 											searchPanelContainer, 
 											listView,
 											resultListContainer,
-											detailPanelContainer
-											//,
+											detailPanelContainer,
 											//detailsPanel,
-											//containerForm
+											containerForm
 											);
 		
-		searchComponentPanel.initialisePanel(fieldCpm);
+		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
 	}
-	
-
 }

@@ -6,19 +6,26 @@
  */
 package au.org.theark.phenotypic.web.component.field.form;
 
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
-import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.field.Detail;
 
 /**
  * @author nivedann
@@ -27,8 +34,8 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 @SuppressWarnings({ "serial", "unchecked", "unused" })
 public class DetailForm extends Form{
 
-	//@SpringBean( name = Constants.STUDY_SERVICE)
-	//private IStudyService studyService;
+	@SpringBean( name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService phenotypicService;
 	
 	public DetailForm(String id)
 	{
@@ -38,47 +45,38 @@ public class DetailForm extends Form{
 	private WebMarkupContainer resultListContainer;
 	private WebMarkupContainer detailPanelContainer;
 	
-	private ContainerForm subjectContainerForm;
+	private ContainerForm fieldContainerForm;
 	
-	
-	private TextField<String> subjectIdTxtFld;
-	private TextField<String> firstNameTxtFld;
-	private TextField<String> middleNameTxtFld;
-	private TextField<String> lastNameTxtFld;
-	private TextField<String> preferredNameTxtFld;
+	private TextField<String> fieldIdTxtFld;
+	private TextField<String> fieldNameTxtFld;
+	private TextField<String> fieldDescriptionTxtFld;
+	private TextField<String> fieldUnitsTxtFld;
 	
 	private DatePicker<Date> dateOfBirth;
 	
 	//Reference Data 
-	private DropDownChoice<TitleType> titleTypeDdc;
-	private DropDownChoice<VitalStatus> vitalStatusDdc;
-	private DropDownChoice<GenderType> genderTypeDdc;
-	private DropDownChoice<SubjectStatus> subjectStatusDdc;
-	
-	//TODO There will be mobile, email and address that will added via a component
+	private DropDownChoice<FieldType> fieldTypeDdc;
 	
 	private AjaxButton deleteButton;
 	private AjaxButton saveButton;
 	private AjaxButton cancelButton;
 	
-	
-	/*
-	*//**
+	/**
 	 * @param id
-	 *//*
-	public DetailsForm(	String id,
-						Details detailsPanel, 
+	 */
+	public DetailForm(	String id,
+						Detail detailPanel, 
 						WebMarkupContainer listContainer,
 						WebMarkupContainer detailsContainer,
 						ContainerForm containerForm) {
 		super(id);
-		this.subjectContainerForm = containerForm;
+		this.fieldContainerForm = containerForm;
 		this.resultListContainer = listContainer;
 		this.detailPanelContainer = detailsContainer;
-		this.subjectContainerForm = containerForm;
+		this.fieldContainerForm = containerForm;
 		
 		
-		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
+		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
 
 			@Override
@@ -88,11 +86,11 @@ public class DetailForm extends Form{
 			}
 		};
 		
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(subjectContainerForm.getModelObject(), target);
+				onSave(fieldContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 			
@@ -105,66 +103,33 @@ public class DetailForm extends Form{
 	
 	public void initialiseForm(){
 		
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
-		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
-		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
-		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
-		dateOfBirth = new DatePicker<Date>(Constants.PERSON_DOB);
+		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_NAME);
+		fieldDescriptionTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DESCRIPTION);
 		
 		//Initialise Drop Down Choices 
 		//Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
-		Collection<TitleType> titleTypeList = studyService.getTitleType();
-		ChoiceRenderer<TitleType> defaultChoiceRenderer = new ChoiceRenderer<TitleType>(Constants.NAME,Constants.ID);
-		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE,(List)titleTypeList,defaultChoiceRenderer);
-		
-		Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
-		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.STATUS_NAME, Constants.ID);
-		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
-		
-		Collection<GenderType> genderTypeList = studyService.getGenderType(); 
-		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
-		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
-		
-		Collection<SubjectStatus> subjectStatusList = studyService.getSubjectStatus();
-		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
-		
+		Collection<FieldType> fieldTypeList = phenotypicService.getFieldTypes();
+		ChoiceRenderer<FieldType> defaultChoiceRenderer = new ChoiceRenderer<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_NAME,au.org.theark.phenotypic.web.Constants.FIELD_ID);
+		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE,(List)fieldTypeList,defaultChoiceRenderer);
+
 		attachValidators();
 		addComponents();
 	}
 	
 	private void attachValidators(){
 		
-		firstNameTxtFld.setRequired(true);
-		firstNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		middleNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		lastNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		preferredNameTxtFld.setRequired(true);
-		preferredNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		dateOfBirth.setRequired(true);
-		vitalStatusDdc.setRequired(true);
-		genderTypeDdc.setRequired(true);
-		
+		fieldNameTxtFld.setRequired(true);
 	}
 	
 	private void addComponents(){
 
-		add(subjectIdTxtFld);
-		add(titleTypeDdc);
-		add(firstNameTxtFld);
-		add(middleNameTxtFld);
-		add(lastNameTxtFld);
-		add(preferredNameTxtFld);
-		add(dateOfBirth);
-		add(vitalStatusDdc);
-		add(genderTypeDdc);
-		add(subjectStatusDdc);
+		add(fieldIdTxtFld);
+		add(fieldTypeDdc);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 	}
 	
-	protected void onSave(SubjectVO subjectVo, AjaxRequestTarget target){
+	protected void onSave(FieldVO fieldVo, AjaxRequestTarget target){
 		
 	}
 	
@@ -176,12 +141,12 @@ public class DetailForm extends Form{
 		
 	}
 
-	public TextField<String> getSubjectIdTxtFld() {
-		return subjectIdTxtFld;
+	public TextField<String> getFieldIdTxtFld() {
+		return fieldIdTxtFld;
 	}
 
-	public void setSubjectIdTxtFld(TextField<String> subjectIdTxtFld) {
-		this.subjectIdTxtFld = subjectIdTxtFld;
-	}*/
+	public void setfieldIdTxtFld(TextField<String> fieldIdTxtFld) {
+		this.fieldIdTxtFld = fieldIdTxtFld;
+	}
 
 }

@@ -18,13 +18,17 @@ import au.org.theark.phenotypic.model.entity.UploadCollection;
 public interface IPhenotypicDao {
 
 	// Collection
-	public Collection getCollection(Long id);
-	public List<Collection> getCollectionMatches(Collection colExample);
-	public void createCollection(Collection col);
-	public void updateCollection(Collection col);
-	public void deleteCollection(Collection col);
+	public Collection getPhenotypicCollection(Long id);
+	public java.util.Collection<Collection> getPhenotypicCollection();
+	public java.util.Collection<Collection> searchPhenotypicCollection(Collection collectionToMatch);
+	public void createCollection(Collection collection);
+	public void updateCollection(Collection collection);
+	public void deleteCollection(Collection collection);
 	
 	// Collection Import
+	public CollectionImport getCollectionImport(Long id);
+	public java.util.Collection<CollectionImport> getCollectionImport();
+	public java.util.Collection<CollectionImport> searchCollectionImport(CollectionImport collectionImportToMatch);
 	public void createCollectionImport(CollectionImport collectionImport);
 	public void updateCollectionImport(CollectionImport collectionImport);
 	public void deleteCollectionImport(CollectionImport collectionImport);
@@ -38,12 +42,17 @@ public interface IPhenotypicDao {
 	// Field
 	public Field getField(Long fieldId);
 	public Field getFieldByName(Long studyId, String fieldName);
+	public java.util.Collection<Field> getField();
+	public java.util.Collection<Field> getFieldByStudyId(Long studyId);
+	public java.util.Collection<Field> searchField(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
 	public void deleteField(Field field);
 	
 	// Field Type
+	public FieldType getFieldType(Long id);
 	public FieldType getFieldTypeByName(String fieldTypeName);
+	public java.util.Collection<FieldType> getFieldTypes();
 	public void createFieldType(FieldType fieldType);
 	public void updateFieldType(FieldType fieldType);
 

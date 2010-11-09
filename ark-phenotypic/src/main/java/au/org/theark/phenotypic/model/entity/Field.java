@@ -15,6 +15,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.model.study.entity.Study;
+
 /**
  * fieldField entity. @author MyEclipse Persistence Tools
  */
@@ -25,7 +27,7 @@ public class Field implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private Long studyId;
+	private Study study;
 	private FieldType fieldType;
 	private String name;
 	private String description;
@@ -44,25 +46,23 @@ public class Field implements java.io.Serializable {
 	/** default constructor */
 	public Field() {
 	}
-
+	
 	/** minimal constructor */
 	public Field(Long id, FieldType fieldType, Long studyId, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.fieldType = fieldType;
-		this.studyId = studyId;
 		this.name = name;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public Field(Long id, FieldType fieldType, Long studyId, String name,
+	public Field(Long id, FieldType fieldType, String name,
 			String description, String units, Long seqNum, String minValue,
 			String maxValue, String discreteValues, String userId,
 			Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.fieldType = fieldType;
-		this.studyId = studyId;
 		this.name = name;
 		this.description = description;
 		this.units = units;
@@ -97,15 +97,6 @@ public class Field implements java.io.Serializable {
 
 	public void setFieldType(FieldType fieldType) {
 		this.fieldType = fieldType;
-	}
-
-	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public Long getStudyId() {
-		return this.studyId;
-	}
-
-	public void setStudyId(Long studyId) {
-		this.studyId = studyId;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 100)
@@ -200,12 +191,30 @@ public class Field implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-    	@Column(name = "UPDATE_TIME")
+   @Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @param study the study to set
+	 */
+	public void setStudy(Study study)
+	{
+		this.study = study;
+	}
+
+	/**
+	 * @return the study
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy()
+	{
+		return study;
 	}
 }

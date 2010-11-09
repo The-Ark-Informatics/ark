@@ -8,12 +8,15 @@ import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.FileTypeNotAvailableException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
@@ -34,7 +37,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 
 	private IPhenotypicDao	phenotypicDao;
-	private Long studyId; 
+	private Long studyId;
+	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao)
@@ -92,9 +98,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createField(Field field)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
+		//TODO caller of createField to setStudy
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		field.setStudyId(studyId);
+		Study study = iArkCommonService.getStudy(studyId);
+		field.setStudy(study);
 
 		phenotypicDao.createField(field);
 	}
@@ -116,7 +123,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public Collection getCollection(Long id)
 	{
-		return phenotypicDao.getCollection(id);
+		return phenotypicDao.getPhenotypicCollection(id);
 	}
 	
 	public void createFieldData(FieldData fieldData)
@@ -135,11 +142,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		if (collectionId == null){
 			log.info("Using default collectionId of 1");
-			collection = phenotypicDao.getCollection(new Long(1));
+			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		}
 		else{
 			log.info("Using collectionId in context");
-			collection = phenotypicDao.getCollection(collectionId);
+			collection = phenotypicDao.getPhenotypicCollection(collectionId);
 		}
 		
 		try {
@@ -184,11 +191,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		if (collectionId == null){
 			log.info("Using default collectionId of 1");
-			collection = phenotypicDao.getCollection(new Long(1));
+			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		}
 		else{
 			log.info("Using collectionId in context");
-			collection = phenotypicDao.getCollection(collectionId);
+			collection = phenotypicDao.getPhenotypicCollection(collectionId);
 		}
 		
 		try {
@@ -220,5 +227,65 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
+	}
+
+	public java.util.Collection<FieldType> getFieldTypes()
+	{
+		return phenotypicDao.getFieldTypes();
+	}
+
+	public void deleteCollection(Collection collection)
+	{
+		phenotypicDao.createCollection(collection);
+	}
+
+	public void deleteCollectionImport(CollectionImport collectionImport)
+	{
+		phenotypicDao.deleteCollectionImport(collectionImport);
+	}
+
+	public void deleteField(Field field)
+	{
+		phenotypicDao.deleteField(field);
+	}
+
+	public void deleteFieldData(FieldData fieldData)
+	{
+		phenotypicDao.deleteFieldData(fieldData);		
+	}
+
+	public CollectionImport getCollectionImport(Long id)
+	{
+		return phenotypicDao.getCollectionImport(id);
+	}
+
+	public FieldType getFieldType(Long id)
+	{
+		return phenotypicDao.getFieldType(id);
+	}
+
+	public java.util.Collection<Field> searchField(Field field)
+	{
+		return phenotypicDao.searchField(field);
+	}
+	
+	public java.util.Collection<Field> getFieldByStudyId(Long studyId)
+	{
+		return phenotypicDao.getFieldByStudyId(studyId);
+	}
+
+	public void updateCollectionImport(CollectionImport collectionImport)
+	{
+		phenotypicDao.updateCollectionImport(collectionImport);
+	}
+
+	public void updateField(Field field)
+	{
+		phenotypicDao.updateField(field);
+	}
+
+	public void updateFieldData(FieldData fieldData)
+	{
+		phenotypicDao.updateFieldData(fieldData);
 	}
 }
