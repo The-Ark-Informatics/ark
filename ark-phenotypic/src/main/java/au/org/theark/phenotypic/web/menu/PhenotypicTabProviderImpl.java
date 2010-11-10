@@ -28,7 +28,8 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public  List<ITab> buildTabs(){
+	public List<ITab> buildTabs()
+	{
 		// Main tab
 		ITab tab1 = createTab(Constants.PHENOTYPIC_MAIN_TAB);
 		moduleTabsList.add(tab1);
