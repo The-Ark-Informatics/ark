@@ -10,12 +10,9 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.FieldVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
@@ -26,31 +23,17 @@ public class SearchResultList extends Panel
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
+	private Detail					detailPanel;
 
-	// TODO build detailPanel
-	// private Details detailPanel;
-
-	// TODO build fieldService
-	// @SpringBean( name = "userService")
-	// private IUserService userService;
-
-	@SpringBean( name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService; 
-	
-	// TODO build detailPanel
-	public SearchResultList(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer// ,
-																																																																		// Details
-																																																																		// details
-	)
+	public SearchResultList(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
+			Detail detail)
 	{
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
 		this.containerForm = studyCompContainerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
-		// TODO build detailPanel
-		// this.detailPanel = details;
-
+		this.setDetailPanel(detail);
 	}
 
 	/**
@@ -78,60 +61,65 @@ public class SearchResultList extends Panel
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID, ""));
 				}
-				
+
 				// Component Name Link
 				item.add(buildLink(field));
-				
+
 				// TODO when displaying text escape any special characters
 				// Field Type
 				if (field.getFieldType() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, field.getFieldType().getName()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, field.getFieldType().getName()));// the ID here
+					// must match the
+					// ones in mark-up
 				}
 				else
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, ""));// the ID here must match the ones in mark-up
 				}
-				
-				
+
 				// TODO when displaying text escape any special characters
 				// Description
 				if (field.getDescription() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION, field.getDescription()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION, field.getDescription()));// the ID here must match
+					// the ones in mark-up
 				}
 				else
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION, ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
 				// Units
 				if (field.getName() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS, field.getUnits()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS, field.getUnits()));// the ID here must match the ones in
+					// mark-up
 				}
 				else
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS, ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
 				// Min
 				if (field.getMinValue() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE, field.getMinValue()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE, field.getMinValue()));// the ID here must match the
+					// ones in mark-up
 				}
 				else
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE, ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
 				// Max
 				if (field.getMinValue() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE, field.getMaxValue()));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE, field.getMaxValue()));// the ID here must match the
+					// ones in mark-up
 				}
 				else
 				{
@@ -170,8 +158,8 @@ public class SearchResultList extends Panel
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
 
-				// TODO Build detailPanel
 				// detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
+
 				target.addComponent(searchResultContainer);
 				// target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);
@@ -183,5 +171,22 @@ public class SearchResultList extends Panel
 		Label nameLinkLabel = new Label("nameLbl", field.getName());
 		link.add(nameLinkLabel);
 		return link;
+	}
+
+	/**
+	 * @param detailPanel
+	 *           the detailPanel to set
+	 */
+	public void setDetailPanel(Detail detailPanel)
+	{
+		this.detailPanel = detailPanel;
+	}
+
+	/**
+	 * @return the detailPanel
+	 */
+	public Detail getDetailPanel()
+	{
+		return detailPanel;
 	}
 }
