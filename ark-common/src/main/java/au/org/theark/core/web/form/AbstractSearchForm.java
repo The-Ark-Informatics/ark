@@ -89,7 +89,7 @@ public abstract class AbstractSearchForm<T>  extends Form<T>{
 			searchButton.setEnabled(false);
 			newButton.setEnabled(false);
 			resetButton.setEnabled(false);
-			this.error("There is no study in context.Please select a study");
+			this.error("There is no study in context. Please select a study");
 			
 		}else{
 			newButton.setEnabled(true);
