@@ -7,8 +7,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.vo.FieldVO;
@@ -56,14 +54,18 @@ public class Detail extends Panel
 			{
 				// Save or update the Field
 				// try {
-				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				study = iArkCommonService.getStudy(studyId);
+				
+				// Study should have beeen set, but if not, set it 
+				if(fieldVo.getField().getStudy().getStudyKey() == null ) {
+					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					study = iArkCommonService.getStudy(studyId);
+					fieldVo.getField().setStudy(study);
+				}
 				
 				// Force uppercase field name
 				fieldVo.getField().setName(fieldVo.getField().getName().toUpperCase());
 				
-				// Set Study, field type
-				fieldVo.getField().setStudy(study);
+				// Set field type
 				fieldVo.getField().setFieldType(fieldVo.getFieldType());
 				
 				if (fieldVo.getField().getId() == null)
