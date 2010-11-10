@@ -39,7 +39,7 @@ public class SearchResultList extends Panel
 	/**
 	 * 
 	 * @param iModel
-	 * @return
+	 * @return the pageableListView of Field
 	 */
 	public PageableListView<Field> buildPageableListView(IModel iModel)
 	{
@@ -143,25 +143,25 @@ public class SearchResultList extends Panel
 
 	private AjaxLink buildLink(final Field field)
 	{
-
 		AjaxLink link = new AjaxLink("field.name")
 		{
-
 			@Override
 			public void onClick(AjaxRequestTarget target)
 			{
-
 				FieldVO fieldVo = containerForm.getModelObject();
-				fieldVo.setMode(au.org.theark.core.Constants.MODE_EDIT);
-				fieldVo.setField(field);// Sets the selected object into the model
+				fieldVo.setMode(au.org.theark.core.Constants.MODE_READ);
+				
+				// Sets the selected object into the model
+				fieldVo.setField(field);
+				
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
 
-				// detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
+				detailPanel.getDetailForm().getFieldIdTxtFld().setEnabled(false);
 
 				target.addComponent(searchResultContainer);
-				// target.addComponent(detailsPanelContainer);
+				target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);
 			}
 		};
