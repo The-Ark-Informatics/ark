@@ -1,7 +1,6 @@
 package au.org.theark.phenotypic.model.vo;
 
 import java.io.Serializable;
-import java.util.List;
 
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.phenotypic.model.entity.Collection;
@@ -22,12 +21,12 @@ public class CollectionVO implements Serializable
 	protected FieldData fieldData;
 	protected Person Person;
 	
-	/** A List of fields linked to this phenotypic collection*/
-	protected List<Field> fieldList;
+	/** A Collection of fields linked to this phenotypic collection*/
+	protected java.util.Collection<Field> fieldCollection;
 	
-	/** A List of persons linked to this phenotypic collection*/
-	protected List<Person> personList;
+	/** A Colleciton of persons linked to this phenotypic collection*/
+	protected java.util.Collection<Person> personCollection;
 	
-	/** A List of fieldData linked to this phenotypic collection*/
-	protected List<FieldData> fieldDataList;
+	/** A Collection of fieldData linked to this phenotypic collection*/
+	protected java.util.Collection<FieldData> fieldDataCollection;
 }
