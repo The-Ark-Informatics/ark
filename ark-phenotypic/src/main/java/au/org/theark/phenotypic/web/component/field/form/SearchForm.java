@@ -11,6 +11,7 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
@@ -33,13 +34,15 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
 
+	private CompoundPropertyModel<FieldVO>	cpmModel;
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
 	private DropDownChoice<FieldType>		fieldTypeDdc;
-	private TextField<String>					fieldDescriptionTxtFld;
+	private TextArea<String>					fieldDescriptionTxtAreaFld;
 	private TextField<String>					fieldUnitsTxtFld;
-	private CompoundPropertyModel<FieldVO>	cpmModel;
-
+	private TextField<String>					fieldMinValueTxtFld;
+	private TextField<String>					fieldMaxValueTxtFld;
+	
 	/**
 	 * @param id
 	 */
@@ -64,8 +67,10 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	{
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_NAME);
-		fieldDescriptionTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION);
+		fieldDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION);
 		fieldUnitsTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS);
+		fieldMinValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE);
+		fieldMaxValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE);
 		initFieldTypeDdc();
 		addFieldComponents();
 	}
@@ -75,22 +80,21 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		add(fieldIdTxtFld);
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
-		add(fieldDescriptionTxtFld);
+		add(fieldDescriptionTxtAreaFld);
 		add(fieldUnitsTxtFld);
+		add(fieldMinValueTxtFld);
+		add(fieldMaxValueTxtFld);
 	}
 
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
-		// TODO Auto-generated method stub
 		
 	}
-
 }
