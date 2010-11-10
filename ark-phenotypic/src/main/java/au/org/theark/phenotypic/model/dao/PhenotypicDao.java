@@ -402,6 +402,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_UNITS, field.getUnits(), MatchMode.ANYWHERE));
 		}
 		
+		if (field.getMinValue() != null){
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_MIN_VALUE, field.getMinValue(), MatchMode.ANYWHERE));
+		}
+		
+		if (field.getMaxValue() != null){
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_MAX_VALUE, field.getMaxValue(), MatchMode.ANYWHERE));
+		}
+		
 		fieldCollection = criteria.list();
 		
 		return fieldCollection;
