@@ -97,12 +97,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void createField(Field field)
 	{
-		Subject currentUser = SecurityUtils.getSubject();
-		//TODO caller of createField to setStudy
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId);
-		field.setStudy(study);
-
 		phenotypicDao.createField(field);
 	}
 
