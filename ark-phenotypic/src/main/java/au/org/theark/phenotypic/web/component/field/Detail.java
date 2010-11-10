@@ -1,14 +1,11 @@
 package au.org.theark.phenotypic.web.component.field;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -18,22 +15,15 @@ import au.org.theark.phenotypic.web.component.field.form.DetailForm;
 @SuppressWarnings("serial")
 public class Detail extends Panel
 {
-	//private CompoundPropertyModel<FieldVO>	cpm;
-
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService					phenotypicService;
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
-
 	private DetailForm							detailForm;
-
 	private FeedbackPanel						feedBackPanel;
 	private WebMarkupContainer					listContainer;
 	private WebMarkupContainer					detailsContainer;
 	private WebMarkupContainer					searchPanelContainer;
 	private ContainerForm						containerForm;
-	private Study									study;
 
 	public Detail(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, WebMarkupContainer searchPanelContainer,
 			ContainerForm containerForm)
@@ -52,30 +42,20 @@ public class Detail extends Panel
 		{
 			protected void onSave(FieldVO fieldVo, AjaxRequestTarget target)
 			{
-				// Save or update the Field
+				
+				//TODO Implement try catch for exception handling
 				// try {
-				
-				// Study should have beeen set, but if not, set it 
-				if(fieldVo.getField().getStudy().getStudyKey() == null ) {
-					Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					study = iArkCommonService.getStudy(studyId);
-					fieldVo.getField().setStudy(study);
-				}
-				
-				// Force uppercase field name
-				fieldVo.getField().setName(fieldVo.getField().getName().toUpperCase());
-				
-				// Set field type
-				fieldVo.getField().setFieldType(fieldVo.getFieldType());
 				
 				if (fieldVo.getField().getId() == null)
 				{
+					// Save the Field
 					phenotypicService.createField(fieldVo.getField());
 					this.info("Field " + fieldVo.getField().getName() + " was created successfully");
 					processFeedback(target);
 				}
 				else
 				{
+					// Update the Field
 					phenotypicService.updateField(fieldVo.getField());
 					this.info("Field " + fieldVo.getField().getName() + " was updated successfully");
 					processFeedback(target);
@@ -86,8 +66,6 @@ public class Detail extends Panel
 				//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 				//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 				//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-				 
-
 			}
 
 			protected void onCancel(AjaxRequestTarget target)
@@ -96,13 +74,17 @@ public class Detail extends Panel
 				containerForm.setModelObject(fieldVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);
-				detailForm.setVisible(false);
 				target.addComponent(searchPanelContainer);
 				target.addComponent(feedBackPanel);
 				target.addComponent(detailsContainer);
 			}
 
 			protected void processFeedback(AjaxRequestTarget target)
+			{
+				target.addComponent(feedBackPanel);
+			}
+			
+			protected void processErrors(AjaxRequestTarget target)
 			{
 				target.addComponent(feedBackPanel);
 			}
