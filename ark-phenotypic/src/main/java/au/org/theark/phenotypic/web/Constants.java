@@ -44,13 +44,15 @@ public class Constants {
 	public static final String COLLECTIONVO_PERSON_ID = "collection.person.id";
 	public static final String COLLECTIONVO_FIELD_DATA_ID = "collection.fieldData.id";
 	public static final String FIELDVO_FIELD_ID = "field.id";
+	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
+	public static final String FIELDVO_FIELD_FIELD_TYPE = "field.fieldType";
 	public static final String FIELDVO_FIELD_NAME = "field.name";
 	public static final String FIELDVO_FIELD_DESCRIPTION = "field.description";
-	public static final String FIELDVO_FIELD_FIELD_TYPE = "field.fieldType";
 	public static final String FIELDVO_FIELD_UNITS = "field.units";
-	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
+	public static final String FIELDVO_FIELD_SEQ_NUM = "field.seqNum";
 	public static final String	FIELDVO_FIELD_MIN_VALUE	= "field.minValue";
 	public static final String	FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
+	public static final String	FIELDVO_FIELD_DISCRETE_VALUES	= "field.discreteValues";
 	
 	// Entity fields
 	public static final String COLLECTION = "collection";
