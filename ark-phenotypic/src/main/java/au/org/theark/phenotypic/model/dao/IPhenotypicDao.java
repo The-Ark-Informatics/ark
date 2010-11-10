@@ -1,7 +1,5 @@
 package au.org.theark.phenotypic.model.dao;
 
-import java.util.List;
-
 import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
