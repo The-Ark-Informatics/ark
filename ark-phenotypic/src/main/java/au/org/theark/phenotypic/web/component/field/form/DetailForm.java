@@ -18,10 +18,14 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -35,7 +39,6 @@ import au.org.theark.phenotypic.web.component.field.Detail;
 @SuppressWarnings( { "serial", "unchecked", "unused" })
 public class DetailForm extends Form<FieldVO>
 {
-
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				phenotypicService;
 
@@ -52,8 +55,10 @@ public class DetailForm extends Form<FieldVO>
 	private DropDownChoice<FieldType>	fieldTypeDdc;
 	private TextArea<String>				fieldDescriptionTxtAreaFld;
 	private TextField<String>				fieldUnitsTxtFld;
+	private TextField<String>				fieldSeqNumTxtFld;
 	private TextField<String>				fieldMinValueTxtFld;
 	private TextField<String>				fieldMaxValueTxtFld;
+	private TextField<String>				fieldDiscreteValuesTxtFld;
 
 	private AjaxButton						deleteButton;
 	private AjaxButton						saveButton;
@@ -80,7 +85,6 @@ public class DetailForm extends Form<FieldVO>
 		this.fieldContainerForm = containerForm;
 		this.resultListContainer = listContainer;
 		this.detailPanelContainer = detailsContainer;
-		this.fieldContainerForm = containerForm;
 
 		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
 		{
@@ -106,25 +110,28 @@ public class DetailForm extends Form<FieldVO>
 				processErrors(target);
 			}
 		};
-
+	}
+	
+	private void initFieldTypeDdc()
+	{
+		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
+		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
+		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
 	public void initialiseForm()
 	{
-
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_NAME);
 		fieldDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION);
 		fieldUnitsTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_UNITS);
+		fieldSeqNumTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_SEQ_NUM);
 		fieldMinValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE);
-		
+		fieldMaxValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE);
+		fieldDiscreteValuesTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DISCRETE_VALUES);
 		
 		// Initialise Drop Down Choices
-		// Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
-		Collection<FieldType> fieldTypeList = phenotypicService.getFieldTypes();
-		ChoiceRenderer<FieldType> defaultChoiceRenderer = new ChoiceRenderer<FieldType>(	au.org.theark.phenotypic.web.Constants.FIELD_NAME,
-																													au.org.theark.phenotypic.web.Constants.FIELD_ID);
-		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, (List) fieldTypeList, defaultChoiceRenderer);
+		initFieldTypeDdc();
 
 		attachValidators();
 		addComponents();
@@ -132,7 +139,8 @@ public class DetailForm extends Form<FieldVO>
 
 	private void attachValidators()
 	{
-		fieldNameTxtFld.setRequired(true);
+		fieldNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.name.required", this, new Model<String>("Name")));;
+		fieldTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.fieldType.required", this, new Model<String>("Field Type")));;;
 	}
 
 	private void addComponents()
@@ -141,8 +149,11 @@ public class DetailForm extends Form<FieldVO>
 		add(fieldNameTxtFld);
 		add(fieldDescriptionTxtAreaFld);
 		add(fieldTypeDdc);
+		add(fieldSeqNumTxtFld);
 		add(fieldUnitsTxtFld);
 		add(fieldMinValueTxtFld);
+		add(fieldMaxValueTxtFld);
+		add(fieldDiscreteValuesTxtFld);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 	}
