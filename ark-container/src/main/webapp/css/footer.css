@@ -1,6 +1,6 @@
 div.footer {
 	position: fixed;
-	bottom: 10px;
+	bottom: 0px;
 	z-index: 100000;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
