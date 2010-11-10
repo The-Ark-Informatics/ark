@@ -3,9 +3,6 @@
  */
 package au.org.theark.phenotypic.web.component.field;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,7 +12,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -35,24 +31,33 @@ public class Search extends Panel
 	private FeedbackPanel				feedBackPanel;
 	private WebMarkupContainer			searchMarkupContainer;
 	private WebMarkupContainer			listContainer;
-	private WebMarkupContainer			detailsContainer;
+	private WebMarkupContainer			detailContainer;
 	private PageableListView<Field>	listView;
 	private ContainerForm				containerForm;
+	private Detail							detail;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			phenotypicService;
-	
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService			iArkCommonService;
 
 	/* Constructor */
-	public Search(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<Field> listView, WebMarkupContainer resultListContainer,
-			WebMarkupContainer detailPanelContainer, ContainerForm containerForm)
+	public Search(	String id, 
+						FeedbackPanel feedBackPanel, 
+						WebMarkupContainer searchMarkupContainer, 
+						PageableListView<Field> listView, 
+						WebMarkupContainer resultListContainer,
+						WebMarkupContainer detailPanelContainer, 
+						Detail detail, 
+						ContainerForm containerForm)
 	{
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
+		this.detailContainer = detailPanelContainer;
+		this.detail = detail;
 		this.containerForm = containerForm;
 		listContainer = resultListContainer;
 	}
@@ -60,10 +65,10 @@ public class Search extends Panel
 	public void processDetail(AjaxRequestTarget target)
 	{
 		searchMarkupContainer.setVisible(false);
-		// detail.getDetailsForm().getSubjectIdTxtFld().setEnabled(false);
-		// detailsContainer.setVisible(true);
+		detail.getDetailForm().getFieldIdTxtFld().setEnabled(false);
+		detailContainer.setVisible(true);
 		listContainer.setVisible(false);
-		// target.addComponent(detailsWebMarkupContainer);
+		target.addComponent(detailContainer);
 		target.addComponent(searchMarkupContainer);
 		target.addComponent(listContainer);
 	}
@@ -84,7 +89,7 @@ public class Search extends Panel
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 				Field searchField = containerForm.getModelObject().getField();
 				searchField.setStudy(study);
-				
+
 				java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
 
 				if (fieldCollection != null && fieldCollection.size() == 0)
@@ -109,5 +114,4 @@ public class Search extends Panel
 		};
 		add(searchForm);
 	}
-
 }
