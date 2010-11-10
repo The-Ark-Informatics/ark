@@ -14,104 +14,110 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
+public class FieldContainerPanel extends Panel
+{
 
-public class FieldContainerPanel extends Panel{
+	private static final long					serialVersionUID	= 1L;
 
-	private static final long serialVersionUID = 1L;
+	private FeedbackPanel						feedBackPanel;
 
-	private FeedbackPanel feedBackPanel;
-	
-	//Panels
-	private Search searchComponentPanel;
-	private SearchResultList searchResultPanel;
-	//private Details detailsPanel;
-	
-	private CompoundPropertyModel<FieldVO> fieldCpm;
+	// Panels
+	private Search									searchComponentPanel;
+	private SearchResultList					searchResultPanel;
+	private Detail									detailPanel;
 
-	private IModel<Object> iModel;
-	private PageableListView<Field> listView;
+	private CompoundPropertyModel<FieldVO>	fieldCpm;
 
-	//Mark-up Containers
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer resultListContainer;
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer;
-	
-	private ContainerForm containerForm;
+	private IModel<Object>						iModel;
+	private PageableListView<Field>			listView;
 
-	@SpringBean( name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
-	
-	public FieldContainerPanel(String id) {
+	// Mark-up Containers
+	private WebMarkupContainer					searchPanelContainer;
+	private WebMarkupContainer					resultListContainer;
+	private WebMarkupContainer					detailPanelContainer;
+	private WebMarkupContainer					detailPanelFormContainer;
+
+	private ContainerForm						containerForm;
+
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService					phenotypicService;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService					iArkCommonService;
+
+	public FieldContainerPanel(String id)
+	{
 		super(id);
-		
-		/*Initialise the CPM */
+
+		/* Initialise the CPM */
 		fieldCpm = new CompoundPropertyModel<FieldVO>(new FieldVO());
-	
+
 		initialiseMarkupContainers();
-		
-		/*Bind the CPM to the Form */
+
+		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", fieldCpm);
 		containerForm.add(initialiseFeedBackPanel());
-		//containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
-		
+
 		add(containerForm);
 	}
-	
-	private void initialiseMarkupContainers(){
-		
+
+	private void initialiseMarkupContainers()
+	{
+
 		searchPanelContainer = new WebMarkupContainer("searchContainer");
 		searchPanelContainer.setOutputMarkupPlaceholderTag(true);
-		
-		detailPanelContainer = new WebMarkupContainer("detailsContainer");
+
+		detailPanelContainer = new WebMarkupContainer("detailContainer");
 		detailPanelContainer.setOutputMarkupPlaceholderTag(true);
 		detailPanelContainer.setVisible(false);
 
-		//Contains the controls of the details
+		// Contains the controls of the details
 		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
 		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
 		detailPanelFormContainer.setEnabled(false);
-		
-		//The wrapper for ResultsList panel that will contain a ListView
+
+		// The wrapper for ResultsList panel that will contain a ListView
 		resultListContainer = new WebMarkupContainer("resultListContainer");
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
 		resultListContainer.setVisible(true);
-	
 	}
-	
-	private WebMarkupContainer initialiseFeedBackPanel(){
+
+	private WebMarkupContainer initialiseFeedBackPanel()
+	{
 		/* Feedback Panel */
-		feedBackPanel= new FeedbackPanel("feedbackMessage");
+		feedBackPanel = new FeedbackPanel("feedbackMessage");
 		feedBackPanel.setOutputMarkupId(true);
 		return feedBackPanel;
 	}
-	
-	
-	private WebMarkupContainer initialiseSearchResults(){
-		
-		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm,resultListContainer
-				//TODO Implement detailsPanel
-				//,detailsPanel
-				);
-		
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
+
+	private WebMarkupContainer initialiseSearchResults()
+	{
+
+		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, searchPanelContainer, containerForm, resultListContainer, detailPanel);
+
+		iModel = new LoadableDetachableModel<Object>()
+		{
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load() {
+			protected Object load()
+			{
 				return containerForm.getModelObject().getFieldCollection();
 			}
 		};
 
-		listView  = searchResultPanel.buildPageableListView(iModel);
+		listView = searchResultPanel.buildPageableListView(iModel);
 		listView.setReuseItems(true);
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
 		searchResultPanel.add(pageNavigator);
@@ -119,50 +125,34 @@ public class FieldContainerPanel extends Panel{
 		resultListContainer.add(searchResultPanel);
 		return resultListContainer;
 	}
-	
-	/*
-	
-	private WebMarkupContainer initialiseDetailPanel(){
-		
-		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailPanelContainer,searchPanelContainer,containerForm);
-		detailsPanel.initialisePanel();
-		detailPanelContainer.add(detailsPanel);
+
+	private WebMarkupContainer initialiseDetailPanel()
+	{
+
+		detailPanel = new Detail("detailPanel", resultListContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
 		return detailPanelContainer;
-		
+
 	}
-	*/
-	
-	private WebMarkupContainer initialiseSearchPanel(){
-		//FieldVO fieldVo = new FieldVO();
-		
-		//Get a result-set by default
+
+	private WebMarkupContainer initialiseSearchPanel()
+	{
+		// Get a collection of fields for the study in context by default
 		Collection<Field> fieldCollection = new ArrayList<Field>();
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		try {
-			if(sessionStudyId != null && sessionStudyId > 0){
-				fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());	
-			}
-			
-		//} catch (ArkSystemException e) {
-		} catch (Exception e) {
-			this.error("A System error occured  while initializing Search Panel");
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		containerForm.getModelObject().getField().setStudy(study);
+
+		if (sessionStudyId != null && sessionStudyId > 0)
+		{
+			fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
 		}
-		
-		
-		//fieldCpm.getObject().setFieldCollection(fieldCollection);
+
 		containerForm.getModelObject().setFieldCollection(fieldCollection);
-		
-		searchComponentPanel = new Search("searchComponentPanel", 
-											feedBackPanel, 
-											searchPanelContainer, 
-											listView,
-											resultListContainer,
-											detailPanelContainer,
-											//detailsPanel,
-											containerForm
-											);
-		
+
+		searchComponentPanel = new Search("searchComponentPanel", feedBackPanel, searchPanelContainer, listView, resultListContainer, detailPanelContainer, detailPanel, containerForm);
+
 		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
