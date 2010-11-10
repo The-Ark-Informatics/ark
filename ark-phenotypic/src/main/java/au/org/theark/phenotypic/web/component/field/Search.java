@@ -108,6 +108,12 @@ public class Search extends Panel
 				// Show the details panel name and description
 				FieldVO fieldVo = new FieldVO();
 				fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+				
+				// Set study for the new field
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study	study = iArkCommonService.getStudy(studyId);
+				fieldVo.getField().setStudy(study);
+				
 				containerForm.setModelObject(fieldVo);
 				processDetail(target);
 			}
