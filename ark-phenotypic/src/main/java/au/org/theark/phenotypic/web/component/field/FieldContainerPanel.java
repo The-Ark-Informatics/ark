@@ -24,7 +24,6 @@ import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
 public class FieldContainerPanel extends Panel
 {
-
 	private static final long					serialVersionUID	= 1L;
 
 	private FeedbackPanel						feedBackPanel;
@@ -141,11 +140,11 @@ public class FieldContainerPanel extends Panel
 		// Get a collection of fields for the study in context by default
 		Collection<Field> fieldCollection = new ArrayList<Field>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		containerForm.getModelObject().getField().setStudy(study);
 
 		if (sessionStudyId != null && sessionStudyId > 0)
 		{
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			containerForm.getModelObject().getField().setStudy(study);
 			fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
 		}
 
