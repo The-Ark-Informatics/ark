@@ -47,7 +47,7 @@
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<select wicket:id="fieldType">
+					<select wicket:id="field.fieldType">
 	       				<option>Number</option>
 						<option>Character</option>
 						<option>Date</option>
@@ -56,46 +56,108 @@
 			</div>
 			
 			<div id="panelMargin">&nbsp;</div>
-			
+						
 			<div id="fldLabel">
-				<div class="label">
-					<label for="fieldDescription">
-						<wicket:message key="field.description">Description:</wicket:message>
-					</label>
-				</div>
-			</div>
+	 			<div class="label">
+					<label for="fieldDescription"><wicket:message key="field.description">Description:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
 			<div id="fldControl">
 				<div class="label">
 					<textarea wicket:id="field.description" rows="5" cols="35"></textarea> 
 				</div>
 			</div>
 			
+			<div id="searchPanelBreaker">&nbsp;</div>
+	       	
+	       	<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="fieldUnits"><wicket:message key="field.units">Units:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="field.units"  type="text" />
+				</div>
+			</div>
+	       	   		       			
+	       	<div id="panelMargin">&nbsp;</div>
+					
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="fieldDiscreteValues"><wicket:message key="field.discreteValues">Discrete Values:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="field.discreteValues"  type="text" />
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
-			
-			<div id="panelContentLeft">&nbsp;</div>
-			
-			<div id="fldLabel">
-				<div class="label">
-					<label for="fieldUnits"><wicket:message	key="field.units">Units:</wicket:message></label> 
-				</div>
-			</div>
-			<div id="fldControl">
-				<div class="label" >
-					<input wicket:id="field.units" />
-				</div>
-			</div>
-			
-			<div id="panelMargin">&nbsp;</div>
+	       	
+	       	<div id="panelContentLeft">&nbsp;</div>
 			
 			<div id="fldLabel">
+	 			<div class="label">
+					<label for="fieldMinValue"><wicket:message key="field.minValue">Minimum Value:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
 				<div class="label">
-					<label for="fieldMinValue"><wicket:message	key="field.minValue">Minimum Value:</wicket:message></label> 
+					<input wicket:id="field.minValue"  type="text" />
 				</div>
 			</div>
+	       	   		       			
+	       	<div id="panelMargin">&nbsp;</div>
+					
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="fieldMinValue"><wicket:message key="field.maxValue">Maximum Value:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
 			<div id="fldControl">
-				<div class="label" >
-					<input wicket:id="field.minValue" /> 
+				<div class="label">
+					<input wicket:id="field.maxValue"  type="text" />
+				</div>
+			</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+	       	
+	       	<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="fieldSeqNum"><wicket:message key="field.seqNum">Sequence Number:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="field.seqNum"  type="text" />
+				</div>
+			</div>
+	       	   		       			
+	       	<div id="panelMargin">&nbsp;</div>
+					
+			<div id="fldLabel">
+	 			<div class="label">
+					&nbsp;
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					&nbsp;
 				</div>
 			</div>
 			
