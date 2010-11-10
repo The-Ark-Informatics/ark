@@ -376,40 +376,34 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		java.util.Collection<Field> fieldCollection = null;
 		
-		try{
-			Criteria criteria = getSession().createCriteria(Field.class);
-	
-			if (field.getId() != null)
-			{
-				//au.org.theark.phenotypic.web.Constants.FIELD_ID
-				criteria.add(Restrictions.eq("id", field.getId()));
-			}
-	
-			if (field.getName() != null)
-			{
-				//au.org.theark.phenotypic.web.Constants.FIELD_NAME
-				criteria.add(Restrictions.eq("name", field.getName()));
-			}
-			
-			if(field.getStudy() != null){
-				criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, field.getStudy()));
-			}
-	
-		/*	if (field.getFieldType() != null)
-			{
-				criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_FIELD_TYPE, field.getFieldType()));
-			}*/
-	
-			if (field.getDescription() != null)
-			{
-				//au.org.theark.phenotypic.web.Constants.FIELD_DESCRIPTION
-				criteria.add(Restrictions.ilike("description", field.getDescription()));
-			}
-			fieldCollection = criteria.list();
+		Criteria criteria = getSession().createCriteria(Field.class);
+
+		if (field.getId() != null){
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_ID, field.getId()));
 		}
-		catch(org.hibernate.QueryException qex){
-			log.error("Error during searchField: " + qex.getMessage());
+
+		if (field.getName() != null){
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_NAME, field.getName()));
 		}
+		
+		if(field.getStudy() != null){
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, field.getStudy()));
+		}
+
+		if (field.getFieldType() != null){
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_FIELD_TYPE, field.getFieldType()));
+		}
+
+		if (field.getDescription() != null){
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DESCRIPTION, field.getDescription(), MatchMode.ANYWHERE));
+		}
+		
+		if (field.getUnits() != null){
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_UNITS, field.getUnits(), MatchMode.ANYWHERE));
+		}
+		
+		fieldCollection = criteria.list();
+		
 		return fieldCollection;
 	}
 
@@ -423,15 +417,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public java.util.Collection<Field> getFieldByStudyId(Long studyId)
 	{
 		java.util.Collection<Field> fieldCollection = new ArrayList<Field>();
-		try{
-			Criteria criteria = getSession().createCriteria(Field.class);
-			//criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY_ID, studyId));
-			fieldCollection = criteria.list();
-		}
-		catch(Exception ex){
-			log.error("System exception: " + ex.getStackTrace());
-		}
-		
+		Study study = iArkCommonService.getStudy(studyId);
+		Criteria criteria = getSession().createCriteria(Field.class);
+		criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
+		fieldCollection = criteria.list();
 		return fieldCollection;
 	}
 
@@ -454,20 +443,20 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (collectionImportToMatch.getId() != null)
 		{
-			// TODO Add collectionImport.id criteria
-			// criteria.add(Restrictions.eq(Constants.COLLECTION_IMPORT_ID,collectionImportToMatch.getId()));
+			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_ID,collectionImportToMatch.getId()));
 		}
 
 		if (collectionImportToMatch.getCollection() != null)
 		{
-			// TODO Add collectionImport.collection criteria
-			// criteria.add(Restrictions.ilike(Constants.COLLECTION_IMPORT_COLLECTION,collectionImportToMatch.getCollection()));
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_COLLECTION,collectionImportToMatch.getCollection()));
+		}
+		
+		if (collectionImportToMatch.getImportType() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_TYPE,collectionImportToMatch.getImportType()));
 		}
 
 		java.util.Collection<CollectionImport> collectionImportCollection = criteria.list();
 		return collectionImportCollection;
 	}
-
-	
-
 }
