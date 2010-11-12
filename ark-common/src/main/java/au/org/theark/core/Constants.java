@@ -85,6 +85,9 @@ public class Constants {
 	public static final String DELETE="delete";
 	public static final String	EDIT	= "edit";
 	public static final String	EDIT_CANCEL	= "editCancel";
+	public static final String	OK	= "ok";
+	public static final String	DELETE_CONFIRM_TITLE	= "Delete confirmation";
+	public static final String	DELETE_CONFIRM_MESSAGE	= "Are you sure you want to delete?";
 	
 	public static final String SEARCH_FORM ="searchForm";
 	public static final int MODE_NEW = 1;
