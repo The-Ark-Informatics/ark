@@ -34,6 +34,7 @@ public interface IPhenotypicDao {
 	// Status
 	public Status getStatus(Long statusId);
 	public Status getStatusByName(String statusName);
+	public java.util.Collection<Status> getStatus();
 	public void createStatus(Status status);
 	public void updateStatus(Status status);
 	
@@ -68,4 +69,5 @@ public interface IPhenotypicDao {
 	public void createUploadCollection(UploadCollection uploadCollection);
 	public void updateUploadCollection(UploadCollection uploadCollection);
 	public void deleteUploadCollection(UploadCollection uploadCollection);
+	
 }

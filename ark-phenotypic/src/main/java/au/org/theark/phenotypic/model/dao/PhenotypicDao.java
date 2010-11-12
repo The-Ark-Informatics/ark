@@ -318,6 +318,13 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		else
 			return null;
 	}
+	
+	public java.util.Collection<Status> getStatus()
+	{
+		Criteria crit = getSession().createCriteria(Status.class);
+		java.util.Collection<Status> statusCollection = crit.list();
+		return (statusCollection);
+	}
 
 	public void createStatus(Status status)
 	{
