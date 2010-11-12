@@ -43,6 +43,10 @@ public class FieldContainerPanel extends Panel
 	private WebMarkupContainer					resultListContainer;
 	private WebMarkupContainer					detailPanelContainer;
 	private WebMarkupContainer					detailPanelFormContainer;
+	
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
+	
 
 	private ContainerForm						containerForm;
 
@@ -90,6 +94,15 @@ public class FieldContainerPanel extends Panel
 		resultListContainer = new WebMarkupContainer("resultListContainer");
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
 		resultListContainer.setVisible(true);
+		
+		//Buttons
+		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
+		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
+		viewButtonContainer.setVisible(false);
+		
+		editButtonContainer = new WebMarkupContainer("editButtonContainer");
+		editButtonContainer.setOutputMarkupPlaceholderTag(true);
+		editButtonContainer.setVisible(false);
 	}
 
 	private WebMarkupContainer initialiseFeedBackPanel()
@@ -103,7 +116,10 @@ public class FieldContainerPanel extends Panel
 	private WebMarkupContainer initialiseSearchResults()
 	{
 
-		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, searchPanelContainer, containerForm, resultListContainer, detailPanel);
+		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, searchPanelContainer, containerForm, resultListContainer, detailPanel,
+				viewButtonContainer,
+				editButtonContainer,
+				detailPanelFormContainer);
 
 		iModel = new LoadableDetachableModel<Object>()
 		{
@@ -128,7 +144,10 @@ public class FieldContainerPanel extends Panel
 	private WebMarkupContainer initialiseDetailPanel()
 	{
 
-		detailPanel = new Detail("detailPanel", resultListContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm);
+		detailPanel = new Detail("detailPanel", resultListContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
+				viewButtonContainer,
+				editButtonContainer,
+				detailPanelFormContainer);
 		detailPanel.initialisePanel();
 		detailPanelContainer.add(detailPanel);
 		return detailPanelContainer;
@@ -150,7 +169,7 @@ public class FieldContainerPanel extends Panel
 
 		containerForm.getModelObject().setFieldCollection(fieldCollection);
 
-		searchComponentPanel = new Search("searchComponentPanel", feedBackPanel, searchPanelContainer, listView, resultListContainer, detailPanelContainer, detailPanel, containerForm);
+		searchComponentPanel = new Search("searchPanel", feedBackPanel, searchPanelContainer, listView, resultListContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 
 		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);
