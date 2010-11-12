@@ -11,6 +11,7 @@ public interface IPhenotypicService {
 	
 	// Collection
 	public Collection getCollection(Long id);
+	public java.util.Collection<Collection> searchPhenotypicCollection(Collection phenotypicCollection);
 	public void createCollection(Collection col);
 	public void updateCollection(Collection col);
 	public void deleteCollection(Collection col);
@@ -41,10 +42,13 @@ public interface IPhenotypicService {
 	
 	// Status
 	public Status getStatusByName(String statusName);
+	public java.util.Collection<Status> getStatus();
 	
 	// Validate phenotypic data file
 	public java.util.Collection<String> validatePhenotypicDataFile();
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
+	
+	
 }

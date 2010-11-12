@@ -109,6 +109,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.getStatusByName(statusName);
 	}
+	
+	public java.util.Collection<Status> getStatus(){
+		return phenotypicDao.getStatus();
+	}
 
 	public Field getField(Long fieldId)
 	{
@@ -281,5 +285,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void updateFieldData(FieldData fieldData)
 	{
 		phenotypicDao.updateFieldData(fieldData);
+	}
+
+	public java.util.Collection<Collection> searchPhenotypicCollection(Collection phenotypicCollection)
+	{
+		return phenotypicDao.searchPhenotypicCollection(phenotypicCollection);
 	}
 }
