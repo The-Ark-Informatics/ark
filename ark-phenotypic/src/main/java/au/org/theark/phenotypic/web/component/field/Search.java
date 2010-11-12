@@ -35,6 +35,9 @@ public class Search extends Panel
 	private PageableListView<Field>	listView;
 	private ContainerForm				containerForm;
 	private Detail							detail;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer detailPanelFormContainer;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			phenotypicService;
@@ -50,7 +53,10 @@ public class Search extends Panel
 						WebMarkupContainer resultListContainer,
 						WebMarkupContainer detailPanelContainer, 
 						Detail detail, 
-						ContainerForm containerForm)
+						ContainerForm containerForm,
+						WebMarkupContainer viewButtonContainer,
+						WebMarkupContainer editButtonContainer,
+						WebMarkupContainer detailPanelFormContainer)
 	{
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
@@ -59,6 +65,9 @@ public class Search extends Panel
 		this.detailContainer = detailPanelContainer;
 		this.detail = detail;
 		this.containerForm = containerForm;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer;
 		listContainer = resultListContainer;
 	}
 
@@ -68,9 +77,24 @@ public class Search extends Panel
 		detail.getDetailForm().getFieldIdTxtFld().setEnabled(false);
 		detailContainer.setVisible(true);
 		listContainer.setVisible(false);
+		
+		// Button containers
+		// New Field, thus Edit container visible
+		viewButtonContainer.setVisible(false);
+		editButtonContainer.setVisible(true);
+		editButtonContainer.setEnabled(true);
+		
+		// Hide Delete button on New
+		detail.getDetailForm().getDeleteButton().setVisible(false);
+		
+		// Enable all fields to be edited
+		detailPanelFormContainer.setEnabled(true);
+		
 		target.addComponent(detailContainer);
 		target.addComponent(searchMarkupContainer);
 		target.addComponent(listContainer);
+		target.addComponent(viewButtonContainer);
+		target.addComponent(editButtonContainer);
 	}
 
 	public void initialisePanel()
