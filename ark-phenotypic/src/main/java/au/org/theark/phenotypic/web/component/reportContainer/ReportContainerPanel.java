@@ -1,4 +1,4 @@
-package au.org.theark.phenotypic.web.component.ReportContainer;
+package au.org.theark.phenotypic.web.component.reportContainer;
 
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
