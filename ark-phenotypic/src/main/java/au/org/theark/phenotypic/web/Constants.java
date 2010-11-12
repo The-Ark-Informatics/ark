@@ -9,12 +9,14 @@ public class Constants {
 	
 	// Sub tabs/menus
 	public static final String PHENOTYPIC_SUBMENU = "phenotypicSubMenus";
-	public static final String COLLECTION_SUBMENU = "Collections";
+	public static final String	PHENOTYPIC_SUMMARY_SUBMENU	= "Summary";
+	public static final String PHENO_COLLECTION_SUBMENU = "Collections";
 	public static final String FIELD_SUBMENU = "Fields";
 	public static final String PHENOTYPIC_IMPORT_SUBMENU = "Data Import";
 	public static final String REPORT_SUBMENU = "Reports";
 	
 	// Resource keys
+	public static final String	PHENOTYPIC_SUMMARY_RESOURCEKEY	= "tab.module.phenotypic.summaryModule";
 	public static final String COLLECTION_RESOURCEKEY = "tab.module.phenotypic.collection";
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
 	public static final String PHENOTYPIC_IMPORT_RESOURCEKEY = "tab.module.phenotypic.phenotypicImport";
@@ -40,9 +42,19 @@ public class Constants {
 	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 	
 	// VO fields
+	public static final String	COLLECTIONVO_COLLECTION_ID	= "collection.id";
+	public static final String	COLLECTIONVO_COLLECTION_NAME	= "collection.name";
+	public static final String	COLLECTIONVO_COLLECTION_DESCRIPTION	= "collection.description";
+	public static final String COLLECTIONVO_FIELD = "collection.field";
 	public static final String COLLECTIONVO_FIELD_ID = "collection.field.id";
+	public static final String COLLECTIONVO_PERSON = "collection.person";
 	public static final String COLLECTIONVO_PERSON_ID = "collection.person.id";
+	public static final String COLLECTIONVO_FIELD_DATA = "collection.fieldData";
 	public static final String COLLECTIONVO_FIELD_DATA_ID = "collection.fieldData.id";
+	public static final String COLLECTIONVO_COLLECTION_STATUS = "collection.status";
+	public static final String	COLLECTIONVO_COLLECTION_START_DATE	= "collection.startDate";
+	public static final String	COLLECTIONVO_COLLECTION_EXPIRY_DATE	= "collection.expiryDate";
+	
 	public static final String FIELDVO_FIELD_ID = "field.id";
 	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
 	public static final String FIELDVO_FIELD_FIELD_TYPE = "field.fieldType";
@@ -111,4 +123,12 @@ public class Constants {
 	public static final String FIELD_DATA_INSERT_TIME = "insertTime";
 	public static final String FIELD_DATA_UPDATE_USER = "user";
 	public static final String FIELD_DATA_UPDATE_TIME = "updateTime";
+
+	public static final String	STATUS	= "status";
+	public static final String	STATUS_ID	= "id";
+	public static final String	STATUS_NAME	= "name";
+
+	
+	
+	
 }
