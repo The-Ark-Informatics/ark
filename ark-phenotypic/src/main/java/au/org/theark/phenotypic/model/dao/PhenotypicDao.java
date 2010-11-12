@@ -27,6 +27,7 @@ import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.Upload;
 import au.org.theark.phenotypic.model.entity.UploadCollection;
+import org.apache.commons.lang.StringUtils;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -38,7 +39,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
-
+	
 	public java.util.Collection<Collection> getPhenotypicCollection()
 	{
 		Criteria crit = getSession().createCriteria(Collection.class);
@@ -186,6 +187,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		field.setUserId(currentUser.getPrincipal().toString());
 		field.setInsertTime(dateNow);
+		
+		// Format the Field name before creating
+		field.setName(formatFieldName(field.getName()));
 
 		getSession().save(field);
 	}
@@ -196,6 +200,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		field.setUpdateUserId(currentUser.getPrincipal().toString());
 		field.setUpdateTime(dateNow);
+		
+		// Format the Field name before updating
+		field.setName(formatFieldName(field.getName()));
 
 		getSession().update(field);
 	}
@@ -203,6 +210,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void deleteField(Field field)
 	{
 		getSession().delete(field);
+	}
+	
+	private String formatFieldName(String fieldName){
+		// Uppercase the Fieldname
+		fieldName = fieldName.toUpperCase();
+		
+		// Replace all spaces with underscores
+		fieldName = StringUtils.replace(fieldName, " ", "_");
+		
+		// Replace all spaces with underscores
+		fieldName = StringUtils.replace(fieldName, " ", "_");
+		
+		return fieldName;
 	}
 
 	public FieldType getFieldTypeByName(String fieldTypeName)
