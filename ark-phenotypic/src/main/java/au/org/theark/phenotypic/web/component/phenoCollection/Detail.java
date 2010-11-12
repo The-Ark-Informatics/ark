@@ -11,8 +11,8 @@ import au.org.theark.phenotypic.model.vo.CollectionVO;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.summary.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.summary.form.DetailForm;
+import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.summaryModule.form.DetailForm;
 
 @SuppressWarnings("serial")
 public class Detail extends Panel

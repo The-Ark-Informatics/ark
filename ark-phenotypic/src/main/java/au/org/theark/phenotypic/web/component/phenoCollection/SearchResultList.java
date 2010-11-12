@@ -15,7 +15,7 @@ import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.CollectionVO;
 import au.org.theark.phenotypic.model.vo.FieldVO;
-import au.org.theark.phenotypic.web.component.summary.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultList extends Panel
