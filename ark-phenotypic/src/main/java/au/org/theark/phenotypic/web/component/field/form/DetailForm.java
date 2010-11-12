@@ -10,8 +10,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import mx4j.log.Log;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -45,7 +48,8 @@ public class DetailForm extends Form<FieldVO>
 	private WebMarkupContainer				resultListContainer;
 	private WebMarkupContainer				detailPanelContainer;
 	private WebMarkupContainer				detailFormContainer;
-
+	private WebMarkupContainer 			viewButtonContainer;
+	private WebMarkupContainer 			editButtonContainer;
 	private ContainerForm					fieldContainerForm;
 
 	private int									mode;
@@ -60,6 +64,8 @@ public class DetailForm extends Form<FieldVO>
 	private TextField<String>				fieldMaxValueTxtFld;
 	private TextField<String>				fieldDiscreteValuesTxtFld;
 
+	private AjaxButton						editButton;
+	private AjaxButton						editCancelButton;
 	private AjaxButton						deleteButton;
 	private AjaxButton						saveButton;
 	private AjaxButton						cancelButton;
@@ -79,12 +85,42 @@ public class DetailForm extends Form<FieldVO>
 	 * 
 	 * @param id
 	 */
-	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm)
+	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
+			WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer,
+			WebMarkupContainer detailFormContainer)
 	{
 		super(id);
 		this.fieldContainerForm = containerForm;
 		this.resultListContainer = listContainer;
 		this.detailPanelContainer = detailsContainer;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailFormContainer = detailFormContainer;
+		
+		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
+		{
+
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onEdit(fieldContainerForm.getModelObject(), target);
+				target.addComponent(detailPanelContainer);
+			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form)
+			{
+				processErrors(target);
+			}
+		};
+		
+		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onCancel(target);
+			}
+		};
 
 		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
 		{
@@ -102,6 +138,20 @@ public class DetailForm extends Form<FieldVO>
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onSave(fieldContainerForm.getModelObject(), target);
+				target.addComponent(detailPanelContainer);
+			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form)
+			{
+				processErrors(target);
+			}
+		};
+		
+		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+		{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onDelete(fieldContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 
@@ -145,17 +195,30 @@ public class DetailForm extends Form<FieldVO>
 
 	private void addComponents()
 	{
-		add(fieldIdTxtFld);
-		add(fieldNameTxtFld);
-		add(fieldDescriptionTxtAreaFld);
-		add(fieldTypeDdc);
-		add(fieldSeqNumTxtFld);
-		add(fieldUnitsTxtFld);
-		add(fieldMinValueTxtFld);
-		add(fieldMaxValueTxtFld);
-		add(fieldDiscreteValuesTxtFld);
-		add(saveButton);
-		add(cancelButton.setDefaultFormProcessing(false));
+		detailFormContainer.add(fieldIdTxtFld);
+		detailFormContainer.add(fieldNameTxtFld);
+		detailFormContainer.add(fieldDescriptionTxtAreaFld);
+		detailFormContainer.add(fieldTypeDdc);
+		detailFormContainer.add(fieldSeqNumTxtFld);
+		detailFormContainer.add(fieldUnitsTxtFld);
+		detailFormContainer.add(fieldMinValueTxtFld);
+		detailFormContainer.add(fieldMaxValueTxtFld);
+		detailFormContainer.add(fieldDiscreteValuesTxtFld);
+		
+		add(detailFormContainer);
+		
+		// View has Edit and Cancel
+		viewButtonContainer.add(editButton);
+		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
+		
+		// Edit has Save, Delete and Cancel
+		editButtonContainer.add(saveButton);
+		editButtonContainer.add(deleteButton);
+		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
+		
+		// Button containers
+		add(viewButtonContainer);
+		add(editButtonContainer);
 	}
 
 	protected void onSave(FieldVO fieldVo, AjaxRequestTarget target)
@@ -166,6 +229,16 @@ public class DetailForm extends Form<FieldVO>
 	protected void onCancel(AjaxRequestTarget target)
 	{
 
+	}
+	
+	protected void onEdit(FieldVO fieldVo, AjaxRequestTarget target)
+	{
+
+	}
+	
+	protected void onDelete(FieldVO fieldVo, AjaxRequestTarget target)
+	{
+		
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
@@ -192,5 +265,54 @@ public class DetailForm extends Form<FieldVO>
 	{
 		this.fieldNameTxtFld = fieldNameTxtFld;
 	}
+	
+	public AjaxButton getEditButton()
+	{
+		return editButton;
+	}
 
+	public void setEditButton(AjaxButton editButton)
+	{
+		this.editButton = editButton;
+	}
+
+	public AjaxButton getEditCancelButton()
+	{
+		return editCancelButton;
+	}
+
+	public void setEditCancelButton(AjaxButton editCancelButton)
+	{
+		this.editCancelButton = editCancelButton;
+	}
+
+	public AjaxButton getDeleteButton()
+	{
+		return deleteButton;
+	}
+
+	public void setDeleteButton(AjaxButton deleteButton)
+	{
+		this.deleteButton = deleteButton;
+	}
+
+	public AjaxButton getSaveButton()
+	{
+		return saveButton;
+	}
+
+	public void setSaveButton(AjaxButton saveButton)
+	{
+		this.saveButton = saveButton;
+	}
+
+	public AjaxButton getCancelButton()
+	{
+		return cancelButton;
+	}
+
+	public void setCancelButton(AjaxButton cancelButton)
+	{
+		this.cancelButton = cancelButton;
+	}
 }
