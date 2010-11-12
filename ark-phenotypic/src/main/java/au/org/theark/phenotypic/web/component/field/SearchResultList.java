@@ -24,15 +24,24 @@ public class SearchResultList extends Panel
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
 	private Detail					detailPanel;
+	private WebMarkupContainer detailPanelFormContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
 
 	public SearchResultList(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
-			Detail detail)
+			Detail detail,
+			WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer,
+			WebMarkupContainer detailPanelFormContainer)
 	{
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
 		this.containerForm = studyCompContainerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer; 
 		this.setDetailPanel(detail);
 	}
 
@@ -148,21 +157,31 @@ public class SearchResultList extends Panel
 			@Override
 			public void onClick(AjaxRequestTarget target)
 			{
-				FieldVO fieldVo = containerForm.getModelObject();
-				fieldVo.setMode(au.org.theark.core.Constants.MODE_READ);
-				
 				// Sets the selected object into the model
+				FieldVO fieldVo = containerForm.getModelObject();
 				fieldVo.setField(field);
 				
 				detailsPanelContainer.setVisible(true);
+				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
 
 				detailPanel.getDetailForm().getFieldIdTxtFld().setEnabled(false);
+				
+				// Button containers
+				// View Field, thus view container visible
+				viewButtonContainer.setVisible(true);
+				viewButtonContainer.setEnabled(true);
+				editButtonContainer.setVisible(false);
+				
+				// Have to Edit, before allowing delete
+				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);
+				target.addComponent(viewButtonContainer);
+				target.addComponent(editButtonContainer);
 			}
 		};
 
