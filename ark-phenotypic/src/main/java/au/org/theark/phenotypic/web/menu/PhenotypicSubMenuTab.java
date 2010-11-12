@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
-import au.org.theark.phenotypic.web.component.ReportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
-import au.org.theark.phenotypic.web.component.collection.CollectionContainer;
 import au.org.theark.phenotypic.web.component.field.FieldContainer;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
+import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
+import au.org.theark.phenotypic.web.component.summaryModule.CollectionContainer;
 
 @SuppressWarnings( { "serial", "unused" })
 public class PhenotypicSubMenuTab extends Panel
@@ -47,7 +47,11 @@ public class PhenotypicSubMenuTab extends Panel
 		// This way we can get the menus from the back-end.
 		// We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.COLLECTION_SUBMENU);
+		menuModule.setModuleName(Constants.PHENOTYPIC_SUMMARY_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_SUMMARY_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule.setModuleName(Constants.PHENO_COLLECTION_SUBMENU);
 		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 
@@ -106,7 +110,11 @@ public class PhenotypicSubMenuTab extends Panel
 
 					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
 
-					if (moduleName.getModuleName().equalsIgnoreCase(Constants.COLLECTION_SUBMENU))
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
+					{
+						panelToReturn = new CollectionContainer(panelId); // Note the constructor
+					}
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
 					{
 						panelToReturn = new CollectionContainer(panelId); // Note the constructor
 					}
