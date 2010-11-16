@@ -39,8 +39,7 @@ public class Person implements java.io.Serializable {
 	
 	private Date dateOfBirth;
 	
-
-	private String personId;
+	
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
 			0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
@@ -68,7 +67,7 @@ public class Person implements java.io.Serializable {
 	/** full constructor */
 	public Person(Long personKey, String firstName, String middleName,
 			String lastName, String preferredName, 	Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType,GenderType genderType,
-			String personId, Set<LinkSubjectStudy> linkSubjectStudies,
+			Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
 			Set<LinkSiteContact> linkSiteContacts, Set<Address> addresses,
@@ -82,7 +81,6 @@ public class Person implements java.io.Serializable {
 		this.vitalStatus = vitalStatus;
 		this.titleType = titleType;
 		this.genderType = genderType;
-		this.personId = personId;
 		this.linkSubjectStudies = linkSubjectStudies;
 		this.phones = phones;
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
@@ -182,14 +180,6 @@ public class Person implements java.io.Serializable {
 		this.titleType = titleType;
 	}
 
-	@Column(name = "PERSON_ID", length = 50)
-	public String getPersonId() {
-		return this.personId;
-	}
-
-	public void setPersonId(String personId) {
-		this.personId = personId;
-	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
