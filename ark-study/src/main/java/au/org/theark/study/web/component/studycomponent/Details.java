@@ -1,116 +1,69 @@
 package au.org.theark.study.web.component.studycomponent;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.study.model.vo.StudyCompVo;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
-import au.org.theark.study.web.component.studycomponent.form.DetailsForm;
+import au.org.theark.study.web.component.studycomponent.form.DetailForm;
 
 public class Details extends Panel{
-	
-	private CompoundPropertyModel<StudyCompVo> cpm;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	@SpringBean(name ="studyService")
-	private IStudyService studyService;
-	
-	private DetailsForm detailsForm;
-	
-	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer detailsContainer;
-	private WebMarkupContainer searchPanelContainer;
-	private ContainerForm containerForm;
-	private Study study;
 
-	public Details(	String id, 
-					final WebMarkupContainer listContainer, 
+	private DetailForm detailForm;
+	private FeedbackPanel feedBackPanel;
+	private WebMarkupContainer searchResultPanelContainer;
+	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer detailPanelFormContainer; 
+	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
+	private ContainerForm containerForm;
+
+	public Details(	String id,
 					FeedbackPanel feedBackPanel,
-					WebMarkupContainer detailsContainer,
+					WebMarkupContainer searchResultPanelContainer,
+					WebMarkupContainer detailPanelContainer,
+					WebMarkupContainer detailPanelFormContainer, 
 					WebMarkupContainer searchPanelContainer,
+					WebMarkupContainer viewButtonContainer,
+					WebMarkupContainer editButtonContainer,
 					ContainerForm containerForm){
 		
 		super(id);
 		this.feedBackPanel = feedBackPanel;
-		this.listContainer = listContainer;
-		this.detailsContainer = detailsContainer;
-		this.containerForm = containerForm;
+		this.searchResultPanelContainer = searchResultPanelContainer;
+		this.detailPanelContainer = detailPanelContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.searchPanelContainer = searchPanelContainer;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.containerForm = containerForm;
+		
 	}
 	
 	public void initialisePanel(){
 		
-		detailsForm = new DetailsForm("detailsForm", this, listContainer, detailsContainer, containerForm){
-			
-			protected void onSave(StudyCompVo studyCompVo, AjaxRequestTarget target){
-				//Do the save Persist the Study component and the attached documents to the backend/upload the files and persist the file payload
-				//Enable Unhide a panel that will display a list of Files that "have been uploaded along with a download option"
-				try {
-					Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					study =studyService.getStudy(studyId);
-					studyCompVo.getStudyComponent().setStudy(study);
-					
-					if(studyCompVo.getStudyComponent().getStudyCompKey() == null){
-						
-						studyService.create(studyCompVo.getStudyComponent());
-						this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was created successfully" );
-						processFeedback(target);
-					
-					}else{
-					
-						studyService.update(studyCompVo.getStudyComponent());
-						this.info("Study Component " + studyCompVo.getStudyComponent().getName() + " was updated successfully" );
-						processFeedback(target);
-						
-					}
-					
-				} catch (UnAuthorizedOperation e) {
-					 this.error("You are not authorised to manage study components for the given study " + study.getName());
-					 processFeedback(target);
-				} catch (ArkSystemException e) {
-					this.error("A System error occured, we will have someone contact you.");
-					processFeedback(target);
-				}
-				
-			}
-			
-			protected void onCancel(AjaxRequestTarget target){
-				StudyCompVo studyCompVo = new StudyCompVo();
-				containerForm.setModelObject(studyCompVo);
-				searchPanelContainer.setVisible(true);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(feedBackPanel);
-			}
-
-			protected void processFeedback(AjaxRequestTarget target){
-				target.addComponent(feedBackPanel);
-			}
-			
-		};
+		detailForm = new DetailForm("detailsForm",	
+									feedBackPanel,
+									searchResultPanelContainer,
+									detailPanelContainer,
+									detailPanelFormContainer,
+									searchPanelContainer,
+									viewButtonContainer, 
+									editButtonContainer,
+									containerForm);
 		
-		detailsForm.initialiseForm();
-		add(detailsForm);
+		detailForm.initialiseDetailForm();
+		
+		add(detailForm);
 	}
 
-	public DetailsForm getDetailsForm() {
-		return detailsForm;
+	public DetailForm getDetailForm() {
+		return detailForm;
 	}
 
-	public void setDetailsForm(DetailsForm detailsForm) {
-		this.detailsForm = detailsForm;
+	public void setDetailForm(DetailForm detailForm) {
+		this.detailForm = detailForm;
 	}
 
 }
