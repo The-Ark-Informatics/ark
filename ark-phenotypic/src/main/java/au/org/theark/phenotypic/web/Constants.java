@@ -42,18 +42,18 @@ public class Constants {
 	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 	
 	// VO fields
-	public static final String	COLLECTIONVO_COLLECTION_ID	= "collection.id";
-	public static final String	COLLECTIONVO_COLLECTION_NAME	= "collection.name";
-	public static final String	COLLECTIONVO_COLLECTION_DESCRIPTION	= "collection.description";
-	public static final String COLLECTIONVO_FIELD = "collection.field";
-	public static final String COLLECTIONVO_FIELD_ID = "collection.field.id";
-	public static final String COLLECTIONVO_PERSON = "collection.person";
-	public static final String COLLECTIONVO_PERSON_ID = "collection.person.id";
-	public static final String COLLECTIONVO_FIELD_DATA = "collection.fieldData";
-	public static final String COLLECTIONVO_FIELD_DATA_ID = "collection.fieldData.id";
-	public static final String COLLECTIONVO_COLLECTION_STATUS = "collection.status";
-	public static final String	COLLECTIONVO_COLLECTION_START_DATE	= "collection.startDate";
-	public static final String	COLLECTIONVO_COLLECTION_EXPIRY_DATE	= "collection.expiryDate";
+	public static final String	COLLECTIONVO_COLLECTION_ID	= "phenoCollection.id";
+	public static final String	COLLECTIONVO_COLLECTION_NAME	= "phenoCollection.name";
+	public static final String	COLLECTIONVO_COLLECTION_DESCRIPTION	= "phenoCollection.description";
+	public static final String COLLECTIONVO_FIELD = "phenoCollection.field";
+	public static final String COLLECTIONVO_FIELD_ID = "phenoCollection.field.id";
+	public static final String COLLECTIONVO_PERSON = "phenoCollection.person";
+	public static final String COLLECTIONVO_PERSON_ID = "phenoCollection.person.id";
+	public static final String COLLECTIONVO_FIELD_DATA = "phenoCollection.fieldData";
+	public static final String COLLECTIONVO_FIELD_DATA_ID = "phenoCollection.fieldData.id";
+	public static final String COLLECTIONVO_COLLECTION_STATUS = "phenoCollection.status";
+	public static final String	COLLECTIONVO_COLLECTION_START_DATE	= "phenoCollection.startDate";
+	public static final String	COLLECTIONVO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
 	
 	public static final String FIELDVO_FIELD_ID = "field.id";
 	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
@@ -67,7 +67,7 @@ public class Constants {
 	public static final String	FIELDVO_FIELD_DISCRETE_VALUES	= "field.discreteValues";
 	
 	// Entity fields
-	public static final String COLLECTION = "collection";
+	public static final String COLLECTION = "phenoCollection";
 	public static final String COLLECTION_ID = "id";
 	public static final String COLLECTION_STUDY = "study";
 	public static final String COLLECTION_NAME = "name";
