@@ -21,7 +21,7 @@ import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.FileTypeNotAvailableException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -59,7 +59,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
     *
     * @param col  the collection object to be created
     */
-	public void createCollection(Collection col)
+	public void createCollection(PhenoCollection col)
 	{
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -67,14 +67,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		// Newly created collections must start with a Created status
 		Status status = phenotypicDao.getStatusByName(Constants.STATUS_CREATED);
 		
-		if (studyId == null)
-		{
-			log.error("StudyId was NULL, using 1 as default...");
-			studyId = new Long(1);
-		}
-		
 		col.setStatus(status);
-		col.setStudyId(studyId);
+		col.setStudy(iArkCommonService.getStudy(studyId));
 
 		phenotypicDao.createCollection(col);
 	}
@@ -90,7 +84,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.createCollectionImport(colImport);
 	}
 
-	public void updateCollection(Collection colEntity)
+	public void updateCollection(PhenoCollection colEntity)
 	{
 		phenotypicDao.updateCollection(colEntity);
 	}
@@ -119,7 +113,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.getField(fieldId);
 	}
 
-	public Collection getCollection(Long id)
+	public PhenoCollection getCollection(Long id)
 	{
 		return phenotypicDao.getPhenotypicCollection(id);
 	}
@@ -136,7 +130,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
-		Collection collection = null;
+		PhenoCollection collection = null;
 		
 		if (collectionId == null){
 			log.info("Using default collectionId of 1");
@@ -185,7 +179,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
-		Collection collection = null;
+		PhenoCollection collection = null;
 		
 		if (collectionId == null){
 			log.info("Using default collectionId of 1");
@@ -232,7 +226,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.getFieldTypes();
 	}
 
-	public void deleteCollection(Collection collection)
+	public void deleteCollection(PhenoCollection collection)
 	{
 		phenotypicDao.createCollection(collection);
 	}
@@ -287,7 +281,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.updateFieldData(fieldData);
 	}
 
-	public java.util.Collection<Collection> searchPhenotypicCollection(Collection phenotypicCollection)
+	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection)
 	{
 		return phenotypicDao.searchPhenotypicCollection(phenotypicCollection);
 	}

@@ -1,6 +1,6 @@
 package au.org.theark.phenotypic.service;
 
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -10,11 +10,11 @@ import au.org.theark.phenotypic.model.entity.Status;
 public interface IPhenotypicService {
 	
 	// Collection
-	public Collection getCollection(Long id);
-	public java.util.Collection<Collection> searchPhenotypicCollection(Collection phenotypicCollection);
-	public void createCollection(Collection col);
-	public void updateCollection(Collection col);
-	public void deleteCollection(Collection col);
+	public PhenoCollection getCollection(Long id);
+	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection);
+	public void createCollection(PhenoCollection col);
+	public void updateCollection(PhenoCollection col);
+	public void deleteCollection(PhenoCollection col);
 	
 	// Collection Import
 	public CollectionImport getCollectionImport(Long id);
