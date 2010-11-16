@@ -35,19 +35,29 @@ import au.org.theark.phenotypic.util.PhenotypicImport;
 public class PhenotypicServiceImpl implements IPhenotypicService
 {
 	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
-
+	
+	private IArkCommonService iArkCommonService;
 	private IPhenotypicDao	phenotypicDao;
 	private Long studyId;
+	private Study study;
 	
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	public IArkCommonService getiArkCommonService()
+	{
+		return iArkCommonService;
+	}
 
+	@Autowired
+	public void setiArkCommonService(IArkCommonService iArkCommonService)
+	{
+		this.iArkCommonService = iArkCommonService;
+	}
+	
 	@Autowired
 	public void setPhenotypicDao(IPhenotypicDao phenotypicDao)
 	{
 		this.phenotypicDao = phenotypicDao;
 	}
-
+	
 	public IPhenotypicDao getPhenotypicDao()
 	{
 		return phenotypicDao;
@@ -128,6 +138,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
 		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
 		PhenoCollection collection = null;
@@ -148,7 +159,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			log.error("Error with Collection...no object instatiated...");
 		}
 		
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, studyId, collection);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, collection, iArkCommonService);
 	
 		try
 		{
@@ -177,6 +188,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
 		
 		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
 		PhenoCollection collection = null;
@@ -197,7 +209,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			log.error("Error with Collection...no object instatiated...");
 		}
 		
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, studyId, collection);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, collection, iArkCommonService);
 	
 		try
 		{
@@ -260,17 +272,17 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.searchField(field);
 	}
-	
-	public java.util.Collection<Field> getFieldByStudyId(Long studyId)
-	{
-		return phenotypicDao.getFieldByStudyId(studyId);
-	}
 
 	public void updateCollectionImport(CollectionImport collectionImport)
 	{
 		phenotypicDao.updateCollectionImport(collectionImport);
 	}
 
+	public Field getFieldByNameAndStudy(String fieldName, Study study)
+	{
+		return phenotypicDao.getFieldByNameAndStudy(fieldName, study);
+	}
+	
 	public void updateField(Field field)
 	{
 		phenotypicDao.updateField(field);
