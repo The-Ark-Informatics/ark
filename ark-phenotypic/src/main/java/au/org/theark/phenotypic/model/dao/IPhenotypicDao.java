@@ -1,6 +1,7 @@
 package au.org.theark.phenotypic.model.dao;
 
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -16,12 +17,12 @@ import au.org.theark.phenotypic.model.entity.UploadCollection;
 public interface IPhenotypicDao {
 
 	// Collection
-	public Collection getPhenotypicCollection(Long id);
-	public java.util.Collection<Collection> getPhenotypicCollection();
-	public java.util.Collection<Collection> searchPhenotypicCollection(Collection collectionToMatch);
-	public void createCollection(Collection collection);
-	public void updateCollection(Collection collection);
-	public void deleteCollection(Collection collection);
+	public PhenoCollection getPhenotypicCollection(Long id);
+	public java.util.Collection<PhenoCollection> getPhenotypicCollection();
+	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch);
+	public void createCollection(PhenoCollection collection);
+	public void updateCollection(PhenoCollection collection);
+	public void deleteCollection(PhenoCollection collection);
 	
 	// Collection Import
 	public CollectionImport getCollectionImport(Long id);
@@ -40,9 +41,8 @@ public interface IPhenotypicDao {
 	
 	// Field
 	public Field getField(Long fieldId);
-	public Field getFieldByName(Long studyId, String fieldName);
 	public java.util.Collection<Field> getField();
-	public java.util.Collection<Field> getFieldByStudyId(Long studyId);
+	public Field getFieldByNameAndStudy(String fieldName, Study study);
 	public java.util.Collection<Field> searchField(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
