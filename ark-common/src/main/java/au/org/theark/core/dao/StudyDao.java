@@ -9,6 +9,7 @@ package au.org.theark.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -26,6 +27,7 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -243,6 +245,9 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 					subjectList.add(subject);
 					
 					subject.setStudy((Study)objects[3]);
+					
+					
+				
 				}
 				
 			}
@@ -261,6 +266,18 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 			return listOfSubjects.get(0);
 		}else{
 			throw new EntityNotFoundException("The entity with id" + id.toString() +" cannot be found.");
+		}
+	}
+	
+	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException{
+		
+		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		linkSubjectStudyCriteria.add(Restrictions.eq("subjectUID",subjectUID));
+		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
+		if(listOfSubjects != null && listOfSubjects.size() > 0){
+			return listOfSubjects.get(0);
+		}else{
+			throw new EntityNotFoundException("There is no subject with the given UID " + subjectUID.toString() );
 		}
 	}
 	

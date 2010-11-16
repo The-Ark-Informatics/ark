@@ -100,6 +100,15 @@ public interface IStudyDao {
 	 */
 	public LinkSubjectStudy getLinkSubjectStudy(Long linkSubjectStudyId) throws EntityNotFoundException;
 	
+	/**
+	 * Return a Subject based on a Unique Identifier. In the event it does not locate the specified subject by the Id
+	 * it will throw a  EntityNotFoundException
+	 * @param subjectUID
+	 * @return LinkSubjectStudy
+	 * @throws EntityNotFoundException
+	 */
+	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException;
+	
 	
 
 }
