@@ -17,10 +17,12 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 
@@ -45,11 +47,12 @@ public class PhenotypicImport
 	private char				phenotypicDelimChr	= ',';															// default phenotypic file delimiter: COMMA
 	private IPhenotypicDao	phenotypicDao			= null;
 	private Person				person;
-	private Collection		collection;
+	private PhenoCollection		collection;
 	private List<Field>		fieldList;
-	private Long				studyId;
+	private Study				study;
 	static Logger				log						= LoggerFactory.getLogger(PhenotypicImport.class);
 	java.util.Collection<String> validationMessages = null;
+	private IArkCommonService iArkCommonService = null;
 
 	/**
 	 * PhenotypicImport constructor
@@ -60,7 +63,7 @@ public class PhenotypicImport
 	public PhenotypicImport(IPhenotypicDao phenotypicDao)
 	{
 		this.phenotypicDao = phenotypicDao;
-		this.collection = new Collection();
+		this.collection = new PhenoCollection();
 		this.collection.setId(new Long(1));
 		this.validationMessages = new ArrayList<String>();
 	}
@@ -75,12 +78,13 @@ public class PhenotypicImport
 	 * @param collection
 	 *           phenotypic collection in context
 	 */
-	public PhenotypicImport(IPhenotypicDao phenotypicDao, Long studyId, Collection collection)
+	public PhenotypicImport(IPhenotypicDao phenotypicDao, Study study, PhenoCollection collection, IArkCommonService iArkCommonService)
 	{
 		this.phenotypicDao = phenotypicDao;
-		this.studyId = studyId;
+		this.study = study;
 		this.collection = collection;
 		this.validationMessages = new ArrayList<String>();
+		this.iArkCommonService = iArkCommonService;
 	}
 	
 	/**
@@ -120,13 +124,8 @@ public class PhenotypicImport
 		Date dateCollected = new Date();
 		Field field = null;
 		
-		try {
-			log.info("phenotypicImport.validateMatrixPhenoFile collection name: " + collection.getName());
-		}
-		catch (NullPointerException npe){
-			log.error("Error with Collection...no object instatiated...");
-			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
-		}
+		//TODO Implent collection from context
+		collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		
 		try
 		{
@@ -203,8 +202,9 @@ public class PhenotypicImport
 								
 								fieldData.setCollection(this.collection);
 								
-								// First/0th column should be the personId
-								fieldData.setPersonId(new Long(stringLineArray[0]));
+								// First/0th column should be the SubjectUID
+								// If no SubjectUID found, caught by exception catch
+								fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 								
 								// Second/1th column should be date collected
 								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
@@ -212,7 +212,7 @@ public class PhenotypicImport
 								
 								// Set field
 								field = new Field();
-								field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
+								field = phenotypicDao.getFieldByNameAndStudy(fieldNameArray[i], study);
 								fieldData.setField(field);
 								
 								// Other/ith columns should be the field data value
@@ -221,11 +221,9 @@ public class PhenotypicImport
 								// Validate the field data
 								PhenotypicValidator.validateFieldData(fieldData, validationMessages);
 							}
-							catch(org.hibernate.PropertyValueException pve){
-								log.error("Error with DAO: " + pve.getMessage());
-							}
-							catch(org.apache.wicket.WicketRuntimeException wre){
-								log.error("Error with Wicket: " + wre.getMessage());
+							//TODO handle via ArkSystemExcpetion
+							catch(au.org.theark.core.exception.EntityNotFoundException enfe){
+								log.error("Error with SubjectUID: " + enfe.getMessage());
 							}
 						}
 
@@ -330,13 +328,8 @@ public class PhenotypicImport
 		Date dateCollected = new Date();
 		Field field = null;
 		
-		try {
-			log.info("phenotypicImport.processMatrixPhenoFile collection name: " + collection.getName());
-		}
-		catch (NullPointerException npe){
-			log.error("Error with Collection...no object instatiated...");
-			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
-		}
+		//TODO Implent collection from context
+		collection = phenotypicDao.getPhenotypicCollection(new Long(1));
 		
 		try
 		{
@@ -391,8 +384,9 @@ public class PhenotypicImport
 							
 							fieldData.setCollection(this.collection);
 							
-							// First/0th column should be the personId
-							fieldData.setPersonId(new Long(stringLineArray[0]));
+							// First/0th column should be the SubjectUID
+							// If no SubjectUID found, caught by exception catch
+							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 							
 							// Second/1th column should be date collected
 							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
@@ -400,7 +394,7 @@ public class PhenotypicImport
 							
 							// Set field
 							field = new Field();
-							field = phenotypicDao.getFieldByName(studyId, fieldNameArray[i]);
+							field = phenotypicDao.getFieldByNameAndStudy(fieldNameArray[i], study);
 							fieldData.setField(field);
 							
 							// Other/ith columns should be the field data value
@@ -409,11 +403,9 @@ public class PhenotypicImport
 							// Try to create the field data
 							phenotypicDao.createFieldData(fieldData);
 						}
-						catch(org.hibernate.PropertyValueException pve){
-							log.error("Error with DAO: " + pve.getMessage());
-						}
-						catch(org.apache.wicket.WicketRuntimeException wre){
-							log.error("Error with Wicket: " + wre.getMessage());
+						//TODO handle via ArkSystemExcpetion
+						catch(au.org.theark.core.exception.EntityNotFoundException enfe){
+							log.error("Error with SubjectUID: " + enfe.getMessage());
 						}
 					}
 
