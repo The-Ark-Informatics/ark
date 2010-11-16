@@ -28,6 +28,9 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private Study study;
 	private SubjectStatus subjectStatus;
 	private Person person;
+	
+	private String subjectUID;
+	
 	private Set<SubjectCustFldDat> subjectCustFldDats = new HashSet<SubjectCustFldDat>(
 			0);
 
@@ -103,6 +106,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setSubjectCustFldDats(Set<SubjectCustFldDat> subjectCustFldDats) {
 		this.subjectCustFldDats = subjectCustFldDats;
+	}
+
+	@Column(name = "SUBJECT_UID", length = 50)
+	public String getSubjectUID() {
+		return subjectUID;
+	}
+
+	public void setSubjectUID(String subjectUID) {
+		this.subjectUID = subjectUID;
 	}
 
 }
