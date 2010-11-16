@@ -10,38 +10,52 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 
 public class SearchResultList extends Panel{
 	
 	
-	private WebMarkupContainer detailsPanelContainer;
+	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer searchResultContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
+
 	private ContainerForm containerForm;
-	private Details detailPanel;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	
-	
-	
-	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer,ContainerForm studyCompContainerForm,
-			WebMarkupContainer searchResultContainer, Details details){
+
+	/**
+	 * Constructor for SearchResultList
+	 * @param id
+	 * @param detailPanelContainer
+	 * @param detailPanelFormContainer
+	 * @param searchPanelContainer
+	 * @param searchResultContainer
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param studyCompContainerForm
+	 * @param details
+	 */
+	public SearchResultList(String id, 
+							WebMarkupContainer  detailPanelContainer,
+							WebMarkupContainer  detailPanelFormContainer, 
+							WebMarkupContainer searchPanelContainer,
+							WebMarkupContainer searchResultContainer,
+							WebMarkupContainer viewButtonContainer,
+							WebMarkupContainer editButtonContainer,
+							ContainerForm studyCompContainerForm){
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
+		this.detailPanelContainer = detailPanelContainer;
 		this.containerForm = studyCompContainerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
-		this.detailPanel = details;
-
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer;
 	}
 		
 	/**
@@ -104,13 +118,23 @@ public class SearchResultList extends Panel{
 				StudyCompVo studyCompVo  = containerForm.getModelObject();
 				studyCompVo.setMode(Constants.MODE_EDIT);
 				studyCompVo.setStudyComponent(studyComponent);//Sets the selected object into the model
-				detailsPanelContainer.setVisible(true);
+				
+				detailPanelContainer.setVisible(true);
+				viewButtonContainer.setVisible(true);
+				viewButtonContainer.setEnabled(true);
+				
+				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-				detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
+				editButtonContainer.setVisible(false);
+				
 				target.addComponent(searchResultContainer);
-				target.addComponent(detailsPanelContainer);
+				target.addComponent(detailPanelContainer);
+				target.addComponent(detailPanelFormContainer);
 				target.addComponent(searchPanelContainer);
+				target.addComponent(viewButtonContainer);
+				target.addComponent(editButtonContainer);
+				
 			}
 		};
 		
