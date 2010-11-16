@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 
 import au.org.theark.core.Constants;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import org.slf4j.Logger;
