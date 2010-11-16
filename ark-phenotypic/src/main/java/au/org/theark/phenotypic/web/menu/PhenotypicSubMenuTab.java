@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
-import au.org.theark.phenotypic.web.component.field.FieldContainer;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
+import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
-import au.org.theark.phenotypic.web.component.summaryModule.CollectionContainer;
+import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainer;
 
 @SuppressWarnings( { "serial", "unused" })
 public class PhenotypicSubMenuTab extends Panel
@@ -51,6 +51,7 @@ public class PhenotypicSubMenuTab extends Panel
 		menuModule.setResourceKey(Constants.PHENOTYPIC_SUMMARY_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 		
+		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.PHENO_COLLECTION_SUBMENU);
 		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
 		moduleTabs.add(menuModule);
@@ -74,36 +75,6 @@ public class PhenotypicSubMenuTab extends Panel
 		{
 			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), this, moduleName.getModuleName())))
 			{
-				public boolean isVisible()
-				{
-					boolean hasStudy = true;
-
-					/*
-					// Implement this if you want to secure this Tab
-					try
-					{
-						currentUser = SecurityUtils.getSubject();
-						studyId = (Long) currentUser.getSession().getAttribute(Constants.STUDY_ID);
-
-						// TODO: Disable main tab if studyId not selected (in context)
-						if (studyId != null)
-						{
-							hasStudy = true;
-						}
-						else
-						{
-							hasStudy = false;
-						}
-					}
-					catch (Exception ex)
-					{
-						log.error("PhenotypicSubMenuTab: General exception when determing tab visibility. " + ex.getMessage());
-					}
-					*/
-
-					return hasStudy;
-				}
-
 				@Override
 				public Panel getPanel(String panelId)
 				{
@@ -112,15 +83,14 @@ public class PhenotypicSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
 					{
-						panelToReturn = new CollectionContainer(panelId); // Note the constructor
+						panelToReturn = new SummaryContainer(panelId); // Note the constructor
 					}
-					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
 					{
-						panelToReturn = new CollectionContainer(panelId); // Note the constructor
+						panelToReturn = new PhenoCollectionContainerPanel(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
 					{
-						//panelToReturn = new FieldContainer(panelId); // Note the constructor
 						panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_IMPORT_SUBMENU))
