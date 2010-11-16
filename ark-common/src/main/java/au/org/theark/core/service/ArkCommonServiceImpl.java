@@ -11,7 +11,9 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -131,6 +133,11 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public Collection<VitalStatus> getVitalStatus() {
 		
 		return studyDao.getVitalStatus();
+	}
+	
+	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException{
+	
+		return studyDao.getSubjectByUID(subjectUID);
 	}
 
 }
