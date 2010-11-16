@@ -29,7 +29,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
@@ -39,7 +39,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
  * 
  */
 @SuppressWarnings( { "serial", "unchecked", "unused" })
-public class DetailForm extends Form<CollectionVO>
+public class DetailForm extends Form<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				phenotypicService;
@@ -211,7 +211,7 @@ public class DetailForm extends Form<CollectionVO>
 		add(editButtonContainer);
 	}
 
-	protected void onSave(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
@@ -221,12 +221,12 @@ public class DetailForm extends Form<CollectionVO>
 
 	}
 	
-	protected void onEdit(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
 	
-	protected void onDelete(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 		
 	}

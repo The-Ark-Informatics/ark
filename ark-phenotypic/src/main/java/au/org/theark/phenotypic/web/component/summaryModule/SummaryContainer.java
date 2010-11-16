@@ -10,7 +10,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -28,41 +28,32 @@ public class SummaryContainer extends Panel
 	public SummaryContainer(String id)
 	{
 		super(id);
-		log.info("CollectionContainer Constructor invoked.");
-		Form collectionForm = new Form("collectionForm");
+		log.info("SummaryContainer Constructor invoked.");
+		Form summaryForm = new Form("summaryForm");
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_BUTTON, new StringResourceModel("page.newCollection", this, null))
+		summaryForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_BUTTON, new StringResourceModel("button.new", this, null))
 		{
 			public void onSubmit()
 			{
-				Date dateNow = new Date(System.currentTimeMillis());
-				Collection collection = new Collection();
-				
-				collection.setStudyId(new Long(100));
-				collection.setInsertTime(dateNow);
-				collection.setName("New collection record");
-				collection.setDescription("Collection description");
-				
-				log.info("Creating a new collection record");
-				serviceInterface.createCollection(collection);
+				log.info("New pressed");
 			}
 		});
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.SAVE_BUTTON, new StringResourceModel("page.newField", this, null))
+		summaryForm.add(new Button(au.org.theark.phenotypic.web.Constants.SAVE_BUTTON, new StringResourceModel("button.save", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Save collection");
+				log.info("Save pressed");
 			}
 		});
 		
-		collectionForm.add(new Button(au.org.theark.phenotypic.web.Constants.EDIT_BUTTON, new StringResourceModel("page.newField", this, null))
+		summaryForm.add(new Button(au.org.theark.phenotypic.web.Constants.EDIT_BUTTON, new StringResourceModel("button.edit", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Edit collection");
+				log.info("Edit pressed");
 			}
 		});
-		add(collectionForm);
+		add(summaryForm);
 	}
 }
