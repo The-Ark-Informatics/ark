@@ -1,7 +1,5 @@
 package au.org.theark.phenotypic.web.component.TestContainer;
 
-import java.util.Date;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.form.Button;
@@ -12,9 +10,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -37,8 +33,8 @@ public class TestContainerPanel extends Panel
 		{
 			public void onSubmit()
 			{
-				log.info("WTF you hit me");
-				Collection colEn = new Collection();
+				/*log.info("WTF you hit me");
+				PhenoCollection colEn = new PhenoCollection();
 				colEn.setStudyId(new Long(100));
 				serviceInterface.createCollection(colEn);
 				FieldData fieldData = new FieldData();
@@ -54,21 +50,22 @@ public class TestContainerPanel extends Panel
 				fieldData.setDateCollected(dateNow);
 				
 				log.info("Creating a new field record: " + fieldData);
-				serviceInterface.createFieldData(fieldData);
+				serviceInterface.createFieldData(fieldData);*/
+				log.info("FireTest pressed");
 			}
 		});
 		testForm.add(new Button(au.org.theark.phenotypic.web.Constants.WATERTEST, new StringResourceModel("page.waterTest", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Noah save me!");
+				log.info("WaterTest pressed");
 			}
 		});
 		testForm.add(new Button(au.org.theark.phenotypic.web.Constants.NOAHTEST, new StringResourceModel("page.noahsRescue", this, null))
 		{
 			public void onSubmit()
 			{
-				log.info("Noah saves!");
+				log.info("Noahs Rescue pressed");
 			}
 		});
 		add(testForm);
