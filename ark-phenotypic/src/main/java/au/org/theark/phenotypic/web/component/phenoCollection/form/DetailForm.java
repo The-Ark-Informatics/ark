@@ -29,7 +29,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
@@ -39,7 +39,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
  * 
  */
 @SuppressWarnings( { "serial", "unchecked", "unused" })
-public class DetailForm extends Form<CollectionVO>
+public class DetailForm extends Form<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				phenotypicService;
@@ -57,8 +57,8 @@ public class DetailForm extends Form<CollectionVO>
 	private TextField<String>				nameTxtFld;
 	private DropDownChoice<Status>		statusDdc;
 	private TextArea<String>				descriptionTxtAreaFld;
-	private TextField<String>				startDateTxtFld;
-	private TextField<String>				expiryDateTxtFld;
+	private DatePicker<Date>				startDateTxtFld;
+	private DatePicker<Date>				expiryDateTxtFld;
 
 	private AjaxButton						editButton;
 	private AjaxButton						editCancelButton;
@@ -170,8 +170,11 @@ public class DetailForm extends Form<CollectionVO>
 		idTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID);
 		nameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_NAME);
 		descriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION);
-		startDateTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
-		expiryDateTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
+		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
+		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
+		
+		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
 		
 		// Initialise Drop Down Choices
 		initStatusDdc();
@@ -211,7 +214,7 @@ public class DetailForm extends Form<CollectionVO>
 		add(editButtonContainer);
 	}
 
-	protected void onSave(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
@@ -221,12 +224,12 @@ public class DetailForm extends Form<CollectionVO>
 
 	}
 	
-	protected void onEdit(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
 	
-	protected void onDelete(CollectionVO collectionVo, AjaxRequestTarget target)
+	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 		
 	}
@@ -276,12 +279,12 @@ public class DetailForm extends Form<CollectionVO>
 		this.descriptionTxtAreaFld = descriptionTxtAreaFld;
 	}
 
-	public TextField<String> getStartDateTxtFld()
+	public DatePicker<Date> getStartDateTxtFld()
 	{
 		return startDateTxtFld;
 	}
 
-	public void setStartDateTxtFld(TextField<String> startDateTxtFld)
+	public void setStartDateTxtFld(DatePicker<Date> startDateTxtFld)
 	{
 		this.startDateTxtFld = startDateTxtFld;
 	}

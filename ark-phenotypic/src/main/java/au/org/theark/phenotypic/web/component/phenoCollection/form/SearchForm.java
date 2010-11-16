@@ -6,6 +6,7 @@
  */
 package au.org.theark.phenotypic.web.component.phenoCollection.form;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -16,11 +17,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.phenotypic.model.entity.Collection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -29,34 +31,35 @@ import au.org.theark.phenotypic.service.IPhenotypicService;
  * 
  */
 @SuppressWarnings({"serial", "unchecked"})
-public class SearchForm extends AbstractSearchForm<CollectionVO>
+public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
 
-	private CompoundPropertyModel<CollectionVO>	cpmModel;
+	private CompoundPropertyModel<PhenoCollectionVO>	cpmModel;
 	private TextField<String>					phenoCollectionIdTxtFld;
 	private TextField<String>					phenoCollectionNameTxtFld;
 	private TextArea<String>					phenoCollectionDescriptionTxtAreaFld;
 	private DropDownChoice<Status>			statusDdc;
-	private TextField<String>					phenoCollectionStartDateFld;
-	private TextField<String>					phenoCollectionExpiryDateFld;
+	private DatePicker<Date> 					phenoCollectionStartDateFld;
+	private DatePicker<Date>					phenoCollectionExpiryDateFld;
 	
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<CollectionVO> compoundPropertyModel)
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel)
 	{
 		super(id, compoundPropertyModel);
 		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
 	}
 
-	 private void initFieldTypeDdc()
+	 private void initStatusDdc()
 	 {
 		 java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
-		 CompoundPropertyModel<CollectionVO> phenoCollectionCpm = cpmModel;
-		 PropertyModel<Collection> phenoCollectionPm = new PropertyModel<Collection>(phenoCollectionCpm, au.org.theark.phenotypic.web.Constants.COLLECTION);
+		 CompoundPropertyModel<PhenoCollectionVO> phenoCollectionCpm = cpmModel;
+		 PropertyModel<PhenoCollection> phenoCollectionPm = new PropertyModel<PhenoCollection>(phenoCollectionCpm, 
+				 au.org.theark.phenotypic.web.Constants.COLLECTION);
 		 PropertyModel<Status> statusPm = new PropertyModel<Status>(phenoCollectionPm, au.org.theark.phenotypic.web.Constants.STATUS);
 		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
 		 statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.STATUS, statusPm, (List) statusCollection, fieldTypeRenderer);
@@ -67,9 +70,13 @@ public class SearchForm extends AbstractSearchForm<CollectionVO>
 		phenoCollectionIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID);
 		phenoCollectionNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_NAME);
 		phenoCollectionDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION);
-		phenoCollectionStartDateFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
-		phenoCollectionExpiryDateFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
-		initFieldTypeDdc();
+		phenoCollectionStartDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
+		phenoCollectionExpiryDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
+		
+		phenoCollectionStartDateFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+		phenoCollectionExpiryDateFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+		
+		initStatusDdc();
 		addFieldComponents();
 	}
 
