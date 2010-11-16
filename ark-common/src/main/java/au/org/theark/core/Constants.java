@@ -1,8 +1,9 @@
 package au.org.theark.core;
 
-
+/*
+ * Common constants that apply to all of the Ark modules
+ */
 public class Constants {
-	
 	/* Module Role Display Names*/
 	public static final String DISPLAY_ROLE_STUDY_ADMIN="Study Admin";
 	public static final String DISPLAY_ROLE_ORDINARY_USER="Ordinary User";
@@ -34,8 +35,7 @@ public class Constants {
 	public static final String MODULE_GWAS ="gwas";
 	public static final String MODULE_DATA_ANALYSIS ="data_analysis";
 	
-			 
-	/*Common Service Names */
+	/* Common Service Names */
 	public static final String ARK_COMMON_SERVICE = "arkCommonService";
 	
 	/* Global constants */
@@ -71,12 +71,12 @@ public class Constants {
 	public static final String STUDY_SERVICE= "studyService";
 	public static final String STUDY_DAO ="studyDao";
 	
-	
 	public static final String FIELD_TYPE_NUMBER ="NUMBER";	
 	public static final String FIELD_TYPE_CHARACTER ="CHARACTER";
 	public static final String FIELD_TYPE_DATE ="DATE";
 	public static final String DISCRETE_RANGE_TOKEN =",";
 	
+	/* Button names/labels */
 	public static final String SEARCH="search";
 	public static final String NEW="new";
 	public static final String RESET="reset";
@@ -86,11 +86,21 @@ public class Constants {
 	public static final String	EDIT	= "edit";
 	public static final String	EDIT_CANCEL	= "editCancel";
 	public static final String	OK	= "ok";
+	public static final String	PREVIOUS	= "previous";
+	public static final String	NEXT	= "next";
+	public static final String	LAST	= "last";
+	public static final String	FINISH	= "finish";
+	public static final String	DONE	= "done";
+	
+	/* Delete confirmation */
 	public static final String	DELETE_CONFIRM_TITLE	= "Delete confirmation";
 	public static final String	DELETE_CONFIRM_MESSAGE	= "Are you sure you want to delete?";
 	
 	public static final String SEARCH_FORM ="searchForm";
+	
+	/* Form modes (view/edit) */
 	public static final int MODE_NEW = 1;
 	public static final int MODE_EDIT =2;
 	public static final int MODE_READ =3;
+	
 }
