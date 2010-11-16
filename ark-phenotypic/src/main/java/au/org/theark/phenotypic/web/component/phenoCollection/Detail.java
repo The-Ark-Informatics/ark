@@ -7,12 +7,11 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.phenotypic.model.vo.CollectionVO;
-import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.summaryModule.form.DetailForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.DetailForm;
 
 @SuppressWarnings("serial")
 public class Detail extends Panel
@@ -52,22 +51,22 @@ public class Detail extends Panel
 	{
 		detailForm = new DetailForm("detailForm", this, listContainer, detailsContainer, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer)
 		{
-			protected void onSave(CollectionVO collectionVo, AjaxRequestTarget target)
+			protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 			{
 				//TODO Implement try catch for exception handling
 				// try {
-				if (collectionVo.getCollection().getId() == null)
+				if (collectionVo.getPhenoCollection().getId() == null)
 				{
 					// Save the Collection
-					phenotypicService.createCollection(collectionVo.getCollection());
-					this.info("Collection " + collectionVo.getCollection().getName() + " was created successfully");
+					phenotypicService.createCollection(collectionVo.getPhenoCollection());
+					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was created successfully");
 					processFeedback(target);
 				}
 				else
 				{
 					// Update the Collection
-					phenotypicService.updateCollection(collectionVo.getCollection());
-					this.info("Collection " + collectionVo.getCollection().getName() + " was updated successfully");
+					phenotypicService.updateCollection(collectionVo.getPhenoCollection());
+					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was updated successfully");
 					processFeedback(target);
 				}
 				
@@ -81,7 +80,7 @@ public class Detail extends Panel
 
 			protected void onCancel(AjaxRequestTarget target)
 			{
-				CollectionVO collectionVo = new CollectionVO();
+				PhenoCollectionVO collectionVo = new PhenoCollectionVO();
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);
@@ -90,14 +89,14 @@ public class Detail extends Panel
 				target.addComponent(detailsContainer);
 			}
 			
-			protected void onDelete(CollectionVO collectionVo, AjaxRequestTarget target)
+			protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 			{
 				selectModalWindow.show(target);
 				target.addComponent(selectModalWindow);
 			}
 			
 			// On click of Edit button, allow form to be editable
-			protected void onEdit(CollectionVO collectionVo, AjaxRequestTarget target)
+			protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 			{
 				detailPanelFormContainer.setEnabled(true);
 				editButtonContainer.setVisible(true);
@@ -148,8 +147,8 @@ public class Detail extends Panel
 				// try {
 	      	
 	      	// Handle Delete action
-	   		phenotypicService.deleteCollection(containerForm.getModelObject().getCollection());
-	   		this.info("Collection " + containerForm.getModelObject().getCollection().getName() + " was deleted successfully");
+	   		phenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
+	   		this.info("Collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
 	   		
 	   		// Display delete confirmation message
 	   		target.addComponent(feedBackPanel);
@@ -163,7 +162,7 @@ public class Detail extends Panel
 	   		close(target);
 	         
 				// Move focus back to Search form
-	   		CollectionVO collectionVo = new CollectionVO();
+	   		PhenoCollectionVO collectionVo = new PhenoCollectionVO();
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);

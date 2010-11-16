@@ -1,5 +1,7 @@
 package au.org.theark.phenotypic.web.component.phenoCollection;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -11,11 +13,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import au.org.theark.phenotypic.model.entity.Collection;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
-import au.org.theark.phenotypic.model.vo.FieldVO;
-import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
+import au.org.theark.core.Constants;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultList extends Panel
@@ -52,15 +53,16 @@ public class SearchResultList extends Panel
 	 * @param iModel
 	 * @return the pageableListView of PhenoCollection
 	 */
-	public PageableListView<Collection> buildPageableListView(IModel iModel)
+	public PageableListView<PhenoCollection> buildPageableListView(IModel iModel)
 	{
 
-		PageableListView<Collection> sitePageableListView = new PageableListView<Collection>("collectionList", iModel, 10)
+		PageableListView<PhenoCollection> sitePageableListView = new PageableListView<PhenoCollection>("collectionList", iModel, 10)
 		{
 			@Override
-			protected void populateItem(final ListItem<Collection> item)
+			protected void populateItem(final ListItem<PhenoCollection> item)
 			{
-				Collection phenoCollection = item.getModelObject();
+				PhenoCollection phenoCollection = item.getModelObject();
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
 
 				/* The phenoCollection ID */
 				if (phenoCollection.getId() != null)
@@ -98,6 +100,30 @@ public class SearchResultList extends Panel
 				{
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION, ""));// the ID here must match the ones in mark-up
 				}
+				
+				// TODO when displaying text escape any special characters
+				// Start Date
+				if (phenoCollection.getStartDate() != null)
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, simpleDateFormat.format(phenoCollection.getStartDate())));// the ID here must match
+					// the ones in mark-up
+				}
+				else
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, ""));// the ID here must match the ones in mark-up
+				}
+				
+				// TODO when displaying text escape any special characters
+				// Expiry Date
+				if (phenoCollection.getExpiryDate() != null)
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
+					// the ones in mark-up
+				}
+				else
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
+				}
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
@@ -114,16 +140,16 @@ public class SearchResultList extends Panel
 		return sitePageableListView;
 	}
 
-	private AjaxLink buildLink(final Collection phenoCollection)
+	private AjaxLink buildLink(final PhenoCollection phenoCollection)
 	{
-		AjaxLink link = new AjaxLink("field.name")
+		AjaxLink link = new AjaxLink("phenoCollection.name")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)
 			{
 				// Sets the selected object into the model
-				CollectionVO collectionVo = containerForm.getModelObject();
-				collectionVo.setCollection(phenoCollection);
+				PhenoCollectionVO collectionVo = containerForm.getModelObject();
+				collectionVo.setPhenoCollection(phenoCollection);
 				
 				detailsPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);

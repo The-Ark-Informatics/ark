@@ -14,14 +14,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.phenotypic.model.entity.Collection;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
-import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.summaryModule.form.SearchForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.SearchForm;
 
 /**
  * @author cellis
@@ -34,7 +32,7 @@ public class Search extends Panel
 	private WebMarkupContainer			searchMarkupContainer;
 	private WebMarkupContainer			listContainer;
 	private WebMarkupContainer			detailContainer;
-	private PageableListView<Collection>	listView;
+	private PageableListView<PhenoCollection>	listView;
 	private ContainerForm				containerForm;
 	private Detail							detail;
 	private WebMarkupContainer viewButtonContainer;
@@ -51,7 +49,7 @@ public class Search extends Panel
 	public Search(	String id, 
 						FeedbackPanel feedBackPanel, 
 						WebMarkupContainer searchMarkupContainer, 
-						PageableListView<Collection> listView, 
+						PageableListView<PhenoCollection> listView, 
 						WebMarkupContainer resultListContainer,
 						WebMarkupContainer detailPanelContainer, 
 						Detail detail, 
@@ -104,7 +102,7 @@ public class Search extends Panel
 		// Get the study id from the session and get the study
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<CollectionVO>) containerForm.getModel())
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<PhenoCollectionVO>) containerForm.getModel())
 		{
 			protected void onSearch(AjaxRequestTarget target)
 			{
@@ -115,9 +113,9 @@ public class Search extends Panel
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 				//Field searchField = containerForm.getModelObject().getField();
 				//searchField.setStudy(study);
-				Collection phenoCollection = containerForm.getModelObject().getCollection();
+				PhenoCollection phenoCollection = containerForm.getModelObject().getPhenoCollection();
 
-				java.util.Collection<Collection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollection);
+				java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollection);
 
 				if (phenoCollectionCollection != null && phenoCollectionCollection.size() == 0)
 				{
@@ -133,7 +131,7 @@ public class Search extends Panel
 			protected void onNew(AjaxRequestTarget target)
 			{
 				// Show the details panel name and description
-				CollectionVO phenoCollectionVo = new CollectionVO();
+				PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 				phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 				
 				// Set study for the new field

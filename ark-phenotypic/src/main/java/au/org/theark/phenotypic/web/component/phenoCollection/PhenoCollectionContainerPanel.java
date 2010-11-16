@@ -16,12 +16,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.vo.CollectionVO;
-import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 public class PhenoCollectionContainerPanel extends Panel
 {
@@ -34,10 +33,10 @@ public class PhenoCollectionContainerPanel extends Panel
 	private SearchResultList					searchResultPanel;
 	private Detail									detailPanel;
 
-	private CompoundPropertyModel<CollectionVO>	fieldCpm;
+	private CompoundPropertyModel<PhenoCollectionVO>	fieldCpm;
 
 	private IModel<Object>						iModel;
-	private PageableListView<au.org.theark.phenotypic.model.entity.Collection>			listView;
+	private PageableListView<PhenoCollection>			listView;
 
 	// Mark-up Containers
 	private WebMarkupContainer					searchPanelContainer;
@@ -62,7 +61,7 @@ public class PhenoCollectionContainerPanel extends Panel
 		super(id);
 
 		/* Initialise the CPM */
-		fieldCpm = new CompoundPropertyModel<CollectionVO>(new CollectionVO());
+		fieldCpm = new CompoundPropertyModel<PhenoCollectionVO>(new PhenoCollectionVO());
 
 		initialiseMarkupContainers();
 
@@ -129,7 +128,7 @@ public class PhenoCollectionContainerPanel extends Panel
 			@Override
 			protected Object load()
 			{
-				return containerForm.getModelObject().getFieldCollection();
+				return containerForm.getModelObject().getPhenoCollectionCollection();
 			}
 		};
 
@@ -156,21 +155,21 @@ public class PhenoCollectionContainerPanel extends Panel
 	private WebMarkupContainer initialiseSearchPanel()
 	{
 		// Get a collection of fields for the study in context by default
-		Collection<au.org.theark.phenotypic.model.entity.Collection> phenoCollection = new ArrayList<au.org.theark.phenotypic.model.entity.Collection>();
+		Collection<PhenoCollection> phenoCollectionCol = new ArrayList<PhenoCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		if (sessionStudyId != null && sessionStudyId > 0)
 		{
 			Study study = iArkCommonService.getStudy(sessionStudyId);
-			containerForm.getModelObject().getField().setStudy(study);
-			phenoCollection = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getCollection());
+			containerForm.getModelObject().getPhenoCollection().setStudy(study);
+			phenoCollectionCol = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
 		}
 
-		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollection);
+		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 
 		searchComponentPanel = new Search("searchPanel", feedBackPanel, searchPanelContainer, listView, resultListContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
-
 		searchComponentPanel.initialisePanel();
+		
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
 	}
