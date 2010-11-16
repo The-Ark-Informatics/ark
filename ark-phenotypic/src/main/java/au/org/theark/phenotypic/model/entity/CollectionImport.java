@@ -24,11 +24,10 @@ import javax.persistence.TemporalType;
 public class CollectionImport implements java.io.Serializable {
 
 	// Fields
-
 	private Long id;
 	private ImportType importType;
 	private DelimiterType delimiterType;
-	private Collection collection;
+	private PhenoCollection collection;
 	private Date startTime;
 	private Date finishTime;
 	private String userId;
@@ -44,7 +43,7 @@ public class CollectionImport implements java.io.Serializable {
 
 	/** minimal constructor */
 	public CollectionImport(Long id, ImportType importType,
-			DelimiterType delimiterType, Collection collection, String userId, Date insertTime) {
+			DelimiterType delimiterType, PhenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.importType = importType;
 		this.delimiterType = delimiterType;
@@ -56,7 +55,7 @@ public class CollectionImport implements java.io.Serializable {
 	/** full constructor */
 	public CollectionImport(Long id, ImportType importType,
 			DelimiterType delimiterType, 
-			Collection collection, Date startTime, Date finishTime,
+			PhenoCollection collection, Date startTime, Date finishTime,
 			String userId, Date insertTime, String updateUserId,
 			Date updateTime) {
 		this.id = id;
@@ -106,11 +105,11 @@ public class CollectionImport implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public PhenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(PhenoCollection collection) {
 		this.collection = collection;
 	}
 
@@ -171,5 +170,4 @@ public class CollectionImport implements java.io.Serializable {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-
 }
