@@ -1,22 +1,26 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.phenotypic.web.component.field.form;
 
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
@@ -33,7 +37,11 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
-
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService			iArkCommonService;
+	
+	private PageableListView<Field>	listView;
 	private CompoundPropertyModel<FieldVO>	cpmModel;
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
@@ -46,10 +54,30 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<FieldVO> model)
+	public SearchForm(	String id, 
+						CompoundPropertyModel<FieldVO> model,
+						PageableListView<Field> listView, 
+						FeedbackPanel feedBackPanel,
+						WebMarkupContainer listContainer,
+						WebMarkupContainer searchMarkupContainer,
+						WebMarkupContainer detailContainer,
+						WebMarkupContainer detailPanelFormContainer,
+						WebMarkupContainer viewButtonContainer,
+						WebMarkupContainer editButtonContainer)
 	{
-		super(id, model);
+		
+		super(	id,
+				model,
+				detailContainer,
+				detailPanelFormContainer,
+				viewButtonContainer,
+				editButtonContainer,
+				searchMarkupContainer,
+				listContainer,
+				feedBackPanel);
+		
 		this.cpmModel = model;
+		this.listView = listView;
 		initialiseFieldForm();
 	}
 
@@ -91,12 +119,52 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		
+		FieldVO fieldVo = new FieldVO();
+		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		// Set study for the new field
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study	study = iArkCommonService.getStudy(studyId);
+		fieldVo.getField().setStudy(study);
+		setModelObject(fieldVo);
+		preProcessDetailPanel(target);
+		//// Hide Delete button on New
+		//detail.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
 		
+		target.addComponent(feedbackPanel);
+		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		// Get a list of all Fields for the Study in context
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		Field searchField = getModelObject().getField();
+		searchField.setStudy(study);
+
+		java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
+
+		if (fieldCollection != null && fieldCollection.size() == 0)
+		{
+			this.info("Fields with the specified criteria does not exist in the system.");
+			target.addComponent(feedbackPanel);
+		}
+		getModelObject().setFieldCollection(fieldCollection);
+		listView.removeAll();
+		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+		target.addComponent(listContainer);// For ajax this is required so
+		
+	}
+	
+	protected boolean isSecure() {
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();		
+		boolean flag = false;
+		if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+				securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+			flag = true;
+		}
+		//if it is a Super or Study admin then make the new available
+		return flag;
 	}
 }
