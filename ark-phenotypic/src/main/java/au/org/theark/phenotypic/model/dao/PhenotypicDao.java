@@ -1,12 +1,11 @@
 package au.org.theark.phenotypic.model.dao;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -18,16 +17,14 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.phenotypic.model.entity.Collection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.Upload;
 import au.org.theark.phenotypic.model.entity.UploadCollection;
-import org.apache.commons.lang.StringUtils;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -37,19 +34,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	private Subject	currentUser;
 	private Date		dateNow;
 	
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	public java.util.Collection<Collection> getPhenotypicCollection()
+	public java.util.Collection<PhenoCollection> getPhenotypicCollection()
 	{
-		Criteria crit = getSession().createCriteria(Collection.class);
-		java.util.List<Collection> collectionList = crit.list();
+		Criteria crit = getSession().createCriteria(PhenoCollection.class);
+		java.util.List<PhenoCollection> collectionList = crit.list();
 		return collectionList;
 	}
 
-	public java.util.Collection<Collection> searchPhenotypicCollection(Collection collectionToMatch)
+	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch)
 	{
-		Criteria collectionCriteria = getSession().createCriteria(Collection.class);
+		Criteria collectionCriteria = getSession().createCriteria(PhenoCollection.class);
 
 		if (collectionToMatch.getId() != null)
 		{
@@ -61,9 +55,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			collectionCriteria.add(Restrictions.ilike("name", collectionToMatch.getName(), MatchMode.ANYWHERE));
 		}
 
-		if (collectionToMatch.getStudyId() != null)
+		if (collectionToMatch.getStudy() != null)
 		{
-			collectionCriteria.add(Restrictions.eq("studyId", collectionToMatch.getStudyId()));
+			collectionCriteria.add(Restrictions.eq("study", collectionToMatch.getStudy()));
 		}
 
 		if (collectionToMatch.getInsertTime() != null)
@@ -92,17 +86,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		collectionCriteria.addOrder(Order.asc("name"));
-		java.util.Collection<Collection> phenotypicCollectionCollection = collectionCriteria.list();
+		java.util.Collection<PhenoCollection> phenotypicCollectionCollection = collectionCriteria.list();
 		return phenotypicCollectionCollection;
 	}
 
-	public Collection getPhenotypicCollection(Long id)
+	public PhenoCollection getPhenotypicCollection(Long id)
 	{
-		Collection collection = (Collection) getSession().get(Collection.class, id);
+		PhenoCollection collection = (PhenoCollection) getSession().get(PhenoCollection.class, id);
 		return collection;
 	}
 
-	public void createCollection(Collection collection)
+	public void createCollection(PhenoCollection collection)
 	{
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -113,7 +107,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().save(collection);
 	}
 
-	public void updateCollection(Collection collection)
+	public void updateCollection(PhenoCollection collection)
 	{
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -124,7 +118,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(collection);
 	}
 
-	public void deleteCollection(Collection collection)
+	public void deleteCollection(PhenoCollection collection)
 	{
 		getSession().delete(collection);
 	}
@@ -162,10 +156,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return field;
 	}
 
-	public Field getFieldByName(Long studyId, String fieldName)
+	public Field getFieldByNameAndStudy(String fieldName, Study study)
 	{
 		Field field = new Field();
-		Study study = iArkCommonService.getStudy(studyId);
 		field.setStudy(study);
 		field.setName(fieldName);
 		Example example = Example.create(field);
@@ -449,16 +442,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return fieldCollection;
 	}
 	
-	public java.util.Collection<Field> getFieldByStudyId(Long studyId)
-	{
-		java.util.Collection<Field> fieldCollection = new ArrayList<Field>();
-		Study study = iArkCommonService.getStudy(studyId);
-		Criteria criteria = getSession().createCriteria(Field.class);
-		criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
-		fieldCollection = criteria.list();
-		return fieldCollection;
-	}
-
 	public CollectionImport getCollectionImport(Long id)
 	{
 		CollectionImport collectionImport = (CollectionImport) getSession().get(CollectionImport.class, id);
