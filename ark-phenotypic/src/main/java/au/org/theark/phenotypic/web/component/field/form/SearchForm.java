@@ -59,7 +59,9 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		 CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
 		 PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
 		 PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, au.org.theark.phenotypic.web.Constants.FIELD_TYPE);
-		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
+		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(
+				 au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, 
+				 au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
 		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
 	 }
 
