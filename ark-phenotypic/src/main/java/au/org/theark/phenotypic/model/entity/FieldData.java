@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 
 
@@ -28,10 +29,8 @@ public class FieldData implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private Collection collection;
-	private Person person;
-	//TODO: Implement use of Person object rather than Long personId
-	private Long personId;
+	private PhenoCollection collection;
+	private LinkSubjectStudy linkSubjectStudy;
 	private Date dateCollected;
 	private Field field;
 	private String value;
@@ -47,27 +46,28 @@ public class FieldData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, Person person, String userId, Date insertTime) {
+	public FieldData(Long id, Field field,	PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String userId, Date insertTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
 		this.dateCollected = dateCollected;
-		this.setPerson(person);
+		this.linkSubjectStudy = linkSubjectStudy;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public FieldData(Long id, Field field,	Collection collection, Date dateCollected, Person person, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
+	public FieldData(Long id, Field field,	PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
+		this.dateCollected = dateCollected;
+		this.linkSubjectStudy = linkSubjectStudy;
 		this.value = value;
 		this.userId = userId;
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
 		this.updateTime = updateTime;
-		this.setPerson(person);
 	}
 
 	// Property accessors
@@ -95,11 +95,11 @@ public class FieldData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public PhenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(PhenoCollection collection) {
 		this.collection = collection;
 	}
 	
@@ -159,39 +159,22 @@ public class FieldData implements java.io.Serializable {
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-
+	
 	/**
-	 * @param person the person to set
-	 */
-	public void setPerson(Person person)
-	{
-		this.person = person;
-	}
-
-	/**
-	 * @return the person
+	 * @return the linkSubjectStudy
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_ID")
-	// TODO: Change to PERSON_ID once MySQL database refactored 
-	public Person getPerson()
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_KEY")
+	public LinkSubjectStudy getLinkSubjectStudy()
 	{
-		return person;
+		return linkSubjectStudy;
 	}
 
 	/**
-	 * @param personId the personId to set
+	 * @param linkSubjectStudy the linkSubjectStudy to set
 	 */
-	public void setPersonId(Long personId)
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
 	{
-		this.personId = personId;
-	}
-
-	/**
-	 * @return the personId
-	 */
-	public Long getPersonId()
-	{
-		return personId;
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 }
