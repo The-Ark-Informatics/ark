@@ -7,13 +7,10 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-
+import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.study.model.vo.StudyCompVo;
@@ -22,65 +19,32 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 
 
-public class StudyComponentContainerPanel extends Panel{
+public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCompVo>{
 
 	private static final long serialVersionUID = 1L;
 
-	private FeedbackPanel feedBackPanel;
 	
 	//Panels
 	private Search searchComponentPanel;
 	private SearchResultList searchResultPanel;
 	private Details detailsPanel;
-	
-	private CompoundPropertyModel<StudyCompVo> studyCompModel;
 
-	private IModel<Object> iModel;
-	private PageableListView<StudyComp> listView;
+	private PageableListView<StudyComp> pageableListView;
 
-	//Mark-up Containers
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer resultListContainer;
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer;
-	
 	private ContainerForm containerForm;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
-	private void initialiseMarkupContainers(){
-		
-		searchPanelContainer = new WebMarkupContainer("searchContainer");
-		searchPanelContainer.setOutputMarkupPlaceholderTag(true);
-		
-		detailPanelContainer = new WebMarkupContainer("detailsContainer");
-		detailPanelContainer.setOutputMarkupPlaceholderTag(true);
-		detailPanelContainer.setVisible(false);
-
-		//Contains the controls of the details
-		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
-		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
-		detailPanelFormContainer.setEnabled(false);
-		
-		//The wrapper for ResultsList panel that will contain a ListView
-		resultListContainer = new WebMarkupContainer("resultListContainer");
-		resultListContainer.setOutputMarkupPlaceholderTag(true);
-		resultListContainer.setVisible(true);
-	
-	}
 	
 	public StudyComponentContainerPanel(String id) {
 		super(id);
 		
 		/*Initialise the CPM */
-		studyCompModel = new CompoundPropertyModel<StudyCompVo>(new StudyCompVo());
-		
-	
-		initialiseMarkupContainers();
+		cpModel = new CompoundPropertyModel<StudyCompVo>(new StudyCompVo());
 		
 		/*Bind the CPM to the Form */
-		containerForm = new ContainerForm("containerForm", studyCompModel);
+		containerForm = new ContainerForm("containerForm", cpModel);
 		
 		containerForm.add(initialiseFeedBackPanel());
 	
@@ -93,18 +57,18 @@ public class StudyComponentContainerPanel extends Panel{
 		add(containerForm);
 		
 	}
+
 	
-	private WebMarkupContainer initialiseFeedBackPanel(){
-		/* Feedback Panel */
-		feedBackPanel= new FeedbackPanel("feedbackMessage");
-		feedBackPanel.setOutputMarkupId(true);
-		return feedBackPanel;
-	}
-	
-	
-	private WebMarkupContainer initialiseSearchResults(){
+	protected WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,containerForm,resultListContainer,detailsPanel);
+		searchResultPanel = new SearchResultList("searchResults",
+												detailPanelContainer,
+												detailPanelFormContainer,
+												searchPanelContainer,
+												searchResultPanelContainer,
+												viewButtonContainer,
+												editButtonContainer,
+												containerForm	);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
@@ -115,26 +79,35 @@ public class StudyComponentContainerPanel extends Panel{
 			}
 		};
 
-		listView  = searchResultPanel.buildPageableListView(iModel);
-		listView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		pageableListView  = searchResultPanel.buildPageableListView(iModel);
+		pageableListView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
-		searchResultPanel.add(listView);
-		resultListContainer.add(searchResultPanel);
-		return resultListContainer;
+		searchResultPanel.add(pageableListView);
+		searchResultPanelContainer.add(searchResultPanel);
+		return searchResultPanelContainer;
 	}
 	
 	
-	private WebMarkupContainer initialiseDetailPanel(){
+	protected WebMarkupContainer initialiseDetailPanel(){
 		
-		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailPanelContainer,searchPanelContainer,containerForm);
+		detailsPanel = new Details("detailsPanel",
+									feedBackPanel,
+									searchResultPanelContainer, 
+									detailPanelContainer,
+									detailPanelFormContainer,
+									searchPanelContainer,
+									viewButtonContainer,
+									editButtonContainer,
+									containerForm);
 		detailsPanel.initialisePanel();
 		detailPanelContainer.add(detailsPanel);
 		return detailPanelContainer;
 		
 	}
 	
-	private WebMarkupContainer initialiseSearchPanel(){
+	protected WebMarkupContainer initialiseSearchPanel(){
+		
 		StudyCompVo studyCompVo = new StudyCompVo();
 		
 		//Get a result-set by default
@@ -149,18 +122,22 @@ public class StudyComponentContainerPanel extends Panel{
 			this.error("A System error occured  while initializing Search Panel");
 		}
 		
-		studyCompModel.getObject().setStudyCompList(resultList);
+		cpModel.getObject().setStudyCompList(resultList);
 		
 		searchComponentPanel = new Search("searchComponentPanel", 
 											feedBackPanel, 
 											searchPanelContainer, 
-											listView,
-											resultListContainer,
+											pageableListView,
+											searchResultPanelContainer,
 											detailPanelContainer,
+											detailPanelFormContainer,
+											viewButtonContainer,
+											editButtonContainer,
 											detailsPanel,
-											containerForm);
+											containerForm
+										);
 		
-		searchComponentPanel.initialisePanel(studyCompModel);
+		searchComponentPanel.initialisePanel(cpModel);
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
 	}
