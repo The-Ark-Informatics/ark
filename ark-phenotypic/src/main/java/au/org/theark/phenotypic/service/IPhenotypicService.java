@@ -1,5 +1,6 @@
 package au.org.theark.phenotypic.service;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -25,7 +26,7 @@ public interface IPhenotypicService {
 	// Field
 	public Field getField(Long fieldId);
 	public java.util.Collection<Field> searchField(Field field);
-	public java.util.Collection<Field> getFieldByStudyId(Long studyId);
+	public Field getFieldByNameAndStudy(String fieldName, Study study);
 	public void createField(Field field);
 	public void updateField(Field field);
 	public void deleteField(Field field);
