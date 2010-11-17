@@ -8,6 +8,7 @@ package au.org.theark.study.web.component.studycomponent.form;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -159,11 +160,12 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDelete(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
-	 */
-	@Override
-	protected void onDelete(Form<StudyCompVo> containerForm,AjaxRequestTarget target) {
+
+	protected void onDeleteConfirmed(AjaxRequestTarget target,String selection, ModalWindow selectModalWindow) {
+		selectModalWindow.close(target);
+		StudyCompVo studyCompVo = new StudyCompVo();
+		containerForm.setModelObject(studyCompVo);
+		onCancel(target);
 		
 	}
 
