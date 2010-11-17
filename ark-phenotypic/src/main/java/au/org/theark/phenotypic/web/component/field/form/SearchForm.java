@@ -27,6 +27,7 @@ import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.field.Detail;
 
 /**
  * @author cellis
@@ -50,6 +51,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	private TextField<String>					fieldUnitsTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
+	private Detail detailPanel;
 	
 	/**
 	 * @param id
@@ -58,6 +60,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 						CompoundPropertyModel<FieldVO> model,
 						PageableListView<Field> listView, 
 						FeedbackPanel feedBackPanel,
+						Detail detailPanel,
 						WebMarkupContainer listContainer,
 						WebMarkupContainer searchMarkupContainer,
 						WebMarkupContainer detailContainer,
@@ -78,6 +81,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		
 		this.cpmModel = model;
 		this.listView = listView;
+		this.detailPanel = detailPanel;
 		initialiseFieldForm();
 	}
 
@@ -128,7 +132,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		setModelObject(fieldVo);
 		preProcessDetailPanel(target);
 		//// Hide Delete button on New
-		//detail.getDetailForm().getDeleteButton().setVisible(false);
+		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
 	@Override
