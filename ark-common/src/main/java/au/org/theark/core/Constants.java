@@ -40,7 +40,7 @@ public class Constants {
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID="studyId";
-	public static final String DATE_FORMAT="dd/MM/yyyy";
+	public static final String DD_MM_YYYY="dd/mm/yyyy";
 	public static final String SUBJECT_IDENTIFIER="SUBJECTID";
 	public static final String DATE_COLLECTED="DATE_COLLECTED";
 	
