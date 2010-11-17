@@ -46,7 +46,7 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 		searchPanelContainer = new WebMarkupContainer("searchContainer");
 		searchPanelContainer.setOutputMarkupPlaceholderTag(true);
 		
-		detailPanelContainer = new WebMarkupContainer("detailsContainer");
+		detailPanelContainer = new WebMarkupContainer("detailContainer");
 		detailPanelContainer.setOutputMarkupPlaceholderTag(true);
 		detailPanelContainer.setVisible(false);
 
