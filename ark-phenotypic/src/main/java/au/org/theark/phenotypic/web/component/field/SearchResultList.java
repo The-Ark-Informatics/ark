@@ -165,8 +165,6 @@ public class SearchResultList extends Panel
 				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-
-				detailPanel.getDetailForm().getFieldIdTxtFld().setEnabled(false);
 				
 				// Button containers
 				// View Field, thus view container visible
