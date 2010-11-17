@@ -27,7 +27,7 @@ public class Search extends Panel
 	private WebMarkupContainer			detailContainer;
 	private PageableListView<Field>	listView;
 	private ContainerForm				containerForm;
-	private Detail							detail;
+	private Detail							detailPanel;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailPanelFormContainer;
@@ -50,7 +50,7 @@ public class Search extends Panel
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
 		this.detailContainer = detailPanelContainer;
-		this.detail = detail;
+		this.detailPanel = detail;
 		this.containerForm = containerForm;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
@@ -66,6 +66,7 @@ public class Search extends Panel
 												(CompoundPropertyModel<FieldVO>) containerForm.getModel(),
 												listView,
 												feedBackPanel,
+												detailPanel,
 												listContainer,
 												searchMarkupContainer,
 												detailContainer,
