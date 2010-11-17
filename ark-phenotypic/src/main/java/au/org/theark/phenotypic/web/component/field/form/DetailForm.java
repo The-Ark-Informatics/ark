@@ -15,12 +15,14 @@ import mx4j.log.Log;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -28,6 +30,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
@@ -40,16 +43,11 @@ import au.org.theark.phenotypic.web.component.field.Detail;
  * 
  */
 @SuppressWarnings( { "serial", "unchecked", "unused" })
-public class DetailForm extends Form<FieldVO>
+public class DetailForm extends AbstractDetailForm<FieldVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				phenotypicService;
 
-	private WebMarkupContainer				resultListContainer;
-	private WebMarkupContainer				detailPanelContainer;
-	private WebMarkupContainer				detailFormContainer;
-	private WebMarkupContainer 			viewButtonContainer;
-	private WebMarkupContainer 			editButtonContainer;
 	private ContainerForm					fieldContainerForm;
 
 	private int									mode;
@@ -63,103 +61,42 @@ public class DetailForm extends Form<FieldVO>
 	private TextField<String>				fieldMinValueTxtFld;
 	private TextField<String>				fieldMaxValueTxtFld;
 	private TextField<String>				fieldDiscreteValuesTxtFld;
-
-	private AjaxButton						editButton;
-	private AjaxButton						editCancelButton;
-	private AjaxButton						deleteButton;
-	private AjaxButton						saveButton;
-	private AjaxButton						cancelButton;
+	
 
 	/**
-	 * Default constructor
-	 * 
+	 * Constructor
 	 * @param id
+	 * @param feedBackPanel
+	 * @param detailPanel
+	 * @param listContainer
+	 * @param detailsContainer
+	 * @param containerForm
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param detailFormContainer
+	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id)
+	public DetailForm(	String id,
+						FeedbackPanel feedBackPanel, 
+						Detail detailPanel, 
+						WebMarkupContainer listContainer, 
+						WebMarkupContainer detailsContainer, 
+						ContainerForm containerForm,
+						WebMarkupContainer viewButtonContainer,
+						WebMarkupContainer editButtonContainer,
+						WebMarkupContainer detailFormContainer,
+						WebMarkupContainer searchPanelContainer)
 	{
-		super(id);
-	}
-
-	/**
-	 * DetailForm constructor
-	 * 
-	 * @param id
-	 */
-	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailFormContainer)
-	{
-		super(id);
-		this.fieldContainerForm = containerForm;
-		this.resultListContainer = listContainer;
-		this.detailPanelContainer = detailsContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailFormContainer = detailFormContainer;
 		
-		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
-		{
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onEdit(fieldContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-		
-		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
-		{
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-		};
-
-		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-		};
-
-		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onSave(fieldContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-		
-		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onDelete(fieldContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
+		super(	id,
+				feedBackPanel, 
+				listContainer,
+				detailsContainer,
+				detailFormContainer,
+				searchPanelContainer,
+				viewButtonContainer,
+				editButtonContainer,
+				containerForm);
 	}
 	
 	private void initFieldTypeDdc()
@@ -169,7 +106,7 @@ public class DetailForm extends Form<FieldVO>
 		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
-	public void initialiseForm()
+	public void initialiseDetailForm()
 	{
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_NAME);
@@ -187,7 +124,7 @@ public class DetailForm extends Form<FieldVO>
 		addComponents();
 	}
 
-	private void attachValidators()
+	protected void attachValidators()
 	{
 		fieldNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.name.required", this, new Model<String>("Name")));;
 		fieldTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.fieldType.required", this, new Model<String>("Field Type")));;;
@@ -195,97 +132,64 @@ public class DetailForm extends Form<FieldVO>
 
 	private void addComponents()
 	{
-		detailFormContainer.add(fieldIdTxtFld);
-		detailFormContainer.add(fieldNameTxtFld);
-		detailFormContainer.add(fieldDescriptionTxtAreaFld);
-		detailFormContainer.add(fieldTypeDdc);
-		detailFormContainer.add(fieldSeqNumTxtFld);
-		detailFormContainer.add(fieldUnitsTxtFld);
-		detailFormContainer.add(fieldMinValueTxtFld);
-		detailFormContainer.add(fieldMaxValueTxtFld);
-		detailFormContainer.add(fieldDiscreteValuesTxtFld);
+		detailPanelFormContainer.add(fieldIdTxtFld.setEnabled(false));
+		detailPanelFormContainer.add(fieldNameTxtFld);
+		detailPanelFormContainer.add(fieldDescriptionTxtAreaFld);
+		detailPanelFormContainer.add(fieldTypeDdc);
+		detailPanelFormContainer.add(fieldSeqNumTxtFld);
+		detailPanelFormContainer.add(fieldUnitsTxtFld);
+		detailPanelFormContainer.add(fieldMinValueTxtFld);
+		detailPanelFormContainer.add(fieldMaxValueTxtFld);
+		detailPanelFormContainer.add(fieldDiscreteValuesTxtFld);
 		
-		add(detailFormContainer);
+		add(detailPanelFormContainer);
 		
-		// View has Edit and Cancel
-		viewButtonContainer.add(editButton);
-		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-		
-		// Edit has Save, Delete and Cancel
-		editButtonContainer.add(saveButton);
-		editButtonContainer.add(deleteButton);
-		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		
-		// Button containers
-		add(viewButtonContainer);
-		add(editButtonContainer);
 	}
-
-	protected void onSave(FieldVO fieldVo, AjaxRequestTarget target)
+	
+	@Override
+	protected void onSave(Form<FieldVO> containerForm, AjaxRequestTarget target)
 	{
 
+		if (containerForm.getModelObject().getField().getId() == null)
+		{
+			// Save the Field
+			phenotypicService.createField(containerForm.getModelObject().getField());
+			this.info("Field " + containerForm.getModelObject().getField().getName() + " was created successfully");
+			processErrors(target);
+		}
+		else
+		{
+			// Update the Field
+			phenotypicService.updateField(containerForm.getModelObject().getField());
+			this.info("Field " + containerForm.getModelObject().getField().getName() + " was updated successfully");
+			processErrors(target);
+		}
+		
+		onSavePostProcess(target);
+		//TODO:(CE) To handle Business and System Exceptions here
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
 	{
-
+		FieldVO fieldVo = new FieldVO();
+		containerForm.setModelObject(fieldVo);
+		onCancelPostProcess(target);
 	}
 	
-	protected void onEdit(FieldVO fieldVo, AjaxRequestTarget target)
-	{
-
-	}
-	
-	protected void onDelete(FieldVO fieldVo, AjaxRequestTarget target)
+	@Override
+	protected void onDelete(Form<FieldVO> fieldVo, AjaxRequestTarget target)
 	{
 		
+		target.addComponent(detailPanelContainer);
+		selectModalWindow.show(target);
+		target.addComponent(selectModalWindow);
 	}
-
+	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
-
+		target.addComponent(feedBackPanel);
 	}
-
-	public TextField<String> getFieldIdTxtFld()
-	{
-		return fieldIdTxtFld;
-	}
-
-	public void setfieldIdTxtFld(TextField<String> fieldIdTxtFld)
-	{
-		this.fieldIdTxtFld = fieldIdTxtFld;
-	}
-	
-	public TextField<String> getFieldNameTxtFld()
-	{
-		return fieldNameTxtFld;
-	}
-
-	public void setFieldNameTxtFld(TextField<String> fieldNameTxtFld)
-	{
-		this.fieldNameTxtFld = fieldNameTxtFld;
-	}
-	
-	public AjaxButton getEditButton()
-	{
-		return editButton;
-	}
-
-	public void setEditButton(AjaxButton editButton)
-	{
-		this.editButton = editButton;
-	}
-
-	public AjaxButton getEditCancelButton()
-	{
-		return editCancelButton;
-	}
-
-	public void setEditCancelButton(AjaxButton editCancelButton)
-	{
-		this.editCancelButton = editCancelButton;
-	}
-
+		
 	public AjaxButton getDeleteButton()
 	{
 		return deleteButton;
@@ -295,24 +199,28 @@ public class DetailForm extends Form<FieldVO>
 	{
 		this.deleteButton = deleteButton;
 	}
-
-	public AjaxButton getSaveButton()
-	{
-		return saveButton;
+	
+	/**
+	 * 
+	 */
+	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
+		//TODO:(CE) To handle Business and System Exceptions here
+		phenotypicService.deleteField(containerForm.getModelObject().getField());
+   		this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
+   		
+   		// Display delete confirmation message
+   		target.addComponent(feedBackPanel);
+   		//TODO Implement Exceptions in PhentoypicService
+		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+     
+		// Close the confirm modal window
+   		selectModalWindow.close(target);
+		// Move focus back to Search form
+		FieldVO fieldVo = new FieldVO();
+		containerForm.setModelObject(fieldVo);
+		onCancel(target);
 	}
-
-	public void setSaveButton(AjaxButton saveButton)
-	{
-		this.saveButton = saveButton;
-	}
-
-	public AjaxButton getCancelButton()
-	{
-		return cancelButton;
-	}
-
-	public void setCancelButton(AjaxButton cancelButton)
-	{
-		this.cancelButton = cancelButton;
-	}
+	
 }
