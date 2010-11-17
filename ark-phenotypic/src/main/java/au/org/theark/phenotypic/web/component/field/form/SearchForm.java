@@ -33,16 +33,16 @@ import au.org.theark.phenotypic.web.component.field.Detail;
  * @author cellis
  * 
  */
-@SuppressWarnings({"serial", "unchecked"})
+@SuppressWarnings( { "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<FieldVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
-	
+	private IPhenotypicService					phenotypicService;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService			iArkCommonService;
-	
-	private PageableListView<Field>	listView;
+	private IArkCommonService					iArkCommonService;
+
+	private PageableListView<Field>			listView;
 	private CompoundPropertyModel<FieldVO>	cpmModel;
 	private TextField<String>					fieldIdTxtFld;
 	private TextField<String>					fieldNameTxtFld;
@@ -51,51 +51,33 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	private TextField<String>					fieldUnitsTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
-	private Detail detailPanel;
-	
+	private Detail									detailPanel;
+
 	/**
 	 * @param id
 	 */
-	public SearchForm(	String id, 
-						CompoundPropertyModel<FieldVO> model,
-						PageableListView<Field> listView, 
-						FeedbackPanel feedBackPanel,
-						Detail detailPanel,
-						WebMarkupContainer listContainer,
-						WebMarkupContainer searchMarkupContainer,
-						WebMarkupContainer detailContainer,
-						WebMarkupContainer detailPanelFormContainer,
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer)
+	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, PageableListView<Field> listView, FeedbackPanel feedBackPanel, Detail detailPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer)
 	{
-		
-		super(	id,
-				model,
-				detailContainer,
-				detailPanelFormContainer,
-				viewButtonContainer,
-				editButtonContainer,
-				searchMarkupContainer,
-				listContainer,
-				feedBackPanel);
-		
+
+		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+
 		this.cpmModel = model;
 		this.listView = listView;
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
 	}
 
-	 private void initFieldTypeDdc()
-	 {
-		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
-		 CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
-		 PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
-		 PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, au.org.theark.phenotypic.web.Constants.FIELD_TYPE);
-		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(
-				 au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, 
-				 au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
-		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
-	 }
+	private void initFieldTypeDdc()
+	{
+		java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
+		CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
+		PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
+		PropertyModel<FieldType> fieldTypePm = new PropertyModel<FieldType>(fieldPm, au.org.theark.phenotypic.web.Constants.FIELD_TYPE);
+		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
+		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
+	}
 
 	public void initialiseFieldForm()
 	{
@@ -127,18 +109,17 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 		// Set study for the new field
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study	study = iArkCommonService.getStudy(studyId);
+		Study study = iArkCommonService.getStudy(studyId);
 		fieldVo.getField().setStudy(study);
 		setModelObject(fieldVo);
 		preProcessDetailPanel(target);
-		//// Hide Delete button on New
+		// Hide Delete button on New
 		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
-		
 		target.addComponent(feedbackPanel);
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
@@ -157,18 +138,17 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);
-		
 	}
-	
-	protected boolean isSecure() {
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();		
+
+	protected boolean isSecure()
+	{
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
 		boolean flag = false;
-		if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-				securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+		if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
 			flag = true;
 		}
-		//if it is a Super or Study admin then make the new available
+		// if it is a Super or Study admin then make the new available
 		return flag;
 	}
 }
