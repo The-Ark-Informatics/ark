@@ -4,13 +4,22 @@
 	
 	<!-- Content Zone -->
 	<div id="contentZone">
-		<form wicket:id="summaryForm">
-			<div id="actionButtons">&nbsp;
-				<div>
-					<input wicket:id="newButton" type="submit" wicket:message="value:button.new" />&nbsp;<br></br>
-					<input wicket:id="saveButton" type="submit" wicket:message="value:button.save" />&nbsp;<br></br>
-					<input wicket:id="editButton" type="submit" wicket:message="value:button.edit" />&nbsp;<br></br>
-				</div>
+		<form wicket:id="containerForm">
+			<span wicket:id="feedbackMessage"> </span>
+			
+			<!--  The Search WebMarkupContainer that has the SearchPanel -->
+			<div wicket:id="searchContainer">
+				<div wicket:id="searchPanel"></div>  
+			</div>
+			 
+			<!--  The SearchResults  WebMarkupContainer that has the SearchResultsPanel -->
+			<div wicket:id="resultListContainer">
+				<div wicket:id="searchResults"></div>
+			</div>
+			 
+			<!--  The detailContainer  WebMarkupContainer that has the DetailsPanel -->
+			<div wicket:id="detailContainer">
+				<div wicket:id="detailPanel"></div>
 			</div>
 		</form>
 	</div>
