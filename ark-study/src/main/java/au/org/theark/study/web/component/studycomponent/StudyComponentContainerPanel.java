@@ -124,7 +124,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 		
 		cpModel.getObject().setStudyCompList(resultList);
 		
-		searchComponentPanel = new Search("searchComponentPanel", 
+		searchComponentPanel = new Search(	"searchComponentPanel", 
 											feedBackPanel, 
 											searchPanelContainer, 
 											pageableListView,
