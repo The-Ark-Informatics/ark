@@ -156,7 +156,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		getModelObject().setFieldCollection(fieldCollection);
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.addComponent(listContainer);
 		
 	}
 	
