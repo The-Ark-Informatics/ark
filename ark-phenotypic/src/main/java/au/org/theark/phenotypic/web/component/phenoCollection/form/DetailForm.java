@@ -173,8 +173,8 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
 		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
 		
-		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
-		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 		
 		// Initialise Drop Down Choices
 		initStatusDdc();

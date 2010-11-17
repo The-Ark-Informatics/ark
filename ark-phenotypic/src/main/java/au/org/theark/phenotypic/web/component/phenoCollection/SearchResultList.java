@@ -62,7 +62,7 @@ public class SearchResultList extends Panel
 			protected void populateItem(final ListItem<PhenoCollection> item)
 			{
 				PhenoCollection phenoCollection = item.getModelObject();
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);
 
 				/* The phenoCollection ID */
 				if (phenoCollection.getId() != null)
