@@ -54,11 +54,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target){
 		selectModalWindow.show(target);
 		target.addComponent(selectModalWindow);
-		searchPanelContainer.setVisible(true);
-		detailPanelContainer.setVisible(false);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-
 	}
 	
 	abstract protected void onCancel(AjaxRequestTarget target);
@@ -149,9 +144,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-			
-				onDelete(containerForm, target);
 				target.addComponent(detailPanelContainer);
+				onDelete(containerForm, target);
 			
 			}
 		};
