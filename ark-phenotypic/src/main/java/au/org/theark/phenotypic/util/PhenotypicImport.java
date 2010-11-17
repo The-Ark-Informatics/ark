@@ -207,7 +207,7 @@ public class PhenotypicImport
 								fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 								
 								// Second/1th column should be date collected
-								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+								DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 								fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
 								
 								// Set field
@@ -389,7 +389,7 @@ public class PhenotypicImport
 							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 							
 							// Second/1th column should be date collected
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
 							
 							// Set field

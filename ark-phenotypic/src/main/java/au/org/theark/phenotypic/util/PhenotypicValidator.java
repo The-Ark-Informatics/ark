@@ -75,7 +75,7 @@ public class PhenotypicValidator
 		if(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)){
 			try{
 				Date dateFieldValue = new Date();
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DATE_FORMAT);
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFieldValue = dateFormat.parse(fieldData.getValue());
 				return true;
 			}
