@@ -177,14 +177,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	}
 	
 	@Override
-	protected void onDelete(Form<FieldVO> fieldVo, AjaxRequestTarget target)
-	{
-		
-		target.addComponent(detailPanelContainer);
-		selectModalWindow.show(target);
-		target.addComponent(selectModalWindow);
-	}
-	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
 		target.addComponent(feedBackPanel);
