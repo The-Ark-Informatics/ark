@@ -80,7 +80,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		col.setStatus(status);
 		col.setStudy(iArkCommonService.getStudy(studyId));
 
-		phenotypicDao.createCollection(col);
+		phenotypicDao.createPhenoCollection(col);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void updateCollection(PhenoCollection colEntity)
 	{
-		phenotypicDao.updateCollection(colEntity);
+		phenotypicDao.updatePhenoCollection(colEntity);
 	}
 
 	public void createField(Field field)
@@ -140,26 +140,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = iArkCommonService.getStudy(studyId);
 		
-		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
-		PhenoCollection collection = null;
-		
-		if (collectionId == null){
-			log.info("Using default collectionId of 1");
-			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
-		}
-		else{
-			log.info("Using collectionId in context");
-			collection = phenotypicDao.getPhenotypicCollection(collectionId);
-		}
-		
-		try {
-			log.info("phenotypicImport.collection: " + collection.getName());
-		}
-		catch (NullPointerException npe){
-			log.error("Error with Collection...no object instatiated...");
-		}
-		
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, collection, iArkCommonService);
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -190,26 +173,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = iArkCommonService.getStudy(studyId);
 		
-		Long collectionId = (Long) currentUser.getSession().getAttribute(Constants.COLLECTION_ID);
-		PhenoCollection collection = null;
-		
-		if (collectionId == null){
-			log.info("Using default collectionId of 1");
-			collection = phenotypicDao.getPhenotypicCollection(new Long(1));
-		}
-		else{
-			log.info("Using collectionId in context");
-			collection = phenotypicDao.getPhenotypicCollection(collectionId);
-		}
-		
-		try {
-			log.info("phenotypicImport.collection: " + collection.getName());
-		}
-		catch (NullPointerException npe){
-			log.error("Error with Collection...no object instatiated...");
-		}
-		
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, collection, iArkCommonService);
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -240,7 +206,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void deleteCollection(PhenoCollection collection)
 	{
-		phenotypicDao.createCollection(collection);
+		phenotypicDao.createPhenoCollection(collection);
 	}
 
 	public void deleteCollectionImport(CollectionImport collectionImport)
