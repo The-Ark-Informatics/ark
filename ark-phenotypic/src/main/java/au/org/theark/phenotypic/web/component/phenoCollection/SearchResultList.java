@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.web.component.phenoCollection;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -68,11 +69,11 @@ public class SearchResultList extends Panel
 				if (phenoCollection.getId() != null)
 				{
 					// Add the id component here
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID, phenoCollection.getId().toString()));
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID, phenoCollection.getId().toString()));
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID, ""));
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID, ""));
 				}
 
 				// Component Name Link
@@ -82,47 +83,47 @@ public class SearchResultList extends Panel
 				// PhenoCollection status
 				if (phenoCollection.getStatus() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_STATUS, phenoCollection.getStatus().getName()));
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, phenoCollection.getStatus().getName()));
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_STATUS, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, ""));// the ID here must match the ones in mark-up
 				}
 
 				// TODO when displaying text escape any special characters
 				// Description
 				if (phenoCollection.getDescription() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION, phenoCollection.getDescription()));// the ID here must match
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION, phenoCollection.getDescription()));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Start Date
 				if (phenoCollection.getStartDate() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, simpleDateFormat.format(phenoCollection.getStartDate())));// the ID here must match
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, simpleDateFormat.format(phenoCollection.getStartDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Expiry Date
 				if (phenoCollection.getExpiryDate() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
 				}
 
 				/* For the alternative stripes */
@@ -151,6 +152,9 @@ public class SearchResultList extends Panel
 				PhenoCollectionVO collectionVo = containerForm.getModelObject();
 				collectionVo.setPhenoCollection(phenoCollection);
 				
+				// Place the selected collection in session context for the user
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, phenoCollection.getId());
+		
 				detailsPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
