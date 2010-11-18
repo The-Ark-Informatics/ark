@@ -105,5 +105,9 @@ public class Constants {
 	
 	/* Common import field delimiters */
 	public static final char IMPORT_DELIM_CHAR_COMMA	= ',';
-	public static final char IMPORT_DELIM_CHAR_TAB	= '	';	
+	public static final char IMPORT_DELIM_CHAR_TAB	= '	';
+	
+	/* Search result list rows per page */
+	public static final int	ROWS_PER_PAGE	= 10;
+	public static final String	RESULT_LIST	= "resultList";
 }
