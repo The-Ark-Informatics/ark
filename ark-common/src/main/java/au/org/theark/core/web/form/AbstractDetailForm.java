@@ -233,15 +233,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 	
 	protected  void onDeleteCancel(AjaxRequestTarget target, ModalWindow selectModalWindow){
 		selectModalWindow.close(target);
-        // Go back into Edit mode (and remove feedback, if straight after "New")
-        detailPanelFormContainer.setEnabled(true);
-		editButtonContainer.setVisible(true);
-		viewButtonContainer.setVisible(false);
-		deleteButton.setEnabled(true);
-		deleteButton.setVisible(true);
-		target.addComponent(detailPanelFormContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
 	}
 	
 	protected ModalWindow initialiseModalWindow(){
