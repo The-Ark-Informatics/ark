@@ -103,4 +103,7 @@ public class Constants {
 	public static final int MODE_EDIT =2;
 	public static final int MODE_READ =3;
 	
+	/* Common import field delimiters */
+	public static final char IMPORT_DELIM_CHAR_COMMA	= ',';
+	public static final char IMPORT_DELIM_CHAR_TAB	= '	';	
 }
