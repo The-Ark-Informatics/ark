@@ -61,10 +61,10 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	private TextField<String>				fieldMinValueTxtFld;
 	private TextField<String>				fieldMaxValueTxtFld;
 	private TextField<String>				fieldDiscreteValuesTxtFld;
-	
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param detailPanel
@@ -76,34 +76,18 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(	String id,
-						FeedbackPanel feedBackPanel, 
-						Detail detailPanel, 
-						WebMarkupContainer listContainer, 
-						WebMarkupContainer detailsContainer, 
-						ContainerForm containerForm,
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer,
-						WebMarkupContainer detailFormContainer,
-						WebMarkupContainer searchPanelContainer)
+	public DetailForm(String id, FeedbackPanel feedBackPanel, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
 	{
-		
-		super(	id,
-				feedBackPanel, 
-				listContainer,
-				detailsContainer,
-				detailFormContainer,
-				searchPanelContainer,
-				viewButtonContainer,
-				editButtonContainer,
-				containerForm);
+
+		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 	}
-	
+
 	private void initFieldTypeDdc()
 	{
-		 java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
-		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
-		 fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
+		java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
+		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
+		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
 	public void initialiseDetailForm()
@@ -116,7 +100,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		fieldMinValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE);
 		fieldMaxValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE);
 		fieldDiscreteValuesTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DISCRETE_VALUES);
-		
+
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 
@@ -126,8 +110,8 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 
 	protected void attachValidators()
 	{
-		fieldNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.name.required", this, new Model<String>("Name")));;
-		fieldTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.fieldType.required", this, new Model<String>("Field Type")));;;
+		fieldNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.name.required", this, new Model<String>("Name")));
+		fieldTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.fieldType.required", this, new Model<String>("Field Type")));
 	}
 
 	private void addComponents()
@@ -141,11 +125,10 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		detailPanelFormContainer.add(fieldMinValueTxtFld);
 		detailPanelFormContainer.add(fieldMaxValueTxtFld);
 		detailPanelFormContainer.add(fieldDiscreteValuesTxtFld);
-		
+
 		add(detailPanelFormContainer);
-		
 	}
-	
+
 	@Override
 	protected void onSave(Form<FieldVO> containerForm, AjaxRequestTarget target)
 	{
@@ -164,9 +147,9 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was updated successfully");
 			processErrors(target);
 		}
-		
+
 		onSavePostProcess(target);
-		//TODO:(CE) To handle Business and System Exceptions here
+		// TODO:(CE) To handle Business and System Exceptions here
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
@@ -175,13 +158,13 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		containerForm.setModelObject(fieldVo);
 		onCancelPostProcess(target);
 	}
-	
+
 	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
 		target.addComponent(feedBackPanel);
 	}
-		
+
 	public AjaxButton getDeleteButton()
 	{
 		return deleteButton;
@@ -191,28 +174,28 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	{
 		this.deleteButton = deleteButton;
 	}
-	
+
 	/**
 	 * 
 	 */
-	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
-		//TODO:(CE) To handle Business and System Exceptions here
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	{
+		// TODO:(CE) To handle Business and System Exceptions here
 		phenotypicService.deleteField(containerForm.getModelObject().getField());
-   		this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
-   		
-   		// Display delete confirmation message
-   		target.addComponent(feedBackPanel);
-   		//TODO Implement Exceptions in PhentoypicService
-		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-     
+		this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
+
+		// Display delete confirmation message
+		target.addComponent(feedBackPanel);
+		// TODO Implement Exceptions in PhentoypicService
+		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+
 		// Close the confirm modal window
-   		selectModalWindow.close(target);
+		selectModalWindow.close(target);
 		// Move focus back to Search form
 		FieldVO fieldVo = new FieldVO();
 		containerForm.setModelObject(fieldVo);
 		onCancel(target);
 	}
-	
 }
