@@ -60,7 +60,7 @@ public class SearchPanel extends Panel
 
 	public void initialisePanel()
 	{
-		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, 
 												(CompoundPropertyModel<PhenoCollectionVO>) containerForm.getModel(),
 												listView,
 												feedBackPanel,
@@ -72,11 +72,6 @@ public class SearchPanel extends Panel
 												viewButtonContainer,
 												editButtonContainer
 												);
-		
-		// For summary module, disable buttons
-		this.viewButtonContainer.setVisible(false);
-		this.editButtonContainer.setVisible(false);
-		
 		add(searchForm);
 	}
 }
