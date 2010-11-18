@@ -7,65 +7,27 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
-import au.org.theark.phenotypic.web.component.phenoCollection.Search;
-import au.org.theark.phenotypic.web.component.phenoCollection.SearchResultList;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoCollectionVO>
 {
-//	private static final long					serialVersionUID	= 1L;
-//
-//	private FeedbackPanel						feedBackPanel;
-//
-//	// Panels
-//	private Search									searchComponentPanel;
-//	private SearchResultList					searchResultPanel;
-//	private Detail									detailPanel;
-//
-//	private CompoundPropertyModel<PhenoCollectionVO>	fieldCpm;
-//
-//	private IModel<Object>						iModel;
-//	private PageableListView<PhenoCollection>			listView;
-//
-//	// Mark-up Containers
-//	private WebMarkupContainer					searchPanelContainer;
-//	private WebMarkupContainer					resultListContainer;
-//	private WebMarkupContainer					detailPanelContainer;
-//	private WebMarkupContainer					detailPanelFormContainer;
-//	
-//	private WebMarkupContainer viewButtonContainer;
-//	private WebMarkupContainer editButtonContainer;
-//	
-//
-//	private ContainerForm						containerForm;
-//
-//	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-//	private IPhenotypicService					phenotypicService;
-//
-//	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-//	private IArkCommonService					iArkCommonService;
 	private static final long					serialVersionUID	= 1L;
 
 	// Panels
-	private Search									searchComponentPanel;
-	private SearchResultList					searchResultPanel;
-	private Detail									detailPanel;
+	private SearchPanel									searchComponentPanel;
+	private SearchResultListPanel					searchResultPanel;
+	private DetailPanel									detailPanel;
 	private PageableListView<PhenoCollection>			listView;
 
 	private ContainerForm						containerForm;
@@ -98,7 +60,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 	protected WebMarkupContainer initialiseSearchResults()
 	{
 
-		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
 				viewButtonContainer,
 				editButtonContainer,
 				detailPanelFormContainer);
@@ -125,7 +87,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 	protected WebMarkupContainer initialiseDetailPanel()
 	{
-		detailPanel = new Detail("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
 				viewButtonContainer,
 				editButtonContainer,
 				detailPanelFormContainer);
@@ -149,7 +111,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 
-		searchComponentPanel = new Search("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 		searchComponentPanel.initialisePanel();
 		
 		searchPanelContainer.add(searchComponentPanel);

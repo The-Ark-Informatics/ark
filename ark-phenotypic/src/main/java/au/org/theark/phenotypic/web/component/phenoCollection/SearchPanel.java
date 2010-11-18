@@ -16,7 +16,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.form.SearchForm;
  * 
  */
 @SuppressWarnings("serial")
-public class Search extends Panel
+public class SearchPanel extends Panel
 {
 	private FeedbackPanel				feedBackPanel;
 	private WebMarkupContainer			searchMarkupContainer;
@@ -24,19 +24,19 @@ public class Search extends Panel
 	private WebMarkupContainer			detailContainer;
 	private PageableListView<PhenoCollection>	listView;
 	private ContainerForm				containerForm;
-	private Detail							detailPanel;
+	private DetailPanel							detailPanel;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailPanelFormContainer;
 
 	/* Constructor */
-	public Search(	String id, 
+	public SearchPanel(	String id, 
 					FeedbackPanel feedBackPanel, 
 					WebMarkupContainer searchMarkupContainer, 
 					PageableListView<PhenoCollection> listView, 
 					WebMarkupContainer resultListContainer,
 					WebMarkupContainer detailPanelContainer, 
-					Detail detail, 
+					DetailPanel detail, 
 					ContainerForm containerForm,
 					WebMarkupContainer viewButtonContainer,
 					WebMarkupContainer editButtonContainer,

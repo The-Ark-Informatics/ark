@@ -20,20 +20,20 @@ import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
-public class SearchResultList extends Panel
+public class SearchResultListPanel extends Panel
 {
 
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private Detail					detailPanel;
+	private DetailPanel					detailPanel;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 
-	public SearchResultList(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
-			Detail detail,
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
+			DetailPanel detail,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
 			WebMarkupContainer detailPanelFormContainer)
@@ -159,8 +159,6 @@ public class SearchResultList extends Panel
 				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-
-				detailPanel.getDetailForm().getIdTxtFld().setEnabled(false);
 				
 				// Button containers
 				// View Field, thus view container visible
@@ -190,7 +188,7 @@ public class SearchResultList extends Panel
 	 * @param detailPanel
 	 *           the detailPanel to set
 	 */
-	public void setDetailPanel(Detail detailPanel)
+	public void setDetailPanel(DetailPanel detailPanel)
 	{
 		this.detailPanel = detailPanel;
 	}
@@ -198,7 +196,7 @@ public class SearchResultList extends Panel
 	/**
 	 * @return the detailPanel
 	 */
-	public Detail getDetailPanel()
+	public DetailPanel getDetailPanel()
 	{
 		return detailPanel;
 	}
