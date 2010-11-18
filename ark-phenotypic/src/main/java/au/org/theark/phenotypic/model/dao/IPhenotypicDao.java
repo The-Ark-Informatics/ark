@@ -1,11 +1,17 @@
 package au.org.theark.phenotypic.model.dao;
 
+import java.util.Date;
+
+import org.hibernate.Session;
+
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.Upload;
 import au.org.theark.phenotypic.model.entity.UploadCollection;
@@ -20,9 +26,9 @@ public interface IPhenotypicDao {
 	public PhenoCollection getPhenotypicCollection(Long id);
 	public java.util.Collection<PhenoCollection> getPhenotypicCollection();
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch);
-	public void createCollection(PhenoCollection collection);
-	public void updateCollection(PhenoCollection collection);
-	public void deleteCollection(PhenoCollection collection);
+	public void createPhenoCollection(PhenoCollection collection);
+	public void updatePhenoCollection(PhenoCollection collection);
+	public void deletePhenoCollection(PhenoCollection collection);
 	
 	// Collection Import
 	public CollectionImport getCollectionImport(Long id);
@@ -56,18 +62,29 @@ public interface IPhenotypicDao {
 	public void updateFieldType(FieldType fieldType);
 
 	// Field Data
+	public FieldData getFieldData(Long id);
+	public java.util.Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field);
+	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value);
 	public void createFieldData(FieldData fieldData);
 	public void updateFieldData(FieldData fieldData);
 	public void deleteFieldData(FieldData fieldData);
 	
+	// Field Data Log
+	public FieldDataLog getFieldDataLog(Long id);
+	public java.util.Collection<FieldDataLog> getFieldDataLogByField(Field field);
+	public void createFieldDataLog(FieldDataLog fieldDataLog);
+	
 	// Upload
+	public Upload getUpload(Long id);
+	public java.util.Collection<Upload> getUploadByFileName(String fileName);
 	public void createUpload(Upload upload);
 	public void updateUpload(Upload upload);
 	public void deleteUpload(Upload upload);
 	
-	// Upload
+	// Upload Collection
+	public UploadCollection getUploadCollection(Long id);
+	public java.util.Collection<UploadCollection> getUploadCollectionByCollection(PhenoCollection phenoCollection);
 	public void createUploadCollection(UploadCollection uploadCollection);
 	public void updateUploadCollection(UploadCollection uploadCollection);
 	public void deleteUploadCollection(UploadCollection uploadCollection);
-	
 }
