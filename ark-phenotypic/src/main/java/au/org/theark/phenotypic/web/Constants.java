@@ -41,19 +41,22 @@ public class Constants {
 
 	public static final String	PHENOTYPIC_GRID_VIEW	= "phenotypicGridView";
 	
+	// Session items
+	public static final String	SESSION_PHENO_COLLECTION_ID = "phenoCollectionId";	
+	
 	// VO fields
-	public static final String	COLLECTIONVO_COLLECTION_ID	= "phenoCollection.id";
-	public static final String	COLLECTIONVO_COLLECTION_NAME	= "phenoCollection.name";
-	public static final String	COLLECTIONVO_COLLECTION_DESCRIPTION	= "phenoCollection.description";
-	public static final String COLLECTIONVO_FIELD = "phenoCollection.field";
-	public static final String COLLECTIONVO_FIELD_ID = "phenoCollection.field.id";
-	public static final String COLLECTIONVO_PERSON = "phenoCollection.person";
-	public static final String COLLECTIONVO_PERSON_ID = "phenoCollection.person.id";
-	public static final String COLLECTIONVO_FIELD_DATA = "phenoCollection.fieldData";
-	public static final String COLLECTIONVO_FIELD_DATA_ID = "phenoCollection.fieldData.id";
-	public static final String COLLECTIONVO_COLLECTION_STATUS = "phenoCollection.status";
-	public static final String	COLLECTIONVO_COLLECTION_START_DATE	= "phenoCollection.startDate";
-	public static final String	COLLECTIONVO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_ID	= "phenoCollection.id";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME	= "phenoCollection.name";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION	= "phenoCollection.description";
+	public static final String PHENO_COLLECTIONVO_FIELD = "phenoCollection.field";
+	public static final String PHENO_COLLECTIONVO_FIELD_ID = "phenoCollection.field.id";
+	public static final String PHENO_COLLECTIONVO_PERSON = "phenoCollection.person";
+	public static final String PHENO_COLLECTIONVO_PERSON_ID = "phenoCollection.person.id";
+	public static final String PHENO_COLLECTIONVO_FIELD_DATA = "phenoCollection.fieldData";
+	public static final String PHENO_COLLECTIONVO_FIELD_DATA_ID = "phenoCollection.fieldData.id";
+	public static final String PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS = "phenoCollection.status";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE	= "phenoCollection.startDate";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
 	
 	public static final String FIELDVO_FIELD_ID = "field.id";
 	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
@@ -66,19 +69,35 @@ public class Constants {
 	public static final String	FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
 	public static final String	FIELDVO_FIELD_DISCRETE_VALUES	= "field.discreteValues";
 	
+	public static final String	FIELD_DATAVO_FIELD_DATA_ID = "fieldData.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION	= "fieldData.collection";
+	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION_ID	= "fieldData.collection.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_LINK_SUBJECT_STUDY	= "fieldData.linkSubjectStudy";
+	public static final String	FIELD_DATAVO_FIELD_DATA_LINK_SUBJECT_STUDY_KEY	= "fieldData.linkSubjectStudy.key";
+	public static final String	FIELD_DATAVO_FIELD_DATA_DATE_COLLECTED = "fieldData.dateCollected";
+	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD	= "fieldData.field";
+	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD_ID	= "fieldData.field.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_VALUE = "fieldData.value";
+	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER = "fieldData.user";
+	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER_ID = "fieldData.user.id";
+	public static final String FIELD_DATAVO_FIELD_DATA_INSERT_TIME = "fieldData.insertTime";
+	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_TIME = "fieldData.updateTime";
+	
 	// Entity fields
-	public static final String COLLECTION = "phenoCollection";
-	public static final String COLLECTION_ID = "id";
-	public static final String COLLECTION_STUDY = "study";
-	public static final String COLLECTION_NAME = "name";
-	public static final String COLLECTION_DESCRIPTION = "description";
-	public static final String COLLECTION_STATUS = "status";
-	public static final String COLLECTION_START_DATE = "startDate";
-	public static final String COLLECTION_EXPIRY_DATE= "expiryDate";
-	public static final String COLLECTION_USER = "user";
-	public static final String COLLECTION_INSERT_TIME = "insertTime";
-	public static final String COLLECTION_UPDATE_USER = "user";
-	public static final String COLLECTION_UPDATE_TIME = "updateTime";
+	public static final String PHENO_COLLECTION = "phenoCollection";
+	public static final String PHENO_COLLECTION_ID = "id";
+	public static final String PHENO_COLLECTION_STUDY = "study";
+	public static final String PHENO_COLLECTION_NAME = "name";
+	public static final String PHENO_COLLECTION_DESCRIPTION = "description";
+	public static final String PHENO_COLLECTION_STATUS = "status";
+	public static final String PHENO_COLLECTION_START_DATE = "startDate";
+	public static final String PHENO_COLLECTION_EXPIRY_DATE= "expiryDate";
+	public static final String PHENO_COLLECTION_USER = "user";
+	public static final String	PHENO_COLLECTION_USER_ID	= "userId";
+	public static final String PHENO_COLLECTION_INSERT_TIME = "insertTime";
+	public static final String PHENO_COLLECTION_UPDATE_USER = "user";
+	public static final String	PHENO_COLLECTION_UPDATE_USER_ID	= "userId";
+	public static final String PHENO_COLLECTION_UPDATE_TIME = "updateTime";
 	
 	public static final String COLLECTION_IMPORT = "collectionImport";
 	public static final String COLLECTION_IMPORT_ID = "id";
@@ -88,8 +107,10 @@ public class Constants {
 	public static final String COLLECTION_IMPORT_START_TIME = "startTime";
 	public static final String COLLECTION_IMPORT_FINISH_TIME= "finishTime";
 	public static final String COLLECTION_IMPORT_USER = "user";
+	public static final String COLLECTION_IMPORT_USER_ID = "userId";
 	public static final String COLLECTION_IMPORT_INSERT_TIME = "insertTime";
 	public static final String COLLECTION_IMPORT_UPDATE_USER = "user";
+	public static final String COLLECTION_IMPORT_UPDATE_USER_ID = "userId";
 	public static final String COLLECTION_IMPORT_UPDATE_TIME = "updateTime";
 	
 	public static final String	FIELD	= "field";
@@ -114,21 +135,22 @@ public class Constants {
 	
 	public static final String FIELD_DATA = "fieldData";
 	public static final String FIELD_DATA_ID = "id";
-	public static final String FIELD_DATA_COLLECTION = "collection";
-	public static final String FIELD_DATA_PERSON = "person";
+	public static final String	FIELD_DATA_PHENO_COLLECTION	= "collection";
+	public static final String	FIELD_DATA_LINK_SUBJECT_STUDY	= "linkSubjectStudy";
 	public static final String FIELD_DATA_COLLECTED = "dateCollected";
 	public static final String FIELD_DATA_FIELD = "field";
 	public static final String FIELD_DATA_VALUE = "value";
 	public static final String FIELD_DATA_USER = "user";
 	public static final String FIELD_DATA_INSERT_TIME = "insertTime";
 	public static final String FIELD_DATA_UPDATE_USER = "user";
+	public static final String FIELD_DATA_UPDATE_USER_ID = "userId";
 	public static final String FIELD_DATA_UPDATE_TIME = "updateTime";
 
 	public static final String	STATUS	= "status";
 	public static final String	STATUS_ID	= "id";
 	public static final String	STATUS_NAME	= "name";
 
-	
-	
-	
+	public static final String	LINK_SUBJECT_STUDY	= "linkSubjectStudy";
+
+		
 }
