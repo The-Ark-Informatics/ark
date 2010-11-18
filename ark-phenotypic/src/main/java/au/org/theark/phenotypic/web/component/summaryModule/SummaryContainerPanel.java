@@ -62,6 +62,10 @@ public class SummaryContainerPanel extends AbstractContainerPanel<PhenoCollectio
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(listView);
 		searchResultPanelContainer.add(searchResultPanel);
+		
+		// for Summary Module, disable search result list
+		searchResultPanel.setVisible(false);
+		
 		return searchResultPanelContainer;
 	}
 
