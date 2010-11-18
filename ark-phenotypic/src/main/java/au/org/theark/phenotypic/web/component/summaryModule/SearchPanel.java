@@ -56,10 +56,6 @@ public class SearchPanel extends Panel
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		listContainer = resultListContainer;
-		
-		// For Summary Module, disable any buttons
-		this.editButtonContainer.setVisible(false);
-		this.viewButtonContainer.setVisible(false);
 	}
 
 	public void initialisePanel()
@@ -76,6 +72,10 @@ public class SearchPanel extends Panel
 												viewButtonContainer,
 												editButtonContainer
 												);
+		
+		// For summary module, disable buttons
+		this.viewButtonContainer.setVisible(false);
+		this.editButtonContainer.setVisible(false);
 		
 		add(searchForm);
 	}
