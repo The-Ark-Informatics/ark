@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.web.component.phenotypicImport;
 
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -14,6 +15,7 @@ import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.Constants;
 
 @SuppressWarnings( { "unchecked", "serial" ,"unused"})
 public class PhenotypicImportContainer extends Panel
@@ -24,6 +26,7 @@ public class PhenotypicImportContainer extends Panel
 
 	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicImportContainer.class);
+	private boolean phenoCollectionInContext		= false;
 
 	public PhenotypicImportContainer(String id)
 	{
@@ -41,6 +44,17 @@ public class PhenotypicImportContainer extends Panel
 				//TODO Add placeholder to store the validation messages 
 				validationMessages = serviceInterface.validatePhenotypicDataFile();
 			}
+			
+			public boolean isVisible(){
+				boolean flag = false;
+				Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(Constants.SESSION_PHENO_COLLECTION_ID);
+				
+				if(sessionCollectionId != null && sessionCollectionId.longValue() > 0){
+					flag = true;
+					phenoCollectionInContext = true;
+				}
+				return flag;
+			}
 		});
 		
 		phenotypicImportForm.add(new Button(au.org.theark.phenotypic.web.Constants.IMPORT_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.importPhenotypicDataFile", this, null))
@@ -50,8 +64,22 @@ public class PhenotypicImportContainer extends Panel
 				log.info("Import Phenotypic Data File");
 				serviceInterface.importPhenotypicDataFile();
 			}
+			
+			public boolean isVisible(){
+				boolean flag = false;
+				Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(Constants.SESSION_PHENO_COLLECTION_ID);
+				
+				if(sessionCollectionId != null && sessionCollectionId.longValue() > 0){
+					flag = true;
+					phenoCollectionInContext = true;
+				}
+				return flag;
+			}
 		});
 
+		if(!phenoCollectionInContext){
+			this.info("There is currently no Phenotypic Collection in context");
+		}
 		add(phenotypicImportForm);
 	}
 }
