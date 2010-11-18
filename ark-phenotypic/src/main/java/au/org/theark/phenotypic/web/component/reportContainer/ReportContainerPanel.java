@@ -1,50 +1,91 @@
 package au.org.theark.phenotypic.web.component.reportContainer;
 
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 
-import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.web.component.reportContainer.form.ContainerForm;
 
-@SuppressWarnings( { "unchecked", "serial", "unused" })
-public class ReportContainerPanel extends Panel
+public class ReportContainerPanel extends AbstractContainerPanel<PhenoCollectionVO>
 {
-	@SpringBean(name = "phenotypicService")
-	private IPhenotypicService	serviceInterface;
+	private static final long						serialVersionUID	= 1L;
 
-	private static final long	serialVersionUID	= 1L;
-	private transient Logger	log					= LoggerFactory.getLogger(ReportContainerPanel.class);
+	// Panels
+	private SearchPanel								searchComponentPanel;
+	private SearchResultListPanel					searchResultPanel;
+	private DetailPanel								detailPanel;
+	private PageableListView<PhenoCollection>	listView;
+	private ContainerForm							containerForm;
 
 	public ReportContainerPanel(String id)
 	{
 		super(id);
-		log.info("ReportContainerPanel Constructor invoked.");
-		Form reportForm = new Form("reportForm");
-		reportForm.add(new Button(au.org.theark.phenotypic.web.Constants.NEW_BUTTON, new StringResourceModel("page.reportButton1", this, null))
+
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<PhenoCollectionVO>(new PhenoCollectionVO());
+
+		initialiseMarkupContainers();
+		
+		/* Bind the CPM to the Form */
+		containerForm = new ContainerForm("containerForm", cpModel);
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		add(containerForm);
+	}
+
+	protected WebMarkupContainer initialiseSearchResults()
+	{
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
+				editButtonContainer, detailPanelFormContainer);
+
+		iModel = new LoadableDetachableModel<Object>()
 		{
-			public void onSubmit()
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected Object load()
 			{
-				log.info("Report button 1 test");
+				return containerForm.getModelObject().getPhenoCollectionCollection();
 			}
-		});
-		reportForm.add(new Button(au.org.theark.phenotypic.web.Constants.SAVE_BUTTON, new StringResourceModel("page.reportButton2", this, null))
-		{
-			public void onSubmit()
-			{
-				log.info("Report button 2 test");
-			}
-		});
-		reportForm.add(new Button(au.org.theark.phenotypic.web.Constants.EDIT_BUTTON, new StringResourceModel("page.reportButton3", this, null))
-		{
-			public void onSubmit()
-			{
-				log.info("Report button 3 test");
-			}
-		});
-		add(reportForm);
+		};
+
+		listView = searchResultPanel.buildPageableListView(iModel);
+		listView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		searchResultPanel.add(pageNavigator);
+		searchResultPanel.add(listView);
+		searchResultPanelContainer.add(searchResultPanel);
+		
+		// for Summary Module, disable search result list
+		searchResultPanel.setVisible(false);
+		
+		return searchResultPanelContainer;
+	}
+
+	protected WebMarkupContainer initialiseDetailPanel()
+	{
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
+				detailPanelFormContainer);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
+		return detailPanelContainer;
+	}
+
+	protected WebMarkupContainer initialiseSearchPanel()
+	{
+		// For Summary Module, no results ever displayed
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel.initialisePanel();
+
+		searchPanelContainer.add(searchComponentPanel);
+		return searchPanelContainer;
 	}
 }
