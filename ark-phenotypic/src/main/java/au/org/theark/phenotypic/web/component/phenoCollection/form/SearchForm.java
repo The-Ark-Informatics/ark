@@ -25,7 +25,7 @@ import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
+import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 
 /**
  * @author cellis
@@ -48,12 +48,12 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private DropDownChoice<Status>							statusDdc;
 	private DatePicker<Date>									phenoCollectionStartDateFld;
 	private DatePicker<Date>									phenoCollectionExpiryDateFld;
-	private Detail													detailPanel;
+	private DetailPanel													detailPanel;
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, Detail detailPanel,
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
 			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer)
 	{
@@ -154,5 +154,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);// For ajax this is required so
+	}
+	
+	@Override
+	protected boolean isSecure()
+	{
+		return true;
 	}
 }
