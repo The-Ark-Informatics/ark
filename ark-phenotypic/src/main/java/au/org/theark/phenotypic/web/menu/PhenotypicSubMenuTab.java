@@ -22,7 +22,7 @@ import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
-import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainer;
+import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
 @SuppressWarnings( { "serial", "unused" })
 public class PhenotypicSubMenuTab extends Panel
@@ -83,7 +83,7 @@ public class PhenotypicSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
 					{
-						panelToReturn = new SummaryContainer(panelId); // Note the constructor
+						panelToReturn = new SummaryContainerPanel(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
 					{
