@@ -1,7 +1,10 @@
 package au.org.theark.phenotypic.model.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,13 +13,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
@@ -37,9 +40,9 @@ public class FieldData implements java.io.Serializable {
 	private Date insertTime;
 	private String updateUserId;
 	private Date updateTime;
-
+	private Set<FieldDataLog> fieldDataLogs = new HashSet<FieldDataLog>(0);
+	
 	// Constructors
-
 	/** default constructor */
 	public FieldData() {
 	}
@@ -175,5 +178,19 @@ public class FieldData implements java.io.Serializable {
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
 	{
 		this.linkSubjectStudy = linkSubjectStudy;
+	}
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "fieldData")
+	public Set<FieldDataLog> getFieldDataLogs()
+	{
+		return fieldDataLogs;
+	}
+
+	/**
+	 * @param fieldDataLogs the fieldDataLogs to set
+	 */
+	public void setFieldDataLogs(Set<FieldDataLog> fieldDataLogs)
+	{
+		this.fieldDataLogs = fieldDataLogs;
 	}
 }
