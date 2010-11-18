@@ -27,7 +27,7 @@ import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.Detail;
+import au.org.theark.phenotypic.web.component.field.DetailPanel;
 
 /**
  * @author cellis
@@ -51,12 +51,12 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	private TextField<String>					fieldUnitsTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
-	private Detail									detailPanel;
+	private DetailPanel									detailPanel;
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, PageableListView<Field> listView, FeedbackPanel feedBackPanel, Detail detailPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, PageableListView<Field> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer)
 	{

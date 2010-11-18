@@ -25,9 +25,9 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 	private static final long					serialVersionUID	= 1L;
 
 	// Panels
-	private Search									searchComponentPanel;
-	private SearchResultList					searchResultPanel;
-	private Detail									detailPanel;
+	private SearchPanel									searchComponentPanel;
+	private SearchResultListPanel					searchResultPanel;
+	private DetailPanel									detailPanel;
 	private PageableListView<Field>			listView;
 
 	private ContainerForm						containerForm;
@@ -62,7 +62,7 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 	protected WebMarkupContainer initialiseSearchResults()
 	{
 
-		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
 				viewButtonContainer,
 				editButtonContainer,
 				detailPanelFormContainer);
@@ -90,7 +90,7 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 	protected WebMarkupContainer initialiseDetailPanel()
 	{
 
-		detailPanel = new Detail("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
 				viewButtonContainer,
 				editButtonContainer,
 				detailPanelFormContainer);
@@ -115,7 +115,7 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 
 		containerForm.getModelObject().setFieldCollection(fieldCollection);
 
-		searchComponentPanel = new Search("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 
 		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);

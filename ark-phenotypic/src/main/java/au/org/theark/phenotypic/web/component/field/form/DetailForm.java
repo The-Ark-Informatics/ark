@@ -36,7 +36,7 @@ import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.Detail;
+import au.org.theark.phenotypic.web.component.field.DetailPanel;
 
 /**
  * @author nivedann
@@ -76,7 +76,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
+	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
 			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
 	{
 

@@ -8,7 +8,7 @@ import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.field.form.DetailForm;
 
 @SuppressWarnings("serial")
-public class Detail extends Panel
+public class DetailPanel extends Panel
 {
 	private DetailForm							detailForm;
 	private FeedbackPanel						feedBackPanel;
@@ -23,7 +23,7 @@ public class Detail extends Panel
 	
 	
 
-	public Detail(	String id, 
+	public DetailPanel(	String id, 
 					final WebMarkupContainer listContainer, 
 					FeedbackPanel feedBackPanel,
 					WebMarkupContainer detailsContainer, 
