@@ -1,9 +1,3 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.phenotypic.web.component.phenoCollection.form;
 
 import java.util.Collection;
@@ -42,29 +36,29 @@ import au.org.theark.phenotypic.web.component.phenoCollection.Detail;
 public class DetailForm extends Form<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService			phenotypicService;
 
-	private WebMarkupContainer				resultListContainer;
-	private WebMarkupContainer				detailPanelContainer;
-	private WebMarkupContainer				detailFormContainer;
-	private WebMarkupContainer 			viewButtonContainer;
-	private WebMarkupContainer 			editButtonContainer;
-	private ContainerForm					phenoCollectionContainerForm;
+	private WebMarkupContainer			resultListContainer;
+	private WebMarkupContainer			detailPanelContainer;
+	private WebMarkupContainer			detailFormContainer;
+	private WebMarkupContainer			viewButtonContainer;
+	private WebMarkupContainer			editButtonContainer;
+	private ContainerForm				phenoCollectionContainerForm;
 
-	private int									mode;
+	private int								mode;
 
-	private TextField<String>				idTxtFld;
-	private TextField<String>				nameTxtFld;
-	private DropDownChoice<Status>		statusDdc;
-	private TextArea<String>				descriptionTxtAreaFld;
-	private DatePicker<Date>				startDateTxtFld;
-	private DatePicker<Date>				expiryDateTxtFld;
+	private TextField<String>			idTxtFld;
+	private TextField<String>			nameTxtFld;
+	private DropDownChoice<Status>	statusDdc;
+	private TextArea<String>			descriptionTxtAreaFld;
+	private DatePicker<Date>			startDateTxtFld;
+	private DatePicker<Date>			expiryDateTxtFld;
 
-	private AjaxButton						editButton;
-	private AjaxButton						editCancelButton;
-	private AjaxButton						deleteButton;
-	private AjaxButton						saveButton;
-	private AjaxButton						cancelButton;
+	private AjaxButton					editButton;
+	private AjaxButton					editCancelButton;
+	private AjaxButton					deleteButton;
+	private AjaxButton					saveButton;
+	private AjaxButton					cancelButton;
 
 	/**
 	 * Default constructor
@@ -81,10 +75,8 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	 * 
 	 * @param id
 	 */
-	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailFormContainer)
+	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer)
 	{
 		super(id);
 		this.phenoCollectionContainerForm = containerForm;
@@ -93,7 +85,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailFormContainer;
-		
+
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
 		{
 
@@ -108,7 +100,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 				processErrors(target);
 			}
 		};
-		
+
 		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
 		{
 			@Override
@@ -142,7 +134,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 				processErrors(target);
 			}
 		};
-		
+
 		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -157,25 +149,25 @@ public class DetailForm extends Form<PhenoCollectionVO>
 			}
 		};
 	}
-	
+
 	private void initStatusDdc()
 	{
-		 java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
-		 ChoiceRenderer statusRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
-		 statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_STATUS, (List) statusCollection, statusRenderer);
+		java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
+		ChoiceRenderer statusRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
+		statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, (List) statusCollection, statusRenderer);
 	}
 
 	public void initialiseForm()
 	{
-		idTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID);
-		nameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_NAME);
-		descriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION);
-		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
-		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
-		
+		idTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID);
+		nameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME);
+		descriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
+		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE);
+		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE);
+
 		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-		
+
 		// Initialise Drop Down Choices
 		initStatusDdc();
 
@@ -185,8 +177,11 @@ public class DetailForm extends Form<PhenoCollectionVO>
 
 	private void attachValidators()
 	{
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.name.required", this, new Model<String>("Name")));;
-		statusDdc.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.status.required", this, new Model<String>("Status")));;;
+		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.name.required", this, new Model<String>("Name")));
+		;
+		statusDdc.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.status.required", this, new Model<String>("Status")));
+		;
+		;
 	}
 
 	private void addComponents()
@@ -197,18 +192,18 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		detailFormContainer.add(statusDdc);
 		detailFormContainer.add(startDateTxtFld);
 		detailFormContainer.add(expiryDateTxtFld);
-		
+
 		add(detailFormContainer);
-		
+
 		// View has Edit and Cancel
 		viewButtonContainer.add(editButton);
 		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-		
+
 		// Edit has Save, Delete and Cancel
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(deleteButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		
+
 		// Button containers
 		add(viewButtonContainer);
 		add(editButtonContainer);
@@ -223,22 +218,22 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	{
 
 	}
-	
+
 	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
-	
+
 	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
-		
+
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
 	{
 
 	}
-	
+
 	public TextField<String> getIdTxtFld()
 	{
 		return idTxtFld;
@@ -288,7 +283,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	{
 		this.startDateTxtFld = startDateTxtFld;
 	}
-	
+
 	public AjaxButton getEditButton()
 	{
 		return editButton;
