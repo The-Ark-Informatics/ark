@@ -1,47 +1,43 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
-import java.util.List;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
-import au.org.theark.phenotypic.service.Constants;
-import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.summaryModule.DetailPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({"serial", "unchecked"})
+@SuppressWarnings({"serial", "unused"})
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
-
+	private PageableListView<PhenoCollection>				listView;
 	private CompoundPropertyModel<PhenoCollectionVO>	cpmModel;
-	private TextField<String>					phenoCollectionIdTxtFld;
-	private TextField<String>					phenoCollectionNameTxtFld;
-	private TextArea<String>					phenoCollectionDescriptionTxtAreaFld;
-	private DropDownChoice<Status>			statusDdc;
-	private TextField<String>					phenoCollectionStartDateFld;
-	private TextField<String>					phenoCollectionExpiryDateFld;
-	
+	private DetailPanel													detailPanel;
+
+	/**
+	 * @param id
+	 */
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
+			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer)
+	{
+
+		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+
+		this.cpmModel = model;
+		this.listView = listView;
+		this.detailPanel = detailPanel;
+		initialiseFieldForm();
+	}
+
 	/**
 	 * @param id
 	 */
@@ -50,48 +46,38 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		super(id, compoundPropertyModel);
 		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
+		
+		// For SummaryModule, disable buttons
+		this.viewButtonContainer.setVisible(false);
+		this.editButtonContainer.setVisible(false);
 	}
 
-	 private void initFieldTypeDdc()
-	 {
-		 java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
-		 CompoundPropertyModel<PhenoCollectionVO> phenoCollectionCpm = cpmModel;
-		 PropertyModel<PhenoCollection> phenoCollectionPm = new PropertyModel<PhenoCollection>(phenoCollectionCpm, au.org.theark.phenotypic.web.Constants.COLLECTION);
-		 PropertyModel<Status> statusPm = new PropertyModel<Status>(phenoCollectionPm, au.org.theark.phenotypic.web.Constants.STATUS);
-		 ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
-		 statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.STATUS, statusPm, (List) statusCollection, fieldTypeRenderer);
-	 }
+	private void initDropDownChoice()
+	{
+		// Initialise any drop-downs
+	}
 
 	public void initialiseFieldForm()
 	{
-		phenoCollectionIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID);
-		phenoCollectionNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_NAME);
-		phenoCollectionDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION);
-		phenoCollectionStartDateFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE);
-		phenoCollectionExpiryDateFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE);
-		//initFieldTypeDdc();
+		// Set up fields on the form
+		initDropDownChoice();
 		addFieldComponents();
 	}
 
 	private void addFieldComponents()
 	{
-		add(phenoCollectionIdTxtFld);
-		add(phenoCollectionNameTxtFld);
-		//add(statusDdc);
-		//add(phenoCollectionDescriptionTxtAreaFld);
-		//add(phenoCollectionStartDateFld);
-		//add(phenoCollectionExpiryDateFld);
+		// Add the field components
 	}
 
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		
+		// What to do on New button click
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
-		
+		// What to do on Search button click
 	}
 }

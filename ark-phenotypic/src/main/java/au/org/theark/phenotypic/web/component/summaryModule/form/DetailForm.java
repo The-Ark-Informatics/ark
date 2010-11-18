@@ -6,61 +6,43 @@
  */
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-
-import mx4j.log.Log;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextArea;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
-import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.summaryModule.Detail;
+import au.org.theark.phenotypic.web.component.summaryModule.DetailPanel;
 
 /**
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unchecked", "unused" })
+@SuppressWarnings( { "serial", "unused" })
 public class DetailForm extends Form<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService	phenotypicService;
 
-	private WebMarkupContainer				resultListContainer;
-	private WebMarkupContainer				detailPanelContainer;
-	private WebMarkupContainer				detailFormContainer;
-	private WebMarkupContainer 			viewButtonContainer;
-	private WebMarkupContainer 			editButtonContainer;
-	private ContainerForm					phenoCollectionContainerForm;
+	private WebMarkupContainer	resultListContainer;
+	private WebMarkupContainer	detailPanelContainer;
+	private WebMarkupContainer	detailFormContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private ContainerForm		phenoCollectionContainerForm;
 
-	private int									mode;
-
-	private TextField<String>				idTxtFld;
-	private TextField<String>				nameTxtFld;
-
-	private AjaxButton						editButton;
-	private AjaxButton						editCancelButton;
-	private AjaxButton						deleteButton;
-	private AjaxButton						saveButton;
-	private AjaxButton						cancelButton;
+	private int						mode;
+	
+	private AjaxButton			editButton;
+	private AjaxButton			editCancelButton;
+	private AjaxButton			deleteButton;
+	private AjaxButton			saveButton;
+	private AjaxButton			cancelButton;
 
 	/**
 	 * Default constructor
@@ -77,10 +59,8 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	 * 
 	 * @param id
 	 */
-	public DetailForm(String id, Detail detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailFormContainer)
+	public DetailForm(String id, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer)
 	{
 		super(id);
 		this.phenoCollectionContainerForm = containerForm;
@@ -89,7 +69,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailFormContainer;
-		
+
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
 		{
 
@@ -104,7 +84,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 				processErrors(target);
 			}
 		};
-		
+
 		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
 		{
 			@Override
@@ -138,7 +118,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 				processErrors(target);
 			}
 		};
-		
+
 		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -156,34 +136,27 @@ public class DetailForm extends Form<PhenoCollectionVO>
 
 	public void initialiseForm()
 	{
-		idTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID);
-		nameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_NAME);
-
 		attachValidators();
 		addComponents();
 	}
 
 	private void attachValidators()
 	{
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenoCollection.name.required", this, new Model<String>("Name")));;
 	}
 
 	private void addComponents()
 	{
-		detailFormContainer.add(idTxtFld);
-		detailFormContainer.add(nameTxtFld);
-		
 		add(detailFormContainer);
-		
+
 		// View has Edit and Cancel
 		viewButtonContainer.add(editButton);
 		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-		
+
 		// Edit has Save, Delete and Cancel
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(deleteButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		
+
 		// Button containers
 		add(viewButtonContainer);
 		add(editButtonContainer);
@@ -198,42 +171,22 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	{
 
 	}
-	
+
 	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
 
 	}
-	
+
 	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
 	{
-		
+
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
 	{
 
 	}
-	
-	public TextField<String> getIdTxtFld()
-	{
-		return idTxtFld;
-	}
 
-	public void setIdTxtFld(TextField<String> idTxtFld)
-	{
-		this.idTxtFld = idTxtFld;
-	}
-
-	public TextField<String> getNameTxtFld()
-	{
-		return nameTxtFld;
-	}
-
-	public void setNameTxtFld(TextField<String> nameTxtFld)
-	{
-		this.nameTxtFld = nameTxtFld;
-	}
-	
 	public AjaxButton getEditButton()
 	{
 		return editButton;

@@ -14,7 +14,7 @@ import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.summaryModule.form.DetailForm;
 
 @SuppressWarnings("serial")
-public class Detail extends Panel
+public class DetailPanel extends Panel
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService					phenotypicService;
@@ -30,7 +30,7 @@ public class Detail extends Panel
 	private WebMarkupContainer 				editButtonContainer;
 	private ModalWindow 					selectModalWindow;
 
-	public Detail(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, WebMarkupContainer searchPanelContainer,
+	public DetailPanel(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, WebMarkupContainer searchPanelContainer,
 			ContainerForm containerForm,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,

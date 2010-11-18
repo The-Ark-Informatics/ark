@@ -1,7 +1,5 @@
 package au.org.theark.phenotypic.web.component.summaryModule;
 
-import java.text.SimpleDateFormat;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -13,26 +11,25 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
-import au.org.theark.core.Constants;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
-public class SearchResultList extends Panel
+public class SearchResultListPanel extends Panel
 {
 
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private Detail					detailPanel;
+	private DetailPanel					detailPanel;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 
-	public SearchResultList(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
-			Detail detail,
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
+			DetailPanel detail,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
 			WebMarkupContainer detailPanelFormContainer)
@@ -56,23 +53,24 @@ public class SearchResultList extends Panel
 	public PageableListView<PhenoCollection> buildPageableListView(IModel iModel)
 	{
 
-		PageableListView<PhenoCollection> sitePageableListView = new PageableListView<PhenoCollection>("collectionList", iModel, 10)
+		PageableListView<PhenoCollection> sitePageableListView = new PageableListView<PhenoCollection>("resultList", iModel, 10)
 		{
 			@Override
 			protected void populateItem(final ListItem<PhenoCollection> item)
 			{
+				/* For SummaryModule, no resultList displayed
 				PhenoCollection phenoCollection = item.getModelObject();
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);
-
-				/* The phenoCollection ID */
+				
+				// The phenoCollection ID 
 				if (phenoCollection.getId() != null)
 				{
 					// Add the id component here
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID, phenoCollection.getId().toString()));
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID, phenoCollection.getId().toString()));
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_ID, ""));
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID, ""));
 				}
 
 				// Component Name Link
@@ -82,50 +80,52 @@ public class SearchResultList extends Panel
 				// PhenoCollection status
 				if (phenoCollection.getStatus() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_STATUS, phenoCollection.getStatus().getName()));
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, phenoCollection.getStatus().getName()));
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_STATUS, ""));// the ID here must match the ones in mark-up
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, ""));// the ID here must match the ones in mark-up
 				}
 
 				// TODO when displaying text escape any special characters
 				// Description
 				if (phenoCollection.getDescription() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION, phenoCollection.getDescription()));// the ID here must match
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION, phenoCollection.getDescription()));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_DESCRIPTION, ""));// the ID here must match the ones in mark-up
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Start Date
 				if (phenoCollection.getStartDate() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, simpleDateFormat.format(phenoCollection.getStartDate())));// the ID here must match
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, simpleDateFormat.format(phenoCollection.getStartDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_START_DATE, ""));// the ID here must match the ones in mark-up
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Expiry Date
 				if (phenoCollection.getExpiryDate() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.COLLECTIONVO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
+					//item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
 				}
+				*/
+				
 
-				/* For the alternative stripes */
+				// For the alternative stripes 
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
 				{
 					@Override
@@ -133,13 +133,14 @@ public class SearchResultList extends Panel
 					{
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
-				}));
-
+				})
+				);
 			}
 		};
 		return sitePageableListView;
 	}
 
+	@SuppressWarnings("unused")
 	private AjaxLink buildLink(final PhenoCollection phenoCollection)
 	{
 		AjaxLink link = new AjaxLink("phenoCollection.name")
@@ -155,8 +156,6 @@ public class SearchResultList extends Panel
 				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-
-				detailPanel.getDetailForm().getIdTxtFld().setEnabled(false);
 				
 				// Button containers
 				// View Field, thus view container visible
@@ -186,7 +185,7 @@ public class SearchResultList extends Panel
 	 * @param detailPanel
 	 *           the detailPanel to set
 	 */
-	public void setDetailPanel(Detail detailPanel)
+	public void setDetailPanel(DetailPanel detailPanel)
 	{
 		this.detailPanel = detailPanel;
 	}
@@ -194,7 +193,7 @@ public class SearchResultList extends Panel
 	/**
 	 * @return the detailPanel
 	 */
-	public Detail getDetailPanel()
+	public DetailPanel getDetailPanel()
 	{
 		return detailPanel;
 	}
