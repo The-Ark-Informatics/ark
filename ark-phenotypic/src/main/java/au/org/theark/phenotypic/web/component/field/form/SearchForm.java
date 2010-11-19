@@ -67,6 +67,9 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		this.listView = listView;
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
+		disableSearchButtons(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	private void initFieldTypeDdc()
@@ -103,21 +106,6 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	}
 
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
-		FieldVO fieldVo = new FieldVO();
-		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
-		// Set study for the new field
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId);
-		fieldVo.getField().setStudy(study);
-		setModelObject(fieldVo);
-		preProcessDetailPanel(target);
-		// Hide Delete button on New
-		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
-	}
-
-	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
 		target.addComponent(feedbackPanel);
@@ -138,6 +126,23 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);
+	}
+	
+	// Reset button implemented in AbstractSearcForm
+	
+	@Override
+	protected void onNew(AjaxRequestTarget target)
+	{
+		FieldVO fieldVo = new FieldVO();
+		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		// Set study for the new field
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
+		fieldVo.getField().setStudy(study);
+		setModelObject(fieldVo);
+		preProcessDetailPanel(target);
+		// Hide Delete button on New
+		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
 	protected boolean isSecure()
