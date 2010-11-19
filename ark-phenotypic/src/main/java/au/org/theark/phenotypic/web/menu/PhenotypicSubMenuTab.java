@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
@@ -17,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
-import au.org.theark.phenotypic.web.component.TestContainer.TestContainerPanel;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
