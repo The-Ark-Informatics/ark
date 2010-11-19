@@ -64,6 +64,9 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.listView = listView;
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
+		disableSearchButtons(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	/**
