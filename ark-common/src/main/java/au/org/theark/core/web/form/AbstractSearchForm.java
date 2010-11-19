@@ -126,15 +126,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 		};
 
-		/*
-		 * Commented this section of code.Sub-classes should enforce this check until we have a mechanism to disable tabs. Long sessionStudyId =
-		 * (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID); if(sessionStudyId == null){
-		 * searchButton.setEnabled(false); newButton.setEnabled(false); resetButton.setEnabled(false);
-		 * this.error("There is no study in context. Please select a study");
-		 * 
-		 * }else{ newButton.setEnabled(true); searchButton.setEnabled(true); resetButton.setEnabled(true); }
-		 */
-
 		addComponentsToForm();
 	}
 
@@ -161,5 +152,22 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		target.addComponent(viewButtonContainer);
 		target.addComponent(editButtonContainer);
 		target.addComponent(detailFormCompContainer);
+	}
+
+	protected void disableSearchButtons(Long sessionId, String errorMessage)
+	{	
+		if (sessionId == null)
+		{
+			searchButton.setEnabled(false);
+			newButton.setEnabled(false);
+			resetButton.setEnabled(false);
+			this.error(errorMessage);
+		}
+		else
+		{
+			newButton.setEnabled(true);
+			searchButton.setEnabled(true);
+			resetButton.setEnabled(true);
+		}
 	}
 }
