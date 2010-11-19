@@ -12,7 +12,7 @@ import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
- * Homepage aka Index page of ETA
+ * Homepage aka Index page of The ARK
  */
 public class HomePage extends BasePage
 {
@@ -27,9 +27,7 @@ public class HomePage extends BasePage
 	 */
 	public HomePage(final PageParameters parameters)
 	{
-
 		buildModuleTabs();
-
 	}
 
 	@Override
@@ -63,7 +61,6 @@ public class HomePage extends BasePage
 	protected void buildTabMenu()
 	{
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
