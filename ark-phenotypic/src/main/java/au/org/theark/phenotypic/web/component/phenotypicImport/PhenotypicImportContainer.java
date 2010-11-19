@@ -1,40 +1,68 @@
 package au.org.theark.phenotypic.web.component.phenotypicImport;
 
-import java.util.Date;
-
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.Constants;
+import au.org.theark.phenotypic.web.component.phenotypicImport.form.ContainerForm;
 
-@SuppressWarnings( { "unchecked", "serial" ,"unused"})
-public class PhenotypicImportContainer extends Panel
+@SuppressWarnings( { "serial" ,"unused"})
+public class PhenotypicImportContainer extends AbstractContainerPanel<PhenoCollectionVO>
 {
+	private static final long						serialVersionUID	= 1L;
 
+	// Panels
+	private SearchPanel								searchComponentPanel;
+	private SearchResultListPanel					searchResultPanel;
+	private DetailPanel								detailPanel;
+	private PageableListView<PhenoCollection>	listView;
+	private ContainerForm							containerForm;
+	
 	@SpringBean(name = "phenotypicService")
 	private IPhenotypicService	serviceInterface;
 
-	private static final long	serialVersionUID	= 1L;
 	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicImportContainer.class);
 	private boolean phenoCollectionInContext		= false;
 
 	public PhenotypicImportContainer(String id)
 	{
 		super(id);
-		log.info("PhenotypicImportContainer Constructor invoked.");
-		Form phenotypicImportForm = new Form("phenotypicImportForm");
+
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<PhenoCollectionVO>(new PhenoCollectionVO());
+
+		initialiseMarkupContainers();
+
+		/* Bind the CPM to the Form */
+		containerForm = new ContainerForm("containerForm", cpModel);
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
 		
-		phenotypicImportForm.add(new Button(au.org.theark.phenotypic.web.Constants.VALIDATE_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.validatePhenotypicDataFile", this, null))
+		initialiseTestButtons();
+
+		add(containerForm);
+	}
+	
+	public void initialiseTestButtons(){
+		
+		// Test button to validate pheno data file
+		containerForm.add(new Button(au.org.theark.phenotypic.web.Constants.VALIDATE_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.validatePhenotypicDataFile", this, null))
 		{
 			public void onSubmit()
 			{
@@ -57,7 +85,8 @@ public class PhenotypicImportContainer extends Panel
 			}
 		});
 		
-		phenotypicImportForm.add(new Button(au.org.theark.phenotypic.web.Constants.IMPORT_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.importPhenotypicDataFile", this, null))
+		// Test button to import pheno data file
+		containerForm.add(new Button(au.org.theark.phenotypic.web.Constants.IMPORT_PHENOTYPIC_DATA_FILE, new StringResourceModel("page.importPhenotypicDataFile", this, null))
 		{
 			public void onSubmit()
 			{
@@ -76,10 +105,55 @@ public class PhenotypicImportContainer extends Panel
 				return flag;
 			}
 		});
+		
+		add(containerForm);
+	}
 
-		if(!phenoCollectionInContext){
-			this.info("There is currently no Phenotypic Collection in context");
-		}
-		add(phenotypicImportForm);
+	protected WebMarkupContainer initialiseSearchResults()
+	{
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
+				editButtonContainer, detailPanelFormContainer);
+
+		iModel = new LoadableDetachableModel<Object>()
+		{
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected Object load()
+			{
+				return containerForm.getModelObject().getPhenoCollectionCollection();
+			}
+		};
+
+		listView = searchResultPanel.buildPageableListView(iModel);
+		listView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		searchResultPanel.add(pageNavigator);
+		searchResultPanel.add(listView);
+		searchResultPanelContainer.add(searchResultPanel);
+		
+		// for Summary Module, disable search result list
+		searchResultPanel.setVisible(false);
+		
+		return searchResultPanelContainer;
+	}
+
+	protected WebMarkupContainer initialiseDetailPanel()
+	{
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
+				detailPanelFormContainer);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
+		return detailPanelContainer;
+	}
+
+	protected WebMarkupContainer initialiseSearchPanel()
+	{
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel.initialisePanel();
+
+		searchPanelContainer.add(searchComponentPanel);
+		return searchPanelContainer;
 	}
 }
