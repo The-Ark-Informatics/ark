@@ -8,15 +8,18 @@ package au.org.theark.phenotypic.web.component.reportContainer.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.reportContainer.DetailPanel;
 
 /**
@@ -24,189 +27,119 @@ import au.org.theark.phenotypic.web.component.reportContainer.DetailPanel;
  * 
  */
 @SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends Form<PhenoCollectionVO>
+public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService	phenotypicService;
-
-	private WebMarkupContainer	resultListContainer;
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
-	private ContainerForm		phenoCollectionContainerForm;
-
-	private int						mode;
+	private IPhenotypicService			phenotypicService;
 	
-	private AjaxButton			editButton;
-	private AjaxButton			editCancelButton;
-	private AjaxButton			deleteButton;
-	private AjaxButton			saveButton;
-	private AjaxButton			cancelButton;
+	private ContainerForm					fieldContainerForm;
+
+	private int								mode;
 
 	/**
-	 * Default constructor
-	 * 
+	 * Constructor
 	 * @param id
+	 * @param feedBackPanel
+	 * @param detailPanel
+	 * @param listContainer
+	 * @param detailsContainer
+	 * @param containerForm
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param detailFormContainer
+	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id)
+	public DetailForm(	String id,
+						FeedbackPanel feedBackPanel, 
+						DetailPanel detailPanel, 
+						WebMarkupContainer listContainer, 
+						WebMarkupContainer detailsContainer, 
+						Form<PhenoCollectionVO> containerForm,
+						WebMarkupContainer viewButtonContainer,
+						WebMarkupContainer editButtonContainer,
+						WebMarkupContainer detailFormContainer,
+						WebMarkupContainer searchPanelContainer)
 	{
-		super(id);
+		
+		super(	id,
+				feedBackPanel, 
+				listContainer,
+				detailsContainer,
+				detailFormContainer,
+				searchPanelContainer,
+				viewButtonContainer,
+				editButtonContainer,
+				containerForm);
 	}
 
-	/**
-	 * DetailForm constructor
-	 * 
-	 * @param id
-	 */
-	public DetailForm(String id, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer)
+	private void initialiseDropDownChoice()
 	{
-		super(id);
-		this.phenoCollectionContainerForm = containerForm;
-		this.resultListContainer = listContainer;
-		this.detailPanelContainer = detailsContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailFormContainer = detailFormContainer;
-
-		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
-		{
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onEdit(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-
-		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
-		{
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-		};
-
-		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-		};
-
-		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onSave(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-
-		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onDelete(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
+		// Initialise Drop Down Choices
 	}
 
-	public void initialiseForm()
+	public void initialiseDetailForm()
 	{
+		// Set up field on form here
+
+		// Initialise Drop Down Choices
+		initialiseDropDownChoice();
+
 		attachValidators();
 		addComponents();
 	}
 
-	private void attachValidators()
+	protected void attachValidators()
 	{
+		// Field validation here
 	}
 
 	private void addComponents()
 	{
-		add(detailFormContainer);
-
-		// View has Edit and Cancel
-		viewButtonContainer.add(editButton);
-		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-
-		// Edit has Save, Delete and Cancel
-		editButtonContainer.add(saveButton);
-		editButtonContainer.add(deleteButton);
-		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-
-		// Button containers
-		add(viewButtonContainer);
-		add(editButtonContainer);
+		// Add components here eg:
+		//detailPanelFormContainer.add(idTxtFld);
+		//detailPanelFormContainer.add(nameTxtFld);
+		//add(detailPanelFormContainer);
 	}
 
-	protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
+	@Override
+	protected void onSave(Form<PhenoCollectionVO> containerForm, AjaxRequestTarget target)
 	{
-
+		/* Implement Save/Update
+		if (containerForm.getModelObject().getPhenoCollection().getId() == null)
+		{
+			// Save
+			phenotypicService.createCollection(containerForm.getModelObject().getPhenoCollection());
+			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was created successfully");
+			processErrors(target);
+		}
+		else
+		{
+			// Update the Field
+			phenotypicService.updateField(containerForm.getModelObject().getField());
+			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was updated successfully");
+			processErrors(target);
+		}
+		
+		onSavePostProcess(target);
+		//TODO:(CE) To handle Business and System Exceptions here
+		 * 
+		 */
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
 	{
-
+		// Implement Cancel
+		PhenoCollectionVO phenoCollectionVO = new PhenoCollectionVO();
+		containerForm.setModelObject(phenoCollectionVO);
+		onCancelPostProcess(target);
 	}
-
-	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-	{
-
-	}
-
-	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-	{
-
-	}
-
+	
+	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
-
+		target.addComponent(feedBackPanel);
 	}
-
-	public AjaxButton getEditButton()
-	{
-		return editButton;
-	}
-
-	public void setEditButton(AjaxButton editButton)
-	{
-		this.editButton = editButton;
-	}
-
-	public AjaxButton getEditCancelButton()
-	{
-		return editCancelButton;
-	}
-
-	public void setEditCancelButton(AjaxButton editCancelButton)
-	{
-		this.editCancelButton = editCancelButton;
-	}
-
+		
 	public AjaxButton getDeleteButton()
 	{
 		return deleteButton;
@@ -216,24 +149,28 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	{
 		this.deleteButton = deleteButton;
 	}
-
-	public AjaxButton getSaveButton()
-	{
-		return saveButton;
-	}
-
-	public void setSaveButton(AjaxButton saveButton)
-	{
-		this.saveButton = saveButton;
-	}
-
-	public AjaxButton getCancelButton()
-	{
-		return cancelButton;
-	}
-
-	public void setCancelButton(AjaxButton cancelButton)
-	{
-		this.cancelButton = cancelButton;
+	
+	/**
+	 * 
+	 */
+	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
+		//TODO:(CE) To handle Business and System Exceptions here
+		//phenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
+   	//this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
+   		
+   	// Display delete confirmation message
+   	//target.addComponent(feedBackPanel);
+   	//TODO Implement Exceptions in PhentoypicService
+		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+     
+		// Close the confirm modal window
+   	selectModalWindow.close(target);
+   	
+   	// Move focus back to Search form
+		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		setModelObject(phenoCollectionVo);
+		onCancel(target);
 	}
 }
