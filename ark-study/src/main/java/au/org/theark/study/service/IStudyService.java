@@ -1,6 +1,5 @@
 package au.org.theark.study.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -9,15 +8,9 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -32,12 +25,6 @@ public interface IStudyService {
 	 * @throws ArkSystemException
 	 */
 	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
-	
-	public List<Study> getStudy(Study study);
-	
-	public List<StudyStatus> getListOfStudyStatus();
-	
-	public Study getStudy(Long id);
 	
 	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved,EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
@@ -72,15 +59,7 @@ public interface IStudyService {
 	
 	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
 	
-	public List<PhoneType> getListOfPhoneType();
-	
 	public void create(Phone phone) throws ArkSystemException;
-	
-	public Collection<TitleType> getTitleType();
-	
-	public Collection<VitalStatus> getVitalStatus();
-	
-	public Collection<GenderType> getGenderType();
 	
 	/**
 	 * A method to create a Subject.
@@ -89,10 +68,5 @@ public interface IStudyService {
 	public void createSubject(SubjectVO subjectVO);
 	
 	public void updateSubject(SubjectVO subjectVO);
-	
-	public Collection<SubjectStatus> getSubjectStatus();
-	
-	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
-	
 
 }
