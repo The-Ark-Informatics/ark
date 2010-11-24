@@ -123,7 +123,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 	private void addComponents()
 	{
-		detailPanelFormContainer.add(idTxtFld);
+		detailPanelFormContainer.add(idTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(nameTxtFld);
 		detailPanelFormContainer.add(descriptionTxtAreaFld);
 		detailPanelFormContainer.add(statusDdc);
