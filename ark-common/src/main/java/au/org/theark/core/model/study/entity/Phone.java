@@ -3,9 +3,12 @@ package au.org.theark.core.model.study.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 /**
@@ -46,6 +49,8 @@ public class Phone implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="phone_generator", sequenceName="PHONE_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "phone_generator")
 	@Column(name = "PHONE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getPhoneKey() {
 		return this.phoneKey;
