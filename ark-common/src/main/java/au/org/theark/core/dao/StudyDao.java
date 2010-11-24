@@ -9,7 +9,6 @@ package au.org.theark.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -246,7 +245,9 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 					
 					subject.setStudy((Study)objects[3]);
 					
-					
+					for (Phone phone : person.getPhones()) {
+						subject.getPhoneList().add(phone);
+					}
 				
 				}
 				
