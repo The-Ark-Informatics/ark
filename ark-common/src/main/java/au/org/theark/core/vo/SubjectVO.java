@@ -9,7 +9,6 @@ package au.org.theark.core.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.EmailAccount;
@@ -34,15 +33,17 @@ public class SubjectVO implements Serializable{
 	protected EmailAccount emailAccount;
 	protected Study study;
 	protected Long linkSubjectStudyId;
-	protected Collection<SubjectVO> subjectList;
 	protected SubjectStatus subjectStatus;
-	
+	protected String subjectUID;
+
+	protected Collection<SubjectVO> subjectList;
+
 	/** A List of phone numbers linked to this person/subject*/
-	protected List<Phone> phoneList;
+	protected Collection<Phone> phoneList;
 	/** A List of Address linked to this person/subject*/
-	protected List<Address> addressList;
+	protected Collection<Address> addressList;
 	/** A List of Email account linked to this person/subject*/
-	protected List<EmailAccount> emailAccountList;
+	protected Collection<EmailAccount> emailAccountList;
 	
 	/**
 	 * Constructor
@@ -90,27 +91,27 @@ public class SubjectVO implements Serializable{
 		this.emailAccount = emailAccount;
 	}
 
-	public List<Phone> getPhoneList() {
+	public Collection<Phone> getPhoneList() {
 		return phoneList;
 	}
 
-	public void setPhoneList(List<Phone> phoneList) {
+	public void setPhoneList(Collection<Phone> phoneList) {
 		this.phoneList = phoneList;
 	}
 
-	public List<Address> getAddressList() {
+	public Collection<Address> getAddressList() {
 		return addressList;
 	}
 
-	public void setAddressList(List<Address> addressList) {
+	public void setAddressList(Collection<Address> addressList) {
 		this.addressList = addressList;
 	}
 
-	public List<EmailAccount> getEmailAccountList() {
+	public Collection<EmailAccount> getEmailAccountList() {
 		return emailAccountList;
 	}
 
-	public void setEmailAccountList(List<EmailAccount> emailAccountList) {
+	public void setEmailAccountList(Collection<EmailAccount> emailAccountList) {
 		this.emailAccountList = emailAccountList;
 	}
 
@@ -155,6 +156,13 @@ public class SubjectVO implements Serializable{
 		this.linkSubjectStudyId = linkSubjectStudyId;
 	}
 
+	public String getSubjectUID() {
+		return subjectUID;
+	}
+
+	public void setSubjectUID(String subjectUID) {
+		this.subjectUID = subjectUID;
+	}
 
 
 }
