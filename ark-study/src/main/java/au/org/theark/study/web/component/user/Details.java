@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
@@ -41,10 +42,10 @@ public class Details extends Panel{
 
 	@SpringBean( name = "userService")
 	private IUserService userService;
-	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
 
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	private Search searchPanel;
 	private UserForm userForm;
 	private AppRoleAccordion appRoleAccordion;
@@ -217,7 +218,7 @@ public class Details extends Panel{
 			mapToSystemValues(arkUserVO);
 			Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			if(sessionStudyId != null){
-				Study study = studyService.getStudy(sessionStudyId);
+				Study study = iArkCommonService.getStudy(sessionStudyId);
 				StudyVO studyVO = new StudyVO();
 				studyVO.setStudyName(study.getName());
 				studyVO.setModules(arkUserVO.getModules());

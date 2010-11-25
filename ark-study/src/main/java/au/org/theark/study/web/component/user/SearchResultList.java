@@ -21,11 +21,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyVO;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.user.form.ContainerForm;
@@ -47,8 +47,8 @@ public class SearchResultList extends Panel{
 	@SpringBean( name = "userService")
 	private transient IUserService userService;
 	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	/**
 	 * Current constructor
@@ -213,7 +213,7 @@ public class SearchResultList extends Panel{
 					//Rebuild the accordion and attach it to the Form
 					try {
 						//Lookup this study
-						Study study = studyService.getStudy(sessionStudyId);
+						Study study = iArkCommonService.getStudy(sessionStudyId);
 						StudyVO studyVO = new StudyVO();
 						studyVO.setStudyName(study.getName());
 						arkUserVo.setStudyVO(studyVO);
