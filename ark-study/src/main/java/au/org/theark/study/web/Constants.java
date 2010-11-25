@@ -32,15 +32,18 @@ public class Constants {
 	public static final String SEARCH="search";
 	public static final String NEW="new";
 	public static final String RESET="reset";
+	public static final String ADD_PHONE="addPhone";
 	public static final int MODE_NEW = 1;
 	public static final int MODE_EDIT =2;
 	public static final int MODE_READ =3;
 	
 	/* Person */
+	
 	public static final String PERSON_PREFERRED_NAME="person.preferredName";
 	public static final String PERSON_VITAL_STATUS ="person.vitalStatus";
 	public static final String PERSON_KEY="personKey";
 	public static final String PERSON_PERSON_KEY="person.personKey";
+	public static final String SUBJECT_UID="subjectUID";
 	
 	public static final String PERSON_FIRST_NAME = "person.firstName";
 	public static final String PERSON_MIDDLE_NAME = "person.middleName";
