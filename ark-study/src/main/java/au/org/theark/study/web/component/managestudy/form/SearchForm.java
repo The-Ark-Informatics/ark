@@ -46,6 +46,8 @@ public class SearchForm extends Form<StudyModelVO>{
 		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
 		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_SEARCH_DOA);
+		dateOfApplicationDp.setChangeMonth(true);
+		dateOfApplicationDp.setChangeYear(true);
 		principalContactTxtFld = new TextField<String>(Constants.STUDY_SEARCH_CONTACT);
 		this.studyStatusList = statusList;
 		
