@@ -1,6 +1,5 @@
 package au.org.theark.study.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -19,15 +18,10 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.model.study.entity.TitleType;
-import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -114,10 +108,6 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	
-	public Study getStudy(Long id){
-		return studyDao.getStudy(id);
-	}
-	
 	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException{
 		
 		return iLdapUserDao.getModulesLinkedToStudy(studyNameCN);
@@ -172,36 +162,13 @@ public class StudyServiceImpl implements IStudyService{
 		//Add audit log
 	}
 	
-	public List<PhoneType> getListOfPhoneType(){
-		return studyDao.getListOfPhoneType();
-	}
-	
 	public void create(Phone phone) throws ArkSystemException{
 		
 	}
 	
-	public Collection<TitleType> getTitleType(){
-		return studyDao.getTitleType();
-	}
-	
-	public Collection<VitalStatus> getVitalStatus(){
-		return studyDao.getVitalStatus();
-	}
-	
-	public Collection<GenderType> getGenderType(){
-		return studyDao.getGenderType();
-	}
-	
-	public Collection<SubjectStatus> getSubjectStatus(){
-		return studyDao.getSubjectStatus();
-	}
 	
 	public void createSubject(SubjectVO subjectVO){
 		studyDao.createSubject(subjectVO);
-	}
-	
-	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
-		return studyDao.getSubject(subjectVO);
 	}
 	
 	public void updateSubject(SubjectVO subjectVO){
