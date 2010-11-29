@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -17,19 +18,27 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.Details;
+import au.org.theark.study.web.component.subject.PhoneList;
+import au.org.theark.study.web.component.subject.PhoneListContainer;
 
 /**
  * @author nivedann
@@ -40,17 +49,28 @@ public class DetailsForm extends Form<SubjectVO>{
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	private WebMarkupContainer  resultListContainer;
 	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer searchSubjectPanelContainer;
+	private WebMarkupContainer markupContainerPhoneList;
+	private WebMarkupContainer phoneDetailPanelContainer;
 	
 	private ContainerForm subjectContainerForm;
 	
+	private PhoneListContainer phoneListContainer;
+	private PhoneList phoneListPanel;
+	private IModel<Object> iModel;
+	private PageableListView<Phone> pageableListView;
 	
 	private TextField<String> subjectIdTxtFld;
 	private TextField<String> firstNameTxtFld;
 	private TextField<String> middleNameTxtFld;
 	private TextField<String> lastNameTxtFld;
 	private TextField<String> preferredNameTxtFld;
+	private TextField<String> subjectUIDTxtFld;
 	
 	private DatePicker<Date> dateOfBirth;
 	
@@ -65,7 +85,10 @@ public class DetailsForm extends Form<SubjectVO>{
 	private AjaxButton deleteButton;
 	private AjaxButton saveButton;
 	private AjaxButton cancelButton;
+	private FeedbackPanel detailFeedbackPanel;
 	
+	private AjaxButton addPhoneButton;
+	private Study study;
 	/**
 	 * @param id
 	 */
@@ -73,13 +96,15 @@ public class DetailsForm extends Form<SubjectVO>{
 						Details detailsPanel, 
 						WebMarkupContainer listContainer,
 						WebMarkupContainer detailsContainer,
-						ContainerForm containerForm) {
+						WebMarkupContainer searchPanelContainer,
+						ContainerForm containerForm, 
+						FeedbackPanel feedbackPanel) {
 		super(id);
 		this.subjectContainerForm = containerForm;
 		this.resultListContainer = listContainer;
 		this.detailPanelContainer = detailsContainer;
-		this.subjectContainerForm = containerForm;
-		
+		this.detailFeedbackPanel = feedbackPanel;
+		this.searchSubjectPanelContainer = searchPanelContainer;
 		
 		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
@@ -87,6 +112,20 @@ public class DetailsForm extends Form<SubjectVO>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				
+				SubjectVO subjectVO = new SubjectVO();
+				
+				subjectContainerForm.setModelObject(subjectVO);
+				searchSubjectPanelContainer.setVisible(true);
+				detailPanelContainer.setVisible(false);
+				resultListContainer.setVisible(false);
+				phoneDetailPanelContainer.setVisible(false);
+				markupContainerPhoneList.setVisible(true);
+				
+				target.addComponent(searchSubjectPanelContainer);
+				target.addComponent(detailPanelContainer);
+				target.addComponent(detailFeedbackPanel);
+				target.addComponent(phoneDetailPanelContainer);
+				target.addComponent(markupContainerPhoneList);
 				onCancel(target);
 			}
 		};
@@ -95,8 +134,59 @@ public class DetailsForm extends Form<SubjectVO>{
 		{
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(subjectContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
+				
+				Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(studyId == null){
+					//No study in context
+					this.error("There is no study in Context. Please select a study to manage a subject.");
+				}
+				else{
+					study = iArkCommonService.getStudy(studyId);
+					if(subjectContainerForm.getModelObject().getPerson().getPersonKey() == null || subjectContainerForm.getModelObject().getPerson().getPersonKey() == 0){
+						subjectContainerForm.getModelObject().setStudy(study);
+						studyService.createSubject(subjectContainerForm.getModelObject());
+						this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+					}else{
+						studyService.updateSubject(subjectContainerForm.getModelObject());
+						
+						Collection<SubjectVO> collectionOfSubject = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
+						for (SubjectVO subjectVO2 : collectionOfSubject) {
+							subjectContainerForm.setModelObject(subjectVO2);
+							break;
+						}
+						
+						java.util.Collection<Phone> phoneList = new java.util.ArrayList<Phone>();
+						for (Phone phone : subjectContainerForm.getModelObject().getPerson().getPhones()) {
+							phoneList.add(phone);
+						}
+						pageableListView.removeAll();
+						phoneListContainer.setVisible(true);
+						detailPanelContainer.setVisible(false);
+						target.addComponent(phoneListContainer);
+						target.addComponent(detailPanelContainer);
+						subjectContainerForm.getModelObject().setPhoneList(phoneList);
+						//containerForm.setModelObject(subjectVO);
+						//Get the subject back from backend
+						
+						this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+					}
+				}
+				target.addComponent(detailFeedbackPanel);
+				
+				//onSave(subjectContainerForm.getModelObject(), target);
+			}
+			
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processErrors(target);
+			}
+		};
+		
+		addPhoneButton = new AjaxButton(Constants.ADD_PHONE, new StringResourceModel("addPhoneKey", this, null))
+		{
+
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onAddPhone(subjectContainerForm.getModelObject(), target);
+				//target.addComponent(detailPanelContainer);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
@@ -108,34 +198,53 @@ public class DetailsForm extends Form<SubjectVO>{
 	
 	public void initialiseForm(){
 		
+		/* Contains the List of Phone Numbers */
+		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
+		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
+		markupContainerPhoneList.setVisible(true);
+		
+		phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
+		phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
+		phoneDetailPanelContainer.setVisible(false);
+		
+		
 		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
+		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		
 		dateOfBirth = new DatePicker<Date>(Constants.PERSON_DOB);
+		dateOfBirth.setChangeMonth(true);
+		dateOfBirth.setChangeYear(true);
 		
 		//Initialise Drop Down Choices 
 		//Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
-		Collection<TitleType> titleTypeList = studyService.getTitleType();
+		Collection<TitleType> titleTypeList = iArkCommonService.getTitleType();
 		ChoiceRenderer<TitleType> defaultChoiceRenderer = new ChoiceRenderer<TitleType>(Constants.NAME,Constants.ID);
 		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE,(List)titleTypeList,defaultChoiceRenderer);
 		
-		Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
+		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.STATUS_NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
 		
-		Collection<GenderType> genderTypeList = studyService.getGenderType(); 
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
 		
-		Collection<SubjectStatus> subjectStatusList = studyService.getSubjectStatus();
+		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
+		
+		//Add the PhoneListContainer
+		phoneListContainer = new PhoneListContainer("phoneListContainer", subjectContainerForm, detailFeedbackPanel,markupContainerPhoneList,phoneDetailPanelContainer);
+		
 		
 		attachValidators();
 		addComponents();
 	}
+	
 	
 	private void attachValidators(){
 		
@@ -148,6 +257,7 @@ public class DetailsForm extends Form<SubjectVO>{
 		dateOfBirth.setRequired(true);
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
+		subjectUIDTxtFld.setRequired(true);
 		
 	}
 	
@@ -163,9 +273,16 @@ public class DetailsForm extends Form<SubjectVO>{
 		add(vitalStatusDdc);
 		add(genderTypeDdc);
 		add(subjectStatusDdc);
+		add(subjectUIDTxtFld);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
+		
+		//Add the Phone Management Container Panel into this form
+		add(phoneListContainer);
+		
 	}
+	
+
 	
 	protected void onSave(SubjectVO subjectVo, AjaxRequestTarget target){
 		
@@ -175,9 +292,18 @@ public class DetailsForm extends Form<SubjectVO>{
 		
 	}
 	
+	protected  void onAddPhone(SubjectVO subjectVo, AjaxRequestTarget target){
+		//Do something here, phoneDetailPanelContainer visible
+		phoneDetailPanelContainer.setVisible(true);
+		target.addComponent(phoneDetailPanelContainer);
+		System.out.println("onAddPhone invoked");
+	}
+
 	protected void processErrors(AjaxRequestTarget target){
 		
 	}
+	
+	
 
 	public TextField<String> getSubjectIdTxtFld() {
 		return subjectIdTxtFld;
