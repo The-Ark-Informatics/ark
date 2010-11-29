@@ -1,12 +1,11 @@
 package au.org.theark.study.model.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -86,8 +85,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			}
 
 		}
-		
-		
 
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		List<Study> studyList  = studyCriteria.list();
@@ -211,27 +208,51 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void createSubject(SubjectVO subjectVO){
-	
+		
+		//Add Business Validations here as well apart from UI validation
 		Session session = getSession();
 		Person person  = subjectVO.getPerson();
+		
+		
+		if(subjectVO.getPhoneList() != null && subjectVO.getPhoneList().size() > 0){
+			Collection<Phone> phonesList = subjectVO.getPhoneList();
+			for (Phone phone : phonesList) {
+				phone.setPerson(person);
+				person.getPhones().add(phone);
+			}
+		}
 		//Add the person
 		session.save(person);
+		
 		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 		linkSubjectStudy.setPerson(person);
 		linkSubjectStudy.setStudy(subjectVO.getStudy());
 		linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
+		linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
 		session.save(linkSubjectStudy);
 		
 	}
 	
+	
+ 
 	public void updateSubject(SubjectVO subjectVO){
 		
 		try{
 			
 			Session session = getSession();
 			
-			//Updat the Person Details
+			//Update the Person Details
 			Person person  = subjectVO.getPerson();
+			
+			if(subjectVO.getPhoneList() != null && subjectVO.getPhoneList().size() > 0){
+				Collection<Phone> phonesList = subjectVO.getPhoneList();
+				for (Phone phone : phonesList) {
+					phone.setPerson(person);
+					person.getPhones().add(phone);
+				}
+			}
+			
+			
 			session.update(person);//Personal Details of Subject updated
 			
 			//Get the LinkSubjectStudy reference based on the id
@@ -259,91 +280,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	}
 	
-	/**
-	 * Look up the Link Subject Study for subjects linked to a study
-	 * @param subjectVO
-	 * @return
-	 */
-	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
-
-		
-		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study");
-		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
-		hqlString.append(" where linkSubStudy.study.studyKey = ");
-		hqlString.append( subjectVO.getStudy().getStudyKey());
-		
-		//TODO This should be the Subject UID or ID, this field will need to be in LinkSubjectStudy table
-		if(subjectVO.getPerson().getPersonKey() != null){
-			hqlString.append(" and linkSubStudy.person.personKey = ");
-			hqlString.append( subjectVO.getPerson().getPersonKey());
-		}
-		
-		if(subjectVO.getPerson().getFirstName() != null){
-			hqlString.append(" and linkSubStudy.person.firstName = ");
-			hqlString.append("\'");
-			hqlString.append(subjectVO.getPerson().getFirstName().trim());
-			hqlString.append("\'");
-		}
-		
-		if(subjectVO.getPerson().getMiddleName() != null){
-			hqlString.append(" and linkSubStudy.person.middleName = ");
-			hqlString.append("\'");
-			hqlString.append(subjectVO.getPerson().getMiddleName().trim());
-			hqlString.append("\'");
-		}
-							
-		if(subjectVO.getPerson().getLastName() != null){
-			hqlString.append(" and linkSubStudy.person.lastName = ");
-			hqlString.append("\'");
-			hqlString.append(subjectVO.getPerson().getLastName().trim());
-			hqlString.append("\'");
-		}
-		
-		if(subjectVO.getPerson().getGenderType() != null){
-			hqlString.append(" and linkSubStudy.person.genderType.id = ");
-			hqlString.append(subjectVO.getPerson().getGenderType().getId());
-		}
-		
-		if(subjectVO.getPerson().getVitalStatus() != null){
-			hqlString.append(" and linkSubStudy.person.vitalStatus.id = ");
-			hqlString.append(subjectVO.getPerson().getVitalStatus().getId());
-		}
-		
-		if(subjectVO.getSubjectStatus() != null){
-			hqlString.append(" and linkSubStudy.subjectStatus.subjectStatusKey = ");
-			hqlString.append(subjectVO.getSubjectStatus().getSubjectStatusKey());
-		}
-		
-		Query query = getSession().createQuery(hqlString.toString());
-		List<Object[]> list  = query.list();
-		
-		Collection<SubjectVO> subjectList = new ArrayList<SubjectVO>();
-		if(list.size() > 0){
-			log.info("Number of rows fetched " + list.size());
-			
-			for (Object[] objects : list) {
-				if(objects.length > 0 && objects.length == 4){
-					
-					SubjectVO subject = new SubjectVO();
-					Person person =(Person) objects[0];
-					subject.setPerson(person);
-					
-					SubjectStatus status = (SubjectStatus) objects[1];
-					subject.setSubjectStatus(status);
-					
-					subject.setLinkSubjectStudyId((Long)objects[2]);
-					subjectList.add(subject);
-					
-					subject.setStudy((Study)objects[3]);
-				}
-				
-			}
-			log.info("Size : " + subjectList.size());
-		}
-
-		return subjectList;
-	}
 	
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
 		
