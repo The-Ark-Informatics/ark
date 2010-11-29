@@ -176,7 +176,7 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 
 		
 		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study");
+		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study, linkSubStudy.subjectUID");
 		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
 		hqlString.append(" where linkSubStudy.study.studyKey = ");
 		hqlString.append( subjectVO.getStudy().getStudyKey());
@@ -227,11 +227,12 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		List<Object[]> list  = query.list();
 		
 		Collection<SubjectVO> subjectList = new ArrayList<SubjectVO>();
+		
 		if(list.size() > 0){
 			log.info("Number of rows fetched " + list.size());
-			
+			//The Length is determined by the number of select columns specified in the hqlString above
 			for (Object[] objects : list) {
-				if(objects.length > 0 && objects.length == 4){
+				if(objects.length > 0 && objects.length == 5){
 					
 					SubjectVO subject = new SubjectVO();
 					Person person =(Person) objects[0];
@@ -244,6 +245,8 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 					subjectList.add(subject);
 					
 					subject.setStudy((Study)objects[3]);
+					
+					subject.setSubjectUID((String)objects[4]);
 					
 					for (Phone phone : person.getPhones()) {
 						subject.getPhoneList().add(phone);
