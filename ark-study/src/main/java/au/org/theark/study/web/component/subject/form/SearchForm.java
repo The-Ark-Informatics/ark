@@ -29,6 +29,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -42,6 +43,10 @@ public class SearchForm extends Form<SubjectVO>{
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+
 	
 	private TextField<String> subjectIdTxtFld;
 	private TextField<String> firstNameTxtFld;
@@ -125,7 +130,7 @@ public class SearchForm extends Form<SubjectVO>{
 		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
 		
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
-		Collection<VitalStatus> vitalStatusList = studyService.getVitalStatus();
+		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.STATUS_NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS,vitalStatusPm,(List)vitalStatusList,vitalStatusRenderer);
 	}
@@ -134,7 +139,7 @@ public class SearchForm extends Form<SubjectVO>{
 		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(subjectCpm,Constants.SUBJECT_STATUS);
-		Collection<SubjectStatus> subjectStatusList = studyService.getSubjectStatus();
+		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
 	}
@@ -144,7 +149,7 @@ public class SearchForm extends Form<SubjectVO>{
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,Constants.GENDER_TYPE);
-		Collection<GenderType> genderTypeList = studyService.getGenderType(); 
+		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME,Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE,genderTypePm, (List)genderTypeList,genderTypeRenderer);
 	}
