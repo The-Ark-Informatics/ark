@@ -17,7 +17,7 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.study.web.component.subject.form.ContainerForm;
+import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
 
 /**
  * @author nivedann
@@ -26,22 +26,22 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
 public class PhoneList extends Panel{
 
 	
-	private ContainerForm subjectContainerForm;
+	private PhoneContainerForm phoneContainerForm;
 	private WebMarkupContainer phoneDetailPanelContainer;
 	private WebMarkupContainer phoneListPanelContainer;
 	/**
 	 * @param id
 	 */
-	public PhoneList(String id,ContainerForm containerForm,WebMarkupContainer listContainer,WebMarkupContainer detailPanelContainer) {
+	public PhoneList(String id,PhoneContainerForm containerForm,WebMarkupContainer listContainer,WebMarkupContainer detailPanelContainer) {
 		super(id);
-		this.subjectContainerForm = containerForm;
+		this.phoneContainerForm = containerForm;
 		this.phoneListPanelContainer = listContainer;
 		this.phoneDetailPanelContainer = detailPanelContainer;
 	}
 	
 	public PageableListView<Phone> buildPageableListView(IModel iModel){
 		
-		PageableListView<Phone> phonePageableListView = new PageableListView<Phone>("phoneList",iModel,5) {
+		PageableListView<Phone> phonePageableListView = new PageableListView<Phone>("phoneNumberList",iModel,5) {
 
 			@Override
 			protected void populateItem(ListItem<Phone> item) {
@@ -49,21 +49,22 @@ public class PhoneList extends Panel{
 				Phone phone = item.getModelObject();
 				
 				if(phone.getPhoneKey() != null){
-					item.add(new Label("phone.phoneKey",phone.getPhoneKey().toString()));
+					item.add(new Label("phoneKey",phone.getPhoneKey().toString()));
 				}else{
-					item.add(new Label("phone.phoneKey",""));
+					item.add(new Label("phoneKey",""));
 				}
 				
 				if(phone.getAreaCode() != null){
-					item.add(new Label("phone.areaCode",phone.getAreaCode().toString()));	
+					item.add(new Label("areaCode",phone.getAreaCode().toString()));	
 				}else{
-					item.add(new Label("phone.areaCode",""));
+					item.add(new Label("areaCode",""));
 				}
 				item.add(buildLink(phone));
-				//item.add(new Label("phone.phoneNumber",phone.getPhoneNumber().toString()));
-				
-				//TODO get the Name given the PhoneType Id
-				//item.add(new Label("phone.phoneType",phone.getPhoneNumber().toString()));
+				if(phone.getPhoneType() != null && phone.getPhoneType().getName() != null){
+					item.add(new Label("phoneType.name",phone.getPhoneType().getName()));	
+				}else{
+					item.add(new Label("phoneType.name",""));
+				}				
 				
 			}
 		};
@@ -72,10 +73,10 @@ public class PhoneList extends Panel{
 	
 	private AjaxLink buildLink(final Phone phone){
 		
-		AjaxLink link = new AjaxLink("phone.number") {
+		AjaxLink link = new AjaxLink("phoneNumber") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				SubjectVO subjectVO = subjectContainerForm.getModelObject();
+				SubjectVO subjectVO = phoneContainerForm.getModelObject();
 				subjectVO.setPhone(phone);
 				phoneDetailPanelContainer.setVisible(true);
 				phoneListPanelContainer.setVisible(false);
@@ -85,6 +86,11 @@ public class PhoneList extends Panel{
 				
 			}
 		};
+		
+		//Add the label for the link
+		Label phoneNumberLabelLink = new Label("phonerNumberLblLink", phone.getPhoneNumber().toString());
+		link.add(phoneNumberLabelLink);
+		
 		return link;
 	}
 
