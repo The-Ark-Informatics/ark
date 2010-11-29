@@ -15,10 +15,14 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -29,44 +33,58 @@ import au.org.theark.study.web.Constants;
  */
 public class PhoneForm extends Form{
 	
-	private ContainerForm phoneContainerForm;
+	private PhoneContainerForm phoneContainerForm;
 	
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private TextField<String> phoneIdTxtFld;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
 	
-	private WebMarkupContainer listContainer;
+	private WebMarkupContainer phoneListContainer;
+	private WebMarkupContainer detailPanelContainer;
 	
 	private AjaxButton deleteButton;
 	private AjaxButton saveButton;
 	private AjaxButton cancelButton;
 	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
+	private PageableListView<Phone> pageableListView;
+	private FeedbackPanel feedBackPanel;
 	/**
 	 * @param id
 	 */
-	public PhoneForm(String id,ContainerForm containerForm, WebMarkupContainer phoneListContainer) {
+	public PhoneForm(	String id,
+						PhoneContainerForm containerForm, 
+						PageableListView<Phone> pageableListView, 
+						WebMarkupContainer phoneListContainer,
+						WebMarkupContainer detailPanelContainer,
+						FeedbackPanel feedbackPanel){
 		super(id);
 		this.phoneContainerForm = containerForm;
-		this.listContainer  = phoneListContainer;
-		
+		this.pageableListView = pageableListView;
+		this.phoneListContainer = phoneListContainer;
+		this.detailPanelContainer = detailPanelContainer;
+		this.feedBackPanel = feedbackPanel;
 		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onPhoneAddCancel(phoneContainerForm.getModelObject(), target);
 				
 			}
 		};
 		
-		saveButton = new AjaxButton(Constants.SAVE,  new StringResourceModel("cancelKey", this, null))
+		saveButton = new AjaxButton(Constants.SAVE,  new StringResourceModel("saveKey", this, null))
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(phoneContainerForm.getModelObject(), target);
+				onPhoneAdd(phoneContainerForm.getModelObject(), target);	
 				//Hide the Detail Panel for Phone and make the List display with the new result
 			}
 			
@@ -76,7 +94,7 @@ public class PhoneForm extends Form{
 			}
 		};
 		
-		deleteButton = new AjaxButton(Constants.DELETE,  new StringResourceModel("cancelKey", this, null))
+		deleteButton = new AjaxButton(Constants.DELETE,  new StringResourceModel("deleteKey", this, null))
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -87,12 +105,35 @@ public class PhoneForm extends Form{
 		
 	}
 	
-	protected void onSave(SubjectVO subjectVO, AjaxRequestTarget target){
+	protected void onPhoneAddCancel(SubjectVO subjectVO, AjaxRequestTarget target){
+		phoneContainerForm.getModelObject().setPhone(new Phone());
+		phoneListContainer.setVisible(true);
+		detailPanelContainer.setVisible(false);
+		target.addComponent(phoneListContainer);
+		target.addComponent(detailPanelContainer);
+	}
+	
+	protected void onPhoneAdd(SubjectVO subjectVO, AjaxRequestTarget target){
+		Phone phone = subjectVO.getPhone();
+		if(phone.getPhoneKey() == null){
+			subjectVO.getPhoneList().add(phone);	
+		}
+		pageableListView.removeAll();
+		phoneListContainer.setVisible(true);
+		detailPanelContainer.setVisible(false);
+		target.addComponent(phoneListContainer);
+		target.addComponent(detailPanelContainer);
+		//Add the item into a list
+		//Close the the detail panel
+		//Refresh the List view
+	}
+	
+	protected void onPhoneModify(SubjectVO subjectVO, AjaxRequestTarget target){
 		
 	}
 	
 	protected void processFeedback(AjaxRequestTarget target){
-		
+		target.addComponent(feedBackPanel);
 	}
 	
 	public void initialiseForm(){
@@ -102,24 +143,26 @@ public class PhoneForm extends Form{
 		phoneNumberTxtFld = new TextField<String>("phone.phoneNumber");
 
 		//Initalise the dropdown choice with a list
-		List<PhoneType> phoneTypeList = studyService.getListOfPhoneType();
+		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.PHONE_TYPE_ID);
 		phoneTypeChoice = new DropDownChoice("phone.phoneType",phoneTypeList,defaultChoiceRenderer);
+		addComponents();
 	}
 	
 	private void addComponents(){
 		
-		add(phoneIdTxtFld);
+		add(phoneIdTxtFld.setEnabled(false));
 		add(areaCodeTxtFld);
 		add(phoneNumberTxtFld);
 		add(phoneTypeChoice);
+		add(saveButton);
+		add(cancelButton);
+		add(deleteButton);
 	}
 	
 	private void attachValidators(){
 		
 	}
-	private void decorateComponents(){
-		
-	}
+
 
 }
