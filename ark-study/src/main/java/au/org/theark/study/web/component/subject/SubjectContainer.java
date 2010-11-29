@@ -20,6 +20,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -46,6 +47,10 @@ public class SubjectContainer extends Panel{
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
+	
 	private void initialiseMarkupContainers(){
 		/* The markup container for search panel */
 		searchWebMarkupContainer = new WebMarkupContainer("searchContainer");
@@ -67,8 +72,8 @@ public class SubjectContainer extends Panel{
 		
 		if(sessionStudyId != null && sessionStudyId > 0){
 			
-			containerForm.getModelObject().setStudy(studyService.getStudy(sessionStudyId));
-			list = studyService.getSubject(containerForm.getModelObject());	
+			containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
+			list = iArkCommonService.getSubject(containerForm.getModelObject());	
 		}
 		containerForm.getModelObject().setSubjectList(list);
 		
