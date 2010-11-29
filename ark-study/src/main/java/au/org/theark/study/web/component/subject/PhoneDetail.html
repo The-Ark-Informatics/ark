@@ -3,13 +3,48 @@
 	<form wicket:id="phoneForm">
 		
 		<div id="detailsPanelBorder">
+
+
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 -->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="phoneID">
+						<wicket:message	key="phoneID">Phone ID:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="phone.phoneKey" type="text" /> 
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="areaCode"><wicket:message	key="areaCode">Area Code:</wicket:message></label>
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="phone.areaCode" type="text" />
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+
 		
 			<div id="panelContentLeft">&nbsp;</div>
 			<!--  Row 1 -->
 			<div id="fldLabel">
 				<div class="label">
 					<label for="phoneNumber">
-						<wicket:message	key="phone.number">Number:</wicket:message>
+						<wicket:message	key="phoneNumber">Number:</wicket:message>
 					</label>
 				</div>
 			</div>
@@ -23,7 +58,7 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="phoneType"><wicket:message	key="phone.type">Phone Type:</wicket:message></label>
+					<label for="phoneType"><wicket:message	key="phoneType">Phone Type:</wicket:message></label>
 				</div>
 			</div>
 			
