@@ -6,6 +6,8 @@
  */
 package au.org.theark.study.web.component.subject;
 
+import java.util.Collection;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -16,7 +18,10 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -33,6 +38,10 @@ public class SearchResults extends Panel{
 	
 	private ContainerForm subjectContainerForm;
 	private Details detailsPanel;
+	
+
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	/**
 	 * @param id
@@ -60,10 +69,7 @@ public class SearchResults extends Panel{
 			protected void populateItem(final ListItem<SubjectVO> item) {
 				// TODO Auto-generated method stub
 				SubjectVO subject = item.getModelObject();
-				
 				item.add(buildLink(subject));
-				
-				
 				StringBuffer sb = new StringBuffer();
 				sb.append(subject.getPerson().getFirstName());
 				sb.append(" ");
@@ -108,15 +114,31 @@ public class SearchResults extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 				
 				SubjectVO subjectVO = subjectContainerForm.getModelObject();
-				subjectVO.setStudy(subject.getStudy());
-				subjectVO.setPerson(subject.getPerson());//The selected person on the containerForm's Model
-				subjectVO.setSubjectStatus(subject.getSubjectStatus());
-				subjectVO.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
+				
+				SubjectVO subjectFromBackend = new SubjectVO();
+				
+				//For the selected subject, get the details from back-end to make sure the associations can be accessed
+				//If this is not done we get Lazy
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
+				for (SubjectVO subjectVO2 : subjects) {
+					subjectFromBackend = subjectVO2;
+					break;
+				}
+				subjectVO.setStudy(subjectFromBackend.getStudy());
+				subjectVO.setPerson(subjectFromBackend.getPerson());//The selected person on the containerForm's Model
+				subjectVO.setSubjectStatus(subjectFromBackend.getSubjectStatus());
+				subjectVO.setLinkSubjectStudyId(subjectFromBackend.getLinkSubjectStudyId());
+				subjectVO.setSubjectUID(subjectFromBackend.getSubjectUID());
+				java.util.Collection<Phone> phoneList = new java.util.ArrayList<Phone>();
+				for (Phone phone : subjectFromBackend.getPerson().getPhones()) {
+					phoneList.add(phone);
+				}
+				subjectVO.setPhoneList(phoneList);
+				//Select the subject from back-end
 				
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-				//TODO detailPanel.getDetailsForm().getComponentIdTxtFld().setEnabled(false);
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
 				target.addComponent(searchPanelContainer);

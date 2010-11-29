@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -39,6 +40,10 @@ public class Search extends Panel{
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+
 	
 	/**
 	 * @param id
@@ -79,10 +84,10 @@ public class Search extends Panel{
 			protected  void onSearch(AjaxRequestTarget target){
 				
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().setStudy(studyService.getStudy(sessionStudyId));
+				containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
 				//Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(fbPanel);
-				Collection<SubjectVO> subjects = studyService.getSubject(containerForm.getModelObject());
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(containerForm.getModelObject());
 				
 				if(subjects != null && subjects.size() == 0){
 					this.info("There are no subjects with the specified criteria.");
