@@ -138,7 +138,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 				// Make the details panel visible
 				if (searchEventHandler != null) {
 					searchEventHandler.onNew(target);
-					preProcessDetailPanel(target);		//TODO: Moved from the onNew() implementation
 				} else {
 					onNew(target);	//backwards compatibility
 				}
