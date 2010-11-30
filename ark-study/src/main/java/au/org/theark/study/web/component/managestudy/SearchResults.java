@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -76,7 +77,7 @@ public class SearchResults extends Panel{
 					item.add(new Label("contact", ""));//the ID here must match the ones in mark-up
 				}
 				
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);//TODO Change this to DATE_FORMAT_AU
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY, Locale.getDefault());
 				String dateOfApplication ="";
 				if(study.getDateOfApplication() != null){
 					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());
