@@ -40,7 +40,13 @@ public class Constants {
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID="studyId";
+	
 	public static final String DD_MM_YYYY="dd/mm/yyyy";
+	
+	/*Jquery/Wiquey Date Picker Format */
+	public static final String DATE_PICKER_DD_MM_YY="dd/mm/yy";
+	
+	
 	public static final String SUBJECT_IDENTIFIER="SUBJECTID";
 	public static final String DATE_COLLECTED="DATE_COLLECTED";
 	
