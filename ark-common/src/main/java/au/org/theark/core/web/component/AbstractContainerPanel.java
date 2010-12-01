@@ -1,6 +1,5 @@
 package au.org.theark.core.web.component;
 
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -18,7 +17,17 @@ import org.apache.wicket.model.IModel;
  *
  */
 @SuppressWarnings("serial")
-public abstract class AbstractContainerPanel<T> extends AbstractCRUDPanel {
+public abstract class AbstractContainerPanel<T> extends Panel{
+
+	protected FeedbackPanel feedBackPanel;
+	
+	/*Web Markup Containers */
+	protected WebMarkupContainer searchPanelContainer;
+	protected WebMarkupContainer searchResultPanelContainer;
+	protected WebMarkupContainer detailPanelContainer;
+	protected WebMarkupContainer detailPanelFormContainer;
+	protected WebMarkupContainer viewButtonContainer;
+	protected WebMarkupContainer editButtonContainer;
 
 	protected IModel<Object> iModel;
 	protected CompoundPropertyModel<T> cpModel;
@@ -30,7 +39,38 @@ public abstract class AbstractContainerPanel<T> extends AbstractCRUDPanel {
 		super(id);
 		initialiseMarkupContainers();
 	}
+	
+	
+	public void initialiseMarkupContainers(){
+		
+		searchPanelContainer = new WebMarkupContainer("searchContainer");
+		searchPanelContainer.setOutputMarkupPlaceholderTag(true);
+		
+		detailPanelContainer = new WebMarkupContainer("detailContainer");
+		detailPanelContainer.setOutputMarkupPlaceholderTag(true);
+		detailPanelContainer.setVisible(false);
 
+		//Contains the controls of the details
+		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
+		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
+		detailPanelFormContainer.setEnabled(false);
+		
+		//The wrapper for ResultsList panel that will contain a ListView
+		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
+		searchResultPanelContainer.setOutputMarkupPlaceholderTag(true);
+		searchResultPanelContainer.setVisible(true);
+		
+		/* Defines a Read-Only Mode */
+		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
+		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
+		viewButtonContainer.setVisible(false);
+		
+		/* Defines a edit mode */
+		editButtonContainer = new WebMarkupContainer("editButtonContainer");
+		editButtonContainer.setOutputMarkupPlaceholderTag(true);
+		editButtonContainer.setVisible(false);
+		
+	}
 	
 	protected WebMarkupContainer initialiseFeedBackPanel(){
 		/* Feedback Panel */

@@ -24,8 +24,7 @@ import au.org.theark.core.Constants;
 @SuppressWarnings("serial")
 public abstract class AbstractSearchForm<T> extends Form<T>
 {
-	protected ISearchEventHandler searchEventHandler;
-	
+
 	protected AjaxButton				searchButton;
 	protected AjaxButton				newButton;
 	protected Button					resetButton;
@@ -45,27 +44,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	{
 
 		super(id, cpmModel);
-		this.searchEventHandler = null;
+
 		initialiseForm();
 
 	}
 
-	/**
-	 * Constructor for AbstractSearchForm class (based on AbstractCRUDPanel)
-	 * @param id
-	 * @param cpmModel
-	 * @param searchEventHandler
-	 */
-	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel, 
-								ISearchEventHandler searchEventHandler)
-	{
-
-		super(id, cpmModel);
-		this.searchEventHandler = searchEventHandler;
-		initialiseForm();
-
-	}
-	
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormCompContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer listContainer, FeedbackPanel feedBackPanel)
 	{
@@ -103,10 +86,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				// Make the details panel visible
-				if (searchEventHandler != null)
-					searchEventHandler.onSearch(target);
-				else
-					onSearch(target);	//backwards compatibility
+				onSearch(target);
 			}
 
 			@Override
@@ -136,11 +116,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				// Make the details panel visible
-				if (searchEventHandler != null) {
-					searchEventHandler.onNew(target);
-				} else {
-					onNew(target);	//backwards compatibility
-				}
+				onNew(target);
 			}
 
 			@Override
@@ -160,7 +136,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		add(newButton);
 	}
 
-	//backwards compatibility
 	protected void preProcessDetailPanel(AjaxRequestTarget target)
 	{
 

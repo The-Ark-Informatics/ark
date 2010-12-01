@@ -20,19 +20,17 @@ import au.org.theark.core.Constants;
  * @param <T>
  *
  */
-public abstract class AbstractDetailForm<T> extends Form<T> {
+public abstract class AbstractDetailForm<T> extends Form<T>{
 
 	private static final long serialVersionUID = 1L;
 
-	protected IDetailEventHandler detailEventHandler;
-	
 	protected WebMarkupContainer  resultListContainer;
 	protected WebMarkupContainer detailPanelContainer;
 	protected WebMarkupContainer searchPanelContainer;
 	protected WebMarkupContainer viewButtonContainer;
 	protected WebMarkupContainer editButtonContainer;
 	protected WebMarkupContainer detailPanelFormContainer;
-	protected FeedbackPanel feedBackPanel;
+	protected FeedbackPanel feedBackPanel;;
 	protected Form<T> containerForm;
 	
 	protected AjaxButton saveButton;
@@ -43,7 +41,20 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 	protected ModalWindow selectModalWindow;
 	
+	/**
+	 * Implement this to add all the form components/objects
+	 */
+	protected void addFormComponents(){
+		add(saveButton);
+		add(cancelButton.setDefaultFormProcessing(false));
+	}
+	
 	abstract protected void attachValidators();
+	
+	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target){
+		selectModalWindow.show(target);
+		target.addComponent(selectModalWindow);
+	}
 	
 	abstract protected void onCancel(AjaxRequestTarget target);
 	
@@ -51,9 +62,21 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	
 	abstract protected void processErrors(AjaxRequestTarget target);
 	
-	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
 	
 	
+	
+	protected void onCancelPostProcess(AjaxRequestTarget target){
+		
+		resultListContainer.setVisible(false);
+		detailPanelContainer.setVisible(false);
+		searchPanelContainer.setVisible(true);
+
+		target.addComponent(feedBackPanel);
+		target.addComponent(searchPanelContainer);
+		target.addComponent(detailPanelContainer);
+		target.addComponent(resultListContainer);
+	}
+
 	/**
 	 * Constructor for AbstractDetailForm class
 	 * @param id
@@ -88,54 +111,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		initialiseForm();
 	}
 	
-	/**
-	 * Constructor for AbstractDetailForm class (based on AbstractCRUDPanel)
-	 * @param id
-	 * @param feedBackPanel
-	 * @param containerForm
-	 * @param detailPanelFormContainer 
-	 */
-	public AbstractDetailForm(	String id,
-								Form<T> containerForm,
-								WebMarkupContainer detailPanelFormContainer, 
-								WebMarkupContainer viewButtonContainer,
-								WebMarkupContainer editButtonContainer,
-								IDetailEventHandler detailEventHandler) {
-		super(id);
-		this.containerForm = containerForm;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailEventHandler = detailEventHandler;
-		
-		initialiseForm();
-	}
-	
-	/**
-	 * Implement this to add all the form components/objects
-	 */
-	protected void addFormComponents(){
-		add(saveButton);
-		add(cancelButton.setDefaultFormProcessing(false));
-	}	
-	
-	protected void onCancelPostProcess(AjaxRequestTarget target){
-		
-		resultListContainer.setVisible(false);
-		detailPanelContainer.setVisible(false);
-		searchPanelContainer.setVisible(true);
-
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
-	}
-
-	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target){
-		selectModalWindow.show(target);
-		target.addComponent(selectModalWindow);
-	}
-	
 	@SuppressWarnings("serial")
 	protected void initialiseForm(){
 		
@@ -145,35 +120,23 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				
-				if (detailEventHandler != null) {
-					detailEventHandler.onCancel(target);
-				} else {	// backwards compatibility
-					resultListContainer.setVisible(false); //Hide the Search Result List Panel via the WebMarkupContainer
-					detailPanelContainer.setVisible(false); //Hide the Detail Panle via the WebMarkupContainer
-					target.addComponent(detailPanelContainer);//Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-					target.addComponent(resultListContainer);//Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
-					onCancel(target);//Invoke a onCancel() that the sub-class can use to build anything more specific
-				}
+				resultListContainer.setVisible(false); //Hide the Search Result List Panel via the WebMarkupContainer
+				detailPanelContainer.setVisible(false); //Hide the Detail Panle via the WebMarkupContainer
+				target.addComponent(detailPanelContainer);//Attach the Detail WebMarkupContainer to be re-rendered using Ajax
+				target.addComponent(resultListContainer);//Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
+				onCancel(target);//Invoke a onCancel() that the sub-class can use to build anything more specific
 			}
 		};
 		
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if (detailEventHandler != null) {
-					detailEventHandler.onSave(target);
-				} else {	// backwards compatibility
-					onSave(containerForm, target);
-					target.addComponent(detailPanelContainer);
-				}
+				onSave(containerForm, target);
+				target.addComponent(detailPanelContainer);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				if (detailEventHandler != null) {
-					detailEventHandler.processErrors(target);
-				} else {	// backwards compatibility
-					processErrors(target);
-				}
+				processErrors(target);
 			}
 		};
 		
@@ -181,12 +144,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if (detailEventHandler != null) {
-					detailEventHandler.onDelete(target);					
-				} else {	// backwards compatibility
-					target.addComponent(detailPanelContainer);
-					onDelete(containerForm, target);
-				}
+				target.addComponent(detailPanelContainer);
+				onDelete(containerForm, target);
+			
 			}
 		};
 		
@@ -194,61 +154,41 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				if (detailEventHandler != null) {
-					deleteButton.setEnabled(true);
-					deleteButton.setVisible(true);
-					detailEventHandler.onEdit(target);
-				} else {	// backwards compatibility
-					viewButtonContainer.setVisible(false);
-					editButtonContainer.setVisible(true);
-					detailPanelFormContainer.setEnabled(true);
-					target.addComponent(viewButtonContainer);
-					target.addComponent(editButtonContainer);
-					target.addComponent(detailPanelFormContainer);
-				}
+				deleteButton.setEnabled(true);
+				deleteButton.setVisible(true);
+				viewButtonContainer.setVisible(false);
+				editButtonContainer.setVisible(true);
+				detailPanelFormContainer.setEnabled(true);
+				target.addComponent(viewButtonContainer);
+				target.addComponent(editButtonContainer);
+				target.addComponent(detailPanelFormContainer);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				if (detailEventHandler != null) {
-					detailEventHandler.processErrors(target);
-				} else {	// backwards compatibility
-					processErrors(target);
-				}
+				processErrors(target);
 			}
 		};
 		
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				if (detailEventHandler != null) {
-					detailEventHandler.onEditCancel(target);
-				} else {	// backwards compatibility
-					 onCancel(target);
-				}
+			{	
+				onCancel(target);
 			}
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				if (detailEventHandler != null) {
-					detailEventHandler.processErrors(target);
-				} else {	// backwards compatibility
-					processErrors(target);
-				}
+				processErrors(target);
 			}
 		};
 		
-		if (detailEventHandler == null) {	// backwards compatibility
-			selectModalWindow = initialiseModalWindow();
-		}
+		selectModalWindow = initialiseModalWindow();
 		
 		addComponentsToForm();
 	}
 	
-	protected void addComponentsToForm() {
+	protected void addComponentsToForm(){
 		
-		if (detailEventHandler == null) {	// backwards compatibility
-			detailPanelFormContainer.add(selectModalWindow);
-			add(detailPanelFormContainer);
-		}
+		detailPanelFormContainer.add(selectModalWindow);
+		add(detailPanelFormContainer);
 
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
@@ -289,6 +229,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	}
 	
 
+	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
+	
 	protected  void onDeleteCancel(AjaxRequestTarget target, ModalWindow selectModalWindow){
 		selectModalWindow.close(target);
 	}
@@ -299,15 +241,11 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow"){
 
 			protected void onSelect(AjaxRequestTarget target, String selection){
-				if (detailEventHandler != null) {
-					detailEventHandler.onDeleteConfirmed(target,selection, selectModalWindow);
-				} else {
-					onDeleteConfirmed(target,selection, selectModalWindow);
-				}
+				onDeleteConfirmed(target,selection, selectModalWindow);
 		    }
 	
 		    protected void onCancel(AjaxRequestTarget target){
-				onDeleteCancel(target,selectModalWindow);
+		    	onDeleteCancel(target,selectModalWindow);
 		    }
 		};
 		
