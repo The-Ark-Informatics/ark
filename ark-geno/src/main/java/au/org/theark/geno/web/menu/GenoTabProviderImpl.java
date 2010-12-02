@@ -44,7 +44,9 @@ public class GenoTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 			@Override
 			public Panel getPanel(String pid) {
-				return new GenoSubMenuTab(pid);//The sub menus Study 
+				GenoSubMenuTab genoSubMenu = new GenoSubMenuTab(pid);//The sub menus Genotypic
+				genoSubMenu.buildTabs();
+				return genoSubMenu;
 			}
 			
 		};
