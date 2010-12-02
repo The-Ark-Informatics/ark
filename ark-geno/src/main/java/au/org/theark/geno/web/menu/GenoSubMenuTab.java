@@ -54,7 +54,8 @@ public class GenoSubMenuTab extends Panel {
 		
 		for(final MenuModule moduleName : moduleTabs)
 		{
-			// use ResourceModel instead of Model<String>(getLocalizer().getString...)
+			// use ResourceModel instead of Model<String>(getLocalizer().getString...) to avoid a warning like this:
+			//- Tried to retrieve a localized string for a component that has not yet been added to the page. This can sometimes lead to an invalid or no localized resource returned. Make sure you are not calling Component#getString() inside your Component's constructor. Offending component: [MarkupContainer [Component id = panel]]
 			moduleSubTabsList.add( new AbstractTab(new ResourceModel(moduleName.getResourceKey(), moduleName.getModuleName()) )
 			{
 				
