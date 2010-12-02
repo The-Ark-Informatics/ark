@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -25,8 +26,8 @@ public class EncodedData implements java.io.Serializable {
 	// Fields
 
 	private Long id;
-	private Collection collection;
-	private Long subjectId;
+	private GenoCollection collection;
+	private LinkSubjectStudy subject;
 	private Blob encodedBit1;
 	private Blob encodedBit2;
 
@@ -37,18 +38,18 @@ public class EncodedData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EncodedData(Long id, Collection collection, Long subjectId) {
+	public EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject) {
 		this.id = id;
 		this.collection = collection;
-		this.subjectId = subjectId;
+		this.subject = subject;
 	}
 
 	/** full constructor */
-	private EncodedData(Long id, Collection collection, Long subjectId,
+	private EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject,
 			Blob encodedBit1, Blob encodedBit2) {
 		this.id = id;
 		this.collection = collection;
-		this.subjectId = subjectId;
+		this.subject = subject;
 		this.encodedBit1 = encodedBit1;
 		this.encodedBit2 = encodedBit2;
 	}
@@ -68,21 +69,22 @@ public class EncodedData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public GenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(GenoCollection collection) {
 		this.collection = collection;
 	}
 
-	@Column(name = "SUBJECT_ID", nullable = false, precision = 22, scale = 0)
-	public Long getSubjectId() {
-		return this.subjectId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECT_ID", nullable = false)
+	public LinkSubjectStudy getSubject() {
+		return this.subject;
 	}
 
-	public void setSubjectId(Long subjectId) {
-		this.subjectId = subjectId;
+	public void setSubject(LinkSubjectStudy subject) {
+		this.subject = subject;
 	}
 	
 	@Column(name = "ENCODED_BIT1")

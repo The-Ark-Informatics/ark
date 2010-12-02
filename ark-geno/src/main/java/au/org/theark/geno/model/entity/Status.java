@@ -23,7 +23,7 @@ public class Status implements java.io.Serializable {
 
 	private Long id;
 	private String name;
-	private Set<Collection> collections = new HashSet<Collection>(0);
+	private Set<GenoCollection> collections = new HashSet<GenoCollection>(0);
 
 	// Constructors
 
@@ -37,7 +37,7 @@ public class Status implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Status(Long id, String name, Set<Collection> collections) {
+	public Status(Long id, String name, Set<GenoCollection> collections) {
 		this.id = id;
 		this.name = name;
 		this.collections = collections;
@@ -64,11 +64,11 @@ public class Status implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "status")
-	public Set<Collection> getCollections() {
+	public Set<GenoCollection> getCollections() {
 		return this.collections;
 	}
 
-	public void setCollections(Set<Collection> collections) {
+	public void setCollections(Set<GenoCollection> collections) {
 		this.collections = collections;
 	}
 

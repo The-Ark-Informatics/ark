@@ -20,7 +20,7 @@ public class DecodeMask implements java.io.Serializable {
 	// Fields
 
 	private Long id;
-	private Collection collection;
+	private GenoCollection collection;
 	private Marker marker;
 	private Long bitPosition;
 
@@ -50,11 +50,11 @@ public class DecodeMask implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public GenoCollection getCollection() {
 		return collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(GenoCollection collection) {
 		this.collection = collection;
 	}
 

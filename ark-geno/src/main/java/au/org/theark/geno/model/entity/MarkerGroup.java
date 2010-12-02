@@ -3,6 +3,7 @@ package au.org.theark.geno.model.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -31,8 +33,7 @@ public class MarkerGroup implements java.io.Serializable {
 
 	private Long id;
 	private MarkerType markerType;
-	private Long studyId;
-	private Long uploadId;
+	private Study study;
 	private String name;
 	private String description;
 	private Long visible;
@@ -53,26 +54,24 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
-			Long uploadId, String userId, Date insertTime) {
+	public MarkerGroup(Long id, MarkerType markerType, Study study,
+			String userId, Date insertTime) {
 		this.id = id;
 		this.markerType = markerType;
-		this.studyId = studyId;
-		this.uploadId = uploadId;
+		this.study = study;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public MarkerGroup(Long id, MarkerType markerType, Long studyId,
-			Long uploadId, String name, String description, Long visible,
+	public MarkerGroup(Long id, MarkerType markerType, Study study,
+			String name, String description, Long visible,
 			String userId, Date insertTime, String updateUserId,
 			Date updateTime, Set<CollectionImport> collectionImports,
 			Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
 		this.id = id;
 		this.markerType = markerType;
-		this.studyId = studyId;
-		this.uploadId = uploadId;
+		this.study = study;
 		this.name = name;
 		this.description = description;
 		this.visible = visible;
@@ -108,22 +107,14 @@ public class MarkerGroup implements java.io.Serializable {
 		this.markerType = markerType;
 	}
 
-	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public Long getStudyId() {
-		return this.studyId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID", nullable = false)
+	public Study getStudy() {
+		return this.study;
 	}
 
-	public void setStudyId(Long studyId) {
-		this.studyId = studyId;
-	}
-
-	@Column(name = "UPLOAD_ID", nullable = false, precision = 22, scale = 0)
-	public Long getUploadId() {
-		return this.uploadId;
-	}
-
-	public void setUploadId(Long uploadId) {
-		this.uploadId = uploadId;
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 	@Column(name = "NAME", length = 100)

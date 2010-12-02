@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -21,7 +22,7 @@ public class SubjectMetaData implements java.io.Serializable {
 
 	private Long id;
 	private MetaData metaData;
-	private Long subjectId;
+	private LinkSubjectStudy subjectId;
 	private String userId;
 	private String insertTime;
 	private String updateUserId;
@@ -34,7 +35,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectMetaData(Long id, MetaData metaData, Long subjectId,
+	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId,
 			String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
@@ -44,7 +45,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectMetaData(Long id, MetaData metaData, Long subjectId,
+	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -77,12 +78,13 @@ public class SubjectMetaData implements java.io.Serializable {
 		this.metaData = metaData;
 	}
 
-	@Column(name = "SUBJECT_ID", nullable = false, precision = 22, scale = 0)
-	public Long getSubjectId() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECT_ID", nullable = false)
+	public LinkSubjectStudy getSubjectId() {
 		return this.subjectId;
 	}
 
-	public void setSubjectId(Long subjectId) {
+	public void setSubjectId(LinkSubjectStudy subjectId) {
 		this.subjectId = subjectId;
 	}
 

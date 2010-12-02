@@ -31,7 +31,7 @@ public class MetaData implements java.io.Serializable {
 
 	private Long id;
 	private MetaDataField metaDataField;
-	private Collection collection;
+	private GenoCollection collection;
 	private String value;
 	private String userId;
 	private Date insertTime;
@@ -51,7 +51,7 @@ public class MetaData implements java.io.Serializable {
 
 	/** minimal constructor */
 	public MetaData(Long id, MetaDataField metaDataField,
-			Collection collection, String userId, Date insertTime) {
+			GenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataField = metaDataField;
 		this.collection = collection;
@@ -61,7 +61,7 @@ public class MetaData implements java.io.Serializable {
 
 	/** full constructor */
 	public MetaData(Long id, MetaDataField metaDataField,
-			Collection collection, String value, String userId,
+			GenoCollection collection, String value, String userId,
 			Date insertTime, String updateUserId, Date updateTime,
 			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas,
 			Set<MarkerMetaData> markerMetaDatas,
@@ -104,11 +104,11 @@ public class MetaData implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public GenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(GenoCollection collection) {
 		this.collection = collection;
 	}
 

@@ -1,8 +1,9 @@
 package au.org.theark.geno.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.geno.model.entity.Collection;
+import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.CollectionImport;
 import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
@@ -11,9 +12,9 @@ import au.org.theark.geno.model.entity.Status;
 
 public interface ICollectionDao {
 
-	public void createCollection(Collection col);
+	public void createCollection(GenoCollection col);
 	
-	public List<Collection> getCollectionMatches(Collection colExample);
+	public List<GenoCollection> getCollectionMatches(GenoCollection colExample);
 	
 	/**
 	 * Interface to get a list of Study Status reference data from the backend.
@@ -21,10 +22,11 @@ public interface ICollectionDao {
 	 * displaying a list of options for a particular study.
 	 * @return
 	 */
+	public Collection<Status> getStatus();
 
-	public Collection getCollection(Long id);
+	public GenoCollection getCollection(Long id);
 	
-	public void updateCollection(Collection colEntity);
+	public void updateCollection(GenoCollection colEntity);
 	
 	public void createMetaData(MetaData metaData);
 	
@@ -41,5 +43,6 @@ public interface ICollectionDao {
     //(it should already be in context)
 
 	public void createCollectionImport(CollectionImport colImport);
+
 
 }

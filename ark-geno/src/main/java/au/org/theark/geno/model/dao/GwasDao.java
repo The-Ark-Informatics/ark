@@ -1,35 +1,23 @@
 package au.org.theark.geno.model.dao;
 
 //import java.util.List;
-import java.util.*;
-import java.io.*;
-import java.sql.Blob;
-import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.lob.BlobImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-//import au.org.theark.geno.model.entity.Person;
-import au.org.theark.geno.model.entity.Collection;
-import au.org.theark.geno.model.entity.DecodeMask;
 import au.org.theark.geno.model.entity.EncodedData;
+import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.Marker;
-import au.org.theark.geno.model.entity.MarkerGroup;
 import au.org.theark.geno.model.entity.MarkerType;
-import au.org.theark.geno.model.entity.MetaData;
-import au.org.theark.geno.model.entity.MetaDataField;
-import au.org.theark.geno.model.entity.MetaDataType;
-import au.org.theark.geno.model.entity.Status;
 
 @Repository("gwasDao")
 public class GwasDao extends HibernateSessionDao implements IGwasDao
@@ -159,4 +147,5 @@ public class GwasDao extends HibernateSessionDao implements IGwasDao
     	Session session = getSession();
     	session.save(marker);
 	}
+
 }

@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -22,7 +23,7 @@ public class SubjectMarkerMetaData implements java.io.Serializable {
 	private Long id;
 	private MetaData metaData;
 	private Marker marker;
-	private Long subjectId;
+	private LinkSubjectStudy subject;
 	private String userId;
 	private String insertTime;
 	private String updateUserId;
@@ -36,23 +37,23 @@ public class SubjectMarkerMetaData implements java.io.Serializable {
 
 	/** minimal constructor */
 	public SubjectMarkerMetaData(Long id, MetaData metaData, Marker marker,
-			Long subjectId, String userId, String insertTime) {
+			LinkSubjectStudy subject, String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.marker = marker;
-		this.subjectId = subjectId;
+		this.subject = subject;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
 	public SubjectMarkerMetaData(Long id, MetaData metaData, Marker marker,
-			Long subjectId, String userId, String insertTime,
+			LinkSubjectStudy subject, String userId, String insertTime,
 			String updateUserId, String updateTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.marker = marker;
-		this.subjectId = subjectId;
+		this.subject = subject;
 		this.userId = userId;
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
@@ -90,13 +91,14 @@ public class SubjectMarkerMetaData implements java.io.Serializable {
 		this.marker = marker;
 	}
 
-	@Column(name = "SUBJECT_ID", nullable = false, precision = 22, scale = 0)
-	public Long getSubjectId() {
-		return this.subjectId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECT_ID", nullable = false)
+	public LinkSubjectStudy getSubject() {
+		return this.subject;
 	}
 
-	public void setSubjectId(Long subjectId) {
-		this.subjectId = subjectId;
+	public void setSubject(LinkSubjectStudy subject) {
+		this.subject = subject;
 	}
 
 	@Column(name = "USER_ID", nullable = false, length = 50)

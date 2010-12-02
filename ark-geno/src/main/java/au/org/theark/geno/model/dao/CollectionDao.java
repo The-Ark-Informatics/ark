@@ -1,5 +1,6 @@
 package au.org.theark.geno.model.dao;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.geno.model.entity.Collection;
+import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.CollectionImport;
 import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
@@ -28,59 +29,63 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 	static Logger log = LoggerFactory.getLogger(CollectionDao.class);
 
     @SuppressWarnings("unchecked")
-	public List<Collection> getCollectionMatches(Collection colExample)
+	public List<GenoCollection> getCollectionMatches(GenoCollection colExample)
 	{	
-		Criteria colCriteria = getSession().createCriteria(Collection.class);
+		Criteria colCriteria = getSession().createCriteria(GenoCollection.class);
 		
 		if(colExample.getId() != null) {
-			colCriteria.add(Restrictions.eq("id",colExample.getId()));	
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_ID, colExample.getId()));	
 		}
 		
 		if(colExample.getName() != null) {
-			colCriteria.add(Restrictions.ilike("name", colExample.getName(), MatchMode.ANYWHERE));	
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_NAME, colExample.getName(), MatchMode.ANYWHERE));	
 		}
 		
-		if(colExample.getStudyId() != null) {
-			colCriteria.add(Restrictions.eq("studyId", colExample.getStudyId()));
+		if(colExample.getDescription() != null) {
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_DESCRIPTION, colExample.getDescription(), MatchMode.ANYWHERE));	
+		}
+		
+		if(colExample.getStudy() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_STUDY, colExample.getStudy()));
 		}
 		
 		if(colExample.getInsertTime() != null) {
-			colCriteria.add(Restrictions.eq("insertTime", colExample.getInsertTime()));
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_INSERT_TIME, colExample.getInsertTime()));
 		}
 		
 		if(colExample.getUserId() != null) {
-			colCriteria.add(Restrictions.ilike("userId", colExample.getUserId(), MatchMode.ANYWHERE));
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_USER_ID, colExample.getUserId(), MatchMode.ANYWHERE));
 		}
 
 		if(colExample.getUpdateTime() != null) {
-			colCriteria.add(Restrictions.eq("updateTime", colExample.getUpdateTime()));
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_UPDATE_TIME, colExample.getUpdateTime()));
 		}
 
 		if(colExample.getUpdateUserId() != null) {
-			colCriteria.add(Restrictions.ilike("updateUserId", colExample.getUpdateUserId(), MatchMode.ANYWHERE));
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_UPDATE_USER_ID, colExample.getUpdateUserId(), MatchMode.ANYWHERE));
 		}
 		
 		if(colExample.getStatus() != null) {
-			colCriteria.add(Restrictions.eq("status", colExample.getStatus()));
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_STATUS, colExample.getStatus()));
 		}
 
 		colCriteria.addOrder(Order.asc("name"));
-		List<Collection> colList  = colCriteria.list();
+		List<GenoCollection> colList  = colCriteria.list();
 		return colList;
 	}
 
-	public void createCollection(Collection col) {
+	public void createCollection(GenoCollection col) {
 		getSession().save(col);
 	}
 
 	
-	public Collection getCollection(Long id) {
+	public GenoCollection getCollection(Long id) {
 		
-		Collection col = (Collection)getSession().get(Collection.class, id);
+		GenoCollection col = (GenoCollection)getSession().get(GenoCollection.class, id);
 		return col;
 	}
 	
-	public void updateCollection(Collection colEntity) {
+	public void updateCollection(GenoCollection colEntity) {
 		getSession().update(colEntity);
 	}
 	
@@ -194,6 +199,12 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 
 	public void createCollectionImport(CollectionImport colImport) {
 		getSession().save(colImport);
+	}
+
+	public Collection<Status> getStatus() {
+		Criteria crit = getSession().createCriteria(Status.class);
+		java.util.Collection<Status> statusCollection = crit.list();
+		return (statusCollection);
 	}
 
 }

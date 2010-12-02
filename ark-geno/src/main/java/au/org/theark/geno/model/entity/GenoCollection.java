@@ -3,6 +3,7 @@ package au.org.theark.geno.model.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -25,13 +27,13 @@ import au.org.theark.geno.service.Constants;
  */
 @Entity(name="au.org.theark.geno.model.entity.Collection")
 @Table(name = "COLLECTION", schema = Constants.GENO_TABLE_SCHEMA)
-public class Collection implements java.io.Serializable {
+public class GenoCollection implements java.io.Serializable {
 
 	// Fields
 
 	private Long id;
 	private Status status;
-	private Long studyId;
+	private Study study;
 	private String name;
 	private String description;
 	private Date startDate;
@@ -45,39 +47,36 @@ public class Collection implements java.io.Serializable {
 			0);
 	private Set<EncodedData> encodedDatas = new HashSet<EncodedData>(0);
 	private Set<DecodeMask> decodeMasks = new HashSet<DecodeMask>(0);
-	private Set<DataSet> dataSets = new HashSet<DataSet>(0);
-	private Set<SubjectGroup> subjectGroups = new HashSet<SubjectGroup>(0);
 	private Set<UploadCollection> uploadCollections = new HashSet<UploadCollection>(
 			0);
 
 	// Constructors
 
 	/** default constructor */
-	public Collection() {
+	public GenoCollection() {
 	}
 
 	/** minimal constructor */
-	public Collection(Long id, Status status, Long studyId, String userId,
+	public GenoCollection(Long id, Status status, Study study, String userId,
 			Date insertTime) {
 		this.id = id;
 		this.status = status;
-		this.studyId = studyId;
+		this.study = study;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor 
 	 * @param decodeMasks */
-	public Collection(Long id, Status status, Long studyId, String name,
+	public GenoCollection(Long id, Status status, Study study, String name,
 			String description, Date startDate, Date expiryDate, String userId,
 			Date insertTime, String updateUserId, Date updateTime,
 			Set<MetaData> metaDatas, Set<CollectionImport> collectionImports,
 			Set<EncodedData> encodedDatas, Set<DecodeMask> decodeMasks, 
-			Set<DataSet> dataSets, Set<SubjectGroup> subjectGroups,
 			Set<UploadCollection> uploadCollections) {
 		this.id = id;
 		this.status = status;
-		this.studyId = studyId;
+		this.study = study;
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate;
@@ -90,8 +89,6 @@ public class Collection implements java.io.Serializable {
 		this.collectionImports = collectionImports;
 		this.encodedDatas = encodedDatas;
 		this.decodeMasks = decodeMasks;
-		this.dataSets = dataSets;
-		this.subjectGroups = subjectGroups;
 		this.uploadCollections = uploadCollections;
 	}
 
@@ -118,13 +115,14 @@ public class Collection implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public Long getStudyId() {
-		return this.studyId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID", nullable = false)
+	public Study getStudy() {
+		return this.study;
 	}
 
-	public void setStudyId(Long studyId) {
-		this.studyId = studyId;
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 	@Column(name = "NAME", length = 50)
@@ -145,7 +143,7 @@ public class Collection implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "START_DATE", length = 7)
 	public Date getStartDate() {
 		return this.startDate;
@@ -155,7 +153,7 @@ public class Collection implements java.io.Serializable {
 		this.startDate = startDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "EXPIRY_DATE", length = 7)
 	public Date getExpiryDate() {
 		return this.expiryDate;
@@ -239,24 +237,6 @@ public class Collection implements java.io.Serializable {
 		this.decodeMasks = decodeMasks;
 	}
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<DataSet> getDataSets() {
-		return this.dataSets;
-	}
-
-	public void setDataSets(Set<DataSet> dataSets) {
-		this.dataSets = dataSets;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<SubjectGroup> getSubjectGroups() {
-		return this.subjectGroups;
-	}
-
-	public void setSubjectGroups(Set<SubjectGroup> subjectGroups) {
-		this.subjectGroups = subjectGroups;
-	}
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
 	public Set<UploadCollection> getUploadCollections() {
 		return this.uploadCollections;

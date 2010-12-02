@@ -3,6 +3,7 @@ package au.org.theark.geno.model.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.geno.service.Constants;
 
 /**
@@ -31,7 +33,7 @@ public class MetaDataField implements java.io.Serializable {
 
 	private Long id;
 	private MetaDataType metaDataType;
-	private Long studyId;
+	private Study study;
 	private String name;
 	private String description;
 	private String units;
@@ -52,25 +54,25 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaDataField(Long id, MetaDataType metaDataType, Long studyId, String name,
+	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name,
 			String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataType = metaDataType;
-		this.studyId = studyId;
+		this.study = study;
 		this.name = name;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public MetaDataField(Long id, MetaDataType metaDataType, Long studyId, String name,
+	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name,
 			String description, String units, Long seqNum, String minValue,
 			String maxValue, String discreteValues, String userId,
 			Date insertTime, String updateUserId, Date updateTime,
 			Set<MetaData> metaDatas) {
 		this.id = id;
 		this.metaDataType = metaDataType;
-		this.studyId = studyId;
+		this.study = study;
 		this.name = name;
 		this.description = description;
 		this.units = units;
@@ -108,13 +110,14 @@ public class MetaDataField implements java.io.Serializable {
 		this.metaDataType = metaDataType;
 	}
 
-	@Column(name = "STUDY_ID", nullable = false, precision = 22, scale = 0)
-	public Long getStudyId() {
-		return this.studyId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID", nullable = false)
+	public Study getStudy() {
+		return this.study;
 	}
 
-	public void setStudyId(Long studyId) {
-		this.studyId = studyId;
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 100)

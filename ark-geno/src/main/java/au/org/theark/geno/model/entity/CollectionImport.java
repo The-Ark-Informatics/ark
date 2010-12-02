@@ -30,7 +30,7 @@ public class CollectionImport implements java.io.Serializable {
 	private ImportType importType;
 	private DelimiterType delimiterType;
 	private MarkerGroup markerGroup;
-	private Collection collection;
+	private GenoCollection collection;
 	private Date startTime;
 	private Date finishTime;
 	private String userId;
@@ -47,7 +47,7 @@ public class CollectionImport implements java.io.Serializable {
 	/** minimal constructor */
 	public CollectionImport(Long id, ImportType importType,
 			DelimiterType delimiterType, MarkerGroup markerGroup,
-			Collection collection, String userId, Date insertTime) {
+			GenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.importType = importType;
 		this.delimiterType = delimiterType;
@@ -61,7 +61,7 @@ public class CollectionImport implements java.io.Serializable {
 	/** full constructor */
 	public CollectionImport(Long id, ImportType importType,
 			DelimiterType delimiterType, MarkerGroup markerGroup,
-			Collection collection, Date startTime, Date finishTime,
+			GenoCollection collection, Date startTime, Date finishTime,
 			String userId, Date insertTime, String updateUserId,
 			Date updateTime) {
 		this.id = id;
@@ -122,11 +122,11 @@ public class CollectionImport implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public Collection getCollection() {
+	public GenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(GenoCollection collection) {
 		this.collection = collection;
 	}
 

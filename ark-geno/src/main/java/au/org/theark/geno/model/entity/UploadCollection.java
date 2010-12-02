@@ -23,7 +23,7 @@ public class UploadCollection implements java.io.Serializable {
 	// Fields
 
 	private Long id;
-	private Collection collection;
+	private GenoCollection collection;
 	private Upload upload;
 	private String userId;
 	private String insertTime;
@@ -37,14 +37,14 @@ public class UploadCollection implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public UploadCollection(Long id, Collection collection, Upload upload) {
+	public UploadCollection(Long id, GenoCollection collection, Upload upload) {
 		this.id = id;
 		this.collection = collection;
 		this.upload = upload;
 	}
 
 	/** full constructor */
-	public UploadCollection(Long id, Collection collection, Upload upload,
+	public UploadCollection(Long id, GenoCollection collection, Upload upload,
 			String userId, String insertTime, String updateUserId,
 			String updateTime) {
 		this.id = id;
@@ -71,11 +71,11 @@ public class UploadCollection implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_PK", nullable = false)
-	public Collection getCollection() {
+	public GenoCollection getCollection() {
 		return this.collection;
 	}
 
-	public void setCollection(Collection collection) {
+	public void setCollection(GenoCollection collection) {
 		this.collection = collection;
 	}
 
