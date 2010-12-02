@@ -206,7 +206,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void deleteCollection(PhenoCollection collection)
 	{
-		phenotypicDao.createPhenoCollection(collection);
+		phenotypicDao.deletePhenoCollection(collection);
 	}
 
 	public void deleteCollectionImport(CollectionImport collectionImport)
