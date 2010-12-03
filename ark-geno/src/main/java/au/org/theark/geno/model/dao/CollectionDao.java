@@ -207,4 +207,8 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 		return (statusCollection);
 	}
 
+	public void deleteCollection(GenoCollection col) {
+		getSession().delete(col);
+	}
+
 }

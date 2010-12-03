@@ -44,5 +44,7 @@ public interface ICollectionDao {
 
 	public void createCollectionImport(CollectionImport colImport);
 
+	public void deleteCollection(GenoCollection col);
+
 
 }
