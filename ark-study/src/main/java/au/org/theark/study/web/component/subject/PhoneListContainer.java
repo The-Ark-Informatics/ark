@@ -17,8 +17,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -34,6 +36,9 @@ import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
  */
 public class PhoneListContainer extends Panel {
 
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	private PhoneDetail phoneDetailPanel;
 	private PhoneList phoneListPanel;
 
@@ -46,6 +51,8 @@ public class PhoneListContainer extends Panel {
 	private DetailsForm subjectForm;
 	private AjaxButton addPhoneButton;
 	private FeedbackPanel feedBackPanel;
+	
+	private ContainerForm subjectContainerForm;
 
 	private void onAddPhone(SubjectVO subjectVO, AjaxRequestTarget target) {
 		System.out.println("onAddPhone Invoked");
@@ -69,19 +76,18 @@ public class PhoneListContainer extends Panel {
 		this.feedBackPanel = feedbackPanel;
 		this.phoneListPanelContainer = phoneListPanelContainer;
 		this.phoneDetailPanelContainer = phoneDetailPanelContainer;
-		this.pageableListView = pageableListView;
+		this.subjectContainerForm = containerForm;
 		
-		/* The container Form for Managing Phone Numbers */
-		//initialiseMarkupContainers();
-		phoneContainerForm = new PhoneContainerForm("phoneContainerForm",containerForm.getModel());
+		phoneContainerForm = new PhoneContainerForm("phoneContainerForm");
 
 		addPhoneButton = new AjaxButton(Constants.ADD_PHONE,new StringResourceModel("addPhoneKey", this, null)) {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
-				phoneContainerForm.getModelObject().setPhone(new Phone());
-				onAddPhone(phoneContainerForm.getModelObject(), target);
-				
+				//phoneContainerForm.getModelObject().setPhone(new Phone());
+				subjectContainerForm.getModelObject().setPhone(new Phone());
+				//onAddPhone(phoneContainerForm.getModelObject(), target);
+				onAddPhone(subjectContainerForm.getModelObject(), target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -96,36 +102,23 @@ public class PhoneListContainer extends Panel {
 		add(phoneContainerForm);
 	}
 
-//	private void initialiseMarkupContainers() {
-//
-//		phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
-//		phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
-//		phoneDetailPanelContainer.setVisible(false);
-//
-//		phoneListPanelContainer = new WebMarkupContainer("phoneListMarkupContainer");
-//		phoneListPanelContainer.setOutputMarkupPlaceholderTag(true);
-//		phoneListPanelContainer.setVisible(true);
-//
-//	}
-
-	private WebMarkupContainer initialiseDetailPanel(WebMarkupContainer phoneListPanelContainer, FeedbackPanel feedbackPanel) {
-		phoneDetailPanel = new PhoneDetail("phoneDetailPanel",phoneContainerForm, pageableListView, phoneListPanelContainer,phoneDetailPanelContainer, feedBackPanel);
-		phoneDetailPanel.initialisePanel();
-		phoneDetailPanelContainer.add(phoneDetailPanel);
-		return phoneDetailPanelContainer;
-	}
-
+	@SuppressWarnings("serial")
 	public WebMarkupContainer initialisePhoneList() {
 
-		// Set a default list here
-		phoneListPanel = new PhoneList("phoneListPanel", phoneContainerForm,	phoneListPanelContainer, phoneDetailPanelContainer);
-		
+		phoneListPanel = new PhoneList("phoneListPanel", subjectContainerForm,	phoneListPanelContainer, phoneDetailPanelContainer);
 		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
-
 			@Override
 			protected Object load() {
-				return phoneContainerForm.getModelObject().getPhoneList();
+				
+				//TODO: Need to use the back-end to get the next list of Phone items in order to keep the data fresh and avoid LIE
+				//Collection<SubjectVO> subjects = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
+				//				
+				//SubjectVO subjectVOBackend = new SubjectVO();
+				//for (SubjectVO subjectVO : subjects) {
+				//	subjectVOBackend = subjectVO;
+				//}
+				//return subjectVOBackend.getPhoneList();//We are not updating the Model object Person
+				return subjectContainerForm.getModelObject().getPhoneList();
 			}
 		};
 		pageableListView = phoneListPanel.buildPageableListView(iModel);
@@ -136,6 +129,14 @@ public class PhoneListContainer extends Panel {
 		phoneListPanelContainer.add(phoneListPanel);
 		
 		return phoneListPanelContainer;
+	}
+	
+	private WebMarkupContainer initialiseDetailPanel(WebMarkupContainer phoneListPanelContainer, FeedbackPanel feedbackPanel) {
+		//phoneDetailPanel = new PhoneDetail("phoneDetailPanel",phoneContainerForm, pageableListView, phoneListPanelContainer,phoneDetailPanelContainer, feedBackPanel);
+		phoneDetailPanel = new PhoneDetail("phoneDetailPanel",subjectContainerForm, pageableListView, phoneListPanelContainer,phoneDetailPanelContainer, feedBackPanel);
+		phoneDetailPanel.initialisePanel();
+		phoneDetailPanelContainer.add(phoneDetailPanel);
+		return phoneDetailPanelContainer;
 	}
 
 }
