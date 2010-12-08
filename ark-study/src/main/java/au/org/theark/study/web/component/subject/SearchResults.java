@@ -35,7 +35,7 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer detailsPanelContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer searchResultContainer;
-	
+	private WebMarkupContainer phoneListWebMarkupContainer;
 	private ContainerForm subjectContainerForm;
 	private Details detailsPanel;
 	
@@ -51,7 +51,8 @@ public class SearchResults extends Panel{
 							WebMarkupContainer searchPanelContainer,
 							ContainerForm containerForm,
 							WebMarkupContainer searchResultContainer,
-							Details detailPanel) {
+							Details detailPanel,
+							WebMarkupContainer markupContainerPhoneList) {
 		
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
@@ -59,6 +60,7 @@ public class SearchResults extends Panel{
 		this.searchResultContainer = searchResultContainer;
 		this.detailsPanel = detailPanel;
 		this.subjectContainerForm = containerForm;
+		this.phoneListWebMarkupContainer =markupContainerPhoneList;
 	}
 	
 	public PageableListView<SubjectVO> buildPageableListView(IModel iModel){
@@ -109,43 +111,44 @@ public class SearchResults extends Panel{
 	
 	private AjaxLink buildLink(final SubjectVO subject){
 		
-		AjaxLink link = new AjaxLink(Constants.PERSON_PERSON_KEY) {
+		//AjaxLink link = new AjaxLink(Constants.PERSON_PERSON_KEY) {
+		AjaxLink link = new AjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				
-				SubjectVO subjectVO = subjectContainerForm.getModelObject();
-				
 				SubjectVO subjectFromBackend = new SubjectVO();
-				
-				//For the selected subject, get the details from back-end to make sure the associations can be accessed
-				//If this is not done we get Lazy
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
 				for (SubjectVO subjectVO2 : subjects) {
 					subjectFromBackend = subjectVO2;
 					break;
 				}
-				subjectVO.setStudy(subjectFromBackend.getStudy());
-				subjectVO.setPerson(subjectFromBackend.getPerson());//The selected person on the containerForm's Model
-				subjectVO.setSubjectStatus(subjectFromBackend.getSubjectStatus());
-				subjectVO.setLinkSubjectStudyId(subjectFromBackend.getLinkSubjectStudyId());
-				subjectVO.setSubjectUID(subjectFromBackend.getSubjectUID());
-				java.util.Collection<Phone> phoneList = new java.util.ArrayList<Phone>();
-				for (Phone phone : subjectFromBackend.getPerson().getPhones()) {
-					phoneList.add(phone);
-				}
-				subjectVO.setPhoneList(phoneList);
-				//Select the subject from back-end
+				
+				subjectContainerForm.setModelObject(subject);
+				//Refresh the details of the SubjectVO attached to the Model
+				SubjectVO subjectVOInModel = subjectContainerForm.getModelObject();
+				subjectVOInModel.setPerson(subject.getPerson());
+				subjectVOInModel.setSubjectUID(subject.getSubjectUID());
+				subjectVOInModel.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
+				subjectVOInModel.setSubjectStatus(subject.getSubjectStatus());
+				subjectVOInModel.setPhoneList(subject.getPhoneList());
+				
+				PhoneList phoneListPanel  = (PhoneList) phoneListWebMarkupContainer.get("phoneListPanel");
+				PageableListView<Phone> phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
+				phonePageableListView.removeAll();
+				phoneListWebMarkupContainer.setVisible(true);
+				target.addComponent(phoneListWebMarkupContainer);
 				
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
+				
+				target.addComponent(searchPanelContainer);
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
-				target.addComponent(searchPanelContainer);
+				
 			}
 		};
-		
-		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getPerson().getPersonKey().toString());
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
 	}
