@@ -48,6 +48,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_SEARCH_DOA);
 		dateOfApplicationDp.setChangeMonth(true);
 		dateOfApplicationDp.setChangeYear(true);
+		dateOfApplicationDp.setDateFormat("dd/mm/yy");
 		principalContactTxtFld = new TextField<String>(Constants.STUDY_SEARCH_CONTACT);
 		this.studyStatusList = statusList;
 		
