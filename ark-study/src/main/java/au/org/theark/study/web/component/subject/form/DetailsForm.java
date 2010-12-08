@@ -55,7 +55,7 @@ public class DetailsForm extends Form<SubjectVO>{
 	private WebMarkupContainer  resultListContainer;
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer searchSubjectPanelContainer;
-	private WebMarkupContainer markupContainerPhoneList;
+	private WebMarkupContainer phoneListMarkupContainer;
 	private WebMarkupContainer phoneDetailPanelContainer;
 	
 	private ContainerForm subjectContainerForm;
@@ -63,7 +63,7 @@ public class DetailsForm extends Form<SubjectVO>{
 	private PhoneListContainer phoneListContainer;
 	private PhoneList phoneListPanel;
 	private IModel<Object> iModel;
-	private PageableListView<Phone> pageableListView;
+	private PageableListView<Phone> phonePageableListView;
 	
 	private TextField<String> subjectIdTxtFld;
 	private TextField<String> firstNameTxtFld;
@@ -97,14 +97,18 @@ public class DetailsForm extends Form<SubjectVO>{
 						WebMarkupContainer listContainer,
 						WebMarkupContainer detailsContainer,
 						WebMarkupContainer searchPanelContainer,
+						WebMarkupContainer phoneListWebMarkupContainer,
 						ContainerForm containerForm, 
-						FeedbackPanel feedbackPanel) {
+						FeedbackPanel feedbackPanel	) {
 		super(id);
 		this.subjectContainerForm = containerForm;
 		this.resultListContainer = listContainer;
 		this.detailPanelContainer = detailsContainer;
 		this.detailFeedbackPanel = feedbackPanel;
 		this.searchSubjectPanelContainer = searchPanelContainer;
+		this.phoneListMarkupContainer = phoneListWebMarkupContainer;
+		
+	
 		
 		cancelButton = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
@@ -118,14 +122,15 @@ public class DetailsForm extends Form<SubjectVO>{
 				searchSubjectPanelContainer.setVisible(true);
 				detailPanelContainer.setVisible(false);
 				resultListContainer.setVisible(false);
+				
 				phoneDetailPanelContainer.setVisible(false);
-				markupContainerPhoneList.setVisible(true);
+				phoneListMarkupContainer.setVisible(true);
 				
 				target.addComponent(searchSubjectPanelContainer);
 				target.addComponent(detailPanelContainer);
 				target.addComponent(detailFeedbackPanel);
 				target.addComponent(phoneDetailPanelContainer);
-				target.addComponent(markupContainerPhoneList);
+				target.addComponent(phoneListMarkupContainer);
 				onCancel(target);
 			}
 		};
@@ -142,38 +147,32 @@ public class DetailsForm extends Form<SubjectVO>{
 				}
 				else{
 					study = iArkCommonService.getStudy(studyId);
+					
 					if(subjectContainerForm.getModelObject().getPerson().getPersonKey() == null || subjectContainerForm.getModelObject().getPerson().getPersonKey() == 0){
 						subjectContainerForm.getModelObject().setStudy(study);
 						studyService.createSubject(subjectContainerForm.getModelObject());
 						this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
 					}else{
 						studyService.updateSubject(subjectContainerForm.getModelObject());
-						
-						Collection<SubjectVO> collectionOfSubject = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
-						for (SubjectVO subjectVO2 : collectionOfSubject) {
-							subjectContainerForm.setModelObject(subjectVO2);
-							break;
-						}
-						
-						java.util.Collection<Phone> phoneList = new java.util.ArrayList<Phone>();
-						for (Phone phone : subjectContainerForm.getModelObject().getPerson().getPhones()) {
-							phoneList.add(phone);
-						}
-						pageableListView.removeAll();
-						phoneListContainer.setVisible(true);
-						detailPanelContainer.setVisible(false);
-						target.addComponent(phoneListContainer);
-						target.addComponent(detailPanelContainer);
-						subjectContainerForm.getModelObject().setPhoneList(phoneList);
-						//containerForm.setModelObject(subjectVO);
-						//Get the subject back from backend
-						
 						this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
 					}
+					
+					//					Collection<SubjectVO> collectionOfSubject = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
+					//					for (SubjectVO subjectVO2 : collectionOfSubject) {
+					//						subjectContainerForm.setModelObject(subjectVO2);
+					//						break;
+					//					}
+						
+					//gain access to the ListView in the markup container.
+					PhoneList phoneListPanel  = (PhoneList) phoneListMarkupContainer.get("phoneListPanel");
+					phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
+					phonePageableListView.removeAll();
+					phoneListMarkupContainer.setVisible(true);
+					detailPanelContainer.setVisible(true);
+					target.addComponent(phoneListMarkupContainer);
+					target.addComponent(detailPanelContainer);
 				}
 				target.addComponent(detailFeedbackPanel);
-				
-				//onSave(subjectContainerForm.getModelObject(), target);
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
@@ -199,9 +198,9 @@ public class DetailsForm extends Form<SubjectVO>{
 	public void initialiseForm(){
 		
 		/* Contains the List of Phone Numbers */
-		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
-		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
-		markupContainerPhoneList.setVisible(true);
+//		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
+//		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
+//		markupContainerPhoneList.setVisible(true);
 		
 		phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
 		phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
@@ -238,7 +237,7 @@ public class DetailsForm extends Form<SubjectVO>{
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
 		
 		//Add the PhoneListContainer
-		phoneListContainer = new PhoneListContainer("phoneListContainer", subjectContainerForm, detailFeedbackPanel,markupContainerPhoneList,phoneDetailPanelContainer);
+		phoneListContainer = new PhoneListContainer("phoneListContainer", subjectContainerForm, detailFeedbackPanel,phoneListMarkupContainer,phoneDetailPanelContainer);
 		
 		
 		attachValidators();
@@ -293,14 +292,12 @@ public class DetailsForm extends Form<SubjectVO>{
 	}
 	
 	protected  void onAddPhone(SubjectVO subjectVo, AjaxRequestTarget target){
-		//Do something here, phoneDetailPanelContainer visible
 		phoneDetailPanelContainer.setVisible(true);
 		target.addComponent(phoneDetailPanelContainer);
-		System.out.println("onAddPhone invoked");
 	}
 
 	protected void processErrors(AjaxRequestTarget target){
-		
+		target.addComponent(detailFeedbackPanel);
 	}
 	
 	
