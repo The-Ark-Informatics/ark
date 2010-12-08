@@ -53,10 +53,10 @@ public class SubjectVO implements Serializable{
 		phone = new Phone();
 		address = new Address();
 		emailAccount = new EmailAccount();
-		
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
+		subjectUID = new String();
 	}
 
 	public Person getPerson() {
