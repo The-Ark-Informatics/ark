@@ -48,7 +48,7 @@ public class SearchForm extends Form<SubjectVO>{
 	private IArkCommonService iArkCommonService;
 
 	
-	private TextField<String> subjectIdTxtFld;
+	private TextField<String> subjectUIDTxtFld;
 	private TextField<String> firstNameTxtFld;
 	private TextField<String> middleNameTxtFld;
 	private TextField<String> lastNameTxtFld;
@@ -166,7 +166,7 @@ public class SearchForm extends Form<SubjectVO>{
 	
 	private void addComponents(){
 		
-		add(subjectIdTxtFld);
+		add(subjectUIDTxtFld);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
 		add(lastNameTxtFld);
@@ -179,7 +179,7 @@ public class SearchForm extends Form<SubjectVO>{
 		
 	}
 	public void initialiseForm(){
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
+		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
