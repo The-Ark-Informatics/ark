@@ -16,8 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
+import au.org.theark.study.web.component.subject.form.ContainerForm;
 
 /**
  * @author nivedann
@@ -26,15 +25,14 @@ import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
 public class PhoneList extends Panel{
 
 	
-	private PhoneContainerForm phoneContainerForm;
 	private WebMarkupContainer phoneDetailPanelContainer;
 	private WebMarkupContainer phoneListPanelContainer;
-	/**
-	 * @param id
-	 */
-	public PhoneList(String id,PhoneContainerForm containerForm,WebMarkupContainer listContainer,WebMarkupContainer detailPanelContainer) {
+	private ContainerForm subjectContainerForm;
+
+	
+	public PhoneList(String id,ContainerForm containerForm,WebMarkupContainer listContainer,WebMarkupContainer detailPanelContainer) {
 		super(id);
-		this.phoneContainerForm = containerForm;
+		this.subjectContainerForm = containerForm;
 		this.phoneListPanelContainer = listContainer;
 		this.phoneDetailPanelContainer = detailPanelContainer;
 	}
@@ -76,8 +74,9 @@ public class PhoneList extends Panel{
 		AjaxLink link = new AjaxLink("phoneNumber") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				SubjectVO subjectVO = phoneContainerForm.getModelObject();
-				subjectVO.setPhone(phone);
+				//SubjectVO subjectVO = phoneContainerForm.getModelObject();//In order to get to the ModelObject we have created a new PhoneContainerForm and gain access to it
+				subjectContainerForm.getModelObject().setPhone(phone);
+				//subjectVO.setPhone(phone);
 				phoneDetailPanelContainer.setVisible(true);
 				phoneListPanelContainer.setVisible(false);
 				
