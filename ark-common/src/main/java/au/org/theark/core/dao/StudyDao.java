@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -49,7 +50,7 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	public List<Study> getStudy(Study study)
 	{
 		
-		
+	
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
 		if(study.getStudyKey() != null){
@@ -174,17 +175,22 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	 */
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 
-		
 		StringBuffer hqlString =	new StringBuffer();
 		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study, linkSubStudy.subjectUID");
 		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
 		hqlString.append(" where linkSubStudy.study.studyKey = ");
 		hqlString.append( subjectVO.getStudy().getStudyKey());
 		
-		//TODO This should be the Subject UID or ID, this field will need to be in LinkSubjectStudy table
 		if(subjectVO.getPerson().getPersonKey() != null){
 			hqlString.append(" and linkSubStudy.person.personKey = ");
 			hqlString.append( subjectVO.getPerson().getPersonKey());
+		}
+		
+		if(subjectVO.getSubjectUID() != null  && subjectVO.getSubjectUID().length() > 0){
+			hqlString.append(" and linkSubStudy.subjectUID = ");
+			hqlString.append("\'");
+			hqlString.append( subjectVO.getSubjectUID());
+			hqlString.append("\'");
 		}
 		
 		if(subjectVO.getPerson().getFirstName() != null){
@@ -226,39 +232,46 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		Query query = getSession().createQuery(hqlString.toString());
 		List<Object[]> list  = query.list();
 		
-		Collection<SubjectVO> subjectList = new ArrayList<SubjectVO>();
+		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
 		
 		if(list.size() > 0){
+			
+			SubjectVO subject = null;
+			
 			log.info("Number of rows fetched " + list.size());
 			//The Length is determined by the number of select columns specified in the hqlString above
 			for (Object[] objects : list) {
 				if(objects.length > 0 && objects.length == 5){
 					
-					SubjectVO subject = new SubjectVO();
-					Person person =(Person) objects[0];
-					subject.setPerson(person);
-					
-					SubjectStatus status = (SubjectStatus) objects[1];
-					subject.setSubjectStatus(status);
-					
+					subject = new SubjectVO();
+					subject.setPerson((Person) objects[0]);
+					subject.setSubjectStatus((SubjectStatus) objects[1]);
 					subject.setLinkSubjectStudyId((Long)objects[2]);
-					subjectList.add(subject);
-					
 					subject.setStudy((Study)objects[3]);
-					
 					subject.setSubjectUID((String)objects[4]);
 					
-					for (Phone phone : person.getPhones()) {
+					for (Phone phone : subject.getPerson().getPhones()) {
+						PhoneType phoneType = phone.getPhoneType();
+						phoneType.setName(phoneType.getName());
+						phoneType.setDescription(phoneType.getDescription());
+						
+						phone.setPhoneType(phoneType);
 						subject.getPhoneList().add(phone);
 					}
-				
+					subjectVOList.add(subject);
 				}
-				
 			}
-			log.info("Size : " + subjectList.size());
+			log.info("Size : " + subjectVOList.size());
 		}
-
-		return subjectList;
+		return subjectVOList;
+	}
+	
+	
+	public List<Phone> getPhonesForPerson(Person person){
+		
+		Criteria personCriteria  = getSession().createCriteria(Phone.class);
+		personCriteria.add(Restrictions.eq("person", person));//Filter the phones linked to this personID/Key
+		return personCriteria.list();
 	}
 	
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
