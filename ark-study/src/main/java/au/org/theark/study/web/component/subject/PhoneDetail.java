@@ -13,10 +13,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
 import au.org.theark.study.web.component.subject.form.PhoneForm;
 
@@ -33,7 +33,8 @@ public class PhoneDetail extends Panel{
 	private PageableListView<Phone> pageableListView;
 	private WebMarkupContainer phoneListContainer;
 	private WebMarkupContainer phoneDetailPanelContainer;
-	
+	//Subject
+	private ContainerForm subjectContainerForm;
 	
 	@SpringBean(name ="studyService")
 	private IStudyService studyService;
@@ -56,27 +57,29 @@ public class PhoneDetail extends Panel{
 		this.phoneListContainer = phoneListContainer;
 		this.phoneDetailPanelContainer = phoneDetailPanelContainer;
 	}
+
+	public PhoneDetail(	String id,ContainerForm containerForm, PageableListView<Phone> pageableListView, WebMarkupContainer phoneListContainer, 
+			WebMarkupContainer phoneDetailPanelContainer, FeedbackPanel feedBackPanel){
+
+		super(id);
+		subjectContainerForm = containerForm;
+		this.feedBackPanel = feedBackPanel;
+		this.pageableListView = pageableListView;
+		this.phoneListContainer = phoneListContainer;
+		this.phoneDetailPanelContainer = phoneDetailPanelContainer;
+	}
 	
 	@SuppressWarnings("serial")
 	public void initialisePanel(){
 		
-		phoneForm = new PhoneForm("phoneForm", phoneContainerForm, pageableListView,phoneListContainer,phoneDetailPanelContainer, feedBackPanel){
+		//Changed from phoneContainerForm to subjectContainerForm
+		phoneForm = new PhoneForm("phoneForm", subjectContainerForm, pageableListView,phoneListContainer,phoneDetailPanelContainer, feedBackPanel){
 			
 			protected void onSave(SubjectVO subjectVO, AjaxRequestTarget target){
 				//Save or Update the Phone detail
 				if(subjectVO.getPhone().getPhoneKey() == null){
-					//New 
-//					try {
-//						studyService.create(subjectVO.getPhone());
-//						//Hide the details and unhide the list and refresh it
-//						
-//						processFeedback(target);
-//					} catch (ArkSystemException e) {
-//					
-//						this.error("A System error occured cannot create the phone item.");
-//					}
+
 				}else{
-					//Update
 				}
 			}
 			
