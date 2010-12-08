@@ -6,19 +6,13 @@
  */
 package au.org.theark.study.web.component.subject;
 
-import java.util.Collection;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.DetailsForm;
@@ -41,6 +35,7 @@ public class Details extends Panel {
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer phoneListWebMarkupContainer;
 	private ContainerForm containerForm;
 	private Study study;
 
@@ -54,6 +49,7 @@ public class Details extends Panel {
 					FeedbackPanel feedBackPanel,
 					WebMarkupContainer detailsContainer,
 					WebMarkupContainer searchPanelContainer,
+					WebMarkupContainer phoneListWebMarkupContainer,
 					ContainerForm containerForm) {
 		
 		super(id);
@@ -62,28 +58,12 @@ public class Details extends Panel {
 		this.detailsContainer = detailsContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.containerForm = containerForm;
+		this.phoneListWebMarkupContainer = phoneListWebMarkupContainer;
 	}
 	
 	public void initialisePanel(){
 		
-		detailsForm = new DetailsForm("detailsForm",this,listContainer,detailsContainer,searchPanelContainer,containerForm, feedBackPanel){
-			
-			protected void onCancel(AjaxRequestTarget target){
-//				SubjectVO subjectVO = new SubjectVO();
-//				containerForm.setModelObject(subjectVO);
-//				searchPanelContainer.setVisible(true);
-//				detailsContainer.setVisible(false);
-//				listContainer.setVisible(false);
-//				target.addComponent(searchPanelContainer);
-//				target.addComponent(detailsContainer);
-//				target.addComponent(feedBackPanel);
-			}
-			
-			protected void processErrors(AjaxRequestTarget target){
-				target.addComponent(feedBackPanel);
-			}
-		};
-		
+		detailsForm = new DetailsForm("detailsForm",this,listContainer,detailsContainer,searchPanelContainer,phoneListWebMarkupContainer,containerForm, feedBackPanel);
 		detailsForm.initialiseForm();
 		add(detailsForm);
 	}
