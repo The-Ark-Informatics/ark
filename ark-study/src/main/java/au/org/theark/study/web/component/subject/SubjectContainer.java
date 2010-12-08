@@ -36,6 +36,9 @@ public class SubjectContainer extends Panel{
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer resultListContainer;//Search Results Container
+	private WebMarkupContainer markupContainerPhoneList;//Phone List Markup Container
+	//private WebMarkupContainer phoneDetailPanelContainer;
+	
 	private IModel<Object> iModel;
 	private PageableListView<SubjectVO> pageableListView;
 	private FeedbackPanel feedBackPanel;
@@ -63,19 +66,28 @@ public class SubjectContainer extends Panel{
 		resultListContainer = new WebMarkupContainer("resultListContainer");
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
 		resultListContainer.setVisible(true);
+		
+		/* Contains the List of Phone Numbers. This is required on the SearchResult Panel of Subject to refresh the PhoneList to avoid LazyLoadException */
+		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
+		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
+		markupContainerPhoneList.setVisible(true);
+
+		//phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
+		//phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
+		//phoneDetailPanelContainer.setVisible(false);
 	}
 	
 	private WebMarkupContainer initialiseSearchPanel(){
 		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Collection<SubjectVO> list = new ArrayList<SubjectVO>();
+		Collection<SubjectVO> subjectVOCollection = new ArrayList<SubjectVO>();
 		
 		if(sessionStudyId != null && sessionStudyId > 0){
 			
 			containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
-			list = iArkCommonService.getSubject(containerForm.getModelObject());	
+			subjectVOCollection = iArkCommonService.getSubject(containerForm.getModelObject());	
 		}
-		containerForm.getModelObject().setSubjectList(list);
+		containerForm.getModelObject().setSubjectList(subjectVOCollection);
 		
 		searchPanel = new Search(	"searchPanel", 
 									feedBackPanel, 
@@ -99,7 +111,7 @@ public class SubjectContainer extends Panel{
 	}
 	
 	private WebMarkupContainer initialiseDetailPanel(){
-		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailsContainer, searchWebMarkupContainer, containerForm);
+		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailsContainer, searchWebMarkupContainer, markupContainerPhoneList,containerForm);
 		detailsPanel.initialisePanel();
 		detailsContainer.add(detailsPanel);
 		return detailsContainer;
@@ -109,7 +121,7 @@ public class SubjectContainer extends Panel{
 	
 	private WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultsPanel = new SearchResults("resultsPanel", detailsContainer, searchWebMarkupContainer, containerForm, resultListContainer, detailsPanel);
+		searchResultsPanel = new SearchResults("resultsPanel", detailsContainer, searchWebMarkupContainer, containerForm, resultListContainer, detailsPanel,markupContainerPhoneList);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
