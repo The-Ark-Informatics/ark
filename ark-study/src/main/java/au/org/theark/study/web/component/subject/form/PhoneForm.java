@@ -33,8 +33,8 @@ import au.org.theark.study.web.Constants;
  */
 public class PhoneForm extends Form{
 	
-	private PhoneContainerForm phoneContainerForm;
-	
+	//private PhoneContainerForm phoneContainerForm;
+	private ContainerForm subjectContainerForm;
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private TextField<String> phoneIdTxtFld;
@@ -60,13 +60,14 @@ public class PhoneForm extends Form{
 	 * @param id
 	 */
 	public PhoneForm(	String id,
-						PhoneContainerForm containerForm, 
+						ContainerForm containerForm,
+						//PhoneContainerForm containerForm, 
 						PageableListView<Phone> pageableListView, 
 						WebMarkupContainer phoneListContainer,
 						WebMarkupContainer detailPanelContainer,
 						FeedbackPanel feedbackPanel){
 		super(id);
-		this.phoneContainerForm = containerForm;
+		this.subjectContainerForm = containerForm;
 		this.pageableListView = pageableListView;
 		this.phoneListContainer = phoneListContainer;
 		this.detailPanelContainer = detailPanelContainer;
@@ -75,7 +76,7 @@ public class PhoneForm extends Form{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onPhoneAddCancel(phoneContainerForm.getModelObject(), target);
+				onPhoneAddCancel(subjectContainerForm.getModelObject(), target);
 				
 			}
 		};
@@ -84,7 +85,7 @@ public class PhoneForm extends Form{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onPhoneAdd(phoneContainerForm.getModelObject(), target);	
+				onPhoneAdd(subjectContainerForm.getModelObject(), target);	
 				//Hide the Detail Panel for Phone and make the List display with the new result
 			}
 			
@@ -106,7 +107,7 @@ public class PhoneForm extends Form{
 	}
 	
 	protected void onPhoneAddCancel(SubjectVO subjectVO, AjaxRequestTarget target){
-		phoneContainerForm.getModelObject().setPhone(new Phone());
+		subjectContainerForm.getModelObject().setPhone(new Phone());
 		phoneListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
 		target.addComponent(phoneListContainer);
@@ -116,7 +117,7 @@ public class PhoneForm extends Form{
 	protected void onPhoneAdd(SubjectVO subjectVO, AjaxRequestTarget target){
 		Phone phone = subjectVO.getPhone();
 		if(phone.getPhoneKey() == null){
-			subjectVO.getPhoneList().add(phone);	
+			subjectContainerForm.getModelObject().getPhoneList().add(phone);	
 		}
 		pageableListView.removeAll();
 		phoneListContainer.setVisible(true);
