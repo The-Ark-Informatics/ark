@@ -212,24 +212,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		//Add Business Validations here as well apart from UI validation
 		Session session = getSession();
 		Person person  = subjectVO.getPerson();
-		
-		
-		if(subjectVO.getPhoneList() != null && subjectVO.getPhoneList().size() > 0){
+		if(subjectVO.getPerson().getPhones() != null && subjectVO.getPhoneList().size() > 0){
 			Collection<Phone> phonesList = subjectVO.getPhoneList();
 			for (Phone phone : phonesList) {
 				phone.setPerson(person);
 				person.getPhones().add(phone);
 			}
 		}
-		//Add the person
-		session.save(person);
 		
+		session.save(person); //Save the Person and associated Phones
 		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 		linkSubjectStudy.setPerson(person);
 		linkSubjectStudy.setStudy(subjectVO.getStudy());
 		linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
 		linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
-		session.save(linkSubjectStudy);
+		
+		session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
 		
 	}
 	
@@ -240,10 +238,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		try{
 			
 			Session session = getSession();
-			
 			//Update the Person Details
 			Person person  = subjectVO.getPerson();
-			
 			if(subjectVO.getPhoneList() != null && subjectVO.getPhoneList().size() > 0){
 				Collection<Phone> phonesList = subjectVO.getPhoneList();
 				for (Phone phone : phonesList) {
@@ -252,22 +248,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				}
 			}
 			
-			
-			session.update(person);//Personal Details of Subject updated
-			
+			session.update(person);//Update Person and associated Phones
 			//Get the LinkSubjectStudy reference based on the id
 			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(subjectVO.getLinkSubjectStudyId());	
 			//Update this linkSubjectStudy instance with any details the user may have changed from front end
 			linkSubjectStudy.setStudy(subjectVO.getStudy());
 			//No need to set Person here since, there would not be a change to the actual person ID primary key
 			linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
-			
 			//Update the instance
 			session.update(linkSubjectStudy);
 			
 		}catch(EntityNotFoundException entityNotFound){
 			log.error("The LinkSubjectStudy entity does not exist to update this subject " );
 			//Throw an appropriate exception to the user
+		}catch(Exception  ae){
+			log.error("A System Exception occured while update of Subject " + ae.getStackTrace());
+			//TODO throw ArkSystemException back to caller
 		}
 		
 	}
