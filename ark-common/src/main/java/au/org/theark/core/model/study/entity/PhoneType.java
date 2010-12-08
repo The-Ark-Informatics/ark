@@ -2,7 +2,7 @@ package au.org.theark.core.model.study.entity;
 
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -74,7 +74,7 @@ public class PhoneType implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "phoneType")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "phoneType")
 	public Set<Phone> getPhones() {
 		return this.phones;
 	}
