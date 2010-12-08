@@ -228,7 +228,8 @@ public class DetailForm extends Form<StudyModelVO>{
 		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
 		dateOfApplicationDp.setChangeMonth(true);
 		dateOfApplicationDp.setChangeYear(true);
-		dateOfApplicationDp.setDateFormat("dd/mm/yy").getLocale();
+		//dateOfApplicationDp.setDateFormat("dd/mm/yy").getLocale();
+		dateOfApplicationDp.setDateFormat("dd/mm/yy");
 		initPalette();
 		
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO> )containerForm.getModel(); //details.getCpm();
