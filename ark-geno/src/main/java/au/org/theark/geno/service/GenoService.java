@@ -247,9 +247,11 @@ public class GenoService implements IGenoService {
 		// All transactions will be rolled back
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = currentUser.getPrincipal().toString();	//use Shiro to get username
+		log.info("GWAS Import test started for user: " + userId);
 		Date dateNow = new Date(System.currentTimeMillis());
 		Long studyId = new Long(Constants.TEST_STUDY_ID); 
 		
+		/*
 		MarkerType markerType = gwasDao.getMarkerType("SNP");
 		MarkerGroup markerGroup = new MarkerGroup();
 		markerGroup.setStudy(arkCommonService.getStudy(studyId));
@@ -283,7 +285,7 @@ public class GenoService implements IGenoService {
 		catch (GenoSystemException gse) {
 			log.error("Well something didn't go right. " + gse);
 		}
-		
+		*/
 	}
 	
 	/** 
