@@ -12,7 +12,8 @@
 
     <context:component-scan base-package="au.org.theark.geno.model.dao"/>
     <context:component-scan base-package="au.org.theark.geno.service"/>
-    <context:component-scan base-package="au.org.theark.geno.web.component.geno"/>
-    
+    <context:component-scan base-package="au.org.theark.geno.web.component.genoCollection"/>
+    <context:component-scan base-package="au.org.theark.geno.web.component.test"/>  
+    <!--  context:component-scan base-package="au.org.theark.geno.web.component.test.servlet"/> -->  
 	
 </beans>
