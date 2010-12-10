@@ -47,7 +47,7 @@ public interface IMapDataAcceptor {
 	/**
 	 * Called when all data is provided and ready to be synchronised
 	 * (e.g. committed to database, written to file)
-	 * If the commit fails, then the an exception can be thrown.
+	 * If the sync fails, then the an exception can be thrown.
 	 */
 	void sync() throws DataAcceptorIOException;
 	

@@ -59,26 +59,29 @@ public interface IPedDataAcceptor {
 
 	//long getMarkerName();
 	/**
-	 * Called to move to a marker in preparation to accept the genotype 
+	 * Called to set a marker in preparation to accept the genotype 
 	 */
-	void gotoMarkerName(String markerName);
+	void setMarkerName(String markerName);
 
 	//long getAllele1();
 	/**
 	 * Called to accept an allele 1 at the current marker position
+	 * @param markerIdx 
 	 */
 	void setAllele1(String allele1);
 	
 	//long getAllele2();
 	/**
 	 * Called to accept an allele 1 at the current marker position
+	 * @param markerIdx 
 	 */
 	void setAllele2(String allele2);
 
 	/**
-	 * Called when all data is provided and ready to be committed to storage.
-	 * If the commit fails, then the an exception can be thrown.
+	 * Called when all data is provided and ready to be synchronised
+	 * (e.g. committed to database, written to file)
+	 * If the sync fails, then the an exception can be thrown.
 	 */
-	void commit() throws DataAcceptorIOException;
-	
+	void sync() throws DataAcceptorIOException;
+
 }

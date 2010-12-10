@@ -3,18 +3,17 @@ package au.org.theark.geno.util;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.csvreader.CsvReader;
 
 import au.org.theark.geno.exception.DataAcceptorIOException;
 import au.org.theark.geno.exception.FileFormatException;
 import au.org.theark.geno.exception.GenoSystemException;
+
+import com.csvreader.CsvReader;
 
 
 /**
@@ -27,49 +26,73 @@ import au.org.theark.geno.exception.GenoSystemException;
  */
 public class PedMapImport {
 	
-	private char minorAllele;
-	private char majorAllele;
-	private char basisAllele;
-	private int basisCount;
-	private String markerName;
-	private long markerPosition;
-	private int markerChromosome;
-	
-	//private double progress;
 	private long subjectCount;
-	private long markerCount;
-	private double speed;
+	private int markerCount;	// assumes #(markers) < (2^31)-1 (about 2e09);
 	private long curPos;
 	private long srcLength = -1;	// -1 means nothing being processed
-	private StopWatch timer = null;
+
 	private char mapDelimChr = '\t';	//default map file delimiter: TAB
 	private char pedDelimChr = ' ';		//default ped file delimiter: SPACE
 	
+	private StopWatch timer = null;
+	
+	private ArrayList<String> markerIdList = null;
+	
 	private IMapDataAcceptor mapPipe = null;
-	private IPedDataAcceptor pedStorage = null;
+	private IPedDataAcceptor pedPipe = null;
 	
 	static Logger log = LoggerFactory.getLogger(PedMapImport.class);
 	
-	public void setMapStorage(IMapDataAcceptor mapStorage) {
-		this.mapPipe = mapStorage;
-	}
-
+	/**
+	 * Get the Map Data Acceptor object
+	 */
 	public IMapDataAcceptor getMapStorage() {
 		return mapPipe;
 	}
 	
-	public void setPedStorage(IPedDataAcceptor pedStorage) {
-		this.pedStorage = pedStorage;
+	/**
+	 * Set the Map Data Acceptor object
+	 * @param mapStorage
+	 */
+	public void setMapStorage(IMapDataAcceptor mapStorage) {
+		this.mapPipe = mapStorage;
 	}
 
+	/**
+	 * Get the Ped Data Acceptor object
+	 */
 	public IPedDataAcceptor getPedStorage() {
-		return pedStorage;
+		return pedPipe;
 	}
 	
 	/**
-	 * 
+	 * Set the Ped Data Acceptor object
+	 * @param mapStorage
+	 */
+	public void setPedStorage(IPedDataAcceptor pedStorage) {
+		this.pedPipe = pedStorage;
+	}
+
+	public char getMapDelimChr() {
+		return mapDelimChr;
+	}
+
+	public void setMapDelimChr(char mapDelimChr) {
+		this.mapDelimChr = mapDelimChr;
+	}
+
+	public char getPedDelimChr() {
+		return pedDelimChr;
+	}
+
+	public void setPedDelimChr(char pedDelimChr) {
+		this.pedDelimChr = pedDelimChr;
+	}
+
+	/**
+	 * Default constructor
 	 * @param mapStore is required for defining where the marker data is to go
-	 * @param pedStore is required for 
+	 * @param pedStore is required for defining where the pedigree data is to go
 	 */
 	public PedMapImport(IMapDataAcceptor aMapStore, IPedDataAcceptor aPedStore) {
 		setMapStorage(aMapStore);
@@ -89,15 +112,20 @@ public class PedMapImport {
 		if (mapPipe == null) {
 			throw new GenoSystemException("Aborting: Must have a Map Data Acceptor object defined before calling.");
 		}
-		
-		//File file = new File(mapFilePath);
+
+		// Reset counters/indices
 		curPos = 0;
+		markerCount = 0;
+		// see ArrayList memory pre-allocation code further below
+		markerIdList = new ArrayList<String>();
 
 		InputStreamReader isr = null;
 		CsvReader csvRdr = null;
-		
-		DecimalFormat twoPlaces = new DecimalFormat("0.00");
 
+		// Map import assumptions:
+		// - all markers must have unique Ids
+		// - it is possible for some markers to have the same position
+		//   (e.g. markers are yet to be merged)
 		try {
 			isr = new InputStreamReader(mapInStream);
 			csvRdr = new CsvReader(isr, mapDelimChr);
@@ -118,13 +146,20 @@ public class PedMapImport {
 				// the variables defined above
 				newLine = csvRdr.getValues();
 				try {
-					mapPipe.init();
 					if (newLine.length < 3) {
-						// non-compliant map file
+						// non-compliant Map file
 						throw new FileFormatException("The specified file does not appear to conform to the Map file format.");
 					}
 					else
 					{
+						mapPipe.init();
+						// ArrayList memory pre-allocation after reading 1st line of file
+						if (markerCount == 1) {
+							// (over-)estimate the number of markers
+							int minCapacity = (int) (1.5 * srcLength / curPos);
+							markerIdList.ensureCapacity(minCapacity);
+						}
+
 						for (int i = 0; i < newLine.length; i++) {
 							String cellData = newLine[i];
 							/* Debug only - Show data
@@ -141,6 +176,7 @@ public class PedMapImport {
 							case 1:
 								// second column should be the marker id
 								mapPipe.setMarkerName(cellData);
+								markerIdList.add(cellData);
 								break;
 							case 2:
 								// third column should be the genetic distance (morgans)
@@ -156,12 +192,11 @@ public class PedMapImport {
 								log.debug("Warning: more than expected number of columns for a map file");
 								continue;
 							}
-								
 							curPos += cellData.length() + 1;	//update progress
 						}
+						markerCount++;
+						mapPipe.sync();
 					}
-					markerCount++;
-					mapPipe.sync();
 				}
 				catch (DataAcceptorIOException ex) {
 					log.error("Failure during call to data acceptor: ", ex);
@@ -181,8 +216,8 @@ public class PedMapImport {
 		finally {
 			// Clean up the IO objects
 			timer.stop();
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + twoPlaces.format(timer.getTime()/1000.0) + " s");
-			log.info("Total file size: " + srcLength + " B or " + twoPlaces.format(srcLength / 1024.0 / 1024.0 ) + " MB");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + au.org.theark.geno.service.Constants.TWO_DECPLACES.format(timer.getTime()/1000.0) + " s");
+			log.info("Total file size: " + srcLength + " B or " + au.org.theark.geno.service.Constants.TWO_DECPLACES.format(srcLength / 1024.0 / 1024.0 ) + " MB");
 			if (timer != null)
 				timer = null;
 			if (csvRdr != null) {
@@ -219,10 +254,146 @@ public class PedMapImport {
 	 */
 	public void processPed(InputStream pedInStream, long inLength) throws FileFormatException, GenoSystemException {
 
-		if (pedStorage == null) {
+		if (pedPipe == null) {
 			throw new NullPointerException("Must have a Ped Data Acceptor object defined before calling.");
 		}
+		// Reset counters/indices
+		curPos = 0;
+		subjectCount = 0;
+		int markerIdx = 0;
 
+		InputStreamReader isr = null;
+		CsvReader csvRdr = null;
+		
+		boolean firstInPair = true;
+		// Ped import assumptions:
+		// - all bi-allelic genotypes are separated by the default delimiter.
+		// - if for some reason the marker Id re-occurs in the list, then
+		//   the the genotype for the last occurrence will apply.
+		try {
+			isr = new InputStreamReader(pedInStream);
+			csvRdr = new CsvReader(isr, pedDelimChr);
+			String[] newLine;
+			
+			//srcLength = file.length();
+			srcLength = inLength;
+			if (srcLength <= 0) {
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+				//return;
+			}
+
+			timer = new StopWatch();
+			timer.start();
+			
+			while(csvRdr.readRecord()) {
+				// do something with the newline to put the data into
+				// the variables defined above
+				newLine = csvRdr.getValues();
+				try {
+					if (newLine.length < 6) {
+						// non-compliant Ped file
+						throw new FileFormatException("The specified file does not appear to conform to the Ped file format.");
+					}
+					else
+					{
+						markerIdx = 0;
+						pedPipe.init();
+
+						for (int i = 0; i < newLine.length; i++) {
+							String cellData = newLine[i];
+							/* Debug only - Show data
+							if (i < newLine.length - 1)
+								log.debug(cellData + ",");
+							else
+								log.debug(cellData);
+							*/
+							switch (i) {
+							case 0:
+								// first column should be the family id
+								pedPipe.setFamilyId(cellData);
+								break;
+							case 1:
+								// second column should be the individual id
+								pedPipe.setIndivId(cellData);
+								break;
+							case 2:
+								// third column should be the paternal (father) id
+								pedPipe.setFatherId(cellData);
+								break;
+							case 3:
+								// fourth column should be the maternal (mother) id
+								pedPipe.setMotherId(cellData);
+								break;
+							case 4:
+								// fifth column should be the sex (gender)
+								pedPipe.setGender(cellData);
+								break;								
+							case 5:
+								// sixth column should be a phenotype status 
+								pedPipe.setPhenotype(cellData);
+								break;
+								
+							default:
+								// additional columns should correspond to the genotyped pair of   
+								// alleles per marker (assumes human studies, i.e. bi-allelic)
+								pedPipe.setMarkerName(markerIdList.get(markerIdx));
+								if (firstInPair) {
+									pedPipe.setAllele1(cellData);
+								}
+								else {
+									pedPipe.setAllele2(cellData);
+									// keep track of which marker we are up to
+									markerIdx++;
+								}
+								// toggle variable to prepare for accepting the next allele in the pair
+								firstInPair = !firstInPair;
+							}
+
+							curPos += cellData.length() + 1;	//update progress
+						}
+						subjectCount++;
+						pedPipe.sync();
+					}
+				}
+				catch (DataAcceptorIOException ex) {
+					log.error("Failure during call to data acceptor: ", ex);
+				}
+			}
+		}
+		catch (IOException ioe) {
+			log.error("processMap IOException stacktrace:", ioe);
+			throw new GenoSystemException("Unexpected I/O exception whilst reading the map data");
+		}
+		catch (Exception ex) {
+			log.error("processMap Exception stacktrace:", ex);
+			throw new GenoSystemException("Unexpected exception occurred when trying to process map data");			
+		}
+		finally {
+			// Clean up the IO objects
+			timer.stop();
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + au.org.theark.geno.service.Constants.TWO_DECPLACES.format(timer.getTime()/1000.0) + " s");
+			log.info("Total file size: " + srcLength + " B or " + au.org.theark.geno.service.Constants.TWO_DECPLACES.format(srcLength / 1024.0 / 1024.0 ) + " MB");
+			if (timer != null)
+				timer = null;
+			if (csvRdr != null) {
+				try {
+					csvRdr.close();					
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (isr != null) {
+				try {
+					isr.close();
+				}
+				catch (Exception ex) {
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}				
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
 	}
 	
 	/**
