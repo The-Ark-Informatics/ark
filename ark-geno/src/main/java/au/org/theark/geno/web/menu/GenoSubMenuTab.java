@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import mx4j.log.Log;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
@@ -18,9 +20,9 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.geno.web.Constants;
+import au.org.theark.geno.web.component.genoCollection.GenoCollectionContainerPanel;
+import au.org.theark.geno.web.component.genoCollection.SearchPanel;
 import au.org.theark.geno.web.component.test.TestContainerPanel;
-import au.org.theark.geno.web.component.upload.GenoCollectionContainerPanel;
-import au.org.theark.geno.web.component.upload.SearchPanel;
 
 
 public class GenoSubMenuTab extends Panel {
@@ -42,13 +44,13 @@ public class GenoSubMenuTab extends Panel {
 		
 		//THis way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName("Upload");
-		menuModule.setResourceKey("tab.module.geno.upload");
+		menuModule.setModuleName(Constants.GENO_SUBMENU_COLLECTION);
+		menuModule.setResourceKey(Constants.GENO_RESOURCEKEY_COLLECTION);
 		moduleTabs.add(menuModule);
 
 		menuModule = new MenuModule();
-		menuModule.setModuleName("Test");
-		menuModule.setResourceKey("tab.module.geno.test");
+		menuModule.setModuleName(Constants.GENO_SUBMENU_TEST);
+		menuModule.setResourceKey(Constants.GENO_RESOURCEKEY_TEST);
 		moduleTabs.add(menuModule);
 
 		
@@ -59,22 +61,28 @@ public class GenoSubMenuTab extends Panel {
 			moduleSubTabsList.add( new AbstractTab(new ResourceModel(moduleName.getResourceKey(), moduleName.getModuleName()) )
 			{
 				
-//				public boolean isVisible(){
-//					
-//					boolean flag = false;
-//					if(moduleName.getModuleName().equalsIgnoreCase(Constants.TEST)){
-//						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
-//						Subject currentUser = SecurityUtils.getSubject();
-//						if((arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN))){
-//							 flag =  currentUser.isAuthenticated();	 
-//						}else{
-//							 flag = false;
-//						}
-//					}else{
-//						flag=true;
-//					}
-//					return flag;
-//				}
+				public boolean isVisible() {
+					
+					boolean flag = false;
+					// only super-admins have access to the Test sub-menu
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.GENO_SUBMENU_TEST)) {
+						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
+						Subject currentUser = SecurityUtils.getSubject();
+						if (arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN)) {
+							System.out.println("Used Ark super admin role");
+							flag =  currentUser.isAuthenticated();
+						} else if (arkSecurityManager.subjectHasRole(RoleConstants.GWAS_SUPER_ADMIN)) {
+							System.out.println("Used GWAS super admin role");
+							flag =  currentUser.isAuthenticated();	 
+						} else {
+							flag = false;
+						}
+						flag = true;	//TODO: Temporarily Super admin doesn't seem to work.  Turn on Test tab as default.
+					} else {
+						flag=true;
+					}
+					return flag;
+				}
 				
 				@Override
 				public Panel getPanel(String panelId) 
@@ -82,9 +90,9 @@ public class GenoSubMenuTab extends Panel {
 					
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
-					if(moduleName.getModuleName().equalsIgnoreCase("Test")) {
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.GENO_SUBMENU_TEST)) {
 						panelToReturn = new TestContainerPanel(panelId);
-					} else if(moduleName.getModuleName().equalsIgnoreCase("Upload")) {
+					} else if(moduleName.getModuleName().equalsIgnoreCase(Constants.GENO_SUBMENU_COLLECTION)) {
 						GenoCollectionContainerPanel genoColPanel = new GenoCollectionContainerPanel(panelId);
 						genoColPanel.initialisePanel();
 						panelToReturn = genoColPanel;
