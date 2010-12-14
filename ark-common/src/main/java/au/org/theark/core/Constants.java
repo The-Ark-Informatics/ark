@@ -120,4 +120,7 @@ public class Constants {
 	/* Search result list rows per page */
 	public static final int	ROWS_PER_PAGE	= 10;
 	public static final String	RESULT_LIST	= "resultList";
+	
+	/*Study Schema */
+	public static final String STUDY_SCHEMA="study";
 }
