@@ -40,6 +40,10 @@ public class Constants {
 	
 	/* Global constants */
 	public static final String STUDY_CONTEXT_ID="studyId";
+	public static final String PERSON_CONTEXT_ID="personId";
+	public static final String PERSON_TYPE="personType";
+	public static final String PERSON_CONTEXT_TYPE_SUBJECT= "subject";
+	public static final String PERSON_CONTEXT_TYPE_CONTACT= "contact";
 	
 	public static final String DD_MM_YYYY="dd/MM/yyyy";	//cap M is for month, low m is for minute 
 	
