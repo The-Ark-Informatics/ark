@@ -7,6 +7,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
@@ -108,6 +109,12 @@ public interface IStudyDao {
 	 * @throws EntityNotFoundException
 	 */
 	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException;
+	
+	/**
+	 * Get a list of Marital Status
+	 * @return
+	 */
+	public Collection<MaritalStatus> getMaritalStatus();
 	
 	
 

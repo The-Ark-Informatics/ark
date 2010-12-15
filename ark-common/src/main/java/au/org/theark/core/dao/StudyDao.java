@@ -12,7 +12,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -26,6 +25,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
@@ -53,8 +53,8 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
-		if(study.getStudyKey() != null){
-			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getStudyKey()));	
+		if(study.getId() != null){
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getId()));	
 		}
 		
 		if(study.getName() != null){
@@ -165,7 +165,12 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		Example example = Example.create(new SubjectStatus());
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
 		return criteria.list();
+	}
 	
+	public Collection<MaritalStatus> getMaritalStatus(){
+		Example example = Example.create(new MaritalStatus());
+		Criteria criteria = getSession().createCriteria(MaritalStatus.class).add(example);
+		return criteria.list();		
 	}
 	
 	/**
@@ -176,14 +181,14 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 
 		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.linkSubjectStudyKey, linkSubStudy.study, linkSubStudy.subjectUID");
+		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.id, linkSubStudy.study, linkSubStudy.subjectUID");
 		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
-		hqlString.append(" where linkSubStudy.study.studyKey = ");
-		hqlString.append( subjectVO.getStudy().getStudyKey());
+		hqlString.append(" where linkSubStudy.study.id = ");
+		hqlString.append( subjectVO.getStudy().getId());
 		
-		if(subjectVO.getPerson().getPersonKey() != null){
-			hqlString.append(" and linkSubStudy.person.personKey = ");
-			hqlString.append( subjectVO.getPerson().getPersonKey());
+		if(subjectVO.getPerson().getId() != null){
+			hqlString.append(" and linkSubStudy.person.id = ");
+			hqlString.append( subjectVO.getPerson().getId());
 		}
 		
 		if(subjectVO.getSubjectUID() != null  && subjectVO.getSubjectUID().length() > 0){
@@ -225,8 +230,8 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		}
 		
 		if(subjectVO.getSubjectStatus() != null){
-			hqlString.append(" and linkSubStudy.subjectStatus.subjectStatusKey = ");
-			hqlString.append(subjectVO.getSubjectStatus().getSubjectStatusKey());
+			hqlString.append(" and linkSubStudy.subjectStatus.id = ");
+			hqlString.append(subjectVO.getSubjectStatus().getId());
 		}
 		
 		Query query = getSession().createQuery(hqlString.toString());
@@ -250,14 +255,14 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 					subject.setStudy((Study)objects[3]);
 					subject.setSubjectUID((String)objects[4]);
 					
-					for (Phone phone : subject.getPerson().getPhones()) {
-						PhoneType phoneType = phone.getPhoneType();
-						phoneType.setName(phoneType.getName());
-						phoneType.setDescription(phoneType.getDescription());
-						
-						phone.setPhoneType(phoneType);
-						subject.getPhoneList().add(phone);
-					}
+//					for (Phone phone : subject.getPerson().getPhones()) {
+//						PhoneType phoneType = phone.getPhoneType();
+//						phoneType.setName(phoneType.getName());
+//						phoneType.setDescription(phoneType.getDescription());
+//						
+//						phone.setPhoneType(phoneType);
+//						subject.getPhoneList().add(phone);
+//					}
 					subjectVOList.add(subject);
 				}
 			}
@@ -277,7 +282,7 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
 		
 		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
-		linkSubjectStudyCriteria.add(Restrictions.eq("linkSubjectStudyKey",id));
+		linkSubjectStudyCriteria.add(Restrictions.eq("id",id));
 		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
 		if(listOfSubjects != null && listOfSubjects.size() > 0){
 			return listOfSubjects.get(0);
