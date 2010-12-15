@@ -29,7 +29,6 @@ import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.datepicker.DateOption;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
@@ -236,7 +235,7 @@ public class DetailForm extends Form<StudyModelVO>{
 		initStudyStatusDropDown(studyCmpModel);
 
 		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModelVO> )containerForm.getModel(),"study");
-		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectKey","autoGenSubId");
+		autoGenSubIdRdChoice = initRadioButtonChoice(pm,"autoGenerateSubjectUId","autoGenSubId");
 		autoConsentRdChoice = initRadioButtonChoice(pm,"autoConsent","autoConsent");
 		attachValidation();
 		studyIdTxtFld.setEnabled(false);
