@@ -3,12 +3,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
+
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
+import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.subject.SubjectContainer;
 
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the
@@ -21,6 +24,8 @@ import au.org.theark.study.web.Constants;
 	public class MainTabProviderImpl extends Panel implements  IMainTabProvider {
 
 	List<ITab> moduleTabsList;
+	//List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
+	
 	public MainTabProviderImpl(String panelId){
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
@@ -28,12 +33,15 @@ import au.org.theark.study.web.Constants;
 	
 	
 	public  List<ITab> buildTabs(){
+		
 		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
+		ITab tab2 = createTab(Constants.SUBJECT_MAIN_TAB);
 		moduleTabsList.add(tab1);
+		moduleTabsList.add(tab2);
 		return moduleTabsList;
 	}
 	
-	public ITab createTab(String tabName) {
+	public ITab createTab(final String tabName) {
 		
 		return  new AbstractTab(new Model<String>(tabName)) {
 			/**
@@ -45,10 +53,17 @@ import au.org.theark.study.web.Constants;
 			}
 			@Override
 			public Panel getPanel(String pid) {
-				return new StudySubMenuTab(pid);//The sub menus for Study 
+				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
+				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
+					panelToReturn =  new StudySubMenuTab(pid);//The sub menus for Study 
+				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
+					panelToReturn = new SubjectSubMenuTab(pid);
+				}
+				return panelToReturn;
 			}
 			
 		};
+		
 	}
 
 }
