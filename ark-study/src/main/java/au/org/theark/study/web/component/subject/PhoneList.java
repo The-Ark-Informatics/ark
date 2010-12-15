@@ -46,14 +46,14 @@ public class PhoneList extends Panel{
 				
 				Phone phone = item.getModelObject();
 				
-				if(phone.getPhoneKey() != null){
-					item.add(new Label("phoneKey",phone.getPhoneKey().toString()));
+				if(phone.getId() != null){
+					item.add(new Label("phoneKey",phone.getId().toString()));
 				}else{
 					item.add(new Label("phoneKey",""));
 				}
 				
 				if(phone.getAreaCode() != null){
-					item.add(new Label("areaCode",phone.getAreaCode().toString()));	
+					item.add(new Label("areaCode",phone.getAreaCode()));	
 				}else{
 					item.add(new Label("areaCode",""));
 				}
@@ -87,7 +87,7 @@ public class PhoneList extends Panel{
 		};
 		
 		//Add the label for the link
-		Label phoneNumberLabelLink = new Label("phonerNumberLblLink", phone.getPhoneNumber().toString());
+		Label phoneNumberLabelLink = new Label("phonerNumberLblLink", phone.getPhoneNumber());
 		link.add(phoneNumberLabelLink);
 		
 		return link;

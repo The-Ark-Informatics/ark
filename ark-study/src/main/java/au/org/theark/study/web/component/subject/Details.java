@@ -35,7 +35,6 @@ public class Details extends Panel {
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer phoneListWebMarkupContainer;
 	private ContainerForm containerForm;
 	private Study study;
 
@@ -49,7 +48,6 @@ public class Details extends Panel {
 					FeedbackPanel feedBackPanel,
 					WebMarkupContainer detailsContainer,
 					WebMarkupContainer searchPanelContainer,
-					WebMarkupContainer phoneListWebMarkupContainer,
 					ContainerForm containerForm) {
 		
 		super(id);
@@ -58,12 +56,12 @@ public class Details extends Panel {
 		this.detailsContainer = detailsContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.containerForm = containerForm;
-		this.phoneListWebMarkupContainer = phoneListWebMarkupContainer;
+		
 	}
 	
 	public void initialisePanel(){
 		
-		detailsForm = new DetailsForm("detailsForm",this,listContainer,detailsContainer,searchPanelContainer,phoneListWebMarkupContainer,containerForm, feedBackPanel);
+		detailsForm = new DetailsForm("detailsForm",this,listContainer,detailsContainer,searchPanelContainer,containerForm, feedBackPanel);
 		detailsForm.initialiseForm();
 		add(detailsForm);
 	}

@@ -77,7 +77,7 @@ public class PhoneDetail extends Panel{
 			
 			protected void onSave(SubjectVO subjectVO, AjaxRequestTarget target){
 				//Save or Update the Phone detail
-				if(subjectVO.getPhone().getPhoneKey() == null){
+				if(subjectVO.getPhone().getId() == null){
 
 				}else{
 				}

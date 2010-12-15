@@ -20,7 +20,6 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
@@ -35,7 +34,7 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer detailsPanelContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer searchResultContainer;
-	private WebMarkupContainer phoneListWebMarkupContainer;
+	//private WebMarkupContainer phoneListWebMarkupContainer;
 	private ContainerForm subjectContainerForm;
 	private Details detailsPanel;
 	
@@ -51,8 +50,7 @@ public class SearchResults extends Panel{
 							WebMarkupContainer searchPanelContainer,
 							ContainerForm containerForm,
 							WebMarkupContainer searchResultContainer,
-							Details detailPanel,
-							WebMarkupContainer markupContainerPhoneList) {
+							Details detailPanel) {
 		
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
@@ -60,7 +58,6 @@ public class SearchResults extends Panel{
 		this.searchResultContainer = searchResultContainer;
 		this.detailsPanel = detailPanel;
 		this.subjectContainerForm = containerForm;
-		this.phoneListWebMarkupContainer =markupContainerPhoneList;
 	}
 	
 	public PageableListView<SubjectVO> buildPageableListView(IModel iModel){
@@ -93,7 +90,7 @@ public class SearchResults extends Panel{
 				
 				item.add(new Label(Constants.PERSON_GENDER_TYPE_NAME,subject.getPerson().getGenderType().getName()));
 				
-				item.add(new Label(Constants.PERSON_VITAL_STATUS_NAME,subject.getPerson().getVitalStatus().getStatusName()));
+				item.add(new Label(Constants.PERSON_VITAL_STATUS_NAME,subject.getPerson().getVitalStatus().getName()));
 				
 				item.add(new Label(Constants.SUBJECT_STATUS_NAME,subject.getSubjectStatus().getName()));
 				
@@ -130,13 +127,13 @@ public class SearchResults extends Panel{
 				subjectVOInModel.setSubjectUID(subject.getSubjectUID());
 				subjectVOInModel.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
 				subjectVOInModel.setSubjectStatus(subject.getSubjectStatus());
-				subjectVOInModel.setPhoneList(subject.getPhoneList());
+				//subjectVOInModel.setPhoneList(subject.getPhoneList());
 				
-				PhoneList phoneListPanel  = (PhoneList) phoneListWebMarkupContainer.get("phoneListPanel");
-				PageableListView<Phone> phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
-				phonePageableListView.removeAll();
-				phoneListWebMarkupContainer.setVisible(true);
-				target.addComponent(phoneListWebMarkupContainer);
+//				PhoneList phoneListPanel  = (PhoneList) phoneListWebMarkupContainer.get("phoneListPanel");
+//				PageableListView<Phone> phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
+//				phonePageableListView.removeAll();
+//				phoneListWebMarkupContainer.setVisible(true);
+//				target.addComponent(phoneListWebMarkupContainer);
 				
 				detailsPanelContainer.setVisible(true);
 				searchResultContainer.setVisible(false);

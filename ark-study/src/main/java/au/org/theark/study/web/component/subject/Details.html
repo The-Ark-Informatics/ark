@@ -17,7 +17,7 @@
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="person.personKey" type="text" />
+					<input wicket:id="person.id" type="text" />
 				</div>
 			</div>
 			
@@ -207,12 +207,15 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					&nbsp;
+					<wicket:message key="maritalStatus">Marital Status:</wicket:message>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label" >
-					&nbsp;
+					<select wicket:id="person.maritalStatus">
+	       				<option>Single</option>
+	       				<option>Married</option>
+	       			</select>
 				</div>
 			</div>
 			
@@ -220,8 +223,8 @@
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
-			<!--  Add the Phone Container Panel here -->
-			<div wicket:id=phoneListContainer></div>
+			<!--  Add the Phone Container Panel here <div wicket:id=phoneListContainer></div> -->
+			
 			
 			
 			<!-- Row 4 Ends

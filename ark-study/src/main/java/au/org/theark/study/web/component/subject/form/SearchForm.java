@@ -131,7 +131,7 @@ public class SearchForm extends Form<SubjectVO>{
 		
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
-		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.STATUS_NAME, Constants.ID);
+		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS,vitalStatusPm,(List)vitalStatusList,vitalStatusRenderer);
 	}
 	
@@ -140,7 +140,7 @@ public class SearchForm extends Form<SubjectVO>{
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(subjectCpm,Constants.SUBJECT_STATUS);
 		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
-		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
+		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_ID);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
 	}
 	

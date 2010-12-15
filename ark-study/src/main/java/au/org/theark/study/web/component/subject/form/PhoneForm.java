@@ -116,7 +116,7 @@ public class PhoneForm extends Form{
 	
 	protected void onPhoneAdd(SubjectVO subjectVO, AjaxRequestTarget target){
 		Phone phone = subjectVO.getPhone();
-		if(phone.getPhoneKey() == null){
+		if(phone.getId() == null){
 			subjectContainerForm.getModelObject().getPhoneList().add(phone);	
 		}
 		pageableListView.removeAll();

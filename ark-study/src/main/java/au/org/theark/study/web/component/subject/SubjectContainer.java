@@ -36,7 +36,7 @@ public class SubjectContainer extends Panel{
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer resultListContainer;//Search Results Container
-	private WebMarkupContainer markupContainerPhoneList;//Phone List Markup Container
+	//private WebMarkupContainer markupContainerPhoneList;//Phone List Markup Container
 	//private WebMarkupContainer phoneDetailPanelContainer;
 	
 	private IModel<Object> iModel;
@@ -68,9 +68,9 @@ public class SubjectContainer extends Panel{
 		resultListContainer.setVisible(true);
 		
 		/* Contains the List of Phone Numbers. This is required on the SearchResult Panel of Subject to refresh the PhoneList to avoid LazyLoadException */
-		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
-		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
-		markupContainerPhoneList.setVisible(true);
+		//		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
+		//		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
+		//		markupContainerPhoneList.setVisible(true);
 
 		//phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
 		//phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
@@ -111,7 +111,7 @@ public class SubjectContainer extends Panel{
 	}
 	
 	private WebMarkupContainer initialiseDetailPanel(){
-		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailsContainer, searchWebMarkupContainer, markupContainerPhoneList,containerForm);
+		detailsPanel = new Details("detailsPanel", resultListContainer, feedBackPanel, detailsContainer, searchWebMarkupContainer, containerForm);
 		detailsPanel.initialisePanel();
 		detailsContainer.add(detailsPanel);
 		return detailsContainer;
@@ -121,7 +121,7 @@ public class SubjectContainer extends Panel{
 	
 	private WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultsPanel = new SearchResults("resultsPanel", detailsContainer, searchWebMarkupContainer, containerForm, resultListContainer, detailsPanel,markupContainerPhoneList);
+		searchResultsPanel = new SearchResults("resultsPanel", detailsContainer, searchWebMarkupContainer, containerForm, resultListContainer, detailsPanel);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;

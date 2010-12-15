@@ -18,16 +18,14 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -37,8 +35,6 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.Details;
-import au.org.theark.study.web.component.subject.PhoneList;
-import au.org.theark.study.web.component.subject.PhoneListContainer;
 
 /**
  * @author nivedann
@@ -60,10 +56,10 @@ public class DetailsForm extends Form<SubjectVO>{
 	
 	private ContainerForm subjectContainerForm;
 	
-	private PhoneListContainer phoneListContainer;
-	private PhoneList phoneListPanel;
-	private IModel<Object> iModel;
-	private PageableListView<Phone> phonePageableListView;
+//	private PhoneListContainer phoneListContainer;
+//	private PhoneList phoneListPanel;
+//	private IModel<Object> iModel;
+//	private PageableListView<Phone> phonePageableListView;
 	
 	private TextField<String> subjectIdTxtFld;
 	private TextField<String> firstNameTxtFld;
@@ -79,6 +75,7 @@ public class DetailsForm extends Form<SubjectVO>{
 	private DropDownChoice<VitalStatus> vitalStatusDdc;
 	private DropDownChoice<GenderType> genderTypeDdc;
 	private DropDownChoice<SubjectStatus> subjectStatusDdc;
+	private DropDownChoice<MaritalStatus> maritalStatusDdc;
 	
 	//TODO There will be mobile, email and address that will added via a component
 	
@@ -97,7 +94,7 @@ public class DetailsForm extends Form<SubjectVO>{
 						WebMarkupContainer listContainer,
 						WebMarkupContainer detailsContainer,
 						WebMarkupContainer searchPanelContainer,
-						WebMarkupContainer phoneListWebMarkupContainer,
+						//WebMarkupContainer phoneListWebMarkupContainer,
 						ContainerForm containerForm, 
 						FeedbackPanel feedbackPanel	) {
 		super(id);
@@ -106,7 +103,7 @@ public class DetailsForm extends Form<SubjectVO>{
 		this.detailPanelContainer = detailsContainer;
 		this.detailFeedbackPanel = feedbackPanel;
 		this.searchSubjectPanelContainer = searchPanelContainer;
-		this.phoneListMarkupContainer = phoneListWebMarkupContainer;
+		//this.phoneListMarkupContainer = phoneListWebMarkupContainer;
 		
 	
 		
@@ -123,14 +120,14 @@ public class DetailsForm extends Form<SubjectVO>{
 				detailPanelContainer.setVisible(false);
 				resultListContainer.setVisible(false);
 				
-				phoneDetailPanelContainer.setVisible(false);
-				phoneListMarkupContainer.setVisible(true);
+				//phoneDetailPanelContainer.setVisible(false);
+				//phoneListMarkupContainer.setVisible(true);
 				
 				target.addComponent(searchSubjectPanelContainer);
 				target.addComponent(detailPanelContainer);
 				target.addComponent(detailFeedbackPanel);
-				target.addComponent(phoneDetailPanelContainer);
-				target.addComponent(phoneListMarkupContainer);
+				//target.addComponent(phoneDetailPanelContainer);
+				//target.addComponent(phoneListMarkupContainer);
 				onCancel(target);
 			}
 		};
@@ -148,7 +145,7 @@ public class DetailsForm extends Form<SubjectVO>{
 				else{
 					study = iArkCommonService.getStudy(studyId);
 					
-					if(subjectContainerForm.getModelObject().getPerson().getPersonKey() == null || subjectContainerForm.getModelObject().getPerson().getPersonKey() == 0){
+					if(subjectContainerForm.getModelObject().getPerson().getId() == null || subjectContainerForm.getModelObject().getPerson().getId() == 0){
 						subjectContainerForm.getModelObject().setStudy(study);
 						studyService.createSubject(subjectContainerForm.getModelObject());
 						this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
@@ -157,19 +154,20 @@ public class DetailsForm extends Form<SubjectVO>{
 						this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
 					}
 					
-					//					Collection<SubjectVO> collectionOfSubject = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
-					//					for (SubjectVO subjectVO2 : collectionOfSubject) {
-					//						subjectContainerForm.setModelObject(subjectVO2);
-					//						break;
-					//					}
+					//Collection<SubjectVO> collectionOfSubject = iArkCommonService.getSubject(subjectContainerForm.getModelObject());
+					//for (SubjectVO subjectVO2 : collectionOfSubject) {
+					//subjectContainerForm.setModelObject(subjectVO2);
+					//break;
+					//}
 						
 					//gain access to the ListView in the markup container.
-					PhoneList phoneListPanel  = (PhoneList) phoneListMarkupContainer.get("phoneListPanel");
-					phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
-					phonePageableListView.removeAll();
-					phoneListMarkupContainer.setVisible(true);
+					// PhoneList phoneListPanel  = (PhoneList) phoneListMarkupContainer.get("phoneListPanel");
+					// phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
+					// phonePageableListView.removeAll();
+					// phoneListMarkupContainer.setVisible(true);
+					// target.addComponent(phoneListMarkupContainer);
 					detailPanelContainer.setVisible(true);
-					target.addComponent(phoneListMarkupContainer);
+
 					target.addComponent(detailPanelContainer);
 				}
 				target.addComponent(detailFeedbackPanel);
@@ -198,16 +196,16 @@ public class DetailsForm extends Form<SubjectVO>{
 	public void initialiseForm(){
 		
 		/* Contains the List of Phone Numbers */
-//		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
-//		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
-//		markupContainerPhoneList.setVisible(true);
+		//		markupContainerPhoneList = new WebMarkupContainer("phoneListMarkupContainer");
+		//		markupContainerPhoneList.setOutputMarkupPlaceholderTag(true);
+		//		markupContainerPhoneList.setVisible(true);
 		
 		phoneDetailPanelContainer = new WebMarkupContainer("phoneDetailMarkupContainer");
 		phoneDetailPanelContainer.setOutputMarkupPlaceholderTag(true);
 		phoneDetailPanelContainer.setVisible(false);
 		
 		
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_KEY);
+		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_ID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
@@ -225,7 +223,7 @@ public class DetailsForm extends Form<SubjectVO>{
 		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE,(List)titleTypeList,defaultChoiceRenderer);
 		
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
-		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.STATUS_NAME, Constants.ID);
+		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
 		
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
@@ -233,11 +231,15 @@ public class DetailsForm extends Form<SubjectVO>{
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
 		
 		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
-		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_KEY);
+		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_ID);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
 		
+		Collection<MaritalStatus> maritalStatusList = iArkCommonService.getMaritalStatus(); 
+		ChoiceRenderer<MaritalStatus> maritalStatusRender = new ChoiceRenderer<MaritalStatus>(Constants.NAME,Constants.ID);
+		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS,(List) maritalStatusList, maritalStatusRender);
+		
 		//Add the PhoneListContainer
-		phoneListContainer = new PhoneListContainer("phoneListContainer", subjectContainerForm, detailFeedbackPanel,phoneListMarkupContainer,phoneDetailPanelContainer);
+		//phoneListContainer = new PhoneListContainer("phoneListContainer", subjectContainerForm, detailFeedbackPanel,phoneListMarkupContainer,phoneDetailPanelContainer);
 		
 		
 		attachValidators();
@@ -272,13 +274,12 @@ public class DetailsForm extends Form<SubjectVO>{
 		add(vitalStatusDdc);
 		add(genderTypeDdc);
 		add(subjectStatusDdc);
+		add(maritalStatusDdc);
 		add(subjectUIDTxtFld);
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
-		
 		//Add the Phone Management Container Panel into this form
-		add(phoneListContainer);
-		
+		//add(phoneListContainer);
 	}
 	
 
