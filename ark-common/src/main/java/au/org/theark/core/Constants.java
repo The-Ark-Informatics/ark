@@ -44,9 +44,10 @@ public class Constants {
 	public static final String PERSON_TYPE="personType";
 	public static final String PERSON_CONTEXT_TYPE_SUBJECT= "subject";
 	public static final String PERSON_CONTEXT_TYPE_CONTACT= "contact";
-	
+	public static final String SUBJECT_DETAIL="Subject Mangement";
+	public static final String TAB_MODULE_SUBJECT_DETAIL ="tab.module.subject.detail";
 	public static final String DD_MM_YYYY="dd/MM/yyyy";	//cap M is for month, low m is for minute 
-	
+	public static final String MENU_SUBJECT_SUBMENU="subjectSubMenus";
 	/*Jquery/Wiquey Date Picker Format */
 	public static final String DATE_PICKER_DD_MM_YY="dd/mm/yy";
 	
@@ -69,7 +70,8 @@ public class Constants {
 	public static final String TAB_MODULE_SUBJECT="tab.module.subject";
 	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
 	
-	public static final String STUDY_KEY="studyKey";
+	public static final String STUDY_KEY="id";
+	
 	public static final String STUDY_NAME="name";
 	public static final String DATE_OF_APPLICATION="dateOfApplication";
 	public static final String EST_YEAR_OF_COMPLETION="estimatedYearOfCompletion";
