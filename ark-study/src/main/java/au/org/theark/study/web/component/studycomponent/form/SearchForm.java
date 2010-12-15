@@ -52,10 +52,10 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo>{
 
 	protected void initialiseSearchForm(){
 		
-		studyCompIdTxtFld = new TextField<String>("studyComponent.studyCompKey");
-		compNameTxtFld = new TextField<String>("studyComponent.name");
-		descriptionTxtArea = new TextArea<String>("studyComponent.description");
-		keywordTxtArea = new TextArea<String>("studyComponent.keyword");
+		studyCompIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
+		compNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
+		descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
+		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 	}
 	/**
 	 * @param id
