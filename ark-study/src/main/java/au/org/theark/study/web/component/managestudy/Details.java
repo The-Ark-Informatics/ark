@@ -98,7 +98,7 @@ public class Details  extends Panel{
 			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
 				
 				try{
-					if(studyModel.getStudy()!= null && studyModel.getStudy().getStudyKey() == null){
+					if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
 						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
 						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 						postSaveUpdate(target);
@@ -110,7 +110,7 @@ public class Details  extends Panel{
 						postSaveUpdate(target);
 					}
 					
-					SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getStudyKey());
+					SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
 					studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
 
 				}
