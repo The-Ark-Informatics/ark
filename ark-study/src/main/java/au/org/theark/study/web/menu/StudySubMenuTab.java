@@ -20,7 +20,6 @@ import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.study.web.component.site.SiteContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
-import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.user.UserContainer;
 
 
@@ -67,11 +66,6 @@ public class StudySubMenuTab extends Panel {
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.MY_DETAIL);
 		menuModule.setResourceKey(Constants.TAB_MODULE_MY_DETAIL);
-		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.SUBJECT);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT);
 		moduleTabs.add(menuModule);
 		
 		for(final MenuModule moduleName : moduleTabs)
@@ -127,11 +121,7 @@ public class StudySubMenuTab extends Panel {
 						Subject currentUser = SecurityUtils.getSubject();
 						panelToReturn = new MyDetailsContainer(panelId,new ArkUserVO(),currentUser );
 						
-					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SUBJECT)){
-						
-						panelToReturn = new SubjectContainer(panelId);
 					}
-					
 					return panelToReturn;
 				};
 			});
