@@ -11,16 +11,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * SubjectStatus entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SUBJECT_STATUS", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "SUBJECT_STATUS", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class SubjectStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long subjectStatusKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
@@ -33,14 +35,14 @@ public class SubjectStatus implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectStatus(Long subjectStatusKey) {
-		this.subjectStatusKey = subjectStatusKey;
+	public SubjectStatus(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public SubjectStatus(Long subjectStatusKey, String name,
+	public SubjectStatus(Long id, String name,
 			String description, Set<LinkSubjectStudy> linkSubjectStudies) {
-		this.subjectStatusKey = subjectStatusKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.linkSubjectStudies = linkSubjectStudies;
@@ -48,13 +50,13 @@ public class SubjectStatus implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "SUBJECT_STATUS_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getSubjectStatusKey() {
-		return this.subjectStatusKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setSubjectStatusKey(Long subjectStatusKey) {
-		this.subjectStatusKey = subjectStatusKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", unique = true, length = 50)

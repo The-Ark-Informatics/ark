@@ -16,16 +16,18 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * StudyComp entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "STUDY_COMP", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "STUDY_COMP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudyComp implements java.io.Serializable {
 
 	// Fields
 
-	private Long studyCompKey;
+	private Long id;
 	private Study study;
 	private String name;
 	private String description;
@@ -44,16 +46,16 @@ public class StudyComp implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudyComp(Long studyCompKey) {
-		this.studyCompKey = studyCompKey;
+	public StudyComp(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public StudyComp(Long studyCompKey, Study study, String name,
+	public StudyComp(Long id, Study study, String name,
 			String description,String keyword,
 			Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkStudyStudycomp> linkStudyStudycomps, Set<Document> documents) {
-		this.studyCompKey = studyCompKey;
+		this.id = id;
 		this.study = study;
 		this.name = name;
 		this.description = description;
@@ -66,17 +68,17 @@ public class StudyComp implements java.io.Serializable {
 	@Id
 	@SequenceGenerator(name="studycomp_generator", sequenceName="STUDYCOMP_SEQUENCE")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "studycomp_generator")
-	@Column(name = "STUDY_COMP_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getStudyCompKey() {
-		return this.studyCompKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setStudyCompKey(Long studyCompKey) {
-		this.studyCompKey = studyCompKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}

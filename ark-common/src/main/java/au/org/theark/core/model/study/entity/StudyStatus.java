@@ -10,16 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * StudyStatus entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "STUDY_STATUS", schema = "ETA")
+@Table(name = "STUDY_STATUS", schema = Constants.STUDY_SCHEMA)
 public class StudyStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long studyStatusKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<Study> studies = new HashSet<Study>(0);
@@ -31,33 +33,33 @@ public class StudyStatus implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudyStatus(Long studyStatusKey) {
-		this.studyStatusKey = studyStatusKey;
+	public StudyStatus(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public StudyStatus(Long studyStatusKey, String name, String description,
+	public StudyStatus(Long id, String name, String description,
 			Set<Study> studies) {
-		this.studyStatusKey = studyStatusKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.studies = studies;
 	}
 	
-	public StudyStatus(Long studyStatusKey, String name){
-		this.studyStatusKey = studyStatusKey;
+	public StudyStatus(Long id, String name){
+		this.id = id;
 		this.name = name;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "STUDY_STATUS_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getStudyStatusKey() {
-		return this.studyStatusKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setStudyStatusKey(Long studyStatusKey) {
-		this.studyStatusKey = studyStatusKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", length = 25)

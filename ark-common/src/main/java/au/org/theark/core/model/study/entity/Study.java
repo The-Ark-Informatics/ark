@@ -19,16 +19,18 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * Study entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "STUDY", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "STUDY", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Study implements java.io.Serializable {
 
 	// Fields
 
-	private Long studyKey;
+	private Long id;
 	private StudyStatus studyStatus;
 	private String name;
 	private String description;
@@ -36,15 +38,15 @@ public class Study implements java.io.Serializable {
 	private Long estimatedYearOfCompletion;
 	private String chiefInvestigator;
 	private String coInvestigator;
-	private Boolean autoGenerateSubjectKey;
-	private Long subjectKeyStart;
+	private Boolean autoGenerateSubjectUId;
+	private Long subjectUIdStart;
 	private String subjectIdPrefix;
 	private String contactPerson;
 	private String contactPersonPhone;
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
-	private Set<LinkStudySubstudy> linkStudySubstudiesForStudyKey = new HashSet<LinkStudySubstudy>(
+	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(
 			0);
 	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(
 			0);
@@ -59,7 +61,7 @@ public class Study implements java.io.Serializable {
 			0);
 	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
 			0);
-	private Set<LinkStudySubstudy> linkStudySubstudiesForSubstudyKey = new HashSet<LinkStudySubstudy>(
+	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(
 			0);
 
 	// Constructors
@@ -69,27 +71,27 @@ public class Study implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Study(Long studyKey) {
-		this.studyKey = studyKey;
+	public Study(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Study(Long studyKey, StudyStatus studyStatus, String name,
+	public Study(Long id, StudyStatus studyStatus, String name,
 			String description, Date dateOfApplication,
 			Long estimatedYearOfCompletion, String chiefInvestigator,
-			String coInvestigator, Boolean autoGenerateSubjectKey,
-			Long subjectKeyStart, String subjectIdPrefix, String contactPerson,
+			String coInvestigator, Boolean autoGenerateSubjectUId,
+			Long subjectUIdStart, String subjectIdPrefix, String contactPerson,
 			String contactPersonPhone, String ldapGroupName,
 			Boolean autoConsent, String subStudyBiospecimenPrefix,
-			Set<LinkStudySubstudy> linkStudySubstudiesForStudyKey,
+			Set<LinkStudySubstudy> linkStudySubstudiesForid,
 			Set<LinkStudyStudysite> linkStudyStudysites,
 			Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds,
 			Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<LinkSubjectContact> linkSubjectContacts,
 			Set<LinkStudyStudycomp> linkStudyStudycomps,
-			Set<LinkStudySubstudy> linkStudySubstudiesForSubstudyKey) {
-		this.studyKey = studyKey;
+			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
+		this.id = id;
 		this.studyStatus = studyStatus;
 		this.name = name;
 		this.description = description;
@@ -97,15 +99,15 @@ public class Study implements java.io.Serializable {
 		this.estimatedYearOfCompletion = estimatedYearOfCompletion;
 		this.chiefInvestigator = chiefInvestigator;
 		this.coInvestigator = coInvestigator;
-		this.autoGenerateSubjectKey = autoGenerateSubjectKey;
-		this.subjectKeyStart = subjectKeyStart;
+		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
+		this.subjectUIdStart = subjectUIdStart;
 		this.subjectIdPrefix = subjectIdPrefix;
 		this.contactPerson = contactPerson;
 		this.contactPersonPhone = contactPersonPhone;
 		this.ldapGroupName = ldapGroupName;
 		this.autoConsent = autoConsent;
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
-		this.linkStudySubstudiesForStudyKey = linkStudySubstudiesForStudyKey;
+		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 		this.linkStudyStudysites = linkStudyStudysites;
 		this.studyComps = studyComps;
 		this.subjectCustmFlds = subjectCustmFlds;
@@ -113,7 +115,7 @@ public class Study implements java.io.Serializable {
 		this.linkSubjectStudies = linkSubjectStudies;
 		this.linkSubjectContacts = linkSubjectContacts;
 		this.linkStudyStudycomps = linkStudyStudycomps;
-		this.linkStudySubstudiesForSubstudyKey = linkStudySubstudiesForSubstudyKey;
+		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
 	// Property accessors
@@ -122,17 +124,17 @@ public class Study implements java.io.Serializable {
 	@Id
 	@SequenceGenerator(name="study_generator", sequenceName="STUDY_SEQUENCE")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "study_generator")
-	@Column(name = "STUDY_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getStudyKey() {
-		return this.studyKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setStudyKey(Long studyKey) {
-		this.studyKey = studyKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_STATUS_KEY")
+	@JoinColumn(name = "STUDY_STATUS_ID")
 	public StudyStatus getStudyStatus() {
 		return this.studyStatus;
 	}
@@ -196,25 +198,16 @@ public class Study implements java.io.Serializable {
 		this.coInvestigator = coInvestigator;
 	}
 
-	@Column(name = "AUTO_GENERATE_SUBJECT_KEY", precision = 1, scale = 0)
-	public Boolean getAutoGenerateSubjectKey() {
-		return this.autoGenerateSubjectKey;
+	@Column(name = "SUBJECT_UID_START", precision = 22, scale = 0)
+	public Long getSubjectUIdStart() {
+		return subjectUIdStart;
 	}
 
-	public void setAutoGenerateSubjectKey(Boolean autoGenerateSubjectKey) {
-		this.autoGenerateSubjectKey = autoGenerateSubjectKey;
+	public void setSubjectUIdStart(Long subjectUIdStart) {
+		this.subjectUIdStart = subjectUIdStart;
 	}
 
-	@Column(name = "SUBJECT_KEY_START", precision = 22, scale = 0)
-	public Long getSubjectKeyStart() {
-		return this.subjectKeyStart;
-	}
-
-	public void setSubjectKeyStart(Long subjectKeyStart) {
-		this.subjectKeyStart = subjectKeyStart;
-	}
-
-	@Column(name = "SUBJECT_ID_PREFIX", length = 20)
+	@Column(name = "SUBJECT_KEY_PREFIX", length = 20)
 	public String getSubjectIdPrefix() {
 		return this.subjectIdPrefix;
 	}
@@ -258,6 +251,16 @@ public class Study implements java.io.Serializable {
 	public void setAutoConsent(Boolean autoConsent) {
 		this.autoConsent = autoConsent;
 	}
+	
+	@Column(name = "AUTO_GENERATE_SUBJECT_UID", precision = 1, scale = 0)
+	public Boolean getAutoGenerateSubjectUId() {
+		return autoGenerateSubjectUId;
+	}
+
+	public void setAutoGenerateSubjectUId(Boolean autoGenerateSubjectUId) {
+		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
+	}
+
 
 	@Column(name = "SUB_STUDY_BIOSPECIMEN_PREFIX", length = 20)
 	public String getSubStudyBiospecimenPrefix() {
@@ -268,14 +271,14 @@ public class Study implements java.io.Serializable {
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyByStudyKey")
-	public Set<LinkStudySubstudy> getLinkStudySubstudiesForStudyKey() {
-		return this.linkStudySubstudiesForStudyKey;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyBySubstudyKey")
+	public Set<LinkStudySubstudy> getLinkStudySubstudiesForid() {
+		return this.linkStudySubstudiesForid;
 	}
 
-	public void setLinkStudySubstudiesForStudyKey(
-			Set<LinkStudySubstudy> linkStudySubstudiesForStudyKey) {
-		this.linkStudySubstudiesForStudyKey = linkStudySubstudiesForStudyKey;
+	public void setLinkStudySubstudiesForid(
+			Set<LinkStudySubstudy> linkStudySubstudiesForid) {
+		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
@@ -345,14 +348,14 @@ public class Study implements java.io.Serializable {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyBySubstudyKey")
-	public Set<LinkStudySubstudy> getLinkStudySubstudiesForSubstudyKey() {
-		return this.linkStudySubstudiesForSubstudyKey;
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyByStudyKey")
+	public Set<LinkStudySubstudy> getLinkStudySubstudiesForSubid() {
+		return this.linkStudySubstudiesForSubid;
 	}
 
-	public void setLinkStudySubstudiesForSubstudyKey(
-			Set<LinkStudySubstudy> linkStudySubstudiesForSubstudyKey) {
-		this.linkStudySubstudiesForSubstudyKey = linkStudySubstudiesForSubstudyKey;
+	public void setLinkStudySubstudiesForSubid(
+			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
+		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
 }

@@ -15,16 +15,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * LinkSubjectStudy entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_SUBJECT_STUDY", schema = "ETA")
+@Table(name = "LINK_SUBJECT_STUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkSubjectStudy implements java.io.Serializable {
 
 	// Fields
 
-	private Long linkSubjectStudyKey;
+	private Long id;
 	private Study study;
 	private SubjectStatus subjectStatus;
 	private Person person;
@@ -41,15 +43,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public LinkSubjectStudy(Long linkSubjectStudyKey) {
-		this.linkSubjectStudyKey = linkSubjectStudyKey;
+	public LinkSubjectStudy(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public LinkSubjectStudy(Long linkSubjectStudyKey, Study study,
+	public LinkSubjectStudy(Long id, Study study,
 			SubjectStatus subjectStatus, Person person,
 			Set<SubjectCustFldDat> subjectCustFldDats) {
-		this.linkSubjectStudyKey = linkSubjectStudyKey;
+		this.id = id;
 		this.study = study;
 		this.subjectStatus = subjectStatus;
 		this.person = person;
@@ -60,17 +62,17 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	@Id
 	@SequenceGenerator(name="link_subject_study_generator", sequenceName="LINK_SUBJECT_STUDY_SEQUENCE")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "link_subject_study_generator")
-	@Column(name = "LINK_SUBJECT_STUDY_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getLinkSubjectStudyKey() {
-		return this.linkSubjectStudyKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getid() {
+		return this.id;
 	}
 
-	public void setLinkSubjectStudyKey(Long linkSubjectStudyKey) {
-		this.linkSubjectStudyKey = linkSubjectStudyKey;
+	public void setid(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}
@@ -80,7 +82,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_STATUS_KEY")
+	@JoinColumn(name = "SUBJECT_STATUS_ID")
 	public SubjectStatus getSubjectStatus() {
 		return this.subjectStatus;
 	}
@@ -90,7 +92,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_KEY")
+	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return this.person;
 	}

@@ -8,20 +8,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * LinkSubjectContact entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_SUBJECT_CONTACT", schema = "ETA")
+@Table(name = "LINK_SUBJECT_CONTACT", schema = Constants.STUDY_SCHEMA)
 public class LinkSubjectContact implements java.io.Serializable {
 
 	// Fields
 
-	private Long linkSubjectContactKey;
+	private Long id;
 	private Study study;
 	private Relationship relationship;
-	private Person personBySubjectKey;
-	private Person personByContactKey;
+	private Person personBySubjectId;
+	private Person personByContactId;
 
 	// Constructors
 
@@ -30,34 +32,34 @@ public class LinkSubjectContact implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public LinkSubjectContact(Long linkSubjectContactKey) {
-		this.linkSubjectContactKey = linkSubjectContactKey;
+	public LinkSubjectContact(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public LinkSubjectContact(Long linkSubjectContactKey, Study study,
-			Relationship relationship, Person personBySubjectKey,
-			Person personByContactKey) {
-		this.linkSubjectContactKey = linkSubjectContactKey;
+	public LinkSubjectContact(Long id, Study study,
+			Relationship relationship, Person personBySubjectId,
+			Person personByContactId) {
+		this.id = id;
 		this.study = study;
 		this.relationship = relationship;
-		this.personBySubjectKey = personBySubjectKey;
-		this.personByContactKey = personByContactKey;
+		this.personBySubjectId = personBySubjectId;
+		this.personByContactId = personByContactId;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "LINK_SUBJECT_CONTACT_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getLinkSubjectContactKey() {
-		return this.linkSubjectContactKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setLinkSubjectContactKey(Long linkSubjectContactKey) {
-		this.linkSubjectContactKey = linkSubjectContactKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}
@@ -67,7 +69,7 @@ public class LinkSubjectContact implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "RELATIONSHIP_KEY")
+	@JoinColumn(name = "RELATIONSHIP_ID")
 	public Relationship getRelationship() {
 		return this.relationship;
 	}
@@ -77,23 +79,23 @@ public class LinkSubjectContact implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_KEY")
-	public Person getPersonBySubjectKey() {
-		return this.personBySubjectKey;
+	@JoinColumn(name = "PERSON_SUBJECT_ID")
+	public Person getpersonBySubjectId() {
+		return this.personBySubjectId;
 	}
 
-	public void setPersonBySubjectKey(Person personBySubjectKey) {
-		this.personBySubjectKey = personBySubjectKey;
+	public void setPersonBySubjectId(Person personBySubjectId) {
+		this.personBySubjectId = personBySubjectId;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CONTACT_KEY")
-	public Person getPersonByContactKey() {
-		return this.personByContactKey;
+	@JoinColumn(name = "PERSON_CONTACT_ID")
+	public Person getPersonByContactId() {
+		return this.personByContactId;
 	}
 
-	public void setPersonByContactKey(Person personByContactKey) {
-		this.personByContactKey = personByContactKey;
+	public void setPersonByContactId(Person personByContactId) {
+		this.personByContactId = personByContactId;
 	}
 
 }

@@ -11,16 +11,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * Relationship entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "RELATIONSHIP", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "RELATIONSHIP", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class Relationship implements java.io.Serializable {
 
 	// Fields
 
-	private Long relationshipKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(
@@ -33,14 +35,14 @@ public class Relationship implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Relationship(Long relationshipKey) {
-		this.relationshipKey = relationshipKey;
+	public Relationship(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Relationship(Long relationshipKey, String name, String description,
+	public Relationship(Long id, String name, String description,
 			Set<LinkSubjectContact> linkSubjectContacts) {
-		this.relationshipKey = relationshipKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.linkSubjectContacts = linkSubjectContacts;
@@ -48,13 +50,13 @@ public class Relationship implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "RELATIONSHIP_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getRelationshipKey() {
-		return this.relationshipKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setRelationshipKey(Long relationshipKey) {
-		this.relationshipKey = relationshipKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", unique = true, length = 20)

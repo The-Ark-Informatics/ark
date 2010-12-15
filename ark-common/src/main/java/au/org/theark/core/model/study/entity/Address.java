@@ -12,16 +12,17 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * Address entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "ADDRESS", schema = "ETA")
+@Table(name = "ADDRESS", schema = Constants.STUDY_SCHEMA)
 public class Address implements java.io.Serializable {
 
 	// Fields
-
-	private Long addressKey;
+	private Long id;
 	private Person person;
 	private String streetAddress;
 	private String suburb;
@@ -40,16 +41,16 @@ public class Address implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Address(Long addressKey) {
-		this.addressKey = addressKey;
+	public Address(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Address(Long addressKey, Person person, String streetAddress,
+	public Address(Long id, Person person, String streetAddress,
 			String suburb, String postCode, String city, String state,
 			String country, boolean addressStatus, Long addressTypeKey,
 			Set<StudySite> studySites) {
-		this.addressKey = addressKey;
+		this.id = id;
 		this.person = person;
 		this.streetAddress = streetAddress;
 		this.suburb = suburb;
@@ -64,17 +65,18 @@ public class Address implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "ADDRESS_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getAddressKey() {
-		return this.addressKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return id;
 	}
 
-	public void setAddressKey(Long addressKey) {
-		this.addressKey = addressKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_KEY")
+	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return this.person;
 	}
@@ -163,5 +165,7 @@ public class Address implements java.io.Serializable {
 	public void setStudySites(Set<StudySite> studySites) {
 		this.studySites = studySites;
 	}
+
+	
 
 }

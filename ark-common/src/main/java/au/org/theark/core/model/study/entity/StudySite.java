@@ -13,24 +13,24 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * StudySite entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "STUDY_SITE", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "STUDY_SITE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudySite implements java.io.Serializable {
 
 	// Fields
 
-	private Long studySiteKey;
+	private Long id;
 	private Address address;
 	private String name;
 	private String description;
-	private Long domainTypeKey;
-	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(
-			0);
-	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(
-			0);
+	private DomainType domainType;
+	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(0);
+	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(0);
 
 	// Constructors
 
@@ -39,37 +39,37 @@ public class StudySite implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudySite(Long studySiteKey) {
-		this.studySiteKey = studySiteKey;
+	public StudySite(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public StudySite(Long studySiteKey, Address address, String name,
-			String description, Long domainTypeKey,
+	public StudySite(Long id, Address address, String name,
+			String description, DomainType domainType,
 			Set<LinkSiteContact> linkSiteContacts,
 			Set<LinkStudyStudysite> linkStudyStudysites) {
-		this.studySiteKey = studySiteKey;
+		this.id = id;
 		this.address = address;
 		this.name = name;
 		this.description = description;
-		this.domainTypeKey = domainTypeKey;
+		this.domainType = domainType;
 		this.linkSiteContacts = linkSiteContacts;
 		this.linkStudyStudysites = linkStudyStudysites;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "STUDY_SITE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getStudySiteKey() {
-		return this.studySiteKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setStudySiteKey(Long studySiteKey) {
-		this.studySiteKey = studySiteKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ADDRESS_KEY")
+	@JoinColumn(name = "ADDRESS_ID")
 	public Address getAddress() {
 		return this.address;
 	}
@@ -96,13 +96,13 @@ public class StudySite implements java.io.Serializable {
 		this.description = description;
 	}
 
-	@Column(name = "DOMAIN_TYPE_KEY", precision = 22, scale = 0)
-	public Long getDomainTypeKey() {
-		return this.domainTypeKey;
+	@Column(name = "DOMAIN_TYPE_ID")
+	public DomainType getDomainType() {
+		return this.domainType;
 	}
 
-	public void setDomainTypeKey(Long domainTypeKey) {
-		this.domainTypeKey = domainTypeKey;
+	public void setDomainType(DomainType domainType) {
+		this.domainType = domainType;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studySite")

@@ -13,16 +13,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * SubjectCustmFld entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SUBJECT_CUSTM_FLD", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "SUBJECT_CUSTM_FLD", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class SubjectCustmFld implements java.io.Serializable {
 
 	// Fields
 
-	private Long subjectCustmFldKey;
+	private Long id;
 	private Study study;
 	private DataType dataType;
 	private String name;
@@ -37,15 +39,15 @@ public class SubjectCustmFld implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectCustmFld(Long subjectCustmFldKey) {
-		this.subjectCustmFldKey = subjectCustmFldKey;
+	public SubjectCustmFld(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public SubjectCustmFld(Long subjectCustmFldKey, Study study,
+	public SubjectCustmFld(Long id, Study study,
 			DataType dataType, String name, String description,
 			Set<SubjectCustFldDat> subjectCustFldDats) {
-		this.subjectCustmFldKey = subjectCustmFldKey;
+		this.id = id;
 		this.study = study;
 		this.dataType = dataType;
 		this.name = name;
@@ -55,13 +57,13 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "SUBJECT_CUSTM_FLD_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getSubjectCustmFldKey() {
-		return this.subjectCustmFldKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setSubjectCustmFldKey(Long subjectCustmFldKey) {
-		this.subjectCustmFldKey = subjectCustmFldKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)

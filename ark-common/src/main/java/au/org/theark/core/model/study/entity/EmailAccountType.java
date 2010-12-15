@@ -10,16 +10,18 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * EmailAccountType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "EMAIL_ACCOUNT_TYPE", schema = "ETA")
+@Table(name = "EMAIL_ACCOUNT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class EmailAccountType implements java.io.Serializable {
 
 	// Fields
 
-	private Long emailAccountTypeKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<EmailAccount> emailAccounts = new HashSet<EmailAccount>(0);
@@ -31,14 +33,14 @@ public class EmailAccountType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EmailAccountType(Long emailAccountTypeKey) {
-		this.emailAccountTypeKey = emailAccountTypeKey;
+	public EmailAccountType(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public EmailAccountType(Long emailAccountTypeKey, String name,
+	public EmailAccountType(Long id, String name,
 			String description, Set<EmailAccount> emailAccounts) {
-		this.emailAccountTypeKey = emailAccountTypeKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.emailAccounts = emailAccounts;
@@ -46,13 +48,13 @@ public class EmailAccountType implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "EMAIL_ACCOUNT_TYPE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getEmailAccountTypeKey() {
-		return this.emailAccountTypeKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setEmailAccountTypeKey(Long emailAccountTypeKey) {
-		this.emailAccountTypeKey = emailAccountTypeKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", length = 20)

@@ -6,10 +6,12 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import au.org.theark.core.Constants;
+
 
 
 @Entity
-@Table(name="ETA_USER", schema="ETA")
+@Table(name="ETA_USER", schema=Constants.STUDY_SCHEMA)
 public class EtaUser implements Serializable{
 	
 	private Long id;

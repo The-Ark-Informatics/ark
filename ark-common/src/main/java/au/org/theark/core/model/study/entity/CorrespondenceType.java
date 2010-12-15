@@ -11,16 +11,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * CorrespondenceType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "CORRESPONDENCE_TYPE", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "CORRESPONDENCE_TYPE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class CorrespondenceType implements java.io.Serializable {
 
 	// Fields
 
-	private Long correspondenceTypeKey;
+	private Long id;
 	private String name;
 	private String typeDescription;
 	private Set<Correspondence> correspondences = new HashSet<Correspondence>(0);
@@ -32,14 +34,14 @@ public class CorrespondenceType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public CorrespondenceType(Long correspondenceTypeKey) {
-		this.correspondenceTypeKey = correspondenceTypeKey;
+	public CorrespondenceType(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public CorrespondenceType(Long correspondenceTypeKey, String name,
+	public CorrespondenceType(Long id, String name,
 			String typeDescription, Set<Correspondence> correspondences) {
-		this.correspondenceTypeKey = correspondenceTypeKey;
+		this.id = id;
 		this.name = name;
 		this.typeDescription = typeDescription;
 		this.correspondences = correspondences;
@@ -47,16 +49,16 @@ public class CorrespondenceType implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "CORRESPONDENCE_TYPE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getCorrespondenceTypeKey() {
-		return this.correspondenceTypeKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setCorrespondenceTypeKey(Long correspondenceTypeKey) {
-		this.correspondenceTypeKey = correspondenceTypeKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	@Column(name = "NAME", unique = true, length = 50)
+	@Column(name = "NAME", unique = true, nullable = false, length = 50)
 	public String getName() {
 		return this.name;
 	}

@@ -11,20 +11,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * Phone entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "PHONE", schema = "ETA")
+@Table(name = "PHONE",  schema = Constants.STUDY_SCHEMA)
 public class Phone implements java.io.Serializable {
 
 	// Fields
 
-	private Long phoneKey;
+	private Long id;
 	private PhoneType phoneType;
 	private Person person;
-	private Long phoneNumber;
-	private Long areaCode;
+	private String phoneNumber;
+	private String areaCode;
 
 	// Constructors
 
@@ -33,14 +35,14 @@ public class Phone implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Phone(Long phoneKey) {
-		this.phoneKey = phoneKey;
+	public Phone(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Phone(Long phoneKey, PhoneType phoneType, Person person,
-			Long phoneNumber,Long areaCode) {
-		this.phoneKey = phoneKey;
+	public Phone(Long id, PhoneType phoneType, Person person,
+			String phoneNumber,String areaCode) {
+		this.id = id;
 		this.phoneType = phoneType;
 		this.person = person;
 		this.phoneNumber = phoneNumber;
@@ -51,17 +53,17 @@ public class Phone implements java.io.Serializable {
 	@Id
 	@SequenceGenerator(name="phone_generator", sequenceName="PHONE_SEQ")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "phone_generator")
-	@Column(name = "PHONE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getPhoneKey() {
-		return this.phoneKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setPhoneKey(Long phoneKey) {
-		this.phoneKey = phoneKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PHONE_TYPE_KEY")
+	@JoinColumn(name = "PHONE_TYPE_ID")
 	public PhoneType getPhoneType() {
 		return this.phoneType;
 	}
@@ -71,7 +73,7 @@ public class Phone implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_KEY")
+	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return this.person;
 	}
@@ -80,21 +82,21 @@ public class Phone implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@Column(name = "PHONE_NUMBER", precision = 22, scale = 0)
-	public Long getPhoneNumber() {
+	@Column(name = "PHONE_NUMBER", length = 50)
+	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
 
-	public void setPhoneNumber(Long phoneNumber) {
+	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 	
 	@Column(name = "AREA_CODE", precision = 22, scale = 0)
-	public Long getAreaCode() {
+	public String getAreaCode() {
 		return this.areaCode;
 	}
 
-	public void setAreaCode(Long areaCode) {
+	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
 

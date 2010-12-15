@@ -15,16 +15,18 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.Constants;
+
 /**
  * Correspondence entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "CORRESPONDENCE", schema = "ETA")
+@Table(name = "CORRESPONDENCE", schema = Constants.STUDY_SCHEMA)
 public class Correspondence implements java.io.Serializable {
 
 	// Fields
 
-	private Long correspondenceKey;
+	private Long id;
 	private CorrespondenceType correspondenceType;
 	private Date dateOfCorrespondence;
 	private String summary;
@@ -37,15 +39,15 @@ public class Correspondence implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Correspondence(Long correspondenceKey) {
-		this.correspondenceKey = correspondenceKey;
+	public Correspondence(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Correspondence(Long correspondenceKey,
+	public Correspondence(Long id,
 			CorrespondenceType correspondenceType, Date dateOfCorrespondence,
 			String summary, Set<Document> documents) {
-		this.correspondenceKey = correspondenceKey;
+		this.id = id;
 		this.correspondenceType = correspondenceType;
 		this.dateOfCorrespondence = dateOfCorrespondence;
 		this.summary = summary;
@@ -54,17 +56,17 @@ public class Correspondence implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "CORRESPONDENCE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getCorrespondenceKey() {
-		return this.correspondenceKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setCorrespondenceKey(Long correspondenceKey) {
-		this.correspondenceKey = correspondenceKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CORRESPONDENCE_TYPE_KEY")
+	@JoinColumn(name = "CORRESPONDENCE_TYPE_ID")
 	public CorrespondenceType getCorrespondenceType() {
 		return this.correspondenceType;
 	}

@@ -8,16 +8,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * LinkSiteContact entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_SITE_CONTACT", schema = "ETA")
+@Table(name = "LINK_SITE_CONTACT", schema = Constants.STUDY_SCHEMA)
 public class LinkSiteContact implements java.io.Serializable {
 
 	// Fields
 
-	private Long linkSiteContactKey;
+	private Long id;
 	private StudySite studySite;
 	private Person person;
 
@@ -28,31 +30,31 @@ public class LinkSiteContact implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public LinkSiteContact(Long linkSiteContactKey) {
-		this.linkSiteContactKey = linkSiteContactKey;
+	public LinkSiteContact(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public LinkSiteContact(Long linkSiteContactKey, StudySite studySite,
+	public LinkSiteContact(Long id, StudySite studySite,
 			Person person) {
-		this.linkSiteContactKey = linkSiteContactKey;
+		this.id = id;
 		this.studySite = studySite;
 		this.person = person;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "LINK_SITE_CONTACT_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getLinkSiteContactKey() {
-		return this.linkSiteContactKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getid() {
+		return this.id;
 	}
 
-	public void setLinkSiteContactKey(Long linkSiteContactKey) {
-		this.linkSiteContactKey = linkSiteContactKey;
+	public void setid(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_SITE_KEY")
+	@JoinColumn(name = "STUDY_SITE_ID")
 	public StudySite getStudySite() {
 		return this.studySite;
 	}
@@ -62,7 +64,7 @@ public class LinkSiteContact implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_KEY")
+	@JoinColumn(name = "PERSON_ID")
 	public Person getPerson() {
 		return this.person;
 	}

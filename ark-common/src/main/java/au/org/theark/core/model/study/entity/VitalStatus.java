@@ -18,17 +18,21 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * @author nivedann
  *
  */
 @Entity
-@Table(name = "VITAL_STATUS", schema = "ETA")
+@Table(name = "VITAL_STATUS", schema = Constants.STUDY_SCHEMA)
 public class VitalStatus implements Serializable{
 
 	//Fields
 	private Long id;
-	private String statusName;
+
+
+	private String name;
 	private String description;
 	private Set<Person> persons = new HashSet<Person>(0);
 	
@@ -50,15 +54,15 @@ public class VitalStatus implements Serializable{
 		return this.id;
 	}
 	
-	@Column(name = "STATUS_NAME", length = 25)
-	public String getStatusName() {
-		return this.statusName;
+	@Column(name = "NAME", length = 25)
+	public String getName() {
+		return name;
 	}
 
-	public void setStatusName(String statusName) {
-		this.statusName = statusName;
+	public void setName(String name) {
+		this.name = name;
 	}
-
+	
 	@Column(name = "DESCRIPTION")
 	public String getDescription() {
 		return this.description;

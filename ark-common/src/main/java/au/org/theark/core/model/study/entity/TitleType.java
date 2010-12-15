@@ -13,12 +13,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * @author nivedann
  *
  */
 @Entity
-@Table(name = "TITLE_TYPE", schema = "ETA")
+@Table(name = "TITLE_TYPE", schema = Constants.STUDY_SCHEMA)
 public class TitleType implements Serializable{
 
 	private Long id;

@@ -18,25 +18,25 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.core.Constants;
+
 /**
  * Person entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "PERSON", schema = "ETA")
+@Table(name = "PERSON", schema = Constants.STUDY_SCHEMA)
 public class Person implements java.io.Serializable {
 
 	// Fields
-
-	private Long personKey;
+	private Long id;
 	private String firstName;
 	private String middleName;
 	private String lastName;
 	private String preferredName;
-	
 	private GenderType genderType;
 	private VitalStatus vitalStatus;
 	private TitleType titleType;
-	
+	private MaritalStatus maritalStatus;
 	private Date dateOfBirth;
 	
 	
@@ -60,19 +60,19 @@ public class Person implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Person(Long personKey) {
-		this.personKey = personKey;
+	public Person(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Person(Long personKey, String firstName, String middleName,
+	public Person(Long id, String firstName, String middleName,
 			String lastName, String preferredName, 	Date dateOfBirth, VitalStatus vitalStatus, TitleType titleType,GenderType genderType,
 			Set<LinkSubjectStudy> linkSubjectStudies,
 			Set<Phone> phones, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectContact> linkSubjectContactsForContactKey,
 			Set<LinkSiteContact> linkSiteContacts, Set<Address> addresses,
 			Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
-		this.personKey = personKey;
+		this.id = id;
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;
@@ -94,13 +94,13 @@ public class Person implements java.io.Serializable {
 	@Id
 	@SequenceGenerator(name="person_generator", sequenceName="PERSON_SEQUENCE")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "person_generator")
-	@Column(name = "PERSON_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getPersonKey() {
-		return this.personKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setPersonKey(Long personKey) {
-		this.personKey = personKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "FIRST_NAME", length = 50)
@@ -140,7 +140,7 @@ public class Person implements java.io.Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "GENDER_ID")
+	@JoinColumn(name = "GENDER_TYPE_ID")
 	public GenderType getGenderType() {
 		return this.genderType;
 	}
@@ -171,7 +171,7 @@ public class Person implements java.io.Serializable {
 	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TITLE_ID")
+	@JoinColumn(name = "TITLE_TYPE_ID")
 	public TitleType getTitleType(){
 		return this.titleType;
 	}
@@ -180,6 +180,16 @@ public class Person implements java.io.Serializable {
 		this.titleType = titleType;
 	}
 
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "MARITAL_STATUS_ID")
+	public MaritalStatus getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(MaritalStatus maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<LinkSubjectStudy> getLinkSubjectStudies() {
@@ -209,7 +219,7 @@ public class Person implements java.io.Serializable {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personByContactKey")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personByContactId")
 	public Set<LinkSubjectContact> getLinkSubjectContactsForContactKey() {
 		return this.linkSubjectContactsForContactKey;
 	}
@@ -237,7 +247,7 @@ public class Person implements java.io.Serializable {
 		this.addresses = addresses;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personBySubjectKey")
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personBySubjectId")
 	public Set<LinkSubjectContact> getLinkSubjectContactsForSubjectKey() {
 		return this.linkSubjectContactsForSubjectKey;
 	}

@@ -8,16 +8,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * LinkStudySubstudy entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_STUDY_SUBSTUDY", schema = "ETA")
+@Table(name = "LINK_STUDY_SUBSTUDY", schema =Constants.STUDY_SCHEMA)
 public class LinkStudySubstudy implements java.io.Serializable {
 
 	// Fields
 
-	private Long linkStudySubstudyKey;
+	private Long id;
 	private Study studyByStudyKey;
 	private Study studyBySubstudyKey;
 
@@ -28,31 +30,31 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public LinkStudySubstudy(Long linkStudySubstudyKey) {
-		this.linkStudySubstudyKey = linkStudySubstudyKey;
+	public LinkStudySubstudy(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public LinkStudySubstudy(Long linkStudySubstudyKey, Study studyByStudyKey,
+	public LinkStudySubstudy(Long id, Study studyByStudyKey,
 			Study studyBySubstudyKey) {
-		this.linkStudySubstudyKey = linkStudySubstudyKey;
+		this.id = id;
 		this.studyByStudyKey = studyByStudyKey;
 		this.studyBySubstudyKey = studyBySubstudyKey;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "LINK_STUDY_SUBSTUDY_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getLinkStudySubstudyKey() {
-		return this.linkStudySubstudyKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setLinkStudySubstudyKey(Long linkStudySubstudyKey) {
-		this.linkStudySubstudyKey = linkStudySubstudyKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudyByStudyKey() {
 		return this.studyByStudyKey;
 	}
@@ -62,7 +64,7 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBSTUDY_KEY")
+	@JoinColumn(name = "SUB_STUDY_ID")
 	public Study getStudyBySubstudyKey() {
 		return this.studyBySubstudyKey;
 	}

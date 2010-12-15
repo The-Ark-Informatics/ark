@@ -13,12 +13,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * @author nivedann
  *
  */
 @Entity
-@Table(name = "GENDER_TYPE", schema = "ETA")
+@Table(name = "GENDER_TYPE", schema = Constants.STUDY_SCHEMA)
 public class GenderType implements Serializable{
 
 	private Long id;

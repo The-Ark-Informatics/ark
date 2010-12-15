@@ -8,16 +8,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * SubjectCustFldDat entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "SUBJECT_CUST_FLD_DAT", schema = "ETA")
+@Table(name = "SUBJECT_CUST_FLD_DAT", schema = Constants.STUDY_SCHEMA)
 public class SubjectCustFldDat implements java.io.Serializable {
 
 	// Fields
 
-	private Long subjectCustFldDatKey;
+	private Long id;
 	private SubjectCustmFld subjectCustmFld;
 	private LinkSubjectStudy linkSubjectStudy;
 	private String fieldData;
@@ -29,15 +31,15 @@ public class SubjectCustFldDat implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectCustFldDat(Long subjectCustFldDatKey) {
-		this.subjectCustFldDatKey = subjectCustFldDatKey;
+	public SubjectCustFldDat(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public SubjectCustFldDat(Long subjectCustFldDatKey,
+	public SubjectCustFldDat(Long id,
 			SubjectCustmFld subjectCustmFld, LinkSubjectStudy linkSubjectStudy,
 			String fieldData) {
-		this.subjectCustFldDatKey = subjectCustFldDatKey;
+		this.id = id;
 		this.subjectCustmFld = subjectCustmFld;
 		this.linkSubjectStudy = linkSubjectStudy;
 		this.fieldData = fieldData;
@@ -45,17 +47,17 @@ public class SubjectCustFldDat implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "SUBJECT_CUST_FLD_DAT_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getSubjectCustFldDatKey() {
-		return this.subjectCustFldDatKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setSubjectCustFldDatKey(Long subjectCustFldDatKey) {
-		this.subjectCustFldDatKey = subjectCustFldDatKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_CUSTM_FLD_KEY")
+	@JoinColumn(name = "SUBJECT_CUSTM_FLD_ID")
 	public SubjectCustmFld getSubjectCustmFld() {
 		return this.subjectCustmFld;
 	}
@@ -65,7 +67,7 @@ public class SubjectCustFldDat implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LINK_SUBJECT_STUDY_KEY")
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return this.linkSubjectStudy;
 	}

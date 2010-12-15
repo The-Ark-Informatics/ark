@@ -9,20 +9,22 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * EmailAccount entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "EMAIL_ACCOUNT", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "EMAIL_ACCOUNT", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class EmailAccount implements java.io.Serializable {
 
 	// Fields
 
-	private Long emailAccountKey;
+	private Long id;
 	private EmailAccountType emailAccountType;
 	private String name;
 	private boolean primaryAccount;
-	private Long personKey;
+	private Long personId;
 
 	// Constructors
 
@@ -31,34 +33,34 @@ public class EmailAccount implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public EmailAccount(Long emailAccountKey) {
-		this.emailAccountKey = emailAccountKey;
+	public EmailAccount(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public EmailAccount(Long emailAccountKey,
+	public EmailAccount(Long id,
 			EmailAccountType emailAccountType, String name,
-			boolean primaryAccount, Long personKey) {
-		this.emailAccountKey = emailAccountKey;
+			boolean primaryAccount, Long personId) {
+		this.id = id;
 		this.emailAccountType = emailAccountType;
 		this.name = name;
 		this.primaryAccount = primaryAccount;
-		this.personKey = personKey;
+		this.personId = personId;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "EMAIL_ACCOUNT_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getEmailAccountKey() {
-		return this.emailAccountKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getid() {
+		return this.id;
 	}
 
-	public void setEmailAccountKey(Long emailAccountKey) {
-		this.emailAccountKey = emailAccountKey;
+	public void setid(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "EMAIL_ACCOUNT_TYPE_KEY")
+	@JoinColumn(name = "EMAIL_ACCOUNT_TYPE_ID")
 	public EmailAccountType getEmailAccountType() {
 		return this.emailAccountType;
 	}
@@ -85,13 +87,13 @@ public class EmailAccount implements java.io.Serializable {
 		this.primaryAccount = primaryAccount;
 	}
 
-	@Column(name = "PERSON_KEY", precision = 22, scale = 0)
-	public Long getPersonKey() {
-		return this.personKey;
+	@Column(name = "PERSON_ID", precision = 22, scale = 0)
+	public Long getPersonId() {
+		return this.personId;
 	}
 
-	public void setPersonKey(Long personKey) {
-		this.personKey = personKey;
+	public void setPersonId(Long personId) {
+		this.personId = personId;
 	}
 
 }

@@ -9,16 +9,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * Document entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "DOCUMENT", schema = "ETA")
+@Table(name = "DOCUMENT", schema = Constants.STUDY_SCHEMA)
 public class Document implements java.io.Serializable {
 
 	// Fields
 
-	private Long documentKey;
+	private Long id;
 	private Correspondence correspondence;
 	private StudyComp studyComp;
 	private String name;
@@ -32,15 +34,15 @@ public class Document implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Document(Long documentKey) {
-		this.documentKey = documentKey;
+	public Document(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public Document(Long documentKey, Correspondence correspondence,
+	public Document(Long id, Correspondence correspondence,
 			StudyComp studyComp, String name, String description,
 			Blob documentContent) {
-		this.documentKey = documentKey;
+		this.id = id;
 		this.correspondence = correspondence;
 		this.studyComp = studyComp;
 		this.name = name;
@@ -50,17 +52,17 @@ public class Document implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "DOCUMENT_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getDocumentKey() {
-		return this.documentKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setDocumentKey(Long documentKey) {
-		this.documentKey = documentKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CORRESPONDENCE_KEY")
+	@JoinColumn(name = "CORRESPONDENCE_ID")
 	public Correspondence getCorrespondence() {
 		return this.correspondence;
 	}
@@ -70,7 +72,7 @@ public class Document implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_COMP_KEY")
+	@JoinColumn(name = "STUDY_COMP_ID")
 	public StudyComp getStudyComp() {
 		return this.studyComp;
 	}

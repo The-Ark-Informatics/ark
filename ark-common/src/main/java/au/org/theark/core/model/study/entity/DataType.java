@@ -11,20 +11,21 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * DataType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "DATA_TYPE", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "DATA_TYPE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class DataType implements java.io.Serializable {
 
 	// Fields
 
-	private Long dataTypeKey;
+	private Long id;
 	private String name;
 	private String description;
-	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(
-			0);
+	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(0);
 
 	// Constructors
 
@@ -33,15 +34,14 @@ public class DataType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public DataType(Long dataTypeKey, String name) {
-		this.dataTypeKey = dataTypeKey;
+	public DataType(Long id, String name) {
+		this.id = id;
 		this.name = name;
 	}
 
 	/** full constructor */
-	public DataType(Long dataTypeKey, String name, String description,
-			Set<SubjectCustmFld> subjectCustmFlds) {
-		this.dataTypeKey = dataTypeKey;
+	public DataType(Long id, String name, String description,	Set<SubjectCustmFld> subjectCustmFlds) {
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.subjectCustmFlds = subjectCustmFlds;
@@ -49,13 +49,13 @@ public class DataType implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "DATA_TYPE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getDataTypeKey() {
-		return this.dataTypeKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setDataTypeKey(Long dataTypeKey) {
-		this.dataTypeKey = dataTypeKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", unique = true, nullable = false)

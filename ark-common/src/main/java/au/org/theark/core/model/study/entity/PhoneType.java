@@ -11,16 +11,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * PhoneType entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "PHONE_TYPE", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "PHONE_TYPE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class PhoneType implements java.io.Serializable {
 
 	// Fields
 
-	private Long phoneTypeKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<Phone> phones = new HashSet<Phone>(0);
@@ -32,14 +34,14 @@ public class PhoneType implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public PhoneType(Long phoneTypeKey) {
-		this.phoneTypeKey = phoneTypeKey;
+	public PhoneType(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public PhoneType(Long phoneTypeKey, String name, String description,
+	public PhoneType(Long id, String name, String description,
 			Set<Phone> phones) {
-		this.phoneTypeKey = phoneTypeKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.phones = phones;
@@ -47,16 +49,16 @@ public class PhoneType implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "PHONE_TYPE_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getPhoneTypeKey() {
-		return this.phoneTypeKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getid() {
+		return this.id;
 	}
 
-	public void setPhoneTypeKey(Long phoneTypeKey) {
-		this.phoneTypeKey = phoneTypeKey;
+	public void setid(Long id) {
+		this.id = id;
 	}
 
-	@Column(name = "NAME", unique = true, length = 20)
+	@Column(name = "NAME", unique = true, nullable = false, length = 20)
 	public String getName() {
 		return this.name;
 	}

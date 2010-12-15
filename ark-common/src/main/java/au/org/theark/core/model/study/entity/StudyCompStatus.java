@@ -11,16 +11,18 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import au.org.theark.core.Constants;
+
 /**
  * StudyCompStatus entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "STUDY_COMP_STATUS", schema = "ETA", uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
+@Table(name = "STUDY_COMP_STATUS", schema = Constants.STUDY_SCHEMA, uniqueConstraints = @UniqueConstraint(columnNames = "NAME"))
 public class StudyCompStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long studyCompStatusKey;
+	private Long id;
 	private String name;
 	private String description;
 	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
@@ -33,14 +35,14 @@ public class StudyCompStatus implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public StudyCompStatus(Long studyCompStatusKey) {
-		this.studyCompStatusKey = studyCompStatusKey;
+	public StudyCompStatus(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public StudyCompStatus(Long studyCompStatusKey, String name,
+	public StudyCompStatus(Long id, String name,
 			String description, Set<LinkStudyStudycomp> linkStudyStudycomps) {
-		this.studyCompStatusKey = studyCompStatusKey;
+		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.linkStudyStudycomps = linkStudyStudycomps;
@@ -48,13 +50,13 @@ public class StudyCompStatus implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@Column(name = "STUDY_COMP_STATUS_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getStudyCompStatusKey() {
-		return this.studyCompStatusKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getid() {
+		return this.id;
 	}
 
-	public void setStudyCompStatusKey(Long studyCompStatusKey) {
-		this.studyCompStatusKey = studyCompStatusKey;
+	public void setid(Long id) {
+		this.id = id;
 	}
 
 	@Column(name = "NAME", unique = true, length = 100)

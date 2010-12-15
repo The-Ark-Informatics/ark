@@ -8,20 +8,22 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import au.org.theark.core.Constants;
+
 /**
  * LinkSubjectStudycomp entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_SUBJECT_STUDYCOMP", schema = "ETA")
+@Table(name = "LINK_SUBJECT_STUDYCOMP", schema = Constants.STUDY_SCHEMA)
 public class LinkSubjectStudycomp implements java.io.Serializable {
 
 	// Fields
 
-	private Long linkSubjectStudycompKey;
+	private Long id;
 	private StudyComp studyComp;
 	private Study study;
 	private Person person;
-	private Long compStatusKey;
+	private Long studyCompStatusId;
 
 	// Constructors
 
@@ -30,33 +32,33 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public LinkSubjectStudycomp(Long linkSubjectStudycompKey) {
-		this.linkSubjectStudycompKey = linkSubjectStudycompKey;
+	public LinkSubjectStudycomp(Long id) {
+		this.id = id;
 	}
 
 	/** full constructor */
-	public LinkSubjectStudycomp(Long linkSubjectStudycompKey,
-			StudyComp studyComp, Study study, Person person, Long compStatusKey) {
-		this.linkSubjectStudycompKey = linkSubjectStudycompKey;
+	public LinkSubjectStudycomp(Long id,
+			StudyComp studyComp, Study study, Person person, Long studyCompStatusId) {
+		this.id = id;
 		this.studyComp = studyComp;
 		this.study = study;
 		this.person = person;
-		this.compStatusKey = compStatusKey;
+		this.studyCompStatusId = studyCompStatusId;
 	}
 
 	// Property accessors
 	@Id
-	@Column(name = "LINK_SUBJECT_STUDYCOMP_KEY", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getLinkSubjectStudycompKey() {
-		return this.linkSubjectStudycompKey;
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setLinkSubjectStudycompKey(Long linkSubjectStudycompKey) {
-		this.linkSubjectStudycompKey = linkSubjectStudycompKey;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_COMP_KEY")
+	@JoinColumn(name = "STUDY_COMP_ID")
 	public StudyComp getStudyComp() {
 		return this.studyComp;
 	}
@@ -66,7 +68,7 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}
@@ -76,7 +78,7 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_KEY")
+	@JoinColumn(name = "PERSON_SUBJECT_ID")
 	public Person getPerson() {
 		return this.person;
 	}
@@ -85,13 +87,13 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@Column(name = "COMP_STATUS_KEY", precision = 22, scale = 0)
-	public Long getCompStatusKey() {
-		return this.compStatusKey;
+	@Column(name = "STUDY_COMP_STATUS_ID", precision = 22, scale = 0)
+	public Long getStudyCompStatusId() {
+		return this.studyCompStatusId;
 	}
 
-	public void setCompStatusKey(Long compStatusKey) {
-		this.compStatusKey = compStatusKey;
+	public void setStudyCompStatusId(Long studyCompStatusId) {
+		this.studyCompStatusId = studyCompStatusId;
 	}
 
 }
