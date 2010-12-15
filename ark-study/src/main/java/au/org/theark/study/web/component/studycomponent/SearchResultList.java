@@ -73,11 +73,11 @@ public class SearchResultList extends Panel{
 				StudyComp studyComponent = item.getModelObject();
 				
 				/* The Component ID */
-				if(studyComponent.getStudyCompKey() != null){
+				if(studyComponent.getId() != null){
 					//Add the study Component Key here
-					item.add(new Label("studyComponent.studyCompKey", studyComponent.getStudyCompKey().toString()));	
+					item.add(new Label("studyComponent.id", studyComponent.getId().toString()));	
 				}else{
-					item.add(new Label("studyComponent.studyCompKey",""));
+					item.add(new Label("studyComponent.id",""));
 				}
 				/* Component Name Link */
 				item.add(buildLink(studyComponent));
