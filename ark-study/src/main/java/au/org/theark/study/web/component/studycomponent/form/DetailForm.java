@@ -24,6 +24,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.web.Constants;
 
 /**
  * @author nivedann
@@ -68,11 +69,12 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 	}
 	
 	public void initialiseDetailForm(){
-		componentIdTxtFld = new TextField<String>("studyComponent.studyCompKey");
+		
+		componentIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
 		componentIdTxtFld.setEnabled(false);
-		componentNameTxtFld = new TextField<String>("studyComponent.name");
-		componentDescription = new TextArea<String>("studyComponent.description");
-		keywordTxtArea = new TextArea<String>("studyComponent.keyword");
+		componentNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
+		componentDescription = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
+		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -126,7 +128,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 			study =	iArkCommonService.getStudy(studyId);	
 			containerForm.getModelObject().getStudyComponent().setStudy(study);
 			
-			if(containerForm.getModelObject().getStudyComponent().getStudyCompKey() == null){
+			if(containerForm.getModelObject().getStudyComponent().getId() == null){
 				
 				studyService.create(containerForm.getModelObject().getStudyComponent());
 				this.info("Study Component " + containerForm.getModelObject().getStudyComponent().getName() + " was created successfully" );
