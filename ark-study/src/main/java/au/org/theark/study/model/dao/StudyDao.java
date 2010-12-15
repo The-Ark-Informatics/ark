@@ -2,7 +2,6 @@ package au.org.theark.study.model.dao;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
@@ -44,8 +43,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
-		if(study.getStudyKey() != null){
-			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getStudyKey()));	
+		if(study.getId() != null){
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getId()));	
 		}
 		
 		if(study.getName() != null){
@@ -150,7 +149,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		try{
 			getSession().update(studyComponent);	
 		}catch(HibernateException hibException){
-			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getStudyCompKey() + " Cause " + hibException.getStackTrace());
+			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getId() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot update Study component due to system error");
 		}
 	}
@@ -159,8 +158,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
 		
-		if(studyCompCriteria.getStudyCompKey() != null){
-			criteria.add(Restrictions.eq(Constants.STUDY_COMP_KEY,studyCompCriteria.getStudyCompKey()));	
+		if(studyCompCriteria.getId() != null){
+			criteria.add(Restrictions.eq(Constants.STUDY_COMP_KEY,studyCompCriteria.getId()));	
 		}
 		
 		if(studyCompCriteria.getName() != null){
@@ -212,13 +211,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		//Add Business Validations here as well apart from UI validation
 		Session session = getSession();
 		Person person  = subjectVO.getPerson();
-		if(subjectVO.getPerson().getPhones() != null && subjectVO.getPhoneList().size() > 0){
-			Collection<Phone> phonesList = subjectVO.getPhoneList();
-			for (Phone phone : phonesList) {
-				phone.setPerson(person);
-				person.getPhones().add(phone);
-			}
-		}
+		//		if(subjectVO.getPerson().getPhones() != null && subjectVO.getPhoneList().size() > 0){
+		//			Collection<Phone> phonesList = subjectVO.getPhoneList();
+		//			for (Phone phone : phonesList) {
+		//				phone.setPerson(person);
+		//				person.getPhones().add(phone);
+		//			}
+		//		}
 		
 		session.save(person); //Save the Person and associated Phones
 		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
@@ -288,6 +287,38 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			throw new EntityNotFoundException("The entity with id" + id.toString() +" cannot be found.");
 		}
 	}
+
+	/**
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
+	 * a subject or contact.
+	 * @param personId
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException{
+		
+		Criteria personCriteria =  getSession().createCriteria(Person.class);
+		personCriteria.add(Restrictions.eq("personKey",personId));
+		List<Person> listOfPerson = personCriteria.list();
+		if(listOfPerson != null && listOfPerson.size() > 0){
+			return listOfPerson.get(0);
+		}else{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		}
+	}
+	
+	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException{
+		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
+		phoneCriteria.add(Restrictions.eq("personKey", personId));
+		List<Phone> personPhoneList = phoneCriteria.list();
+		if(personPhoneList == null && personPhoneList.size() == 0){
+			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		}
+		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
+		return personPhoneList;
+	}
+	
 	
 	
 }
