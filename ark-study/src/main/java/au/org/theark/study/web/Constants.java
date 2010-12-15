@@ -41,10 +41,8 @@ public class Constants {
 	
 	public static final String PERSON_PREFERRED_NAME="person.preferredName";
 	public static final String PERSON_VITAL_STATUS ="person.vitalStatus";
-	public static final String PERSON_KEY="personKey";
-	public static final String PERSON_PERSON_KEY="person.personKey";
+	public static final String PERSON_PERSON_ID="person.id";
 	public static final String SUBJECT_UID="subjectUID";
-	
 	public static final String PERSON_FIRST_NAME = "person.firstName";
 	public static final String PERSON_MIDDLE_NAME = "person.middleName";
 	public static final String PERSON_LAST_NAME = "person.lastName";
@@ -52,9 +50,10 @@ public class Constants {
 	public static final String GENDER_TYPE="genderType";
 	public static final String ID="id";
 	public static final String SUBJECT_STATUS ="subjectStatus";
-	public static final String SUBJECT_STATUS_KEY ="subjectStatusKey";
+	public static final String SUBJECT_STATUS_ID ="id";
 	public static final String VITAL_STATUS="vitalStatus";
 	public static final String STATUS_NAME ="statusName";
+	public static final String PERSON_MARITAL_STATUS ="person.maritalStatus";
 	public static final String PERSON_DOB="person.dateOfBirth";
 	public static final String PERSON_TYTPE_TYPE = "person.titleType";
 	public static final String PERSON_GENDER_TYPE ="person.genderType";
@@ -91,7 +90,7 @@ public class Constants {
 	
 	/* Study */
 	
-	public static final String STUDY_SEARCH_KEY="study.studyKey";
+	public static final String STUDY_SEARCH_KEY="study.id";
 	public static final String STUDY_SEARCH_NAME="study.name";
 	public static final String STUDY_SEARCH_DOA="study.dateOfApplication";
 	public static final String STUDY_SEARCH_CONTACT="study.contactPerson";
@@ -103,7 +102,7 @@ public class Constants {
 	public static final String STUDY_SITE_NAME="studySite.name";
 	
 	
-	public static final String STUDY_KEY = "study.studyKey";
+	public static final String STUDY_KEY = "study.id";
 	
 	public static final String STUDY_NAME="study.name";
 	public static final String STUDY_DESCRIPTION="study.description";
@@ -114,14 +113,16 @@ public class Constants {
 	public static final String STUDY_ESTIMATED_YEAR_OF_COMPLETION="study.estimatedYearOfCompletion";
 	public static final String STUDY_CHIEF_INVESTIGATOR ="study.chiefInvestigator";
 	public static final String STUDY_CO_INVESTIGATOR ="study.coInvestigator";
-	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "study.autoGenerateSubjectKey";
-	public static final String SUBJECT_KEY_START="study.subjectKeyStart";
+	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "study.autoGenerateSubjectUId";
+	public static final String SUBJECT_KEY_START="study.subjectUIdStart";
 	public static final String SUBJECT_ID_PREFIX = "study.subjectIdPrefix";
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
 	public static final String STUDY_AUTO_CONSENT="study.autoConsent";
 	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="study.subStudyBiospecimenPrefix";
 	public static final String STUDY_MAIN_TAB="Study";
-	public static final String STUDY_STATUS_KEY="studyStatusKey";
+	public static final String SUBJECT_MAIN_TAB="Subject";
+	//public static final String STUDY_STATUS_KEY="studyStatusId";
+	public static final String STUDY_STATUS_KEY="id";
 	public static final String STUDY_DROP_DOWN_CHOICE ="studyChoice";
 	public static final String YES="Yes";
 	public static final String NO="No";
@@ -137,7 +138,10 @@ public class Constants {
 	public static final String MODULE_NAME ="moduleName";
 	public static final String MODULES_SELECTED="modulesSelected";
 	public static final String MODULES_AVAILABLE="modulesAvailable";
-	
+	public static final String STUDY_COMPONENT_ID ="studyComponent.id";
+	public static final String STUDY_COMPONENT_NAME="studyComponent.name";
+	public static final String STUDY_COMPONENT_DESCRIPTION = "studyComponent.description";
+	public static final String STUDY_COMPONENT_KEYWORD="studyComponent.keyword";
 	/* Error Messages and Fields references from Resource files */
 	public static final String ERROR_STUDY_NAME_REQUIRED ="error.study.name.required";
 	public static final String ERROR_STUDY_STATUS_REQUIRED="error.study.status.required";
