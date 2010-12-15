@@ -63,10 +63,10 @@ public class SearchResults extends Panel{
 				
 				Study study = item.getModelObject();
 				
-				if(study.getStudyKey() != null){
-					item.add(new Label("studyKey", study.getStudyKey().toString()));	
+				if(study.getId() != null){
+					item.add(new Label("id", study.getId().toString()));	
 				}else{
-					item.add(new Label("studyKey",""));
+					item.add(new Label("id",""));
 				}
 				
 				item.add(buildLink(study,searchResultsContainer));
@@ -107,7 +107,7 @@ public class SearchResults extends Panel{
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				//Place the selected study in session context for the user
-				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getStudyKey());
+				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getId());
 				studyContainerForm.getModelObject().setStudy(study);
 				List<ModuleVO> modules = new ArrayList<ModuleVO>();
 				Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
