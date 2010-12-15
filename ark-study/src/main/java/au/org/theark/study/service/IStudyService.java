@@ -6,8 +6,10 @@ import java.util.Set;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -68,5 +70,24 @@ public interface IStudyService {
 	public void createSubject(SubjectVO subjectVO);
 	
 	public void updateSubject(SubjectVO subjectVO);
+	
+	/**
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
+	 * a subject or contact.
+	 * @param personId
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException;
+	
+	/**
+	 * Look up the phones connected with the person(subject or contact)
+	 * @param personId
+	 * @return List<Phone>
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException;
 
 }
