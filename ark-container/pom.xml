@@ -21,7 +21,14 @@
 	<dependencies>
 
 		<!--  Ark Dependencies -->
-
+     	
+     	<!-- MySQL database driver -->
+		<dependency>
+    		<groupId>mysql</groupId>
+    		<artifactId>mysql-connector-java</artifactId>
+    		<version>5.1.13</version>
+		</dependency>
+		
 		<!--  Ark Common Module -->
 		<dependency>
 			<groupId>au.org.theark.core</groupId>
