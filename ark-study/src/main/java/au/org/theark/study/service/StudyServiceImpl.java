@@ -60,11 +60,6 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao;
 	}
 
-	
-	public List<Study> getStudy(Study study){
-		return studyDao.getStudy(study);
-	}
-	
 	public List<StudyStatus> getListOfStudyStatus(){
 		return studyDao.getListOfStudyStatus();
 	}
