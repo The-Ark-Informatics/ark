@@ -34,60 +34,6 @@ import au.org.theark.study.service.Constants;
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
-	
-//	public List<Study> getStudy(Study study)
-//	{
-//		
-//		
-//		Criteria studyCriteria =  getSession().createCriteria(Study.class);
-//		
-//		if(study.getId() != null){
-//			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getId()));	
-//		}
-//		
-//		if(study.getName() != null){
-//			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, study.getName(), MatchMode.ANYWHERE));	
-//		}
-//		
-//		if(study.getDateOfApplication() != null){
-//			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, study.getDateOfApplication()));
-//		}
-//		
-//		if(study.getEstimatedYearOfCompletion() != null){
-//			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, study.getEstimatedYearOfCompletion()));
-//		}
-//
-//		if(study.getChiefInvestigator() != null){
-//			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, study.getChiefInvestigator(),MatchMode.ANYWHERE));
-//		}
-//
-//		if(study.getContactPerson() != null){
-//			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, study.getContactPerson(), MatchMode.ANYWHERE));
-//		}
-//		
-//		if(study.getStudyStatus() != null){
-//			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
-//			try{
-//				StudyStatus status  = getStudyStatus("Archive");
-//				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
-//			}catch(StatusNotAvailableException notAvailable){
-//				log.error("Cannot look up and filter on archive status.Reference data could be missing");
-//			}
-//		}else{
-//			try{
-//				StudyStatus status  = getStudyStatus("Archive");
-//				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
-//			}catch(StatusNotAvailableException notAvailable){
-//				log.error("Cannot look up and filter on archive status.Reference data could be missing");
-//			}
-//
-//		}
-//
-//		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
-//		List<Study> studyList  = studyCriteria.list();
-//		
-//		return studyList;
-//	}
 
 	public void create(Study study) {
 		getSession().save(study);
@@ -98,7 +44,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Example studyStatus = Example.create(new StudyStatus());
 		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
 		return   studyStatusCriteria.list();
-		
 	}
 	
 	/**
@@ -117,7 +62,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			System.out.println("Cannot locate a study status with " + statusName + " in the database");
 			throw new StatusNotAvailableException();
 		}
-		
 	}
 	
 	public Study getStudy(Long id){
@@ -209,14 +153,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		//Add Business Validations here as well apart from UI validation
 		Session session = getSession();
 		Person person  = subjectVO.getPerson();
-		//		if(subjectVO.getPerson().getPhones() != null && subjectVO.getPhoneList().size() > 0){
-		//			Collection<Phone> phonesList = subjectVO.getPhoneList();
-		//			for (Phone phone : phonesList) {
-		//				phone.setPerson(person);
-		//				person.getPhones().add(phone);
-		//			}
-		//		}
-		
 		session.save(person); //Save the Person and associated Phones
 		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 		linkSubjectStudy.setPerson(person);
@@ -233,7 +169,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public void updateSubject(SubjectVO subjectVO){
 		
 		try{
-			
 			Session session = getSession();
 			Person person  = subjectVO.getPerson();
 			session.update(person);//Update Person and associated Phones
