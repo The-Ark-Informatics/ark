@@ -27,8 +27,6 @@ public interface IStudyDao {
 	
 	public void update(StudyComp studyComponent) throws ArkSystemException;
 	
-	public List<Study> getStudy(Study study);
-	
 	/**
 	 * Interface to get a list of Study Status reference data from the backend.
 	 * These study status' are no associated with a study as such but can be used for
