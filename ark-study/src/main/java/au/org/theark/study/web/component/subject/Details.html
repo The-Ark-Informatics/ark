@@ -11,13 +11,13 @@
 			<div id="fldLabel">
 				<div class="label">
 					<label for="subjectId">
-						<wicket:message key="subjectId">Subject Id:</wicket:message>
+						<wicket:message key="subjectUID">Subject UID:</wicket:message>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="person.id" type="text" />
+					<input wicket:id="subjectUID"/> 
 				</div>
 			</div>
 			
@@ -192,14 +192,17 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="gender">
-						<wicket:message key="subjectUID">Subject UID:</wicket:message>
+					<label for="Marital status">
+						<wicket:message key="maritalStatus">Marital Status:</wicket:message>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="subjectUID"/> 
+					<select wicket:id="person.maritalStatus">
+	       				<option>Single</option>
+	       				<option>Married</option>
+	       			</select>
 				</div>
 			</div>
 			
@@ -207,15 +210,12 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<wicket:message key="maritalStatus">Marital Status:</wicket:message>
+					&nbsp;
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label" >
-					<select wicket:id="person.maritalStatus">
-	       				<option>Single</option>
-	       				<option>Married</option>
-	       			</select>
+					&nbsp;
 				</div>
 			</div>
 			
