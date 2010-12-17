@@ -25,6 +25,7 @@ public class Constants {
 	public static final String STUDY_COMP_NAME="name";
 	public static final String STUDY_COMP_KEYWORD="keyword";
 	
+	public static final String ID="id";
 	
 	
 
