@@ -7,8 +7,6 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,59 +35,59 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
 	
-	public List<Study> getStudy(Study study)
-	{
-		
-		
-		Criteria studyCriteria =  getSession().createCriteria(Study.class);
-		
-		if(study.getId() != null){
-			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getId()));	
-		}
-		
-		if(study.getName() != null){
-			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, study.getName(), MatchMode.ANYWHERE));	
-		}
-		
-		if(study.getDateOfApplication() != null){
-			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, study.getDateOfApplication()));
-		}
-		
-		if(study.getEstimatedYearOfCompletion() != null){
-			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, study.getEstimatedYearOfCompletion()));
-		}
-
-		if(study.getChiefInvestigator() != null){
-			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, study.getChiefInvestigator(),MatchMode.ANYWHERE));
-		}
-
-		if(study.getContactPerson() != null){
-			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, study.getContactPerson(), MatchMode.ANYWHERE));
-		}
-		
-		if(study.getStudyStatus() != null){
-			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
-			try{
-				StudyStatus status  = getStudyStatus("Archive");
-				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
-			}catch(StatusNotAvailableException notAvailable){
-				log.error("Cannot look up and filter on archive status.Reference data could be missing");
-			}
-		}else{
-			try{
-				StudyStatus status  = getStudyStatus("Archive");
-				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
-			}catch(StatusNotAvailableException notAvailable){
-				log.error("Cannot look up and filter on archive status.Reference data could be missing");
-			}
-
-		}
-
-		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
-		List<Study> studyList  = studyCriteria.list();
-		
-		return studyList;
-	}
+//	public List<Study> getStudy(Study study)
+//	{
+//		
+//		
+//		Criteria studyCriteria =  getSession().createCriteria(Study.class);
+//		
+//		if(study.getId() != null){
+//			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY,study.getId()));	
+//		}
+//		
+//		if(study.getName() != null){
+//			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, study.getName(), MatchMode.ANYWHERE));	
+//		}
+//		
+//		if(study.getDateOfApplication() != null){
+//			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, study.getDateOfApplication()));
+//		}
+//		
+//		if(study.getEstimatedYearOfCompletion() != null){
+//			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, study.getEstimatedYearOfCompletion()));
+//		}
+//
+//		if(study.getChiefInvestigator() != null){
+//			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, study.getChiefInvestigator(),MatchMode.ANYWHERE));
+//		}
+//
+//		if(study.getContactPerson() != null){
+//			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, study.getContactPerson(), MatchMode.ANYWHERE));
+//		}
+//		
+//		if(study.getStudyStatus() != null){
+//			studyCriteria.add(Restrictions.eq(Constants.STUDY_STATUS, study.getStudyStatus()));
+//			try{
+//				StudyStatus status  = getStudyStatus("Archive");
+//				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+//			}catch(StatusNotAvailableException notAvailable){
+//				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+//			}
+//		}else{
+//			try{
+//				StudyStatus status  = getStudyStatus("Archive");
+//				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
+//			}catch(StatusNotAvailableException notAvailable){
+//				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+//			}
+//
+//		}
+//
+//		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
+//		List<Study> studyList  = studyCriteria.list();
+//		
+//		return studyList;
+//	}
 
 	public void create(Study study) {
 		getSession().save(study);
@@ -159,7 +157,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
 		
 		if(studyCompCriteria.getId() != null){
-			criteria.add(Restrictions.eq(Constants.STUDY_COMP_KEY,studyCompCriteria.getId()));	
+			criteria.add(Restrictions.eq(Constants.ID,studyCompCriteria.getId()));	
 		}
 		
 		if(studyCompCriteria.getName() != null){
@@ -237,16 +235,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		try{
 			
 			Session session = getSession();
-			//Update the Person Details
 			Person person  = subjectVO.getPerson();
-			if(subjectVO.getPhoneList() != null && subjectVO.getPhoneList().size() > 0){
-				Collection<Phone> phonesList = subjectVO.getPhoneList();
-				for (Phone phone : phonesList) {
-					phone.setPerson(person);
-					person.getPhones().add(phone);
-				}
-			}
-			
 			session.update(person);//Update Person and associated Phones
 			//Get the LinkSubjectStudy reference based on the id
 			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(subjectVO.getLinkSubjectStudyId());	
@@ -254,6 +243,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			linkSubjectStudy.setStudy(subjectVO.getStudy());
 			//No need to set Person here since, there would not be a change to the actual person ID primary key
 			linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
+			linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
 			//Update the instance
 			session.update(linkSubjectStudy);
 			
@@ -279,7 +269,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
 		
 		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
-		linkSubjectStudyCriteria.add(Restrictions.eq("linkSubjectStudyKey",id));
+		linkSubjectStudyCriteria.add(Restrictions.eq(Constants.ID,id));
 		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
 		if(listOfSubjects != null && listOfSubjects.size() > 0){
 			return listOfSubjects.get(0);
@@ -299,7 +289,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException{
 		
 		Criteria personCriteria =  getSession().createCriteria(Person.class);
-		personCriteria.add(Restrictions.eq("personKey",personId));
+		personCriteria.add(Restrictions.eq(Constants.ID,personId));
 		List<Person> listOfPerson = personCriteria.list();
 		if(listOfPerson != null && listOfPerson.size() > 0){
 			return listOfPerson.get(0);
@@ -310,7 +300,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException{
 		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
-		phoneCriteria.add(Restrictions.eq("personKey", personId));
+		phoneCriteria.add(Restrictions.eq(Constants.ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
 		if(personPhoneList == null && personPhoneList.size() == 0){
 			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
