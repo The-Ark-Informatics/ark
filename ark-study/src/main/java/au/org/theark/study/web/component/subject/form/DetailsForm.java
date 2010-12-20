@@ -205,7 +205,7 @@ public class DetailsForm extends Form<SubjectVO>{
 		phoneDetailPanelContainer.setVisible(false);
 		
 		
-		subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_ID);
+		//subjectIdTxtFld = new TextField<String>(Constants.PERSON_PERSON_ID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
@@ -264,7 +264,7 @@ public class DetailsForm extends Form<SubjectVO>{
 	
 	private void addComponents(){
 
-		add(subjectIdTxtFld);
+		//add(subjectIdTxtFld);
 		add(titleTypeDdc);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
