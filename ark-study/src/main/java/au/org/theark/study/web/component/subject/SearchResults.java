@@ -8,6 +8,7 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.Collection;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -112,6 +113,11 @@ public class SearchResults extends Panel{
 		AjaxLink link = new AjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
+				
+				
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
+				//We specify the type of person here as Subject
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT);
 				
 				SubjectVO subjectFromBackend = new SubjectVO();
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
