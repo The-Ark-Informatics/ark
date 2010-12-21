@@ -6,20 +6,13 @@
  */
 package au.org.theark.study.web.component.subject;
 
-import java.util.Collection;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.SearchForm;
@@ -30,85 +23,70 @@ import au.org.theark.study.web.component.subject.form.SearchForm;
  */
 public class Search extends Panel{
 
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer searchWebMarkupContainer;
-	private WebMarkupContainer detailsWebMarkupContainer;
-	private ContainerForm containerForm;
-	private PageableListView<SubjectVO> pageableListView;
-	private FeedbackPanel fbPanel;
-	private Details details;
 	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
-
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-
+	private FeedbackPanel feedBackPanel;
+	private WebMarkupContainer searchMarkupContainer;
+	private WebMarkupContainer listContainer;
+	private WebMarkupContainer detailsContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer detailFormContainer;
+	private PageableListView<SubjectVO> listView;
+	
 	
 	/**
+	 * Constructor
 	 * @param id
+	 * @param feedBackPanel
+	 * @param searchMarkupContainer
+	 * @param listView
+	 * @param resultListContainer
+	 * @param detailPanelContainer
+	 * @param detailFormContainer
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param detailPanel
+	 * @param containerForm
 	 */
-	public Search(	String id,
-					FeedbackPanel feedbackpanel,
+	public Search(	String id, 
+					FeedbackPanel feedBackPanel, 
 					WebMarkupContainer searchMarkupContainer,
-					PageableListView<SubjectVO> pageableListView,
-					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailsContainer,
+					PageableListView<SubjectVO> listView,  
+					WebMarkupContainer resultListContainer, 
+					WebMarkupContainer detailPanelContainer,
+					WebMarkupContainer detailFormContainer,
+					WebMarkupContainer viewButtonContainer,
+					WebMarkupContainer editButtonContainer,	
 					Details detailPanel,
-					ContainerForm subjectContainerForm) {
-		
-		super(id);
-		this.containerForm = subjectContainerForm;
-		this.pageableListView = pageableListView;
-		listContainer = resultListContainer;
-		searchWebMarkupContainer = searchMarkupContainer;
-		detailsWebMarkupContainer = detailsContainer;
-		fbPanel = feedbackpanel;
-		this.details = detailPanel;
-	}
-	
-	public void processDetail(AjaxRequestTarget target){
-		searchWebMarkupContainer.setVisible(false);
-		details.getDetailsForm().getSubjectIdTxtFld().setEnabled(false);
-		detailsWebMarkupContainer.setVisible(true);
-		listContainer.setVisible(false);
-		target.addComponent(detailsWebMarkupContainer);
-		target.addComponent(searchWebMarkupContainer);
-		target.addComponent(listContainer);
-	}
-	
-	public void initialisePanel(){
-		
-		SearchForm searchForm = new SearchForm("searchForm", (CompoundPropertyModel<SubjectVO>)containerForm.getModel()){
-			
-			protected  void onSearch(AjaxRequestTarget target){
-				
-				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
-				//Refresh the FB panel if there was an old message from previous search result
-				target.addComponent(fbPanel);
-				Collection<SubjectVO> subjects = iArkCommonService.getSubject(containerForm.getModelObject());
-				
-				if(subjects != null && subjects.size() == 0){
-					this.info("There are no subjects with the specified criteria.");
-					target.addComponent(fbPanel);
-				}
-				
-				containerForm.getModelObject().setSubjectList(subjects);
-				pageableListView.removeAll();
-				listContainer.setVisible(true);
-				target.addComponent(listContainer);
-				
-			}
-			
-			protected  void onNew(AjaxRequestTarget target){
-				containerForm.setModelObject(new SubjectVO());
-				processDetail(target);
-			}
-		};
-		
-		searchForm.initialiseForm();
-		add(searchForm);
-	}
+					ContainerForm containerForm) {
 
+		super(id);
+		this.searchMarkupContainer =  searchMarkupContainer;
+		this.listView = listView;
+		this.feedBackPanel = feedBackPanel;
+		this.listContainer = resultListContainer;
+		this.detailsContainer = detailPanelContainer;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailFormContainer = detailFormContainer;
+		
+	}
+	
+	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm){
+		
+		
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, 
+														subjectVoCpm, 
+														listView,
+														feedBackPanel,
+														listContainer,
+														searchMarkupContainer,
+														detailsContainer,
+														detailFormContainer,
+														viewButtonContainer,
+														editButtonContainer);
+		add(searchStudyCompForm);
+		
+	}
+	
 }
