@@ -255,7 +255,7 @@ public class DetailForm extends Form<StudyModelVO>{
 		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,false){
 				@Override
 				public ResourceReference getCSS(){ 
-			      return new ResourceReference(Palette.class, "ark-palette.css");
+			      return null;
 				}
 		};
 	}
