@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
@@ -23,6 +24,9 @@ public class PhenoCollectionVO implements Serializable
 	protected FieldData fieldData;
 	protected Person person;
 	protected Study study;
+	private Collection<Field> fieldsAvailable;
+	private Collection<Field> fieldsSelected;
+
 	protected int mode;
 	
 	/** A Collection of collections for the study in context*/
@@ -43,6 +47,9 @@ public class PhenoCollectionVO implements Serializable
 		this.field = new Field();
 		this.person = new Person();
 		this.study = new Study();
+		this.fieldData = new FieldData();
+		this.fieldsAvailable = new ArrayList<Field>();
+		this.fieldsSelected = new ArrayList<Field>();
 	}
 	
 	public PhenoCollection getPhenoCollection()
@@ -153,5 +160,37 @@ public class PhenoCollectionVO implements Serializable
 	public void setPhenoCollectionCollection(java.util.Collection<PhenoCollection> phenoCollection)
 	{
 		this.phenoCollectionCollection = phenoCollection;
+	}
+
+	/**
+	 * @param fieldsAvailable the fieldsAvailable to set
+	 */
+	public void setFieldsAvailable(Collection<Field> fieldsAvailable)
+	{
+		this.fieldsAvailable = fieldsAvailable;
+	}
+
+	/**
+	 * @return the fieldsAvailable
+	 */
+	public Collection<Field> getFieldsAvailable()
+	{
+		return fieldsAvailable;
+	}
+
+	/**
+	 * @param fieldsSelected the fieldsSelected to set
+	 */
+	public void setFieldsSelected(Collection<Field> fieldsSelected)
+	{
+		this.fieldsSelected = fieldsSelected;
+	}
+
+	/**
+	 * @return the fieldsSelected
+	 */
+	public Collection<Field> getFieldsSelected()
+	{
+		return fieldsSelected;
 	}
 }
