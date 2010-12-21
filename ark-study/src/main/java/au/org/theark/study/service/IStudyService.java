@@ -63,6 +63,8 @@ public interface IStudyService {
 	
 	public void create(Phone phone) throws ArkSystemException;
 	
+	public void update(Phone phone) throws ArkSystemException;
+	
 	/**
 	 * A method to create a Subject.
 	 * @param subjectVO

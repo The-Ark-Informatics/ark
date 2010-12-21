@@ -163,6 +163,9 @@ public class StudyServiceImpl implements IStudyService{
 		studyDao.create(phone);
 	}
 	
+	public void update(Phone phone) throws ArkSystemException{
+		studyDao.update(phone);
+	}
 	
 	public void createSubject(SubjectVO subjectVO){
 		studyDao.createSubject(subjectVO);
