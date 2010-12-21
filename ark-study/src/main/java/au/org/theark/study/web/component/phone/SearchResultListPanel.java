@@ -73,7 +73,6 @@ public class SearchResultListPanel extends Panel{
 				}else{
 					item.add(new Label("areaCode",""));
 				}
-				item.add(buildLink(phone));
 				if(phone.getPhoneType() != null && phone.getPhoneType().getName() != null){
 					item.add(new Label("phoneType.name",phone.getPhoneType().getName()));	
 				}else{
@@ -87,7 +86,7 @@ public class SearchResultListPanel extends Panel{
 	
 	private AjaxLink buildLink(final Phone phone){
 		
-		AjaxLink link = new AjaxLink("phone.phoneNumber") {
+		AjaxLink link = new AjaxLink("phoneNumber") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
