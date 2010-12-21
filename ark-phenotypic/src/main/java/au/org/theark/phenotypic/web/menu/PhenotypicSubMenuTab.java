@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
+import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
@@ -62,6 +63,11 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.FIELD_DATA_SUBMENU);
+		menuModule.setResourceKey(Constants.FIELD_DATA_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.PHENOTYPIC_IMPORT_SUBMENU);
 		menuModule.setResourceKey(Constants.PHENOTYPIC_IMPORT_RESOURCEKEY);
 		moduleTabs.add(menuModule);
@@ -92,6 +98,10 @@ public class PhenotypicSubMenuTab extends Panel
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
 					{
 						panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU))
+					{
+						panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_IMPORT_SUBMENU))
 					{
