@@ -135,12 +135,11 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		PropertyModel<Collection<Field>> selectedModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsSelected");
 		PropertyModel<Collection<Field>> availableModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsAvailable");
 		
-		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, 10, true)
-		{
+		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, 10, true){
 			@Override
 			public ResourceReference getCSS(){ 
-		      return new ResourceReference(Palette.class, "ark-palette.css"); 
-		} 
+		      return null;
+			}
 		};
 	}
 
@@ -170,7 +169,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		if (containerForm.getModelObject().getPhenoCollection().getId() == null)
 		{
 			// Save
-			Study study = containerForm.getModelObject().getPhenoCollection().getStudy();
 			phenotypicService.createCollection(containerForm.getModelObject());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was created successfully");
 			processErrors(target);
@@ -178,7 +176,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		else
 		{
 			// Update
-			phenotypicService.updateCollection(containerForm.getModelObject().getPhenoCollection());
+			phenotypicService.updateCollection(containerForm.getModelObject());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was updated successfully");
 			processErrors(target);
 		}
@@ -215,7 +213,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	 */
 	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
 		//TODO:(CE) To handle Business and System Exceptions here
-		phenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
+		phenotypicService.deleteCollection(containerForm.getModelObject());
    	this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
    		
    	// Display delete confirmation message
