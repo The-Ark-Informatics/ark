@@ -10,16 +10,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -29,14 +23,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -62,7 +53,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	private DropDownChoice<SubjectStatus> subjectStatusDdc;
 	private PageableListView<SubjectVO> listView;
 	private CompoundPropertyModel<SubjectVO> cpmModel;
-	
 	
 	/**
 	 * @param id
@@ -116,68 +106,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		initVitalStatusDdc();
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
-		//addComponents();
 	}
 	
-	/**
-	 * @param id
-	 */
-//	public SearchForm(String id, CompoundPropertyModel<SubjectVO> model) {
-//		super(id);
-//		this.cpmModel = model; 
-//		// TODO Auto-generated constructor stub
-//		
-//		newButton = new AjaxButton(Constants.NEW){
-//			
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//				//Make the details panel visible
-//				onNew(target);
-//			}
-//			
-//			@Override
-//			public boolean isVisible(){
-//				
-//				SecurityManager securityManager =  ThreadContext.getSecurityManager();
-//				Subject currentUser = SecurityUtils.getSubject();		
-//				boolean flag = false;
-//				if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-//						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-//					flag = true;
-//				}
-//				//if it is a Super or Study admin then make the new available
-//				return flag;
-//			}
-//			
-//		};
-//		
-//		searchButton = new AjaxButton(Constants.SEARCH){
-//			
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//				onSearch(target);
-//			}
-//			
-//		};
-//		
-//		resetButton = new Button(Constants.RESET){
-//			public void onSubmit(){
-//				onReset();
-//			}
-//		};
-//		
-//		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		if(sessionStudyId == null){
-//			newButton.setEnabled(false);
-//			searchButton.setEnabled(false);
-//			this.error("There is no study in context. You can only search or manage subjects based on a study.");
-//		}
-//		
-//		initVitalStatusDdc();
-//		initSubjectStatusDdc();
-//		initGenderTypeDdc();
-//		
-//	}
 	
 	private void initVitalStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
@@ -231,16 +161,18 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		target.addComponent(listContainer);//For ajax this is required so 
 		
 	}
-	
 
 	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure()
+	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
 	 */
 	@Override
-	protected boolean isSecure() {
+	protected boolean isSecure(String actionType) {
 		// TODO Auto-generated method stub
 		return true;
 	}
+	
+
+
 	
 
 }
