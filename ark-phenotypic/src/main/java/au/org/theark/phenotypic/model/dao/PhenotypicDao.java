@@ -187,10 +187,137 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		getSession().update(collection);
 	}
+	
+	public void updatePhenoCollection(PhenoCollectionVO collectionVo)
+	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		collectionVo.getPhenoCollection().setUpdateTime(dateNow);
+		collectionVo.getPhenoCollection().setUserId(currentUser.getPrincipal().toString());
+		
+		Session session = getSession();
+		session.update(collectionVo.getPhenoCollection());
+		
+		Collection<FieldPhenoCollection> fieldPhenoCollections = getPhenoCollectionFields(collectionVo.getPhenoCollection());
+		// Delete all previous field_collections
+		for (FieldPhenoCollection fieldPhenoCollection : fieldPhenoCollections)
+		{
+			session.delete(fieldPhenoCollection);
+		}
+		// Save field_collections
+		FieldPhenoCollection fieldPhenoCollection = new FieldPhenoCollection();
+		Collection<Field> fieldSelection = collectionVo.getFieldsSelected();
+		for (Field field : fieldSelection)
+		{
+			fieldPhenoCollection = new FieldPhenoCollection();
+			fieldPhenoCollection.setStudy(collectionVo.getPhenoCollection().getStudy());
+			fieldPhenoCollection.setPhenoCollection(collectionVo.getPhenoCollection());
+			fieldPhenoCollection.setField(field);
+			
+			session.save(fieldPhenoCollection);
+		}
+	}
+	
+	/**
+	 * <p>
+	 * This method is a helper for the Update FieldPhenoCollection.
+	 * It establishes the list of fields that need to be added. 
+	 * 1. Iterate through each Field that is in the selected list</br>
+	 * 2. Check if the selected Field exists in the existing list of Fields.</br>
+	 * 3. If the selected list contains the Field, then checks if there is a Field that is not currently present and adds it to a list.
+	 * 4. If the selected Field does NOT exist (inverse of 3), it adds the Field into a list. .</br>
+	 * 
+	 * </p>
+	 * @param selectedFieldList
+	 * @param existingFieldList
+	 * @param FieldListToAdd
+	 */
+	private void processAddList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToAdd){
+		for (Field selectedField : selectedFieldList)
+		{	
+			// Check if the selected Field is already there in the existing fields
+			if(existingFieldList.contains(selectedField))
+			{
+				// Check if the field is present
+				for(Field existingField: existingFieldList)
+				{
+					// If the selected Field and the current existingField match then process the fields
+					if(selectedField.equals(existingField))
+					{					
+						// Check if the field exists
+						for(Field selectedField1 : selectedFieldList)
+						{
+							// If not in list, add it
+							if(!existingFieldList.contains(selectedField1))
+							{
+								fieldListToAdd.add(selectedField1);
+							}
+						}
+					}
+				}				
+			}
+			else
+			{
+				fieldListToAdd.add(selectedField);
+			}
+		}
+	}
+	
+	/**
+	 * <p>
+	 * This method is a helper for the Update user details.
+	 * It establishes the list of PhenoCollection and fields that need to be removed. 
+	 * 1. Iterate through each PhenoCollection that is currently in the back-end.</br>
+	 * 2. Check if the PhenoCollection exists in the currently selected list of PhenoCollections.</br>
+	 * 3. If the selected list does not contain the PhenoCollection then it marks the existing PhenoCollection and all fields linked to it to be removed.</br>
+	 * 4. If the existing PhenoCollection does exist(inverse of 3), then checks if the existing fields are listed in the selected PhenoCollection's list of fields.</br>
+	 * 5. If it does not find a field that exists then it marks that PhenoCollection and the specific field(s) to be removed.</br>
+	 * </p>
+	 * @param selectedFieldList
+	 * @param existingFieldList
+	 * @param FieldListToRemove
+	 */
+	private void processRemoveList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToRemove)
+	{		
+		for(Field existingField : existingFieldList)
+		{
+			// If the existing Field was not in the selected list of Fields, then mark it for removal
+			if(!selectedFieldList.contains(existingField))
+			{
+				fieldListToRemove.add(existingField);
+			}
+			else
+			{
+				// Selected List contains an existing Field. Determine the fields that need to be removed
+				for(Field selectedField : selectedFieldList)
+				{	
+					if(selectedField.equals(existingField))
+					{
+						fieldListToRemove.add(existingField);
+					}
+				}
+			}
+		}
+	}
 
 	public void deletePhenoCollection(PhenoCollection collection)
 	{
 		getSession().delete(collection);
+	}
+	
+	public void deletePhenoCollection(PhenoCollectionVO collectionVo)
+	{
+		Session session = getSession();
+		
+		Collection<FieldPhenoCollection> fieldPhenoCollections = getPhenoCollectionFields(collectionVo.getPhenoCollection());
+		// Delete all previous field_collections
+		for (FieldPhenoCollection fieldPhenoCollection : fieldPhenoCollections)
+		{
+			session.delete(fieldPhenoCollection);
+		}
+		
+		session.delete(collectionVo.getPhenoCollection());
 	}
 
 	public void createCollectionImport(CollectionImport collectionImport)
@@ -218,6 +345,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void deleteCollectionImport(CollectionImport collectionImport)
 	{
 		getSession().delete(collectionImport);
+	}
+	
+	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+
+		if (phenoCollection.getId() != null){
+			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION,phenoCollection.getId()));
+		}
+
+		java.util.Collection<FieldPhenoCollection> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
+		
 	}
 
 	public Field getField(Long id)
