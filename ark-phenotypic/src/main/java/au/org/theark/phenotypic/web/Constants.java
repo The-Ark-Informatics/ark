@@ -12,6 +12,7 @@ public class Constants {
 	public static final String	PHENOTYPIC_SUMMARY_SUBMENU	= "Summary";
 	public static final String PHENO_COLLECTION_SUBMENU = "Collections";
 	public static final String FIELD_SUBMENU = "Fields";
+	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
 	public static final String PHENOTYPIC_IMPORT_SUBMENU = "Data Import";
 	public static final String REPORT_SUBMENU = "Reports";
 	
@@ -19,6 +20,7 @@ public class Constants {
 	public static final String	PHENOTYPIC_SUMMARY_RESOURCEKEY	= "tab.module.phenotypic.summaryModule";
 	public static final String COLLECTION_RESOURCEKEY = "tab.module.phenotypic.collection";
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
+	public static final String FIELD_DATA_RESOURCEKEY = "tab.module.phenotypic.fieldData";
 	public static final String PHENOTYPIC_IMPORT_RESOURCEKEY = "tab.module.phenotypic.phenotypicImport";
 	public static final String REPORT_RESOURCEKEY = "tab.module.phenotypic.report";
 	
@@ -57,6 +59,7 @@ public class Constants {
 	public static final String PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS = "phenoCollection.status";
 	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE	= "phenoCollection.startDate";
 	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
+	public static final String PHENO_COLLECTIONVO_FIELD_PALETTE = "phenoCollection.fieldPalette";
 	
 	public static final String FIELDVO_FIELD_ID = "field.id";
 	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
@@ -72,11 +75,14 @@ public class Constants {
 	public static final String	FIELD_DATAVO_FIELD_DATA_ID = "fieldData.id";
 	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION	= "fieldData.collection";
 	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION_ID	= "fieldData.collection.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION_NAME	= "fieldData.collection.name";
 	public static final String	FIELD_DATAVO_FIELD_DATA_LINK_SUBJECT_STUDY	= "fieldData.linkSubjectStudy";
-	public static final String	FIELD_DATAVO_FIELD_DATA_LINK_SUBJECT_STUDY_KEY	= "fieldData.linkSubjectStudy.key";
+	public static final String	FIELD_DATAVO_FIELD_DATA_LINK_SUBJECT_STUDY_ID	= "fieldData.linkSubjectStudy.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_SUBJECTUID	= "fieldData.linkSubjectStudy.subjectUID";
 	public static final String	FIELD_DATAVO_FIELD_DATA_DATE_COLLECTED = "fieldData.dateCollected";
 	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD	= "fieldData.field";
 	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD_ID	= "fieldData.field.id";
+	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD_NAME	= "fieldData.field.name";
 	public static final String	FIELD_DATAVO_FIELD_DATA_VALUE = "fieldData.value";
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER = "fieldData.user";
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER_ID = "fieldData.user.id";
@@ -150,7 +156,5 @@ public class Constants {
 	public static final String	STATUS_ID	= "id";
 	public static final String	STATUS_NAME	= "name";
 
-	public static final String	LINK_SUBJECT_STUDY	= "linkSubjectStudy";
-
-		
+	public static final String	LINK_SUBJECT_STUDY	= "linkSubjectStudy";	
 }
