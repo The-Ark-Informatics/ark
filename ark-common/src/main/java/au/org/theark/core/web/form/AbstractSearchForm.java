@@ -70,7 +70,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	abstract protected void onNew(AjaxRequestTarget target);
 
 	/* This method should be implemented by sub-classes to secure a control(New button etc..) */
-	abstract protected boolean isSecure();
+	abstract protected boolean isSecure(String actionType);
+	
 
 	protected void onReset()
 	{
@@ -92,7 +93,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isSecure();
+				return isSecure(Constants.SEARCH);
 			}
 		};
 
@@ -106,7 +107,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isSecure();
+				return isSecure(Constants.RESET);
 			}
 		};
 
@@ -122,7 +123,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isSecure();
+				return isSecure(Constants.NEW);
 			}
 		};
 
