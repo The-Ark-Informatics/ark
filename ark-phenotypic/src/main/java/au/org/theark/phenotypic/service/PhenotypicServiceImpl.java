@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
@@ -27,6 +28,7 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.Status;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.util.PhenotypicImport;
 
 @Transactional
@@ -82,6 +84,17 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 		phenotypicDao.createPhenoCollection(col);
 	}
+	
+	/**
+    * A Phenotypic collection is the data storage or grouping of a particular set set of data,
+    * containing subjects with fields with field data values for a particular date collected 
+    *
+    * @param phenoVo the collectionVo object to be created
+    */
+	public void createCollection(PhenoCollectionVO phenoVo)
+	{
+		phenotypicDao.createPhenoCollection(phenoVo);
+	}
 
 	/**
     * A Phenotypic collection import is the job that runs to import the data into the database.
@@ -123,9 +136,19 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.getField(fieldId);
 	}
 
-	public PhenoCollection getCollection(Long id)
+	public PhenoCollection getPhenoCollection(Long id)
 	{
 		return phenotypicDao.getPhenotypicCollection(id);
+	}
+	
+	public PhenoCollectionVO getPhenoCollectionAndFields(Long id)
+	{
+		return phenotypicDao.getPhenoCollectionAndFields(id);
+	}
+	
+	public Collection<PhenoCollection> getPhenoCollectionByStudy(Study study)
+	{
+		return phenotypicDao.getPhenotypicCollectionByStudy(study);
 	}
 	
 	public void createFieldData(FieldData fieldData)
@@ -206,7 +229,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public void deleteCollection(PhenoCollection collection)
 	{
-		phenotypicDao.deletePhenoCollection(collection);
+		phenotypicDao.createPhenoCollection(collection);
 	}
 
 	public void deleteCollectionImport(CollectionImport collectionImport)
@@ -262,5 +285,15 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection)
 	{
 		return phenotypicDao.searchPhenotypicCollection(phenotypicCollection);
+	}
+
+	public Collection<FieldData> searchFieldDataByField(Field field)
+	{
+		return phenotypicDao.searchFieldDataByField(field);
+	}
+	
+	public Collection<FieldData> searchFieldData(FieldData fieldData)
+	{
+		return phenotypicDao.searchFieldData(fieldData);
 	}
 }
