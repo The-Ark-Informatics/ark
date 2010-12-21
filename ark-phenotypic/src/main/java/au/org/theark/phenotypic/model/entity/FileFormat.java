@@ -10,12 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * FileFormat entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name="au.org.theark.phenotypic.model.entity.FileFormat")
-@Table(name = "FILE_FORMAT", schema = "PHENOTYPIC")
+@Table(name = "FILE_FORMAT", schema = Constants.TABLE_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
 	// Fields

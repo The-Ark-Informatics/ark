@@ -10,12 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * Status entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name="au.org.theark.phenotypic.model.entity.Status")
-@Table(name = "STATUS", schema = "PHENOTYPIC")
+@Table(name = "STATUS", schema = Constants.TABLE_SCHEMA)
 public class Status implements java.io.Serializable {
 
 	// Fields

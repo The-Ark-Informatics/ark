@@ -10,12 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * ImportType entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name="au.org.theark.phenotypic.model.entity.ImportType")
-@Table(name = "IMPORT_TYPE", schema = "PHENOTYPIC")
+@Table(name = "IMPORT_TYPE", schema = Constants.TABLE_SCHEMA)
 public class ImportType implements java.io.Serializable {
 
 	// Fields

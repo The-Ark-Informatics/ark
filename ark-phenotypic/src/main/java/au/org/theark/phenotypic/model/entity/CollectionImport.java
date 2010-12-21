@@ -15,12 +15,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * CollectionImport entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name="au.org.theark.phenotypic.model.entity.CollectionImport")
-@Table(name = "COLLECTION_IMPORT", schema = "PHENOTYPIC")
+@Table(name = "COLLECTION_IMPORT", schema = Constants.TABLE_SCHEMA)
 public class CollectionImport implements java.io.Serializable {
 
 	// Fields

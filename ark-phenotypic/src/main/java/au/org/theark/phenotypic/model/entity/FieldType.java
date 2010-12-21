@@ -5,12 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * MarkerType entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "FIELD_TYPE", schema = "PHENOTYPIC")
+@Table(name = "FIELD_TYPE", schema = Constants.TABLE_SCHEMA)
 public class FieldType implements java.io.Serializable
 {
 

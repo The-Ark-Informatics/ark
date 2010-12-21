@@ -19,13 +19,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.phenotypic.service.Constants;
 
 /**
  * Collection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.entity.Collection")
-@Table(name = "COLLECTION", schema = "phenotypic")
+@Table(name = "COLLECTION", schema = Constants.TABLE_SCHEMA)
 public class PhenoCollection implements java.io.Serializable
 {
 
@@ -148,7 +149,7 @@ public class PhenoCollection implements java.io.Serializable
 		this.description = description;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "START_DATE", length = 7)
 	public Date getStartDate()
 	{
@@ -160,7 +161,7 @@ public class PhenoCollection implements java.io.Serializable
 		this.startDate = startDate;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "EXPIRY_DATE", length = 7)
 	public Date getExpiryDate()
 	{

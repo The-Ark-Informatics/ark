@@ -13,12 +13,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import au.org.theark.phenotypic.service.Constants;
+
 /**
  * UploadCollection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity(name="au.org.theark.phenotypic.model.entity.UploadCollection")
-@Table(name = "UPLOAD_COLLECTION", schema = "PHENOTYPIC")
+@Table(name = "UPLOAD_COLLECTION", schema = Constants.TABLE_SCHEMA)
 public class UploadCollection implements java.io.Serializable {
 
 	// Fields

@@ -16,13 +16,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.phenotypic.service.Constants;
 
 /**
  * fieldField entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "FIELD", schema = "PHENOTYPIC")
+@Table(name = "FIELD", schema = Constants.TABLE_SCHEMA)
 public class Field implements java.io.Serializable {
 
 	// Fields

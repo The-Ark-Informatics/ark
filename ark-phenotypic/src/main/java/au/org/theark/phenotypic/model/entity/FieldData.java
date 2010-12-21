@@ -20,13 +20,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.phenotypic.service.Constants;
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "FIELD_DATA", schema = "PHENOTYPIC")
+@Table(name = "FIELD_DATA", schema = Constants.TABLE_SCHEMA)
 public class FieldData implements java.io.Serializable {
 
 	// Fields
@@ -105,7 +106,7 @@ public class FieldData implements java.io.Serializable {
 		this.collection = collection;
 	}
 	
-	@Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_COLLECTED", nullable = false)
 	public Date getDateCollected() {
 		return this.dateCollected;

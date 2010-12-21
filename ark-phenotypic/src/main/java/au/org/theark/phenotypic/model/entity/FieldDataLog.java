@@ -15,13 +15,15 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import au.org.theark.phenotypic.service.Constants;
+
 
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "FIELD_DATA_LOG", schema = "PHENOTYPIC")
+@Table(name = "FIELD_DATA_LOG", schema = Constants.TABLE_SCHEMA)
 public class FieldDataLog implements java.io.Serializable {
 
 	// Fields
