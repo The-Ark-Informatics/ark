@@ -75,7 +75,7 @@ public class PhenotypicImportContainer extends AbstractContainerPanel<PhenoColle
 			
 			public boolean isVisible(){
 				boolean flag = false;
-				Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(Constants.SESSION_PHENO_COLLECTION_ID);
+				Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 				
 				if(sessionCollectionId != null && sessionCollectionId.longValue() > 0){
 					flag = true;
