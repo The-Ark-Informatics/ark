@@ -160,7 +160,7 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	public void create(Phone phone) throws ArkSystemException{
-		
+		studyDao.create(phone);
 	}
 	
 	
