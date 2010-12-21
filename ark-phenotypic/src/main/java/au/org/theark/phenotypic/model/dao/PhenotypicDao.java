@@ -8,6 +8,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -23,11 +24,13 @@ import au.org.theark.phenotypic.model.entity.CollectionImport;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldDataLog;
+import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.Upload;
 import au.org.theark.phenotypic.model.entity.UploadCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -40,6 +43,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public java.util.Collection<PhenoCollection> getPhenotypicCollection()
 	{
 		Criteria crit = getSession().createCriteria(PhenoCollection.class);
+		java.util.List<PhenoCollection> collectionList = crit.list();
+		return collectionList;
+	}
+	
+	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study)
+	{
+		Criteria crit = getSession().createCriteria(PhenoCollection.class);
+		
+		if (study != null)
+		{
+			crit.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, study));
+		}
+		
 		java.util.List<PhenoCollection> collectionList = crit.list();
 		return collectionList;
 	}
@@ -98,6 +114,32 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		PhenoCollection collection = (PhenoCollection) getSession().get(PhenoCollection.class, id);
 		return collection;
 	}
+	
+	public PhenoCollectionVO getPhenoCollectionAndFields(Long id)
+	{
+		PhenoCollection phenoCollection = getPhenotypicCollection(id);
+		PhenoCollectionVO phenoCollVo = new PhenoCollectionVO();
+		phenoCollVo.setPhenoCollection(phenoCollection);
+		java.util.Collection<FieldPhenoCollection> fieldPhenocCollectionFields = getPhenoCollectionFields(phenoCollection);
+		for (FieldPhenoCollection fieldPhenoCollection : fieldPhenocCollectionFields)
+		{
+			phenoCollVo.getFieldsSelected().add(fieldPhenoCollection.getField());
+		}
+		
+		return phenoCollVo;
+	}
+	
+	public java.util.Collection<FieldPhenoCollection> getPhenoCollectionFields(PhenoCollection phenoCollection)
+	{
+		Criteria collectionCriteria = getSession().createCriteria(FieldPhenoCollection.class);
+		if (phenoCollection != null)
+		{
+			collectionCriteria.add(Restrictions.eq("phenoCollection", phenoCollection));
+		}
+		
+		java.util.Collection<FieldPhenoCollection> fieldPhenoCollectionFields = collectionCriteria.list();
+		return fieldPhenoCollectionFields;
+	}
 
 	public void createPhenoCollection(PhenoCollection collection)
 	{
@@ -108,6 +150,31 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		collection.setUserId(currentUser.getPrincipal().toString());
 
 		getSession().save(collection);
+	}
+	
+	public void createPhenoCollection(PhenoCollectionVO collectionVo)
+	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		collectionVo.getPhenoCollection().setInsertTime(dateNow);
+		collectionVo.getPhenoCollection().setUserId(currentUser.getPrincipal().toString());
+		
+		Session session = getSession();
+		session.save(collectionVo.getPhenoCollection());
+		
+		Collection<Field> fieldSelection = collectionVo.getFieldsSelected();
+		
+		FieldPhenoCollection fieldPhenoCollection = new FieldPhenoCollection();
+		for (Field field : fieldSelection)
+		{
+			fieldPhenoCollection.setStudy(collectionVo.getPhenoCollection().getStudy());
+			fieldPhenoCollection.setPhenoCollection(collectionVo.getPhenoCollection());
+			fieldPhenoCollection.setField(field);
+			
+			session.save(fieldPhenoCollection);
+			fieldPhenoCollection = new FieldPhenoCollection();
+		}
 	}
 
 	public void updatePhenoCollection(PhenoCollection collection)
@@ -549,6 +616,47 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	public Collection<FieldData> searchFieldDataByField(Field field)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+
+		if (field.getId() != null)
+		{
+			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
+		}
+
+		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
+	}
+	
+	public Collection<FieldData> searchFieldData(FieldData fieldData)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+
+		if (fieldData.getId() != null)
+		{
+			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_ID, fieldData.getId()));
+		}
+		
+		if (fieldData.getCollection() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_PHENO_COLLECTION, fieldData.getCollection()));
+		}
+		
+		if (fieldData.getField() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, fieldData.getField()));
+		}
+		
+		if (fieldData.getLinkSubjectStudy() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, fieldData.getLinkSubjectStudy()));
+		}
+
+		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
 	}
 	
 	public void createFieldDataLog(FieldDataLog fieldDataLog)

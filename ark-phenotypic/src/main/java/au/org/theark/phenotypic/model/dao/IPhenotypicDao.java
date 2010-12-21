@@ -1,8 +1,7 @@
 package au.org.theark.phenotypic.model.dao;
 
+import java.util.Collection;
 import java.util.Date;
-
-import org.hibernate.Session;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -15,6 +14,7 @@ import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.Upload;
 import au.org.theark.phenotypic.model.entity.UploadCollection;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 
 /**
  * Interface for all select/insert/update/delete operations on the backend database.
@@ -25,8 +25,11 @@ public interface IPhenotypicDao {
 	// Collection
 	public PhenoCollection getPhenotypicCollection(Long id);
 	public java.util.Collection<PhenoCollection> getPhenotypicCollection();
+	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study);
+	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch);
 	public void createPhenoCollection(PhenoCollection collection);
+	public void createPhenoCollection(PhenoCollectionVO collectionVo);
 	public void updatePhenoCollection(PhenoCollection collection);
 	public void deletePhenoCollection(PhenoCollection collection);
 	
@@ -65,6 +68,8 @@ public interface IPhenotypicDao {
 	public FieldData getFieldData(Long id);
 	public java.util.Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field);
 	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value);
+	public Collection<FieldData> searchFieldDataByField(Field field);
+	public Collection<FieldData> searchFieldData(FieldData fieldData);
 	public void createFieldData(FieldData fieldData);
 	public void updateFieldData(FieldData fieldData);
 	public void deleteFieldData(FieldData fieldData);
@@ -87,4 +92,5 @@ public interface IPhenotypicDao {
 	public void createUploadCollection(UploadCollection uploadCollection);
 	public void updateUploadCollection(UploadCollection uploadCollection);
 	public void deleteUploadCollection(UploadCollection uploadCollection);
+	
 }
