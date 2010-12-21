@@ -2,6 +2,7 @@
 	&nbsp;
 	<form wicket:id="detailsForm">
 		<div id="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
 			<!-- Row 1 Study ID and Name-->
@@ -223,29 +224,39 @@
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
-			<!--  Add the Phone Container Panel here <div wicket:id=phoneListContainer></div> -->
-			
-			
-			
-			<!-- Row 4 Ends
-			
-			<div wicket:id="markupContainerPhoneList">
-				 <div wicket:id=phoneListPanel></div>
-				 <div id="fldLabel">&nbsp;</div>
-				 <div id="fldControl">&nbsp;</div>
-				 <input wicket:id="addPhone" type="submit" wicket:message="value:page.addPhoneKey" />&nbsp;
+			<!-- ModalWindow for confirm Delete window -->
+			<div wicket:id="modalwindow"></div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+				
 			</div>
-			-->
+			
 			<!--  Row 2 Action Buttons -->
-			<div id="fldLabel">&nbsp;</div>
-			<div id="fldControl">&nbsp;</div>
-			<div id="panelMargin">&nbsp;</div>
-			<div id="actionButtons">&nbsp;
-				<div class="label">
-					<input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
-					
-					<div id="panelMargin">&nbsp;</div>
-					<input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+			
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
+				  	</div>
+				</div>
+			</div>
+			
+			<div wicket:id="viewButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+						<input wicket:id="edit" type="submit" wicket:message="value:page.edit" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.cancel" />
+				  	</div>
 				</div>
 			</div>
 		</div>
