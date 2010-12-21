@@ -96,7 +96,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		//Another PropertyModel for rendering the DropDowns and pass in the Property Model instance of type Study
 		PropertyModel<StudyStatus> pmStudyStatus = new PropertyModel<StudyStatus>(pm,"studyStatus");
 		initStudyStatusDropDown(pmStudyStatus);
-		decorateComponents();
+		//decorateComponents();
 		addComponentsToForm();
 
 	}
