@@ -144,13 +144,17 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 			containerForm.getModelObject().getPhone().setPerson(person);
 			if(containerForm.getModelObject().getPhone().getId() == null ){
 				studyService.create(containerForm.getModelObject().getPhone());
-				System.out.println("Phone " + containerForm.getModelObject().getPhone().getPhoneNumber() + " " + containerForm.getModelObject().getPhone().getId());
-				
+				this.info("Phone number was added and linked to " + containerForm.getModelObject().getPhone().getPerson().getFirstName() + " " + containerForm.getModelObject().getPhone().getPerson().getLastName());
+				processErrors(target);
 				//Call the create
 			}else{
+				studyService.update(containerForm.getModelObject().getPhone());
+				this.info("Phone number was updated and linked to " + containerForm.getModelObject().getPhone().getPerson().getFirstName() + " " + containerForm.getModelObject().getPhone().getPerson().getLastName());
+				processErrors(target);
 				//Update 
 			}
 			
+			onSavePostProcess(target);
 			//Invoke backend to persist the phone
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
