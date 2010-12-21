@@ -241,7 +241,7 @@ public class DetailForm extends Form<StudyModelVO>{
 		attachValidation();
 		studyIdTxtFld.setEnabled(false);
 		studySummaryLabel = new  Label("studySummaryLabel");
-		decorateComponents();
+		//decorateComponents();
 		addComponents();
 		
 	}
