@@ -1,6 +1,9 @@
 package au.org.theark.phenotypic.web.component.phenotypicImport.form;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -11,6 +14,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -126,11 +130,14 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	{
 		// What to do on Search button click
 	}
-
-	@Override
-	protected boolean isSecure()
+	
+	protected boolean isSecure(String actionType)
 	{
-		// Summary module has no buttons
-		return false;
+		boolean flag = false;
+		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
+		{
+				flag = false;
+		}
+		return flag;
 	}
 }
