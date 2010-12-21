@@ -9,11 +9,7 @@ package au.org.theark.study.web.component.subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.DetailsForm;
 
@@ -23,48 +19,57 @@ import au.org.theark.study.web.component.subject.form.DetailsForm;
  */
 public class Details extends Panel {
 
-	
-	@SpringBean(name ="studyService")
-	private IStudyService studyService;
-	
 
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
 	private DetailsForm detailsForm;
 	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer detailsContainer;
+	private WebMarkupContainer searchResultPanelContainer;
+	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer detailPanelFormContainer; 
 	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
 	private ContainerForm containerForm;
-	private Study study;
 
-	
-	/**
-	 * Constructor
-	 * @param id
-	 */
-	public Details(	String id, 
-					final WebMarkupContainer listContainer, 
+	public Details(	String id,
 					FeedbackPanel feedBackPanel,
-					WebMarkupContainer detailsContainer,
+					WebMarkupContainer searchResultPanelContainer,
+					WebMarkupContainer detailPanelContainer,
+					WebMarkupContainer detailPanelFormContainer, 
 					WebMarkupContainer searchPanelContainer,
-					ContainerForm containerForm) {
+					WebMarkupContainer viewButtonContainer,
+					WebMarkupContainer editButtonContainer,
+					ContainerForm containerForm){
 		
 		super(id);
 		this.feedBackPanel = feedBackPanel;
-		this.listContainer = listContainer;
-		this.detailsContainer = detailsContainer;
+		this.searchResultPanelContainer = searchResultPanelContainer;
+		this.detailPanelContainer = detailPanelContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.searchPanelContainer = searchPanelContainer;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
 		this.containerForm = containerForm;
 		
 	}
 	
+
 	public void initialisePanel(){
 		
-		detailsForm = new DetailsForm("detailsForm",this,listContainer,detailsContainer,searchPanelContainer,containerForm, feedBackPanel);
-		detailsForm.initialiseForm();
+		detailsForm = new DetailsForm("detailsForm",	
+									feedBackPanel,
+									searchResultPanelContainer,
+									detailPanelContainer,
+									detailPanelFormContainer,
+									searchPanelContainer,
+									viewButtonContainer, 
+									editButtonContainer,
+									containerForm);
+		
+		detailsForm.initialiseDetailForm();
+		
 		add(detailsForm);
 	}
+	
 
 	public DetailsForm getDetailsForm() {
 		return detailsForm;
