@@ -17,8 +17,9 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.MenuModule;
-import au.org.theark.study.web.component.managestudy.StudyContainer;
+import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
+import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
 
 /**
  * @author nivedann
@@ -43,7 +44,7 @@ public class SubjectSubMenuTab extends Panel{
 		
 		//THis way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.SUBJECT_DETAIL);
+		menuModule.setModuleName(Constants.TAB_SUBJECT_DETAIL);
 		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_DETAIL);
 		moduleTabs.add(menuModule);
 		
@@ -52,10 +53,10 @@ public class SubjectSubMenuTab extends Panel{
 //		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_ADDRESS);
 //		moduleTabs.add(menuModule);
 //
-//		menuModule = new MenuModule();
-//		menuModule.setModuleName(Constants.SUBJECT_PHONE);
-//		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_PHONE);
-//		moduleTabs.add(menuModule);
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_PERSON_PHONE);
+		menuModule.setResourceKey(Constants.TAB_MODULE_PERSON_PHONE);
+		moduleTabs.add(menuModule);
 //		
 //		menuModule = new MenuModule();
 //		menuModule.setModuleName(Constants.SUBJECT_EMAIL);
@@ -83,16 +84,16 @@ public class SubjectSubMenuTab extends Panel{
 					
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
-					if(moduleName.getModuleName().equalsIgnoreCase(Constants.SUBJECT_DETAIL)){
+					if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_DETAIL)){
 						
 						panelToReturn = new SubjectContainer(panelId);//Note the constructor
 					
 					}
-//					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SUBJECT_PHONE)){
-//					
-//						panelToReturn = new StudyContainer(panelId);
-//					
-//					}
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_PHONE)){
+					
+						panelToReturn = new PhoneContainerPanel(panelId);
+					
+					}
 //					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SITE)){
 //						
 //						panelToReturn = new SiteContainerPanel(panelId);

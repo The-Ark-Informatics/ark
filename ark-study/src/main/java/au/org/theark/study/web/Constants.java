@@ -66,6 +66,8 @@ public class Constants {
 	public static final String CLASS="class";
 	public static final String SUBJECT_KEY_LBL ="subjectKeyLbl";
 	public static final String SUBJECT_LIST ="subjectList";
+	public static final String PHONE_LIST = "phoneList";
+	public static final String PHONE_NUMBER_LABEL="phoneNumberLabel";
 	/* Multiple choice List Controls */
 	public static final String AVAILABLE_ROLES_MLC ="availableRolesLMC";
 	public static final String SELECTED_ROLES_MLC="selectedRolesLMC";
@@ -131,7 +133,7 @@ public class Constants {
 	public static final String LMC_AJAX_CONTAINER="lmcAjaxContainer";
 	public static final String LMC_SELECTED_APPS="lmcSelectedApps";
 	public static final String LMC_AVAILABLE_APPS="lmcAvailableApps";
-	public static final String PHONE_TYPE_ID="phoneTypeKey";
+	public static final String PHONE_TYPE_ID="phoneTypeId";
 	public static final String AUTO_GEN_SUBJECT_KEY ="autoGenerateSubjectKey";
 	public static final String AUTO_CONSENT ="autoConsent";
 	public static final String 	AUTO_GEN_SUB_ID ="autoGenSubId";
