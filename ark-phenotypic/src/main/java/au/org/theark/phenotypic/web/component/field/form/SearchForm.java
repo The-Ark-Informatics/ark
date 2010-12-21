@@ -156,4 +156,24 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		// if it is a Super or Study admin then make the new available
 		return flag;
 	}
+	
+	protected boolean isSecure(String actionType)
+	{
+		boolean flag = false;
+		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
+		{
+			
+			SecurityManager securityManager =  ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();		
+			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
+			{
+				flag = true;
+			}	
+		}
+		else{
+			flag = true;
+		}
+		
+		return flag;
+	}
 }

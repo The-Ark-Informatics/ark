@@ -168,17 +168,17 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		// Hide Delete button on New
 		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
-
-	protected boolean isSecure()
+	
+	protected boolean isSecure(String actionType)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
 		boolean flag = false;
-		if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
+		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
 		{
+			flag = false;
+		}
+		else{
 			flag = true;
 		}
-		// if it is a Super or Study admin then make the new available
 		return flag;
 	}
 }
