@@ -52,6 +52,8 @@ public interface IStudyDao {
 	
 	public void create(Phone phone) throws ArkSystemException;
 	
+	public void update(Phone phone) throws ArkSystemException;;
+	
 	public Collection<TitleType> getTitleType();
 	
 	public Collection<VitalStatus> getVitalStatus();

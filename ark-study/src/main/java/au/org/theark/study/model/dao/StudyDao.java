@@ -131,6 +131,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	
+	
+	public void update(Phone phone) throws ArkSystemException{
+		try{
+			getSession().save(phone);	
+		}catch(HibernateException hibException){
+			log.error("A hibernate exception occured. Cannot update the Phone record. Cause: " + hibException.getStackTrace());
+			throw new ArkSystemException("Unable to create a Phone record.");
+		}
+	}
+	
+	
 	public Collection<TitleType> getTitleType(){
 		Example example = Example.create(new TitleType());
 		Criteria criteria = getSession().createCriteria(TitleType.class).add(example);
