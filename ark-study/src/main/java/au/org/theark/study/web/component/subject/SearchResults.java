@@ -32,34 +32,40 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  */
 public class SearchResults extends Panel{
 	
-	private WebMarkupContainer detailsPanelContainer;
+	
+	private WebMarkupContainer detailPanelContainer;
+	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer searchResultContainer;
-	//private WebMarkupContainer phoneListWebMarkupContainer;
+	private WebMarkupContainer viewButtonContainer;
+	private WebMarkupContainer editButtonContainer;
 	private ContainerForm subjectContainerForm;
-	private Details detailsPanel;
 	
 
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
-	/**
-	 * @param id
-	 */
-	public SearchResults(	String id,
-							WebMarkupContainer  detailPanelContainer, 
+
+	public SearchResults(String id, 
+							WebMarkupContainer  detailPanelContainer,
+							WebMarkupContainer  detailPanelFormContainer, 
 							WebMarkupContainer searchPanelContainer,
-							ContainerForm containerForm,
 							WebMarkupContainer searchResultContainer,
-							Details detailPanel) {
+							WebMarkupContainer viewButtonContainer,
+							WebMarkupContainer editButtonContainer,
+							ContainerForm containerForm){
 		
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
+		
+		this.detailPanelContainer = detailPanelContainer;
+		this.subjectContainerForm = containerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
-		this.detailsPanel = detailPanel;
-		this.subjectContainerForm = containerForm;
+		this.viewButtonContainer = viewButtonContainer;
+		this.editButtonContainer = editButtonContainer;
+		this.detailPanelFormContainer = detailPanelFormContainer;
 	}
+	  
 	
 	public PageableListView<SubjectVO> buildPageableListView(IModel iModel){
 		
@@ -133,21 +139,21 @@ public class SearchResults extends Panel{
 				subjectVOInModel.setSubjectUID(subject.getSubjectUID());
 				subjectVOInModel.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
 				subjectVOInModel.setSubjectStatus(subject.getSubjectStatus());
-				//subjectVOInModel.setPhoneList(subject.getPhoneList());
 				
-//				PhoneList phoneListPanel  = (PhoneList) phoneListWebMarkupContainer.get("phoneListPanel");
-//				PageableListView<Phone> phonePageableListView = (PageableListView<Phone>)phoneListPanel.get("phoneNumberList");
-//				phonePageableListView.removeAll();
-//				phoneListWebMarkupContainer.setVisible(true);
-//				target.addComponent(phoneListWebMarkupContainer);
-				
-				detailsPanelContainer.setVisible(true);
+				detailPanelContainer.setVisible(true);
+				viewButtonContainer.setVisible(true);
+				viewButtonContainer.setEnabled(true);
+				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
+				editButtonContainer.setVisible(false);
 				
-				target.addComponent(searchPanelContainer);
 				target.addComponent(searchResultContainer);
-				target.addComponent(detailsPanelContainer);
+				target.addComponent(detailPanelContainer);
+				target.addComponent(detailPanelFormContainer);
+				target.addComponent(searchPanelContainer);
+				target.addComponent(viewButtonContainer);
+				target.addComponent(editButtonContainer);
 				
 			}
 		};
