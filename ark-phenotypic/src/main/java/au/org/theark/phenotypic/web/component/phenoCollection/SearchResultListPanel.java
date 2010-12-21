@@ -13,21 +13,26 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultListPanel extends Panel
 {
-
+	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService									phenotypicService;
+	
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private DetailPanel					detailPanel;
+	private DetailPanel			detailPanel;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
@@ -150,7 +155,11 @@ public class SearchResultListPanel extends Panel
 			{
 				// Sets the selected object into the model
 				PhenoCollectionVO collectionVo = containerForm.getModelObject();
-				collectionVo.setPhenoCollection(phenoCollection);
+				collectionVo =	phenotypicService.getPhenoCollectionAndFields(phenoCollection.getId());
+				Field field = new Field();
+				field.setStudy(phenoCollection.getStudy());
+				collectionVo.setFieldsAvailable(phenotypicService.searchField(field));
+				containerForm.setModelObject(collectionVo);
 				
 				// Place the selected collection in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, phenoCollection.getId());
