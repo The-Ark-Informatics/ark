@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -251,7 +252,12 @@ public class DetailForm extends Form<StudyModelVO>{
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("module", "module");
 		PropertyModel<Collection<ModuleVO>> selectedModPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesSelected");
 		PropertyModel<Collection<ModuleVO>> lhsPm = new PropertyModel<Collection<ModuleVO>>(sm,"modulesAvailable");
-		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,false);	
+		appPalette = new Palette("modulesSelected", selectedModPm,lhsPm, renderer,5,false){
+				@Override
+				public ResourceReference getCSS(){ 
+			      return new ResourceReference(Palette.class, "ark-palette.css");
+				}
+		};
 	}
 	
 	@SuppressWarnings("unchecked")
