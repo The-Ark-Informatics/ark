@@ -13,7 +13,7 @@ import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 
 public interface IPhenotypicService {
 	
-	// Collection
+	// PhenoCollection
 	public PhenoCollection getPhenoCollection(Long id);
 	public java.util.Collection<PhenoCollection> getPhenoCollectionByStudy(Study study);
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection);
@@ -21,7 +21,9 @@ public interface IPhenotypicService {
 	public void createCollection(PhenoCollection col);
 	public void createCollection(PhenoCollectionVO colVo);
 	public void updateCollection(PhenoCollection col);
+	public void updateCollection(PhenoCollectionVO colVo);
 	public void deleteCollection(PhenoCollection col);
+	public void deleteCollection(PhenoCollectionVO colVo);
 	
 	// Collection Import
 	public CollectionImport getCollectionImport(Long id);

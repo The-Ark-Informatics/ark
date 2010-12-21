@@ -95,6 +95,16 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		phenotypicDao.createPhenoCollection(phenoVo);
 	}
+	
+	public void deleteCollection(PhenoCollectionVO phenoVo)
+	{
+		phenotypicDao.deletePhenoCollection(phenoVo);
+	}
+
+	public void updateCollection(PhenoCollectionVO phenoVo)
+	{
+		phenotypicDao.updatePhenoCollection(phenoVo);
+	}
 
 	/**
     * A Phenotypic collection import is the job that runs to import the data into the database.
@@ -106,7 +116,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		phenotypicDao.createCollectionImport(colImport);
 	}
-
+	
 	public void updateCollection(PhenoCollection colEntity)
 	{
 		phenotypicDao.updatePhenoCollection(colEntity);
@@ -296,4 +306,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.searchFieldData(fieldData);
 	}
+
+
 }
