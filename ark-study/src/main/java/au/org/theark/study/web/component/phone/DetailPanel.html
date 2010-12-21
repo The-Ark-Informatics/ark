@@ -1,0 +1,114 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="detailsForm">
+		 <div id="detailsPanelBorder">
+		  <div wicket:id="detailFormContainer">
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 -->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="phoneID">
+						<label for="areaCode"><wicket:message	key="areaCode">Area Code:</wicket:message></label>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					 <input wicket:id="phone.areaCode" type="text" />
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<wicket:message	key="phoneNumber">Number:</wicket:message>
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="phone.phoneNumber" type="text" /> 
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+
+		
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 -->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="phoneNumber">
+						<label for="phoneType"><wicket:message	key="phoneType">Phone Type:</wicket:message></label>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="phone.phoneType">
+	       				<option>iPhone</option>
+						<option>Mobile</option>
+	       			</select>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+
+			<!-- ModalWindow for confirm Delete window -->
+			<div wicket:id="modalwindow"></div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+				
+			</div>
+			
+			<!--  Row 2 Action Buttons -->
+			
+			<div wicket:id="editButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					  <div id="panelMargin">&nbsp;</div>
+					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
+				  	</div>
+				</div>
+			</div>
+			
+			<div wicket:id="viewButtonContainer">
+				<div id="fldLabel">&nbsp;</div>
+				<div id="fldControl">&nbsp;</div>
+				<div id="panelMargin">&nbsp;</div>
+				<div id="actionButtons">&nbsp;
+					<div class="label">
+						<input wicket:id="edit" type="submit" wicket:message="value:page.edit" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.cancel" />
+				  	</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</wicket:panel>	
