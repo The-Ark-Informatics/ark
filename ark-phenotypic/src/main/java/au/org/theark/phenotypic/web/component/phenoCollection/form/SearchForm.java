@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -18,11 +21,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -164,9 +167,21 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		target.addComponent(listContainer);// For ajax this is required so
 	}
 	
-	@Override
-	protected boolean isSecure()
+	protected boolean isSecure(String actionType)
 	{
-		return true;
+		boolean flag = false;
+		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
+		{
+			SecurityManager securityManager =  ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();		
+			if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+				flag = true;
+			};
+		}
+		else{
+			flag = true;
+		}
+		return flag;
 	}
 }
