@@ -172,7 +172,4 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	}
 	
 
-
-	
-
 }
