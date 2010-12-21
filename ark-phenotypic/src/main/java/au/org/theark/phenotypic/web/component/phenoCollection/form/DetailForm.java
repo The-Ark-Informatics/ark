@@ -6,14 +6,17 @@ import java.util.List;
 
 import mx4j.log.Log;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -24,7 +27,11 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -53,6 +60,9 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	private TextArea<String>			descriptionTxtAreaFld;
 	private DatePicker<Date>			startDateTxtFld;
 	private DatePicker<Date>			expiryDateTxtFld;
+	
+	// Field selection Palette
+	private Palette	fieldPalette;
 
 	/**
 	 * Constructor
@@ -105,14 +115,33 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE);
 		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE);
 
-		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
+		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
 
 		// Initialise Drop Down Choices
 		initStatusDdc();
+		
+		// Initialise Field Palette
+		initFieldPalette();
 
 		attachValidators();
 		addComponents();
+	}
+	
+	private void initFieldPalette()
+	{	
+		CompoundPropertyModel<PhenoCollectionVO> cpm  = (CompoundPropertyModel<PhenoCollectionVO> )containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "id");
+		PropertyModel<Collection<Field>> selectedModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsSelected");
+		PropertyModel<Collection<Field>> availableModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsAvailable");
+		
+		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, 10, true)
+		{
+			@Override
+			public ResourceReference getCSS(){ 
+		      return new ResourceReference(Palette.class, "ark-palette.css"); 
+		} 
+		};
 	}
 
 	protected void attachValidators()
@@ -129,6 +158,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		detailPanelFormContainer.add(statusDdc);
 		detailPanelFormContainer.add(startDateTxtFld);
 		detailPanelFormContainer.add(expiryDateTxtFld);
+		detailPanelFormContainer.add(fieldPalette);
 
 		add(detailPanelFormContainer);
 	}
@@ -139,15 +169,16 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 		if (containerForm.getModelObject().getPhenoCollection().getId() == null)
 		{
-			// Save the Field
-			phenotypicService.createCollection(containerForm.getModelObject().getPhenoCollection());
+			// Save
+			Study study = containerForm.getModelObject().getPhenoCollection().getStudy();
+			phenotypicService.createCollection(containerForm.getModelObject());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was created successfully");
 			processErrors(target);
 		}
 		else
 		{
-			// Update the Field
-			phenotypicService.updateField(containerForm.getModelObject().getField());
+			// Update
+			phenotypicService.updateCollection(containerForm.getModelObject().getPhenoCollection());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was updated successfully");
 			processErrors(target);
 		}

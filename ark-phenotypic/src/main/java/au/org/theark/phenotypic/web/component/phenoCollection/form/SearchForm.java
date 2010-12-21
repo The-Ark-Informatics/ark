@@ -22,6 +22,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
+import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -48,7 +49,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private DropDownChoice<Status>							statusDdc;
 	private DatePicker<Date>									phenoCollectionStartDateFld;
 	private DatePicker<Date>									phenoCollectionExpiryDateFld;
-	private DetailPanel													detailPanel;
+	private DetailPanel											detailPanel;
+	private Long 													sessionStudyId;
 
 	/**
 	 * @param id
@@ -65,7 +67,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
 		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
+		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
 		disableSearchButtons(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
@@ -97,8 +99,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		phenoCollectionStartDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE);
 		phenoCollectionExpiryDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE);
 
-		phenoCollectionStartDateFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-		phenoCollectionExpiryDateFld.setDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		phenoCollectionStartDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
+		phenoCollectionExpiryDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
 
 		initStatusDdc();
 		addFieldComponents();
@@ -121,10 +123,13 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 
-		// Set study for the new field
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId);
+		// Set study for the new collection and fields available
+		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		phenoCollectionVo.getPhenoCollection().setStudy(study);
 		phenoCollectionVo.getField().setStudy(study);
+		
+		phenoCollectionVo.setFieldsAvailable(phenotypicService.searchField(phenoCollectionVo.getField()));
 
 		setModelObject(phenoCollectionVo);
 		preProcessDetailPanel(target);
