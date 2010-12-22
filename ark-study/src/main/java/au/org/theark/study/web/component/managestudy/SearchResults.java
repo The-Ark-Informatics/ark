@@ -107,7 +107,7 @@ public class SearchResults extends Panel{
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				//Place the selected study in session context for the user
-				SecurityUtils.getSubject().getSession().setAttribute("studyId", study.getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 				//We specify the type of person here as Subject
