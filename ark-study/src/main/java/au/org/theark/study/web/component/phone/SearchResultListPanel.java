@@ -59,7 +59,7 @@ public class SearchResultListPanel extends Panel{
 	
 	public PageableListView<Phone> buildPageableListView(IModel iModel){
 		
-		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST,iModel,10) {
+		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST,iModel,5) {
 
 			@Override
 			protected void populateItem(ListItem<Phone> item) {
