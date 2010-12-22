@@ -26,6 +26,11 @@ public class Constants {
 	public static final String STUDY_COMP_KEYWORD="keyword";
 	
 	public static final String ID="id";
+	public static final String PERSON_PERSON_ID ="person.id";
+	public static final String PHONE_NUMBER ="phoneNumber";
+	public static final String PHONE_TYPE="phoneType";
+	public static final String AREA_CODE="areaCode";
+	
 	
 	
 
