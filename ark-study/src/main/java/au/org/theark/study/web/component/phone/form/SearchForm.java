@@ -108,8 +108,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 //			}else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
 //				
 //			}
-
-			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId);
+			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
 			if (phones != null && phones.size() == 0)
 			{
 				this.info("Fields with the specified criteria does not exist in the system.");
@@ -123,9 +122,12 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 
 			
 		}catch(EntityNotFoundException entityNotFoundException){
+			this.warn("There are no phone items available for the specified criteria.");
+			target.addComponent(feedbackPanel);
 			
 		}catch(ArkSystemException arkException){
-			
+			this.error("The Ark Application has encountered a system error.");
+			target.addComponent(feedbackPanel);
 		}
 		
 	}
