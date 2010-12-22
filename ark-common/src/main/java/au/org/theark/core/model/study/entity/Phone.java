@@ -99,5 +99,5 @@ public class Phone implements java.io.Serializable {
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
 	}
-
+	
 }
