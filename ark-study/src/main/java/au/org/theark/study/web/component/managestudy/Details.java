@@ -111,6 +111,8 @@ public class Details  extends Panel{
 					}
 					
 					SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
+					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 					studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
 
 				}
