@@ -44,7 +44,12 @@ public class Constants {
 	public static final String PERSON_TYPE="personType";
 	public static final String PERSON_CONTEXT_TYPE_SUBJECT= "subject";
 	public static final String PERSON_CONTEXT_TYPE_CONTACT= "contact";
-	public static final String SUBJECT_DETAIL="Subject Mangement";
+	public static final String TAB_SUBJECT_DETAIL="Subject Mangement";
+	public static final String TAB_PERSON_PHONE="Phone";
+	public static final String TAB_MODULE_PERSON_PHONE="tab.module.person.phone";
+	public static final String TAB_PERSON_ADDRESS="Address";
+	public static final String TAB_MODULE_PERSON_ADDRESS="tab.module.person.address";
+	
 	public static final String TAB_MODULE_SUBJECT_DETAIL ="tab.module.subject.detail";
 	public static final String DD_MM_YYYY="dd/MM/yyyy";	//cap M is for month, low m is for minute 
 	public static final String MENU_SUBJECT_SUBMENU="subjectSubMenus";
