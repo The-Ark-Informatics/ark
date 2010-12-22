@@ -7,6 +7,7 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import au.org.theark.core.model.study.entity.Phone;
@@ -22,7 +23,8 @@ public class PhoneVO implements Serializable{
 	private Collection<Phone> phoneList;
 	
 	public PhoneVO(){
-		
+		phone = new Phone();
+		phoneList = new ArrayList<Phone>();
 	}
 	public Phone getPhone() {
 		return phone;
