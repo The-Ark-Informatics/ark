@@ -213,6 +213,10 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 				processErrors(target);
 			
 			}
+			
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getPerson().getId());
+			//We specify the type of person here as Subject
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
 		}
 		onSavePostProcess(target);
