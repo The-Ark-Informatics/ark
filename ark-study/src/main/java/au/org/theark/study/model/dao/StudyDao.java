@@ -246,12 +246,46 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException{
 		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
-		phoneCriteria.add(Restrictions.eq(Constants.ID, personId));
+		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
+		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
 		if(personPhoneList == null && personPhoneList.size() == 0){
 			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
 		}
 		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
+		return personPhoneList;
+	}
+	
+	public List<Phone> getPersonPhoneList(Long personId,Phone phone) throws EntityNotFoundException,ArkSystemException{
+		
+		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
+	
+		
+		if(personId != null){
+			phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+		
+		if(phone != null){
+			
+			if( phone.getPhoneNumber() != null){
+				phoneCriteria.add(Restrictions.eq(Constants.PHONE_NUMBER, phone.getPhoneNumber()));
+			}
+
+			if( phone.getPhoneType() != null){
+				phoneCriteria.add(Restrictions.eq(Constants.PHONE_TYPE, phone.getPhoneType()));
+			}
+			
+			if( phone.getAreaCode() != null){
+				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
+			}
+			
+		}
+		
+		List<Phone> personPhoneList = phoneCriteria.list();
+		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
+		if(personPhoneList == null && personPhoneList.size() == 0){
+			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		}
 		return personPhoneList;
 	}
 	

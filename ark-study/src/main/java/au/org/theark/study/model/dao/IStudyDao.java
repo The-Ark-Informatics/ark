@@ -85,5 +85,16 @@ public interface IStudyDao {
 	 */
 	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException;
 	
+	/**
+	 * Looks up the phones linked to a person and applies any filter supplied with the phone object.Used in Search Phone functionality.
+	 * One can look up base don area code, phone type, phone number
+	 * @param personId
+	 * @param phone
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public List<Phone> getPersonPhoneList(Long personId,Phone phone) throws EntityNotFoundException,ArkSystemException;
+	
 
 }
