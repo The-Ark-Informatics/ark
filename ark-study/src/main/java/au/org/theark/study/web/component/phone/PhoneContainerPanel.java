@@ -153,7 +153,9 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO>{
 				Collection<Phone> personPhoneList = new ArrayList<Phone>();
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				try {
-					personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());
+					if(sessionPersonId != null){
+						personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
+					}
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
