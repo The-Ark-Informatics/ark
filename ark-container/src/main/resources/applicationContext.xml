@@ -43,18 +43,8 @@
     <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-
-    <!-- An Oracle RDBMS data source.
-         
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
-        <property name="url" value="Jdbc:oracle:thin:@192.168.2.227:1521:dbdevel"/>
-        <property name="username" value="eta"/>
-        <property name="password" value="veTum1n"/>
-    </bean>
-    -->
     
-    <!--  MySql Data Source -->
+    <!--  Development: MySql Data Source Development  -->
          
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -64,15 +54,25 @@
     </bean>
     
     
+    <!--  Test: MySql Data Source 
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1:3306"/>
+        <property name="username" value="arkadmin"/>
+        <property name="password" value="veTum1n"/>
+    </bean>
+    -->
+    
     <!--  A LDAP data source. Swtich between Test and Development as required-->
     
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-      <!--<property name="url" value ="ldap://172.19.200.229:389"/>   Test -->
-      <property name="url"  value="ldap://192.168.2.229:389"/>  <!--  Development -->
+      <!--  Test LDAP URL -->
+      <!--  <property name="url" value ="ldap://172.19.200.229:389"/> -->
+      <!-- Development LDAP Url -->    
+      <property name="url"  value="ldap://192.168.2.229:389"/> 
       <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
 	  <property name="password" value="veTum1n" />
-
     </bean>
 
 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
