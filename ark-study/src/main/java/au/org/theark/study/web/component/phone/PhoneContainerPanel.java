@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.phone;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -25,7 +26,6 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.phone.form.ContainerForm;
-import au.org.theark.study.web.component.studycomponent.Details;
 
 
 /**
@@ -96,36 +96,29 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO>{
 		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
 		
 		try{
+			//Initialise the phoneList;
+			Collection<Phone> personPhoneList = new ArrayList<Phone>();
 			
-			if(sessionPersonId != null && sessionPersonType != null){
-				
-				//Get a list of phone for the subject/contact
-				Phone phone = containerForm.getModelObject().getPhone();
-				
-				phone.setPerson(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
-			
-				Collection<Phone> personPhoneList = studyService.getPersonPhoneList(sessionPersonId);
-				//All the phone items related to the person would be fetched
-				cpModel.getObject().setPhoneList(personPhoneList);
-				//containerForm.getModelObject().setPhoneList(personPhoneList);
-				
-				searchPanel = new SearchPanel("searchComponentPanel", 
-												feedBackPanel,
-												searchPanelContainer,
-												pageableListView,
-												searchResultPanelContainer,
-												detailPanelContainer,
-												detailPanel,
-												containerForm,
-												viewButtonContainer,
-												editButtonContainer,
-												detailPanelFormContainer);
-				
-				searchPanel.initialisePanel(cpModel);
-				searchPanelContainer.add(searchPanel);
-			}else{
-				
+			if(sessionPersonId != null){
+				containerForm.getModelObject().getPhone().setPerson(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
+				personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());
 			}
+				
+			//All the phone items related to the person if one found in session or an empty list
+			cpModel.getObject().setPhoneList(personPhoneList);
+			searchPanel = new SearchPanel("searchComponentPanel", 
+											feedBackPanel,
+											searchPanelContainer,
+											pageableListView,
+											searchResultPanelContainer,
+											detailPanelContainer,
+											detailPanel,
+											containerForm,
+											viewButtonContainer,
+											editButtonContainer,
+											detailPanelFormContainer);
+			searchPanel.initialisePanel(cpModel);
+			searchPanelContainer.add(searchPanel);
 			
 		}catch(EntityNotFoundException entityNotFoundException){
 			//Report this to the user
@@ -157,8 +150,19 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO>{
 			@Override
 			protected Object load() {
 				//Get the PersonId from session and get the phoneList from backend
-				return containerForm.getModelObject().getPhoneList();
-				//Hit the backend always and page it
+				Collection<Phone> personPhoneList = new ArrayList<Phone>();
+				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				try {
+					personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());
+				} catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ArkSystemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				return personPhoneList;
 			}
 		};
 	
