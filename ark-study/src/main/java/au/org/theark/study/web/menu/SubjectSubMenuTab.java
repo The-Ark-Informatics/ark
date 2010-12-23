@@ -47,26 +47,11 @@ public class SubjectSubMenuTab extends Panel{
 		menuModule.setModuleName(Constants.TAB_SUBJECT_DETAIL);
 		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_DETAIL);
 		moduleTabs.add(menuModule);
-		
-//		menuModule = new MenuModule();
-//		menuModule.setModuleName(Constants.SUBJECT_ADDRESS);
-//		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_ADDRESS);
-//		moduleTabs.add(menuModule);
-//
+
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.TAB_PERSON_PHONE);
 		menuModule.setResourceKey(Constants.TAB_MODULE_PERSON_PHONE);
 		moduleTabs.add(menuModule);
-//		
-//		menuModule = new MenuModule();
-//		menuModule.setModuleName(Constants.SUBJECT_EMAIL);
-//		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_EMAIL);
-//		moduleTabs.add(menuModule);
-//
-//		menuModule = new MenuModule();
-//		menuModule.setModuleName(Constants.SUBJECT_CONSENT);
-//		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CONSENT);
-//		moduleTabs.add(menuModule);
 		
 		
 		for(final MenuModule moduleName : moduleTabs)
@@ -94,24 +79,6 @@ public class SubjectSubMenuTab extends Panel{
 						panelToReturn = new PhoneContainerPanel(panelId);
 					
 					}
-//					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SITE)){
-//						
-//						panelToReturn = new SiteContainerPanel(panelId);
-//					
-//					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_COMPONENT)){
-//					
-//						panelToReturn = new StudyComponentContainerPanel(panelId);
-//					
-//					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAIL)){
-//						
-//						Subject currentUser = SecurityUtils.getSubject();
-//						panelToReturn = new MyDetailsContainer(panelId,new ArkUserVO(),currentUser );
-//						
-//					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SUBJECT)){
-//						
-//						panelToReturn = new SubjectContainer(panelId);
-//					}
-					
 					return panelToReturn;
 				};
 			});
