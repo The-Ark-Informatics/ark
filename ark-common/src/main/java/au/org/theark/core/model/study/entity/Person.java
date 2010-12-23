@@ -233,15 +233,6 @@ public class Person implements java.io.Serializable {
 		this.linkSiteContacts = linkSiteContacts;
 	}
 
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-//	public Set<Address> getAddresses() {
-//		return this.addresses;
-//	}
-//
-//	public void setAddresses(Set<Address> addresses) {
-//		this.addresses = addresses;
-//	}
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "personBySubjectId")
 	public Set<LinkSubjectContact> getLinkSubjectContactsForSubjectKey() {
 		return this.linkSubjectContactsForSubjectKey;
@@ -251,7 +242,8 @@ public class Person implements java.io.Serializable {
 			Set<LinkSubjectContact> linkSubjectContactsForSubjectKey) {
 		this.linkSubjectContactsForSubjectKey = linkSubjectContactsForSubjectKey;
 	}
-
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
 	public Set<PersonAddress> getPersonAddresses() {
 		return personAddresses;
 	}
