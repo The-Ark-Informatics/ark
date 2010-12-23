@@ -21,7 +21,7 @@ import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 
 @SuppressWarnings( { "serial" ,"unused"})
-public class PhenotypicUploadContainer extends AbstractContainerPanel<UploadVO>
+public class PhenoUploadContainer extends AbstractContainerPanel<UploadVO>
 {
 	private static final long						serialVersionUID	= 1L;
 
@@ -35,10 +35,10 @@ public class PhenotypicUploadContainer extends AbstractContainerPanel<UploadVO>
 	@SpringBean(name = "phenotypicService")
 	private IPhenotypicService	serviceInterface;
 
-	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicUploadContainer.class);
+	private transient Logger	log					= LoggerFactory.getLogger(PhenoUploadContainer.class);
 	private boolean phenoCollectionInContext		= false;
 
-	public PhenotypicUploadContainer(String id)
+	public PhenoUploadContainer(String id)
 	{
 		super(id);
 
