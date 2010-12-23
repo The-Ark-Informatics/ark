@@ -2,13 +2,12 @@ package au.org.theark.core.model.study.entity;
 
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,7 +22,6 @@ public class Address implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private Person person;
 	private String streetAddress;
 	private String suburb;
 	private String postCode;
@@ -46,12 +44,11 @@ public class Address implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Address(Long id, Person person, String streetAddress,
+	public Address(Long id,  String streetAddress,
 			String suburb, String postCode, String city, String state,
 			String country, boolean addressStatus, Long addressTypeKey,
 			Set<StudySite> studySites) {
 		this.id = id;
-		this.person = person;
 		this.streetAddress = streetAddress;
 		this.suburb = suburb;
 		this.postCode = postCode;
@@ -74,16 +71,6 @@ public class Address implements java.io.Serializable {
 		this.id = id;
 	}
 
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PERSON_ID")
-	public Person getPerson() {
-		return this.person;
-	}
-
-	public void setPerson(Person person) {
-		this.person = person;
-	}
 
 	@Column(name = "STREET_ADDRESS")
 	public String getStreetAddress() {
