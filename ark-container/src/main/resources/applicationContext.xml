@@ -44,15 +44,13 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     
-    <!--  Development: MySql Data Source Development  -->
-         
+    <!--  Development: MySql Data Source Development-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://130.95.56.90:3306"/>
+        <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
         <property name="username" value="arkadmin"/>
         <property name="password" value="veTum1n"/>
     </bean>
-    
     
     <!--  Test: MySql Data Source 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
