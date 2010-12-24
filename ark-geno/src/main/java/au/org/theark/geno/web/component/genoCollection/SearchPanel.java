@@ -106,22 +106,24 @@ public class SearchPanel extends Panel {
 			addFieldComponents();
 			
 			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			if (sessionStudyId == null) {
-				this.error(au.org.theark.geno.web.Constants.MSG_NO_STUDY_CONTEXT);
-				setSearchButtonsEnabled(false);
-			} else {
-				setSearchButtonsEnabled(true);
-			}
+//			if (sessionStudyId == null) {
+//				this.error(au.org.theark.geno.web.Constants.MSG_NO_STUDY_CONTEXT);
+//				setSearchButtonsEnabled(false);
+//			} else {
+//				setSearchButtonsEnabled(true);
+//			}
+			disableSearchButtons(sessionStudyId, au.org.theark.geno.web.Constants.MSG_NO_STUDY_CONTEXT);
+
 		}
 		
 		private void initStatusDdc()
 		{
-			java.util.Collection<Status> statusCollection = genoService.getStatus();
-			CompoundPropertyModel<GenoCollectionVO> phenoCollectionCpm = cpmModel;
-			PropertyModel<GenoCollection> genoCollectionPm = new PropertyModel<GenoCollection>(phenoCollectionCpm, au.org.theark.geno.service.Constants.GENO_COLLECTION);
-			PropertyModel<Status> statusPm = new PropertyModel<Status>(genoCollectionPm, au.org.theark.geno.service.Constants.GENO_STATUS);
-			ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.geno.service.Constants.GENO_STATUS_NAME, au.org.theark.geno.service.Constants.GENO_STATUS_ID);
-			genoStatusDdc = new DropDownChoice<Status>(au.org.theark.geno.service.Constants.GENO_STATUS, statusPm, (List) statusCollection, fieldTypeRenderer);
+			java.util.Collection<Status> statusCollection = genoService.getStatusCollection();
+			CompoundPropertyModel<GenoCollectionVO> genoCollectionCpm = cpmModel;
+			PropertyModel<GenoCollection> genoCollectionPm = new PropertyModel<GenoCollection>(genoCollectionCpm, au.org.theark.geno.service.Constants.GENOCOLLECTION);
+			PropertyModel<Status> statusPm = new PropertyModel<Status>(genoCollectionPm, au.org.theark.geno.service.Constants.STATUS);
+			ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.geno.service.Constants.STATUS_NAME, au.org.theark.geno.service.Constants.STATUS_ID);
+			genoStatusDdc = new DropDownChoice<Status>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_STATUS, statusPm, (List) statusCollection, fieldTypeRenderer);
 		}
 
 		private void setSearchButtonsEnabled(boolean enabled) {
@@ -140,7 +142,7 @@ public class SearchPanel extends Panel {
 		}
 
 		@Override
-		protected boolean isSecure() {
+		protected boolean isSecure(String actionType) {
 			// TODO Auto-generated method stub
 			return true;
 		}

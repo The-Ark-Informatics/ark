@@ -23,6 +23,7 @@ import au.org.theark.geno.web.Constants;
 import au.org.theark.geno.web.component.genoCollection.GenoCollectionContainerPanel;
 import au.org.theark.geno.web.component.genoCollection.SearchPanel;
 import au.org.theark.geno.web.component.test.TestContainerPanel;
+import au.org.theark.geno.web.component.upload.UploadContainerPanel;
 
 
 public class GenoSubMenuTab extends Panel {
@@ -49,11 +50,15 @@ public class GenoSubMenuTab extends Panel {
 		moduleTabs.add(menuModule);
 
 		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.GENO_SUBMENU_UPLOAD);
+		menuModule.setResourceKey(Constants.GENO_RESOURCEKEY_UPLOAD);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.GENO_SUBMENU_TEST);
 		menuModule.setResourceKey(Constants.GENO_RESOURCEKEY_TEST);
 		moduleTabs.add(menuModule);
 
-		
 		for(final MenuModule moduleName : moduleTabs)
 		{
 			// use ResourceModel instead of Model<String>(getLocalizer().getString...) to avoid a warning like this:
@@ -77,7 +82,10 @@ public class GenoSubMenuTab extends Panel {
 						} else {
 							flag = false;
 						}
-						flag = true;	//TODO: Temporarily Super admin doesn't seem to work.  Turn on Test tab as default.
+						//TODO: Temporarily Super admin doesn't seem to work.  Turn on Test tab if forced by constant.
+						if (Constants.GENO_SUBMENU_TEST_FORCE_ON) {
+							flag = true;
+						}
 					} else {
 						flag=true;
 					}
@@ -96,6 +104,10 @@ public class GenoSubMenuTab extends Panel {
 						GenoCollectionContainerPanel genoColPanel = new GenoCollectionContainerPanel(panelId);
 						genoColPanel.initialisePanel();
 						panelToReturn = genoColPanel;
+					} else if(moduleName.getModuleName().equalsIgnoreCase(Constants.GENO_SUBMENU_UPLOAD)) {
+						UploadContainerPanel uploadPanel = new UploadContainerPanel(panelId);
+						uploadPanel.initialisePanel();
+						panelToReturn = uploadPanel;
 					}
 					
 					return panelToReturn;

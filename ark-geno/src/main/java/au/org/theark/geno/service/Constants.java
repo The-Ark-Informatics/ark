@@ -17,7 +17,7 @@ public class Constants {
 	public static final DecimalFormat TWO_DECPLACES = new DecimalFormat("0.00");
 
 	// Entity-to-database definitions
-	public static final String GENO_TABLE_SCHEMA = "GDMI";	//TODO: To be renamed to "GENO";
+	public static final String GENO_TABLE_SCHEMA = "GENO";	//TODO: To be renamed to "GENO";
 	public static final String COLLECTION_PK_SEQ =  GENO_TABLE_SCHEMA + ".COLLECTION_PK_SEQ";
 	public static final String COLLECTION_IMPORT_PK_SEQ =  GENO_TABLE_SCHEMA + ".COLLECTION_IMPORT_PK_SEQ";
 	public static final String ENCODED_DATA_PK_SEQ = GENO_TABLE_SCHEMA + ".ENCODED_DATA_PK_SEQ";
@@ -31,22 +31,39 @@ public class Constants {
 	public static final String UPLOAD_MARKER_PK_SEQ = GENO_TABLE_SCHEMA + ".UPLOAD_MARKER_PK_SEQ";
 	
 	// Entity field name definitions (for HQL criteria building)
-	public static final String GENO_COLLECTION = "genoCollection";
-	public static final String GENO_COLLECTION_ID = "id";
-	public static final String GENO_COLLECTION_STUDY = "study";
-	public static final String GENO_COLLECTION_NAME = "name";
-	public static final String GENO_COLLECTION_DESCRIPTION = "description";
-	public static final String GENO_COLLECTION_STATUS = "status";
-	public static final String GENO_COLLECTION_START_DATE = "startDate";
-	public static final String GENO_COLLECTION_EXPIRY_DATE = "expiryDate";
-	public static final String GENO_COLLECTION_UPDATE_TIME = "updateTime";
-	public static final String GENO_COLLECTION_UPDATE_USER_ID = "updateUserId";
-	public static final String GENO_COLLECTION_INSERT_TIME = "insertTime";
-	public static final String GENO_COLLECTION_USER_ID = "userId";
+	public static final String GENOCOLLECTION = "genoCollection";
+	public static final String GENOCOLLECTION_ID = "id";
+	public static final String GENOCOLLECTION_STUDY = "study";
+	public static final String GENOCOLLECTION_NAME = "name";
+	public static final String GENOCOLLECTION_DESCRIPTION = "description";
+	public static final String GENOCOLLECTION_STATUS = "status";
+	public static final String GENOCOLLECTION_STARTDATE = "startDate";
+	public static final String GENOCOLLECTION_EXPIRYDATE = "expiryDate";
+	public static final String GENOCOLLECTION_UPDATETIME = "updateTime";
+	public static final String GENOCOLLECTION_UPDATEUSERID = "updateUserId";
+	public static final String GENOCOLLECTION_INSERTTIME = "insertTime";
+	public static final String GENOCOLLECTION_USERID = "userId";
 	
-	public static final String GENO_STATUS = "status";
-	public static final String GENO_STATUS_ID = "id";
-	public static final String GENO_STATUS_NAME = "name";
+	public static final String STATUS = "status";
+	public static final String STATUS_ID = "id";
+	public static final String STATUS_NAME = "name";
+	
+	public static final String FILEFORMAT = "fileFormat";
+	public static final String FILEFORMAT_ID = "id";
+	public static final String FILEFORMAT_NAME = "name";
+
+	public static final String UPLOAD = "upload";
+
+	public static final String UPLOADCOLLECTION = "uploadCollection";
+	public static final String UPLOADCOLLECTION_ID = "id";
+	public static final String UPLOADCOLLECTION_GENOCOLLECTION = "collection";
+	public static final String UPLOADCOLLECTION_UPLOAD = "upload";
+	public static final String UPLOADCOLLECTION_UPLOAD_FILENAME = "upload.filename";
+	public static final String UPLOADCOLLECTION_UPLOAD_FILEFORMAT = "upload.fileFormat";
+	public static final String UPLOADCOLLECTION_USERID = "userId";
+	public static final String UPLOADCOLLECTION_INSERTTIME = "insertTime";
+	public static final String UPLOADCOLLECTION_UPDATEUSERID = "updateUserId";
+	public static final String UPLOADCOLLECTION_UPDATETIME = "updateTime";
 	
 	// GenoCollectionVO to CompoundPropertyModel
 	public static final String GENO_COLLECTION_VO_ID = "genoCollection.id";
@@ -56,6 +73,11 @@ public class Constants {
 	public static final String GENO_COLLECTION_VO_EXPIRY_DATE = "genoCollection.expiryDate";
 	public static final String GENO_COLLECTION_VO_STATUS = "genoCollection.status";
 
+	// UploadCollectionVO to CompoundPropertyModel
+	public static final String UPLOADCOLLECTION_VO_ID = "uploadCollection.id";
+	public static final String UPLOADCOLLECTION_VO_UPLOAD_FILENAME = "uploadCollection.upload.filename";
+	public static final String UPLOADCOLLECTION_VO_UPLOAD_FILEFORMAT = "uploadCollection.upload.fileFormat";
+
 	// Test related definitions
 	public static final String TEST = "Test1";
 	public static final int TEST_STUDY_ID = 701;	//TODO: Matches ATR for now (24 Nov 2010)
@@ -64,5 +86,4 @@ public class Constants {
 	public static final String TEST_MAP_INFILE = "/home/ark/TestData/first100.map";
 	public static final String TEST_SUBJECT_UID = "U601";	//TODO: Matches ATR Subject 15 for now (24 Nov 2010)
 
-	
 }

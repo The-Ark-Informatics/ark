@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.geno.service.Constants;
 import au.org.theark.geno.service.IGenoService;
 
 
@@ -32,7 +33,7 @@ public class TestGWASImport extends AbstractTransactionalJUnit38SpringContextTes
 	final Logger log = LoggerFactory.getLogger(TestGWASImport.class);
 
 	@Autowired
-	@SpringBean(name = "genoService")
+	@SpringBean(name = Constants.GENO_SERVICE)
 	private IGenoService serviceInterface;
 	
 	//Requires JUnit4...

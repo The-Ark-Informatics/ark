@@ -9,8 +9,11 @@ public class Constants {
 	public static final String GENO_SUBMENU = "GenoSubMenus";
 	public static final String GENO_SUBMENU_COLLECTION = "Collection";
 	public static final String GENO_SUBMENU_TEST = "Test";
+	public static final boolean GENO_SUBMENU_TEST_FORCE_ON = true;
+	public static final String GENO_SUBMENU_UPLOAD = "Upload";
 
 	public static final String GENO_RESOURCEKEY_COLLECTION = "tab.module.geno.collection";
+	public static final String GENO_RESOURCEKEY_UPLOAD = "tab.module.geno.upload";
 	public static final String GENO_RESOURCEKEY_TEST = "tab.module.geno.test";
 
 	public static final String FIRETEST = "fireInTheHole";
@@ -23,5 +26,7 @@ public class Constants {
 	public static final String SESSION_GENO_COLLECTION_ID = "sessionGenoCollectionId";
 
 	public static final String MSG_NO_STUDY_CONTEXT = "There is no study in context. Please select a study";
+	public static final String MSG_NO_GENOCOLLECTION_CONTEXT = "There is no Geno collection in context. Please select a Geno collection";
 
+	
 }

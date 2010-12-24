@@ -12,12 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.CollectionImport;
+import au.org.theark.geno.model.entity.FileFormat;
+import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
 import au.org.theark.geno.model.entity.MetaDataType;
 import au.org.theark.geno.model.entity.Status;
+import au.org.theark.geno.model.entity.Upload;
+import au.org.theark.geno.model.entity.UploadCollection;
 
 // TODO: Replace all hardcoded userIds with actual code from SecurityManager
 // See SearchStudyFrom.java in ark-common
@@ -29,44 +32,44 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 	static Logger log = LoggerFactory.getLogger(CollectionDao.class);
 
     @SuppressWarnings("unchecked")
-	public List<GenoCollection> getCollectionMatches(GenoCollection colExample)
+	public List<GenoCollection> getCollectionMatches(GenoCollection genoCollectionCriteria)
 	{	
 		Criteria colCriteria = getSession().createCriteria(GenoCollection.class);
 		
-		if(colExample.getId() != null) {
-			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_ID, colExample.getId()));	
+		if(genoCollectionCriteria.getId() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENOCOLLECTION_ID, genoCollectionCriteria.getId()));	
 		}
 		
-		if(colExample.getName() != null) {
-			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_NAME, colExample.getName(), MatchMode.ANYWHERE));	
+		if(genoCollectionCriteria.getName() != null) {
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENOCOLLECTION_NAME, genoCollectionCriteria.getName(), MatchMode.ANYWHERE));	
 		}
 		
-		if(colExample.getDescription() != null) {
-			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_DESCRIPTION, colExample.getDescription(), MatchMode.ANYWHERE));	
+		if(genoCollectionCriteria.getDescription() != null) {
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENOCOLLECTION_DESCRIPTION, genoCollectionCriteria.getDescription(), MatchMode.ANYWHERE));	
 		}
 		
-		if(colExample.getStudy() != null) {
-			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_STUDY, colExample.getStudy()));
+		if(genoCollectionCriteria.getStudy() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENOCOLLECTION_STUDY, genoCollectionCriteria.getStudy()));
 		}
 		
-		if(colExample.getInsertTime() != null) {
-			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_INSERT_TIME, colExample.getInsertTime()));
+		if(genoCollectionCriteria.getInsertTime() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENOCOLLECTION_INSERTTIME, genoCollectionCriteria.getInsertTime()));
 		}
 		
-		if(colExample.getUserId() != null) {
-			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_USER_ID, colExample.getUserId(), MatchMode.ANYWHERE));
+		if(genoCollectionCriteria.getUserId() != null) {
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENOCOLLECTION_USERID, genoCollectionCriteria.getUserId(), MatchMode.ANYWHERE));
 		}
 
-		if(colExample.getUpdateTime() != null) {
-			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_UPDATE_TIME, colExample.getUpdateTime()));
+		if(genoCollectionCriteria.getUpdateTime() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENOCOLLECTION_UPDATETIME, genoCollectionCriteria.getUpdateTime()));
 		}
 
-		if(colExample.getUpdateUserId() != null) {
-			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENO_COLLECTION_UPDATE_USER_ID, colExample.getUpdateUserId(), MatchMode.ANYWHERE));
+		if(genoCollectionCriteria.getUpdateUserId() != null) {
+			colCriteria.add(Restrictions.ilike(au.org.theark.geno.service.Constants.GENOCOLLECTION_UPDATEUSERID, genoCollectionCriteria.getUpdateUserId(), MatchMode.ANYWHERE));
 		}
 		
-		if(colExample.getStatus() != null) {
-			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENO_COLLECTION_STATUS, colExample.getStatus()));
+		if(genoCollectionCriteria.getStatus() != null) {
+			colCriteria.add(Restrictions.eq(au.org.theark.geno.service.Constants.GENOCOLLECTION_STATUS, genoCollectionCriteria.getStatus()));
 		}
 
 		colCriteria.addOrder(Order.asc("name"));
@@ -201,14 +204,69 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 		getSession().save(colImport);
 	}
 
-	public Collection<Status> getStatus() {
+	public Collection<Status> getStatusCollection() {
 		Criteria crit = getSession().createCriteria(Status.class);
 		java.util.Collection<Status> statusCollection = crit.list();
 		return (statusCollection);
 	}
 
+	public Collection<FileFormat> getFileFormatCollection() {
+		Criteria crit = getSession().createCriteria(FileFormat.class);
+		java.util.Collection<FileFormat> fileFormatCollection = crit.list();
+		return (fileFormatCollection);
+	}
+	
 	public void deleteCollection(GenoCollection col) {
 		getSession().delete(col);
+	}
+
+	public Collection<UploadCollection> getFileUploadMatches(
+			UploadCollection uploadCollectionCriteria) {
+		
+		Upload uploadCriteria;
+    	Criteria crit = getSession().createCriteria(UploadCollection.class);
+    	
+    	// Have to alias the child for the ability to add criteria/order on child fields
+		crit.createAlias(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD, au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD); 
+
+		if(uploadCollectionCriteria.getId() != null) {
+			crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_ID, uploadCollectionCriteria.getId()));	
+		}
+		
+		if(uploadCollectionCriteria.getCollection() != null) {
+			crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_GENOCOLLECTION, uploadCollectionCriteria.getCollection()));	
+		}
+		
+		if((uploadCriteria = uploadCollectionCriteria.getUpload()) != null) { 
+			if (uploadCriteria.getFilename() != null) {
+				crit.add(Restrictions.ilike(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILENAME, uploadCriteria.getFilename(), MatchMode.ANYWHERE));
+			}
+			
+			if(uploadCriteria.getFileFormat() != null) {
+				crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILEFORMAT, uploadCriteria.getFileFormat()));
+			}
+		}
+		
+		if(uploadCollectionCriteria.getUserId() != null) {
+			crit.add(Restrictions.ilike(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_USERID, uploadCollectionCriteria.getUserId(), MatchMode.ANYWHERE));
+		}
+
+		if(uploadCollectionCriteria.getInsertTime() != null) {
+			crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_INSERTTIME, uploadCollectionCriteria.getInsertTime()));
+		}
+		
+		if(uploadCollectionCriteria.getUpdateTime() != null) {
+			crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPDATETIME, uploadCollectionCriteria.getUpdateTime()));
+		}
+
+		if(uploadCollectionCriteria.getUpdateUserId() != null) {
+			crit.add(Restrictions.ilike(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPDATEUSERID, uploadCollectionCriteria.getUpdateUserId(), MatchMode.ANYWHERE));
+		}
+
+		crit.addOrder(Order.asc(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILENAME));
+		crit.addOrder(Order.asc(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILEFORMAT));
+		List<UploadCollection> colList  = crit.list();
+		return colList;
 	}
 
 }

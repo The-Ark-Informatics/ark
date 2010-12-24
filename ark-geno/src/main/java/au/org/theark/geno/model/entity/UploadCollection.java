@@ -70,7 +70,7 @@ public class UploadCollection implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COLLECTION_PK", nullable = false)
+	@JoinColumn(name = "COLLECTION_ID", nullable = false)
 	public GenoCollection getCollection() {
 		return this.collection;
 	}
@@ -80,7 +80,7 @@ public class UploadCollection implements java.io.Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "UPLOAD_PK", nullable = false)
+	@JoinColumn(name = "UPLOAD_ID", nullable = false)
 	public Upload getUpload() {
 		return this.upload;
 	}

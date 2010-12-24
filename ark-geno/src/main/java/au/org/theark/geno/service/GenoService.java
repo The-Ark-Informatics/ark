@@ -1,9 +1,7 @@
 package au.org.theark.geno.service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
@@ -12,7 +10,6 @@ import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
@@ -23,23 +20,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.geno.exception.DataAcceptorIOException;
-import au.org.theark.geno.exception.FileFormatException;
-import au.org.theark.geno.exception.GenoSystemException;
 import au.org.theark.geno.model.dao.ICollectionDao;
 import au.org.theark.geno.model.dao.IGwasDao;
-import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.CollectionImport;
 import au.org.theark.geno.model.entity.EncodedData;
+import au.org.theark.geno.model.entity.FileFormat;
+import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.Marker;
 import au.org.theark.geno.model.entity.MarkerGroup;
-import au.org.theark.geno.model.entity.MarkerType;
 import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
 import au.org.theark.geno.model.entity.MetaDataType;
 import au.org.theark.geno.model.entity.Status;
+import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.util.IMapDataAcceptor;
 import au.org.theark.geno.util.IPedDataAcceptor;
-import au.org.theark.geno.util.PedMapImport;
 
 @Transactional
 @Service(Constants.GENO_SERVICE)
@@ -122,6 +117,17 @@ public class GenoService implements IGenoService {
 	}
 
 	// Read
+
+	public Collection<GenoCollection> searchGenoCollection(
+			GenoCollection genoCollectionCriteria) {
+		return collectionDao.getCollectionMatches(genoCollectionCriteria);
+	}
+
+	public Collection<UploadCollection> searchUploadCollection(
+			UploadCollection uploadCollectionCriteria) {
+		return collectionDao.getFileUploadMatches(uploadCollectionCriteria);
+	}
+
 	public EncodedData getEncodedData(Long encodedDataId) {
 		return gwasDao.getEncodedData(encodedDataId);
 	}
@@ -193,13 +199,13 @@ public class GenoService implements IGenoService {
 		return collectionDao.getCollection(collectionId);
 	}
 
-	public Collection<Status> getStatus() {
-		return collectionDao.getStatus();
+	public Collection<Status> getStatusCollection() {
+		return collectionDao.getStatusCollection();
 	}
 
-	public Collection<GenoCollection> searchGenoCollection(
-			GenoCollection criteriaToMatch) {
-		return collectionDao.getCollectionMatches(criteriaToMatch);
+	public Collection<FileFormat> getFileFormatCollection() {
+		// TODO Auto-generated method stub
+		return collectionDao.getFileFormatCollection();
 	}
 
 	// Update
@@ -448,6 +454,5 @@ public class GenoService implements IGenoService {
 		}
 
 	}
-
 
 }
