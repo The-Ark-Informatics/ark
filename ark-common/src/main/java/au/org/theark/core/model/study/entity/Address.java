@@ -27,13 +27,11 @@ public class Address implements java.io.Serializable {
 	private String streetAddress;
 	private String postCode;
 	private String city;
-	private String state;
-	private String country;
+	private Country country;
+	private CountryState countryState;
+	private String otherState;
 	private boolean addressStatus;
 	private AddressType addressType;
-	
-	
-	
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	// Constructors
@@ -87,23 +85,6 @@ public class Address implements java.io.Serializable {
 		this.city = city;
 	}
 
-	@Column(name = "STATE", length = 20)
-	public String getState() {
-		return this.state;
-	}
-
-	public void setState(String state) {
-		this.state = state;
-	}
-
-	@Column(name = "COUNTRY", length = 50)
-	public String getCountry() {
-		return this.country;
-	}
-
-	public void setCountry(String country) {
-		this.country = country;
-	}
 
 	@Column(name = "ADDRESS_STATUS", precision = 1, scale = 0)
 	public boolean getAddressStatus() {
@@ -131,6 +112,35 @@ public class Address implements java.io.Serializable {
 
 	public void setAddressType(AddressType addressType) {
 		this.addressType = addressType;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "COUNTRY_ID")
+	public Country getCountry() {
+		return country;
+	}
+
+	public void setCountry(Country country) {
+		this.country = country;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "COUNTRY_STATE_ID")
+	public CountryState getCountryState() {
+		return countryState;
+	}
+
+	public void setCountryState(CountryState countryState) {
+		this.countryState = countryState;
+	}
+
+	@Column(name = "OTHER_STATE", length = 45)
+	public String getOtherState() {
+		return otherState;
+	}
+
+	public void setOtherState(String otherState) {
+		this.otherState = otherState;
 	}
 
 	
