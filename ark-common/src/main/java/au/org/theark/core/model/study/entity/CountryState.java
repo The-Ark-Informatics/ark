@@ -23,7 +23,7 @@ public class CountryState implements Serializable {
 	
 	private Long id;
 	private Country country;
-	private State state;
+	private String state;
 	
 	public CountryState(){
 		
@@ -46,13 +46,13 @@ public class CountryState implements Serializable {
 	public void setCountry(Country country) {
 		this.country = country;
 	}
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STATE_ID")
-	public State getState() {
+
+	@Column(name = "STATE", length = 100)
+	public String getState() {
 		return state;
 	}
-	public void setState(State state) {
+
+	public void setState(String state) {
 		this.state = state;
 	}
 
