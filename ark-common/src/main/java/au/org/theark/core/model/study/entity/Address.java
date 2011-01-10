@@ -8,6 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -23,13 +25,15 @@ public class Address implements java.io.Serializable {
 	// Fields
 	private Long id;
 	private String streetAddress;
-	private String suburb;
 	private String postCode;
 	private String city;
 	private String state;
 	private String country;
 	private boolean addressStatus;
-	private Long addressTypeKey;
+	private AddressType addressType;
+	
+	
+	
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	// Constructors
@@ -41,23 +45,6 @@ public class Address implements java.io.Serializable {
 	/** minimal constructor */
 	public Address(Long id) {
 		this.id = id;
-	}
-
-	/** full constructor */
-	public Address(Long id,  String streetAddress,
-			String suburb, String postCode, String city, String state,
-			String country, boolean addressStatus, Long addressTypeKey,
-			Set<StudySite> studySites) {
-		this.id = id;
-		this.streetAddress = streetAddress;
-		this.suburb = suburb;
-		this.postCode = postCode;
-		this.city = city;
-		this.state = state;
-		this.country = country;
-		this.addressStatus = addressStatus;
-		this.addressTypeKey = addressTypeKey;
-		this.studySites = studySites;
 	}
 
 	// Property accessors
@@ -81,14 +68,6 @@ public class Address implements java.io.Serializable {
 		this.streetAddress = streetAddress;
 	}
 
-	@Column(name = "SUBURB", length = 50)
-	public String getSuburb() {
-		return this.suburb;
-	}
-
-	public void setSuburb(String suburb) {
-		this.suburb = suburb;
-	}
 
 	@Column(name = "POST_CODE", length = 10)
 	public String getPostCode() {
@@ -135,15 +114,6 @@ public class Address implements java.io.Serializable {
 		this.addressStatus = addressStatus;
 	}
 
-	@Column(name = "ADDRESS_TYPE_KEY", precision = 22, scale = 0)
-	public Long getAddressTypeKey() {
-		return this.addressTypeKey;
-	}
-
-	public void setAddressTypeKey(Long addressTypeKey) {
-		this.addressTypeKey = addressTypeKey;
-	}
-
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "address")
 	public Set<StudySite> getStudySites() {
 		return this.studySites;
@@ -151,6 +121,16 @@ public class Address implements java.io.Serializable {
 
 	public void setStudySites(Set<StudySite> studySites) {
 		this.studySites = studySites;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ADDRESS_TYPE_ID")
+	public AddressType getAddressType() {
+		return addressType;
+	}
+
+	public void setAddressType(AddressType addressType) {
+		this.addressType = addressType;
 	}
 
 	
