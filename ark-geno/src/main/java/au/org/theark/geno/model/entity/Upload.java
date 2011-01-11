@@ -1,6 +1,7 @@
 package au.org.theark.geno.model.entity;
 
 import java.sql.Blob;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import au.org.theark.geno.service.Constants;
 
@@ -29,6 +32,7 @@ public class Upload implements java.io.Serializable {
 
 	private Long id;
 	private FileFormat fileFormat;
+	private DelimiterType delimiterType;
 	private String filename;
 	private Set<UploadMarkerGroup> uploadMarkerGroups = new HashSet<UploadMarkerGroup>(
 			0);
@@ -36,9 +40,9 @@ public class Upload implements java.io.Serializable {
 			0);
 	private Blob payload;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 
 	// Constructors
 
@@ -47,21 +51,27 @@ public class Upload implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Upload(Long id, FileFormat fileFormat, String userId,
-			String insertTime) {
+	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, 
+			String filename, String userId, Date insertTime) {
 		this.id = id;
+		this.delimiterType = delimiterType;
 		this.fileFormat = fileFormat;
+		this.filename = filename;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public Upload(Long id, FileFormat fileFormat, String filename,
+	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, 
+			String filename, String userId, Date insertTime, 
 			Set<UploadMarkerGroup> uploadMarkerGroups,
 			Set<UploadCollection> uploadCollections) {
 		this.id = id;
-		this.fileFormat = fileFormat;
+		this.delimiterType = delimiterType;
 		this.filename = filename;
+		this.fileFormat = fileFormat;
+		this.userId = userId;
+		this.insertTime = insertTime;
 		this.uploadMarkerGroups = uploadMarkerGroups;
 		this.uploadCollections = uploadCollections;
 	}
@@ -78,7 +88,6 @@ public class Upload implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FILE_FORMAT_ID", nullable = false)
 	public FileFormat getFileFormat() {
@@ -89,6 +98,17 @@ public class Upload implements java.io.Serializable {
 		this.fileFormat = fileFormat;
 	}
 
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
+	public DelimiterType getDelimiterType() {
+		return this.delimiterType;
+	}
+
+	public void setDelimiterType(DelimiterType delimiterType) {
+		this.delimiterType = delimiterType;
+	}
+	
 	@Column(name = "FILENAME", length = 260)
 	public String getFilename() {
 		return this.filename;
@@ -116,12 +136,13 @@ public class Upload implements java.io.Serializable {
 		this.userId = userId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public String getInsertTime() {
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -134,12 +155,13 @@ public class Upload implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

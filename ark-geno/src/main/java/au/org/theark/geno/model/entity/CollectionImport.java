@@ -28,7 +28,7 @@ public class CollectionImport implements java.io.Serializable {
 
 	private Long id;
 	private ImportType importType;
-	private DelimiterType delimiterType;
+//	private DelimiterType delimiterType;
 	private MarkerGroup markerGroup;
 	private GenoCollection collection;
 	private Date startTime;
@@ -46,11 +46,11 @@ public class CollectionImport implements java.io.Serializable {
 
 	/** minimal constructor */
 	public CollectionImport(Long id, ImportType importType,
-			DelimiterType delimiterType, MarkerGroup markerGroup,
+			/*DelimiterType delimiterType, */MarkerGroup markerGroup,
 			GenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.importType = importType;
-		this.delimiterType = delimiterType;
+//		this.delimiterType = delimiterType;
 		this.markerGroup = markerGroup;
 		this.collection = collection;
 		this.startTime = startTime;
@@ -60,13 +60,13 @@ public class CollectionImport implements java.io.Serializable {
 
 	/** full constructor */
 	public CollectionImport(Long id, ImportType importType,
-			DelimiterType delimiterType, MarkerGroup markerGroup,
+			/*DelimiterType delimiterType, */MarkerGroup markerGroup,
 			GenoCollection collection, Date startTime, Date finishTime,
 			String userId, Date insertTime, String updateUserId,
 			Date updateTime) {
 		this.id = id;
 		this.importType = importType;
-		this.delimiterType = delimiterType;
+//		this.delimiterType = delimiterType;
 		this.markerGroup = markerGroup;
 		this.collection = collection;
 		this.startTime = startTime;
@@ -99,16 +99,16 @@ public class CollectionImport implements java.io.Serializable {
 	public void setImportType(ImportType importType) {
 		this.importType = importType;
 	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
-	public DelimiterType getDelimiterType() {
-		return this.delimiterType;
-	}
-
-	public void setDelimiterType(DelimiterType delimiterType) {
-		this.delimiterType = delimiterType;
-	}
+//
+//	@ManyToOne(fetch = FetchType.LAZY)
+//	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
+//	public DelimiterType getDelimiterType() {
+//		return this.delimiterType;
+//	}
+//
+//	public void setDelimiterType(DelimiterType delimiterType) {
+//		this.delimiterType = delimiterType;
+//	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "MARKER_GROUP_ID", nullable = false)

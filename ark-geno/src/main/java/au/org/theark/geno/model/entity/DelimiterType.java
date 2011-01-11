@@ -23,8 +23,7 @@ public class DelimiterType implements java.io.Serializable {
 
 	private Long id;
 	private String name;
-	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
-			0);
+//	private Set<Upload> uploads = new HashSet<Upload>(0);
 
 	// Constructors
 
@@ -38,11 +37,11 @@ public class DelimiterType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DelimiterType(Long id, String name,
-			Set<CollectionImport> collectionImports) {
+	public DelimiterType(Long id, String name/*,
+			Set<Upload> uploads*/) {
 		this.id = id;
 		this.name = name;
-		this.collectionImports = collectionImports;
+//		this.uploads = uploads;
 	}
 
 	// Property accessors
@@ -65,13 +64,13 @@ public class DelimiterType implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "delimiterType")
-	public Set<CollectionImport> getCollectionImports() {
-		return this.collectionImports;
-	}
-
-	public void setCollectionImports(Set<CollectionImport> collectionImports) {
-		this.collectionImports = collectionImports;
-	}
+//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "delimiterType")
+//	public Set<Upload> getUploads() {
+//		return this.uploads;
+//	}
+//
+//	public void setUploads(Set<Upload> uploads) {
+//		this.uploads = uploads;
+//	}
 
 }
