@@ -31,6 +31,10 @@ public class Constants {
 	public static final String PHONE_TYPE="phoneType";
 	public static final String AREA_CODE="areaCode";
 	
+	public static final String STREET_ADDRESS="streetAddress";
+	public static final String COUNTRY_NAME="name";
+	public static final String POST_CODE = "postCode";
+	
 	
 	
 
