@@ -24,6 +24,7 @@ public class Address implements java.io.Serializable {
 
 	// Fields
 	private Long id;
+	private Person person; 
 	private String streetAddress;
 	private String postCode;
 	private String city;
@@ -114,7 +115,7 @@ public class Address implements java.io.Serializable {
 		this.addressType = addressType;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY )
 	@JoinColumn(name = "COUNTRY_ID")
 	public Country getCountry() {
 		return country;
@@ -142,6 +143,18 @@ public class Address implements java.io.Serializable {
 	public void setOtherState(String otherState) {
 		this.otherState = otherState;
 	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_ID")
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+
+
 
 	
 
