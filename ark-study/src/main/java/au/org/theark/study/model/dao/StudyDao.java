@@ -16,6 +16,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -287,6 +288,44 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
 		}
 		return personPhoneList;
+	}
+	
+	/**
+	 * Looks up all the addresses for a person.
+	 * @param personId
+	 * @param address
+	 * @return List<Address>
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException,ArkSystemException{
+		
+		Criteria criteria =  getSession().createCriteria(Address.class);
+		
+		if(personId != null){
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+		
+		if(address != null){
+		//Add criteria for address
+			if(address.getStreetAddress() != null){
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress()));
+			}
+			
+			if(address.getCountry() != null){
+				criteria.add(Restrictions.ilike(Constants.COUNTRY_NAME, address.getCountry().getName()));
+			}
+			
+			if(address.getPostCode() != null){
+				criteria.add(Restrictions.ilike(Constants.POST_CODE, address.getPostCode()));
+			}
+		}
+		
+		List<Address> personAddressList = criteria.list();
+		if(personAddressList == null && personAddressList.size() == 0){
+			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");		
+		}
+		return personAddressList;
 	}
 	
 	
