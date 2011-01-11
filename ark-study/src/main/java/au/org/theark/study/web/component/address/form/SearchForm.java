@@ -6,9 +6,12 @@
  */
 package au.org.theark.study.web.component.address.form;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -17,8 +20,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -42,8 +45,12 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	private DetailPanel detailPanel;
 	private PageableListView<Address> pageableListView;
 	private CompoundPropertyModel<AddressVO> cpmModel;
-	private TextField<String> phoneNumberTxtFld;
-	private DropDownChoice<PhoneType> phoneTypeChoice;
+	
+	private TextField<String> streetAddressTxtFld;
+	private TextField<String> cityTxtFld;
+	private TextField<String> postCodeTxtFld;
+	private DropDownChoice<Country> countryChoice;
+	private DropDownChoice<CountryState> stateChoice;
 	
 	
 	/**
@@ -72,11 +79,28 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	}
 
 	protected void initialiseSearchForm(){
+
+		streetAddressTxtFld = new TextField<String>(Constants.ADDRESS_STREET_ADDRESS);
+		cityTxtFld = new TextField<String>(Constants.ADDRESS_CITY);
+		postCodeTxtFld = new TextField<String>(Constants.ADDRESS_POST_CODE);
 		
+		//Populate/Initialise the Country DropDown Choice control
+		List<Country> countryList = iArkCommonService.getCountries();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
 		
+		List<CountryState> countryStateList = iArkCommonService.getStates(new Country());
+		ChoiceRenderer defaultStateChoiceRenderer = new ChoiceRenderer("state", Constants.ID);
+		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
+
 	}
 
 	protected void addSearchComponentsToForm(){
+		add(streetAddressTxtFld);
+		add(cityTxtFld);
+		add(postCodeTxtFld);
+		add(countryChoice);
+		add(stateChoice);
 	}
 	
 	@Override
@@ -89,6 +113,8 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
+		setModelObject(new AddressVO());
+		preProcessDetailPanel(target);
 	}
 
 	/* (non-Javadoc)
