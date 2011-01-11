@@ -173,6 +173,12 @@ public class Constants {
 	public static final String DELETE_KEY ="deleteKey";
 	public static final String STUDY ="study";
 	
+	/* Person Address */
+	public static final String ADDRESS_STREET_ADDRESS="address.streetAddress";
+	public static final String ADDRESS_CITY="address.city";
+	public static final String ADDRESS_POST_CODE="address.postCode";
+	public static final String ADDRESS_COUNTRY="address.country";
+	public static final String ADDRESS_COUNTRYSTATE_STATE="address.countryState";
 	
 	
 			 
