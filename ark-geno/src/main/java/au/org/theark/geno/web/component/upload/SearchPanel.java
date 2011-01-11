@@ -14,9 +14,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.geno.model.entity.DelimiterType;
 import au.org.theark.geno.model.entity.FileFormat;
 import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.Upload;
 import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.Constants;
@@ -71,6 +71,7 @@ public class SearchPanel extends Panel {
 		private TextField<String> uploadCollectionIdTxtFld;
 		private TextField<String> uploadCollectionUploadFilenameTxtFld;
 		private DropDownChoice<FileFormat> uploadFileformatDdc;
+		private DropDownChoice<DelimiterType> uploadDelimiterTypeDdc;
 
 		public SearchForm(String id,
 				CompoundPropertyModel<UploadCollectionVO> model) {
@@ -87,7 +88,7 @@ public class SearchPanel extends Panel {
 			uploadCollectionIdTxtFld = new TextField<String>(Constants.UPLOADCOLLECTION_VO_ID);
 			uploadCollectionUploadFilenameTxtFld = new TextField<String>(Constants.UPLOADCOLLECTION_VO_UPLOAD_FILENAME);
 
-			initFileFormatDdc();
+			initDropDownChoices();
 			addFieldComponents();
 			
 			Long sessionGenoColId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.geno.web.Constants.SESSION_GENO_COLLECTION_ID);
@@ -101,14 +102,24 @@ public class SearchPanel extends Panel {
 		}
 		
 		//TODO
-		private void initFileFormatDdc()
+		private void initDropDownChoices()
 		{
-			java.util.Collection<FileFormat> fileFormatCollection = genoService.getFileFormatCollection();
 			CompoundPropertyModel<UploadCollectionVO> fileUploadCpm = cpmModel;
 			PropertyModel<UploadCollectionVO> uploadCollectionPm = new PropertyModel<UploadCollectionVO>(fileUploadCpm, au.org.theark.geno.service.Constants.UPLOADCOLLECTION);
+
+			java.util.Collection<FileFormat> fileFormatCollection = genoService.getFileFormatCollection();
 			PropertyModel<FileFormat> fileFormatPm = new PropertyModel<FileFormat>(uploadCollectionPm, au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILEFORMAT);
-			ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.geno.service.Constants.FILEFORMAT_NAME, au.org.theark.geno.service.Constants.FILEFORMAT_ID);
-			uploadFileformatDdc = new DropDownChoice<FileFormat>(au.org.theark.geno.service.Constants.FILEFORMAT, fileFormatPm, (List) fileFormatCollection, fieldTypeRenderer);
+			ChoiceRenderer<FileFormat> fieldTypeRenderer = new ChoiceRenderer<FileFormat>(au.org.theark.geno.service.Constants.FILEFORMAT_NAME, 
+																au.org.theark.geno.service.Constants.FILEFORMAT_ID);
+			uploadFileformatDdc = new DropDownChoice<FileFormat>(au.org.theark.geno.service.Constants.FILEFORMAT, fileFormatPm, 
+															(List) fileFormatCollection, fieldTypeRenderer);
+			
+			java.util.Collection<DelimiterType> delimiterTypeCollection = genoService.getDelimiterTypeCollection();
+			PropertyModel<DelimiterType> delimiterTypePm = new PropertyModel<DelimiterType>(uploadCollectionPm, au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_DELIMITERTYPE);
+			ChoiceRenderer<DelimiterType> delimiterTypeRenderer = new ChoiceRenderer<DelimiterType>(au.org.theark.geno.service.Constants.DELIMITERTYPE_NAME, 
+																au.org.theark.geno.service.Constants.DELIMITERTYPE_ID);
+			uploadDelimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.geno.service.Constants.DELIMITERTYPE, delimiterTypePm, 
+															(List) delimiterTypeCollection, delimiterTypeRenderer);
 		}
 
 		private void setSearchButtonsEnabled(boolean enabled) {
@@ -121,6 +132,7 @@ public class SearchPanel extends Panel {
 			add(uploadCollectionIdTxtFld);
 			add(uploadCollectionUploadFilenameTxtFld);
 			add(uploadFileformatDdc);
+			add(uploadDelimiterTypeDdc);
 		}
 
 		@Override

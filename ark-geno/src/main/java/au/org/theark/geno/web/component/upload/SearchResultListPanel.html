@@ -23,6 +23,12 @@
 			</th>
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
+				<label for="delimiterType">
+					<wicket:message	key="uploadCollection.upload.delimiterType">Delimiter:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
 				<label for="other">
 					&nbsp;
 				</label>
@@ -35,7 +41,7 @@
 			<td width="10%">
 				<span wicket:id="uploadCollection.id">100</span>
 			</td>
-			<td width="5%"></td>
+			<td width="5%">&nbsp;</td>
 			<td width="10%">
 			  <a href="#"wicket:id="uploadCollection.upload.filename">
 			  	<span wicket:id="nameLbl">Filename</span>
@@ -44,6 +50,10 @@
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
 				<span wicket:id="uploadCollection.upload.fileFormat">File format</span>
+			</td>
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<span wicket:id="uploadCollection.upload.delimiterType">Delimiter type</span>
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
@@ -61,10 +71,8 @@
 			<td width="5%">&nbsp;</td>
 			<td width="10%">&nbsp;</td>
 			<td width="5%">&nbsp;</td>
-			<!--  td width="10%">&nbsp;</td>
-			<td width="5%">&nbsp;</td>
 			<td width="10%">&nbsp;</td>
-			<td width="5%">&nbsp;</td> -->
+			<td width="5%">&nbsp;</td>
 		</tr>
 	</table>
 	<table width="0%" cellspacing="0"></table>

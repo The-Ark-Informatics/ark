@@ -23,6 +23,7 @@ import au.org.theark.geno.exception.DataAcceptorIOException;
 import au.org.theark.geno.model.dao.ICollectionDao;
 import au.org.theark.geno.model.dao.IGwasDao;
 import au.org.theark.geno.model.entity.CollectionImport;
+import au.org.theark.geno.model.entity.DelimiterType;
 import au.org.theark.geno.model.entity.EncodedData;
 import au.org.theark.geno.model.entity.FileFormat;
 import au.org.theark.geno.model.entity.GenoCollection;
@@ -32,6 +33,7 @@ import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
 import au.org.theark.geno.model.entity.MetaDataType;
 import au.org.theark.geno.model.entity.Status;
+import au.org.theark.geno.model.entity.Upload;
 import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.util.IMapDataAcceptor;
 import au.org.theark.geno.util.IPedDataAcceptor;
@@ -116,8 +118,19 @@ public class GenoService implements IGenoService {
 		gwasDao.createEncodedData(ed);
 	}
 
-	// Read
+	public void createUploadCollection(UploadCollection uploadCollection) {
+		Subject currentUser = SecurityUtils.getSubject();
+		Date dateNow = new Date(System.currentTimeMillis());
 
+		uploadCollection.setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
+		uploadCollection.setInsertTime(dateNow);
+		uploadCollection.getUpload().setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
+		uploadCollection.getUpload().setInsertTime(dateNow);
+		collectionDao.createUploadCollection(uploadCollection);
+	}
+
+	
+	// Read
 	public Collection<GenoCollection> searchGenoCollection(
 			GenoCollection genoCollectionCriteria) {
 		return collectionDao.getCollectionMatches(genoCollectionCriteria);
@@ -204,9 +217,13 @@ public class GenoService implements IGenoService {
 	}
 
 	public Collection<FileFormat> getFileFormatCollection() {
-		// TODO Auto-generated method stub
 		return collectionDao.getFileFormatCollection();
 	}
+	
+	public Collection<DelimiterType> getDelimiterTypeCollection() {
+		return collectionDao.getDelimiterTypeCollection();
+	}
+	
 
 	// Update
 	public void updateCollection(GenoCollection colEntity) {
@@ -218,11 +235,15 @@ public class GenoService implements IGenoService {
 		collectionDao.updateCollection(colEntity);
 	}
 	
+	
 	// Delete 
 	public void deleteCollection(GenoCollection col) {
 		collectionDao.deleteCollection(col);
 	}
 	
+	public void deleteUploadCollection(UploadCollection uploadCollection) {
+		collectionDao.deleteUploadCollection(uploadCollection);
+	}
 	
 	// Test
 	public Long newEncodedData(GenoCollection col) {
@@ -454,5 +475,6 @@ public class GenoService implements IGenoService {
 		}
 
 	}
+
 
 }

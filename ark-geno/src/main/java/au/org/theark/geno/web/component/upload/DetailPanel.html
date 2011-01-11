@@ -26,23 +26,12 @@
 
 				<div id="fldLabel">
 					<div class="label">
-						<label for="name"><wicket:message key="uploadCollection.upload.filename">Filename:</wicket:message></label>
+						<label for="filename"><wicket:message key="uploadCollection.upload.filename">Filename:</wicket:message></label>
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<!-- <input wicket:id="uploadCollection.filename" type="text" /> -->
-				<!-- form wicket:id="ajax-simpleUpload">
-			     <fieldset>
-			      <legend>Upload form with ajax progress bar</legend>
-			        <p>
-			        <label for="upload">File</label> -->
-			        <input wicket:id="uploadCollection.upload.filename" id="upload" type="file"/>
-			        <!-- </p>
-			        <input type="submit" value="Upload!"/>
-			        <span wicket:id="progress">[[ajax upload progressbar]]</span>
-			     </fieldset>
-			    </form> -->
+			        	<input wicket:id="uploadCollection.upload.filename" id="upload" type="file"/>
 					</div>
 				</div>
 				
@@ -54,7 +43,7 @@
 				
 				<div id="fldLabel">
 					<div class="label">
-						<label for="status"><wicket:message	key="uploadCollection.upload.fileFormat">File format:</wicket:message></label> 
+						<label for="fileFormat"><wicket:message	key="uploadCollection.upload.fileFormat">File format:</wicket:message></label> 
 					</div>
 				</div>
 				<div id="fldControl">
@@ -66,7 +55,20 @@
 				</div>
 				
 				<div id="panelMargin">&nbsp;</div>
-	
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="delimiterType"><wicket:message	key="uploadCollection.upload.delimiterType">Delimiter:</wicket:message></label> 
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="uploadCollection.upload.delimiterType">
+		       				<option>Test</option>
+		       			</select>
+			       	</div>
+				</div>
+				
 				<div id="searchPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>

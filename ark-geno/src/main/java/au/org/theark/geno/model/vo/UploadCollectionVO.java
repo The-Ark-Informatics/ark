@@ -17,7 +17,7 @@ import au.org.theark.geno.model.entity.UploadCollection;
  */
 public class UploadCollectionVO implements Serializable {
 
-	private Upload upload;
+//	private Upload upload;
 	private GenoCollection genoCollection;
 	private UploadCollection uploadCollection;
 	private FileFormat fileFormat;
@@ -25,20 +25,20 @@ public class UploadCollectionVO implements Serializable {
 	
 	
 	public UploadCollectionVO() {
-		this.upload = new Upload();
+//		this.upload = new Upload();
 		this.genoCollection = new GenoCollection();
 		this.uploadCollection = new UploadCollection();
 		this.fileFormat = new FileFormat();
 		this.uploadCollectionList = new ArrayList<UploadCollection>();
 	}
 
-	public Upload getUpload() {
-		return upload;
-	}
-	
-	public void setUpload(Upload upload) {
-		this.upload = upload;
-	}
+//	public Upload getUpload() {
+//		return upload;
+//	}
+//	
+//	public void setUpload(Upload upload) {
+//		this.upload = upload;
+//	}
 
 	public void setGenoCollection(GenoCollection genoCollection) {
 		this.genoCollection = genoCollection;

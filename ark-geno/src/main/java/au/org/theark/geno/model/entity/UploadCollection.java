@@ -1,5 +1,7 @@
 package au.org.theark.geno.model.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import au.org.theark.geno.service.Constants;
 
@@ -26,9 +30,9 @@ public class UploadCollection implements java.io.Serializable {
 	private GenoCollection collection;
 	private Upload upload;
 	private String userId;
-	private String insertTime;
+	private Date insertTime;
 	private String updateUserId;
-	private String updateTime;
+	private Date updateTime;
 
 	// Constructors
 
@@ -45,8 +49,8 @@ public class UploadCollection implements java.io.Serializable {
 
 	/** full constructor */
 	public UploadCollection(Long id, GenoCollection collection, Upload upload,
-			String userId, String insertTime, String updateUserId,
-			String updateTime) {
+			String userId, Date insertTime, String updateUserId,
+			Date updateTime) {
 		this.id = id;
 		this.collection = collection;
 		this.upload = upload;
@@ -98,12 +102,13 @@ public class UploadCollection implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-	@Column(name = "INSERT_TIME")
-	public String getInsertTime() {
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "INSERT_TIME", nullable = false)
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime) {
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -116,12 +121,13 @@ public class UploadCollection implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime() {
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime) {
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 

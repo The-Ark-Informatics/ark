@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.geno.model.entity.CollectionImport;
+import au.org.theark.geno.model.entity.DelimiterType;
 import au.org.theark.geno.model.entity.FileFormat;
 import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.MetaData;
@@ -31,8 +32,40 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 
 	static Logger log = LoggerFactory.getLogger(CollectionDao.class);
 
+    // Create
+	public void createMetaDataField(MetaDataField mdf)
+	{
+		getSession().save(mdf);
+	}
+	
+	//Testing the create of records
+	//Each FK reference for MetaData must exist (i.e. be saved) prior to use
+    public void createMetaData(MetaData metaData)
+    {
+        getSession().save(metaData);
+    }
+
+	public void createCollection(GenoCollection col) {
+		getSession().save(col);
+	}
+
+	public void createCollectionImport(CollectionImport colImport) {
+		getSession().save(colImport);
+	}
+
+	public void createUploadCollection(UploadCollection uploadCollection) {
+		if (uploadCollection.getUpload().getId() == null) {
+			getSession().save(uploadCollection.getUpload());
+		}
+		else {
+			log.debug("createUploadCollection(..) - Upload should not already exist!");
+		}
+		getSession().save(uploadCollection);
+	}
+	
+	// Read
     @SuppressWarnings("unchecked")
-	public List<GenoCollection> getCollectionMatches(GenoCollection genoCollectionCriteria)
+    public List<GenoCollection> getCollectionMatches(GenoCollection genoCollectionCriteria)
 	{	
 		Criteria colCriteria = getSession().createCriteria(GenoCollection.class);
 		
@@ -77,40 +110,10 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 		return colList;
 	}
 
-	public void createCollection(GenoCollection col) {
-		getSession().save(col);
-	}
-
-	
 	public GenoCollection getCollection(Long id) {
 		
 		GenoCollection col = (GenoCollection)getSession().get(GenoCollection.class, id);
 		return col;
-	}
-	
-	public void updateCollection(GenoCollection colEntity) {
-		getSession().update(colEntity);
-	}
-	
-	public void createMetaDataField(MetaDataField mdf)
-	{
-		getSession().save(mdf);
-	}
-	
-	public void updateMetaDataField(MetaDataField mdf)
-	{
-		getSession().update(mdf);
-	}
-	
-	//Testing the create of records
-	//Each FK reference for MetaData must exist (i.e. be saved) prior to use
-    public void createMetaData(MetaData metaData)
-    {
-        getSession().save(metaData);
-    }
-    
-	public void updateMetaData(MetaData mdEntity) {
-		getSession().update(mdEntity);
 	}
 	
     @SuppressWarnings("unchecked")
@@ -200,10 +203,6 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 //            return null;
     }
 
-	public void createCollectionImport(CollectionImport colImport) {
-		getSession().save(colImport);
-	}
-
 	public Collection<Status> getStatusCollection() {
 		Criteria crit = getSession().createCriteria(Status.class);
 		java.util.Collection<Status> statusCollection = crit.list();
@@ -215,10 +214,12 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 		java.util.Collection<FileFormat> fileFormatCollection = crit.list();
 		return (fileFormatCollection);
 	}
-	
-	public void deleteCollection(GenoCollection col) {
-		getSession().delete(col);
-	}
+
+	public Collection<DelimiterType> getDelimiterTypeCollection() {
+		Criteria crit = getSession().createCriteria(DelimiterType.class);
+		java.util.Collection<DelimiterType> fileFormatCollection = crit.list();
+		return (fileFormatCollection);
+	}	
 
 	public Collection<UploadCollection> getFileUploadMatches(
 			UploadCollection uploadCollectionCriteria) {
@@ -245,6 +246,10 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 			if(uploadCriteria.getFileFormat() != null) {
 				crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILEFORMAT, uploadCriteria.getFileFormat()));
 			}
+
+			if(uploadCriteria.getDelimiterType() != null) {
+				crit.add(Restrictions.eq(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_DELIMITERTYPE, uploadCriteria.getDelimiterType()));
+			}
 		}
 		
 		if(uploadCollectionCriteria.getUserId() != null) {
@@ -267,6 +272,28 @@ public class CollectionDao extends HibernateSessionDao implements ICollectionDao
 		crit.addOrder(Order.asc(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_UPLOAD_FILEFORMAT));
 		List<UploadCollection> colList  = crit.list();
 		return colList;
+	}
+
+	// Update
+	public void updateCollection(GenoCollection colEntity) {
+		getSession().update(colEntity);
+	}
+	
+	public void updateMetaData(MetaData mdEntity) {
+		getSession().update(mdEntity);
+	}
+
+	public void updateMetaDataField(MetaDataField mdf) {
+		getSession().update(mdf);
+	}
+
+	// Delete
+	public void deleteCollection(GenoCollection col) {
+		getSession().delete(col);
+	}
+
+	public void deleteUploadCollection(UploadCollection uploadCollection) {
+		getSession().delete(uploadCollection);
 	}
 
 }

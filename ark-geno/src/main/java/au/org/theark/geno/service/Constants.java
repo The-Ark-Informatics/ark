@@ -52,14 +52,19 @@ public class Constants {
 	public static final String FILEFORMAT_ID = "id";
 	public static final String FILEFORMAT_NAME = "name";
 
+	public static final String DELIMITERTYPE = "delimiterType";
+	public static final String DELIMITERTYPE_ID = "id";
+	public static final String DELIMITERTYPE_NAME = "name";
+
 	public static final String UPLOAD = "upload";
 
 	public static final String UPLOADCOLLECTION = "uploadCollection";
 	public static final String UPLOADCOLLECTION_ID = "id";
 	public static final String UPLOADCOLLECTION_GENOCOLLECTION = "collection";
 	public static final String UPLOADCOLLECTION_UPLOAD = "upload";
-	public static final String UPLOADCOLLECTION_UPLOAD_FILENAME = "upload.filename";
 	public static final String UPLOADCOLLECTION_UPLOAD_FILEFORMAT = "upload.fileFormat";
+	public static final String UPLOADCOLLECTION_UPLOAD_DELIMITERTYPE = "upload.delimiterType";
+	public static final String UPLOADCOLLECTION_UPLOAD_FILENAME = "upload.filename";
 	public static final String UPLOADCOLLECTION_USERID = "userId";
 	public static final String UPLOADCOLLECTION_INSERTTIME = "insertTime";
 	public static final String UPLOADCOLLECTION_UPDATEUSERID = "updateUserId";
@@ -77,6 +82,7 @@ public class Constants {
 	public static final String UPLOADCOLLECTION_VO_ID = "uploadCollection.id";
 	public static final String UPLOADCOLLECTION_VO_UPLOAD_FILENAME = "uploadCollection.upload.filename";
 	public static final String UPLOADCOLLECTION_VO_UPLOAD_FILEFORMAT = "uploadCollection.upload.fileFormat";
+	public static final String UPLOADCOLLECTION_VO_UPLOAD_DELIMITERTYPE = "uploadCollection.upload.delimiterType";
 
 	// Test related definitions
 	public static final String TEST = "Test1";

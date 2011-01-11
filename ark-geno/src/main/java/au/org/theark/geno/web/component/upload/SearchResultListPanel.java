@@ -84,6 +84,17 @@ public class SearchResultListPanel extends Panel {
 					{
 						item.add(new Label(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILEFORMAT, ""));// the ID here must match the ones in mark-up
 					}
+					
+					if (anUpload.getDelimiterType() != null)
+					{
+						item.add(new Label(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_DELIMITERTYPE, anUpload.getDelimiterType().getName()));// the ID here must match
+						// the ones in mark-up
+					}
+					else
+					{
+						item.add(new Label(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_DELIMITERTYPE, ""));// the ID here must match the ones in mark-up
+					}
+				
 				}
 		
 				/* For the alternative stripes */
@@ -109,7 +120,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target)
 			{
 				UploadCollectionVO collectionVo = containerForm.getModelObject();
-				collectionVo.setUpload(uploadCollection.getUpload());
+				collectionVo.setUploadCollection(uploadCollection);
 				
 				// TODO: Place the selected upload in session context for the user (passes to Shiro) ***MAY NOT BE NECESSARY***
 //				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.geno.web.Constants.SESSION_GENO_COLLECTION_ID, uploadCollection.getId());

@@ -42,12 +42,13 @@
 				
 				<div id="fldLabel">
 					<div class="label">
-						<label for="status"><wicket:message	key="uploadCollection.upload.fileFormat">File format:</wicket:message></label>
+						<label for="fileFormat"><wicket:message	key="uploadCollection.upload.fileFormat">File format:</wicket:message></label>
 						&nbsp; 
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
+						<!-- NB: Different from the typical full class path -->
 						<select wicket:id="fileFormat">
 		       				<option>PED</option>
 							<option>MAP</option>
@@ -57,7 +58,20 @@
 				</div>
 		       	   		       			
 		       	<div id="panelMargin">&nbsp;</div>
-						
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="delimiterType"><wicket:message	key="uploadCollection.upload.delimiterType">Delimiter:</wicket:message></label> 
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<!-- NB: Different from the typical full class path -->
+						<select wicket:id="delimiterType">
+		       				<option>Test</option>
+		       			</select>
+			       	</div>
+				</div>
 				
 				<div id="searchPanelContentRight">&nbsp;</div>
 				

@@ -4,7 +4,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
+import javax.naming.spi.DirectoryManager;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -21,7 +26,12 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
 
+import au.org.theark.core.security.ArkSecurityManager;
+import au.org.theark.core.security.RoleConstants;
+import au.org.theark.geno.model.entity.DelimiterType;
 import au.org.theark.geno.model.entity.FileFormat;
+import au.org.theark.geno.model.entity.GenoCollection;
+import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.IGenoService;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;
@@ -80,11 +90,8 @@ public class DetailPanel extends Panel {
 		
 		private TextField<String> idTxtFld;
 		private FileUploadField fileUploadField;
-//		private TextField<String> filenameTxtFld;
 		private DropDownChoice<FileFormat> fileFormatDdc;
-//		private TextArea<String> descriptionTxtAreaFld;
-//		private DatePicker<Date> startDateTxtFld;
-//		private DatePicker<Date> expiryDateTxtFld;
+		private DropDownChoice<DelimiterType> delimiterTypeDdc;
 
 		/**
 		 * Constructor
@@ -104,16 +111,9 @@ public class DetailPanel extends Panel {
 			
 			idTxtFld = new TextField<String>(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_ID);
 			fileUploadField = new FileUploadField(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILENAME);
-//			filenameTxtFld = new TextField<String>(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILENAME);
-//			descriptionTxtAreaFld = new TextArea<String>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_DESCRIPTION);
-//			startDateTxtFld = new DatePicker<Date>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_START_DATE);
-//			expiryDateTxtFld = new DatePicker<Date>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_EXPIRY_DATE);
-
-//			startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-//			expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
 
 			// Initialise Drop Down Choices
-			initUploadFileFormatDdc();
+			initUploadDropDownChoices();
 
 			attachValidators();
 			addComponents();
@@ -224,30 +224,36 @@ public class DetailPanel extends Panel {
 
 		protected void attachValidators()
 		{
-//			filenameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.genoCollection.name.required", this, new Model<String>("Name")));
-			fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.genoCollection.status.required", this, new Model<String>("Status")));
+			fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.uploadCollection.filename.required", this, new Model<String>("Filename")));
+			fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadCollection.fileFormat.required", this, new Model<String>("File Format")));
+			delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.uploadCollection.delimiterType.required", this, new Model<String>("Delimiter")));
 		}
 
 		private void addComponents()
 		{
 			detailPanelFormContainer.add(idTxtFld.setEnabled(false));
 			detailPanelFormContainer.add(fileUploadField);
-//			detailPanelFormContainer.add(filenameTxtFld);
-//			detailPanelFormContainer.add(descriptionTxtAreaFld);
 			detailPanelFormContainer.add(fileFormatDdc);
+			detailPanelFormContainer.add(delimiterTypeDdc);
 //			detailPanelFormContainer.add(startDateTxtFld);
 //			detailPanelFormContainer.add(expiryDateTxtFld);
 
 			add(detailPanelFormContainer);
 		}
 
-		private void initUploadFileFormatDdc()
+		private void initUploadDropDownChoices()
 		{
 			java.util.Collection<FileFormat> fileFormatCollection = genoService.getFileFormatCollection();
 			ChoiceRenderer fileFormatRenderer = new ChoiceRenderer(au.org.theark.geno.service.Constants.FILEFORMAT_NAME, 
 																au.org.theark.geno.service.Constants.FILEFORMAT_ID);
 			fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILEFORMAT, 
 															(List) fileFormatCollection, fileFormatRenderer);
+
+			java.util.Collection<DelimiterType> delimiterTypeCollection = genoService.getDelimiterTypeCollection();
+			ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.geno.service.Constants.DELIMITERTYPE_NAME, 
+																au.org.theark.geno.service.Constants.DELIMITERTYPE_ID);
+			delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_DELIMITERTYPE, 
+															(List) delimiterTypeCollection, delimiterTypeRenderer);
 		}
 
 		protected void showConfirmModalWindow(AjaxRequestTarget target){
@@ -255,46 +261,75 @@ public class DetailPanel extends Panel {
 			target.addComponent(selectModalWindow);
 		}
 		
+		private void createDirectoryIfNeeded(String directoryName)
+		{
+		  File theDir = new File(directoryName);
+
+		  // if the directory does not exist, create it
+		  if (!theDir.exists())
+		  {
+		    System.out.println("creating directory: " + directoryName);
+		    theDir.mkdir();
+		  }
+		}
+
 		protected void onSave(Form<UploadCollectionVO> containerForm, AjaxRequestTarget target)
 		{
-			setMultiPart(true);
+			setMultiPart(true);	//multipart required for file uploads
 			
-//			if (containerForm.getModelObject().getGenoCollection().getId() == null)
-//			{
-//				// Save a new GenoCollection
-//				genoService.createCollection(containerForm.getModelObject().getGenoCollection());
-//				this.info("Genotypic collection " + containerForm.getModelObject().getGenoCollection().getName() + " was created successfully");
-//				processErrors(target);
-//			}
-//			else
-//			{
-//				// Update existing GenoCollection
-//				genoService.updateCollection(containerForm.getModelObject().getGenoCollection());
-//				this.info("Genotypic collection " + containerForm.getModelObject().getGenoCollection().getName() + " was updated successfully");
-//				processErrors(target);
-//			}
+			//NB: We are dealing with the GenoCollection (not Marker)
 			
-//			containerForm.getModelObject().getUpload()
-			//TODO: AJAX-ified and asynchronous and hit database
-			FileUpload fileUpload = fileUploadField.getFileUpload();
-			File file = new File("/tmp/" + fileUpload.getClientFileName());
-			FileOutputStream fos = null;
-			try {
-				fos = new FileOutputStream(file);
-				IOUtils.copy(fileUpload.getInputStream(), fos);
-				fos.close();
-			} catch (IOException ioe) {
-				System.out.println("Failed to save the uploaded file:" + ioe);
-			} finally {
-				if (fos != null) {
-					fos = null;
+			// create new UploadCollection that is linked with the new Upload
+			if (containerForm.getModelObject().getUploadCollection().getId() == null)
+			{				
+				// Retrieve file and store in temp folder
+				//TODO: AJAX-ified and asynchronous and hit database
+				FileUpload fileUpload = fileUploadField.getFileUpload();
+				//TODO: Load the temporary directory from the application configuration instead
+				String tempDir = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
+				createDirectoryIfNeeded(tempDir);
+				String filePath = tempDir + File.separator + fileUpload.getClientFileName();
+				File file = new File(filePath);
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(file);
+					IOUtils.copy(fileUpload.getInputStream(), fos);
+					fos.close();
+					System.out.println("Successfully stored a temporary file: " + filePath);
+				} catch (IOException ioe) {
+					System.out.println("Failed to save the uploaded file:" + ioe);
+				} finally {
+					if (fos != null) {
+						fos = null;
+					}
 				}
+				// Save a new Upload
+				UploadCollection uploadCol = containerForm.getModelObject().getUploadCollection();
+
+				Long genoColctnId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.geno.web.Constants.SESSION_GENO_COLLECTION_ID);
+				GenoCollection genoCol = genoService.getCollection(genoColctnId);
+				uploadCol.setCollection(genoCol);
+				//set the proper filename (getUpload().getFilename() returned an address to an object)
+				uploadCol.getUpload().setFilename(fileUpload.getClientFileName());
+				genoService.createUploadCollection(uploadCol);
+
+				this.info("Geno upload " + uploadCol.getUpload().getFilename() + " was created successfully");
+				processErrors(target);
 			}
+			// Updates on Uploads should not be permitted
+//			else
+//			{	
+//				// Update existing Upload
+//				genoService.updateUpload(containerForm.getModelObject().getUpload());
+//				this.info("Geno upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
+//				processErrors(target);
+//			}
 			
+						
 			uploadContainerPanel.showViewDetail(target);
 			//TODO:(CE) To handle Business and System Exceptions here
 			
-			setMultiPart(false);
+			setMultiPart(false);	//multipart required for file uploads
 		}
 
 		protected void onCancel(AjaxRequestTarget target)
@@ -314,11 +349,23 @@ public class DetailPanel extends Panel {
 
 		protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
 			//TODO:(CE) To handle Business and System Exceptions here
-			genoService.deleteCollection(containerForm.getModelObject().getGenoCollection());
-			this.info("Genotypic collection " + containerForm.getModelObject().getGenoCollection().getName() + " was deleted successfully");
+
+			//TODO: Must be study admin to do this!
+			ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
+			Subject currentUser = SecurityUtils.getSubject();
+			
+			if (arkSecurityManager.subjectHasRole(RoleConstants.STUDY_ADMIN)) {
+				genoService.deleteUploadCollection(containerForm.getModelObject().getUploadCollection());
+				this.info("Geno upload " + containerForm.getModelObject().getUploadCollection().getUpload().getFilename() + " was deleted successfully");	
+			   	// Display delete confirmation message
+				uploadContainerPanel.refreshFeedback(target);
+			}
+			else {
+				this.info("Operation not permitted - Only a Study Admin can delete an upload");	
+			   	// Display insufficient privileges message
+				uploadContainerPanel.refreshFeedback(target);
+			}
 	   		
-		   	// Display delete confirmation message
-			uploadContainerPanel.refreshFeedback(target);
 		   	//TODO Implement Exceptions in PhentoypicService
 			//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 			//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
