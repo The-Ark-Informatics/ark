@@ -21,6 +21,7 @@ public class AddressVO implements Serializable{
 	protected Address address;
 	protected Collection<Address> addresses;
 	
+	
 	/**
 	 * 
 	 */
@@ -44,6 +45,6 @@ public class AddressVO implements Serializable{
 	public void setAddresses(Collection<Address> addresses) {
 		this.addresses = addresses;
 	}
-	
+
 
 }
