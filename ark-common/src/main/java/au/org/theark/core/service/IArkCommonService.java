@@ -5,6 +5,8 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -56,5 +58,12 @@ public interface IArkCommonService {
 	public LinkSubjectStudy getSubjectByUID(String subjectUID) throws EntityNotFoundException;
 	
 	public Collection<MaritalStatus>  getMaritalStatus();
+	
+	public List<Country> getCountries();
+	
+	public List<CountryState>  getStates(Country country);
+	
+	
+	
 	
 }

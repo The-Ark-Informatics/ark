@@ -12,6 +12,8 @@ import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -143,6 +145,14 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	
 	public Collection<MaritalStatus> getMaritalStatus(){
 		return studyDao.getMaritalStatus();
+	}
+	
+	public List<Country> getCountries(){
+		return studyDao.getCountries();
+	}
+	
+	public List<CountryState>  getStates(Country country){
+		 return studyDao.getStates(country);
 	}
 
 }
