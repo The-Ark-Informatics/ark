@@ -5,6 +5,8 @@ import java.util.List;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -116,6 +118,14 @@ public interface IStudyDao {
 	 */
 	public Collection<MaritalStatus> getMaritalStatus();
 	
+	/**
+	 * Returns a list of all countries.
+	 * @return
+	 */
+	public List<Country> getCountries();
+	
+	
+	public List<CountryState>  getStates(Country country);
 	
 
 }

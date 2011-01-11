@@ -23,6 +23,8 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -303,6 +305,33 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		}
 	}
 	
-
+	/**
+	 * Returns a list of Countries
+	 */
+	public List<Country> getCountries(){
+		Criteria criteria  = getSession().createCriteria(Country.class);
+		return criteria.list();
+	}
+	
+	public Country getCountry(Long id){
+		Criteria criteria  = getSession().createCriteria(Country.class);
+		criteria.add(Restrictions.eq("id",id));
+		return (Country) criteria.list().get(0);
+	}
+	
+	public List<CountryState>  getStates(Country country){
+		//Testing this
+		//TODO Remove this
+		Country testCountry = getCountry(new Long("1"));
+		StringBuffer hqlString =	new StringBuffer();
+		hqlString.append(" from CountryState as cs ");
+		hqlString.append(" where cs.country.id = ");
+		hqlString.append( testCountry.getId());
+		
+		Query query = getSession().createQuery(hqlString.toString());
+		List<CountryState> list =  (List<CountryState>) query.list();
+		return list;
+		
+	}
 
 }
