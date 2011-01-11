@@ -6,10 +6,18 @@
  */
 package au.org.theark.study.web.component.address;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -35,6 +43,7 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 	private SearchPanel searchPanel;
 	private SearchResultListPanel searchResultListPanel;
 	private DetailPanel detailPanel;
+	private PageableListView<Address> pageableListView;
 	
 	/**
 	 * @param id
@@ -44,8 +53,8 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 		cpModel = new CompoundPropertyModel<AddressVO>( new AddressVO());
 		containerForm = new ContainerForm("containerForm",cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
+		//containerForm.add(initialiseDetailPanel());
+		//containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
@@ -64,8 +73,36 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was 
+		//Set the person who this address should be associated with 
+		Collection<Address> addressList = new ArrayList<Address>();
+		try {
+			
+			containerForm.getModelObject().getAddress().setPerson(studyService.getPerson(sessionPersonId));
+			addressList = studyService.getPersonAddressList(sessionPersonId, containerForm.getModelObject().getAddress());
+			cpModel.getObject().setAddresses(addressList);
+			
+			searchPanel = new SearchPanel("searchComponentPanel", 
+					feedBackPanel,
+					searchPanelContainer,
+					pageableListView,
+					searchResultPanelContainer,
+					detailPanelContainer,
+					detailPanel,
+					containerForm,
+					viewButtonContainer,
+					editButtonContainer,
+					detailPanelFormContainer);
+			
+			searchPanel.initialisePanel(cpModel);
+			searchPanelContainer.add(searchPanel);
+		} catch (EntityNotFoundException e) {
+			//Report this to the user
+		} catch (ArkSystemException e) {
+			//Logged by the back end. Report this to the user
+		}
+		return searchPanelContainer;
 	}
 
 	/* (non-Javadoc)
