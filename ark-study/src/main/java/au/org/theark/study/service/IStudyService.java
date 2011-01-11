@@ -9,6 +9,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -102,5 +103,15 @@ public interface IStudyService {
 	 * @throws ArkSystemException
 	 */
 	public List<Phone> getPersonPhoneList(Long personId,Phone phone) throws EntityNotFoundException,ArkSystemException;
+	
+	/**
+	 * Looks up the addresses linked to a person and applies any filter supplied with the address object.Used in Search Address functionality.
+	 * @param personId
+	 * @param address
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException,ArkSystemException;
 
 }
