@@ -13,7 +13,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.vo.AddressVO;
 import au.org.theark.study.web.component.address.form.ContainerForm;
+import au.org.theark.study.web.component.address.form.SearchForm;
 
 
 /**
@@ -56,21 +58,21 @@ public class SearchPanel extends Panel{
 		this.detailFormContainer = detailPanelFormContainer;
 	}
 	
-	public void initialisePanel(CompoundPropertyModel<Address> addressVoCpm)
+	public void initialisePanel(CompoundPropertyModel<AddressVO> addressVoCpm)
 	{
 
-//		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
-//				phoneVOCpm,
-//				pageableListView,
-//				feedBackPanel,
-//				listContainer,
-//				searchMarkupContainer,
-//				detailsContainer,
-//				detailFormContainer,
-//				viewButtonContainer,
-//				editButtonContainer	);
+		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
+				addressVoCpm,
+				pageableListView,
+				feedBackPanel,
+				listContainer,
+				searchMarkupContainer,
+				detailsContainer,
+				detailFormContainer,
+				viewButtonContainer,
+				editButtonContainer	);
 		
-		//add(searchForm);
+		add(searchForm);
 	}
 
 }
