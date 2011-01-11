@@ -10,13 +10,13 @@
 				
 				<div id="fldLabel">
 		 			<div class="label">
-		 				<label for="areaCode"><wicket:message key="areaCode">Area Code:</wicket:message></label>		
+		 				<label for="streetAddress"><wicket:message key="street.address">Street Address:</wicket:message></label>		
 		 			</div> 
 		 		</div>
 		 		
 				<div id="fldControl">
 					<div class="label"> <!--  this will change to ID -->
-						<input wicket:id="phone.areaCode"  type="text" />
+						<input wicket:id="address.streetAddress"  type="text" />
 					</div>
 				</div>
 				
@@ -24,13 +24,13 @@
 				
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="fieldType"><wicket:message key="phoneNumber">Phone Number:</wicket:message></label>		
+						<label for="city"><wicket:message key="city">City:</wicket:message></label>		
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phone.phoneNumber"  type="text" />
+						<input wicket:id="address.city"  type="text" />
 					</div>
 				</div>
 					
@@ -42,25 +42,57 @@
 				
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="phoneType"><wicket:message key="phoneType">Phone Type:</wicket:message></label>
+						<label for="postCode"><wicket:message key="postcode">Post Code:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
-					<div class="label">
-						<select wicket:id="phone.phoneType">
-		       				<option>Mobile</option>
-							<option>IPhone</option>
-							<option>Date</option>
-		       			</select>
-		       		</div>
+					<input wicket:id="address.postCode"  type="text" />
 				</div>
 		       	   		       			
 		       	<div id="panelMargin">&nbsp;</div>
 						
 				<div id="fldLabel">
 		 			<div class="label">
-							&nbsp;
+						<label for="country"><wicket:message key="country">Country:</wicket:message></label>		
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="address.country">
+		       				<option>Australia</option>
+							<option>United Kingdom</option>
+		       			</select>
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="state"><wicket:message key="state">State:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+				  <div class="label">
+					<select wicket:id="address.countryState">
+		       				<option>WA</option>
+							<option>QLD</option>
+		       		</select>
+		       	  </div>
+				</div>
+		       	   		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;		
 		 			</div> 
 		 		</div> 			       			
 				
@@ -69,7 +101,8 @@
 						&nbsp;
 					</div>
 				</div>
-				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				
 				<div id="searchPanelBr"></div>
 				
 				<div id="searchPanelBreaker">&nbsp;</div>		
