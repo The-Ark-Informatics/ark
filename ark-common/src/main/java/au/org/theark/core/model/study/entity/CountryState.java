@@ -24,7 +24,7 @@ public class CountryState implements Serializable {
 	private Long id;
 	private Country country;
 	private String state;
-	
+
 	public CountryState(){
 		
 	}
@@ -49,7 +49,7 @@ public class CountryState implements Serializable {
 
 	@Column(name = "STATE", length = 100)
 	public String getState() {
-		return state;
+		return this.state;
 	}
 
 	public void setState(String state) {
