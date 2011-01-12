@@ -29,6 +29,9 @@ public class SubjectCustmFld implements java.io.Serializable {
 	private DataType dataType;
 	private String name;
 	private String description;
+	private String minValue;
+	private String maxValue;
+	private String discreteValues;
 	private Set<SubjectCustFldDat> subjectCustFldDats = new HashSet<SubjectCustFldDat>(
 			0);
 
@@ -39,19 +42,29 @@ public class SubjectCustmFld implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectCustmFld(Long id) {
+	public SubjectCustmFld(Long id, Study study,
+			DataType dataType) {
 		this.id = id;
+		this.study = study;
+		this.dataType = dataType;
 	}
 
-	/** full constructor */
+	/** full constructor 
+	 * @param minValue 
+	 * @param maxValue 
+	 * @param discreteValues */
 	public SubjectCustmFld(Long id, Study study,
-			DataType dataType, String name, String description,
+			DataType dataType, String name, String description, 
+			String minValue, String maxValue, String discreteValues,
 			Set<SubjectCustFldDat> subjectCustFldDats) {
 		this.id = id;
 		this.study = study;
 		this.dataType = dataType;
 		this.name = name;
 		this.description = description;
+		this.minValue = minValue;
+		this.maxValue = maxValue;
+		this.discreteValues = discreteValues;
 		this.subjectCustFldDats = subjectCustFldDats;
 	}
 
@@ -102,6 +115,33 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name = "MIN_VALUE")
+	public String getMinValue() {
+		return minValue;
+	}
+
+	public void setMinValue(String minValue) {
+		this.minValue = minValue;
+	}
+
+	@Column(name = "MAX_VALUE")
+	public String getMaxValue() {
+		return maxValue;
+	}
+
+	public void setMaxValue(String maxValue) {
+		this.maxValue = maxValue;
+	}
+
+	@Column(name = "DISCRETE_VALUES")
+	public String getDiscreteValues() {
+		return discreteValues;
+	}
+
+	public void setDiscreteValues(String discreteValues) {
+		this.discreteValues = discreteValues;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "subjectCustmFld")
