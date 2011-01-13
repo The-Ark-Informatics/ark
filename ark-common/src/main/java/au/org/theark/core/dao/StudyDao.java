@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -319,19 +320,36 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 		return (Country) criteria.list().get(0);
 	}
 	
+	public Country getCountry(String countryName){
+		Criteria criteria  = getSession().createCriteria(Country.class);
+		criteria.add(Restrictions.eq("name",countryName));
+		return (Country) criteria.list().get(0);
+	}
+	
 	public List<CountryState>  getStates(Country country){
-		//Testing this
-		//TODO Remove this
-		Country testCountry = getCountry(new Long("1"));
+		
+		if(country == null ){
+			//Default it to local one like australia, this can be based on locale
+			//Get the default Country from backend and then use that to fetch the state
+			country = getCountry(Constants.DEFAULT_COUNTRY);
+		}
 		StringBuffer hqlString =	new StringBuffer();
 		hqlString.append(" from CountryState as cs ");
 		hqlString.append(" where cs.country.id = ");
-		hqlString.append( testCountry.getId());
+		hqlString.append( country.getId());
 		
 		Query query = getSession().createQuery(hqlString.toString());
 		List<CountryState> list =  (List<CountryState>) query.list();
 		return list;
-		
+	}
+	
+	/**
+	 * Gets  a list of all Address Types
+	 * @return
+	 */
+	public List<AddressType> getAddressTypes(){
+		Criteria criteria  = getSession().createCriteria(AddressType.class);
+		return criteria.list();
 	}
 
 }
