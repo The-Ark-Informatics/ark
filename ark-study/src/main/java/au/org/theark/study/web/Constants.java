@@ -182,7 +182,7 @@ public class Constants {
 	public static final String ADDRESS_POST_CODE="address.postCode";
 	public static final String ADDRESS_COUNTRY="address.country";
 	public static final String ADDRESS_COUNTRYSTATE_STATE="address.countryState";
-	
+	public static final String ADDRESS_ADDRESSTYPE="address.addressType";
 	
 			 
 }
