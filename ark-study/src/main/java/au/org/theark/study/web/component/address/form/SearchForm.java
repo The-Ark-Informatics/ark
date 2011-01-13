@@ -6,10 +6,12 @@
  */
 package au.org.theark.study.web.component.address.form;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -19,6 +21,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -44,7 +48,6 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 
 	private DetailPanel detailPanel;
 	private PageableListView<Address> pageableListView;
-	private CompoundPropertyModel<AddressVO> cpmModel;
 	
 	private TextField<String> streetAddressTxtFld;
 	private TextField<String> cityTxtFld;
@@ -52,8 +55,11 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	private DropDownChoice<Country> countryChoice;
 	private DropDownChoice<CountryState> stateChoice;
 	
+	private WebMarkupContainer countrySelector;
+	
 	
 	/**
+	 * Constructor
 	 * @param id
 	 */
 	public SearchForm(String id,
@@ -69,30 +75,24 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	{
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
-		this.cpmModel = model;
 		this.pageableListView = listView;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchButtons(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
-
+	
+	
+	/**
+	 * Initialise all the form components for the search
+	 */
 	protected void initialiseSearchForm(){
 
 		streetAddressTxtFld = new TextField<String>(Constants.ADDRESS_STREET_ADDRESS);
 		cityTxtFld = new TextField<String>(Constants.ADDRESS_CITY);
 		postCodeTxtFld = new TextField<String>(Constants.ADDRESS_POST_CODE);
-		
-		//Populate/Initialise the Country DropDown Choice control
-		List<Country> countryList = iArkCommonService.getCountries();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
-		
-		List<CountryState> countryStateList = iArkCommonService.getStates(new Country());
-		ChoiceRenderer defaultStateChoiceRenderer = new ChoiceRenderer("state", Constants.ID);
-		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
-
+		initialiaseCountryDropDown();
+		initialiseCountrySelector();
 	}
 
 	protected void addSearchComponentsToForm(){
@@ -100,13 +100,93 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		add(cityTxtFld);
 		add(postCodeTxtFld);
 		add(countryChoice);
-		add(stateChoice);
+		add(countrySelector);//This contains the dropdrop for State
+	}
+	
+	
+	/**
+	 * The MarkupContainer for The State DropDOwn control
+	 */
+	private void initialiseCountrySelector(){
+		
+		countrySelector = new WebMarkupContainer("countrySelector");
+		countrySelector.setOutputMarkupPlaceholderTag(true);
+		//Get the value selected in Country
+		Country selectedCountry  = countryChoice.getModelObject();
+		
+		//If there is no country selected, back should default to current country and pull the states
+		List<CountryState> countryStateList  = iArkCommonService.getStates(selectedCountry);
+		ChoiceRenderer defaultStateChoiceRenderer = new ChoiceRenderer("state", Constants.ID);
+		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
+		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
+		countrySelector.add(stateChoice);
+	}
+
+	private void initialiaseCountryDropDown(){
+		
+		List<Country> countryList = iArkCommonService.getCountries();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
+		
+		//Attach a behavior, so when it changes it does something
+		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				updateCountryStateChoices(countryChoice.getModelObject());
+				target.addComponent(countrySelector);
+			}
+		});
+	}
+	
+	/**
+	 * A method that will refresh the choices in the State drop down choice based on
+	 * what was selected in the Country Dropdown. It uses the country as the argument and invokes
+	 * the back-end to fetch relative states.
+	 */
+	private void updateCountryStateChoices(Country country){
+		
+		List<CountryState> countryStateList = iArkCommonService.getStates(country);
+		stateChoice.getChoices().clear();
+		stateChoice.setChoices(countryStateList);
 	}
 	
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
+		target.addComponent(feedbackPanel);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
+		try{
 
+//			if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
+//				
+//			}else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
+//				
+//			}
+			Address address = getModelObject().getAddress();
+			address.setPerson(studyService.getPerson(sessionPersonId));
+			Collection<Address> addressList =  studyService.getPersonAddressList(sessionPersonId, address);
+			if (addressList != null && addressList.size() == 0)
+			{
+				this.info("Fields with the specified criteria does not exist in the system.");
+				target.addComponent(feedbackPanel);
+			}
+			
+			getModelObject().setAddresses(addressList);
+			pageableListView.removeAll();
+			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+			target.addComponent(listContainer);
+
+			
+		}catch(EntityNotFoundException entityNotFoundException){
+			this.warn("There are no addresses available for the specified criteria.");
+			target.addComponent(feedbackPanel);
+			
+		}catch(ArkSystemException arkException){
+			this.error("The Ark Application has encountered a system error.");
+			target.addComponent(feedbackPanel);
+		}
 		
 	}
 	
