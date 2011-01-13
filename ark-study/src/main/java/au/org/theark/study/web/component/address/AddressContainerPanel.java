@@ -12,7 +12,9 @@ import java.util.Collection;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -24,6 +26,7 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
+
 
 /**
  * @author nivedann
@@ -54,7 +57,7 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 		containerForm = new ContainerForm("containerForm",cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		//containerForm.add(initialiseDetailPanel());
-		//containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
@@ -110,8 +113,52 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",
+					detailPanelContainer,
+					detailPanelFormContainer,
+					searchPanelContainer,
+					searchResultPanelContainer,
+					viewButtonContainer,
+					editButtonContainer,
+					containerForm);
+		
+		iModel = new LoadableDetachableModel<Object>() {
+	
+			private static final long serialVersionUID = 1L;
+	
+			@Override
+			protected Object load() {
+				//Get the PersonId from session and get the phoneList from backend
+				Collection<Address> addressList = new ArrayList<Address>();
+				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				try {
+			
+					if(sessionPersonId != null){
+						addressList = studyService.getPersonAddressList(sessionPersonId,containerForm.getModelObject().getAddress());
+					}
+				} catch (EntityNotFoundException e) {
+					//Report this to user
+					// 	TODO Auto-generated catch block
+					//e.printStackTrace();
+				} catch (ArkSystemException e) {
+					//Report this to user
+					// TODO Auto-generated catch block
+					//e.printStackTrace();
+				}
+			
+			return addressList;
+			}
+		};
+	
+		pageableListView  = searchResultPanel.buildPageableListView(iModel);
+		pageableListView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("addressNavigator", pageableListView);
+		searchResultPanel.add(pageNavigator);
+		searchResultPanel.add(pageableListView);
+		searchResultPanelContainer.add(searchResultPanel);
+		return searchResultPanelContainer;
+		
 	}
 
 }
