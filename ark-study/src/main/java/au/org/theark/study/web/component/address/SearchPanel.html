@@ -94,13 +94,16 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
-						&nbsp;		
+						<label for="state"><wicket:message key="addressType">Address Type:</wicket:message></label>		
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						&nbsp;
+						<select wicket:id="address.addressType">
+		       				<option>Work</option>
+							<option>Home</option>
+		       			</select>
 					</div>
 				</div>
 				
