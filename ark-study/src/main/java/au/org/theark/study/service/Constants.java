@@ -32,8 +32,12 @@ public class Constants {
 	public static final String AREA_CODE="areaCode";
 	
 	public static final String STREET_ADDRESS="streetAddress";
-	public static final String COUNTRY_NAME="name";
+	public static final String COUNTRY_NAME="country";
 	public static final String POST_CODE = "postCode";
+	public static final String CITY = "city";
+	public static final String COUNTRY_STATE_NAME="countryState";
+	public static final String ADDRESS_TYPE="addressType";
+	
 	
 	
 	
