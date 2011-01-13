@@ -130,4 +130,7 @@ public class Constants {
 	
 	/*Study Schema */
 	public static final String STUDY_SCHEMA="study";
+	
+	/* Default Country */
+	public static final String DEFAULT_COUNTRY="Australia";
 }
