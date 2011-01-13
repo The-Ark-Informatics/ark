@@ -12,6 +12,7 @@ import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -153,6 +154,10 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	
 	public List<CountryState>  getStates(Country country){
 		 return studyDao.getStates(country);
+	}
+	
+	public List<AddressType> getAddressTypes(){
+		return studyDao.getAddressTypes();
 	}
 
 }
