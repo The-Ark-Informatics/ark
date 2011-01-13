@@ -144,7 +144,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(detailPanelContainer);
+				//target.addComponent(detailPanelContainer);
 				onDelete(containerForm, target);
 			
 			}
