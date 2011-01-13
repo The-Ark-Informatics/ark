@@ -28,6 +28,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
 
 
+
 /**
  * @author nivedann
  *
@@ -56,7 +57,7 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 		cpModel = new CompoundPropertyModel<AddressVO>( new AddressVO());
 		containerForm = new ContainerForm("containerForm",cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		//containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
@@ -67,8 +68,19 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		detailPanel = new DetailPanel("detailsPanel",
+										feedBackPanel,
+										searchResultPanelContainer, 
+										detailPanelContainer,
+										detailPanelFormContainer,
+										searchPanelContainer,
+										viewButtonContainer,
+										editButtonContainer,
+										containerForm);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
+		return detailPanelContainer;
 	}
 
 	/* (non-Javadoc)
