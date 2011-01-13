@@ -57,7 +57,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	private DropDownChoice<CountryState> stateChoice;
 	private DropDownChoice<AddressType> addressTypeChoice;
 	
-	private WebMarkupContainer countrySelector;
+	private WebMarkupContainer countryStateSelector;
 	
 	
 	/**
@@ -94,6 +94,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		cityTxtFld = new TextField<String>(Constants.ADDRESS_CITY);
 		postCodeTxtFld = new TextField<String>(Constants.ADDRESS_POST_CODE);
 		initialiaseCountryDropDown();
+		
 		initialiseCountrySelector();
 		initialiseAddressTypeDropDown();
 	}
@@ -103,7 +104,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		add(cityTxtFld);
 		add(postCodeTxtFld);
 		add(countryChoice);
-		add(countrySelector);//This contains the dropdrop for State
+		add(countryStateSelector);//This contains the dropdrop for State
 		add(addressTypeChoice);
 	}
 	
@@ -113,8 +114,8 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	 */
 	private void initialiseCountrySelector(){
 		
-		countrySelector = new WebMarkupContainer("countrySelector");
-		countrySelector.setOutputMarkupPlaceholderTag(true);
+		countryStateSelector = new WebMarkupContainer("countryStateSelector");
+		countryStateSelector.setOutputMarkupPlaceholderTag(true);
 		//Get the value selected in Country
 		Country selectedCountry  = countryChoice.getModelObject();
 		
@@ -123,7 +124,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		ChoiceRenderer<CountryState> defaultStateChoiceRenderer = new ChoiceRenderer<CountryState>("state", Constants.ID);
 		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
 		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
-		countrySelector.add(stateChoice);
+		countryStateSelector.add(stateChoice);
 	}
 
 	private void initialiaseCountryDropDown(){
@@ -137,7 +138,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());
-				target.addComponent(countrySelector);
+				target.addComponent(countryStateSelector);
 			}
 		});
 	}
