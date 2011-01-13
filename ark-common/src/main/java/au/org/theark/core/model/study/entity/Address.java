@@ -7,10 +7,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -47,7 +50,10 @@ public class Address implements java.io.Serializable {
 	}
 
 	// Property accessors
+	
 	@Id
+	@SequenceGenerator(name="address_generator", sequenceName="ADDRESS_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "address_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
