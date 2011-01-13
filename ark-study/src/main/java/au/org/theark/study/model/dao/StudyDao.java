@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -307,17 +308,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		
 		if(address != null){
-		//Add criteria for address
+			//Add criteria for address
 			if(address.getStreetAddress() != null){
-				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress()));
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(),MatchMode.ANYWHERE));
 			}
 			
 			if(address.getCountry() != null){
-				criteria.add(Restrictions.ilike(Constants.COUNTRY_NAME, address.getCountry().getName()));
+				criteria.add(Restrictions.eq(Constants.COUNTRY_NAME, address.getCountry()));
 			}
 			
 			if(address.getPostCode() != null){
-				criteria.add(Restrictions.ilike(Constants.POST_CODE, address.getPostCode()));
+				criteria.add(Restrictions.eq(Constants.POST_CODE, address.getPostCode()));
+			}
+			
+			if(address.getCity() != null){
+				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
+			}
+			
+			if(address.getCountryState() != null ){
+				criteria.add(Restrictions.eq(Constants.COUNTRY_STATE_NAME, address.getCountryState()));
+			}
+			
+			if(address.getAddressType() != null){
+				criteria.add(Restrictions.eq(Constants.ADDRESS_TYPE, address.getAddressType()));
 			}
 		}
 		
