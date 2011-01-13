@@ -24,6 +24,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.service.IArkCommonService;
@@ -54,6 +55,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	private TextField<String> postCodeTxtFld;
 	private DropDownChoice<Country> countryChoice;
 	private DropDownChoice<CountryState> stateChoice;
+	private DropDownChoice<AddressType> addressTypeChoice;
 	
 	private WebMarkupContainer countrySelector;
 	
@@ -93,6 +95,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		postCodeTxtFld = new TextField<String>(Constants.ADDRESS_POST_CODE);
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
+		initialiseAddressTypeDropDown();
 	}
 
 	protected void addSearchComponentsToForm(){
@@ -101,6 +104,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		add(postCodeTxtFld);
 		add(countryChoice);
 		add(countrySelector);//This contains the dropdrop for State
+		add(addressTypeChoice);
 	}
 	
 	
@@ -116,7 +120,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		
 		//If there is no country selected, back should default to current country and pull the states
 		List<CountryState> countryStateList  = iArkCommonService.getStates(selectedCountry);
-		ChoiceRenderer defaultStateChoiceRenderer = new ChoiceRenderer("state", Constants.ID);
+		ChoiceRenderer<CountryState> defaultStateChoiceRenderer = new ChoiceRenderer<CountryState>("state", Constants.ID);
 		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
 		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		countrySelector.add(stateChoice);
@@ -125,7 +129,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	private void initialiaseCountryDropDown(){
 		
 		List<Country> countryList = iArkCommonService.getCountries();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
 		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
 		
 		//Attach a behavior, so when it changes it does something
@@ -136,6 +140,12 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 				target.addComponent(countrySelector);
 			}
 		});
+	}
+	
+	private void initialiseAddressTypeDropDown(){
+		List<AddressType> addressTypeList = iArkCommonService.getAddressTypes();
+		ChoiceRenderer<AddressType> defaultChoiceRenderer = new ChoiceRenderer<AddressType>(Constants.NAME, Constants.ID);
+		addressTypeChoice = new DropDownChoice<AddressType>(Constants.ADDRESS_ADDRESSTYPE,addressTypeList,defaultChoiceRenderer);
 	}
 	
 	/**
