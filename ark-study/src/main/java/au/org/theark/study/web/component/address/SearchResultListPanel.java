@@ -68,10 +68,6 @@ public class SearchResultListPanel extends Panel{
 				Address address = item.getModelObject();
 				item.add(buildLink(address));
 				
-//				if(address.getStreetAddress() != null){
-//					item.add(new Label("streetAddress",address.getStreetAddress()));
-//				}
-				
 				if(address.getCity() != null){
 					item.add(new Label("city",address.getCity()));	
 				}else{
@@ -94,6 +90,12 @@ public class SearchResultListPanel extends Panel{
 					item.add(new Label("country.name",address.getCountry().getName()));	
 				}else{
 					item.add(new Label("country.name",""));
+				}
+				
+				if(address.getAddressType() != null && address.getAddressType().getName()!= null){
+					item.add(new Label("addressType.name",address.getAddressType().getName()));
+				}else{
+					item.add(new Label("addressType.name",""));
 				}
 				
 			}
