@@ -35,14 +35,14 @@ public class DetailPanel extends Panel{
 	 * @param id
 	 */
 	public DetailPanel(String id,
-			FeedbackPanel feedBackPanel,
-			WebMarkupContainer searchResultPanelContainer,
-			WebMarkupContainer detailPanelContainer,
-			WebMarkupContainer detailPanelFormContainer, 
-			WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			ContainerForm containerForm) {
+						FeedbackPanel feedBackPanel,
+						WebMarkupContainer searchResultPanelContainer,
+						WebMarkupContainer detailPanelContainer,
+						WebMarkupContainer detailPanelFormContainer, 
+						WebMarkupContainer searchPanelContainer,
+						WebMarkupContainer viewButtonContainer,
+						WebMarkupContainer editButtonContainer,
+						ContainerForm containerForm) {
 		
 		super(id);
 		this.feedBackPanel = feedBackPanel;
@@ -54,8 +54,6 @@ public class DetailPanel extends Panel{
 		this.editButtonContainer = editButtonContainer;
 		this.containerForm = containerForm;
 		
-		
-		// TODO Auto-generated constructor stub
 	}
 	
 	
