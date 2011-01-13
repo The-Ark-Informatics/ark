@@ -68,6 +68,9 @@ public class Constants {
 	public static final String SUBJECT_LIST ="subjectList";
 	public static final String PHONE_LIST = "phoneList";
 	public static final String PHONE_NUMBER_LABEL="phoneNumberLabel";
+	
+	public static final String ADDRESS_LIST="addressList";
+	public static final String ADDRESS_LABEL="addressLabel";
 	/* Multiple choice List Controls */
 	public static final String AVAILABLE_ROLES_MLC ="availableRolesLMC";
 	public static final String SELECTED_ROLES_MLC="selectedRolesLMC";
