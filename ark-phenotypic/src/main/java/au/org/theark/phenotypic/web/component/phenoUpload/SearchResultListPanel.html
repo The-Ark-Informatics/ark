@@ -37,28 +37,37 @@
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
 				<label for="col6">
-					&nbsp;
+					<wicket:message	key="upload.startTime">Start Time</wicket:message>
 				</label>
 			</th>
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
 				<label for="col7">
+					<wicket:message	key="upload.finishTime">Finish Time</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="col8">
 					&nbsp;
 				</label>
 			</th>
 			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="col9">
+					&nbsp;
+				</label>
+			</th>
 		</tr>
 		<!--  The Data Result Set -->
 		<tr wicket:id="resultList">
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-				<span wicket:id="upload.id">100</span>
+				<span wicket:id="upload.id">ID</span>
 			</td>
 			<td width="5%"></td>
 			<td width="10%">
-			  <a href="#"wicket:id="upload.filename">
-			  	<span wicket:id="nameLbl">Filename</span>
-			  </a>
+			  	<span wicket:id="upload.filename">Filename</span>
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
@@ -74,13 +83,27 @@
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-				&nbsp;
+				<span wicket:id="upload.startTime">Start Time</span>
 			</td>
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-				&nbsp;
+				<span wicket:id="upload.finishTime">Finish Time</span>
 			</td>
 			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<a href="#"wicket:id="downloadFile">
+			  		<span wicket:id="downloadFileLbl">Download File</span>
+			  	</a>
+			</td>
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<!--
+				<a href="#"wicket:id="upload.uploadReport">
+			  		<span wicket:id="downloadReportLbl">Download Report</span>
+				</a>
+				-->
+				&nbsp;
+			</td>
 		</tr>
 		<tr>
 			<td width="5%">&nbsp;</td>
@@ -96,6 +119,10 @@
 			<td width="5%">&nbsp;</td>
 			<td width="10%">&nbsp;</td>
 			<td width="5%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="10%"></td>
+			<td width="5%">&nbsp;</td>
+			<td width="10%"></td>
 		</tr>
 	</table>
 	<table width="0%" cellspacing="0"></table>
