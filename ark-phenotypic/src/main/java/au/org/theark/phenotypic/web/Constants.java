@@ -11,9 +11,9 @@ public class Constants {
 	public static final String PHENOTYPIC_SUBMENU = "phenotypicSubMenus";
 	public static final String	PHENOTYPIC_SUMMARY_SUBMENU	= "Summary";
 	public static final String PHENO_COLLECTION_SUBMENU = "Collections";
-	public static final String FIELD_SUBMENU = "Fields";
+	public static final String FIELD_SUBMENU = "Data Dictionary";
 	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
-	public static final String PHENOTYPIC_IMPORT_SUBMENU = "Data Import";
+	public static final String PHENOTYPIC_DATA_UPLOAD_SUBMENU = "Data Upload";
 	public static final String REPORT_SUBMENU = "Reports";
 	
 	// Resource keys
@@ -21,7 +21,7 @@ public class Constants {
 	public static final String COLLECTION_RESOURCEKEY = "tab.module.phenotypic.collection";
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
 	public static final String FIELD_DATA_RESOURCEKEY = "tab.module.phenotypic.fieldData";
-	public static final String PHENOTYPIC_IMPORT_RESOURCEKEY = "tab.module.phenotypic.phenotypicImport";
+	public static final String PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.phenoUpload";
 	public static final String REPORT_RESOURCEKEY = "tab.module.phenotypic.report";
 	
 	// Generic Buttons
@@ -60,6 +60,12 @@ public class Constants {
 	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE	= "phenoCollection.startDate";
 	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
 	public static final String PHENO_COLLECTIONVO_FIELD_PALETTE = "phenoCollection.fieldPalette";
+	public static final String PHENO_COLLECTIONVO_UPLOAD = "phenoCollection.upload";
+	public static final String PHENO_COLLECTIONVO_UPLOAD_ID = "phenoCollection.upload.id";
+	public static final String PHENO_COLLECTIONVO_UPLOAD_NAME = "phenoCollection.upload.filename";
+	public static final String PHENO_COLLECTIONVO_UPLOAD_FILE_FORMAT = "phenoCollection.upload.fileFormat";
+	public static final String PHENO_COLLECTIONVO_UPLOAD_FILE_FORMAT_ID = "phenoCollection.upload.fileFormat.id";
+	public static final String PHENO_COLLECTIONVO_UPLOAD_FILE_FORMAT_NAME = "phenoCollection.upload.fileFormat.name";
 	
 	public static final String FIELDVO_FIELD_ID = "field.id";
 	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
@@ -88,6 +94,30 @@ public class Constants {
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER_ID = "fieldData.user.id";
 	public static final String FIELD_DATAVO_FIELD_DATA_INSERT_TIME = "fieldData.insertTime";
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_TIME = "fieldData.updateTime";
+	
+	// UploadVO
+	public static final String	UPLOADVO_UPLOAD_ID	= "upload.id";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT	= "upload.collectionImport";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_ID	= "upload.collectionImport.id";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION	= "upload.collectionImport.collection";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION_ID	= "upload.collectionImport.collection.id";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION_NAME	= "upload.collectionImport.collection.name";
+	public static final String	UPLOADVO_UPLOAD_FILENAME	= "upload.filename";
+	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT	= "upload.fileFormat";
+	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_ID	= "upload.fileFormat.id";
+	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_NAME	= "upload.fileFormat.name";
+	public static final String	UPLOADVO_UPLOAD_PAYLOAD	= "upload.payload";
+	public static final String	UPLOADVO_UPLOAD_DELIMITER_TYPE	= "upload.delimiterType";
+	public static final String	UPLOADVO_UPLOAD_USER = "upload.user";
+	public static final String	UPLOADVO_UPLOAD_USER_ID = "upload.userId";
+	public static final String	UPLOADVO_UPLOAD_INSERT_TIME	= "upload.insertTime";
+	public static final String	UPLOADVO_UPLOAD_UPDATE_USER	= "upload.user";
+	public static final String	UPLOADVO_UPLOAD_UPDATE_USER_ID	= "upload.user.id";
+	public static final String UPLOADVO_UPLOAD_UPDATE_TIME = "upload.updateTime";
+	public static final String UPLOADVO_UPLOAD_CHECKSUM = "upload.checksum";
+	public static final String	UPLOADVO_UPLOAD_START_TIME	= "upload.startTime";
+	public static final String	UPLOADVO_UPLOAD_FINISH_TIME	= "upload.finishTime";
+	public static final String	UPLOADVO_UPLOAD_UPLOAD_REPORT	= "upload.uploadReport";
 	
 	// Entity fields
 	public static final String PHENO_COLLECTION = "phenoCollection";
@@ -156,5 +186,28 @@ public class Constants {
 	public static final String	STATUS_ID	= "id";
 	public static final String	STATUS_NAME	= "name";
 
-	public static final String	LINK_SUBJECT_STUDY	= "linkSubjectStudy";	
+	public static final String	LINK_SUBJECT_STUDY	= "linkSubjectStudy";
+
+	public static final String	FILE_FORMAT	= "fileFormat";
+	public static final String	FILE_FORMAT_ID	= "id";
+	public static final String	FILE_FORMAT_NAME	= "name";
+	
+	public static final String	UPLOAD	= "upload";
+	public static final String	UPLOAD_ID	= "id";
+	public static final String	UPLOAD_STUDY	= "study";
+	public static final String	UPLOAD_FILE_FORMAT	= "fileFormat";
+	public static final String	UPLOAD_DELIMITER_TYPE	= "delimiterType";
+	public static final String	UPLOAD_FILENAME	= "filename";
+	public static final String	UPLOAD_PAYLOAD	= "payload";
+	public static final String	UPLOAD_USER	= "user";
+	public static final String	UPLOAD_CHECKSUM	= "checksum";
+
+	public static final String	DELIMITER_TYPE_ID	= "id";
+	public static final String	DELIMITER_TYPE_NAME	= "name";
+
+	public static final String	DOWNLOAD_FILE	= "downloadFile";
+
+	
+
+	
 }
