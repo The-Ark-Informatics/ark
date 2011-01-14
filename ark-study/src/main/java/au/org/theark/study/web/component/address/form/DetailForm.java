@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.address.form;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -16,9 +17,15 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -53,6 +60,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DropDownChoice<CountryState> stateChoice;
 	private DropDownChoice<AddressType> addressTypeChoice;
 	private WebMarkupContainer countryStateSelector;
+	private RadioChoice<Boolean> addressStatusRadioChoice;
 	
 	/**
 	 * @param id
@@ -88,6 +96,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		initialiseAddressTypeDropDown();
+		initialiseRadioButton();
 		addDetailFormComponents();
 	}
 	
@@ -99,6 +108,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(countryChoice);
 		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-downn for State
 		detailPanelFormContainer.add(addressTypeChoice);
+		detailPanelFormContainer.add(addressStatusRadioChoice);
 	}
 	
 	
@@ -153,6 +163,33 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		stateChoice.getChoices().clear();
 		stateChoice.setChoices(countryStateList);
 	}
+	
+	private void initialiseRadioButton(){
+		
+		//The list that the Radio Button will use
+		List<Boolean> list = new ArrayList<Boolean>();
+		list.add(Boolean.TRUE);
+		list.add(Boolean.FALSE);
+		
+		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>() {
+			public Object getDisplayValue(final Boolean choice){
+				
+				String displayValue="Inactive";
+				
+				if(choice !=null && choice.booleanValue()){
+					displayValue = "Active";
+				}
+				return displayValue;
+			}
+			
+			public String getIdValue(final Boolean object,final int index){
+				return object.toString();
+			}
+		};
+		
+		PropertyModel<Boolean> addressStatusModel = new PropertyModel<Boolean>(containerForm.getModelObject().getAddress(),"addressStatus");
+		addressStatusRadioChoice = new RadioChoice<Boolean>("addressStatus",addressStatusModel,list,radioChoiceRender);
+	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#attachValidators()
@@ -160,6 +197,14 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	@Override
 	protected void attachValidators() {
 		// TODO Auto-generated method stub
+		//studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
+		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("error.city.required", this, new Model<String>("City")));
+		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("error.street.address.required", this, new Model<String>("Street Address")));
+		streetAddressTxtFld.add(StringValidator.maximumLength(255));
+		
+		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("error.postcode.required", this, new Model<String>("Post Code")));
+		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("error.postcode.max.length", this , new Model<String>("Post Code Max Length")));
+		postCodeTxtFld.add(StringValidator.minimumLength(4));
 		
 	}
 
