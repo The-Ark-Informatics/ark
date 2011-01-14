@@ -24,7 +24,7 @@ public class FileFormat implements java.io.Serializable {
 
 	private Long id;
 	private String name;
-	private Set<Upload> uploads = new HashSet<Upload>(0);
+	private Set<PhenoUpload> uploads = new HashSet<PhenoUpload>(0);
 
 	// Constructors
 
@@ -38,7 +38,7 @@ public class FileFormat implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public FileFormat(Long id, String name, Set<Upload> uploads) {
+	public FileFormat(Long id, String name, Set<PhenoUpload> uploads) {
 		this.id = id;
 		this.name = name;
 		this.uploads = uploads;
@@ -65,11 +65,11 @@ public class FileFormat implements java.io.Serializable {
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "fileFormat")
-	public Set<Upload> getUploads() {
+	public Set<PhenoUpload> getUploads() {
 		return this.uploads;
 	}
 
-	public void setUploads(Set<Upload> uploads) {
+	public void setUploads(Set<PhenoUpload> uploads) {
 		this.uploads = uploads;
 	}
 

@@ -21,15 +21,14 @@ import au.org.theark.phenotypic.service.Constants;
  * CollectionImport entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name="au.org.theark.phenotypic.model.entity.CollectionImport")
-@Table(name = "COLLECTION_IMPORT", schema = Constants.TABLE_SCHEMA)
-public class CollectionImport implements java.io.Serializable {
+@Entity(name="au.org.theark.phenotypic.model.entity.FieldUpload")
+@Table(name = "FIELD_UPLOAD", schema = Constants.TABLE_SCHEMA)
+public class FieldUpload implements java.io.Serializable {
 
 	// Fields
 	private Long id;
-	private ImportType importType;
-	private DelimiterType delimiterType;
-	private PhenoCollection collection;
+	private PhenoUpload upload;
+	private Field field;
 	private Date startTime;
 	private Date finishTime;
 	private String userId;
@@ -40,30 +39,26 @@ public class CollectionImport implements java.io.Serializable {
 	// Constructors
 
 	/** default constructor */
-	public CollectionImport() {
+	public FieldUpload() {
 	}
 
 	/** minimal constructor */
-	public CollectionImport(Long id, ImportType importType,
-			DelimiterType delimiterType, PhenoCollection collection, String userId, Date insertTime) {
+	public FieldUpload(Long id, PhenoUpload upload, Field field, String userId, Date insertTime) {
 		this.id = id;
-		this.importType = importType;
-		this.delimiterType = delimiterType;
-		this.collection = collection;
+		this.upload = upload;
+		this.field = field;
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
 
 	/** full constructor */
-	public CollectionImport(Long id, ImportType importType,
-			DelimiterType delimiterType, 
-			PhenoCollection collection, Date startTime, Date finishTime,
+	public FieldUpload(Long id, PhenoUpload upload, 
+			Field field, Date startTime, Date finishTime,
 			String userId, Date insertTime, String updateUserId,
 			Date updateTime) {
 		this.id = id;
-		this.importType = importType;
-		this.delimiterType = delimiterType;
-		this.collection = collection;
+		this.upload = upload;
+		this.field = field;
 		this.startTime = startTime;
 		this.finishTime = finishTime;
 		this.userId = userId;
@@ -84,35 +79,34 @@ public class CollectionImport implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	/**
+	 * @return the upload
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UPLOAD_ID", nullable = false)
+	public PhenoUpload getUpload()
+	{
+		return upload;
+	}
+	
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(PhenoUpload upload)
+	{
+		this.upload = upload;
+	}
+
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "IMPORT_TYPE_ID", nullable = false)
-	public ImportType getImportType() {
-		return this.importType;
+	@JoinColumn(name = "FIELD_ID", nullable = false)
+	public Field getField() {
+		return this.field;
 	}
 
-	public void setImportType(ImportType importType) {
-		this.importType = importType;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
-	public DelimiterType getDelimiterType() {
-		return this.delimiterType;
-	}
-
-	public void setDelimiterType(DelimiterType delimiterType) {
-		this.delimiterType = delimiterType;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public PhenoCollection getCollection() {
-		return this.collection;
-	}
-
-	public void setCollection(PhenoCollection collection) {
-		this.collection = collection;
+	public void setField(Field field) {
+		this.field = field;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -143,6 +137,8 @@ public class CollectionImport implements java.io.Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+
+
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)

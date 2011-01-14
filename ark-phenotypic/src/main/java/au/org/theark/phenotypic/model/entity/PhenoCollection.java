@@ -42,8 +42,7 @@ public class PhenoCollection implements java.io.Serializable
 	private Date						insertTime;
 	private String						updateUserId;
 	private Date						updateTime;
-	private Set<CollectionImport>	collectionImports	= new HashSet<CollectionImport>(0);
-	private Set<UploadCollection>	uploadCollections	= new HashSet<UploadCollection>(0);
+	private Set<PhenoCollectionUpload>	collectionImports	= new HashSet<PhenoCollectionUpload>(0);
 
 	// Constructors
 
@@ -68,7 +67,7 @@ public class PhenoCollection implements java.io.Serializable
 	 * @param decodeMasks
 	 */
 	public PhenoCollection(Long id, Status status, Study study, String name, String description, Date startDate, Date expiryDate, String userId, Date insertTime, String updateUserId, Date updateTime,
-			Set<CollectionImport> collectionImports, Set<UploadCollection> uploadCollections)
+			Set<PhenoCollectionUpload> collectionImports)
 	{
 		this.id = id;
 		this.status = status;
@@ -82,7 +81,6 @@ public class PhenoCollection implements java.io.Serializable
 		this.updateUserId = updateUserId;
 		this.updateTime = updateTime;
 		this.collectionImports = collectionImports;
-		this.uploadCollections = uploadCollections;
 	}
 
 	// Property accessors
@@ -220,25 +218,13 @@ public class PhenoCollection implements java.io.Serializable
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<CollectionImport> getCollectionImports()
+	public Set<PhenoCollectionUpload> getCollectionImports()
 	{
 		return this.collectionImports;
 	}
 
-	public void setCollectionImports(Set<CollectionImport> collectionImports)
+	public void setCollectionImports(Set<PhenoCollectionUpload> collectionImports)
 	{
 		this.collectionImports = collectionImports;
 	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<UploadCollection> getUploadCollections()
-	{
-		return this.uploadCollections;
-	}
-
-	public void setUploadCollections(Set<UploadCollection> uploadCollections)
-	{
-		this.uploadCollections = uploadCollections;
-	}
-
 }
