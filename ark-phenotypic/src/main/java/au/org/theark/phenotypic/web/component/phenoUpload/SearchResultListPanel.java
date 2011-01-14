@@ -1,10 +1,13 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
+import java.sql.SQLException;
+
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -12,7 +15,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.phenotypic.model.entity.Upload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 
@@ -24,16 +27,13 @@ public class SearchResultListPanel extends Panel
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private DetailPanel					detailPanel;
-	private WebMarkupContainer detailPanelFormContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
+	private DetailPanel			detailPanel;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
-			DetailPanel detail,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailPanelFormContainer)
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
+			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer)
 	{
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
@@ -42,7 +42,7 @@ public class SearchResultListPanel extends Panel
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer; 
+		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
 	}
 
@@ -51,14 +51,14 @@ public class SearchResultListPanel extends Panel
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
-	public PageableListView<Upload> buildPageableListView(IModel iModel)
+	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel)
 	{
-		PageableListView<Upload> sitePageableListView = new PageableListView<Upload>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE)
+		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE)
 		{
 			@Override
-			protected void populateItem(final ListItem<Upload> item)
-			{	
-				 Upload upload = item.getModelObject();
+			protected void populateItem(final ListItem<PhenoUpload> item)
+			{
+				PhenoUpload upload = item.getModelObject();
 
 				// The ID
 				if (upload.getId() != null)
@@ -71,27 +71,38 @@ public class SearchResultListPanel extends Panel
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID, ""));
 				}
 
-				// Name Link
-				item.add(buildLink(upload));
+				/// The filename
+				if (upload.getFilename() != null)
+				{
+					// Add the id component here
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME, upload.getFilename()));
+				}
+				else
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME, ""));
+				}
 
 				// TODO when displaying text escape any special characters
 				// File Format
 				if (upload.getFileFormat() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));// the name here
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));// the name
+					// here
 					// must match the
 					// ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));// the ID here must match the ones in
+					// mark-up
 				}
 
 				// TODO when displaying text escape any special characters
 				// UserId
 				if (upload.getUserId() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));// the ID here must match the ones in
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));// the ID here must match the
+					// ones in
 					// mark-up
 				}
 				else
@@ -103,15 +114,56 @@ public class SearchResultListPanel extends Panel
 				// Insert time
 				if (upload.getInsertTime() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME, upload.getInsertTime().toString()));// the ID here must match the
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME, upload.getInsertTime().toString()));// the ID
+					// here must
+					// match the
 					// ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME, ""));// the ID here must match the ones in
+					// mark-up
 				}
 
-				// For the alternative stripes 
+				// Start time
+				if (upload.getStartTime() != null)
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, upload.getStartTime().toString()));// the ID here
+					// must
+					// match the
+					// ones in mark-up
+				}
+				else
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, ""));// the ID here must match the ones in
+					// mark-up
+				}
+
+				// Finish time
+				if (upload.getFinishTime() != null)
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, upload.getInsertTime().toString()));// the ID
+					// here must
+					// match the
+					// ones in mark-up
+				}
+				else
+				{
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));// the ID here must match the ones in
+					// mark-up
+				}
+
+				// Download file link
+				item.add(buildDownloadLink(upload));
+
+				/*
+				 * // Upload Report if (upload.getUploadReport() != null) { item.add(new
+				 * Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, upload.getFilename()+"_report"));// the ID here must match
+				 * the // ones in mark-up } else { item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, ""));// the ID
+				 * here must match the ones in mark-up }
+				 */
+
+				// For the alternative stripes
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
 				{
 					@Override
@@ -119,49 +171,38 @@ public class SearchResultListPanel extends Panel
 					{
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
-				})
-				);
+				}));
 			}
 		};
 		return sitePageableListView;
 	}
 
-	private AjaxLink buildLink(final Upload upload)
+	private Link buildDownloadLink(final PhenoUpload upload)
 	{
-		AjaxLink link = new AjaxLink("ajaxLinkId")
+		Link link = new Link(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE)
 		{
 			@Override
-			public void onClick(AjaxRequestTarget target)
+			public void onClick()
 			{
-				// Sets the selected object into the model
-				UploadVO uploadVo = containerForm.getModelObject();
-				uploadVo.setUpload(upload);
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;		
+				try
+				{
+					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
+				}
+				catch (SQLException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
 				
-				detailsPanelContainer.setVisible(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				
-				// Button containers
-				// View, thus view container visible
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				editButtonContainer.setVisible(false);
-				
-				// Have to Edit, before allowing delete
-				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
-
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailsPanelContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
-			}
+			};
 		};
 
 		// Add the label for the link
 		// TODO when displaying text escape any special characters
-		Label nameLinkLabel = new Label("nameLbl", upload.getFilename());
+		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
 		link.add(nameLinkLabel);
 		return link;
 	}
