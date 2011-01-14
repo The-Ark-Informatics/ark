@@ -27,7 +27,6 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
-import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 
@@ -38,7 +37,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService									phenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
