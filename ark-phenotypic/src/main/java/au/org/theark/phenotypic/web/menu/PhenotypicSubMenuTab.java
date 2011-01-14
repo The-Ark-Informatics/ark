@@ -21,7 +21,7 @@ import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
-import au.org.theark.phenotypic.web.component.phenotypicImport.PhenotypicImportContainer;
+import au.org.theark.phenotypic.web.component.phenoUpload.PhenoUploadContainer;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
@@ -53,13 +53,13 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.PHENO_COLLECTION_SUBMENU);
-		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
-		moduleTabs.add(menuModule);
-
-		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.FIELD_SUBMENU);
 		menuModule.setResourceKey(Constants.FIELD_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENO_COLLECTION_SUBMENU);
+		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
@@ -68,8 +68,8 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.PHENOTYPIC_IMPORT_SUBMENU);
-		menuModule.setResourceKey(Constants.PHENOTYPIC_IMPORT_RESOURCEKEY);
+		menuModule.setModuleName(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
@@ -103,9 +103,9 @@ public class PhenotypicSubMenuTab extends Panel
 					{
 						panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
 					}
-					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_IMPORT_SUBMENU))
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
 					{
-						panelToReturn = new PhenotypicImportContainer(panelId); // Note the constructor
+						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
 					{
