@@ -92,12 +92,14 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was 
 		//Set the person who this address should be associated with 
 		Collection<Address> addressList = new ArrayList<Address>();
+		
 		try {
-			
-			containerForm.getModelObject().getAddress().setPerson(studyService.getPerson(sessionPersonId));
-			addressList = studyService.getPersonAddressList(sessionPersonId, containerForm.getModelObject().getAddress());
+			if(sessionPersonId != null){
+				containerForm.getModelObject().getAddress().setPerson(studyService.getPerson(sessionPersonId));
+				addressList = studyService.getPersonAddressList(sessionPersonId, containerForm.getModelObject().getAddress());
+			}
+
 			cpModel.getObject().setAddresses(addressList);
-			
 			searchPanel = new SearchPanel("searchComponentPanel", 
 					feedBackPanel,
 					searchPanelContainer,
