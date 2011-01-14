@@ -192,7 +192,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		editButtonContainer.add(deleteButton);
+		editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
 		
 		viewButtonContainer.add(editButton);
 		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
