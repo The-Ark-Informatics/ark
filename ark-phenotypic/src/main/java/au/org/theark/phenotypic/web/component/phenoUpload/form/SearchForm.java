@@ -24,7 +24,7 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.Upload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -43,7 +43,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<Upload>				listView;
+	private PageableListView<PhenoUpload>				listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
 	private DetailPanel								detailPanel;
 
@@ -54,7 +54,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<Upload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer)
 	{
@@ -86,7 +86,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		// Initialise any drop-downs
 		java.util.Collection<FileFormat> fileFormatCollection = phenotypicService.getFileFormats();
 		CompoundPropertyModel<UploadVO> uploadCpm = cpmModel;
-		PropertyModel<Upload> uploadPm = new PropertyModel<Upload>(uploadCpm, au.org.theark.phenotypic.web.Constants.UPLOAD);
+		PropertyModel<PhenoUpload> uploadPm = new PropertyModel<PhenoUpload>(uploadCpm, au.org.theark.phenotypic.web.Constants.UPLOAD);
 		PropertyModel<FileFormat> fileFormatPm = new PropertyModel<FileFormat>(uploadPm, au.org.theark.phenotypic.web.Constants.FILE_FORMAT);
 		ChoiceRenderer fileFormatRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_NAME, au.org.theark.phenotypic.web.Constants.FILE_FORMAT_ID);
 		fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, fileFormatPm, (List) fileFormatCollection, fileFormatRenderer);
@@ -116,14 +116,24 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	protected void onSearch(AjaxRequestTarget target)
 	{
 		target.addComponent(feedbackPanel);
-		Upload searchUpload = getModelObject().getUpload();
-		java.util.Collection<Upload> uploadCollection = phenotypicService.searchUpload(searchUpload);
+		
+		// Set study in context
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		// Get a list of all Fields for the Study in context
+		Study study = iArkCommonService.getStudy(studyId);
+		
+		PhenoUpload searchUpload = getModelObject().getUpload();
+		searchUpload.setStudy(study);
+		
+		java.util.Collection<PhenoUpload> uploadCollection = phenotypicService.searchUpload(searchUpload);
 		
 		if (uploadCollection != null && uploadCollection.size() == 0)
 		{
 			this.info("Uploads with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
+		
+		getModelObject().setUploadCollection(uploadCollection);
 		
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
