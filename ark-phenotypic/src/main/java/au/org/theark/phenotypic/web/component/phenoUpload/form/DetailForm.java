@@ -1,10 +1,14 @@
 package au.org.theark.phenotypic.web.component.phenoUpload.form;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.form.upload.UploadProgressBar;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -18,14 +22,15 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
-import org.apache.wicket.util.file.Files;
-import org.apache.wicket.util.file.Folder;
-import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.util.io.IOUtils;
+import org.hibernate.Hibernate;
 
-import au.org.theark.core.web.component.upload.UploadPage;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -40,23 +45,25 @@ import au.org.theark.phenotypic.web.component.phenoUpload.DetailPanel;
 public class DetailForm extends AbstractDetailForm<UploadVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService			phenotypicService;
-	
-	private ContainerForm					fieldContainerForm;
+	private IPhenotypicService					phenotypicService;
 
-	private int								mode;
-	
-	private TextField<String>									uploadIdTxtFld;
-	private TextField<String>									uploadFilenameTxtFld;
-	private DropDownChoice<FileFormat>						fileFormatDdc;
-	private FileUploadField fileUploadField;
-	private UploadProgressBar uploadProgressBar;
-	
-	// Form for Wicket upload item
-	final FileUploadForm ajaxSimpleUploadForm = new FileUploadForm("ajax-simpleUpload");
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService					iArkCommonService;
+
+	private ContainerForm						fieldContainerForm;
+
+	private int										mode;
+
+	private TextField<String>					uploadIdTxtFld;
+	private TextField<String>					uploadFilenameTxtFld;
+	private DropDownChoice<FileFormat>		fileFormatDdc;
+	private FileUploadField						fileUploadField;
+	// private UploadProgressBar uploadProgressBar;
+	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param detailPanel
@@ -68,49 +75,40 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(	String id,
-						FeedbackPanel feedBackPanel, 
-						DetailPanel detailPanel, 
-						WebMarkupContainer listContainer, 
-						WebMarkupContainer detailsContainer, 
-						Form<UploadVO> containerForm,
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer,
-						WebMarkupContainer detailFormContainer,
-						WebMarkupContainer searchPanelContainer)
+	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, Form<UploadVO> containerForm,
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
 	{
-		
-		super(	id,
-				feedBackPanel, 
-				listContainer,
-				detailsContainer,
-				detailFormContainer,
-				searchPanelContainer,
-				viewButtonContainer,
-				editButtonContainer,
-				containerForm);
+
+		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initialiseDropDownChoice()
+	private void initialiseDropDownChoices()
 	{
 		// Initialise Drop Down Choices
 		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FILE_FORMAT_NAME, au.org.theark.phenotypic.web.Constants.FILE_FORMAT_ID);
 		fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, (List) fieldFormatCollection, fieldFormatRenderer);
+
+		java.util.Collection<DelimiterType> delimiterTypeCollection = phenotypicService.getDelimiterTypes();
+		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
+		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 	}
 
 	public void initialiseDetailForm()
 	{
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID);
-		uploadFilenameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
-		
+		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
+
 		// progress bar for upload
-		uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
-		
+		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleUploadForm);
+
+		// fileUpload for payload
+		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
+
 		// Initialise Drop Down Choices
-		//initialiseDropDownChoice();
+		initialiseDropDownChoices();
 
 		attachValidators();
 		addComponents();
@@ -119,17 +117,36 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	protected void attachValidators()
 	{
 		// Field validation here
-		uploadFilenameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
+		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
+		fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
+		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
 	private void addComponents()
 	{
 		// Add components here eg:
-		detailPanelFormContainer.add(uploadIdTxtFld);
-		detailPanelFormContainer.add(uploadFilenameTxtFld);
-		ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
-		add(ajaxSimpleUploadForm);
+		detailPanelFormContainer.add(uploadIdTxtFld.setEnabled(false));
+		detailPanelFormContainer.add(fileUploadField);
+		detailPanelFormContainer.add(fileFormatDdc);
+		detailPanelFormContainer.add(delimiterTypeDdc);
+
+		// TODO: AJAXify the form to show progress bar
+		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
+		// add(ajaxSimpleUploadForm);
+
 		add(detailPanelFormContainer);
+	}
+
+	private void createDirectoryIfNeeded(String directoryName)
+	{
+		File theDir = new File(directoryName);
+
+		// if the directory does not exist, create it
+		if (!theDir.exists())
+		{
+			System.out.println("creating directory: " + directoryName);
+			theDir.mkdir();
+		}
 	}
 
 	@Override
@@ -138,24 +155,98 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		// Implement Save/Update
 		if (containerForm.getModelObject().getUpload().getId() == null)
 		{
+			setMultiPart(true); // multipart required for file uploads
+
+			// Set study in context
+			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			
+			// Get Collection in conext
+			Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+
+			// Retrieve file and store in temp folder
+			// TODO: AJAX-ified and asynchronous and hit database
+			FileUpload fileUpload = fileUploadField.getFileUpload();
+			// TODO: Load the temporary directory from the application configuration instead
+			String tempDir = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
+			createDirectoryIfNeeded(tempDir);
+			String filePath = tempDir + File.separator + fileUpload.getClientFileName();
+			File file = new File(filePath);
+			FileOutputStream fos = null;
+
+			try
+			{
+				fos = new FileOutputStream(file);
+
+				// Copy file to directory in server
+				IOUtils.copy(fileUpload.getInputStream(), fos);
+
+				// Copy file to BLOB object
+				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+				containerForm.getModelObject().getUpload().setPayload(payload);
+			}
+			catch (IOException ioe)
+			{
+				System.out.println("Failed to save the uploaded file: " + ioe);
+			}
+			finally
+			{
+				if (fos != null)
+				{
+					fos = null;
+				}
+			}
+
+			// Set details of Upload object
+			containerForm.getModelObject().getUpload().setStudy(study);
+
+			byte[] byteArray = fileUpload.getMD5();
+			String checksum = getHex(byteArray);
+			containerForm.getModelObject().getUpload().setChecksum(checksum);
+			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
+			
+			containerForm.getModelObject().setPhenoCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
+			
+			// Set details of link table object
+			PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
+			phenoCollectionUpload.setCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
+			phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
+			containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
+
 			// Save
-			phenotypicService.createUpload(containerForm.getModelObject().getUpload());
-			this.info("Phenotypic collection " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
+			phenotypicService.createUpload(containerForm.getModelObject());
+			
+			this.info("Data upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
 			processErrors(target);
 		}
 		else
 		{
-			// Update the Field
+			// Update
 			phenotypicService.updateUpload(containerForm.getModelObject().getUpload());
-			this.info("Phenotypic collection " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
+			this.info("Data upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
 			processErrors(target);
 		}
-		
+
 		onSavePostProcess(target);
 		/*
 		 * TODO:(CE) To handle Business and System Exceptions here
-		 * 
 		 */
+	}
+
+	static final String	HEXES	= "0123456789ABCDEF";
+
+	public static String getHex(byte[] raw)
+	{
+		if (raw == null)
+		{
+			return null;
+		}
+		final StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (final byte b : raw)
+		{
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+		}
+		return hex.toString();
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
@@ -165,13 +256,13 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		containerForm.setModelObject(uploadVO);
 		onCancelPostProcess(target);
 	}
-	
+
 	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
 		target.addComponent(feedBackPanel);
 	}
-		
+
 	public AjaxButton getDeleteButton()
 	{
 		return deleteButton;
@@ -181,107 +272,30 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	{
 		this.deleteButton = deleteButton;
 	}
-	
+
 	/**
 	 * 
 	 */
-	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
-		//TODO:(CE) To handle Business and System Exceptions here
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	{
+		setMultiPart(true); // multipart required for file uploads
+
+		// TODO:(CE) To handle Business and System Exceptions here
 		phenotypicService.deleteUpload(containerForm.getModelObject().getUpload());
-   	this.info("Upload file " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
-   		
-   	// Display delete confirmation message
-   	target.addComponent(feedBackPanel);
-   	//TODO Implement Exceptions in PhentoypicService
-		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-     
+		this.info("Upload file " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
+
+		// Display delete confirmation message
+		target.addComponent(feedBackPanel);
+		// TODO Implement Exceptions in PhentoypicService
+		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+
 		// Close the confirm modal window
-   	selectModalWindow.close(target);
-   	// Move focus back to Search form
+		selectModalWindow.close(target);
+		// Move focus back to Search form
 		UploadVO uploadVo = new UploadVO();
 		setModelObject(uploadVo);
 		onCancel(target);
 	}
-	
-	/**
-    * Form for uploads.
-    */
-   private class FileUploadForm extends Form<Void>
-   {
-       private FileUploadField fileUploadField;
-
-       /**
-        * Construct.
-        * 
-        * @param name
-        *            Component name
-        */
-       public FileUploadForm(String name)
-       {
-           super(name);
-
-           // set this form to multipart mode (allways needed for uploads!)
-           setMultiPart(true);
-
-           // Add one file input field
-           add(fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_PAYLOAD));
-
-           // Set maximum size to 10mb for demo purposes
-           setMaxSize(Bytes.megabytes(10));
-       }
-
-       /**
-        * @see org.apache.wicket.markup.html.form.Form#onSubmit()
-        */
-       @Override
-       protected void onSubmit()
-       {
-           final FileUpload upload = fileUploadField.getFileUpload();
-           if (upload != null)
-           {
-               // Create a new file
-               File newFile = new File(getUploadFolder(), upload.getClientFileName());
-
-               // Check new file, delete if it allready existed
-               checkFileExists(newFile);
-               try
-               {
-                   // Save to new file
-                   newFile.createNewFile();
-                   upload.writeTo(newFile);
-
-                   this.info("saved file: " + upload.getClientFileName());
-               }
-               catch (Exception e)
-               {
-                   throw new IllegalStateException("Unable to write file");
-               }
-           }
-       }
-       
-       /**
-        * Check whether the file allready exists, and if so, try to delete it.
-        * 
-        * @param newFile
-        *            the file to check
-        */
-       private void checkFileExists(File newFile)
-       {
-           if (newFile.exists())
-           {
-               // Try to delete the file
-               if (!Files.remove(newFile))
-               {
-                   throw new IllegalStateException("Unable to overwrite " + newFile.getAbsolutePath());
-               }
-           }
-       }
-
-       private Folder getUploadFolder()
-       {
-           return new Folder("/tmp");
-       }
-   }
 }
