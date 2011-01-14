@@ -10,6 +10,7 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 
 /**
  * @author cellis
@@ -24,8 +25,10 @@ public class PhenoCollectionVO implements Serializable
 	protected FieldData fieldData;
 	protected Person person;
 	protected Study study;
-	private Collection<Field> fieldsAvailable;
-	private Collection<Field> fieldsSelected;
+	protected PhenoUpload upload;
+	protected Collection<Field> fieldsAvailable;
+	protected Collection<Field> fieldsSelected;
+	protected Collection<PhenoUpload> uploadCollection;
 
 	protected int mode;
 	
@@ -50,6 +53,8 @@ public class PhenoCollectionVO implements Serializable
 		this.fieldData = new FieldData();
 		this.fieldsAvailable = new ArrayList<Field>();
 		this.fieldsSelected = new ArrayList<Field>();
+		this.upload = new PhenoUpload();
+		this.uploadCollection = new ArrayList<PhenoUpload>();
 	}
 	
 	public PhenoCollection getPhenoCollection()
@@ -192,5 +197,37 @@ public class PhenoCollectionVO implements Serializable
 	public Collection<Field> getFieldsSelected()
 	{
 		return fieldsSelected;
+	}
+
+	/**
+	 * @param uploadCol the upload collection to set
+	 */
+	public void setUploadCollection(Collection<PhenoUpload> uploadCollection)
+	{
+		this.uploadCollection = uploadCollection;
+	}
+
+	/**
+	 * @return the upload collection
+	 */
+	public Collection<PhenoUpload> getUploadCollection()
+	{
+		return uploadCollection;
+	}
+
+	/**
+	 * @return the upload
+	 */
+	public PhenoUpload getUpload()
+	{
+		return upload;
+	}
+
+	/**
+	 * @param upload the upload to set
+	 */
+	public void setUpload(PhenoUpload upload)
+	{
+		this.upload = upload;
 	}
 }
