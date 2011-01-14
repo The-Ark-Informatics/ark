@@ -25,7 +25,6 @@ import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
-import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.DetailPanel;
 
@@ -36,7 +35,7 @@ import au.org.theark.phenotypic.web.component.field.DetailPanel;
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<FieldVO>
 {
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService					phenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -51,7 +50,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	private TextField<String>					fieldUnitsTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
-	private DetailPanel									detailPanel;
+	private DetailPanel							detailPanel;
 
 	/**
 	 * @param id
@@ -67,8 +66,8 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		this.listView = listView;
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
-		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchButtons(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
@@ -127,9 +126,9 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);
 	}
-	
-	// Reset button implemented in AbstractSearcForm
-	
+
+	// Reset button implemented in AbstractSearchForm
+
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
@@ -145,35 +144,24 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
-	protected boolean isSecure()
-	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		boolean flag = false;
-		if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-			flag = true;
-		}
-		// if it is a Super or Study admin then make the new available
-		return flag;
-	}
-	
 	protected boolean isSecure(String actionType)
 	{
 		boolean flag = false;
 		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
 		{
-			
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();		
-			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
+
+			SecurityManager securityManager = ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();
+			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
 			{
 				flag = true;
-			}	
+			}
 		}
-		else{
+		else
+		{
 			flag = true;
 		}
-		
+
 		return flag;
 	}
 }
