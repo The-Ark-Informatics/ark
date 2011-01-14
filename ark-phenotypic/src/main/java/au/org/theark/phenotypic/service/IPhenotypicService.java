@@ -3,13 +3,17 @@ package au.org.theark.phenotypic.service;
 import java.util.Collection;
 
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.phenotypic.model.entity.CollectionImport;
+import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.model.vo.UploadVO;
 
 public interface IPhenotypicService {
 	
@@ -26,10 +30,10 @@ public interface IPhenotypicService {
 	public void deleteCollection(PhenoCollectionVO colVo);
 	
 	// Collection Import
-	public CollectionImport getCollectionImport(Long id);
-	public void createCollectionImport(CollectionImport collectionImport);
-	public void updateCollectionImport(CollectionImport collectionImport);
-	public void deleteCollectionImport(CollectionImport collectionImport);
+	public PhenoCollectionUpload getCollectionImport(Long id);
+	public void createCollectionImport(PhenoCollectionUpload collectionImport);
+	public void updateCollectionImport(PhenoCollectionUpload collectionImport);
+	public void deleteCollectionImport(PhenoCollectionUpload collectionImport);
 
 	// Field
 	public Field getField(Long fieldId);
@@ -60,4 +64,19 @@ public interface IPhenotypicService {
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
+	
+	// File Format
+	public java.util.Collection<FileFormat> getFileFormats();
+	
+	// Upload
+	public java.util.Collection<PhenoUpload> searchUpload(PhenoUpload upload);
+	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
+	public PhenoUpload getUpload(Long id);
+	public void createUpload(PhenoUpload upload);
+	public void createUpload(UploadVO uploadVo);
+	public void updateUpload(PhenoUpload upload);
+	public void deleteUpload(PhenoUpload upload);
+	
+	// Delimiter Type
+	public Collection<DelimiterType> getDelimiterTypes();
 }

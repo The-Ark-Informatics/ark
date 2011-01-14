@@ -5,11 +5,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,16 +17,19 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.exception.FileFormatException;
-import au.org.theark.phenotypic.exception.FileTypeNotAvailableException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.CollectionImport;
+import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FileFormat;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.util.PhenotypicImport;
 
 @Transactional
@@ -112,9 +113,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
     *
     * @param colImport  the collection import object to be created
     */
-	public void createCollectionImport(CollectionImport colImport)
+	public void createCollectionImport(PhenoCollectionUpload colImport)
 	{
-		phenotypicDao.createCollectionImport(colImport);
+		phenotypicDao.createCollectionUpload(colImport);
 	}
 	
 	public void updateCollection(PhenoCollection colEntity)
@@ -242,9 +243,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.createPhenoCollection(collection);
 	}
 
-	public void deleteCollectionImport(CollectionImport collectionImport)
+	public void deleteCollectionImport(PhenoCollectionUpload collectionImport)
 	{
-		phenotypicDao.deleteCollectionImport(collectionImport);
+		phenotypicDao.deleteCollectionUpload(collectionImport);
 	}
 
 	public void deleteField(Field field)
@@ -257,9 +258,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.deleteFieldData(fieldData);		
 	}
 
-	public CollectionImport getCollectionImport(Long id)
+	public PhenoCollectionUpload getCollectionImport(Long id)
 	{
-		return phenotypicDao.getCollectionImport(id);
+		return phenotypicDao.getCollectionUpload(id);
 	}
 
 	public FieldType getFieldType(Long id)
@@ -272,9 +273,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.searchField(field);
 	}
 
-	public void updateCollectionImport(CollectionImport collectionImport)
+	public void updateCollectionImport(PhenoCollectionUpload collectionImport)
 	{
-		phenotypicDao.updateCollectionImport(collectionImport);
+		phenotypicDao.updateCollectionUpload(collectionImport);
 	}
 
 	public Field getFieldByNameAndStudy(String fieldName, Study study)
@@ -307,5 +308,48 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.searchFieldData(fieldData);
 	}
 
+	public void createUpload(PhenoUpload upload)
+	{
+		phenotypicDao.createUpload(upload);
+	}
+	
+	public void createUpload(UploadVO uploadVo)
+	{
+		phenotypicDao.createUpload(uploadVo);
+	}
+	
+	public void updateUpload(PhenoUpload upload)
+	{
+		phenotypicDao.updateUpload(upload);
+	}
 
+	public void deleteUpload(PhenoUpload upload)
+	{
+		phenotypicDao.deleteUpload(upload);
+	}
+
+	public Collection<FileFormat> getFileFormats()
+	{
+		return phenotypicDao.getFileFormats();
+	}
+
+	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id)
+	{
+		return null;
+	}
+
+	public PhenoUpload getUpload(Long id)
+	{
+		return phenotypicDao.getUpload(id);
+	}
+
+	public Collection<PhenoUpload> searchUpload(PhenoUpload upload)
+	{
+		return phenotypicDao.searchUpload(upload);
+	}
+
+	public Collection<DelimiterType> getDelimiterTypes()
+	{
+		return phenotypicDao.getDelimiterTypes();
+	}
 }
