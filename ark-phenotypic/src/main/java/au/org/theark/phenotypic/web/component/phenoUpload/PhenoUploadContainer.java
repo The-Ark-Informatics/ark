@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.model.entity.Upload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -29,7 +29,7 @@ public class PhenoUploadContainer extends AbstractContainerPanel<UploadVO>
 	private SearchPanel								searchComponentPanel;
 	private SearchResultListPanel					searchResultPanel;
 	private DetailPanel								detailPanel;
-	private PageableListView<Upload>	listView;
+	private PageableListView<PhenoUpload>	listView;
 	private ContainerForm							containerForm;
 	
 	@SpringBean(name = "phenotypicService")
