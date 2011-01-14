@@ -5,17 +5,19 @@ import java.util.Date;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.phenotypic.model.entity.CollectionImport;
+import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.entity.Upload;
-import au.org.theark.phenotypic.model.entity.UploadCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.model.vo.UploadVO;
 
 /**
  * Interface for all select/insert/update/delete operations on the backend database.
@@ -39,13 +41,13 @@ public interface IPhenotypicDao {
 	// FieldCollection
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
 	
-	// Collection Import
-	public CollectionImport getCollectionImport(Long id);
-	public java.util.Collection<CollectionImport> getCollectionImport();
-	public java.util.Collection<CollectionImport> searchCollectionImport(CollectionImport collectionImportToMatch);
-	public void createCollectionImport(CollectionImport collectionImport);
-	public void updateCollectionImport(CollectionImport collectionImport);
-	public void deleteCollectionImport(CollectionImport collectionImport);
+	// Collection Upload
+	public PhenoCollectionUpload getCollectionUpload(Long id);
+	public java.util.Collection<PhenoCollectionUpload> getCollectionUpload();
+	public java.util.Collection<PhenoCollectionUpload> searchCollectionUpload(PhenoCollectionUpload phenoCollectionUploadToMatch);
+	public void createCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void updateCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void deleteCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
 	
 	// Status
 	public Status getStatus(Long statusId);
@@ -86,17 +88,17 @@ public interface IPhenotypicDao {
 	public void createFieldDataLog(FieldDataLog fieldDataLog);
 	
 	// Upload
-	public Upload getUpload(Long id);
-	public java.util.Collection<Upload> getUploadByFileName(String fileName);
-	public void createUpload(Upload upload);
-	public void updateUpload(Upload upload);
-	public void deleteUpload(Upload upload);
+	public java.util.Collection<PhenoUpload> searchUpload(PhenoUpload upload);
+	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
+	public PhenoUpload getUpload(Long id);
+	public void createUpload(PhenoUpload upload);
+	public void createUpload(UploadVO uploadVo);
+	public void updateUpload(PhenoUpload upload);
+	public void deleteUpload(PhenoUpload upload);
 	
-	// Upload Collection
-	public UploadCollection getUploadCollection(Long id);
-	public java.util.Collection<UploadCollection> getUploadCollectionByCollection(PhenoCollection phenoCollection);
-	public void createUploadCollection(UploadCollection uploadCollection);
-	public void updateUploadCollection(UploadCollection uploadCollection);
-	public void deleteUploadCollection(UploadCollection uploadCollection);
+	// File Formats
+	public java.util.Collection<FileFormat> getFileFormats();
 	
+	// Delimiter Types
+	public java.util.Collection<DelimiterType> getDelimiterTypes();
 }
