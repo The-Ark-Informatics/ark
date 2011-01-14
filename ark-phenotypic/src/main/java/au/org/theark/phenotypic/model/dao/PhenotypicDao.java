@@ -20,17 +20,19 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.phenotypic.model.entity.CollectionImport;
+import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.entity.Status;
-import au.org.theark.phenotypic.model.entity.Upload;
-import au.org.theark.phenotypic.model.entity.UploadCollection;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
+import au.org.theark.phenotypic.model.vo.UploadVO;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -39,23 +41,23 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	static Logger		log	= LoggerFactory.getLogger(PhenotypicDao.class);
 	private Subject	currentUser;
 	private Date		dateNow;
-	
+
 	public java.util.Collection<PhenoCollection> getPhenotypicCollection()
 	{
 		Criteria crit = getSession().createCriteria(PhenoCollection.class);
 		java.util.List<PhenoCollection> collectionList = crit.list();
 		return collectionList;
 	}
-	
+
 	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study)
 	{
 		Criteria crit = getSession().createCriteria(PhenoCollection.class);
-		
+
 		if (study != null)
 		{
 			crit.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, study));
 		}
-		
+
 		java.util.List<PhenoCollection> collectionList = crit.list();
 		return collectionList;
 	}
@@ -114,7 +116,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		PhenoCollection collection = (PhenoCollection) getSession().get(PhenoCollection.class, id);
 		return collection;
 	}
-	
+
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id)
 	{
 		PhenoCollection phenoCollection = getPhenotypicCollection(id);
@@ -125,10 +127,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			phenoCollVo.getFieldsSelected().add(fieldPhenoCollection.getField());
 		}
-		
+
 		return phenoCollVo;
 	}
-	
+
 	public java.util.Collection<FieldPhenoCollection> getPhenoCollectionFields(PhenoCollection phenoCollection)
 	{
 		Criteria collectionCriteria = getSession().createCriteria(FieldPhenoCollection.class);
@@ -136,7 +138,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			collectionCriteria.add(Restrictions.eq("phenoCollection", phenoCollection));
 		}
-		
+
 		java.util.Collection<FieldPhenoCollection> fieldPhenoCollectionFields = collectionCriteria.list();
 		return fieldPhenoCollectionFields;
 	}
@@ -151,7 +153,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		getSession().save(collection);
 	}
-	
+
 	public void createPhenoCollection(PhenoCollectionVO collectionVo)
 	{
 		currentUser = SecurityUtils.getSubject();
@@ -159,19 +161,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		collectionVo.getPhenoCollection().setInsertTime(dateNow);
 		collectionVo.getPhenoCollection().setUserId(currentUser.getPrincipal().toString());
-		
+
 		Session session = getSession();
 		session.save(collectionVo.getPhenoCollection());
-		
+
 		Collection<Field> fieldSelection = collectionVo.getFieldsSelected();
-		
+
 		FieldPhenoCollection fieldPhenoCollection = new FieldPhenoCollection();
 		for (Field field : fieldSelection)
 		{
 			fieldPhenoCollection.setStudy(collectionVo.getPhenoCollection().getStudy());
 			fieldPhenoCollection.setPhenoCollection(collectionVo.getPhenoCollection());
 			fieldPhenoCollection.setField(field);
-			
+
 			session.save(fieldPhenoCollection);
 			fieldPhenoCollection = new FieldPhenoCollection();
 		}
@@ -187,7 +189,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		getSession().update(collection);
 	}
-	
+
 	public void updatePhenoCollection(PhenoCollectionVO collectionVo)
 	{
 		currentUser = SecurityUtils.getSubject();
@@ -195,10 +197,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		collectionVo.getPhenoCollection().setUpdateTime(dateNow);
 		collectionVo.getPhenoCollection().setUserId(currentUser.getPrincipal().toString());
-		
+
 		Session session = getSession();
 		session.update(collectionVo.getPhenoCollection());
-		
+
 		Collection<FieldPhenoCollection> fieldPhenoCollections = getPhenoCollectionFields(collectionVo.getPhenoCollection());
 		// Delete all previous field_collections
 		for (FieldPhenoCollection fieldPhenoCollection : fieldPhenoCollections)
@@ -214,150 +216,110 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			fieldPhenoCollection.setStudy(collectionVo.getPhenoCollection().getStudy());
 			fieldPhenoCollection.setPhenoCollection(collectionVo.getPhenoCollection());
 			fieldPhenoCollection.setField(field);
-			
+
 			session.save(fieldPhenoCollection);
 		}
 	}
-	
+
 	/**
 	 * <p>
-	 * This method is a helper for the Update FieldPhenoCollection.
-	 * It establishes the list of fields that need to be added. 
-	 * 1. Iterate through each Field that is in the selected list</br>
-	 * 2. Check if the selected Field exists in the existing list of Fields.</br>
-	 * 3. If the selected list contains the Field, then checks if there is a Field that is not currently present and adds it to a list.
-	 * 4. If the selected Field does NOT exist (inverse of 3), it adds the Field into a list. .</br>
+	 * This method is a helper for the Update FieldPhenoCollection. It establishes the list of fields that need to be added. 1. Iterate through each
+	 * Field that is in the selected list</br> 2. Check if the selected Field exists in the existing list of Fields.</br> 3. If the selected list
+	 * contains the Field, then checks if there is a Field that is not currently present and adds it to a list. 4. If the selected Field does NOT exist
+	 * (inverse of 3), it adds the Field into a list. .</br>
 	 * 
 	 * </p>
+	 * 
 	 * @param selectedFieldList
 	 * @param existingFieldList
 	 * @param FieldListToAdd
-	 */
-	private void processAddList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToAdd){
-		for (Field selectedField : selectedFieldList)
-		{	
-			// Check if the selected Field is already there in the existing fields
-			if(existingFieldList.contains(selectedField))
-			{
-				// Check if the field is present
-				for(Field existingField: existingFieldList)
-				{
-					// If the selected Field and the current existingField match then process the fields
-					if(selectedField.equals(existingField))
-					{					
-						// Check if the field exists
-						for(Field selectedField1 : selectedFieldList)
-						{
-							// If not in list, add it
-							if(!existingFieldList.contains(selectedField1))
-							{
-								fieldListToAdd.add(selectedField1);
-							}
-						}
-					}
-				}				
-			}
-			else
-			{
-				fieldListToAdd.add(selectedField);
-			}
-		}
-	}
-	
-	/**
-	 * <p>
-	 * This method is a helper for the Update user details.
-	 * It establishes the list of PhenoCollection and fields that need to be removed. 
-	 * 1. Iterate through each PhenoCollection that is currently in the back-end.</br>
-	 * 2. Check if the PhenoCollection exists in the currently selected list of PhenoCollections.</br>
-	 * 3. If the selected list does not contain the PhenoCollection then it marks the existing PhenoCollection and all fields linked to it to be removed.</br>
-	 * 4. If the existing PhenoCollection does exist(inverse of 3), then checks if the existing fields are listed in the selected PhenoCollection's list of fields.</br>
-	 * 5. If it does not find a field that exists then it marks that PhenoCollection and the specific field(s) to be removed.</br>
-	 * </p>
+	 * 
+	 *           private void processAddList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToAdd){ for (Field
+	 *           selectedField : selectedFieldList) { // Check if the selected Field is already there in the existing fields
+	 *           if(existingFieldList.contains(selectedField)) { // Check if the field is present for(Field existingField: existingFieldList) { // If
+	 *           the selected Field and the current existingField match then process the fields if(selectedField.equals(existingField)) { // Check if
+	 *           the field exists for(Field selectedField1 : selectedFieldList) { // If not in list, add it
+	 *           if(!existingFieldList.contains(selectedField1)) { fieldListToAdd.add(selectedField1); } } } } } else {
+	 *           fieldListToAdd.add(selectedField); } } }
+	 * 
+	 * 
+	 *           <p>
+	 *           This method is a helper for the Update user details. It establishes the list of PhenoCollection and fields that need to be removed. 1.
+	 *           Iterate through each PhenoCollection that is currently in the back-end.</br> 2. Check if the PhenoCollection exists in the currently
+	 *           selected list of PhenoCollections.</br> 3. If the selected list does not contain the PhenoCollection then it marks the existing
+	 *           PhenoCollection and all fields linked to it to be removed.</br> 4. If the existing PhenoCollection does exist(inverse of 3), then
+	 *           checks if the existing fields are listed in the selected PhenoCollection's list of fields.</br> 5. If it does not find a field that
+	 *           exists then it marks that PhenoCollection and the specific field(s) to be removed.</br>
+	 *           </p>
 	 * @param selectedFieldList
 	 * @param existingFieldList
 	 * @param FieldListToRemove
+	 * 
+	 *           private void processRemoveList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToRemove) {
+	 *           for(Field existingField : existingFieldList) { // If the existing Field was not in the selected list of Fields, then mark it for
+	 *           removal if(!selectedFieldList.contains(existingField)) { fieldListToRemove.add(existingField); } else { // Selected List contains an
+	 *           existing Field. Determine the fields that need to be removed for(Field selectedField : selectedFieldList) {
+	 *           if(selectedField.equals(existingField)) { fieldListToRemove.add(existingField); } } } } }
 	 */
-	private void processRemoveList(List<Field> selectedFieldList, List<Field> existingFieldList, List<Field> fieldListToRemove)
-	{		
-		for(Field existingField : existingFieldList)
-		{
-			// If the existing Field was not in the selected list of Fields, then mark it for removal
-			if(!selectedFieldList.contains(existingField))
-			{
-				fieldListToRemove.add(existingField);
-			}
-			else
-			{
-				// Selected List contains an existing Field. Determine the fields that need to be removed
-				for(Field selectedField : selectedFieldList)
-				{	
-					if(selectedField.equals(existingField))
-					{
-						fieldListToRemove.add(existingField);
-					}
-				}
-			}
-		}
-	}
 
 	public void deletePhenoCollection(PhenoCollection collection)
 	{
 		getSession().delete(collection);
 	}
-	
+
 	public void deletePhenoCollection(PhenoCollectionVO collectionVo)
 	{
 		Session session = getSession();
-		
+
 		Collection<FieldPhenoCollection> fieldPhenoCollections = getPhenoCollectionFields(collectionVo.getPhenoCollection());
 		// Delete all previous field_collections
 		for (FieldPhenoCollection fieldPhenoCollection : fieldPhenoCollections)
 		{
 			session.delete(fieldPhenoCollection);
 		}
-		
+
 		session.delete(collectionVo.getPhenoCollection());
 	}
 
-	public void createCollectionImport(CollectionImport collectionImport)
+	public void createCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 
-		collectionImport.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		collectionImport.setInsertTime(dateNow);
+		phenoCollectionUpload.setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+		phenoCollectionUpload.setInsertTime(dateNow);
 
-		getSession().save(collectionImport);
-	}
-
-	public void updateCollectionImport(CollectionImport collectionImport)
-	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-
-		collectionImport.setUserId(currentUser.getPrincipal().toString());
-		collectionImport.setUpdateTime(dateNow);
-
-		getSession().update(collectionImport);
-	}
-
-	public void deleteCollectionImport(CollectionImport collectionImport)
-	{
-		getSession().delete(collectionImport);
+		getSession().save(phenoCollectionUpload);
 	}
 	
+	public void updateCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		phenoCollectionUpload.setUserId(currentUser.getPrincipal().toString());
+		phenoCollectionUpload.setUpdateTime(dateNow);
+
+		getSession().update(phenoCollectionUpload);
+	}
+
+	public void deleteCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		getSession().delete(phenoCollectionUpload);
+	}
+
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection)
 	{
 		Criteria criteria = getSession().createCriteria(FieldData.class);
 
-		if (phenoCollection.getId() != null){
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION,phenoCollection.getId()));
+		if (phenoCollection.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION, phenoCollection.getId()));
 		}
 
 		java.util.Collection<FieldPhenoCollection> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
-		
+
 	}
 
 	public Field getField(Long id)
@@ -390,7 +352,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		field.setUserId(currentUser.getPrincipal().toString());
 		field.setInsertTime(dateNow);
-		
+
 		// Format the Field name before creating
 		field.setName(formatFieldName(field.getName()));
 
@@ -403,7 +365,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		field.setUpdateUserId(currentUser.getPrincipal().toString());
 		field.setUpdateTime(dateNow);
-		
+
 		// Format the Field name before updating
 		field.setName(formatFieldName(field.getName()));
 
@@ -414,17 +376,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		getSession().delete(field);
 	}
-	
-	private String formatFieldName(String fieldName){
+
+	private String formatFieldName(String fieldName)
+	{
 		// Uppercase the Fieldname
 		fieldName = fieldName.toUpperCase();
-		
+
 		// Replace all spaces with underscores
 		fieldName = StringUtils.replace(fieldName, " ", "_");
-		
+
 		// Replace all spaces with underscores
 		fieldName = StringUtils.replace(fieldName, " ", "_");
-		
+
 		return fieldName;
 	}
 
@@ -461,46 +424,52 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		FieldData fieldData = (FieldData) getSession().get(FieldData.class, id);
 		return fieldData;
 	}
-	
+
 	public FieldData getFieldDataByName(String fieldName)
 	{
 		log.info("PhenotypicDao.getFieldDataByName: " + fieldName);
 		return null;
 	}
 
-	public Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field)
+	public java.util.Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field)
 	{
 		Criteria criteria = getSession().createCriteria(FieldData.class);
 
-		if (phenoCollection.getId() != null){
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_COLLECTION_ID,phenoCollection.getId()));
+		if (phenoCollection.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_COLLECTION_ID, phenoCollection.getId()));
 		}
-		if (field.getId() != null){
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD_ID,field.getId()));
+		if (field.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD_ID, field.getId()));
 		}
 
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
 	}
-	
+
 	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value)
 	{
-		Criteria criteria = getSession().createCriteria(CollectionImport.class);
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
 
-		if (phenoCollection != null){
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_PHENO_COLLECTION,phenoCollection));
+		if (phenoCollection != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_PHENO_COLLECTION, phenoCollection));
 		}
 
-		if (linkSubjectStudy!= null){
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY,linkSubjectStudy));
+		if (linkSubjectStudy != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
 		}
-		
-		if (field != null){
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD,field));
+
+		if (field != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
 		}
-		
-		if (dateCollected != null){
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_COLLECTED,dateCollected));
+
+		if (dateCollected != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_COLLECTED, dateCollected));
 		}
 
 		FieldData fieldData = new FieldData();
@@ -522,16 +491,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		fieldData.setUserId(currentUser.getPrincipal().toString());
 		fieldData.setInsertTime(dateNow);
-		
+
 		// TODO Add fieldDataLog on Insert
-//		FieldDataLog fieldDataLog = new FieldDataLog();
-//		fieldDataLog.setFieldData(fieldData);
-//		fieldDataLog.setValue(fieldData.getValue());
-//		fieldDataLog.setComment("Insert");
-//		fieldDataLog.setUserId(currentUser.getPrincipal().toString());
-//		fieldDataLog.setInsertTime(dateNow);
-//		
-//		fieldData.getFieldDataLogs().add(fieldDataLog);
+		// FieldDataLog fieldDataLog = new FieldDataLog();
+		// fieldDataLog.setFieldData(fieldData);
+		// fieldDataLog.setValue(fieldData.getValue());
+		// fieldDataLog.setComment("Insert");
+		// fieldDataLog.setUserId(currentUser.getPrincipal().toString());
+		// fieldDataLog.setInsertTime(dateNow);
+		//		
+		// fieldData.getFieldDataLogs().add(fieldDataLog);
 		getSession().save(fieldData);
 	}
 
@@ -541,31 +510,31 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		fieldData.setUpdateTime(dateNow);
 		fieldData.setUpdateUserId(currentUser.getPrincipal().toString());
-		
+
 		// TODO Add fieldDataLog on Update
-//		FieldDataLog fieldDataLog = new FieldDataLog();
-//		fieldDataLog.setFieldData(fieldData);
-//		fieldDataLog.setValue(fieldData.getValue());
-//		fieldDataLog.setComment("Update");
-//		fieldDataLog.setUserId(currentUser.getPrincipal().toString());
-//		fieldDataLog.setInsertTime(dateNow);
-//		
-//		fieldData.getFieldDataLogs().add(fieldDataLog);
-		
+		// FieldDataLog fieldDataLog = new FieldDataLog();
+		// fieldDataLog.setFieldData(fieldData);
+		// fieldDataLog.setValue(fieldData.getValue());
+		// fieldDataLog.setComment("Update");
+		// fieldDataLog.setUserId(currentUser.getPrincipal().toString());
+		// fieldDataLog.setInsertTime(dateNow);
+		//		
+		// fieldData.getFieldDataLogs().add(fieldDataLog);
+
 		getSession().update(fieldData);
 	}
 
 	public void deleteFieldData(FieldData fieldData)
 	{
 		// TODO Add fieldDataLog on Insert
-//		FieldDataLog fieldDataLog = new FieldDataLog();
-//		fieldDataLog.setFieldData(fieldData);
-//		fieldDataLog.setValue(fieldData.getValue());
-//		fieldDataLog.setComment("Delete");
-//		fieldDataLog.setUserId(currentUser.getPrincipal().toString());
-//		fieldDataLog.setInsertTime(dateNow);
-//		fieldData.getFieldDataLogs().add(fieldDataLog);
-		
+		// FieldDataLog fieldDataLog = new FieldDataLog();
+		// fieldDataLog.setFieldData(fieldData);
+		// fieldDataLog.setValue(fieldData.getValue());
+		// fieldDataLog.setComment("Delete");
+		// fieldDataLog.setUserId(currentUser.getPrincipal().toString());
+		// fieldDataLog.setInsertTime(dateNow);
+		// fieldData.getFieldDataLogs().add(fieldDataLog);
+
 		getSession().delete(fieldData);
 	}
 
@@ -604,7 +573,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		else
 			return null;
 	}
-	
+
 	public java.util.Collection<Status> getStatus()
 	{
 		Criteria crit = getSession().createCriteria(Status.class);
@@ -622,17 +591,35 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(status);
 	}
 
-	public void createUpload(Upload upload)
+	public void createUpload(PhenoUpload phenoUpload)
 	{
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
-		upload.setInsertTime(dateNow);
-		upload.setUserId(currentUser.getPrincipal().toString());
+		phenoUpload.setInsertTime(dateNow);
+		phenoUpload.setUserId(currentUser.getPrincipal().toString());
+		phenoUpload.setStartTime(dateNow);
 
-		getSession().save(upload);
+		getSession().save(phenoUpload);
 	}
 	
-	public void updateUpload(Upload upload)
+	public void createUpload(UploadVO phenoUploadVo)
+	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		phenoUploadVo.getUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+		phenoUploadVo.getUpload().setInsertTime(dateNow);
+		phenoUploadVo.getUpload().setStartTime(dateNow);
+		
+		phenoUploadVo.getPhenoCollectionUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+		phenoUploadVo.getPhenoCollectionUpload().setInsertTime(dateNow);
+		
+		Session session = getSession();
+		session.save(phenoUploadVo.getUpload());
+		session.save(phenoUploadVo.getPhenoCollectionUpload());
+	}
+
+	public void updateUpload(PhenoUpload upload)
 	{
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
@@ -641,8 +628,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		getSession().update(upload);
 	}
-	
-	public void deleteUpload(Upload upload)
+
+	public void deleteUpload(PhenoUpload upload)
 	{
 		getSession().delete(upload);
 	}
@@ -663,43 +650,51 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public java.util.Collection<Field> searchField(Field field)
 	{
 		java.util.Collection<Field> fieldCollection = null;
-		
+
 		Criteria criteria = getSession().createCriteria(Field.class);
 
-		if (field.getId() != null){
+		if (field.getId() != null)
+		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_ID, field.getId()));
 		}
 
-		if (field.getName() != null){
+		if (field.getName() != null)
+		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_NAME, field.getName()));
 		}
-		
-		if(field.getStudy() != null){
+
+		if (field.getStudy() != null)
+		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, field.getStudy()));
 		}
 
-		if (field.getFieldType() != null){
+		if (field.getFieldType() != null)
+		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_FIELD_TYPE, field.getFieldType()));
 		}
 
-		if (field.getDescription() != null){
+		if (field.getDescription() != null)
+		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DESCRIPTION, field.getDescription(), MatchMode.ANYWHERE));
 		}
-		
-		if (field.getUnits() != null){
+
+		if (field.getUnits() != null)
+		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_UNITS, field.getUnits(), MatchMode.ANYWHERE));
 		}
-		
-		if (field.getMinValue() != null){
+
+		if (field.getMinValue() != null)
+		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_MIN_VALUE, field.getMinValue(), MatchMode.ANYWHERE));
 		}
-		
-		if (field.getMaxValue() != null){
+
+		if (field.getMaxValue() != null)
+		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_MAX_VALUE, field.getMaxValue(), MatchMode.ANYWHERE));
 		}
-		
+
 		fieldCollection = criteria.list();
-		
+
 		return fieldCollection;
 	}
 
@@ -709,41 +704,37 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.Collection<Field> fieldCollection = criteria.list();
 		return fieldCollection;
 	}
-	
-	public CollectionImport getCollectionImport(Long id)
+
+	public PhenoCollectionUpload getCollectionUpload(Long id)
 	{
-		CollectionImport collectionImport = (CollectionImport) getSession().get(CollectionImport.class, id);
-		return collectionImport;
+		PhenoCollectionUpload phenoCollectionUpload = (PhenoCollectionUpload) getSession().get(PhenoCollectionUpload.class, id);
+		return phenoCollectionUpload;
 	}
 
-	public java.util.Collection<CollectionImport> getCollectionImport()
+	public java.util.Collection<PhenoCollectionUpload> getCollectionUpload()
 	{
-		Criteria criteria = getSession().createCriteria(CollectionImport.class);
-		java.util.Collection<CollectionImport> collectionImportCollection = criteria.list();
-		return collectionImportCollection;
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
+		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
+		return phenoCollectionUploadCollection;
 	}
 
-	public java.util.Collection<CollectionImport> searchCollectionImport(CollectionImport collectionImportToMatch)
+	public java.util.Collection<PhenoCollectionUpload> searchCollectionUpload(PhenoCollectionUpload phenoCollectionUploadToMatch)
 	{
-		Criteria criteria = getSession().createCriteria(CollectionImport.class);
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
 
-		if (collectionImportToMatch.getId() != null)
+		if (phenoCollectionUploadToMatch.getId() != null)
 		{
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_ID,collectionImportToMatch.getId()));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_ID, phenoCollectionUploadToMatch.getId()));
 		}
 
-		if (collectionImportToMatch.getCollection() != null)
-		{
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_COLLECTION,collectionImportToMatch.getCollection()));
-		}
-		
-		if (collectionImportToMatch.getImportType() != null)
-		{
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_TYPE,collectionImportToMatch.getImportType()));
-		}
+		/*
+		 * TODO Change to FieldFieldGroupUpload if (phenoCollectionUploadToMatch.getCollection() != null) {
+		 * criteria.add(Restrictions.ilike(au.org.theark
+		 * .phenotypic.web.Constants.COLLECTION_IMPORT_COLLECTION,phenoCollectionUploadToMatch.getCollection())); }
+		 */
 
-		java.util.Collection<CollectionImport> collectionImportCollection = criteria.list();
-		return collectionImportCollection;
+		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
+		return phenoCollectionUploadCollection;
 	}
 
 	public FieldDataLog getFieldDataLog(Long id)
@@ -752,44 +743,44 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return fieldDataLog;
 	}
 
-	public Collection<FieldDataLog> getFieldDataLogByField(Field field)
+	public java.util.Collection<FieldDataLog> getFieldDataLogByField(Field field)
 	{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public Collection<FieldData> searchFieldDataByField(Field field)
+
+	public java.util.Collection<FieldData> searchFieldDataByField(Field field)
 	{
 		Criteria criteria = getSession().createCriteria(FieldData.class);
 
 		if (field.getId() != null)
 		{
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
 		}
 
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
 	}
-	
-	public Collection<FieldData> searchFieldData(FieldData fieldData)
+
+	public java.util.Collection<FieldData> searchFieldData(FieldData fieldData)
 	{
 		Criteria criteria = getSession().createCriteria(FieldData.class);
 
 		if (fieldData.getId() != null)
 		{
-			 criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_ID, fieldData.getId()));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_ID, fieldData.getId()));
 		}
-		
+
 		if (fieldData.getCollection() != null)
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_PHENO_COLLECTION, fieldData.getCollection()));
 		}
-		
+
 		if (fieldData.getField() != null)
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, fieldData.getField()));
 		}
-		
+
 		if (fieldData.getLinkSubjectStudy() != null)
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, fieldData.getLinkSubjectStudy()));
@@ -798,7 +789,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
 	}
-	
+
 	public void createFieldDataLog(FieldDataLog fieldDataLog)
 	{
 		currentUser = SecurityUtils.getSubject();
@@ -808,52 +799,98 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().save(fieldDataLog);
 	}
 
-	public Upload getUpload(Long id)
+	public PhenoUpload getUpload(Long id)
 	{
-		Upload upload = (Upload) getSession().get(Upload.class, id);
+		PhenoUpload upload = (PhenoUpload) getSession().get(PhenoUpload.class, id);
 		return upload;
- 	}
-
-	public Collection<Upload> getUploadByFileName(String fileName)
-	{
-		// TODO Auto-generated method stub
-		return null;
 	}
 
-	public UploadCollection getUploadCollection(Long id)
+	public java.util.Collection<PhenoUpload> getUploadByFileName(String fileName)
 	{
-		UploadCollection uploadCollection = (UploadCollection) getSession().get(UploadCollection.class, id);
+		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
+
+		if (fileName != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION, fileName));
+		}
+
+		java.util.Collection<PhenoUpload> uploadCollection = criteria.list();
+
 		return uploadCollection;
 	}
 
-	public Collection<UploadCollection> getUploadCollectionByCollection(PhenoCollection phenoCollection)
+	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id)
 	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public void createUploadCollection(UploadCollection uploadCollection)
-	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-		uploadCollection.setInsertTime(dateNow);
-		uploadCollection.setUserId(currentUser.getPrincipal().toString());
+		PhenoCollection phenoCollection = getPhenotypicCollection(id);
+		PhenoCollectionVO phenoCollVo = new PhenoCollectionVO();
+		phenoCollVo.setPhenoCollection(phenoCollection);
+		java.util.Collection<PhenoUpload> phenoCollectionUploads = getPhenoCollectionUploads(phenoCollection);
+		for (PhenoUpload upload : phenoCollectionUploads)
+		{
+			phenoCollVo.getUploadCollection().add(upload);
+		}
 
-		getSession().save(uploadCollection);
+		return phenoCollVo;
 	}
 
-	public void updateUploadCollection(UploadCollection uploadCollection)
+	private java.util.Collection<PhenoUpload> getPhenoCollectionUploads(PhenoCollection phenoCollection)
 	{
-		currentUser = SecurityUtils.getSubject();
-		dateNow = new Date(System.currentTimeMillis());
-		uploadCollection.setUpdateTime(dateNow);
-		uploadCollection.setUpdateUserId(currentUser.getPrincipal().toString());
+		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
 
-		getSession().update(uploadCollection);
+		if (phenoCollection != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION, phenoCollection));
+		}
+
+		java.util.Collection<PhenoUpload> uploadCollection = criteria.list();
+		return uploadCollection;
 	}
-	
-	public void deleteUploadCollection(UploadCollection uploadCollection)
+
+	public java.util.Collection<PhenoUpload> searchUpload(PhenoUpload upload)
 	{
-		getSession().delete(uploadCollection);
+		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
+
+		if (upload.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_ID, upload.getId()));
+		}
+		
+		if (upload.getStudy() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_STUDY, upload.getStudy()));
+		}
+
+		if (upload.getFileFormat() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILE_FORMAT, upload.getFileFormat()));
+		}
+		
+		if (upload.getDelimiterType() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_DELIMITER_TYPE, upload.getDelimiterType()));
+		}
+		
+		if (upload.getFilename() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILENAME, upload.getFilename()));
+		}
+
+		java.util.Collection<PhenoUpload> uploadCollection = criteria.list();
+
+		return uploadCollection;
+	}
+
+	public java.util.Collection<FileFormat> getFileFormats()
+	{
+		Criteria crit = getSession().createCriteria(FileFormat.class);
+		java.util.Collection<FileFormat> fileFormatCollection = crit.list();
+		return fileFormatCollection;
+	}
+
+	public Collection<DelimiterType> getDelimiterTypes()
+	{
+		Criteria crit = getSession().createCriteria(DelimiterType.class);
+		java.util.Collection<DelimiterType> delimiterTypeCollection = crit.list();
+		return delimiterTypeCollection;
 	}
 }
