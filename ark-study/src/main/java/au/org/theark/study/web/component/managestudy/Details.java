@@ -143,7 +143,7 @@ public class Details  extends Panel{
 				studyContainerForm.setModelObject(new StudyModelVO());
 				
 				summaryContainer.setVisible(true);
-				listContainer.setVisible(false);
+				listContainer.setVisible(true);
 				detailsContainer.setVisible(false);
 				searchContainer.setVisible(true);
 				editbuttonContainer.setVisible(true);
