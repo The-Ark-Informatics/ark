@@ -142,7 +142,7 @@ public class StudyContainer extends Panel{
 
 			@Override
 			protected Object load() {
-				return containerForm.getModelObject().getStudyList(); 
+				return iArkCommonService.getStudy(containerForm.getModelObject().getStudy()); 
 			}
 		};
 		
