@@ -67,7 +67,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>{
 	
 	protected void onCancelPostProcess(AjaxRequestTarget target){
 		
-		resultListContainer.setVisible(false);
+		resultListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
 		searchPanelContainer.setVisible(true);
 
