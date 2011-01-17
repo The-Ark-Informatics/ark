@@ -98,10 +98,13 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
-
 			@Override
 			protected Object load() {
-				return containerForm.getModelObject().getSubjectList();
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				Collection<SubjectVO> subjects = iArkCommonService.getSubject(containerForm.getModelObject());
+				containerForm.getModelObject().setSubjectList(subjects);
+				return subjects;
 			}
 		};
 
