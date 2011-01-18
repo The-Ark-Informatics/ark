@@ -108,11 +108,28 @@ public interface IStudyDao {
 	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException,ArkSystemException;
 	
 	
+	/**
+	 * 
+	 * @param address
+	 * @throws ArkSystemException
+	 */
 	public void create(Address address) throws ArkSystemException;
 	
+	
+	/**
+	 * 
+	 * @param address
+	 * @throws ArkSystemException
+	 */
 	public void update(Address address) throws ArkSystemException;
 	
+	/**
+	 * 
+	 * @param address
+	 * @throws ArkSystemException
+	 */
 	public void delete(Address address) throws ArkSystemException;
+	
 	
 
 }
