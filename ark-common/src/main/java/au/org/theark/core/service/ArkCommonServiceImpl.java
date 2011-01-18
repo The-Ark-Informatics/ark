@@ -13,6 +13,7 @@ import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -20,6 +21,8 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -158,6 +161,18 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	
 	public List<AddressType> getAddressTypes(){
 		return studyDao.getAddressTypes();
+	}
+	
+	public List<ConsentStatus> getConsentStatus(){
+		return studyDao.getConsentStatus();
+	}
+	
+	public List<StudyCompStatus> getStudyComponentStatus(){
+		return studyDao.getStudyComponentStatus();
+	}
+	
+	public List<StudyComp> getStudyComponent(){
+		return studyDao.getStudyComponent();
 	}
 
 }
