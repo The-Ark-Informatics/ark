@@ -14,7 +14,7 @@ import au.org.theark.core.Constants;
  *
  */
 @Entity
-@Table(name = "STUDY_STATUS", schema = Constants.STUDY_SCHEMA)
+@Table(name = "CONSENT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class ConsentType implements Serializable {
 	
 	private Long id;
