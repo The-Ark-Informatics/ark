@@ -7,13 +7,14 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -38,6 +39,7 @@ public class Consent implements Serializable {
 	private StudyComp studyComp;
 	private StudyCompStatus studyComponentStatus;
 	private ConsentStatus consentStatus;
+	private ConsentType consentType;
 	private Date consentDate; 
 	private String consentedBy; //Staff
 	private String comments;
@@ -49,6 +51,7 @@ public class Consent implements Serializable {
 		this.id = id;
 	}
 	
+	@Id
 	@SequenceGenerator(name="consent_generator", sequenceName="CONSENT_SEQUENCE")
 	@GeneratedValue(strategy=GenerationType.AUTO, generator = "consent_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
@@ -128,6 +131,15 @@ public class Consent implements Serializable {
 	}
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TYPE_ID")
+	public ConsentType getConsentType() {
+		return consentType;
+	}
+	public void setConsentType(ConsentType consentType) {
+		this.consentType = consentType;
 	}
 	
 	
