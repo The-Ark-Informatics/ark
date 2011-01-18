@@ -24,6 +24,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -33,6 +34,8 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -41,10 +44,11 @@ import au.org.theark.core.vo.SubjectVO;
 
 /**
  * @author nivedann
+ * @param <T>
  *
  */
 @Repository("commonStudyDao")
-public class StudyDao  extends HibernateSessionDao implements IStudyDao{
+public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
 	/* (non-Javadoc)
@@ -349,6 +353,21 @@ public class StudyDao  extends HibernateSessionDao implements IStudyDao{
 	 */
 	public List<AddressType> getAddressTypes(){
 		Criteria criteria  = getSession().createCriteria(AddressType.class);
+		return criteria.list();
+	}
+	
+	public List<ConsentStatus> getConsentStatus(){
+		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
+		return criteria.list();
+	}
+	
+	public List<StudyCompStatus> getStudyComponentStatus(){
+		Criteria criteria = getSession().createCriteria(StudyCompStatus.class);
+		return criteria.list();
+	}
+	
+	public List<StudyComp> getStudyComponent(){
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
 		return criteria.list();
 	}
 

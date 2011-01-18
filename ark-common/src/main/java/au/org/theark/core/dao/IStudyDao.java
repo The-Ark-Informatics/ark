@@ -6,6 +6,7 @@ import java.util.List;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -13,6 +14,8 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -137,6 +140,24 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<AddressType> getAddressTypes();
+	
+	/**
+	 * Returns a Collection of Consent Status
+	 * @return
+	 */
+	public List<ConsentStatus> getConsentStatus();
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<StudyCompStatus> getStudyComponentStatus();
+
+	/**
+	 * 
+	 * @return
+	 */
+	public List<StudyComp> getStudyComponent();
 	
 
 }
