@@ -2,6 +2,7 @@ package au.org.theark.web.pages;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
@@ -24,25 +25,48 @@ public abstract class BasePage extends WebPage{
 	//private Tabs etaTabs;
 	private String principal;
 	private Label userNameLbl;
+	private Label studyNameLbl;
+	
+	protected WebMarkupContainer studyNameMarkup;
+	protected WebMarkupContainer studyLogoMarkup;
+	
 	public BasePage(){
 		
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
+		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/"+Constants.NO_STUDY_LOGO_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
 		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if(currentUser.getPrincipal() != null){
+		if(currentUser.getPrincipal() != null)
+		{
 			principal = (String) currentUser.getPrincipal();
 			userNameLbl = new Label("loggedInUser", new Model(principal));			
-		}else{
+		}
+		else
+		{
 			//user has not logged in as yet.
 			principal="Guest";
 			userNameLbl = new Label("loggedInUser", new Model("Guest"));
 		}
 		
+		studyNameLbl = new Label("studyNameLabel", new Model(" "));
+		
+		// Markup for Study name
+		studyNameMarkup = new WebMarkupContainer("studyNameMarkupContainer");
+		studyNameMarkup.add(studyNameLbl);
+		studyNameMarkup.setOutputMarkupPlaceholderTag(true);
+
+		// Markup for Study Logo
+		studyLogoMarkup = new WebMarkupContainer("studyLogoMarkupContainer");
+		studyLogoMarkup.add(studyLogoImage);
+		studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
+		
 		// Add images
 		add(hostedByImage);
+		add(studyNameMarkup);
+		add(studyLogoMarkup);
 		add(productImage);
 		add(bannerImage);
 		

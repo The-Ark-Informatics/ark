@@ -29,9 +29,24 @@
 								<img wicket:id="productImage"/>
 							</div>
 							
-							<!--  Login/Logout Welcome Panel must be made a re-usable panel-->
+							<div id="studyLogo">
+								<!--  Study Name panel must be made a re-usable panel-->
+								<div wicket:id="studyNameMarkupContainer">
+									<!--  Study name -->
+									<div id="studyName">
+										<span wicket:id="studyNameLabel" id="studyNameLabel"></span>
+									</div>
+								</div>
+								
+								<!--  Study Logo panel must be made a re-usable panel-->
+								<div wicket:id="studyLogoMarkupContainer">
+									<!--  Study Logo image -->
+									<img wicket:id="studyLogoImage" class="center"/>
+								</div>
+							</div>
+							<!--  Login/Logout Welcome panel must be made a re-usable panel-->
 							<div id="welcomePanel">
-								<div>Welcome&nbsp;<span wicket:id=loggedInUser id="loggedInUser"></span>&nbsp;<a wicket:id="logoutLink" href="#">Logout</a>
+								<div>Welcome&nbsp;<span wicket:id="loggedInUser" id="loggedInUser"></span>&nbsp;<a wicket:id="logoutLink" href="#">Logout</a>
 								</div>
 							</div>
 				  		</div>

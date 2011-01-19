@@ -33,11 +33,12 @@ public class HomePage extends BasePage
 	@Override
 	protected void buildModuleTabs()
 	{
-
+		//this.studyLogoMarkup
 		List<ITab> moduleTabsList = new ArrayList<ITab>();
 
 		MainTabProviderImpl studyMainTabProvider = new MainTabProviderImpl("study");
-		moduleTabsList = studyMainTabProvider.buildTabs();
+		// Pass in the Study logo markup, to allow dynamic logo reference
+		moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup);
 
 		PhenotypicTabProviderImpl phenotypicTabs = new PhenotypicTabProviderImpl("phenotypic");
 		List<ITab> phenotypicTabsList = phenotypicTabs.buildTabs();
