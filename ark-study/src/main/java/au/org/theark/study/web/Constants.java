@@ -184,5 +184,13 @@ public class Constants {
 	public static final String ADDRESS_COUNTRYSTATE_STATE="address.countryState";
 	public static final String ADDRESS_ADDRESSTYPE="address.addressType";
 	
+	public static final String CONSENT_CONSENT_TYPE="consent.consentType";
+	public static final String CONSENT_CONSENTED_BY="consent.consentedBy";
+	public static final String CONSENT_CONSENT_STATUS="consent.consentStatus";
+	public static final String CONSENT_STUDY_COMP="consent.studyComp";
+	public static final String CONSENT_STUDY_COMP_STATUS = "consent.studyComponentStatus";
+	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
+		
+	
 			 
 }
