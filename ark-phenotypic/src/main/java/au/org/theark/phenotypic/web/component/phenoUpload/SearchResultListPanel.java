@@ -4,22 +4,23 @@ import java.sql.SQLException;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
-import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 
-@SuppressWarnings( { "serial", "unchecked" })
+@SuppressWarnings( { "serial", "unchecked", "unused" })
 public class SearchResultListPanel extends Panel
 {
 
@@ -149,19 +150,15 @@ public class SearchResultListPanel extends Panel
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));// the ID here must match the ones in
-					// mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));
+					// the ID here must match the ones in mark-up
 				}
 
-				// Download file link
-				item.add(buildDownloadLink(upload));
+				// Download file link button
+				item.add(buildDownloadButton(upload));
 
-				/*
-				 * // Upload Report if (upload.getUploadReport() != null) { item.add(new
-				 * Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, upload.getFilename()+"_report"));// the ID here must match
-				 * the // ones in mark-up } else { item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, ""));// the ID
-				 * here must match the ones in mark-up }
-				 */
+				// Download upload report button
+				item.add(buildDownloadReportButton(upload));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
@@ -176,6 +173,7 @@ public class SearchResultListPanel extends Panel
 		};
 		return sitePageableListView;
 	}
+
 
 	private Link buildDownloadLink(final PhenoUpload upload)
 	{
@@ -199,12 +197,91 @@ public class SearchResultListPanel extends Panel
 				
 			};
 		};
-
+		
 		// Add the label for the link
 		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
 		link.add(nameLinkLabel);
 		return link;
+	}
+	
+	private AjaxButton buildDownloadButton(final PhenoUpload upload)
+	{
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;		
+				try
+				{
+					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
+				}
+				catch (SQLException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));			
+			};
+		};
+
+		return ajaxButton;
+	}
+	
+	private Link buildDownloadReportLink(final PhenoUpload upload)
+	{
+		Link link = new Link(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT)
+		{
+			@Override
+			public void onClick()
+			{
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;		
+				try
+				{
+					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
+				}
+				catch (SQLException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport"+upload.getId()));
+			};
+		};
+
+		// Add the label for the link
+		// TODO when displaying text escape any special characters
+		Label nameLinkLabel = new Label("downloadReportLbl", "Download Report");
+		link.add(nameLinkLabel);
+		return link;
+	}
+	
+	private AjaxButton buildDownloadReportButton(final PhenoUpload upload)
+	{
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;		
+				try
+				{
+					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
+				}
+				catch (SQLException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport"+upload.getId()));
+			};
+		};
+
+		return ajaxButton;
 	}
 
 	/**
