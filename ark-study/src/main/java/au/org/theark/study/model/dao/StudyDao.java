@@ -18,6 +18,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -357,6 +358,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		getSession().delete(address);
 	}
 	
+	
+	public void create(Consent consent) throws ArkSystemException{
+		try{
+			Session session = getSession();
+			session.save(consent);	
+
+		}catch(HibernateException hibException){
+			log.error("An exception occured while creating a consent " + hibException.getStackTrace());
+			throw new ArkSystemException("Could not create the consent.");
+		}
+	}
+	
+	public void update(Consent consent) throws ArkSystemException{
+		Session session = getSession();
+		session.update(consent);
+	}
+	
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
+		
+		return null;
+	}
 	
 	
 }

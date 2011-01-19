@@ -139,5 +139,8 @@ public interface IStudyDao {
 	public void create(Consent consent) throws ArkSystemException;
 	
 	
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
+	
+	
 
 }
