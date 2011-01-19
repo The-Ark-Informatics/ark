@@ -25,6 +25,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -368,6 +369,15 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	
 	public List<StudyComp> getStudyComponent(){
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		return criteria.list();
+	}
+	
+	/**
+	 * Returns a list of Consent types hardcopy, electronic document etc.
+	 * @return
+	 */
+	public List<ConsentType> getConsentType(){
+		Criteria criteria = getSession().createCriteria(ConsentType.class);
 		return criteria.list();
 	}
 

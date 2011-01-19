@@ -7,6 +7,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -158,6 +159,14 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<StudyComp> getStudyComponent();
+	
+	/**
+	 * Returns a list of Consent types hardcopy, electronic document etc.
+	 * @return
+	 */
+	public List<ConsentType> getConsentType();
+	
+	
 	
 
 }
