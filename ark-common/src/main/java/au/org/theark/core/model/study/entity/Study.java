@@ -1,5 +1,6 @@
 package au.org.theark.core.model.study.entity;
 
+import java.sql.Blob;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,6 +47,7 @@ public class Study implements java.io.Serializable {
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
+	private Blob studyLogoBlob; 
 	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(
 			0);
 	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(
@@ -261,10 +263,20 @@ public class Study implements java.io.Serializable {
 		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
 	}
 
-
 	@Column(name = "SUB_STUDY_BIOSPECIMEN_PREFIX", length = 20)
 	public String getSubStudyBiospecimenPrefix() {
 		return this.subStudyBiospecimenPrefix;
+	}
+	
+	public void setStudyLogoBlob(Blob studyLogoBlob)
+	{
+		this.studyLogoBlob = studyLogoBlob;
+	}
+	
+	@Column(name = "STUDY_LOGO")
+	public Blob getStudyLogoBlob()
+	{
+		return studyLogoBlob;
 	}
 
 	public void setSubStudyBiospecimenPrefix(String subStudyBiospecimenPrefix) {
@@ -357,5 +369,4 @@ public class Study implements java.io.Serializable {
 			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
-
 }
