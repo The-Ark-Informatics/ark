@@ -36,6 +36,8 @@ public class StudyContainer extends Panel{
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
 	private WebMarkupContainer summaryContainer;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 	
 	private Details detailsPanel;
 	
@@ -136,6 +138,8 @@ public class StudyContainer extends Panel{
 																editbuttonContainer, 
 																summaryContainer,
 																detailFormContainer,
+																studyNameMarkup,
+																studyLogoMarkup,
 																containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
@@ -163,6 +167,42 @@ public class StudyContainer extends Panel{
 	
 		super(id);
 
+		initialiseMarkupContainers();
+		//Create the form that will hold the other controls
+		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
+		
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());		
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		
+		add(containerForm);
+		
+	}
+	
+	public StudyContainer(String id, WebMarkupContainer studyLogoMarkup) {
+		
+		super(id);
+		this.studyLogoMarkup = studyLogoMarkup; 
+		initialiseMarkupContainers();
+		//Create the form that will hold the other controls
+		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
+		
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());		
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		
+		add(containerForm);
+		
+	}
+	
+public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+		
+		super(id);
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		
 		initialiseMarkupContainers();
 		//Create the form that will hold the other controls
 		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));

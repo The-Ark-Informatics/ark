@@ -1,10 +1,13 @@
 package au.org.theark.study.web.component.managestudy;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
+import mx4j.log.Log;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -12,28 +15,41 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.util.ImageResource;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
 public class SearchResults extends Panel{
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private WebMarkupContainer searchMarkupContainer;
 	private WebMarkupContainer detailsMarkupContainer;
 	private WebMarkupContainer saveBtnContainer;
 	private WebMarkupContainer editBtnContainer;
 	private WebMarkupContainer detailSummaryContainer;
 	private WebMarkupContainer detailFormContainer;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
+	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	private Container studyContainerForm;
@@ -44,6 +60,8 @@ public class SearchResults extends Panel{
 							WebMarkupContainer editButtonContainer, 
 							WebMarkupContainer detailSumContainer,
 							WebMarkupContainer detailFormCompContainer,
+							WebMarkupContainer studyNameMarkup,
+							WebMarkupContainer studyLogoMarkup,
 							Container containerForm){
 		super(id);
 		searchMarkupContainer = searchWebMarkupContainer;
@@ -53,6 +71,8 @@ public class SearchResults extends Panel{
 		detailSummaryContainer = detailSumContainer;
 		detailFormContainer = detailFormCompContainer;
 		studyContainerForm = containerForm;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 	}
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
@@ -142,6 +162,56 @@ public class SearchResults extends Panel{
 				target.addComponent(editBtnContainer);
 				target.addComponent(detailSummaryContainer);
 				target.addComponent(detailFormContainer);
+				
+				setStudyLogo(target);
+			}
+			
+			public void setStudyLogo(AjaxRequestTarget target)
+			{
+				Label studyNameLabel = null;
+				
+				// Set the study logo
+				try
+				{
+					if(study.getStudyLogoBlob() != null)
+					{
+						// Get the Study logo Blob as an array of bytes
+						final byte[] data = study.getStudyLogoBlob().getBytes(1, (int) study.getStudyLogoBlob().length());
+					
+						NonCachingImage studyLogoImage = new NonCachingImage("studyLogoImage", 
+			                new AbstractReadOnlyModel() { 
+			                    @Override 
+			                    public Object getObject() {
+			                        return new ImageResource(data,"gif"); 
+			                    } 
+			                });
+						
+						studyNameMarkup.setVisible(false);
+						studyLogoMarkup.replace(studyLogoImage);
+						studyLogoMarkup.setVisible(true);
+					}
+					else
+					{
+						// Only show study name, no logo
+						/* Retrieve default logo image
+						ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/no_study_logo_image.gif"));
+						studyLogoMarkup.replace(studyNameLabel);
+						studyLogoMarkup.replace(studyLogoImage);
+						*/
+						
+						studyNameLabel = new Label("studyNameLabel", new Model(study.getName()));
+						studyNameMarkup.replace(studyNameLabel);
+						studyNameMarkup.setVisible(true);
+						studyLogoMarkup.setVisible(false);
+					}
+				}
+				catch (SQLException e)
+				{
+					// Log SQL exception
+				}
+				
+				target.addComponent(studyNameMarkup);
+				target.addComponent(studyLogoMarkup);
 			}
 		};
 		
