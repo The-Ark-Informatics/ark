@@ -18,6 +18,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
+import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
@@ -58,7 +59,12 @@ public class SubjectSubMenuTab extends Panel{
 		menuModule.setModuleName(Constants.TAB_PERSON_ADDRESS);
 		menuModule.setResourceKey(Constants.TAB_MODULE_PERSON_ADDRESS);
 		moduleTabs.add(menuModule);
-		
+
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_SUBJECT_CONSENT);
+		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CONSENT);
+		moduleTabs.add(menuModule);
+
 		
 		for(final MenuModule moduleName : moduleTabs)
 		{
@@ -88,6 +94,11 @@ public class SubjectSubMenuTab extends Panel{
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_ADDRESS)){
 						
 						panelToReturn = new AddressContainerPanel(panelId);
+					
+					}
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CONSENT)){
+						
+						panelToReturn = new ConsentContainerPanel(panelId);
 					
 					}
 					return panelToReturn;
