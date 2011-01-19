@@ -20,6 +20,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -236,6 +237,14 @@ public class StudyServiceImpl implements IStudyService{
 	public void delete(Address address) throws ArkSystemException{
 		//Add business rules to check if this address is in use/active and referred elsewhere
 		studyDao.delete(address);
+	}
+	
+	public void create(Consent consent) throws ArkSystemException{
+		studyDao.create(consent);
+	}
+	
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
+		return studyDao.searchConsent(consent);
 	}
 		
 }

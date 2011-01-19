@@ -10,6 +10,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -120,5 +121,13 @@ public interface IStudyService {
 	public void update(Address address) throws ArkSystemException;
 	
 	public void delete(Address address) throws ArkSystemException;
+	
+	public void create(Consent consent) throws ArkSystemException;
+	
+	public void update(Consent consent) throws ArkSystemException;
+	
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
+	
+	
 
 }
