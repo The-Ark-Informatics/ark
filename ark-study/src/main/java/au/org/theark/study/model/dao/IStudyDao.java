@@ -7,6 +7,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
@@ -129,6 +130,13 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public void delete(Address address) throws ArkSystemException;
+	
+	/**
+	 * 
+	 * @param consent
+	 * @throws ArkSystemException
+	 */
+	public void create(Consent consent) throws ArkSystemException;
 	
 	
 
