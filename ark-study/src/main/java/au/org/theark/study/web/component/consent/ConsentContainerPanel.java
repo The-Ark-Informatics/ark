@@ -52,8 +52,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 		cpModel = new CompoundPropertyModel<ConsentVO>(new ConsentVO());
 		containerForm = new ContainerForm("containerForm",cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		//containerForm.add(initialiseDetailPanel());
-		//containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
@@ -64,19 +64,18 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-//		detailPanel = new DetailPanel("detailsPanel",
-//										feedBackPanel,
-//										searchResultPanelContainer, 
-//										detailPanelContainer,
-//										detailPanelFormContainer,
-//										searchPanelContainer,
-//										viewButtonContainer,
-//										editButtonContainer,
-//										containerForm);
-//		detailPanel.initialisePanel();
-//		detailPanelContainer.add(detailPanel);
-//		return detailPanelContainer;
-		return null;
+		detailPanel = new DetailPanel("detailsPanel",
+										feedBackPanel,
+										searchResultPanelContainer, 
+										detailPanelContainer,
+										detailPanelFormContainer,
+										searchPanelContainer,
+										viewButtonContainer,
+										editButtonContainer,
+										containerForm);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
+		return detailPanelContainer;
 	}
 
 	/* (non-Javadoc)
@@ -131,26 +130,26 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 		
-//		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",
-//																			detailPanelContainer,
-//																			detailPanelFormContainer,
-//																			searchPanelContainer,
-//																			searchResultPanelContainer,
-//																			viewButtonContainer,
-//																			editButtonContainer,
-//																			containerForm																				);
-//		iModel = new LoadableDetachableModel<Object>() {
-//
-//			private static final long serialVersionUID = 1L;
-//			@Override
-//			protected Object load() {
-//				//Get the PersonId from session and get the phoneList from backend
-//				Collection<Phone> personPhoneList = new ArrayList<Phone>();
-//				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-//				try {
-//					if(sessionPersonId != null){
-//						personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
-//					}
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",
+																			detailPanelContainer,
+																			detailPanelFormContainer,
+																			searchPanelContainer,
+																			searchResultPanelContainer,
+																			viewButtonContainer,
+																			editButtonContainer,
+																			containerForm																				);
+		iModel = new LoadableDetachableModel<Object>() {
+
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected Object load() {
+				//Get the PersonId from session and get the phoneList from backend
+				Collection<Consent> consentList = new ArrayList<Consent>();
+				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				//try {
+					if(sessionPersonId != null){
+						//consentList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
+					}
 //				} catch (EntityNotFoundException e) {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
@@ -158,18 +157,18 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 //					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
-//				
-//				return personPhoneList;
-//			}
-//		};
-//	
-//		pageableListView  = searchResultPanel.buildPageableListView(iModel);
-//		pageableListView.setReuseItems(true);
-//		PagingNavigator pageNavigator = new PagingNavigator("phoneNavigator", pageableListView);
-//		searchResultPanel.add(pageNavigator);
-//		searchResultPanel.add(pageableListView);
-//		searchResultPanelContainer.add(searchResultPanel);
-		return null;
+				
+				return consentList;
+			}
+		};
+	
+		pageableListView  = searchResultPanel.buildPageableListView(iModel);
+		pageableListView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		searchResultPanel.add(pageNavigator);
+		searchResultPanel.add(pageableListView);
+		searchResultPanelContainer.add(searchResultPanel);
+		return searchResultPanelContainer;
 		
 		
 	}
