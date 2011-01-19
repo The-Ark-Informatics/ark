@@ -72,6 +72,18 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 			@Override
 			protected Object load()
 			{
+				// Get a collection of collections for the study in context by default
+				Collection<PhenoCollection> phenoCollectionCol = new ArrayList<PhenoCollection>();
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+				if (sessionStudyId != null && sessionStudyId > 0)
+				{
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+					containerForm.getModelObject().getPhenoCollection().setStudy(study);
+					phenoCollectionCol = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
+				}
+
+				containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 				return containerForm.getModelObject().getPhenoCollectionCollection();
 			}
 		};
@@ -98,7 +110,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 	protected WebMarkupContainer initialiseSearchPanel()
 	{
-		// Get a collection of fields for the study in context by default
+		// Get a collection of collections for the study in context by default
 		Collection<PhenoCollection> phenoCollectionCol = new ArrayList<PhenoCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
