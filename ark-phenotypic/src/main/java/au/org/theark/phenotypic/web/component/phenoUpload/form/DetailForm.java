@@ -161,26 +161,15 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
 			
-			// Get Collection in conext
+			// Get Collection in context
 			Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 
-			// Retrieve file and store in temp folder
+			// Retrieve file and store as Blob in databasse
 			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
-			// TODO: Load the temporary directory from the application configuration instead
-			String tempDir = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
-			createDirectoryIfNeeded(tempDir);
-			String filePath = tempDir + File.separator + fileUpload.getClientFileName();
-			File file = new File(filePath);
-			FileOutputStream fos = null;
 
 			try
 			{
-				fos = new FileOutputStream(file);
-
-				// Copy file to directory in server
-				IOUtils.copy(fileUpload.getInputStream(), fos);
-
 				// Copy file to BLOB object
 				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 				containerForm.getModelObject().getUpload().setPayload(payload);
@@ -188,13 +177,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 			catch (IOException ioe)
 			{
 				System.out.println("Failed to save the uploaded file: " + ioe);
-			}
-			finally
-			{
-				if (fos != null)
-				{
-					fos = null;
-				}
 			}
 
 			// Set details of Upload object
