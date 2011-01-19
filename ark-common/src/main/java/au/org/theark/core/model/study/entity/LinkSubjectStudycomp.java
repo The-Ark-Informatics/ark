@@ -3,9 +3,12 @@ package au.org.theark.core.model.study.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.Constants;
@@ -23,8 +26,8 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	private StudyComp studyComp;
 	private Study study;
 	private Person person;
-	private Long studyCompStatusId;
-
+	private StudyCompStatus studyComponentStatus;
+	
 	// Constructors
 
 	/** default constructor */
@@ -38,16 +41,18 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 
 	/** full constructor */
 	public LinkSubjectStudycomp(Long id,
-			StudyComp studyComp, Study study, Person person, Long studyCompStatusId) {
+			StudyComp studyComp, Study study, Person person, StudyCompStatus studyComponentStatus) {
 		this.id = id;
 		this.studyComp = studyComp;
 		this.study = study;
 		this.person = person;
-		this.studyCompStatusId = studyCompStatusId;
+		this.studyComponentStatus = studyComponentStatus;
 	}
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="subject_component_generator", sequenceName="SUBJECT_COMPONENT_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "subject_component_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -87,13 +92,15 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@Column(name = "STUDY_COMP_STATUS_ID", precision = 22, scale = 0)
-	public Long getStudyCompStatusId() {
-		return this.studyCompStatusId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_COMP_STATUS_ID")
+	public StudyCompStatus getStudyComponentStatus() {
+		return studyComponentStatus;
 	}
 
-	public void setStudyCompStatusId(Long studyCompStatusId) {
-		this.studyCompStatusId = studyCompStatusId;
+	public void setStudyComponentStatus(StudyCompStatus studyComponentStatus) {
+		this.studyComponentStatus = studyComponentStatus;
 	}
 
 }
