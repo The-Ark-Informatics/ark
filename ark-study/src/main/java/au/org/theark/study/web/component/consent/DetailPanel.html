@@ -5,17 +5,21 @@
 		  <div wicket:id="detailFormContainer">
 		    <div id="searchPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
-			<!--  Row 1 -->
+			
+			<!--  Row 1 Study component Drop Down Choice-->
 			<div id="fldLabel">
 				<div class="label">
-					<label for="phoneID">
-						<label for="areaCode"><wicket:message	key="areaCode">Area Code:</wicket:message></label>
+					<label for="studyComponent">
+						<label for="studyComponent"><wicket:message	key="studyComponent">Study Component:</wicket:message></label>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					 <input wicket:id="phone.areaCode" type="text" />
+					<select wicket:id="consent.studyComp">
+		       		  	<option>Blood</option>
+						<option>Saliva</option>
+		       		</select>
 				</div>
 			</div>
 			
@@ -23,36 +27,37 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<wicket:message	key="phoneNumber">Number:</wicket:message>
+					<label for="studyComponentStatus"><wicket:message key="studyComponent.status">Study Component Status:</wicket:message></label>
 				</div>
 			</div>
 			
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="phone.phoneNumber" type="text" /> 
+				  <select wicket:id="consent.studyComponentStatus">
+		       		<option>Completed</option>
+					<option>Not Completed</option>
+		       	  </select>
 				</div>
 			</div>
 			
 			<div id="searchPanelContentRight">&nbsp;</div>
-		
 			<div id="searchPanelBreaker">&nbsp;</div>
 
-		
+			<!--  Row 2 -->
 			<div id="panelContentLeft">&nbsp;</div>
-			<!--  Row 1 -->
 			<div id="fldLabel">
 				<div class="label">
-					<label for="phoneNumber">
-						<label for="phoneType"><wicket:message	key="phoneType">Phone Type:</wicket:message></label>
+					<label for="consentType">
+						<label for="consentType"><wicket:message key="consent.type">Consent Type:</wicket:message></label>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<select wicket:id="phone.phoneType">
-	       				<option>iPhone</option>
-						<option>Mobile</option>
-	       			</select>
+					<select wicket:id="consent.consentType">
+		       			<option>Hard Copy</option>
+		       			<option>Electronic Copy</option>
+		       		</select>
 				</div>
 			</div>
 			
@@ -60,18 +65,80 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					&nbsp;
+					<label for="consentStatus"><wicket:message key="consent.consentStatus">Consent Status:</wicket:message></label>
 				</div>
 			</div>
 			
 			<div id="fldControl">
 				<div class="label">
-					&nbsp;
+					<select wicket:id="consent.consentStatus">
+		       			<option>Consented</option>
+		       			<option>Not Consented</option>
+		       		</select>
 				</div>
 			</div>
 			
 			<div id="searchPanelContentRight">&nbsp;</div>
-		
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			
+			<!--  Row 3 -->
+			<div id="panelContentLeft">&nbsp;</div>
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="consentedBy"><wicket:message key="consent.consentedBy">Consented By:</wicket:message></label>
+		 			</div> 
+		 	</div> 			       			
+			<div id="fldControl">
+			  <div class="label">
+				<input wicket:id="consent.consentedBy"  type="text" />
+		      </div>
+			</div>
+		       	
+		    <div id="panelMargin">&nbsp;</div>
+				
+			<div id="fldLabel">
+		 			<div class="label">
+						<label for="consentDate"><wicket:message key="consent.date">Consent Date:</wicket:message></label>
+		 			</div> 
+		 	</div> 	
+				
+			<div id="fldControl">
+				<div class="label">
+				  <input wicket:id="consent.consentDate"  type="text" />
+		       	</div>
+			</div>
+				
+			<div id="searchPanelContentRight">&nbsp;</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+	
+			<!--  Row 5 -->
+			<div id="panelContentLeft">&nbsp;</div>
+				<div id="fldLabel">
+		 		 <div class="label">
+				  <label for="consentedBy"><wicket:message key="consent.comments">Comments:</wicket:message></label>
+		 		 </div> 
+		 	</div> 			       			
+			<div id="fldControl">
+				<div class="label">
+				  <textarea wicket:id="consent.comments" rows="5" cols="35"> </textarea>
+		       	</div>
+			</div>
+		       	
+		    <div id="panelMargin">&nbsp;</div>
+				
+			<div id="fldLabel">
+		 			<div class="label">
+						&nbsp;
+		 			</div> 
+		 	</div> 	
+				
+			<div id="fldControl">
+				<div class="label">
+				   &nbsp;
+		       	</div>
+			</div>
+			<div id="searchPanelContentRight">&nbsp;</div>
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
 
