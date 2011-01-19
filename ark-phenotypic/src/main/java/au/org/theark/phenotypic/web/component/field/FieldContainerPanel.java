@@ -74,6 +74,18 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 			@Override
 			protected Object load()
 			{
+				// Get a collection of fields for the study in context by default
+				Collection<Field> fieldCollection = new ArrayList<Field>();
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+				if (sessionStudyId != null && sessionStudyId > 0)
+				{
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+					containerForm.getModelObject().getField().setStudy(study);
+					fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
+				}
+
+				containerForm.getModelObject().setFieldCollection(fieldCollection);
 				return containerForm.getModelObject().getFieldCollection();
 			}
 		};
