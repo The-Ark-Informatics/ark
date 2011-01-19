@@ -68,6 +68,8 @@ public class Constants {
 	public static final String SUBJECT_LIST ="subjectList";
 	public static final String PHONE_LIST = "phoneList";
 	public static final String PHONE_NUMBER_LABEL="phoneNumberLabel";
+	public static final String CONSENT_LIST = "consentList";
+	public static final String CONSENT_COMPONENT_LABEL="consentComponentLabel";
 	
 	public static final String ADDRESS_LIST="addressList";
 	public static final String ADDRESS_LABEL="addressLabel";
@@ -190,6 +192,7 @@ public class Constants {
 	public static final String CONSENT_STUDY_COMP="consent.studyComp";
 	public static final String CONSENT_STUDY_COMP_STATUS = "consent.studyComponentStatus";
 	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
+	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
 		
 	
 			 
