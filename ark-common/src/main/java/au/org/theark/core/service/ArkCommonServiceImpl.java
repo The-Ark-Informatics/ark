@@ -14,6 +14,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -167,12 +168,16 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return studyDao.getConsentStatus();
 	}
 	
-	public List<StudyCompStatus> getStudyComponentStatus(){
-		return studyDao.getStudyComponentStatus();
-	}
-	
 	public List<StudyComp> getStudyComponent(){
 		return studyDao.getStudyComponent();
+	}
+	
+	public List<ConsentType> getConsentType(){
+		return studyDao.getConsentType();
+	}
+	
+	public List<StudyCompStatus> getStudyComponentStatus(){
+		return studyDao.getStudyComponentStatus();
 	}
 
 }
