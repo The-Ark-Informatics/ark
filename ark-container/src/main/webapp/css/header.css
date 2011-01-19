@@ -13,7 +13,6 @@
 	float:left;
 	height:100px;
 	padding-top:10px;
-	width:0;
 }
 
 #product {
@@ -22,8 +21,33 @@
 	padding-top:10px;
 }
 
+#studyName {
+	font-size: 30pt;
+	font-weight: bold; 
+	text-align: center;
+	height: 100px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 10px;
+}
+
+#studyLogo {
+	height: 100px;
+	padding-top:10px;
+	margin:	0px
+	background-color: white;
+	margin-left: auto;
+    margin-right: auto;
+}
+
 #banner {
 	width: 100%;
 	height: 25px;
 	background: url("../images/banner_image.gif") repeat-x scroll center bottom #DAE0D2;	
+}
+
+img.center {   
+	display: block;   
+	margin-left: auto;   
+	margin-right: auto;
 }

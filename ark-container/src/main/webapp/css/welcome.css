@@ -1,5 +1,5 @@
 #welcomePanel {
-	float:left;
+	clear: both;
 	padding-bottom:0;
 	padding-left:5px;
 	text-align:left;
