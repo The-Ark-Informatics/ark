@@ -8,6 +8,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
@@ -28,10 +29,27 @@ import au.org.theark.study.web.component.user.UserContainer;
 public class StudySubMenuTab extends Panel {
 	
 	List<ITab> tabList;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 	
 	public StudySubMenuTab(String id) {
 		super(id);
 		tabList = new ArrayList<ITab>();
+		buildTabs();
+	}
+	
+	public StudySubMenuTab(String id, WebMarkupContainer studyLogoMarkup) {
+		super(id);
+		tabList = new ArrayList<ITab>();
+		this.studyLogoMarkup = studyLogoMarkup;
+		buildTabs();
+	}
+	
+	public StudySubMenuTab(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+		super(id);
+		tabList = new ArrayList<ITab>();
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		buildTabs();
 	}
 	
@@ -106,7 +124,7 @@ public class StudySubMenuTab extends Panel {
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_DETAIL)){
 					
-						panelToReturn = new StudyContainer(panelId);
+						panelToReturn = new StudyContainer(panelId, studyNameMarkup,  studyLogoMarkup);
 					
 					}else if(moduleName.getModuleName().equalsIgnoreCase(Constants.SITE)){
 						

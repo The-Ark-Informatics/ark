@@ -3,15 +3,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
-
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
-import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subject.SubjectContainer;
 
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the
@@ -25,6 +23,8 @@ import au.org.theark.study.web.component.subject.SubjectContainer;
 
 	List<ITab> moduleTabsList;
 	//List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 	
 	public MainTabProviderImpl(String panelId){
 		super(panelId);
@@ -32,8 +32,20 @@ import au.org.theark.study.web.component.subject.SubjectContainer;
 	}
 	
 	
-	public  List<ITab> buildTabs(){
-		
+	public  List<ITab> buildTabs(WebMarkupContainer studyLogoMarkup)
+	{	
+		this.studyLogoMarkup = studyLogoMarkup;
+		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
+		ITab tab2 = createTab(Constants.SUBJECT_MAIN_TAB);
+		moduleTabsList.add(tab1);
+		moduleTabsList.add(tab2);
+		return moduleTabsList;
+	}
+	
+	public  List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup)
+	{	
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
 		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
 		ITab tab2 = createTab(Constants.SUBJECT_MAIN_TAB);
 		moduleTabsList.add(tab1);
@@ -55,7 +67,7 @@ import au.org.theark.study.web.component.subject.SubjectContainer;
 			public Panel getPanel(String pid) {
 				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
-					panelToReturn =  new StudySubMenuTab(pid);//The sub menus for Study 
+					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup);//The sub menus for Study 
 				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
 					panelToReturn = new SubjectSubMenuTab(pid);
 				}
