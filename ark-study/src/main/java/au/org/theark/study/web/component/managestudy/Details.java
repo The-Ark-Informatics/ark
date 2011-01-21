@@ -28,6 +28,9 @@ public class Details  extends Panel{
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editbuttonContainer;
 	private WebMarkupContainer detailFormContainer;
+	private WebMarkupContainer studyLogoImageContainer;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
 	private Container studyContainerForm;
 	
 	
@@ -57,6 +60,9 @@ public class Details  extends Panel{
 					WebMarkupContainer editBtnContainer,
 					WebMarkupContainer detailSumContainer,
 					WebMarkupContainer detailFormContainer,
+					WebMarkupContainer studyNameMarkup,
+					WebMarkupContainer studyLogoMarkup,
+					WebMarkupContainer studyLogoImageContainer,
 					Container studyContainerForm) {
 		super(id);
 		this.listContainer = listContainer;
@@ -68,6 +74,9 @@ public class Details  extends Panel{
 		this.summaryContainer = detailSumContainer;
 		this.detailFormContainer = detailFormContainer;
 		this.studyContainerForm = studyContainerForm;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		this.studyLogoImageContainer = studyLogoImageContainer;
 	}
 
 	
@@ -85,7 +94,6 @@ public class Details  extends Panel{
 	
 	@SuppressWarnings("serial")
 	public void initialisePanel(){
-
 		
 		detailForm = new DetailForm("detailForm", 
 									detailsContainer,
@@ -93,6 +101,9 @@ public class Details  extends Panel{
 									editbuttonContainer, 
 									summaryContainer,
 									detailFormContainer,
+									studyNameMarkup,
+									studyLogoMarkup,
+									studyLogoImageContainer,
 									studyContainerForm){
 			
 			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
