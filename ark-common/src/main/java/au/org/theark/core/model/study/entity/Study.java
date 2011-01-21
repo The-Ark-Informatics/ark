@@ -4,6 +4,7 @@ import java.sql.Blob;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +31,6 @@ import au.org.theark.core.Constants;
 public class Study implements java.io.Serializable {
 
 	// Fields
-
 	private Long id;
 	private StudyStatus studyStatus;
 	private String name;
@@ -47,24 +47,18 @@ public class Study implements java.io.Serializable {
 	private String ldapGroupName;
 	private Boolean autoConsent;
 	private String subStudyBiospecimenPrefix;
-	private Blob studyLogoBlob; 
-	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(
-			0);
-	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(
-			0);
+	private Blob studyLogoBlob;
+	private String filename;
+	
+	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(0);
+	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(0);
 	private Set<StudyComp> studyComps = new HashSet<StudyComp>(0);
-	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(
-			0);
-	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(
-			0);
-	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
-			0);
-	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(
-			0);
-	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
-			0);
-	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(
-			0);
+	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(0);
+	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
+	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
+	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(0);
+	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(0);
+	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(0);
 
 	// Constructors
 
@@ -368,5 +362,22 @@ public class Study implements java.io.Serializable {
 	public void setLinkStudySubstudiesForSubid(
 			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
+	}
+
+	/**
+	 * @param filename the filename to set
+	 */
+	public void setFilename(String filename)
+	{
+		this.filename = filename;
+	}
+
+	/**
+	 * @return the filename
+	 */
+	@Column(name = "FILENAME")
+	public String getFilename()
+	{
+		return filename;
 	}
 }
