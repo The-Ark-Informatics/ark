@@ -329,11 +329,26 @@
 			<div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
-				&nbsp;
+				<div class="label">
+					<label for="studyLogo">
+						<wicket:message	key="study.studyLogo">Study Logo:</wicket:message>
+					</label>
+				</div>
 			</div>
 			<div id="fldControl">
-				&nbsp;				
+				<div wicket:id="studyLogoUploadContainer">
+					<!--  Study Logo uploader -->
+			        <input wicket:id="study.filename" id="studyLogoUpload" type="file" />
+				</div>
+				<div wicket:id="studyLogoImageContainer">
+					<!--  Study Logo image -->
+					<img wicket:id="study.studyLogoImage" id="studyLogoImage" />
+				</div>
+				<div id="note">
+					<wicket:message	key="study.studyLogoNote">Note: Logo's may only be 100x100 pixels, and less than 100kb in size</wicket:message>
+				</div>
 			</div>
+			
 			<div id="searchPanelContentRight">&nbsp;</div>
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
