@@ -38,6 +38,7 @@ public class StudyContainer extends Panel{
 	private WebMarkupContainer summaryContainer;
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
+	private WebMarkupContainer studyLogoImageContainer;
 	
 	private Details detailsPanel;
 	
@@ -74,7 +75,9 @@ public class StudyContainer extends Panel{
 		summaryContainer = new WebMarkupContainer("summaryPanel");
 		summaryContainer.setOutputMarkupPlaceholderTag(true);
 		summaryContainer.setVisible(false);
-
+		
+		studyLogoImageContainer = new WebMarkupContainer("studyLogoImageContainer");
+		studyLogoImageContainer.setOutputMarkupPlaceholderTag(true);
 	}
 	
 	private WebMarkupContainer initialiseDetailPanel(){
@@ -87,6 +90,9 @@ public class StudyContainer extends Panel{
 									editbuttonContainer,
 									summaryContainer,
 									detailFormContainer,
+									studyNameMarkup,
+									studyLogoMarkup,
+									studyLogoImageContainer,
 									containerForm);//Need to pass feedback panel
 				
 				detailsPanel.initialisePanel();
@@ -140,6 +146,7 @@ public class StudyContainer extends Panel{
 																detailFormContainer,
 																studyNameMarkup,
 																studyLogoMarkup,
+																studyLogoImageContainer,
 																containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
