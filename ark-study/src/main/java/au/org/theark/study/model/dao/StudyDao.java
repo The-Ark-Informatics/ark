@@ -73,7 +73,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void updateStudy(Study studyEntity){
-		getSession().update(studyEntity);
+		// session.update and session.flush required as Blob read/writes are used, and InputStream may cause NullPointers when closed incorrectly
+		Session session = getSession();
+		session.update(studyEntity);
+		session.flush();
+	   session.refresh(studyEntity);
 	}
 
 	/* (non-Javadoc)
