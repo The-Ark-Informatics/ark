@@ -193,7 +193,7 @@ public class Constants {
 	public static final String CONSENT_STUDY_COMP_STATUS = "consent.studyComponentStatus";
 	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
 	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
-		
 	
-			 
+	public static final int		PALETTE_ROWS								= 5;
+	public static final long	STUDY_LOGO_FILESIZE						= 100;			 
 }
