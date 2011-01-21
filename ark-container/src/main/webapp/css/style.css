@@ -863,3 +863,8 @@ div.ex {
 	border: 1px solid #FFBD5C;
 	margin: 0px;
 }
+
+#note {
+	font-size: 7pt;
+	font-weight: bold; 
+}
