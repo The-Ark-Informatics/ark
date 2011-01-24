@@ -109,7 +109,7 @@ public class SearchResults extends Panel{
 					item.add(new Label("contact", ""));//the ID here must match the ones in mark-up
 				}
 				
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY, Locale.getDefault());
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);
 				String dateOfApplication ="";
 				if(study.getDateOfApplication() != null){
 					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());
