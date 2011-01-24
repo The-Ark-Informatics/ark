@@ -7,7 +7,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -15,6 +14,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -94,8 +95,6 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			
 			if(sessionPersonId != null){
 				containerForm.getModelObject().getConsent().setSubject(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
-				//getSubjectConsentList(subjectId,)TODO 
-				//personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());
 			}
 				
 			//All the phone items related to the person if one found in session or an empty list
@@ -143,20 +142,28 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected Object load() {
-				//Get the PersonId from session and get the phoneList from backend
+				
+				//Get the PersonId from session and get the phoneList from back end
 				Collection<Consent> consentList = new ArrayList<Consent>();
+				
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-				//try {
+				
+				Study study =	iArkCommonService.getStudy(sessionStudyId);
+				Person subject;
+				try {
 					if(sessionPersonId != null){
-						//consentList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
+						subject = studyService.getPerson(sessionPersonId);
+						containerForm.getModelObject().getConsent().setSubject(subject);
+						containerForm.getModelObject().getConsent().setStudy(study);
+						consentList = studyService.searchConsent(containerForm.getModelObject());
 					}
-//				} catch (EntityNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (ArkSystemException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				} catch (EntityNotFoundException e) {
+					e.printStackTrace();
+				} catch (ArkSystemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				
 				return consentList;
 			}
