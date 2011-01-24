@@ -2,6 +2,7 @@ package au.org.theark.core.vo;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Date;
 
 import au.org.theark.core.model.study.entity.Consent;
 
@@ -13,6 +14,7 @@ public class ConsentVO implements Serializable{
 	
 	
 	protected Consent consent;
+	protected Date consentDateEnd; 
 	protected Collection<Consent> consentList;
 	/**
 	 * We will need upload information here
@@ -32,6 +34,12 @@ public class ConsentVO implements Serializable{
 	}
 	public void setConsentList(Collection<Consent> consentList) {
 		this.consentList = consentList;
+	}
+	public Date getConsentDateEnd() {
+		return consentDateEnd;
+	}
+	public void setConsentDateEnd(Date consentDateEnd) {
+		this.consentDateEnd = consentDateEnd;
 	}
 	
 }
