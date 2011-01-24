@@ -21,8 +21,8 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -30,7 +30,6 @@ import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.phone.DetailPanel;
 
 /**
@@ -56,6 +55,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	 */
 	protected TextField<String> consentedBy;
 	protected DatePicker<Date> consentedDatePicker;
+	protected DatePicker<Date> endConsentedDatePicker;
 	protected DropDownChoice<StudyComp> studyComponentChoice;
 	protected DropDownChoice<StudyCompStatus> studyComponentStatusChoice;
 	protected DropDownChoice<ConsentStatus> consentStatusChoice;
@@ -91,6 +91,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	protected void initialiseSearchForm(){
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
 		consentedDatePicker = new DatePicker<Date>(Constants.CONSENT_CONSENT_DATE);
+		endConsentedDatePicker = new DatePicker<Date>("consentDateEnd");
 		initialiseConsentTypeChoice();
 		initialiseConsentStatusChoice();
 		initialiseComponentChoice();
@@ -140,48 +141,50 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 		add(studyComponentChoice);
 		add(studyComponentStatusChoice);
 		add(consentedDatePicker);
+		add(endConsentedDatePicker);
 		add(consentedBy);
 	}
 	
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
-//		target.addComponent(feedbackPanel);
-//		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-//		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
-//		try{
-//			
-//			Phone phone = getModelObject().getPhone();
-//			phone.setPerson(studyService.getPerson(sessionPersonId));
-//
-////			if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
-////				
-////			}else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
-////				
-////			}
-//			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
-//			if (phones != null && phones.size() == 0)
-//			{
-//				this.info("Fields with the specified criteria does not exist in the system.");
-//				target.addComponent(feedbackPanel);
-//			}
-//			
-//			getModelObject().setPhoneList(phones);
-//			pageableListView.removeAll();
-//			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-//			target.addComponent(listContainer);
-//
-//			
-//		}catch(EntityNotFoundException entityNotFoundException){
-//			this.warn("There are no phone items available for the specified criteria.");
-//			target.addComponent(feedbackPanel);
-//			
-//		}catch(ArkSystemException arkException){
-//			this.error("The Ark Application has encountered a system error.");
-//			target.addComponent(feedbackPanel);
-//		}
-		
+		target.addComponent(feedbackPanel);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
+		Consent consent  = getModelObject().getConsent();
+
+		try {
+			
+			
+			Study study =	iArkCommonService.getStudy(sessionStudyId);
+			Person subject  = studyService.getPerson(sessionPersonId);
+			
+			consent.setSubject(subject);
+			consent.setStudy(study);
+			
+			//Look up based on criteria via back end.
+			//Collection<Consent> consentList =    studyService.searchConsent(getModelObject().getConsent());
+			Collection<Consent> consentList =    studyService.searchConsent(getModelObject());
+			
+			if(consentList != null && consentList.size() == 0){
+				this.info("There are no consents for the specified criteria.");
+				target.addComponent(feedbackPanel);
+			}
+			
+			getModelObject().setConsentList(consentList);
+			pageableListView.removeAll();
+			listContainer.setVisible(true);
+			target.addComponent(listContainer);
+			
+			
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
