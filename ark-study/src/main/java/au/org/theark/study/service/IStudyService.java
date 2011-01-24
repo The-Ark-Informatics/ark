@@ -15,6 +15,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
 
@@ -124,9 +125,13 @@ public interface IStudyService {
 	
 	public void create(Consent consent) throws ArkSystemException;
 	
-	public void update(Consent consent) throws ArkSystemException;
+	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException;
+	
+	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException;
 	
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
+	
+	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException,ArkSystemException;
 	
 	
 

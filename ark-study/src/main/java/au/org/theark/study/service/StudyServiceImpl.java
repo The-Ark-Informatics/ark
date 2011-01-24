@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
@@ -245,6 +246,25 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
 		return studyDao.searchConsent(consent);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.study.service.IStudyService#update(au.org.theark.core.model.study.entity.Consent)
+	 */
+	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
+		studyDao.update(consent);
+		
+	}
+	
+	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException,ArkSystemException{
+		return studyDao.searchConsent(consentVO);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.study.service.IStudyService#delete(au.org.theark.core.model.study.entity.Consent)
+	 */
+	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException {
+		 studyDao.delete(consent);
 	}
 		
 }
