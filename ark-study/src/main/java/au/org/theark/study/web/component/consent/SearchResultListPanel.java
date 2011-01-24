@@ -6,6 +6,8 @@
  */
 package au.org.theark.study.web.component.consent;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -68,17 +70,38 @@ public class SearchResultListPanel extends Panel{
 				Consent consent = item.getModelObject();
 				
 				item.add(buildLink(consent));
+				if(consent.getStudyComponentStatus() != null){
+					item.add(new Label("studyComponentStatus.name", consent.getStudyComponentStatus().getName()));
+				}else{
+					item.add(new Label("studyComponentStatus.name", " "));
+				}
 				
-//				if(phone.getAreaCode() != null){
-//					item.add(new Label("areaCode",phone.getAreaCode()));	
-//				}else{
-//					item.add(new Label("areaCode",""));
-//				}
-//				if(phone.getPhoneType() != null && phone.getPhoneType().getName() != null){
-//					item.add(new Label("phoneType.name",phone.getPhoneType().getName()));	
-//				}else{
-//					item.add(new Label("phoneType.name",""));
-//				}
+				if(consent.getConsentStatus() != null){
+					item.add(new Label("consentStatus.name",consent.getConsentStatus().getName()));
+				}else{
+					item.add(new Label("consentStatus.name"," "));
+				}
+				
+				if(consent.getConsentType() != null){
+					item.add( new Label("consentType.name", consent.getConsentType().getName()));
+				}else{
+					item.add( new Label("consentType.name", ""));
+				}
+				
+				if(consent.getConsentedBy() != null){
+					item.add( new Label("consentedBy", consent.getConsentedBy()));
+				}else{
+					item.add( new Label("consentedBy",""));
+				}
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				String consentDate ="";
+				
+				if(consent.getConsentDate() != null){
+					item.add( new Label("consentDate", simpleDateFormat.format(consent.getConsentDate())));
+				}else{
+					item.add( new Label("consentDate",consentDate));
+				}
 			}
 		};
 		return pageableListView;
