@@ -18,6 +18,7 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 
 
@@ -139,8 +140,13 @@ public interface IStudyDao {
 	public void create(Consent consent) throws ArkSystemException;
 	
 	
+	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException;
+	
+	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException;
+	
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
 	
 	
+	public List<Consent> searchConsent(ConsentVO consentVo) throws EntityNotFoundException,ArkSystemException;
 
 }

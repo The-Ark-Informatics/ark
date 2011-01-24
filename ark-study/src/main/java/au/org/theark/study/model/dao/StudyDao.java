@@ -30,6 +30,7 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
 
@@ -374,14 +375,111 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	
-	public void update(Consent consent) throws ArkSystemException{
+	public void update(Consent consent) throws ArkSystemException,EntityNotFoundException{
 		Session session = getSession();
-		session.update(consent);
+		if((Consent)session.get(Consent.class,consent.getId()) != null){
+			session.update(consent);	
+		}else{
+			throw new EntityNotFoundException("The Consent record you tried to update does not exist in the Ark System");
+		}
+		
+	}
+	
+	/**
+	 * If a consent is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * @param consent
+	 * @throws ArkSystemException
+	 */
+	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException{
+		try{
+			Session session = getSession();
+			consent = (Consent)session.get(Consent.class,consent.getId());	
+			if(consent != null){
+				getSession().delete(consent);	
+			}else{
+				throw new EntityNotFoundException("The Consent record you tried to remove does not exist in the Ark System");
+			}
+			
+		}catch(HibernateException someHibernateException){
+			log.error("An Exception occured while trying to delete this consent " + someHibernateException.getStackTrace());
+		}catch(Exception e){
+			log.error("An Exception occured while trying to delete this consent " + e.getStackTrace());
+			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
+		}
 	}
 	
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
 		
-		return null;
+		Criteria criteria =  getSession().createCriteria(Consent.class);
+		if(consent != null){
+			
+			criteria.add(Restrictions.eq("subject.id", consent.getSubject().getId()));
+			criteria.add(Restrictions.eq("study.id", consent.getStudy().getId()));
+			
+			if(consent.getStudyComp() != null){
+				criteria.add(Restrictions.eq("studyComp", consent.getStudyComp()));	
+			}
+			
+			if(consent.getStudyComponentStatus() != null){
+				criteria.add(Restrictions.eq("studyComponentStatus", consent.getStudyComponentStatus()));
+			}
+			
+			if(consent.getConsentedBy() != null){
+				criteria.add(Restrictions.ilike("consentedBy", consent.getConsentedBy(),MatchMode.ANYWHERE));
+			}
+			
+			if(consent.getConsentStatus() != null){
+				criteria.add(Restrictions.eq("consentStatus", consent.getConsentStatus()));
+			}
+		
+			if(consent.getConsentDate() != null){
+				criteria.add(Restrictions.eq("consentDate", consent.getConsentDate()));
+			}
+			
+			if(consent.getConsentType() != null){
+				criteria.add(Restrictions.eq("consentType", consent.getConsentType()));
+			}
+			
+		}
+		
+		return criteria.list();
+	}
+	
+	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException,ArkSystemException{
+		
+		Criteria criteria =  getSession().createCriteria(Consent.class);
+		if(consentVO != null){
+			
+			criteria.add(Restrictions.eq("subject.id", consentVO.getConsent().getSubject().getId()));
+			criteria.add(Restrictions.eq("study.id",  consentVO.getConsent().getStudy().getId()));
+			
+			if( consentVO.getConsent().getStudyComp() != null){
+				criteria.add(Restrictions.eq("studyComp",  consentVO.getConsent().getStudyComp()));	
+			}
+			
+			if( consentVO.getConsent().getStudyComponentStatus() != null){
+				criteria.add(Restrictions.eq("studyComponentStatus",  consentVO.getConsent().getStudyComponentStatus()));
+			}
+			
+			if( consentVO.getConsent().getConsentedBy() != null){
+				criteria.add(Restrictions.ilike("consentedBy",  consentVO.getConsent().getConsentedBy(),MatchMode.ANYWHERE));
+			}
+			
+			if( consentVO.getConsent().getConsentStatus() != null){
+				criteria.add(Restrictions.eq("consentStatus",  consentVO.getConsent().getConsentStatus()));
+			}
+		
+			if( consentVO.getConsent().getConsentDate() != null){
+				criteria.add(Restrictions.between("consentDate",  consentVO.getConsent().getConsentDate(), consentVO.getConsentDateEnd()));
+			}
+			
+			if( consentVO.getConsent().getConsentType() != null){
+				criteria.add(Restrictions.eq("consentType",  consentVO.getConsent().getConsentType()));
+			}
+			
+		}
+		List<Consent> list = criteria.list();
+		return list;
 	}
 	
 	
