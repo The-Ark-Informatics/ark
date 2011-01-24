@@ -175,9 +175,23 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	 */
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
+		
+		try {
+			studyService.delete(containerForm.getModelObject().getConsent());
+		
+		}catch(EntityNotFoundException entityNotFoundException){
+			this.error("The consent you tried to delete does not exist");
+		}
+		catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			//Report this to the user
+			this.error("A system exception has occured during delete operation of the Consent");
+		}
+		
 		selectModalWindow.close(target);
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
+		onCancel(target);
 	}
 
 	/* (non-Javadoc)
@@ -208,17 +222,15 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 				processErrors(target);
 			}
 			
-			onSavePostProcess(target);
-
-			
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.error("The Consent record you tried to update is no longer available in the system");
+			processErrors(target);
 		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.error(e.getMessage());
+			processErrors(target);
+		}finally{
+			onSavePostProcess(target);
 		}
-		
 		
 	}
 
