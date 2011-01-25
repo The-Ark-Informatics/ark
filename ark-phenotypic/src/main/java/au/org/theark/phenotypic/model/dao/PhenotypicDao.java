@@ -33,6 +33,7 @@ import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
+import au.org.theark.phenotypic.util.PhenoUploadReport;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
@@ -593,13 +594,21 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public void createUpload(PhenoUpload phenoUpload)
 	{
+		Session session = getSession();
+		
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 		phenoUpload.setInsertTime(dateNow);
 		phenoUpload.setUserId(currentUser.getPrincipal().toString());
 		phenoUpload.setStartTime(dateNow);
 
-		getSession().save(phenoUpload);
+		session.save(phenoUpload);
+		
+		// Set Upload report
+		PhenoUploadReport uploadReport = new PhenoUploadReport();
+		PhenoUploadReport.appendDetails(phenoUpload);
+		phenoUpload.setUploadReport(uploadReport.getReportAsBlob());
+		session.update(phenoUpload);
 	}
 	
 	public void createUpload(UploadVO phenoUploadVo)
@@ -617,6 +626,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 		session.save(phenoUploadVo.getUpload());
 		session.save(phenoUploadVo.getPhenoCollectionUpload());
+		
+		// Set Upload report
+		PhenoUploadReport uploadReport = new PhenoUploadReport();
+		PhenoUploadReport.appendDetails(phenoUploadVo.getUpload());
+		phenoUploadVo.getUpload().setUploadReport(uploadReport.getReportAsBlob());
+		session.update(phenoUploadVo.getUpload());
 	}
 
 	public void updateUpload(PhenoUpload upload)
@@ -875,6 +890,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILENAME, upload.getFilename()));
 		}
 
+		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.UPLOAD_ID));
 		java.util.Collection<PhenoUpload> uploadCollection = criteria.list();
 
 		return uploadCollection;
