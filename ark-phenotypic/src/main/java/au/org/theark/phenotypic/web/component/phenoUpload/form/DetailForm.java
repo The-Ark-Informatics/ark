@@ -1,10 +1,8 @@
 package au.org.theark.phenotypic.web.component.phenoUpload.form;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -22,7 +20,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
-import org.apache.wicket.util.io.IOUtils;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.Study;
