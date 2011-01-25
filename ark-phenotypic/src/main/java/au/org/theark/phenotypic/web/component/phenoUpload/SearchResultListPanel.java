@@ -226,6 +226,11 @@ public class SearchResultListPanel extends Panel
 				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));			
 			};
 		};
+		
+		ajaxButton.setVisible(true);
+		
+		if (upload.getPayload() == null)
+			ajaxButton.setVisible(false);
 
 		return ajaxButton;
 	}
@@ -280,6 +285,11 @@ public class SearchResultListPanel extends Panel
 				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport"+upload.getId()));
 			};
 		};
+		
+		ajaxButton.setVisible(true);
+		
+		if (upload.getUploadReport() == null)
+			ajaxButton.setVisible(false);
 
 		return ajaxButton;
 	}
