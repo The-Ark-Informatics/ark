@@ -1,0 +1,46 @@
+#contextMenu p {
+	display: none;
+}
+
+#contextMenu ul {
+	width: 100%;
+	float: left;
+	padding: 0;
+	margin-left: 0;
+	font: bold 12px Verdana, sans-serif;
+}
+
+#contextMenu ul li {
+	list-style: none;
+	margin: 0; 
+	float: left;
+	padding: 1px 0.5em;
+	margin-left: 10%;
+	/*border: 1px solid #EEEEEE;*/
+	border-bottom: none;
+	/*background-color: #EEEEEE;*/
+	text-decoration: none;
+	background-image: url(title-glass.png);
+	background-position: 50%;
+	background-repeat: repeat-x;
+	display: block;
+	width: 10%;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .clearfix {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .clearfix {
+	min-height: 1px;
+}
