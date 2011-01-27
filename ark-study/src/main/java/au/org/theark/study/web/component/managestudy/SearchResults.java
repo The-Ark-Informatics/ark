@@ -1,13 +1,9 @@
 package au.org.theark.study.web.component.managestudy;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -22,16 +18,13 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
-import org.apache.wicket.util.io.Streams;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ImageResource;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
@@ -55,10 +48,11 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
 	private WebMarkupContainer studyLogoImageContainer;
+	private WebMarkupContainer arkContextMarkup;
 	
 	private ContextImage noStudyLogoImage;
 	private NonCachingImage studyLogoImage;
-	private transient StudyLogo studyHelper;
+	private transient StudyHelper studyHelper;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -73,6 +67,7 @@ public class SearchResults extends Panel{
 							WebMarkupContainer studyNameMarkup,
 							WebMarkupContainer studyLogoMarkup,
 							WebMarkupContainer studyLogoImageContainer,
+							WebMarkupContainer arkContextMarkup,
 							Container containerForm){
 		super(id);
 		searchMarkupContainer = searchWebMarkupContainer;
@@ -85,6 +80,7 @@ public class SearchResults extends Panel{
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.studyLogoImageContainer = studyLogoImageContainer;
+		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
@@ -169,9 +165,13 @@ public class SearchResults extends Panel{
 				editBtnContainer.setEnabled(true);
 				detailSummaryContainer.setVisible(true);
 				
-				studyHelper = new StudyLogo();
+				studyHelper = new StudyHelper();
 				studyHelper.setStudyLogo(searchStudy, target, studyNameMarkup, studyLogoMarkup);
 				studyHelper.setStudyLogoImage(searchStudy, "study.studyLogoImage", studyLogoImageContainer);
+
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.resetContextLabel(target, arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, searchStudy.getName(), arkContextMarkup);
 				
 				target.addComponent(studyLogoImageContainer);
 				target.addComponent(searchMarkupContainer);
