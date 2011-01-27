@@ -11,6 +11,7 @@ import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.slf4j.Logger;
@@ -31,12 +32,21 @@ public class PhenotypicSubMenuTab extends Panel
 	private transient Logger	log	= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
 	private transient Subject	currentUser;
 	private transient Long		studyId;
+	private WebMarkupContainer arkContextMarkup;
 	List<ITab>						tabList;
 
 	public PhenotypicSubMenuTab(String id)
 	{
 		super(id);
 		tabList = new ArrayList<ITab>();
+		buildTabs();
+	}
+	
+	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
+	{
+		super(id);
+		tabList = new ArrayList<ITab>();
+		this.arkContextMarkup = arkContextMarkup;
 		buildTabs();
 	}
 
@@ -93,7 +103,88 @@ public class PhenotypicSubMenuTab extends Panel
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
 					{
-						panelToReturn = new PhenoCollectionContainerPanel(panelId); // Note the constructor
+						panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
+					{
+						panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU))
+					{
+						panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
+					{
+						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
+					{
+						panelToReturn = new ReportContainerPanel(panelId); // Note the constructor
+					}
+
+					return panelToReturn;
+				};
+			});
+		}
+
+		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
+		add(moduleTabbedPanel);
+	}
+	
+	public void buildTabs(final WebMarkupContainer arkContextMarkup)
+	{
+		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
+		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
+
+		// This way we can get the menus from the back-end.
+		// We should source this data from a table in the backend and wrap it up in a class like this
+		MenuModule menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENOTYPIC_SUMMARY_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_SUMMARY_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.FIELD_SUBMENU);
+		menuModule.setResourceKey(Constants.FIELD_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENO_COLLECTION_SUBMENU);
+		menuModule.setResourceKey(Constants.COLLECTION_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.FIELD_DATA_SUBMENU);
+		menuModule.setResourceKey(Constants.FIELD_DATA_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.REPORT_SUBMENU);
+		menuModule.setResourceKey(Constants.REPORT_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+
+		for (final MenuModule moduleName : moduleTabs)
+		{
+			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), this, moduleName.getModuleName())))
+			{
+				@Override
+				public Panel getPanel(String panelId)
+				{
+
+					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
+
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
+					{
+						panelToReturn = new SummaryContainerPanel(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
+					{
+						panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
 					{
