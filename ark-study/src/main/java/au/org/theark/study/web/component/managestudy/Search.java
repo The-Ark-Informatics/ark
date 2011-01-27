@@ -15,9 +15,9 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
@@ -40,7 +40,13 @@ public class Search extends Panel{
 	private WebMarkupContainer saveArchivebuttonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailFormContainer;
+	private WebMarkupContainer studyNameMarkup;
+	private WebMarkupContainer studyLogoMarkup;
+	private WebMarkupContainer studyLogoImageContainer;
+	private WebMarkupContainer	studyLogoUploadContainer;
+	private WebMarkupContainer arkContextMarkup;
 	private Details details;
+	private transient StudyHelper studyHelper;
 	
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -69,12 +75,24 @@ public class Search extends Panel{
 					WebMarkupContainer summaryContainer,
 					WebMarkupContainer editBtnContainer,
 					WebMarkupContainer detailFormCompContainer,
+					WebMarkupContainer studyNameMarkup,
+					WebMarkupContainer studyLogoMarkup,
+					WebMarkupContainer studyLogoImageContainer,
+					WebMarkupContainer studyLogoUploadContainer,
+					WebMarkupContainer arkContextMarkup,
 					Container containerForm
 					) {
 		
 		super(id);
 		this.studyStatusList = studyStatusList;
 		this.summaryContainer = summaryContainer;
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		this.studyLogoImageContainer = studyLogoImageContainer; 
+		this.studyLogoUploadContainer = studyLogoUploadContainer;
+		this.studyLogoUploadContainer = studyLogoUploadContainer;
+		this.arkContextMarkup = arkContextMarkup;
+		
 		pageListView = pageableListView;
 		listContainer = resultListContainer;
 		searchWebMarkupContainer = searchMarkupContainer;
@@ -127,6 +145,23 @@ public class Search extends Panel{
 				// Hide Summary details on new
 				summaryContainer.setVisible(false);
 				target.addComponent(summaryContainer);
+				
+				// Show upload item for new Study
+				studyLogoMarkup.setVisible(true);
+				studyLogoImageContainer.setVisible(true);
+				studyLogoUploadContainer.setVisible(true);
+				
+				studyHelper = new StudyHelper();
+				studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyNameMarkup, studyLogoMarkup);
+				studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyLogoImageContainer);
+				
+				target.addComponent(studyLogoMarkup);
+				target.addComponent(studyLogoUploadContainer);
+				target.addComponent(studyLogoImageContainer);
+				
+				// Clear context items
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.resetContextLabel(target, arkContextMarkup);
 				
 				//If the selected side has items then its re-using the first object
 				processDetail(target, Constants.MODE_NEW);
