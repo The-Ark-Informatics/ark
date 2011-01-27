@@ -39,6 +39,7 @@ public class StudyContainer extends Panel{
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
 	private WebMarkupContainer studyLogoImageContainer;
+	private WebMarkupContainer studyLogoUploadContainer;
 	private WebMarkupContainer arkContextMarkup;
 	
 	private Details detailsPanel;
@@ -79,6 +80,9 @@ public class StudyContainer extends Panel{
 		
 		studyLogoImageContainer = new WebMarkupContainer("studyLogoImageContainer");
 		studyLogoImageContainer.setOutputMarkupPlaceholderTag(true);
+		
+		studyLogoUploadContainer = new WebMarkupContainer("studyLogoUploadContainer");
+		studyLogoUploadContainer.setOutputMarkupPlaceholderTag(true);
 	}
 	
 	private WebMarkupContainer initialiseDetailPanel(){
@@ -94,6 +98,8 @@ public class StudyContainer extends Panel{
 									studyNameMarkup,
 									studyLogoMarkup,
 									studyLogoImageContainer,
+									studyLogoUploadContainer,
+									arkContextMarkup,
 									containerForm);//Need to pass feedback panel
 				
 				detailsPanel.initialisePanel();
@@ -115,6 +121,11 @@ public class StudyContainer extends Panel{
 										summaryContainer,
 										editbuttonContainer,
 										detailFormContainer,
+										studyNameMarkup,
+										studyLogoMarkup,
+										studyLogoImageContainer,
+										studyLogoUploadContainer,
+										arkContextMarkup,
 										containerForm);
 		
 		searchStudyPanel.initialisePanel();
