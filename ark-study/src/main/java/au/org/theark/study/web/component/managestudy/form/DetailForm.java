@@ -49,7 +49,7 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
-import au.org.theark.study.web.component.managestudy.StudyLogo;
+import au.org.theark.study.web.component.managestudy.StudyHelper;
 
 @SuppressWarnings({ "unchecked", "serial", "unused" })
 public class DetailForm extends Form<StudyModelVO>
@@ -114,7 +114,7 @@ public class DetailForm extends Form<StudyModelVO>
 	AjaxButton									editCancelButton;
 	List<ModuleVO>								modules;
 
-	private transient StudyLogo			studyHelper;
+	private transient StudyHelper			studyHelper;
 
 	protected void onEdit(StudyModelVO studyModel, AjaxRequestTarget target)
 	{
@@ -230,7 +230,7 @@ public class DetailForm extends Form<StudyModelVO>
 				onSave(model, target);
 
 				// Set Study logo (both on application header, and within study detail form)
-				StudyLogo studyHelper = new StudyLogo();
+				StudyHelper studyHelper = new StudyHelper();
 				studyHelper.setStudyLogo(model.getStudy(), target, studyNameMarkupContainer, studyLogoMarkupContainer);
 				studyHelper.setStudyLogoImage(model.getStudy(), "study.studyLogoImage", studyLogoContainer);
 
@@ -337,7 +337,7 @@ public class DetailForm extends Form<StudyModelVO>
 		// Add default image regardless
 		noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
 		studyLogoContainer.add(noStudyLogoImage);
-		studyHelper = new StudyLogo();
+		studyHelper = new StudyHelper();
 		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyLogoContainer);
 
 		attachValidation();
