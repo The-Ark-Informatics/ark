@@ -67,6 +67,7 @@ public class DetailForm extends Form<StudyModelVO>
 	private WebMarkupContainer	searchContainer;
 	private WebMarkupContainer	studyNameMarkupContainer;
 	private WebMarkupContainer	studyLogoMarkupContainer;
+	private WebMarkupContainer arkContextMarkup;
 
 	private int						mode;
 	private TextField<String>	studyIdTxtFld;
@@ -161,7 +162,8 @@ public class DetailForm extends Form<StudyModelVO>
 	 *           The WebMarkupContainer that will wrap the SearchResults
 	 */
 	public DetailForm(String id, final WebMarkupContainer detailsContainer, WebMarkupContainer saveArchiveContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer sumContainer,
-			WebMarkupContainer detailFormContainer, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer studyLogoImageContainer, Container studyContainerForm)
+			WebMarkupContainer detailFormContainer, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer studyLogoImageContainer, 
+			WebMarkupContainer arkContextMarkup, Container studyContainerForm)
 	{
 
 		super(id);
@@ -174,6 +176,7 @@ public class DetailForm extends Form<StudyModelVO>
 		this.studyLogoContainer = studyLogoImageContainer;
 		this.studyNameMarkupContainer = studyNameMarkup;
 		this.studyLogoMarkupContainer = studyLogoMarkup;
+		this.arkContextMarkup = arkContextMarkup;
 
 		// Multipart required for file uploads
 		setMultiPart(true);
@@ -213,9 +216,7 @@ public class DetailForm extends Form<StudyModelVO>
 				try
 				{
 					// Retrieve file and store as Blob in databasse
-					FileUpload fileUpload = fileUploadField.getFileUpload();
-					
-					System.out.println("Study logo size: " + fileUpload.getSize()); 
+					FileUpload fileUpload = fileUploadField.getFileUpload(); 
 					
 					// Copy file to Blob object
 					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
@@ -322,11 +323,6 @@ public class DetailForm extends Form<StudyModelVO>
 
 		studyLogoUploadContainer = new WebMarkupContainer("studyLogoUploadContainer");
 		studyLogoUploadContainer.setOutputMarkupPlaceholderTag(true);
-		// Hide upload item until edit mode
-		studyLogoUploadContainer.setVisible(false);
-
-		// studyLogoImageContainer = new WebMarkupContainer("studyLogoImageContainer");
-		// studyLogoImageContainer.setOutputMarkupPlaceholderTag(true);
 
 		// fileUpload for logo
 		fileUploadField = new FileUploadField("study.filename",new Model<FileUpload>());
