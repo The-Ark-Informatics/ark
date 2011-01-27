@@ -390,9 +390,9 @@ public class DetailForm extends Form<StudyModelVO>
 
 	private void attachValidation()
 	{
-		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
+		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", null, new Model<String>("Study Name")));
 		// TODO Have to stop the validator posting the content with the error message
-		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 1000));
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded",null, new Model<String>("Study Synopsis")));
 		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
 		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.doa.max.range", this, null));
 		// Can be only today
