@@ -1,8 +1,15 @@
 <wicket:extend>
 	<div id="menuZone">
-	    <div wicket:id="arkSummaryContainer">
-	       <div wicket:id="arkContextPanel">The Panel</div>
-	    </div>
+		<div id="contextMenu" class="clearfix">
+		    <div wicket:id="contextMarkupContainer">
+		    	<ul>
+			    	<li><span wicket:id="studyLabel">Study Label</span></li>
+			       	<li><span wicket:id="subjectLabel">Subject Label</span></li>
+					<li><span wicket:id="phenoLabel">Pheno Label</span></li>
+					<li><span wicket:id="genoLabel">Geno Label</span></li>
+				</ul>
+		    </div>
+		 </div>
 		<div wicket:id="moduleTabsList" class="tabpanel"></div>
 	</div>
 </wicket:extend>
