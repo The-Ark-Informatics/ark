@@ -6,7 +6,9 @@ import java.util.List;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 
+import au.org.theark.core.web.component.ArkContextPanel;
 import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
@@ -18,6 +20,7 @@ public class HomePage extends BasePage
 {
 
 	private static final long	serialVersionUID	= 1L;
+	private WebMarkupContainer wmc;
 
 	/**
 	 * Constructor that is invoked when page is invoked without a session.
@@ -28,6 +31,11 @@ public class HomePage extends BasePage
 	public HomePage(final PageParameters parameters)
 	{
 		buildModuleTabs();
+		
+		wmc = new WebMarkupContainer("arkSummaryContainer");
+		ArkContextPanel arkContextPanel = new ArkContextPanel("arkContextPanel");
+		wmc.add(arkContextPanel);
+		add(wmc);
 	}
 
 	@Override
