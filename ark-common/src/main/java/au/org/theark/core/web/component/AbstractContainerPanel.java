@@ -18,7 +18,6 @@ import org.apache.wicket.model.IModel;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractContainerPanel<T> extends Panel{
-
 	protected FeedbackPanel feedBackPanel;
 	
 	/*Web Markup Containers */
@@ -26,6 +25,10 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	protected WebMarkupContainer searchResultPanelContainer;
 	protected WebMarkupContainer detailPanelContainer;
 	protected WebMarkupContainer detailPanelFormContainer;
+	
+	protected WebMarkupContainer wizardPanelContainer;
+	protected WebMarkupContainer wizardPanelFormContainer;
+	
 	protected WebMarkupContainer viewButtonContainer;
 	protected WebMarkupContainer editButtonContainer;
 
@@ -55,6 +58,15 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
 		detailPanelFormContainer.setEnabled(false);
 		
+		wizardPanelContainer = new WebMarkupContainer("wizardContainer");
+		wizardPanelContainer.setOutputMarkupPlaceholderTag(true);
+		wizardPanelContainer.setVisible(false);
+
+		//Contains the controls of the Wizard
+		wizardPanelFormContainer = new WebMarkupContainer("wizardFormContainer");
+		wizardPanelFormContainer.setOutputMarkupPlaceholderTag(true);
+		wizardPanelFormContainer.setEnabled(false);
+		
 		//The wrapper for ResultsList panel that will contain a ListView
 		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
 		searchResultPanelContainer.setOutputMarkupPlaceholderTag(true);
@@ -83,6 +95,8 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	protected abstract WebMarkupContainer initialiseSearchResults();
 	
 	protected abstract WebMarkupContainer initialiseDetailPanel();
+	
+	//protected abstract WebMarkupContainer initialiseWizardPanel();
 	
 	protected abstract WebMarkupContainer initialiseSearchPanel();
 	
