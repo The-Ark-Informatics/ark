@@ -12,6 +12,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -31,6 +32,8 @@ public class Details  extends Panel{
 	private WebMarkupContainer studyLogoImageContainer;
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
+	private WebMarkupContainer studyLogoUploadMarkup;
+	WebMarkupContainer arkContextMarkup;
 	private Container studyContainerForm;
 	
 	
@@ -63,6 +66,8 @@ public class Details  extends Panel{
 					WebMarkupContainer studyNameMarkup,
 					WebMarkupContainer studyLogoMarkup,
 					WebMarkupContainer studyLogoImageContainer,
+					WebMarkupContainer studyLogoUploadMarkup,
+					WebMarkupContainer arkContextMarkup,
 					Container studyContainerForm) {
 		super(id);
 		this.listContainer = listContainer;
@@ -77,6 +82,7 @@ public class Details  extends Panel{
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.studyLogoImageContainer = studyLogoImageContainer;
+		this.studyLogoUploadMarkup = studyLogoUploadMarkup; 
 	}
 
 	
@@ -104,7 +110,9 @@ public class Details  extends Panel{
 									studyNameMarkup,
 									studyLogoMarkup,
 									studyLogoImageContainer,
-									studyContainerForm){
+									arkContextMarkup,
+									studyContainerForm
+									){
 			
 			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
 				
@@ -125,6 +133,11 @@ public class Details  extends Panel{
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 					studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
+					
+					// Set Study into context items
+					ContextHelper contextHelper = new ContextHelper();
+					contextHelper.resetContextLabel(target, arkContextMarkup);
+					contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), arkContextMarkup);
 
 				}
 				catch(EntityExistsException eee){
