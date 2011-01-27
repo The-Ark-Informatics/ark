@@ -112,6 +112,7 @@ public class StudyContainer extends Panel{
 										detailsContainer,
 										detailsPanel,
 										saveArchivebuttonContainer,
+										summaryContainer,
 										editbuttonContainer,
 										detailFormContainer,
 										containerForm);
