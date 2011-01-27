@@ -34,6 +34,7 @@ public class Search extends Panel{
 	private FeedbackPanel fbPanel;
 	PageableListView<Study> pageListView;
 	private WebMarkupContainer listContainer;
+	private WebMarkupContainer summaryContainer;
 	private WebMarkupContainer searchWebMarkupContainer;
 	private WebMarkupContainer detailsWebMarkupContainer;
 	private WebMarkupContainer saveArchivebuttonContainer;
@@ -65,6 +66,7 @@ public class Search extends Panel{
 					WebMarkupContainer detailsContainer, 
 					Details detailsPanel,
 					WebMarkupContainer saveArchBtnContainer,
+					WebMarkupContainer summaryContainer,
 					WebMarkupContainer editBtnContainer,
 					WebMarkupContainer detailFormCompContainer,
 					Container containerForm
@@ -72,6 +74,7 @@ public class Search extends Panel{
 		
 		super(id);
 		this.studyStatusList = studyStatusList;
+		this.summaryContainer = summaryContainer;
 		pageListView = pageableListView;
 		listContainer = resultListContainer;
 		searchWebMarkupContainer = searchMarkupContainer;
@@ -120,6 +123,11 @@ public class Search extends Panel{
 				}
 				
 				containerForm.getModelObject().setModulesAvailable(modules);
+				
+				// Hide Summary details on new
+				summaryContainer.setVisible(false);
+				target.addComponent(summaryContainer);
+				
 				//If the selected side has items then its re-using the first object
 				processDetail(target, Constants.MODE_NEW);
 			}
