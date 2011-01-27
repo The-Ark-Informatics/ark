@@ -25,6 +25,7 @@ import au.org.theark.study.web.Constants;
 	//List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
+	private WebMarkupContainer arkContextMarkup;
 	
 	public MainTabProviderImpl(String panelId){
 		super(panelId);
@@ -42,10 +43,12 @@ import au.org.theark.study.web.Constants;
 		return moduleTabsList;
 	}
 	
-	public  List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup)
+	public  List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup)
 	{	
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		this.arkContextMarkup = arkContextMarkup;
+		
 		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
 		ITab tab2 = createTab(Constants.SUBJECT_MAIN_TAB);
 		moduleTabsList.add(tab1);
@@ -67,7 +70,7 @@ import au.org.theark.study.web.Constants;
 			public Panel getPanel(String pid) {
 				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
-					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup);//The sub menus for Study 
+					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup);//The sub menus for Study 
 				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
 					panelToReturn = new SubjectSubMenuTab(pid);
 				}
