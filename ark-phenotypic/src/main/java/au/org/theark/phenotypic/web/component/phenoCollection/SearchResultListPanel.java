@@ -16,6 +16,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -36,12 +37,14 @@ public class SearchResultListPanel extends Panel
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer arkContextMarkup;
 
 	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
 			DetailPanel detail,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailPanelFormContainer)
+			WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
@@ -50,8 +53,10 @@ public class SearchResultListPanel extends Panel
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer; 
+		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkContextMarkup = arkContextMarkup;
 		this.setDetailPanel(detail);
+		
 	}
 
 	/**
@@ -177,6 +182,11 @@ public class SearchResultListPanel extends Panel
 				
 				// Have to Edit, before allowing delete
 				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
+				
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.resetContextLabel(target, arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, phenoCollection.getStudy().getName(), arkContextMarkup);
+				contextHelper.setPhenoContextLabel(target, phenoCollection.getName(), arkContextMarkup);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
