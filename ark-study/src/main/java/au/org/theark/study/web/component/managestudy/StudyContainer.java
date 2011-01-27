@@ -39,6 +39,7 @@ public class StudyContainer extends Panel{
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
 	private WebMarkupContainer studyLogoImageContainer;
+	private WebMarkupContainer arkContextMarkup;
 	
 	private Details detailsPanel;
 	
@@ -147,6 +148,7 @@ public class StudyContainer extends Panel{
 																studyNameMarkup,
 																studyLogoMarkup,
 																studyLogoImageContainer,
+																arkContextMarkup,
 																containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
@@ -204,11 +206,12 @@ public class StudyContainer extends Panel{
 		
 	}
 	
-public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
+public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
 		
 		super(id);
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
+		this.arkContextMarkup = arkContextMarkup;
 		
 		initialiseMarkupContainers();
 		//Create the form that will hold the other controls
