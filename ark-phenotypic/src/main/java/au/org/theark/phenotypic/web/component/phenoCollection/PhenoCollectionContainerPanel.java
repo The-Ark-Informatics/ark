@@ -29,6 +29,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 	private SearchResultListPanel					searchResultPanel;
 	private DetailPanel									detailPanel;
 	private PageableListView<PhenoCollection>			listView;
+	private WebMarkupContainer arkContextMarkup;
 
 	private ContainerForm						containerForm;
 
@@ -56,6 +57,26 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 		add(containerForm);
 	}
+	
+	public PhenoCollectionContainerPanel(String id, WebMarkupContainer arkContextMarkup)
+	{
+		super(id);
+
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<PhenoCollectionVO>(new PhenoCollectionVO());
+		this.arkContextMarkup = arkContextMarkup;
+
+		initialiseMarkupContainers();
+
+		/* Bind the CPM to the Form */
+		containerForm = new ContainerForm("containerForm", cpModel);
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+
+		add(containerForm);
+	}
 
 	protected WebMarkupContainer initialiseSearchResults()
 	{
@@ -63,7 +84,8 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
 				viewButtonContainer,
 				editButtonContainer,
-				detailPanelFormContainer);
+				detailPanelFormContainer,
+				arkContextMarkup);
 
 		iModel = new LoadableDetachableModel<Object>()
 		{
