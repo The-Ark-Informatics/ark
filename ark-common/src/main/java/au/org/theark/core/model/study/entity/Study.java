@@ -148,7 +148,7 @@ public class Study implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION", length=255)
 	public String getDescription() {
 		return this.description;
 	}
