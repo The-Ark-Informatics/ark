@@ -121,10 +121,16 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 	protected WebMarkupContainer initialiseDetailPanel()
 	{
-		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
-				viewButtonContainer,
-				editButtonContainer,
-				detailPanelFormContainer);
+		detailPanel = new DetailPanel("detailPanel", 
+												searchResultPanelContainer, 
+												feedBackPanel, 
+												detailPanelContainer, 
+												searchPanelContainer, 
+												containerForm,
+												viewButtonContainer,
+												editButtonContainer,
+												detailPanelFormContainer,
+												arkContextMarkup);
 		detailPanel.initialisePanel();
 		detailPanelContainer.add(detailPanel);
 		return detailPanelContainer;
