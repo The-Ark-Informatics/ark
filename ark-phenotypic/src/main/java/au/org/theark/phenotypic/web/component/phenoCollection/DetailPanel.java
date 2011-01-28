@@ -19,10 +19,9 @@ public class DetailPanel extends Panel
 	private WebMarkupContainer 				detailPanelFormContainer;
 	private WebMarkupContainer 				viewButtonContainer;
 	private WebMarkupContainer 				editButtonContainer;
+	private WebMarkupContainer 				arkContextMarkup;
 	
 	private ContainerForm						containerForm;
-	
-	
 
 	public DetailPanel(	String id, 
 					final WebMarkupContainer listContainer, 
@@ -32,7 +31,8 @@ public class DetailPanel extends Panel
 					ContainerForm containerForm,
 					WebMarkupContainer viewButtonContainer,
 					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer)
+					WebMarkupContainer detailPanelFormContainer,
+					WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
 		this.feedBackPanel = feedBackPanel;
@@ -43,6 +43,7 @@ public class DetailPanel extends Panel
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	public void initialisePanel()
@@ -56,7 +57,8 @@ public class DetailPanel extends Panel
 										viewButtonContainer, 
 										editButtonContainer, 
 										detailPanelFormContainer,
-										searchPanelContainer);
+										searchPanelContainer,
+										arkContextMarkup);
 		
 		detailForm.initialiseDetailForm();
 		add(detailForm);
