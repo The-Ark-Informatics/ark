@@ -71,6 +71,19 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 			@Override
 			protected Object load()
 			{
+				// Get a collection of field data for the study in context by default
+				Collection<FieldData> fieldDataCol = new ArrayList<FieldData>();
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+				if (sessionStudyId != null && sessionStudyId > 0)
+				{
+					Study study = iArkCommonService.getStudy(sessionStudyId);
+					containerForm.getModelObject().getPhenoCollection().setStudy(study);
+					fieldDataCol = phenotypicService.searchFieldData(containerForm.getModelObject().getFieldData());
+				}
+				
+				listView.removeAll();
+				containerForm.getModelObject().setFieldDataCollection(fieldDataCol);
 				return containerForm.getModelObject().getFieldDataCollection();
 			}
 		};
