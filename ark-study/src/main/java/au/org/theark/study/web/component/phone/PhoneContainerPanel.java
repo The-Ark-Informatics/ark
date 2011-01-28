@@ -163,7 +163,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO>{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				pageableListView.removeAll();
 				return personPhoneList;
 			}
 		};
