@@ -194,6 +194,10 @@ public class Constants {
 	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
 	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
 	
-	public static final int		PALETTE_ROWS								= 5;
-	public static final long	STUDY_LOGO_FILESIZE						= 100;			 
+	public static final int		PALETTE_ROWS = 5;
+	public static final long	STUDY_LOGO_FILESIZE = 100;
+	
+	/*Custom Field*/
+	public static final String CUSTOM_FIELD_FIELD_TITLE = "customField.fieldTitle";
+	public static final String CUSTOM_FIELD_FIELD_NAME="customField.name";
 }
