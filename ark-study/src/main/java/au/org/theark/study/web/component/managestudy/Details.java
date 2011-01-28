@@ -1,11 +1,17 @@
 package au.org.theark.study.web.component.managestudy;
 
+import java.io.IOException;
+import java.sql.Blob;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -83,6 +89,7 @@ public class Details  extends Panel{
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.studyLogoImageContainer = studyLogoImageContainer;
 		this.studyLogoUploadMarkup = studyLogoUploadMarkup; 
+		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	
@@ -114,9 +121,22 @@ public class Details  extends Panel{
 									studyContainerForm
 									){
 			
-			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target){
+			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target, FileUploadField fileUploadField){
 				
-				try{
+				try
+				{
+					// Store Study logo image
+					if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+					{
+						// Retrieve file and store as Blob in databasse
+						FileUpload fileUpload = fileUploadField.getFileUpload(); 
+						
+						// Copy file to Blob object
+						Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+						studyModel.getStudy().setStudyLogoBlob(payload);
+						studyModel.getStudy().setFilename(fileUpload.getClientFileName());
+					}
+					
 					if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
 						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
 						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
@@ -147,13 +167,23 @@ public class Details  extends Panel{
 					
 					this.error(ecbr.getMessage());
 				}
-				catch(ArkSystemException arkSystemExeption){
-					this.error(arkSystemExeption.getMessage());
-				}catch(Exception generalException){
-					generalException.getStackTrace();
-					this.error(generalException.getMessage());
+				catch(IOException ioe)
+				{
+					this.error("There was an error transferring the specified Study logo image.");
 				}
-				
+				catch(ArkSystemException arkSystemExeption)
+				{
+					this.error(arkSystemExeption.getMessage());
+				}
+//				catch(Exception generalException)
+//				{
+//					generalException.getStackTrace();
+//					this.error(generalException.getMessage());
+//				}
+				catch (UnAuthorizedOperation e)
+				{
+					this.error("User was unauthorised to perform this operation.");
+				}
 			}
 			
 			protected void processErrors(AjaxRequestTarget target){
