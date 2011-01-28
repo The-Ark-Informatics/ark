@@ -77,6 +77,9 @@ public class Constants {
 	public static final String SUBJECT="Subject";
 	public static final String TAB_MODULE_SUBJECT="tab.module.subject";
 	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
+	public static final String CUSTOM_FIELD="Custom Field";
+	public static final String TAB_CUSTOM_FIELD="tab.custom.field";
+	
 	
 	public static final String STUDY_KEY="id";
 	
