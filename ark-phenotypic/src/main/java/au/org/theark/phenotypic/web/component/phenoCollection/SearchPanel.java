@@ -28,6 +28,7 @@ public class SearchPanel extends Panel
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailPanelFormContainer;
+	private WebMarkupContainer arkContextMarkup;
 
 	/* Constructor */
 	public SearchPanel(	String id, 
@@ -40,7 +41,8 @@ public class SearchPanel extends Panel
 					ContainerForm containerForm,
 					WebMarkupContainer viewButtonContainer,
 					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer)
+					WebMarkupContainer detailPanelFormContainer,
+					WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
@@ -52,6 +54,7 @@ public class SearchPanel extends Panel
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkContextMarkup = arkContextMarkup;
 		listContainer = resultListContainer;
 	}
 
@@ -68,7 +71,8 @@ public class SearchPanel extends Panel
 												detailContainer,
 												detailPanelFormContainer,
 												viewButtonContainer,
-												editButtonContainer
+												editButtonContainer,
+												arkContextMarkup
 												);
 		
 		add(searchForm);
