@@ -145,7 +145,18 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 
-		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel = new SearchPanel("searchPanel", 
+															feedBackPanel, 
+															searchPanelContainer, 
+															listView, 
+															searchResultPanelContainer, 
+															detailPanelContainer, 
+															detailPanel, 
+															containerForm, 
+															viewButtonContainer, 
+															editButtonContainer, 
+															detailPanelFormContainer,
+															arkContextMarkup);
 		searchComponentPanel.initialisePanel();
 		
 		searchPanelContainer.add(searchComponentPanel);
