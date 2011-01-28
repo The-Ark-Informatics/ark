@@ -75,6 +75,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 			@Override
 			protected Object load() {
+				pageableListView.removeAll();
 				return containerForm.getModelObject().getStudyCompList();
 			}
 		};
