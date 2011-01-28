@@ -41,6 +41,7 @@ import org.hibernate.Hibernate;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -123,6 +124,11 @@ public class DetailForm extends Form<StudyModelVO>
 	}
 
 	protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target)
+	{
+
+	}
+	
+	protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target, FileUploadField fileUploadField)
 	{
 
 	}
@@ -213,30 +219,12 @@ public class DetailForm extends Form<StudyModelVO>
 				}
 				model.setLmcSelectedApps(moduleList);
 
-				try
-				{
-					// Retrieve file and store as Blob in databasse
-					FileUpload fileUpload = fileUploadField.getFileUpload(); 
-					
-					// Copy file to Blob object
-					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-					model.getStudy().setStudyLogoBlob(payload);
-					model.getStudy().setFilename(fileUpload.getClientFileName());
-				}
-				catch (IOException ioe)
-				{
-					System.out.println("Failed to save the uploaded file: " + ioe);
-				}
-
-				onSave(model, target);
+				onSave(model, target, fileUploadField);
 
 				// Set Study logo (both on application header, and within study detail form)
 				StudyHelper studyHelper = new StudyHelper();
 				studyHelper.setStudyLogo(model.getStudy(), target, studyNameMarkupContainer, studyLogoMarkupContainer);
 				studyHelper.setStudyLogoImage(model.getStudy(), "study.studyLogoImage", studyLogoContainer);
-
-				// Hide upload item once saved
-				studyLogoUploadContainer.setVisible(false);
 				
 				target.addComponent(detailsContainer);
 				target.addComponent(studyLogoContainer);
