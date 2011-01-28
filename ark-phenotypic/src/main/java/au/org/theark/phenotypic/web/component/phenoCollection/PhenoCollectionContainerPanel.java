@@ -104,7 +104,8 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 					containerForm.getModelObject().getPhenoCollection().setStudy(study);
 					phenoCollectionCol = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
 				}
-
+				
+				listView.removeAll();
 				containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 				return containerForm.getModelObject().getPhenoCollectionCollection();
 			}

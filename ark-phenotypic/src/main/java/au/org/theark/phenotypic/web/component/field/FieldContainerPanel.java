@@ -85,6 +85,7 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 					fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
 				}
 
+				listView.removeAll();
 				containerForm.getModelObject().setFieldCollection(fieldCollection);
 				return containerForm.getModelObject().getFieldCollection();
 			}
