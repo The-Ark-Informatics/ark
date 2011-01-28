@@ -1,10 +1,14 @@
 package au.org.theark.core.web.component;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+
+import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 
 /**
  * <p>
@@ -20,6 +24,7 @@ import org.apache.wicket.model.IModel;
 public abstract class AbstractContainerPanel<T> extends Panel{
 	protected FeedbackPanel feedBackPanel;
 	
+	protected ArkCrudContainerVO arkCrudContainerVO;
 	/*Web Markup Containers */
 	protected WebMarkupContainer searchPanelContainer;
 	protected WebMarkupContainer searchResultPanelContainer;
@@ -34,6 +39,8 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 
 	protected IModel<Object> iModel;
 	protected CompoundPropertyModel<T> cpModel;
+	
+	protected PageableListView<T> myListView;
 	/**
 	 * @param id
 	 */
@@ -43,7 +50,16 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 		initialiseMarkupContainers();
 	}
 	
+	public AbstractContainerPanel(String id, boolean flag){
+		super(id);
+		initCrudContainerVO();
+	}
 	
+	public void initCrudContainerVO(){
+		
+		arkCrudContainerVO = new ArkCrudContainerVO();
+		
+	}
 	public void initialiseMarkupContainers(){
 		
 		searchPanelContainer = new WebMarkupContainer("searchContainer");
