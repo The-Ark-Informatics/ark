@@ -7,8 +7,10 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
  * <p>
@@ -35,6 +37,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	protected WebMarkupContainer	listContainer;
 	protected WebMarkupContainer	detailFormCompContainer;
 	protected FeedbackPanel			feedbackPanel;
+	
+	private ArkCrudContainerVO arkCrudContainerVO;
+	
 
 	/**
 	 * @param id
@@ -44,7 +49,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	{
 
 		super(id, cpmModel);
-
 		initialiseForm();
 
 	}
@@ -63,6 +67,22 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		this.feedbackPanel = feedBackPanel;
 		initialiseForm();
 
+	}
+	
+
+	/**
+	 * Nivedan working
+	 * @param id
+	 * @param cpmModel
+	 */
+	public AbstractSearchForm(	String id, 
+								IModel<T> cpmModel, 
+								FeedbackPanel feedBackPanel,
+								ArkCrudContainerVO arkCrudContainerVO){
+		super(id,cpmModel);
+		this.feedbackPanel = feedBackPanel;
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		initialiseForm();
 	}
 
 	abstract protected void onSearch(AjaxRequestTarget target);
@@ -154,6 +174,22 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		target.addComponent(editButtonContainer);
 		target.addComponent(detailFormCompContainer);
 	}
+	
+	/**
+	 * Overloaded Method that uses the VO to set the WMC's
+	 * @param target
+	 * @param flag
+	 */
+	protected void preProcessDetailPanel(AjaxRequestTarget target, boolean flag)
+	{
+		arkCrudContainerVO.getDetailPanelFormContainer().setVisible(true);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
+		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+		detailFormCompContainer.setEnabled(true);
+	}
 
 	protected void disableSearchButtons(Long sessionId, String errorMessage)
 	{	
@@ -171,4 +207,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			resetButton.setEnabled(true);
 		}
 	}
+	
+	
+	
+	
 }
