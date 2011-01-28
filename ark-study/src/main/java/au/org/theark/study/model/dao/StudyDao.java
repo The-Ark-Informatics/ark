@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -78,7 +79,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Session session = getSession();
 		session.update(studyEntity);
 		session.flush();
-	   session.refresh(studyEntity);
+		session.refresh(studyEntity);
 	}
 
 	/* (non-Javadoc)
@@ -142,7 +143,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void update(Phone phone) throws ArkSystemException{
 		try{
-			getSession().save(phone);	
+			getSession().update(phone);	
 		}catch(HibernateException hibException){
 			log.error("A hibernate exception occured. Cannot update the Phone record. Cause: " + hibException.getStackTrace());
 			throw new ArkSystemException("Unable to create a Phone record.");
@@ -479,6 +480,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			
 		}
 		List<Consent> list = criteria.list();
+		return list;
+	}
+	
+	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld){
+		
+		Criteria criteria = getSession().createCriteria(SubjectCustmFld.class);
+		if(subjectCustmFld != null){
+			
+		}
+		List<SubjectCustmFld> list = criteria.list();
 		return list;
 	}
 	
