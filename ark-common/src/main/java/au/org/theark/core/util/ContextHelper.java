@@ -54,7 +54,19 @@ public class ContextHelper
 	public void setGenoContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
 		genoLabel =  new Label("genoLabel", new Model("Genotypic Collection: " + label));
-		arkContextMarkup.addOrReplace(phenoLabel);
+		arkContextMarkup.addOrReplace(genoLabel);
+		target.addComponent(arkContextMarkup);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void setContextLabel(AjaxRequestTarget target, Label label, WebMarkupContainer arkContextMarkup)
+	{
+		if(label.getId() == "phenoLabel")
+		{
+			phenoLabel =  new Label("phenoLabel", new Model("Phenotypic Collection: " + label));
+			arkContextMarkup.addOrReplace(phenoLabel);
+		}
+		
 		target.addComponent(arkContextMarkup);
 	}
 }
