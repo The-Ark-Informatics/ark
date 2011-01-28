@@ -1,5 +1,5 @@
-#contextMenu p {
-	display: none;
+#contextMenu {
+	float: center;
 }
 
 #contextMenu ul {
@@ -14,17 +14,14 @@
 	list-style: none;
 	margin: 0; 
 	float: left;
-	padding: 1px 0.5em;
-	margin-left: 10%;
-	/*border: 1px solid #EEEEEE;*/
+	padding: 1px;
+	margin-left: 5%;
 	border-bottom: none;
-	/*background-color: #EEEEEE;*/
 	text-decoration: none;
-	background-image: url(title-glass.png);
 	background-position: 50%;
 	background-repeat: repeat-x;
 	display: block;
-	width: 10%;
+	width: 15%;
 }
 
 .clearfix:after {
