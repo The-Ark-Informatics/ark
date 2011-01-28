@@ -23,6 +23,7 @@ import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
@@ -53,13 +54,15 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private DatePicker<Date>									phenoCollectionExpiryDateFld;
 	private DetailPanel											detailPanel;
 	private Long 													sessionStudyId;
+	private WebMarkupContainer arkContextMarkup;
 
 	/**
 	 * @param id
 	 */
 	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
 			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer)
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
+			WebMarkupContainer arkContextMarkup)
 	{
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
@@ -67,6 +70,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.cpmModel = model;
 		this.listView = listView;
 		this.detailPanel = detailPanel;
+		this.arkContextMarkup = arkContextMarkup;
 		initialiseFieldForm();
 		
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
@@ -135,6 +139,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 
 		setModelObject(phenoCollectionVo);
 		preProcessDetailPanel(target);
+		
+		// Reset context item
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.setPhenoContextLabel(target, "", arkContextMarkup);
+		
 		// Hide Delete button on New
 		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
