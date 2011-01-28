@@ -160,7 +160,7 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 					// TODO Auto-generated catch block
 					//e.printStackTrace();
 				}
-			
+			pageableListView.removeAll();
 			return addressList;
 			}
 		};
