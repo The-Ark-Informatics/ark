@@ -165,6 +165,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 					e.printStackTrace();
 				}
 				
+				pageableListView.removeAll();
 				return consentList;
 			}
 		};
