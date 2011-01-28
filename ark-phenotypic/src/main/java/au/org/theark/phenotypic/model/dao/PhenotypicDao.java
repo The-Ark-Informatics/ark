@@ -81,7 +81,22 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, collectionToMatch.getStudy()));
 		}
+		
+		if (collectionToMatch.getDescription() != null)
+		{
+			collectionCriteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_DESCRIPTION, collectionToMatch.getDescription(), MatchMode.ANYWHERE));
+		}
 
+		if (collectionToMatch.getStartDate() != null)
+		{
+			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_START_DATE, collectionToMatch.getStartDate()));
+		}
+		
+		if (collectionToMatch.getExpiryDate() != null)
+		{
+			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_EXPIRY_DATE, collectionToMatch.getExpiryDate()));
+		}
+		
 		if (collectionToMatch.getInsertTime() != null)
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_INSERT_TIME, collectionToMatch.getInsertTime()));
