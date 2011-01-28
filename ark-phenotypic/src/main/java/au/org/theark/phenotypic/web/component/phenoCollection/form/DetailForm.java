@@ -28,10 +28,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -63,6 +65,8 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	
 	// Field selection Palette
 	private Palette	fieldPalette;
+	
+	private WebMarkupContainer arkContextMarkup;
 
 	/**
 	 * Constructor
@@ -86,7 +90,8 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 						WebMarkupContainer viewButtonContainer,
 						WebMarkupContainer editButtonContainer,
 						WebMarkupContainer detailFormContainer,
-						WebMarkupContainer searchPanelContainer)
+						WebMarkupContainer searchPanelContainer,
+						WebMarkupContainer arkContextMarkup)
 	{
 		
 		super(	id,
@@ -98,6 +103,8 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 				viewButtonContainer,
 				editButtonContainer,
 				containerForm);
+		
+		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	private void initStatusDdc()
@@ -181,6 +188,10 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 			processErrors(target);
 		}
 		
+		// Reset context item
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.setPhenoContextLabel(target, containerForm.getModelObject().getPhenoCollection().getName(), arkContextMarkup);
+		
 		onSavePostProcess(target);
 		//TODO:(CE) To handle Business and System Exceptions here
 	}
@@ -189,6 +200,10 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	{
 		PhenoCollectionVO phenoCollectionVO = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVO);
+
+		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollectionVO.getPhenoCollection());
+		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
+		
 		onCancelPostProcess(target);
 	}
 	
