@@ -27,11 +27,14 @@ public class SubjectCustmFld implements java.io.Serializable {
 	private Long id;
 	private Study study;
 	private DataType dataType;
+	private String fieldTitle;
 	private String name;
 	private String description;
 	private String minValue;
 	private String maxValue;
 	private String discreteValues;
+	private Long fieldPostion;
+	
 	private Set<SubjectCustFldDat> subjectCustFldDats = new HashSet<SubjectCustFldDat>(
 			0);
 
@@ -151,6 +154,24 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	public void setSubjectCustFldDats(Set<SubjectCustFldDat> subjectCustFldDats) {
 		this.subjectCustFldDats = subjectCustFldDats;
+	}
+
+	@Column(name = "FIELD_POSITION",  nullable = false, precision = 22, scale = 0)
+	public Long getFieldPostion() {
+		return fieldPostion;
+	}
+
+	public void setFieldPostion(Long fieldPostion) {
+		this.fieldPostion = fieldPostion;
+	}
+
+	@Column(name = "FIELD_TITLE", unique = true, length = 255)
+	public String getFieldTitle() {
+		return fieldTitle;
+	}
+
+	public void setFieldTitle(String fieldTitle) {
+		this.fieldTitle = fieldTitle;
 	}
 
 }
