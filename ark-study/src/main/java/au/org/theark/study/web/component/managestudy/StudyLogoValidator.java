@@ -1,6 +1,5 @@
 package au.org.theark.study.web.component.managestudy;
 
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -14,13 +13,15 @@ import org.apache.wicket.validation.IValidator;
 import org.apache.wicket.validation.ValidationError;
 import org.springframework.util.StringUtils;
 
+import au.org.theark.core.util.SerializableBufferedImage;
+
 public class StudyLogoValidator implements IValidator<FileUpload>
 {
 
 	private static final long			serialVersionUID	= -8116224338791429342L;
 	public static final List<String>	fileExtensions			= Arrays.asList("jpg", "gif", "jpeg", "png");
 	public static final Bytes fileSize	= Bytes.kilobytes(au.org.theark.study.web.Constants.STUDY_LOGO_FILESIZE);
-   private BufferedImage image;
+   private SerializableBufferedImage image;
    
 	public void validate(IValidatable<FileUpload> pValidatable)
 	{
@@ -28,11 +29,8 @@ public class StudyLogoValidator implements IValidator<FileUpload>
 		String fileExtension = StringUtils.getFilenameExtension(fileUploadImage.getClientFileName());
 		ValidationError error = new ValidationError();
 		
-		// Read image, to work out width and height
 		try
-		{
-			image = ImageIO.read(fileUploadImage.getInputStream());
-			
+		{			
 			// Check extension ok
 			if (fileExtension != null && !fileExtensions.contains(fileExtension.toLowerCase()))
 			{	
@@ -44,15 +42,17 @@ public class StudyLogoValidator implements IValidator<FileUpload>
 			{
 				error.addMessageKey("study.studyLogoFileSize");
 				pValidatable.error(error);
-			}
-			else if (image.getWidth() > 100 || image.getHeight() > 100)
-			{
-				error.addMessageKey("study.studyLogoPixelSize");
-				pValidatable.error(error);
-			}
+			} 
 			else
 			{
+				// Read image, to work out width and height
+				image = new SerializableBufferedImage(ImageIO.read(fileUploadImage.getInputStream()));
 				
+				if (image.getWidth() > 100 || image.getHeight() > 100)
+				{
+					error.addMessageKey("study.studyLogoPixelSize");
+					pValidatable.error(error);
+				}
 			}
 		}
 		catch (IOException ioe)
