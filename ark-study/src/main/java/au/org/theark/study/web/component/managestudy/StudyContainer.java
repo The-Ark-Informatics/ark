@@ -167,6 +167,7 @@ public class StudyContainer extends Panel{
 
 			@Override
 			protected Object load() {
+				pageableListView.removeAll();
 				return iArkCommonService.getStudy(containerForm.getModelObject().getStudy()); 
 			}
 		};
