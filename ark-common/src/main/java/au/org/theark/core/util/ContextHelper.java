@@ -27,33 +27,33 @@ public class ContextHelper
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setStudyContextLabel(AjaxRequestTarget target, String studyName, WebMarkupContainer arkContextMarkup)
+	public void setStudyContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
-		studyLabel =  new Label("studyLabel", new Model("Study: " + studyName));
+		studyLabel =  new Label("studyLabel", new Model("Study: " + label));
 		arkContextMarkup.addOrReplace(studyLabel);
 		target.addComponent(arkContextMarkup);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setSubjectContextLabel(AjaxRequestTarget target, String subjectUid, WebMarkupContainer arkContextMarkup)
+	public void setSubjectContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
-		subjectLabel =  new Label("subjectLabel", new Model("SubjectUID: " + subjectUid));
+		subjectLabel =  new Label("subjectLabel", new Model("SubjectUID: " + label));
 		arkContextMarkup.addOrReplace(subjectLabel);
 		target.addComponent(arkContextMarkup);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setPhenoContextLabel(AjaxRequestTarget target, String subjectUid, WebMarkupContainer arkContextMarkup)
+	public void setPhenoContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
-		phenoLabel =  new Label("phenoLabel", new Model("Phenotypic Collection: " + subjectUid));
+		phenoLabel =  new Label("phenoLabel", new Model("Phenotypic Collection: " + label));
 		arkContextMarkup.addOrReplace(phenoLabel);
 		target.addComponent(arkContextMarkup);
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void setGenoContextLabel(AjaxRequestTarget target, String subjectUid, WebMarkupContainer arkContextMarkup)
+	public void setGenoContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
-		genoLabel =  new Label("genoLabel", new Model("Genotypic Collection: " + subjectUid));
+		genoLabel =  new Label("genoLabel", new Model("Genotypic Collection: " + label));
 		arkContextMarkup.addOrReplace(phenoLabel);
 		target.addComponent(arkContextMarkup);
 	}
