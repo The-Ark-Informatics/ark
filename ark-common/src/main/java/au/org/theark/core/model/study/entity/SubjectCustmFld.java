@@ -6,10 +6,13 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -73,6 +76,8 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="subject_fld_gen", sequenceName="SUB_FLD_SEQ")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "subject_fld_gen")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -82,8 +87,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_KEY")
+	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
 	}
@@ -92,8 +96,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.study = study;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DATA_TYPE_KEY")
+	@JoinColumn(name = "DATA_TYPE_ID")
 	public DataType getDataType() {
 		return this.dataType;
 	}
@@ -102,7 +105,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.dataType = dataType;
 	}
 
-	@Column(name = "NAME", unique = true, length = 200)
+	@Column(name = "NAME", unique = true, length = 20)
 	public String getName() {
 		return this.name;
 	}
@@ -111,7 +114,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION")
+	@Column(name = "DESCRIPTION", length=255)
 	public String getDescription() {
 		return this.description;
 	}
