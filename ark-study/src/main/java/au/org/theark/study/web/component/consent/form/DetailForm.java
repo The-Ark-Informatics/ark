@@ -19,7 +19,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -157,6 +159,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		consentStatusChoice.setRequired(true);
 		consentTypeChoice.setRequired(true);
 		consentedDatePicker.setRequired(true);
+		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.consentdate.max.range", this, null));
 		
 	}
 
