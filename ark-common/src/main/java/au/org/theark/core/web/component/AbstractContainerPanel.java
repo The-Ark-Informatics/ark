@@ -8,7 +8,6 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
 
 /**
  * <p>
