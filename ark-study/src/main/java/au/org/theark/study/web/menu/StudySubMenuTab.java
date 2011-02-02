@@ -17,6 +17,7 @@ import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.study.web.component.customfield.CustomFieldContainer;
 import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.study.web.component.site.SiteContainerPanel;
@@ -80,6 +81,11 @@ public class StudySubMenuTab extends Panel
 		menuModule.setResourceKey(Constants.TAB_MODULE_STUDY_COMPONENT);
 		moduleTabs.add(menuModule);
 
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.CUSTOM_FIELD);
+		menuModule.setResourceKey(Constants.TAB_CUSTOM_FIELD);
+		moduleTabs.add(menuModule);
+		
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.USER);
 		menuModule.setResourceKey(Constants.TAB_MODULE_USER);
@@ -150,6 +156,11 @@ public class StudySubMenuTab extends Panel
 
 						panelToReturn = new StudyComponentContainerPanel(panelId);
 
+					}
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.CUSTOM_FIELD)){
+						
+						panelToReturn = new CustomFieldContainer(panelId); 
+						
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAIL))
 					{
