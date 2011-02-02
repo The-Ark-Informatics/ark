@@ -15,6 +15,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -148,5 +149,7 @@ public interface IStudyDao {
 	
 	
 	public List<Consent> searchConsent(ConsentVO consentVo) throws EntityNotFoundException,ArkSystemException;
+	
+	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld);
 
 }
