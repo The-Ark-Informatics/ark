@@ -26,6 +26,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
@@ -265,6 +266,10 @@ public class StudyServiceImpl implements IStudyService{
 	 */
 	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException {
 		 studyDao.delete(consent);
+	}
+	
+	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld){
+		return studyDao.searchStudyFields(subjectCustmFld);
 	}
 		
 }
