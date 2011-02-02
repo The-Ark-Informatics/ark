@@ -87,6 +87,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.id = id;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
 		return this.study;
@@ -96,6 +97,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.study = study;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DATA_TYPE_ID")
 	public DataType getDataType() {
 		return this.dataType;
