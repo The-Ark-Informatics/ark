@@ -242,6 +242,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			hqlString.append(subjectVO.getSubjectStatus().getId());
 		}
 		
+		hqlString.append(" order by  linkSubStudy.subjectUID");
 		Query query = getSession().createQuery(hqlString.toString());
 		List<Object[]> list  = query.list();
 		
