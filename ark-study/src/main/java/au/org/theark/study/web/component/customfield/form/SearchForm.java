@@ -6,17 +6,23 @@
  */
 package au.org.theark.study.web.component.customfield.form;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -25,6 +31,12 @@ import au.org.theark.study.web.Constants;
  */
 public class SearchForm extends AbstractSearchForm<CustomFieldVO>{
 
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService iArkCommonService;
+	
+	@SpringBean( name = Constants.STUDY_SERVICE)
+	private IStudyService studyService;
+	
 	/**
 	 * Search Form Fields
 	 */
@@ -93,8 +105,17 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO>{
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		// TODO Auto-generated method stub
+		target.addComponent(feedbackPanel);
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study =	iArkCommonService.getStudy(sessionStudyId);
+		//Get the list of Study Related Custom Fields
+		getModelObject().getCustomField().setStudy(study);
 		
+		CustomFieldVO vo  = getModelObject();
+		SubjectCustmFld customField = vo.getCustomField();
 		
+		List<SubjectCustmFld> subjectCustomFldList  = studyService.searchStudyFields(customField);
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		
 	}
