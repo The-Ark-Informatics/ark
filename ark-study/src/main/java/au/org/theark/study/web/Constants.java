@@ -200,4 +200,6 @@ public class Constants {
 	/*Custom Field*/
 	public static final String CUSTOM_FIELD_FIELD_TITLE = "customField.fieldTitle";
 	public static final String CUSTOM_FIELD_FIELD_NAME="customField.name";
+	public static final String SEARCH_RESULT_LIST="searchResultList";
+	public static final String CUSTOM_FIELD_LABEL="fieldTitleLabel";
 }
