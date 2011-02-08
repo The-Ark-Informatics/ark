@@ -75,12 +75,12 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 		
 		wizardPanelContainer = new WebMarkupContainer("wizardContainer");
 		wizardPanelContainer.setOutputMarkupPlaceholderTag(true);
-		wizardPanelContainer.setVisible(false);
+		wizardPanelContainer.setVisible(true);
 
 		//Contains the controls of the Wizard
 		wizardPanelFormContainer = new WebMarkupContainer("wizardFormContainer");
 		wizardPanelFormContainer.setOutputMarkupPlaceholderTag(true);
-		wizardPanelFormContainer.setEnabled(false);
+		wizardPanelFormContainer.setEnabled(true);
 		
 		//The wrapper for ResultsList panel that will contain a ListView
 		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
