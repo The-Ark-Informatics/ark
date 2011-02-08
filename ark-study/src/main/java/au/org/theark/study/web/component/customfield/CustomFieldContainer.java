@@ -82,7 +82,12 @@ public class CustomFieldContainer  extends  AbstractContainerPanel<CustomFieldVO
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		
-		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, containerForm,arkCrudContainerVO);
+		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", 
+													feedBackPanel,
+													pageableListView, 
+													containerForm,
+													detailPanel,
+													arkCrudContainerVO);
 		
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
