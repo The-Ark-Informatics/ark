@@ -21,14 +21,13 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FileFormat;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
-import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoUpload.DetailPanel;
+import au.org.theark.phenotypic.web.component.phenoUpload.WizardPanel;
 
 /**
  * @author cellis
@@ -43,18 +42,42 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<PhenoUpload>				listView;
+	private PageableListView<PhenoCollectionUpload>				listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
 	private DetailPanel								detailPanel;
-
+	private WizardPanel								wizardPanel;
+	private WebMarkupContainer 					wizardContainer;
+	
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
+	
+	/**
+	 * @param id
+	 */
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoCollectionUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer wizardContainer, WebMarkupContainer wizardPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer)
+	{
+
+		super(id, model, wizardContainer, wizardPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+
+		this.cpmModel = model;
+		this.listView = listView;
+		this.wizardPanel = wizardPanel;
+		this.wizardContainer = wizardContainer;
+		initialiseFieldForm();
+
+		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		disableSearchButtons(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
+	}
+	
+	
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoCollectionUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer)
 	{
@@ -146,10 +169,18 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		UploadVO uploadVo = new UploadVO();
 		uploadVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 		setModelObject(uploadVo);
-		preProcessDetailPanel(target);
 		
-		// Hide Delete button on New
-		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
+		listContainer.setVisible(false);
+		searchMarkupContainer.setVisible(false);
+		
+		// Explicitly Show Wizard panel
+		wizardContainer.setVisible(true);
+		wizardContainer.setEnabled(true);
+		
+		target.addComponent(listContainer);
+		target.addComponent(searchMarkupContainer);
+		target.addComponent(detailFormCompContainer);
+		target.addComponent(wizardContainer);
 	}
 
 	protected boolean isSecure(String actionType)
