@@ -2,6 +2,8 @@ package au.org.theark.phenotypic.service;
 
 import java.util.Collection;
 
+import org.apache.wicket.util.file.File;
+
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -61,6 +63,7 @@ public interface IPhenotypicService {
 	
 	// Validate phenotypic data file
 	public java.util.Collection<String> validatePhenotypicDataFile();
+	public java.util.Collection<String> validatePhenotypicDataFile(File file);
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
@@ -70,12 +73,21 @@ public interface IPhenotypicService {
 	
 	// Upload
 	public java.util.Collection<PhenoUpload> searchUpload(PhenoUpload upload);
+	public java.util.Collection<PhenoUpload> searchUploadByCollection(PhenoCollection phenoCollection);
 	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
+	public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection);
 	public PhenoUpload getUpload(Long id);
 	public void createUpload(PhenoUpload upload);
 	public void createUpload(UploadVO uploadVo);
 	public void updateUpload(PhenoUpload upload);
 	public void deleteUpload(PhenoUpload upload);
+	
+	// CollectionUpload
+	public PhenoCollectionUpload getPhenoCollectionUpload(Long id);
+	public java.util.Collection<PhenoCollectionUpload> searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
 	
 	// Delimiter Type
 	public Collection<DelimiterType> getDelimiterTypes();

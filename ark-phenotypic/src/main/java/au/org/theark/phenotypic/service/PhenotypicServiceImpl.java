@@ -1,5 +1,6 @@
 package au.org.theark.phenotypic.service;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -200,6 +201,39 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		}
 		return validationMessages;
 	}
+	
+	public java.util.Collection<String> validatePhenotypicDataFile(org.apache.wicket.util.file.File file)
+	{
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+	
+		try
+		{	
+			log.info("Importing file");
+			InputStream is = new FileInputStream(file);
+			validationMessages = pi.validateMatrixPhenoFile(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return validationMessages;
+	}
+	
 
 	public void importPhenotypicDataFile()
 	{
@@ -335,7 +369,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id)
 	{
-		return null;
+		return phenotypicDao.getPhenoCollectionAndUploads(id);
+	}
+	
+	public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection)
+	{
+		return phenotypicDao.getPhenoCollectionAndUploads(phenoCollection);
 	}
 
 	public PhenoUpload getUpload(Long id)
@@ -351,5 +390,35 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public Collection<DelimiterType> getDelimiterTypes()
 	{
 		return phenotypicDao.getDelimiterTypes();
+	}
+
+	public Collection<PhenoUpload> searchUploadByCollection(PhenoCollection phenoCollection)
+	{
+		return phenotypicDao.searchUploadByCollection(phenoCollection);
+	}
+
+	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		phenotypicDao.createCollectionUpload(phenoCollectionUpload);
+	}
+
+	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		phenotypicDao.deleteCollectionUpload(phenoCollectionUpload);
+	}
+
+	public PhenoCollectionUpload getPhenoCollectionUpload(Long id)
+	{
+		return phenotypicDao.getPhenoCollectionUpload(id);
+	}
+
+	public Collection<PhenoCollectionUpload> searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		return phenotypicDao.searchPhenoCollectionUpload(phenoCollectionUpload);
+	}
+
+	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		phenotypicDao.updateCollectionUpload(phenoCollectionUpload);
 	}
 }
