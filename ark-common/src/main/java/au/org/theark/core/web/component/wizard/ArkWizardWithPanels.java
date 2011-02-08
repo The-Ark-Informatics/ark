@@ -1,23 +1,29 @@
 package au.org.theark.core.web.component.wizard;
 
-import org.apache.wicket.extensions.wizard.StaticContentStep;
 import org.apache.wicket.extensions.wizard.Wizard;
 import org.apache.wicket.extensions.wizard.WizardModel;
 import org.apache.wicket.extensions.wizard.WizardStep;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 /**
- * This is kind of the hello world example for wizards. It doesn't do anything useful, except displaying some static text and following static flow.
- * <p>
- * {@link StaticContentStep static content steps} are useful when you have some text to display that you don't want to define seperate panels for.
- * E.g. when the contents come from a database, this is a convenient class to use.
- * </p>
+ * Base Abstract Wizard class using panels for each step
  * 
- * @author Eelco Hillenius
+ * @author cellis
  */
 @SuppressWarnings("serial")
 public class ArkWizardWithPanels extends Wizard
 {
 	private Class<ArkWizardIndex> wizardIndexClass;
+	private WebMarkupContainer wizardBasePanel;
+	
+	protected WebMarkupContainer	resultListContainer;
+	protected WebMarkupContainer	wizardPanelContainer;
+	protected WebMarkupContainer	searchPanelContainer;
+	protected WebMarkupContainer	viewButtonContainer;
+	protected WebMarkupContainer	editButtonContainer;
+	protected WebMarkupContainer	wizardPanelFormContainer;
+	protected FeedbackPanel			feedBackPanel;
 
 	/**
 	 * The first step of this wizard.
@@ -141,24 +147,54 @@ public class ArkWizardWithPanels extends Wizard
 		// initialize the wizard
 		init(model);
 	}
-
+	
 	/**
-	 * @see org.apache.wicket.extensions.wizard.Wizard#onCancel()
+	 * Constructor with specified wizard home/index page
+	 * 
+	 * @param id
+	 *           The component id
+	 * @param wizardSteps
+	 *           The custom wizard steps to be used
 	 */
-	@Override
-	public void onCancel()
+	public ArkWizardWithPanels(String id, WizardStep[] wizardSteps)
 	{
-		setResponsePage(getWizardIndexClass());
+		// FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer wizardPanelContainer, WebMarkupContainer wizardPanelFormContainer,WebMarkupContainer searchPanelContainer
+		super(id);
+//		this.feedBackPanel = feedBackPanel;
+//		this.resultListContainer = resultListContainer;
+//		this.wizardPanelContainer = wizardPanelContainer;
+//		this.wizardPanelFormContainer = wizardPanelFormContainer;
+//		this.searchPanelContainer = searchPanelContainer;
+
+		// create a model with the specified steps
+		WizardModel model = new WizardModel();
+		
+		for (int i = 0; i < wizardSteps.length; i++)
+		{
+			model.add(wizardSteps[i]);
+		}
+
+		// initialize the wizard
+		init(model);
 	}
 
-	/**
-	 * @see org.apache.wicket.extensions.wizard.Wizard#onFinish()
-	 */
-	@Override
-	public void onFinish()
-	{
-		setResponsePage(getWizardIndexClass());
-	}
+//	/**
+//	 * @see org.apache.wicket.extensions.wizard.Wizard#onCancel()
+//	 */
+//	@Override
+//	public void onCancel()
+//	{
+//		setResponsePage(getWizardIndexClass());
+//	}
+//
+//	/**
+//	 * @see org.apache.wicket.extensions.wizard.Wizard#onFinish()
+//	 */
+//	@Override
+//	public void onFinish()
+//	{
+//		setResponsePage(getWizardIndexClass());
+//	}
 
 	/**
 	 * @param arkWizardIndexClass the wizardIndexClass to set
@@ -174,5 +210,21 @@ public class ArkWizardWithPanels extends Wizard
 	public Class<ArkWizardIndex> getWizardIndexClass()
 	{
 		return wizardIndexClass;
+	}
+
+	/**
+	 * @param wizardBasePanel the wizardBasePanel to set
+	 */
+	public void setWizardBasePanel(WebMarkupContainer wizardBasePanel)
+	{
+		this.wizardBasePanel = wizardBasePanel;
+	}
+
+	/**
+	 * @return the wizardBasePanel
+	 */
+	public WebMarkupContainer getWizardBasePanel()
+	{
+		return wizardBasePanel;
 	}
 }

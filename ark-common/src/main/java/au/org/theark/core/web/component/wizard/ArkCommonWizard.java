@@ -1,74 +1,208 @@
 package au.org.theark.core.web.component.wizard;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.wizard.Wizard;
 import org.apache.wicket.extensions.wizard.WizardModel;
+import org.apache.wicket.extensions.wizard.WizardStep;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 
 @SuppressWarnings("serial")
 public class ArkCommonWizard extends Wizard
 {
-
-	/*
-	 * Create a wizard with a default model and three custom steps. Each step
-	 * is a form with some default data in the model for example purpose.
+	private WebMarkupContainer resultListContainer;
+	private WebMarkupContainer wizardPanelContainer;
+	private WebMarkupContainer wizardPanelFormContainer;	
+	private WebMarkupContainer searchPanelContainer;
+	private AjaxRequestTarget target;
+	private WizardStep[] wizardSteps;
+	private AjaxWizardButtonBar buttonBar;
+	
+	/**
+	 * Constructor with specified wizard home/index page
+	 * 
+	 * @param id
+	 *           The component id
+	 * @param wizardSteps
+	 *           The custom wizard steps to be used
 	 */
-	public ArkCommonWizard(String id){
-
+	public ArkCommonWizard(String id, WizardStep[] wizardSteps)
+	{
 		super(id);
-		
+
+		// create a model with the specified steps
 		WizardModel model = new WizardModel();
 		
-//		YourObject theObj = new YourObject();
-//		theObj.setElementdescription("First item");
-//		theObj.setElementlabel("Label me");
-//		theObj.setElementvalue("my value");
-//		
-//		YourObject theObj2 = new YourObject();
-//		theObj2.setElementdescription("Second item");
-//		theObj2.setElementlabel("Label me2");
-//		theObj2.setElementvalue("my value2");
-//		
-//		YourObject theObj3 = new YourObject();
-//		theObj3.setElementdescription("Third item");
-//		theObj3.setElementlabel("Label me3");
-//		theObj3.setElementvalue("my value3");
-		
-//		// Add the steps
-//		model.add(new ArkWizardStep(theObj));
-//		model.add(new ArkWizardStep(theObj2));
-//		model.add(new ArkWizardStep(theObj3));
-		
+		for (int i = 0; i < wizardSteps.length; i++)
+		{
+			model.add(wizardSteps[i]);
+		}
+
+		// initialize the wizard
 		init(model);
 	}
-
+	
 	/**
-	 * On finish. Put any specific logic you want when the user hits the "finish" button eventually Here we print to error log and send them to the
-	 * home page. Normally used for saving unclean objects to database if you did not do it in the WizardStep
+	 * Constructor with specified wizard home/index page
+	 * 
+	 * @param id
+	 *           The component id
+	 * @param wizardSteps
+	 *           The custom wizard steps to be used
 	 */
-	@Override
-	public void onFinish()
+	public ArkCommonWizard(String id, 
+			WizardStep[] wizardSteps, 
+			WebMarkupContainer resultListContainer, 
+			WebMarkupContainer wizardPanelContainer, 
+			WebMarkupContainer wizardPanelFormContainer,	
+			WebMarkupContainer searchPanelContainer,
+			AjaxRequestTarget target
+			)
 	{
-		System.err.println("DONE WITH THE WIZ!");
-		setResponsePage(ArkWizardIndex.class);
-	}
+		super(id);
+		
+		this.setResultListContainer(resultListContainer);
+		this.setWizardPanelContainer(wizardPanelContainer);
+		this.setWizardPanelFormContainer(wizardPanelFormContainer);
+		this.setSearchPanelContainer(searchPanelContainer);
+		this.setTarget(target);
+		this.wizardSteps = new WizardStep[wizardSteps.length];
+		
+		// create a model with the specified steps
+		WizardModel model = new WizardModel();
+		
+		for (int i = 0; i < wizardSteps.length; i++)
+		{
+			this.wizardSteps[i] = wizardSteps[i];
+			model.add(wizardSteps[i]);
+		}
 
-	/**
-	 * On cancel. Put your cancel logic in for when users hit the ‘Cancel’ button. I send them to the home page
-	 */
+		// initialize the wizard
+		init(model);
+	}
+	
 
 	@Override
-	public void onCancel()
-	{
-		setResponsePage(ArkWizardIndex.class);
-	}
-
 	protected Component newButtonBar(java.lang.String id)
 	{
-		return new ArkWizardButtonBarPanel(id, this);
+		return new AjaxWizardButtonBar(id, this);
 	}
 
+	@Override
 	protected Component newOverviewBar(java.lang.String id)
 	{
 		return new ArkWizardOverviewPanel(id);
+	}
+
+	/**
+	 * @param resultListContainer the resultListContainer to set
+	 */
+	public void setResultListContainer(WebMarkupContainer resultListContainer)
+	{
+		this.resultListContainer = resultListContainer;
+	}
+
+	/**
+	 * @return the resultListContainer
+	 */
+	public WebMarkupContainer getResultListContainer()
+	{
+		return resultListContainer;
+	}
+
+	/**
+	 * @param wizardPanelContainer the wizardPanelContainer to set
+	 */
+	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer)
+	{
+		this.wizardPanelContainer = wizardPanelContainer;
+	}
+
+	/**
+	 * @return the wizardPanelContainer
+	 */
+	public WebMarkupContainer getWizardPanelContainer()
+	{
+		return wizardPanelContainer;
+	}
+
+	/**
+	 * @param wizardPanelFormContainer the wizardPanelFormContainer to set
+	 */
+	public void setWizardPanelFormContainer(WebMarkupContainer wizardPanelFormContainer)
+	{
+		this.wizardPanelFormContainer = wizardPanelFormContainer;
+	}
+
+	/**
+	 * @return the wizardPanelFormContainer
+	 */
+	public WebMarkupContainer getWizardPanelFormContainer()
+	{
+		return wizardPanelFormContainer;
+	}
+
+	/**
+	 * @param searchPanelContainer the searchPanelContainer to set
+	 */
+	public void setSearchPanelContainer(WebMarkupContainer searchPanelContainer)
+	{
+		this.searchPanelContainer = searchPanelContainer;
+	}
+
+	/**
+	 * @return the searchPanelContainer
+	 */
+	public WebMarkupContainer getSearchPanelContainer()
+	{
+		return searchPanelContainer;
+	}
+
+	/**
+	 * @param target the target to set
+	 */
+	public void setTarget(AjaxRequestTarget target)
+	{
+		this.target = target;
+	}
+
+	/**
+	 * @return the target
+	 */
+	public AjaxRequestTarget getTarget()
+	{
+		return target;
+	}
+
+	/**
+	 * @param wizardSteps the wizardSteps to set
+	 */
+	public void setWizardSteps(WizardStep[] wizardSteps)
+	{
+		this.wizardSteps = wizardSteps;
+	}
+
+	/**
+	 * @return the wizardSteps
+	 */
+	public WizardStep[] getWizardSteps()
+	{
+		return wizardSteps;
+	}
+
+	/**
+	 * @param buttonBar the buttonBar to set
+	 */
+	public void setButtonBar(AjaxWizardButtonBar buttonBar)
+	{
+		this.buttonBar = buttonBar;
+	}
+
+	/**
+	 * @return the buttonBar
+	 */
+	public AjaxWizardButtonBar getButtonBar()
+	{
+		return buttonBar;
 	}
 }
