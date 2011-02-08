@@ -7,7 +7,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
  * only to edit mode which is usually a common behavior the sub-classes can re-use.
  * </p>
  * 
- * @author nivedann
+ * @author cellis
  * @param <T>
  * 
  */
@@ -44,14 +43,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	protected WebMarkupContainer	wizardPanelFormContainer;
 	protected FeedbackPanel			feedBackPanel;
 	protected Form<T>					containerForm;
-
-	protected AjaxButton				saveButton;
-	protected AjaxButton				cancelButton;
-	protected AjaxButton				deleteButton;
-	protected AjaxButton				editButton;
-	protected AjaxButton				editCancelButton;
-
-	protected ModalWindow			selectModalWindow;
+	
+	protected AjaxButton				nextButton;
+	protected AjaxLink				previousLink;
+	protected AjaxLink				cancelLink;
+	protected AjaxButton				finishButton;
 
 	protected IBehavior				buttonStyleBehavior;
 
@@ -105,6 +101,35 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		setOutputMarkupId(true);
 		setMultiPart(true);
 		initialiseForm();
+		//addFormComponents();
+	}
+	
+	@SuppressWarnings( { "serial", "unchecked" })
+	protected void initialiseForm()
+	{
+		// finish button
+		finishButton = createFinish();
+		finishButton.add(buttonStyleBehavior);
+		finishButton.setVisible(false);
+		finishButton.setOutputMarkupId(true);
+		finishButton.setOutputMarkupPlaceholderTag(true);
+		
+		// previous button
+		previousLink = createPrevious();
+		previousLink.setVisible(false);
+		previousLink.setOutputMarkupId(true);
+		previousLink.setOutputMarkupPlaceholderTag(true);
+		previousLink.add(buttonStyleBehavior);
+
+		// next button
+		nextButton = createNext();
+		nextButton.setOutputMarkupId(true);
+		nextButton.setOutputMarkupPlaceholderTag(true);
+		nextButton.add(buttonStyleBehavior);
+
+		// cancel button
+		cancelLink = createCancel();
+		cancelLink.add(buttonStyleBehavior);		
 	}
 
 	/**
@@ -112,23 +137,13 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 */
 	protected void addFormComponents()
 	{
-		add(saveButton);
-		add(cancelButton.setDefaultFormProcessing(false));
+		add(finishButton);
+		add(previousLink);
+		add(nextButton);
+		add(cancelLink);
 	}
 
 	abstract protected void attachValidators();
-
-	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target)
-	{
-		selectModalWindow.show(target);
-		target.addComponent(selectModalWindow);
-	}
-
-	// abstract protected void onCancel(AjaxRequestTarget target);
-
-	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
-
-	abstract protected void processErrors(AjaxRequestTarget target);
 
 	protected void onCancelPostProcess(AjaxRequestTarget target)
 	{
@@ -142,41 +157,9 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		target.addComponent(resultListContainer);
 	}
 
-	@SuppressWarnings( { "serial", "unchecked" })
-	protected void initialiseForm()
-	{
-		// finish button
-		AjaxButton finish = createFinish();
-		finish.add(buttonStyleBehavior);
-		finish.setVisible(false);
-		finish.setOutputMarkupId(true);
-		finish.setOutputMarkupPlaceholderTag(true);
-		add(finish);
-
-		// previous button
-		AjaxLink link = createPrevious();
-		link.setVisible(false);
-		link.setOutputMarkupId(true);
-		link.setOutputMarkupPlaceholderTag(true);
-		link.add(buttonStyleBehavior);
-		add(link);
-
-		// next button
-		AjaxButton button = createNext();
-		button.setOutputMarkupId(true);
-		button.setOutputMarkupPlaceholderTag(true);
-		button.add(buttonStyleBehavior);
-		add(button);
-
-		// cancel button
-		AjaxLink cancelLink = createCancel();
-		cancelLink.add(buttonStyleBehavior);
-		add(cancelLink);
-	}
-
 	private AjaxButton createNext()
 	{
-		AjaxButton button = new AjaxButton("nextLink",  new StringResourceModel("cancelKey", this, null))
+		nextButton = new AjaxButton("next",  new StringResourceModel("wizardNextKey", this, null))
 		{
 			private static final long	serialVersionUID	= 0L;
 
@@ -195,14 +178,14 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 			}
 
 		};
-		button.add(new AttributeModifier("value", true, getLabelModel("Next")));
+		nextButton.add(new AttributeModifier("value", true, getLabelModel("Next")));
 
-		return button;
+		return nextButton;
 	}
 
 	private AjaxLink createPrevious()
 	{
-		AjaxLink link = new AjaxLink("previousLink")
+		AjaxLink link = new AjaxLink("previous")
 		{
 			private static final long	serialVersionUID	= 0L;
 
@@ -220,7 +203,8 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 
 	private AjaxButton createFinish()
 	{
-		AjaxButton finish = new AjaxButton("finish", this)
+		//finishButton = new AjaxButton("finish", this)
+		finishButton = new AjaxButton("finish",  new StringResourceModel("wizardFinishKey", this, null))
 		{
 
 			private static final long	serialVersionUID	= 0L;
@@ -238,14 +222,14 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 			}
 
 		};
-		finish.add(new AttributeModifier("value", true, getLabelModel("Finish")));
+		finishButton.add(new AttributeModifier("value", true, getLabelModel("Finish")));
 
-		return finish;
+		return finishButton;
 	}
 
 	private AjaxLink createCancel()
 	{
-		AjaxLink link = new AjaxLink("cancelLink")
+		AjaxLink link = new AjaxLink("cancel")
 		{
 			private static final long	serialVersionUID	= 0L;
 
@@ -345,7 +329,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @param target
 	 */
-	public abstract void onCancel(AjaxRequestTarget target);
+	protected abstract void onCancel(AjaxRequestTarget target);
 
 	/**
 	 * Get the "next" component.
@@ -485,5 +469,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	public void changeWizardFormStyle(String cssClassName)
 	{
 		add(new AttributeModifier("class", new Model(cssClassName)));
+	}
+
+	protected void processErrors(AjaxRequestTarget target)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
