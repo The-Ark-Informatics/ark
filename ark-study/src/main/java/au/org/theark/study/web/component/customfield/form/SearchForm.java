@@ -24,6 +24,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.customfield.DetailPanel;
 
 /**
  * @author nivedann
@@ -54,6 +55,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO>{
 						IModel<CustomFieldVO> cpmModel,
 						PageableListView<SubjectCustmFld> pageableListView, 
 						FeedbackPanel feedBackPanel,
+						DetailPanel detailPanel,
 						ArkCrudContainerVO arkCrudContainerVO) {
 		
 		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
