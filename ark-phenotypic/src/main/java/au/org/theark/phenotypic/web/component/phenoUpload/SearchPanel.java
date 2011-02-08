@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.SearchForm;
@@ -24,37 +24,37 @@ public class SearchPanel extends Panel
 	private FeedbackPanel				feedBackPanel;
 	private WebMarkupContainer			searchMarkupContainer;
 	private WebMarkupContainer			listContainer;
-	private WebMarkupContainer			detailContainer;
-	private PageableListView<PhenoUpload>	listView;
+	private WebMarkupContainer			wizardContainer;
+	private PageableListView<PhenoCollectionUpload>	listView;
 	private ContainerForm				containerForm;
-	private DetailPanel							detailPanel;
+	private WizardPanel							wizardPanel;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailPanelFormContainer;
+	private WebMarkupContainer wizardPanelFormContainer;
 
 	/* Constructor */
 	public SearchPanel(	String id, 
 					FeedbackPanel feedBackPanel, 
 					WebMarkupContainer searchMarkupContainer, 
-					PageableListView<PhenoUpload> listView, 
+					PageableListView<PhenoCollectionUpload> listView, 
 					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailPanelContainer, 
-					DetailPanel detail, 
+					WebMarkupContainer wizardPanelContainer, 
+					WizardPanel wizard, 
 					ContainerForm containerForm,
 					WebMarkupContainer viewButtonContainer,
 					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer)
+					WebMarkupContainer wizardPanelFormContainer)
 	{
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
-		this.detailContainer = detailPanelContainer;
-		this.detailPanel = detail;
+		this.wizardContainer = wizardPanelContainer;
+		this.wizardPanel = wizard;
 		this.containerForm = containerForm;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.wizardPanelFormContainer = wizardPanelFormContainer;
 		listContainer = resultListContainer;
 	}
 
@@ -64,11 +64,11 @@ public class SearchPanel extends Panel
 												(CompoundPropertyModel<UploadVO>) containerForm.getModel(),
 												listView,
 												feedBackPanel,
-												detailPanel,
+												wizardPanel,
 												listContainer,
 												searchMarkupContainer,
-												detailContainer,
-												detailPanelFormContainer,
+												wizardContainer,
+												wizardPanelFormContainer,
 												viewButtonContainer,
 												editButtonContainer
 												);
