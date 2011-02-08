@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.model.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -29,8 +30,8 @@ import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
-import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
+import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.util.PhenoUploadReport;
@@ -45,21 +46,21 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public java.util.Collection<PhenoCollection> getPhenotypicCollection()
 	{
-		Criteria crit = getSession().createCriteria(PhenoCollection.class);
-		java.util.List<PhenoCollection> collectionList = crit.list();
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+		java.util.List<PhenoCollection> collectionList = criteria.list();
 		return collectionList;
 	}
 
 	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study)
 	{
-		Criteria crit = getSession().createCriteria(PhenoCollection.class);
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
 
 		if (study != null)
 		{
-			crit.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, study));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, study));
 		}
 
-		java.util.List<PhenoCollection> collectionList = crit.list();
+		java.util.List<PhenoCollection> collectionList = criteria.list();
 		return collectionList;
 	}
 
@@ -81,7 +82,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, collectionToMatch.getStudy()));
 		}
-		
+
 		if (collectionToMatch.getDescription() != null)
 		{
 			collectionCriteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_DESCRIPTION, collectionToMatch.getDescription(), MatchMode.ANYWHERE));
@@ -91,12 +92,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_START_DATE, collectionToMatch.getStartDate()));
 		}
-		
+
 		if (collectionToMatch.getExpiryDate() != null)
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_EXPIRY_DATE, collectionToMatch.getExpiryDate()));
 		}
-		
+
 		if (collectionToMatch.getInsertTime() != null)
 		{
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_INSERT_TIME, collectionToMatch.getInsertTime()));
@@ -307,7 +308,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		getSession().save(phenoCollectionUpload);
 	}
-	
+
 	public void updateCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		currentUser = SecurityUtils.getSubject();
@@ -556,10 +557,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public Status getStatus(Long statusId)
 	{
-		Criteria crit = getSession().createCriteria(Status.class);
-		crit.add(Restrictions.eq("id", statusId));
+		Criteria criteria = getSession().createCriteria(Status.class);
+		criteria.add(Restrictions.eq("id", statusId));
 
-		List<Status> statusList = crit.list();
+		List<Status> statusList = criteria.list();
 		if (statusList.size() > 0)
 		{
 			if (statusList.size() > 1)
@@ -574,10 +575,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public Status getStatusByName(String statusName)
 	{
-		Criteria crit = getSession().createCriteria(Status.class);
-		crit.add(Restrictions.eq("name", statusName));
-		crit.addOrder(Order.asc("id"));
-		List<Status> statusList = crit.list();
+		Criteria criteria = getSession().createCriteria(Status.class);
+		criteria.add(Restrictions.eq("name", statusName));
+		criteria.addOrder(Order.asc("id"));
+		List<Status> statusList = criteria.list();
 		if (statusList.size() > 0)
 		{
 			if (statusList.size() > 1)
@@ -592,8 +593,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public java.util.Collection<Status> getStatus()
 	{
-		Criteria crit = getSession().createCriteria(Status.class);
-		java.util.Collection<Status> statusCollection = crit.list();
+		Criteria criteria = getSession().createCriteria(Status.class);
+		java.util.Collection<Status> statusCollection = criteria.list();
 		return (statusCollection);
 	}
 
@@ -610,7 +611,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void createUpload(PhenoUpload phenoUpload)
 	{
 		Session session = getSession();
-		
+
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 		phenoUpload.setInsertTime(dateNow);
@@ -618,14 +619,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		phenoUpload.setStartTime(dateNow);
 
 		session.save(phenoUpload);
-		
+
 		// Set Upload report
 		PhenoUploadReport uploadReport = new PhenoUploadReport();
 		PhenoUploadReport.appendDetails(phenoUpload);
 		phenoUpload.setUploadReport(uploadReport.getReportAsBlob());
 		session.update(phenoUpload);
 	}
-	
+
 	public void createUpload(UploadVO phenoUploadVo)
 	{
 		currentUser = SecurityUtils.getSubject();
@@ -634,14 +635,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		phenoUploadVo.getUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		phenoUploadVo.getUpload().setInsertTime(dateNow);
 		phenoUploadVo.getUpload().setStartTime(dateNow);
-		
+
 		phenoUploadVo.getPhenoCollectionUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		phenoUploadVo.getPhenoCollectionUpload().setInsertTime(dateNow);
-		
+
 		Session session = getSession();
 		session.save(phenoUploadVo.getUpload());
 		session.save(phenoUploadVo.getPhenoCollectionUpload());
-		
+
 		// Set Upload report
 		PhenoUploadReport uploadReport = new PhenoUploadReport();
 		PhenoUploadReport.appendDetails(phenoUploadVo.getUpload());
@@ -666,8 +667,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public java.util.Collection<FieldType> getFieldTypes()
 	{
-		Criteria crit = getSession().createCriteria(FieldType.class);
-		java.util.Collection<FieldType> fieldTypeCollection = crit.list();
+		Criteria criteria = getSession().createCriteria(FieldType.class);
+		java.util.Collection<FieldType> fieldTypeCollection = criteria.list();
 		return fieldTypeCollection;
 	}
 
@@ -754,7 +755,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (phenoCollectionUploadToMatch.getId() != null)
 		{
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.COLLECTION_IMPORT_ID, phenoCollectionUploadToMatch.getId()));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_UPLOAD_ID, phenoCollectionUploadToMatch.getId()));
 		}
 
 		/*
@@ -863,6 +864,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return phenoCollVo;
 	}
 
+	public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection)
+	{
+		PhenoCollectionVO phenoCollVo = new PhenoCollectionVO();
+		phenoCollVo.setPhenoCollection(phenoCollection);
+		java.util.Collection<PhenoUpload> phenoCollectionUploads = getPhenoCollectionUploads(phenoCollection);
+		for (PhenoUpload upload : phenoCollectionUploads)
+		{
+			phenoCollVo.getUploadCollection().add(upload);
+		}
+
+		return phenoCollVo;
+	}
+
 	private java.util.Collection<PhenoUpload> getPhenoCollectionUploads(PhenoCollection phenoCollection)
 	{
 		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
@@ -884,7 +898,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_ID, upload.getId()));
 		}
-		
+
 		if (upload.getStudy() != null)
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.UPLOAD_STUDY, upload.getStudy()));
@@ -894,12 +908,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILE_FORMAT, upload.getFileFormat()));
 		}
-		
+
 		if (upload.getDelimiterType() != null)
 		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_DELIMITER_TYPE, upload.getDelimiterType()));
 		}
-		
+
 		if (upload.getFilename() != null)
 		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILENAME, upload.getFilename()));
@@ -913,15 +927,76 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public java.util.Collection<FileFormat> getFileFormats()
 	{
-		Criteria crit = getSession().createCriteria(FileFormat.class);
-		java.util.Collection<FileFormat> fileFormatCollection = crit.list();
+		Criteria criteria = getSession().createCriteria(FileFormat.class);
+		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
 		return fileFormatCollection;
 	}
 
 	public Collection<DelimiterType> getDelimiterTypes()
 	{
-		Criteria crit = getSession().createCriteria(DelimiterType.class);
-		java.util.Collection<DelimiterType> delimiterTypeCollection = crit.list();
+		Criteria criteria = getSession().createCriteria(DelimiterType.class);
+		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
 		return delimiterTypeCollection;
+	}
+
+	public Collection<PhenoUpload> searchUploadByCollection(PhenoCollection phenoCollection)
+	{
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
+
+		if (phenoCollection.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_UPLOAD_COLLECTION, phenoCollection));
+		}
+		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID));
+		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
+		java.util.Collection<PhenoUpload> phenoUploadCollection = null;
+		
+		for (Iterator iterator = phenoCollectionUploadCollection.iterator(); iterator.hasNext();)
+		{
+			PhenoCollectionUpload phenoCollectionUpload = (PhenoCollectionUpload) iterator.next();
+			PhenoUpload phenoUpload = phenoCollectionUpload.getUpload();
+			phenoUploadCollection.add(phenoUpload);
+		}
+
+		return phenoUploadCollection;
+	}
+
+	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		phenoCollectionUpload.setInsertTime(dateNow);
+		phenoCollectionUpload.setUserId(currentUser.getPrincipal().toString());
+		getSession().save(phenoCollectionUpload);
+		
+	}
+
+	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		getSession().delete(phenoCollectionUpload);
+	}
+
+	public PhenoCollectionUpload getPhenoCollectionUpload(Long id)
+	{
+		PhenoCollectionUpload phenoCollectionUpload = (PhenoCollectionUpload) getSession().get(PhenoCollectionUpload.class, id);
+		return phenoCollectionUpload;
+	}
+
+	public Collection<PhenoCollectionUpload> searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
+
+		if (phenoCollectionUpload.getCollection().getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_UPLOAD_COLLECTION, phenoCollectionUpload.getCollection()));
+		}
+		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID));
+		java.util.Collection<PhenoCollectionUpload> phenoCollectionUploadCollection = criteria.list();
+		return phenoCollectionUploadCollection;
+	}
+
+	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
+	{
+		getSession().update(phenoCollectionUpload);
 	}
 }

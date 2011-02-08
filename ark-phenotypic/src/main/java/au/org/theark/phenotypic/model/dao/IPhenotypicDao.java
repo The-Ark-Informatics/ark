@@ -44,6 +44,7 @@ public interface IPhenotypicDao {
 	// Collection Upload
 	public PhenoCollectionUpload getCollectionUpload(Long id);
 	public java.util.Collection<PhenoCollectionUpload> getCollectionUpload();
+	public PhenoCollectionVO getPhenoCollectionAndUploads(PhenoCollection phenoCollection);
 	public java.util.Collection<PhenoCollectionUpload> searchCollectionUpload(PhenoCollectionUpload phenoCollectionUploadToMatch);
 	public void createCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
 	public void updateCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
@@ -89,12 +90,20 @@ public interface IPhenotypicDao {
 	
 	// Upload
 	public java.util.Collection<PhenoUpload> searchUpload(PhenoUpload upload);
+	public java.util.Collection<PhenoUpload> searchUploadByCollection(PhenoCollection phenoCollection);
 	public PhenoCollectionVO getPhenoCollectionAndUploads(Long id);
 	public PhenoUpload getUpload(Long id);
 	public void createUpload(PhenoUpload upload);
 	public void createUpload(UploadVO uploadVo);
 	public void updateUpload(PhenoUpload upload);
 	public void deleteUpload(PhenoUpload upload);
+	
+	// Collection Upload
+	public PhenoCollectionUpload getPhenoCollectionUpload(Long id);
+	public java.util.Collection<PhenoCollectionUpload> searchPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
+	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload);
 	
 	// File Formats
 	public java.util.Collection<FileFormat> getFileFormats();
