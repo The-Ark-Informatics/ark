@@ -2,7 +2,10 @@ package au.org.theark.phenotypic.model.entity;
 
 import java.sql.Blob;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -43,6 +47,8 @@ public class PhenoUpload implements java.io.Serializable
 	private Date				insertTime;
 	private String				updateUserId;
 	private Date				updateTime;
+	
+	private Set<PhenoCollectionUpload> phenoCollectionUploads = new HashSet<PhenoCollectionUpload>(0);
 
 	// Constructors
 	/** default constructor */
@@ -306,5 +312,22 @@ public class PhenoUpload implements java.io.Serializable
 	public void setUpdateTime(Date updateTime)
 	{
 		this.updateTime = updateTime;
+	}
+
+	/**
+	 * @param phenoCollectionUploads the phenoCollectionUploads to set
+	 */
+	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads)
+	{
+		this.phenoCollectionUploads = phenoCollectionUploads;
+	}
+
+	/**
+	 * @return the phenoCollectionUploads
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "upload")
+	public Set<PhenoCollectionUpload> getPhenoCollectionUploads()
+	{
+		return phenoCollectionUploads;
 	}
 }
