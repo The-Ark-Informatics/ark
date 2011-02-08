@@ -28,7 +28,7 @@ public class PhenoCollectionUpload implements java.io.Serializable
 
 	// Fields
 	private Long				id;
-	private PhenoUpload				upload;
+	private PhenoUpload		upload;
 	private PhenoCollection	phenoCollection;
 	private String				userId;
 	private Date				insertTime;
