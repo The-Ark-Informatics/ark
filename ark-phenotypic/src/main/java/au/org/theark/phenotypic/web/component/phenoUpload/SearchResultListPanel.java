@@ -17,6 +17,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 
@@ -52,14 +53,14 @@ public class SearchResultListPanel extends Panel
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
-	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel)
+	public PageableListView<PhenoCollectionUpload> buildPageableListView(IModel iModel)
 	{
-		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE)
+		PageableListView<PhenoCollectionUpload> sitePageableListView = new PageableListView<PhenoCollectionUpload>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE)
 		{
 			@Override
-			protected void populateItem(final ListItem<PhenoUpload> item)
+			protected void populateItem(final ListItem<PhenoCollectionUpload> item)
 			{
-				PhenoUpload upload = item.getModelObject();
+				PhenoUpload upload = item.getModelObject().getUpload();
 
 				// The ID
 				if (upload.getId() != null)
