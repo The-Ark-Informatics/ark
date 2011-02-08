@@ -42,7 +42,8 @@ public class PhenoCollection implements java.io.Serializable
 	private Date						insertTime;
 	private String						updateUserId;
 	private Date						updateTime;
-	private Set<PhenoCollectionUpload>	collectionImports	= new HashSet<PhenoCollectionUpload>(0);
+	
+	private Set<PhenoCollectionUpload> phenoCollectionUploads = new HashSet<PhenoCollectionUpload>(0);
 
 	// Constructors
 
@@ -67,7 +68,7 @@ public class PhenoCollection implements java.io.Serializable
 	 * @param decodeMasks
 	 */
 	public PhenoCollection(Long id, Status status, Study study, String name, String description, Date startDate, Date expiryDate, String userId, Date insertTime, String updateUserId, Date updateTime,
-			Set<PhenoCollectionUpload> collectionImports)
+			Set<PhenoCollectionUpload> phenoCollectionUploads)
 	{
 		this.id = id;
 		this.status = status;
@@ -80,7 +81,7 @@ public class PhenoCollection implements java.io.Serializable
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
 		this.updateTime = updateTime;
-		this.collectionImports = collectionImports;
+		this.phenoCollectionUploads = phenoCollectionUploads;
 	}
 
 	// Property accessors
@@ -217,14 +218,20 @@ public class PhenoCollection implements java.io.Serializable
 		this.updateTime = updateTime;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<PhenoCollectionUpload> getCollectionImports()
+	/**
+	 * @param phenoCollectionUploads the phenoCollectionUploads to set
+	 */
+	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads)
 	{
-		return this.collectionImports;
+		this.phenoCollectionUploads = phenoCollectionUploads;
 	}
 
-	public void setCollectionImports(Set<PhenoCollectionUpload> collectionImports)
+	/**
+	 * @return the phenoCollectionUploads
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
+	public Set<PhenoCollectionUpload> getPhenoCollectionUploads()
 	{
-		this.collectionImports = collectionImports;
+		return phenoCollectionUploads;
 	}
 }
