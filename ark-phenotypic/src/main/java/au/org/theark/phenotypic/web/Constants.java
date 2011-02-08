@@ -97,11 +97,11 @@ public class Constants {
 	
 	// UploadVO
 	public static final String	UPLOADVO_UPLOAD_ID	= "upload.id";
-	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT	= "upload.collectionImport";
-	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_ID	= "upload.collectionImport.id";
-	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION	= "upload.collectionImport.collection";
-	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION_ID	= "upload.collectionImport.collection.id";
-	public static final String	UPLOADVO_UPLOAD_COLLECTION_IMPORT_COLLECTION_NAME	= "upload.collectionImport.collection.name";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD	= "upload.collectionUpload";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_ID	= "upload.collectionUpload.id";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION	= "upload.collectionUpload.collection";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_ID	= "upload.collectionUpload.collection.id";
+	public static final String	UPLOADVO_UPLOAD_COLLECTION_UPLOAD_COLLECTION_NAME	= "upload.collectionUpload.collection.name";
 	public static final String	UPLOADVO_UPLOAD_FILENAME	= "upload.filename";
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT	= "upload.fileFormat";
 	public static final String	UPLOADVO_UPLOAD_FILE_FORMAT_ID	= "upload.fileFormat.id";
@@ -135,19 +135,17 @@ public class Constants {
 	public static final String	PHENO_COLLECTION_UPDATE_USER_ID	= "userId";
 	public static final String PHENO_COLLECTION_UPDATE_TIME = "updateTime";
 	
-	public static final String COLLECTION_IMPORT = "collectionImport";
-	public static final String COLLECTION_IMPORT_ID = "id";
-	public static final String COLLECTION_IMPORT_COLLECTION = "collection";
-	public static final String COLLECTION_IMPORT_TYPE = "importType";
-	public static final String COLLECTION_IMPORT_DELIMITER_TYPE = "delimiterType";
-	public static final String COLLECTION_IMPORT_START_TIME = "startTime";
-	public static final String COLLECTION_IMPORT_FINISH_TIME= "finishTime";
-	public static final String COLLECTION_IMPORT_USER = "user";
-	public static final String COLLECTION_IMPORT_USER_ID = "userId";
-	public static final String COLLECTION_IMPORT_INSERT_TIME = "insertTime";
-	public static final String COLLECTION_IMPORT_UPDATE_USER = "user";
-	public static final String COLLECTION_IMPORT_UPDATE_USER_ID = "userId";
-	public static final String COLLECTION_IMPORT_UPDATE_TIME = "updateTime";
+	public static final String PHENO_COLLECTION_UPLOAD = "collectionUpload";
+	public static final String PHENO_COLLECTION_UPLOAD_ID = "id";
+	public static final String PHENO_COLLECTION_UPLOAD_COLLECTION = "collection";
+	public static final String PHENO_COLLECTION_UPLOAD_COLLECTION_ID = "collection.id";
+	public static final String PHENO_COLLECTION_UPLOAD_UPLOAD = "upload";
+	public static final String PHENO_COLLECTION_UPLOAD_UPLOAD_ID = "upload.id";
+	public static final String PHENO_COLLECTION_UPLOAD_USER = "user";
+	public static final String PHENO_COLLECTION_UPLOAD_USER_ID = "userId";
+	public static final String PHENO_COLLECTION_UPLOAD_INSERT_TIME = "insertTime";
+	public static final String PHENO_COLLECTION_UPLOAD_UPDATE_USER_ID = "updateUserId";
+	public static final String PHENO_COLLECTION_UPLOAD_UPDATE_TIME = "updateTime";
 	
 	public static final String	FIELD	= "field";
 	public static final String	FIELD_ID	= "id";
