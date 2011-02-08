@@ -24,6 +24,7 @@ public class UploadVO implements Serializable
 	private PhenoCollectionUpload					phenoCollectionUpload;
 	private java.util.Collection<PhenoUpload>	uploadCollection;
 	private int											mode;
+	private java.util.Collection<String>		validationMessages;
 
 	public UploadVO()
 	{
@@ -130,5 +131,21 @@ public class UploadVO implements Serializable
 	public int getMode()
 	{
 		return mode;
+	}
+
+	/**
+	 * @param validationMessages the validationMessages to set
+	 */
+	public void setValidationMessages(java.util.Collection<String> validationMessages)
+	{
+		this.validationMessages = validationMessages;
+	}
+
+	/**
+	 * @return the validationMessages
+	 */
+	public java.util.Collection<String> getValidationMessages()
+	{
+		return validationMessages;
 	}
 }
