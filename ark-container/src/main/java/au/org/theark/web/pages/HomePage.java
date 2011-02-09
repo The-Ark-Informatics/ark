@@ -1,6 +1,7 @@
 package au.org.theark.web.pages;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
@@ -11,6 +12,7 @@ import org.apache.wicket.markup.html.basic.Label;
 
 import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
+import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
@@ -63,6 +65,7 @@ public class HomePage extends BasePage
 		// Pass in the Study logo markup, to allow dynamic logo reference
 		moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup, this.arkContextPanelMarkup);
 
+		//Pheno
 		PhenotypicTabProviderImpl phenotypicTabs = new PhenotypicTabProviderImpl("phenotypic");
 		List<ITab> phenotypicTabsList = phenotypicTabs.buildTabs(this.arkContextPanelMarkup);
 		for (ITab itab : phenotypicTabsList)
@@ -70,13 +73,21 @@ public class HomePage extends BasePage
 			moduleTabsList.add(itab);
 		}
 
+		//Geno
 		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
 		List<ITab> genoTabsList = genoTabs.buildTabs();
 		for (ITab itab : genoTabsList)
 		{
 			moduleTabsList.add(itab);
 		}
-
+		//Registry
+		RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
+		List<ITab> registryTabList =	registryTabProvider.buildTabs();
+		for(ITab tab : registryTabList){
+			moduleTabsList.add(tab);
+		}
+		
+		
 		moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
 		add(moduleTabbedPanel);
 	}
