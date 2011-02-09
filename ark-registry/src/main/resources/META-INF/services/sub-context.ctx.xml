@@ -11,6 +11,6 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="au.org.theark.registry.model.dao"/>
-    <context:component-scan base-package="au.org.theark.registry.model.service"/>
+    <context:component-scan base-package="au.org.theark.registry.service"/>
     <context:component-scan base-package="au.org.theark.registry.web.component"/>
 </beans>
