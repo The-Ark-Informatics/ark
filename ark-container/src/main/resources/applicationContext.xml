@@ -44,15 +44,17 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
     
-    <!--  Development: MySql Data Source Development-->
+    <!--  Development: MySql Data Source Development -->
+     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
         <property name="username" value="arkadmin"/>
         <property name="password" value="veTum1n"/>
     </bean>
-    
-    <!--  Test: MySql Data Source 
+        
+    <!--  Test: MySql Data Source-->
+    <!--   
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.253:3306"/>
@@ -65,9 +67,10 @@
     
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
       <!--  Test LDAP URL -->
-      <!--  <property name="url" value ="ldap://172.19.200.229:389"/> -->
-      <!-- Development LDAP Url -->    
-      <property name="url"  value="ldap://192.168.2.229:389"/> 
+     <!--   <property name="url" value ="ldap://172.19.200.229:389"/> -->
+      
+      <!-- Development LDAP Url -->   
+      <property name="url"  value="ldap://192.168.2.229:389"/>
       <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
 	  <property name="password" value="veTum1n" />
@@ -87,6 +90,7 @@
         	    <value>au.org.theark.core.model.study.entity</value>
 				<value>au.org.theark.phenotypic.model.entity</value>        		
 				<value>au.org.theark.geno.model.entity</value>
+			<!-- <value>au.org.theark.registry.model.entity</value>-->
         	</list>
         </property>
         <property name="hibernateProperties">
