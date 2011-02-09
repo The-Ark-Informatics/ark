@@ -3,10 +3,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.org.theark.registry</groupId>
 	<artifactId>ark-registry</artifactId>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<!-- TODO project name  -->
-	<name>quickstart</name>
+	<name>Ark Registry</name>
 	<description></description>
 	<!--
 		TODO <organization> <name>company name</name> <url>company url</url>
