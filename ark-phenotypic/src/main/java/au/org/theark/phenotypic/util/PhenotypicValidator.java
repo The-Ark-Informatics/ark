@@ -132,7 +132,7 @@ public class PhenotypicValidator
 					}
 					if ((floatFieldValue < floatMinValue))
 					{
-						errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMaxValue(field, fieldData));
+						errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
 					}
 					return false;
 				}
