@@ -54,14 +54,14 @@ public class PhenotypicValidationMessage
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataLessThanMaxValue(Field field, FieldData fieldData){
+	public static String fieldDataLessThanMinValue(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
 		stringBuffer.append(fieldData.getValue().toString());
 		stringBuffer.append(" is less than the defined minimum value: ");
-		stringBuffer.append(field.getMaxValue());
+		stringBuffer.append(field.getMinValue());
 		return(stringBuffer.toString());
 	}
 	
