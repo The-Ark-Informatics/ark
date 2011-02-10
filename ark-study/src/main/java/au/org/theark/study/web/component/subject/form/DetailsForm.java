@@ -19,7 +19,9 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
@@ -158,12 +160,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	@Override
 	protected void attachValidators() {
 		firstNameTxtFld.setRequired(true);
-		firstNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		middleNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		lastNameTxtFld.add(StringValidator.lengthBetween(3, 50));
-		preferredNameTxtFld.setRequired(true);
-		preferredNameTxtFld.add(StringValidator.lengthBetween(3, 50));
 		dateOfBirth.setRequired(true);
+		dateOfBirth.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.dateofbirth.max.range", this, null));
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
 		subjectUIDTxtFld.setRequired(true);
