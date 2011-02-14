@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.vo.StudySubjectVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -181,6 +182,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return criteria.list();		
 	}
 	
+	
 	/**
 	 * Look up the Link Subject Study for subjects linked to a study
 	 * @param subjectVO
@@ -207,24 +209,24 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		}
 		
 		if(subjectVO.getPerson().getFirstName() != null){
-			hqlString.append(" and linkSubStudy.person.firstName = ");
-			hqlString.append("\'");
+			hqlString.append(" and linkSubStudy.person.firstName like");
+			hqlString.append("\'%");
 			hqlString.append(subjectVO.getPerson().getFirstName().trim());
-			hqlString.append("\'");
+			hqlString.append("%\'");
 		}
 		
 		if(subjectVO.getPerson().getMiddleName() != null){
-			hqlString.append(" and linkSubStudy.person.middleName = ");
-			hqlString.append("\'");
+			hqlString.append(" and linkSubStudy.person.middleName like ");
+			hqlString.append("\'%");
 			hqlString.append(subjectVO.getPerson().getMiddleName().trim());
-			hqlString.append("\'");
+			hqlString.append("%\'");
 		}
 							
 		if(subjectVO.getPerson().getLastName() != null){
-			hqlString.append(" and linkSubStudy.person.lastName = ");
-			hqlString.append("\'");
+			hqlString.append(" and linkSubStudy.person.lastName  like");
+			hqlString.append("\'%");
 			hqlString.append(subjectVO.getPerson().getLastName().trim());
-			hqlString.append("\'");
+			hqlString.append("%\'");
 		}
 		
 		if(subjectVO.getPerson().getGenderType() != null){
@@ -263,15 +265,6 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 					subject.setLinkSubjectStudyId((Long)objects[2]);
 					subject.setStudy((Study)objects[3]);
 					subject.setSubjectUID((String)objects[4]);
-					
-//					for (Phone phone : subject.getPerson().getPhones()) {
-//						PhoneType phoneType = phone.getPhoneType();
-//						phoneType.setName(phoneType.getName());
-//						phoneType.setDescription(phoneType.getDescription());
-//						
-//						phone.setPhoneType(phoneType);
-//						subject.getPhoneList().add(phone);
-//					}
 					subjectVOList.add(subject);
 				}
 			}
