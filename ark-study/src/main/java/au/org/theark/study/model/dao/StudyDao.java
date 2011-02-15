@@ -119,7 +119,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		if(studyCompCriteria.getKeyword() != null){
 		
-			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD,studyCompCriteria.getKeyword()));
+			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD,studyCompCriteria.getKeyword(),MatchMode.ANYWHERE));
 		}
 		List<StudyComp> list =  criteria.list();
 		return list;
