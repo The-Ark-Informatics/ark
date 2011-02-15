@@ -168,6 +168,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
 		subjectUIDTxtFld.setRequired(true);
+		subjectUIDTxtFld.add(StringValidator.lengthBetween(1, 8));
+		titleTypeDdc.setRequired(true);
 		
 	}
 
