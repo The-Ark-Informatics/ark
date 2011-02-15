@@ -72,7 +72,7 @@ import au.org.theark.study.web.Constants;
 				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
 					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup);//The sub menus for Study 
 				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
-					panelToReturn = new SubjectSubMenuTab(pid);
+					panelToReturn = new SubjectSubMenuTab(pid,arkContextMarkup);
 				}
 				return panelToReturn;
 			}
