@@ -21,7 +21,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -39,6 +41,7 @@ public class SearchResults extends Panel{
 	private WebMarkupContainer searchResultContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer arkContextMarkup;
 	private ContainerForm subjectContainerForm;
 	
 
@@ -53,6 +56,7 @@ public class SearchResults extends Panel{
 							WebMarkupContainer searchResultContainer,
 							WebMarkupContainer viewButtonContainer,
 							WebMarkupContainer editButtonContainer,
+							WebMarkupContainer arkContextMarkup,
 							ContainerForm containerForm){
 		
 		super(id);
@@ -64,6 +68,7 @@ public class SearchResults extends Panel{
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkContextMarkup = arkContextMarkup;
 	}
 	  
 	
@@ -131,13 +136,18 @@ public class SearchResults extends Panel{
 					break;
 				}
 				
-				subjectContainerForm.setModelObject(subject);
+				subjectContainerForm.setModelObject(subjectFromBackend);
 				//Refresh the details of the SubjectVO attached to the Model
 				SubjectVO subjectVOInModel = subjectContainerForm.getModelObject();
-				subjectVOInModel.setPerson(subject.getPerson());
-				subjectVOInModel.setSubjectUID(subject.getSubjectUID());
-				subjectVOInModel.setLinkSubjectStudyId(subject.getLinkSubjectStudyId());
-				subjectVOInModel.setSubjectStatus(subject.getSubjectStatus());
+				subjectVOInModel.setPerson(subjectFromBackend.getPerson());
+				subjectVOInModel.setSubjectUID(subjectFromBackend.getSubjectUID());
+				subjectVOInModel.setLinkSubjectStudyId(subjectFromBackend.getLinkSubjectStudyId());
+				subjectVOInModel.setSubjectStatus(subjectFromBackend.getSubjectStatus());
+				
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.resetContextLabel(target, arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
+				contextHelper.setSubjectContextLabel(target, subjectVOInModel.getSubjectUID(), arkContextMarkup);
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);

@@ -30,15 +30,19 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 	private PageableListView<SubjectVO> pageableListView;
 	private ContainerForm containerForm;
 	
+	private WebMarkupContainer arkContextMarkup;
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+	
+	
 
 	/**
 	 * @param id
 	 */
-	public SubjectContainer(String id) {
+	public SubjectContainer(String id,WebMarkupContainer arkContextMarkup) {
 		
 		super(id);
+		this.arkContextMarkup = arkContextMarkup;
 		/*Initialise the CPM */
 		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
@@ -86,7 +90,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 	
 	protected WebMarkupContainer initialiseDetailPanel(){
 		
-		detailsPanel = new Details("detailsPanel",feedBackPanel,searchResultPanelContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,containerForm);
+		detailsPanel = new Details("detailsPanel",feedBackPanel,searchResultPanelContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
 		detailsPanel.initialisePanel();
 		detailPanelContainer.add(detailsPanel);
 		return detailPanelContainer;
@@ -94,7 +98,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 	
 	protected WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultsPanel = new SearchResults("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,containerForm);
+		searchResultsPanel = new SearchResults("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;

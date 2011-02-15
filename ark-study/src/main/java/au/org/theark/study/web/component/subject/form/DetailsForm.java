@@ -24,6 +24,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
+import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -32,6 +33,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -49,7 +51,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
-	
+	private WebMarkupContainer arkContextMarkupContainer;
 
 	private TextField<String> firstNameTxtFld;
 	private TextField<String> middleNameTxtFld;
@@ -77,11 +79,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 						WebMarkupContainer searchPanelContainer,
 						WebMarkupContainer viewButtonContainer,
 						WebMarkupContainer editButtonContainer,
+						WebMarkupContainer arkContextContainer,
 						ContainerForm containerForm				) {
 		
 	
 			super(id,feedBackPanel,resultListContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,containerForm);
-		
+			this.arkContextMarkupContainer = arkContextContainer;
 	}
 
 		
@@ -211,6 +214,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 				processErrors(target);
 			
 			}
+			
+			
+			ContextHelper contextHelper = new ContextHelper();
+			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
+			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
+			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getSubjectUID(), arkContextMarkupContainer);
 			
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getPerson().getId());
 			//We specify the type of person here as Subject

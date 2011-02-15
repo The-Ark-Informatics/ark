@@ -28,6 +28,7 @@ public class Details extends Panel {
 	private WebMarkupContainer searchPanelContainer;
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
+	private WebMarkupContainer arkContextContainer;
 	private ContainerForm containerForm;
 
 	public Details(	String id,
@@ -38,6 +39,7 @@ public class Details extends Panel {
 					WebMarkupContainer searchPanelContainer,
 					WebMarkupContainer viewButtonContainer,
 					WebMarkupContainer editButtonContainer,
+					WebMarkupContainer arkContextContainer,
 					ContainerForm containerForm){
 		
 		super(id);
@@ -48,6 +50,7 @@ public class Details extends Panel {
 		this.searchPanelContainer = searchPanelContainer;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
+		this.arkContextContainer = arkContextContainer;
 		this.containerForm = containerForm;
 		
 	}
@@ -63,6 +66,7 @@ public class Details extends Panel {
 									searchPanelContainer,
 									viewButtonContainer, 
 									editButtonContainer,
+									arkContextContainer,
 									containerForm);
 		
 		detailsForm.initialiseDetailForm();
