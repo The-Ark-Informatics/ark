@@ -12,6 +12,7 @@ import java.util.List;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
@@ -29,12 +30,14 @@ import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
  */
 public class SubjectSubMenuTab extends Panel{
 	
+	private WebMarkupContainer	arkContextMarkup;
 	List<ITab> tabList;
 	/**
 	 * @param id
 	 */
-	public SubjectSubMenuTab(String id) {
+	public SubjectSubMenuTab(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
+		this.arkContextMarkup = arkContextMarkup;
 		tabList = new ArrayList<ITab>();
 		buildTabs();
 	}
@@ -83,7 +86,7 @@ public class SubjectSubMenuTab extends Panel{
 					
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_DETAIL)){
 						
-						panelToReturn = new SubjectContainer(panelId);//Note the constructor
+						panelToReturn = new SubjectContainer(panelId, arkContextMarkup);//Note the constructor
 					
 					}
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_PHONE)){
