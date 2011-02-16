@@ -108,6 +108,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 				containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(containerForm.getModelObject());
 				containerForm.getModelObject().setSubjectList(subjects);
+				pageableListView.removeAll();
 				return subjects;
 			}
 		};
