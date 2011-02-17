@@ -72,7 +72,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	}
 
 	/**
-	 * Constructor for AbstractDetailForm class
+	 * Constructor for AbstractWizardForm class
 	 * 
 	 * @param id
 	 * @param feedBackPanel
@@ -101,7 +101,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		setOutputMarkupId(true);
 		setMultiPart(true);
 		initialiseForm();
-		//addFormComponents();
+		addFormComponents();
 	}
 	
 	@SuppressWarnings( { "serial", "unchecked" })
@@ -147,12 +147,10 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 
 	protected void onCancelPostProcess(AjaxRequestTarget target)
 	{
-		searchPanelContainer.setVisible(true);
-		wizardPanelContainer.setVisible(false);
+		wizardPanelContainer.setVisible(true);
 		resultListContainer.setVisible(true);
 
 		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
 		target.addComponent(wizardPanelContainer);
 		target.addComponent(resultListContainer);
 	}
