@@ -79,8 +79,13 @@ public class Constants {
 	public static final String MENU_STUDY_SUBMENU ="studySubMenus";
 	public static final String CUSTOM_FIELD="Custom Field";
 	public static final String TAB_CUSTOM_FIELD="tab.custom.field";
+	public static final String MENU_REGISTRY_SUBMENU="registrySubMenus";
 	
-	
+	/*
+	 * People Menu
+	 */
+	public static final String PEOPLE = "People";
+	public static final String TAB_PEOPLE_FIELD="tab.people";
 	public static final String STUDY_KEY="id";
 	
 	public static final String STUDY_NAME="name";
