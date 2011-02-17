@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyConsentQuestion;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 
 
@@ -44,6 +46,10 @@ public class SubjectVO implements Serializable{
 	protected Collection<Address> addressList;
 	/** A List of Email account linked to this person/subject*/
 	protected Collection<EmailAccount> emailAccountList;
+	
+	protected Collection<StudyConsentQuestion> consentQuestions;
+	
+	private ConsentAnswer consentAnswerSelect;
 	
 	/**
 	 * Constructor
@@ -162,6 +168,14 @@ public class SubjectVO implements Serializable{
 
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
+	}
+
+	public ConsentAnswer getConsentAnswerSelect() {
+		return consentAnswerSelect;
+	}
+
+	public void setConsentAnswerSelect(ConsentAnswer consentAnswerSelect) {
+		this.consentAnswerSelect = consentAnswerSelect;
 	}
 
 
