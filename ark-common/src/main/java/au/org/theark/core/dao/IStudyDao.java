@@ -6,6 +6,7 @@ import java.util.List;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
@@ -165,6 +166,9 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<ConsentType> getConsentType();
+	
+	
+	public List<ConsentAnswer> getConsentAnswer();
 	
 	
 	
