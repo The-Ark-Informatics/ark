@@ -20,7 +20,6 @@ import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.component.customfield.CustomFieldContainer;
 import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
-import au.org.theark.study.web.component.people.PeopleContainerPanel;
 import au.org.theark.study.web.component.site.SiteContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
 import au.org.theark.study.web.component.user.UserContainer;
