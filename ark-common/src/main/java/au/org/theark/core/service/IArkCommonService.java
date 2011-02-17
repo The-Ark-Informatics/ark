@@ -6,6 +6,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
@@ -90,6 +91,8 @@ public interface IArkCommonService {
 	
 	
 	public List<StudyCompStatus> getStudyComponentStatus();
+	
+	public List<ConsentAnswer> getConsentAnswer();
 	
 	
 	
