@@ -34,6 +34,10 @@ public class ArkCrudContainerVO implements Serializable{
 		
 		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
 		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
+
+		detailPanelContainer.setVisible(false);
+		detailPanelFormContainer.setEnabled(false);
+
 		
 		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
 		searchResultPanelContainer.setOutputMarkupPlaceholderTag(true);
@@ -44,8 +48,9 @@ public class ArkCrudContainerVO implements Serializable{
 		editButtonContainer = new WebMarkupContainer("editButtonContainer");
 		editButtonContainer.setOutputMarkupPlaceholderTag(true);
 		
-		detailPanelContainer.setVisible(false);
-		detailPanelFormContainer.setEnabled(false);
+		
+		
+
 		searchResultPanelContainer.setVisible(true);
 		viewButtonContainer.setVisible(false);
 		editButtonContainer.setVisible(false);
