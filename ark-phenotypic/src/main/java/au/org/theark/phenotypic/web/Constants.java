@@ -14,6 +14,7 @@ public class Constants {
 	public static final String FIELD_SUBMENU = "Data Dictionary";
 	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
 	public static final String PHENOTYPIC_DATA_UPLOAD_SUBMENU = "Data Upload";
+	public static final String PHENOTYPIC_DATA_UPLOAD2_SUBMENU = "Data Upload2";
 	public static final String REPORT_SUBMENU = "Reports";
 	
 	// Resource keys
@@ -22,6 +23,7 @@ public class Constants {
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
 	public static final String FIELD_DATA_RESOURCEKEY = "tab.module.phenotypic.fieldData";
 	public static final String PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.phenoUpload";
+	public static final String PHENOTYPIC_DATA_UPLOAD2_RESOURCEKEY = "tab.module.phenotypic.phenoUpload2";
 	public static final String REPORT_RESOURCEKEY = "tab.module.phenotypic.report";
 	
 	// Generic Buttons
