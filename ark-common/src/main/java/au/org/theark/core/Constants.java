@@ -1,7 +1,8 @@
 package au.org.theark.core;
 
 /*
- * Common constants that apply to all of the Ark modules
+ * Common constants that apply to
+ *  all of the Ark modules
  */
 public class Constants {
 	/* Module Role Display Names*/
@@ -44,7 +45,7 @@ public class Constants {
 	public static final String PERSON_TYPE="personType";
 	public static final String PERSON_CONTEXT_TYPE_SUBJECT= "subject";
 	public static final String PERSON_CONTEXT_TYPE_CONTACT= "contact";
-	public static final String TAB_SUBJECT_DETAIL="Subject Mangement";
+	public static final String TAB_SUBJECT_DETAIL="Subject Management";
 	public static final String TAB_PERSON_PHONE="Phone";
 	public static final String TAB_PERSON_ADDRESS="Address";
 	public static final String TAB_MODULE_PERSON_PHONE="tab.module.person.phone";
