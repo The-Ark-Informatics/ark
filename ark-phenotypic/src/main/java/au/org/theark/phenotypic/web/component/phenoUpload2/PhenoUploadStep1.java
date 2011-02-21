@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.extensions.wizard.WizardStep;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.form.AbstractWizardForm;
+import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
@@ -34,8 +36,10 @@ import au.org.theark.phenotypic.web.component.phenoUpload2.form.ContainerForm;
 /**
  * The first step of this wizard.
  */
-public class PhenoUploadStep1 extends WizardStep
+public class PhenoUploadStep1 extends AbstractWizardStepPanel
 {
+	
+
 	/**
 	 * 
 	 */
@@ -52,7 +56,7 @@ public class PhenoUploadStep1 extends WizardStep
 	@SpringBean(name = "phenotypicService")
 	private IPhenotypicService					serviceInterface;
 
-	private transient Logger					log						= LoggerFactory.getLogger(PhenoUploadContainer.class);
+	private transient Logger					log						= LoggerFactory.getLogger(PhenoUpload2Container.class);
 
 	private ContainerForm						containerForm;
 
@@ -65,16 +69,22 @@ public class PhenoUploadStep1 extends WizardStep
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 
+	public PhenoUploadStep1(String id) {
+		super(id);
+		initialiseDetailForm();
+	}
+	
 	/**
 	 * Construct.
-	 */
+	 
 	public PhenoUploadStep1(ContainerForm containerForm, java.util.Collection<String>	validationMessages)
 	{
-		super("Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
+		//super("Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
 		this.containerForm = containerForm;
 		this.validationMessages = validationMessages;
 		initialiseDetailForm();
 	}
+	*/
 
 	@SuppressWarnings("unchecked")
 	private void initialiseDropDownChoices()
@@ -136,7 +146,7 @@ public class PhenoUploadStep1 extends WizardStep
 		writeOutFile();
 		save();
 
-		setComplete(true); // Set this step as done, you should put custom logic here
+		//setComplete(true); // Set this step as done, you should put custom logic here
 	}
 	
 	private void writeOutFile()
@@ -242,5 +252,12 @@ public class PhenoUploadStep1 extends WizardStep
 			System.out.println("creating directory: " + directoryName);
 			theDir.mkdir();
 		}
+	}
+
+	@Override
+	public void handleWizardState(AbstractWizardForm<?> form,
+			AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		
 	}
 }

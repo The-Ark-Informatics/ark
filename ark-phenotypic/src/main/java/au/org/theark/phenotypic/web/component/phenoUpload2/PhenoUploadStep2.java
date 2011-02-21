@@ -1,14 +1,16 @@
 package au.org.theark.phenotypic.web.component.phenoUpload2;
 
-import org.apache.wicket.extensions.wizard.WizardStep;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.TextArea;
 
+import au.org.theark.core.web.form.AbstractWizardForm;
+import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.web.component.phenoUpload2.form.ContainerForm;
 
 /**
  * The first step of this wizard.
  */
-public class PhenoUploadStep2 extends WizardStep
+public class PhenoUploadStep2 extends AbstractWizardStepPanel
 {
 	
 	/**
@@ -19,19 +21,31 @@ public class PhenoUploadStep2 extends WizardStep
 	private java.util.Collection<String>	validationMessages;
 	private TextArea<String> validationTextArea;
 	
+	
+	public PhenoUploadStep2(String id) {
+		super(id);
+		initialiseDetailForm();
+	}
+	
+	private void initialiseDetailForm() 
+	{
+		validationTextArea = new TextArea<String>("validationMessages");
+		add(validationTextArea);
+		
+		//this.containerForm = containerForm;
+		//this.validationMessages = containerForm.getModelObject().getValidationMessages();
+	}
+
 	/**
 	 * Construct.
-	 */
+	 
 	public PhenoUploadStep2(ContainerForm containerForm, java.util.Collection<String>	validationMessages)
 	{
 		super("Step 2/5: File Validation", "The file has been validated. If there are no errors, click Next to continue.");
 
-		validationTextArea = new TextArea<String>("validationMessages");
-		add(validationTextArea);
 		
-		this.containerForm = containerForm;
-		this.validationMessages = containerForm.getModelObject().getValidationMessages();
 	}
+	*/
 	
 	public void replaceValidationMessages()
 	{	
@@ -53,5 +67,12 @@ public class PhenoUploadStep2 extends WizardStep
 	public java.util.Collection<String> getValidationMessages()
 	{
 		return validationMessages;
+	}
+
+	@Override
+	public void handleWizardState(AbstractWizardForm<?> form,
+			AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		
 	}
 }
