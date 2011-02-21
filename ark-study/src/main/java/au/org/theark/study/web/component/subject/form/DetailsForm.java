@@ -26,6 +26,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
+import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Study;
@@ -35,6 +36,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.DropDownPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -138,6 +140,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(genderTypeDdc);
 		detailPanelFormContainer.add(subjectStatusDdc);
 		detailPanelFormContainer.add(maritalStatusDdc);
+		
+		//List<ConsentAnswer> list  = iArkCommonService.getConsentAnswer();
+		//detailPanelFormContainer.add(new DropDownPanel("ddpanel", "consentAnswerSelect",iArkCommonService.getConsentAnswer()));
 	}
 
 
