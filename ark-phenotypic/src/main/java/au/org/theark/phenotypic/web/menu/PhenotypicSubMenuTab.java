@@ -1,13 +1,9 @@
 package au.org.theark.phenotypic.web.menu;
 
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
@@ -23,6 +19,7 @@ import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoUpload.PhenoUploadContainer;
+import au.org.theark.phenotypic.web.component.phenoUpload2.PhenoUpload2Container;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
@@ -83,6 +80,11 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU);
+		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD2_RESOURCEKEY);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.REPORT_SUBMENU);
 		menuModule.setResourceKey(Constants.REPORT_RESOURCEKEY);
 		moduleTabs.add(menuModule);
@@ -117,6 +119,10 @@ public class PhenotypicSubMenuTab extends Panel
 					{
 						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
 					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU))
+					{
+						panelToReturn = new PhenoUpload2Container(panelId); // Note the constructor
+					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
 					{
 						panelToReturn = new ReportContainerPanel(panelId); // Note the constructor
@@ -135,7 +141,7 @@ public class PhenotypicSubMenuTab extends Panel
 	{
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
-
+		
 		// This way we can get the menus from the back-end.
 		// We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
@@ -197,6 +203,10 @@ public class PhenotypicSubMenuTab extends Panel
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
 					{
 						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
+					}
+					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU))
+					{
+						panelToReturn = new PhenoUpload2Container(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
 					{
