@@ -92,7 +92,6 @@ public class SearchUserForm extends Form<ArkUserVO>{
 			searchBtn.setEnabled(true);
 		}
 		
-		decorateComponents();	
 		addComponentsToForm();
 	}
 	
