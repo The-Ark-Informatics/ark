@@ -1,36 +1,20 @@
 package au.org.theark.phenotypic.web.component.phenoUpload2.form;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
-import org.hibernate.Hibernate;
 
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.wizard.AjaxWizardButtonBar;
 import au.org.theark.core.web.form.AbstractWizardForm;
-import au.org.theark.phenotypic.model.entity.DelimiterType;
-import au.org.theark.phenotypic.model.entity.FileFormat;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenoUpload2.PhenoUploadStep1;
+import au.org.theark.phenotypic.web.component.phenoUpload2.PhenoUploadStep2;
 import au.org.theark.phenotypic.web.component.phenoUpload2.WizardPanel;
 
 /**
@@ -51,6 +35,7 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	private AjaxWizardButtonBar				buttonBar;
 	
 	private static final String	HEXES	= "0123456789ABCDEF";
+	
 
 	/**
 	 * Constructor
@@ -63,7 +48,8 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	 * @param containerForm
 	 * @param viewButtonContainer
 	 * @param editButtonContainer
-	 * @param wizardFormContainer
+	 * @
+	 * param wizardFormContainer
 	 * @param searchPanelContainer
 	 */
 	public WizardForm(String id, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer, WebMarkupContainer wizardContainer, Form<UploadVO> containerForm,
@@ -76,8 +62,21 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 
 	public void initialiseDetailForm()
 	{
+		initialiseStep1();
 		attachValidators();
 		addComponents();
+	}
+	
+	public void initialiseStep1()
+	{
+		PhenoUploadStep1 step1 = new PhenoUploadStep1("step");
+		PhenoUploadStep2 step2 = new PhenoUploadStep2("step");
+		step1.setNextStep(step2);
+		step2.setPreviousStep(step1);
+		//PhenoUploadStep3 step3 = new PhenoUploadStep3("step");
+		//PhenoUploadStep4 step4 = new PhenoUploadStep4("step");
+		//PhenoUploadStep5 step5 = new PhenoUploadStep5("step");
+		wizardPanelFormContainer.add(step1);
 	}
 
 	private void addComponents()

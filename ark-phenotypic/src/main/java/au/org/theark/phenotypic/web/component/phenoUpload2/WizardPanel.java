@@ -21,8 +21,6 @@ public class WizardPanel extends Panel
 	private WebMarkupContainer		editButtonContainer;
 	private ContainerForm			containerForm;
 
-	
-
 	public WizardPanel(String id, 
 							final WebMarkupContainer listContainer, 
 							FeedbackPanel feedBackPanel, 
