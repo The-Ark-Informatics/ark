@@ -159,23 +159,10 @@ public class UserForm extends Form<ArkUserVO>{
 		userPasswordField.setRequired(false);
 		confirmPasswordField.setRequired(false);
 		attachValidators();
-		decorateComponents();
 		addComponents();
 	}
 
-	
-	private void decorateComponents(){
-		
-		ThemeUiHelper.componentRounded(userNameTxtField);
-		ThemeUiHelper.componentRounded(firstNameTxtField);
-		ThemeUiHelper.componentRounded(emailTxtField);
-		ThemeUiHelper.componentRounded(lastNameTxtField);
-		ThemeUiHelper.componentRounded(userPasswordField);
-		ThemeUiHelper.componentRounded(confirmPasswordField);
-		ThemeUiHelper.componentRounded(deleteBtn);
-		ThemeUiHelper.componentRounded(saveBtn);
-		ThemeUiHelper.componentRounded(cancelBtn);
-	}
+
 	
 	private void attachValidators(){
 		userNameTxtField.add(EmailAddressValidator.getInstance());
