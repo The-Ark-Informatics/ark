@@ -95,15 +95,6 @@ public class SearchUserForm extends Form<ArkUserVO>{
 		addComponentsToForm();
 	}
 	
-	private void decorateComponents(){
-		ThemeUiHelper.componentRounded(userNameTxtField);
-		ThemeUiHelper.componentRounded(firstNameTxtField);
-		ThemeUiHelper.componentRounded(lastNameTxtField);
-		ThemeUiHelper.componentRounded(emailTxtField);
-		ThemeUiHelper.componentRounded(searchBtn);
-		ThemeUiHelper.componentRounded(newBtn);
-	}
-
 	private void addComponentsToForm(){
 		/* Add the look up fields */
 		add(userNameTxtField);
