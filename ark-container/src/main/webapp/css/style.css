@@ -56,7 +56,7 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 
 #actionButtons {
 	float: left;
-	width: 20%;
+	width: 50%;
 	height: 5%;
 	padding-bottom:10px;
 }
