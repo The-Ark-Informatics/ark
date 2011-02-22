@@ -8,6 +8,7 @@ package au.org.theark.core.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -192,7 +193,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 
 		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.id, linkSubStudy.study, linkSubStudy.subjectUID");
+		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.id, linkSubStudy.study, linkSubStudy.subjectUID, linkSubStudy.amdrifId, linkSubStudy.studyApproachDate, linkSubStudy.yearOfFirstMamogram, linkSubStudy.yearOfRecentMamogram, linkSubStudy.totalNumberOfMamograms");
 		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
 		hqlString.append(" where linkSubStudy.study.id = ");
 		hqlString.append( subjectVO.getStudy().getId());
@@ -258,15 +259,38 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			log.info("Number of rows fetched " + list.size());
 			//The Length is determined by the number of select columns specified in the hqlString above
 			for (Object[] objects : list) {
-				if(objects.length > 0 && objects.length == 5){
-					
+				if(objects.length > 0 ){
+					log.info("objects.length= " + objects.length);
 					subject = new SubjectVO();
 					subject.setPerson((Person) objects[0]);
 					subject.setSubjectStatus((SubjectStatus) objects[1]);
 					subject.setLinkSubjectStudyId((Long)objects[2]);
+					subject.getSubjectStudy().setSubjectUID((String)objects[4]);
 					subject.setStudy((Study)objects[3]);
 					subject.setSubjectUID((String)objects[4]);
+					subject.getSubjectStudy().setSubjectUID((String)objects[4]);
+					
+					if(objects[5] != null){
+						subject.getSubjectStudy().setAmdrifId((Long)objects[5]);
+					}
+					
+					if(objects[6] != null){
+						subject.getSubjectStudy().setStudyApproachDate( (Date) objects[6]);
+					}
+					
+					if(objects[7] != null){
+						subject.getSubjectStudy().setYearOfFirstMamogram((Long) objects[7]);
+					}
+					
+					if(objects[8] != null){
+						subject.getSubjectStudy().setYearOfRecentMamogram((Long) objects[8]);
+					}
+					if(objects[9] != null){
+						subject.getSubjectStudy().setTotalNumberOfMamograms((Long) objects[9]);
+					}
+					
 					subjectVOList.add(subject);
+					
 				}
 			}
 			log.info("Size : " + subjectVOList.size());
