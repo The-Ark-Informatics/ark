@@ -61,7 +61,7 @@ public class Constants {
 	public static final String DATE_PICKER_DD_MM_YY="dd/mm/yy";
 	
 	
-	public static final String SUBJECT_IDENTIFIER="SUBJECTID";
+	public static final String SUBJECTUID="SUBJECTUID";
 	public static final String DATE_COLLECTED="DATE_COLLECTED";
 	
 	/* Tab Panel Keys */
