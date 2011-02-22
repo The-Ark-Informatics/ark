@@ -26,7 +26,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
-import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Study;
@@ -36,7 +35,6 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.DropDownPanel;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -60,8 +58,16 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private TextField<String> lastNameTxtFld;
 	private TextField<String> preferredNameTxtFld;
 	private TextField<String> subjectUIDTxtFld;
-	
 	private DatePicker<Date> dateOfBirth;
+	
+	private TextField<String> amdrifIdTxtFld;
+	private DatePicker<Date> studyApproachDate;
+	private TextField<String> yearOfFirstMamogramTxtFld;
+	private TextField<String> yearOfRecentMamogramTxtFld;
+	private TextField<String> totalNumberOfMamogramsTxtFld;
+	
+	//Address Stuff comes here 
+	
 	
 	//Reference Data 
 	private DropDownChoice<TitleType> titleTypeDdc;
@@ -96,7 +102,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
-		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		subjectUIDTxtFld = new TextField<String>("subjectStudy.subjectUID"); //Constants.SUBJECT_UID);
 		
 		dateOfBirth = new DatePicker<Date>(Constants.PERSON_DOB);
 		dateOfBirth.setChangeMonth(true);
@@ -123,8 +129,24 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		Collection<MaritalStatus> maritalStatusList = iArkCommonService.getMaritalStatus(); 
 		ChoiceRenderer<MaritalStatus> maritalStatusRender = new ChoiceRenderer<MaritalStatus>(Constants.NAME,Constants.ID);
 		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS,(List) maritalStatusList, maritalStatusRender);
+		
+		initCustomFields();
+		
 		attachValidators();
 		addDetailFormComponents();
+	}
+	 
+	private void initCustomFields(){
+		amdrifIdTxtFld = new TextField<String>("subjectStudy.amdrifId");
+		
+		studyApproachDate = new DatePicker<Date>("subjectStudy.studyApproachDate");
+		studyApproachDate.setChangeMonth(true);
+		studyApproachDate.setChangeYear(true);
+		
+		yearOfFirstMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfFirstMamogram");
+		yearOfRecentMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfRecentMamogram");
+		totalNumberOfMamogramsTxtFld = new TextField<String>("subjectStudy.totalNumberOfMamograms");
+		
 	}
 	
 	public void addDetailFormComponents(){
@@ -141,8 +163,13 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(subjectStatusDdc);
 		detailPanelFormContainer.add(maritalStatusDdc);
 		
-		//List<ConsentAnswer> list  = iArkCommonService.getConsentAnswer();
-		//detailPanelFormContainer.add(new DropDownPanel("ddpanel", "consentAnswerSelect",iArkCommonService.getConsentAnswer()));
+		//Add the supposed-to-be custom controls into the form container.
+		detailPanelFormContainer.add(amdrifIdTxtFld);
+		detailPanelFormContainer.add(studyApproachDate);
+		detailPanelFormContainer.add(yearOfFirstMamogramTxtFld);
+		detailPanelFormContainer.add(yearOfRecentMamogramTxtFld);
+		detailPanelFormContainer.add(totalNumberOfMamogramsTxtFld);
+		
 	}
 
 
