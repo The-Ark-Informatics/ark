@@ -174,12 +174,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Session session = getSession();
 		Person person  = subjectVO.getPerson();
 		session.save(person); //Save the Person and associated Phones
-		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+		
+		LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+		
+		//LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 		linkSubjectStudy.setPerson(person);
 		linkSubjectStudy.setStudy(subjectVO.getStudy());
 		linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
-		linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
-		
+		//linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());//the ui must be mapped to the subjectStudy instance variable
+		Long  amdrfid = linkSubjectStudy.getAmdrifId();
+		System.out.println("AMDRF ID: " + amdrfid);
 		session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
 		
 	}
@@ -193,12 +197,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			Person person  = subjectVO.getPerson();
 			session.update(person);//Update Person and associated Phones
 			//Get the LinkSubjectStudy reference based on the id
-			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(subjectVO.getLinkSubjectStudyId());	
+			LinkSubjectStudy linkSubjectStudy =getLinkSubjectStudy(subjectVO.getLinkSubjectStudyId());	
 			//Update this linkSubjectStudy instance with any details the user may have changed from front end
 			linkSubjectStudy.setStudy(subjectVO.getStudy());
 			//No need to set Person here since, there would not be a change to the actual person ID primary key
 			linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
+			
+			linkSubjectStudy.setAmdrifId(subjectVO.getSubjectStudy().getAmdrifId());
 			linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
+			linkSubjectStudy.setStudyApproachDate(subjectVO.getSubjectStudy().getStudyApproachDate());
+			linkSubjectStudy.setYearOfFirstMamogram(subjectVO.getSubjectStudy().getYearOfFirstMamogram());
+			linkSubjectStudy.setYearOfRecentMamogram(subjectVO.getSubjectStudy().getYearOfRecentMamogram());
+			linkSubjectStudy.setTotalNumberOfMamograms(subjectVO.getSubjectStudy().getTotalNumberOfMamograms());
 			//Update the instance
 			session.update(linkSubjectStudy);
 			
