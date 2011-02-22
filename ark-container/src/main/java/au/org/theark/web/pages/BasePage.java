@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebResponse;
 /**
  * This page will be inherited by all wicket pages. Contains basic functionality that all 
  * pages will require.e.g add the menu in here so all pages can inherit it by default.
@@ -72,6 +73,15 @@ public abstract class BasePage extends WebPage{
 		
 		add(userNameLbl);
 		add(new BookmarkablePageLink<Void>("logoutLink", LogoutPage.class));
+	}
+
+	@Override
+	protected void configureResponse() { 
+		super.configureResponse();
+		WebResponse response = getWebRequestCycle().getWebResponse();
+		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
+		response.setHeader("Expires", "-1");
+		response.setHeader("Pragma", "no-cache");
 	}
 	
 	/**
