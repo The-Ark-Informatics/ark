@@ -24,7 +24,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
-import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
