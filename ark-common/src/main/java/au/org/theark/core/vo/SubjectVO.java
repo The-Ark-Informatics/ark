@@ -13,6 +13,7 @@ import java.util.Collection;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.EmailAccount;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -37,6 +38,16 @@ public class SubjectVO implements Serializable{
 	protected Long linkSubjectStudyId;
 	protected SubjectStatus subjectStatus;
 	protected String subjectUID;
+
+	protected LinkSubjectStudy subjectStudy;
+	
+	public LinkSubjectStudy getSubjectStudy() {
+		return subjectStudy;
+	}
+
+	public void setSubjectStudy(LinkSubjectStudy subjectStudy) {
+		this.subjectStudy = subjectStudy;
+	}
 
 	protected Collection<SubjectVO> subjectList;
 
@@ -63,6 +74,7 @@ public class SubjectVO implements Serializable{
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
 		subjectUID = new String();
+		subjectStudy = new LinkSubjectStudy();
 	}
 
 	public Person getPerson() {
