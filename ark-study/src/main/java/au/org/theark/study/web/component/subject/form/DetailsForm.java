@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -25,6 +26,8 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Study;
@@ -66,7 +69,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private TextField<String> totalNumberOfMamogramsTxtFld;
 	
 	//Address Stuff comes here 
-	
+	private TextField<String> streetAddressTxtFld;
+	private TextField<String> cityTxtFld;
+	private TextField<String> postCodeTxtFld;
+	private DropDownChoice<Country> countryChoice;
+	private DropDownChoice<CountryState> stateChoice;
+	private WebMarkupContainer countryStateSelector;
 	
 	//Reference Data 
 	private DropDownChoice<TitleType> titleTypeDdc;
@@ -146,6 +154,56 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		yearOfRecentMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfRecentMamogram");
 		totalNumberOfMamogramsTxtFld = new TextField<String>("subjectStudy.totalNumberOfMamograms");
 		
+		streetAddressTxtFld = new TextField<String>("subjectStudy.siteAddress");
+		cityTxtFld = new TextField<String>("subjectStudy.city");
+		postCodeTxtFld = new TextField<String>("subjectStudy.postCode");
+		
+		initialiaseCountryDropDown();
+		initialiseCountrySelector();
+		
+	}
+	
+	private void initialiseCountrySelector(){
+		
+		countryStateSelector = new WebMarkupContainer("countryStateSelector");
+		countryStateSelector.setOutputMarkupPlaceholderTag(true);
+		//Get the value selected in Country
+		Country selectedCountry  = countryChoice.getModelObject();
+		
+		//If there is no country selected, back should default to current country and pull the states
+		List<CountryState> countryStateList  = iArkCommonService.getStates(selectedCountry);
+		ChoiceRenderer<CountryState> defaultStateChoiceRenderer = new ChoiceRenderer<CountryState>("state", Constants.ID);
+		stateChoice = new DropDownChoice<CountryState>("subjectStudy.state",countryStateList,defaultStateChoiceRenderer);
+		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
+		countryStateSelector.add(stateChoice);
+	}
+	
+	private void initialiaseCountryDropDown(){
+		
+		List<Country> countryList = iArkCommonService.getCountries();
+		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
+		countryChoice = new DropDownChoice<Country>("subjectStudy.country", countryList, defaultChoiceRenderer);
+		
+		//Attach a behavior, so when it changes it does something
+		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				updateCountryStateChoices(countryChoice.getModelObject());
+				target.addComponent(countryStateSelector);
+			}
+		});
+	}
+	
+	/**
+	 * A method that will refresh the choices in the State drop down choice based on
+	 * what was selected in the Country Dropdown. It uses the country as the argument and invokes
+	 * the back-end to fetch relative states.
+	 */
+	private void updateCountryStateChoices(Country country){
+		
+		List<CountryState> countryStateList = iArkCommonService.getStates(country);
+		stateChoice.getChoices().clear();
+		stateChoice.setChoices(countryStateList);
 	}
 	
 	public void addDetailFormComponents(){
@@ -168,6 +226,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(yearOfFirstMamogramTxtFld);
 		detailPanelFormContainer.add(yearOfRecentMamogramTxtFld);
 		detailPanelFormContainer.add(totalNumberOfMamogramsTxtFld);
+		detailPanelFormContainer.add(streetAddressTxtFld);
+		detailPanelFormContainer.add(cityTxtFld);
+		detailPanelFormContainer.add(postCodeTxtFld);
+		detailPanelFormContainer.add(countryChoice);
+		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-downn for State
+		
 		
 	}
 
