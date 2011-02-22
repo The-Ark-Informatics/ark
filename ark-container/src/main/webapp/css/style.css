@@ -177,6 +177,19 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	height: 5%;
 }
 
+#panelContentRight {
+	float: right;
+	width: 10%;
+	height: 5%;
+}
+
+#panelContentCentre {
+	margin-left: auto;
+    margin-right: auto;
+	width: 80%;
+	height: 5%;
+}
+
 #panelMargin {
 	float: left;
 	width: 5%;
@@ -261,7 +274,7 @@ body {
 	color: #000000;
 	font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
 	font-size: 10pt;
-	line-height: 1.5em;
+	line-height: 1.3em;
 	
 	padding: 0px 0px 0px 0px;
 	margin: 0px 0px 0px 0px;
