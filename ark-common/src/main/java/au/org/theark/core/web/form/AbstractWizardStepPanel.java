@@ -13,18 +13,22 @@ public abstract class AbstractWizardStepPanel extends Panel
 	 */
 	private static final long	serialVersionUID	= 2982993968381162494L;
 
+	protected AbstractWizardHeaderPanel header;
 	protected AbstractWizardStepPanel	previous;
-
 	protected AbstractWizardStepPanel	next;
-
+	
 	public AbstractWizardStepPanel(String id)
 	{
 		super(id);
+		this.header = new AbstractWizardHeaderPanel("header", null, null);
+		this.add(header);
 	}
-
-	public AbstractWizardStepPanel(String id, IModel model)
+	
+	public AbstractWizardStepPanel(String id, String title, String summary)
 	{
-		super(id, model);
+		super(id);
+		this.header = new AbstractWizardHeaderPanel("header", summary, title);
+		this.add(header);
 	}
 
 	public void setNextStep(AbstractWizardStepPanel next)
@@ -76,7 +80,6 @@ public abstract class AbstractWizardStepPanel extends Panel
 	 */
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-
 	}
 
 	/**
@@ -97,7 +100,6 @@ public abstract class AbstractWizardStepPanel extends Panel
 	 */
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		onPageStep(target);
 	}
 
 	/**
@@ -108,7 +110,6 @@ public abstract class AbstractWizardStepPanel extends Panel
 	 */
 	public void onStepInPrevious(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		onPageStep(target);
 	}
 
 	/**
@@ -119,19 +120,7 @@ public abstract class AbstractWizardStepPanel extends Panel
 	 */
 	public void onStepOutNextError(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-	}
-
-	/**
-	 * Call this after page step previous / next occured.
-	 * 
-	 * @param target
-	 */
-	protected void onPageStep(AjaxRequestTarget target)
-	{
-		if (target != null)
-		{
-			target.appendJavascript("Resizer.resizeWizard();");
-		}
+		form.onError(target, form);
 	}
 
 	public abstract void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target);

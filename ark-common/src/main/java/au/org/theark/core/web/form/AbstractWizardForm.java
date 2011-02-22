@@ -36,20 +36,19 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	private static final long serialVersionUID = 1L;
 
 	private static final Logger log = LoggerFactory.getLogger(AbstractWizardForm.class);
-
-	protected WebMarkupContainer resultListContainer;
-	protected WebMarkupContainer wizardPanelContainer;
-	protected WebMarkupContainer searchPanelContainer;
-	protected WebMarkupContainer viewButtonContainer;
-	protected WebMarkupContainer editButtonContainer;
-	protected WebMarkupContainer wizardPanelFormContainer;
-	protected FeedbackPanel feedBackPanel;
+	
 	protected Form<T> containerForm;
-
-	protected AjaxButton nextButton;
-	protected AjaxLink previousLink;
-	protected AjaxLink cancelLink;
-	protected AjaxButton finishButton;
+	protected FeedbackPanel feedBackPanel;
+	protected WebMarkupContainer resultListContainer;
+	protected WebMarkupContainer searchPanelContainer;
+	protected WebMarkupContainer wizardPanelContainer;
+	protected WebMarkupContainer wizardPanelFormContainer;
+	protected WebMarkupContainer wizardButtonContainer;
+	
+	private AjaxButton nextButton;
+	private AjaxLink previousLink;
+	private AjaxLink cancelLink;
+	private AjaxButton finishButton;
 
 	protected IBehavior buttonStyleBehavior;
 
@@ -66,8 +65,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	public AbstractWizardForm(String id, IModel model) {
 		super(id, model);
 
-		buttonStyleBehavior = new AttributeAppender("class", new Model(
-				"ui-corner-all"), " ");
+		buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
 		setOutputMarkupId(true);
 		setMultiPart(true);
 		initialiseForm();
@@ -82,24 +80,21 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param wizardPanelContainer
 	 * @param wizardPanelFormContainer
 	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
+	 * @param wizardButtonContainer
 	 * @param containerForm
 	 */
+	@SuppressWarnings("unchecked")
 	public AbstractWizardForm(String id, FeedbackPanel feedBackPanel,
 			WebMarkupContainer resultListContainer,
 			WebMarkupContainer wizardPanelContainer,
 			WebMarkupContainer wizardPanelFormContainer,
 			WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, Form<T> containerForm) {
+			Form<T> containerForm) {
 		super(id);
 		this.resultListContainer = resultListContainer;
 		this.wizardPanelContainer = wizardPanelContainer;
 		this.feedBackPanel = feedBackPanel;
 		this.searchPanelContainer = searchPanelContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.viewButtonContainer = viewButtonContainer;
 		this.wizardPanelFormContainer = wizardPanelFormContainer;
 		this.containerForm = containerForm;
 
@@ -110,18 +105,11 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		addFormComponents();
 	}
 
-	@SuppressWarnings({ "serial", "unchecked" })
 	protected void initialiseForm() {
-		// finish button
-		finishButton = createFinish();
-		finishButton.add(buttonStyleBehavior);
-		finishButton.setVisible(false);
-		finishButton.setOutputMarkupId(true);
-		finishButton.setOutputMarkupPlaceholderTag(true);
-
 		// previous button
 		previousLink = createPrevious();
-		previousLink.setVisible(false);
+		previousLink.setVisible(true);
+		previousLink.setEnabled(false);
 		previousLink.setOutputMarkupId(true);
 		previousLink.setOutputMarkupPlaceholderTag(true);
 		previousLink.add(buttonStyleBehavior);
@@ -135,19 +123,49 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		// cancel button
 		cancelLink = createCancel();
 		cancelLink.add(buttonStyleBehavior);
+		
+		// finish button
+		finishButton = createFinish();
+		finishButton.add(buttonStyleBehavior);
+		finishButton.setVisible(true);
+		finishButton.setEnabled(false);
+		finishButton.setOutputMarkupId(true);
+		finishButton.setOutputMarkupPlaceholderTag(true);
 	}
 
 	/**
 	 * Implement this to add all the form components/objects
 	 */
-	protected void addFormComponents() {
-		add(finishButton);
-		add(previousLink);
-		add(nextButton);
-		add(cancelLink);
+	protected void addFormComponents()
+	{
+		// Web mark up for buttons
+		wizardButtonContainer = new WebMarkupContainer("wizardButtonContainer");
+		wizardButtonContainer.setOutputMarkupPlaceholderTag(true);
+		wizardButtonContainer.setVisible(true);
+		
+		// Add buttons
+		wizardButtonContainer.add(finishButton);
+		wizardButtonContainer.add(previousLink);
+		wizardButtonContainer.add(nextButton);
+		wizardButtonContainer.add(cancelLink);
+		add(wizardButtonContainer);
 	}
 
-	abstract protected void attachValidators();
+	public WebMarkupContainer getWizardButtonContainer() {
+		return wizardButtonContainer;
+	}
+
+	public void setWizardButtonContainer(WebMarkupContainer wizardButtonContainer) {
+		this.wizardButtonContainer = wizardButtonContainer;
+	}
+
+	public AjaxButton getNextButton() {
+		return nextButton;
+	}
+
+	public void setNextButton(AjaxButton nextButton) {
+		this.nextButton = nextButton;
+	}
 
 	protected void onCancelPostProcess(AjaxRequestTarget target) {
 		wizardPanelContainer.setVisible(true);
@@ -155,6 +173,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 		target.addComponent(feedBackPanel);
 		target.addComponent(wizardPanelContainer);
+		target.addComponent(wizardPanelFormContainer);
 		target.addComponent(resultListContainer);
 	}
 
@@ -198,9 +217,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	}
 
 	private AjaxButton createFinish() {
-		// finishButton = new AjaxButton("finish", this)
-		finishButton = new AjaxButton("finish", new StringResourceModel(
-				"wizardFinishKey", this, null)) {
+		finishButton = new AjaxButton("finish", new StringResourceModel("wizardFinishKey", this, null)) {
 
 			private static final long serialVersionUID = 0L;
 
@@ -237,7 +254,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		return link;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public LoadableDetachableModel getLabelModel(String label) {
 		return new StringResourceModel(label, AbstractWizardForm.this, null);
 	}
@@ -246,17 +263,21 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	// Event form triggers
 	//
 
-	protected void onFinishSubmit(AjaxRequestTarget target, Form<?> form) {
+	protected void onFinishSubmit(AjaxRequestTarget target, Form<?> form) 
+	{
 		log.debug("finish.onSubmit");
+		previousLink.setVisible(true);
+		previousLink.setEnabled(false);
+		finishButton.setVisible(true);
+		finishButton.setEnabled(false);
+		target.addComponent(wizardButtonContainer);
+		
 		onFinish(target, form);
 	}
 
 	protected void onFinishError(AjaxRequestTarget target, Form<?> form) {
 		log.debug("finish.onError");
-		// if (getFeedbackWindow() != null)
-		// showFeedbackWindow(target);
 		AbstractWizardForm.this.onError(target, form);
-		// target.appendJavascript("Resizer.resizeWizard();");
 	}
 
 	protected void onPreviousClick(AjaxRequestTarget target) {
@@ -276,18 +297,26 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		AbstractWizardForm.this.gotoNext(target);
 	}
 
-	protected void onNextError(AjaxRequestTarget target, Form<?> form) {
+	protected void onNextError(AjaxRequestTarget target, Form<?> form) 
+	{
 		log.debug("next.onError");
-		// if (getFeedbackWindow() != null)
-		// showFeedbackWindow(target);
-		AbstractWizardForm.this.onError(target, form);
-		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) AbstractWizardForm.this.get("step");
+		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
+		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
 		currentStep.onStepOutNextError(AbstractWizardForm.this, target);
-		target.appendJavascript("Resizer.resizeWizard();");
 	}
 
-	protected void onCancelClick(AjaxRequestTarget target) {
+	protected void onCancelClick(AjaxRequestTarget target) 
+	{
 		cancelled = true;
+		
+		previousLink.setVisible(true);
+		previousLink.setEnabled(false);
+		nextButton.setVisible(true);
+		nextButton.setEnabled(true);
+		finishButton.setVisible(true);
+		finishButton.setEnabled(false);
+		target.addComponent(wizardButtonContainer);
+		
 		onCancel(target);
 	}
 
@@ -358,17 +387,32 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param target
 	 */
 	protected void gotoNext(AjaxRequestTarget target) {
-		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) get("step");
+		//AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) get("wizardFormContainer");
+		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
+		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
+		
 		log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
 		currentStep.onStepOutNext(AbstractWizardForm.this, target);
-
+		currentStep.handleWizardState(this, target);
+		
 		AbstractWizardStepPanel next = currentStep.getNextStep();
 		if (next != null) {
 			currentStep.replaceWith(next);
 			next.onStepInNext(this, target);
 			next.handleWizardState(this, target);
+			
+			// If no more steps, on final step
+			if(next.getNextStep() == null)
+			{
+				nextButton.setEnabled(false);	
+				finishButton.setEnabled(true);	
+			}
+			
+			target.addComponent(wizardButtonContainer);
 		}
-		target.addComponent(this);
+		target.addComponent(wmc);
+		target.addComponent(feedBackPanel);
+		
 	}
 
 	/**
@@ -378,9 +422,9 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param target
 	 */
 	protected void gotoPrevious(AjaxRequestTarget target) {
-		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) get("step");
-		log.debug("gotoPrevious.currentStep={}", currentStep.getClass()
-				.getName());
+		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
+		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
+		log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
 		currentStep.onStepOutPrevious(AbstractWizardForm.this, target);
 
 		AbstractWizardStepPanel previous = currentStep.getPreviousStep();
@@ -389,7 +433,8 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 			previous.onStepInPrevious(this, target);
 			previous.handleWizardState(this, target);
 		}
-		target.addComponent(this);
+		target.addComponent(wmc);
+		target.addComponent(feedBackPanel);
 	}
 
 	public boolean isCancelled() {
@@ -419,22 +464,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		return null;
 	}
 
-	// protected void showFeedbackWindow(AjaxRequestTarget target)
-	// {
-	// getFeedbackWindow().setContent(new FeedbackPanel("content"));
-	// getFeedbackWindow().show(target);
-	// }
-	//
-	// /**
-	// * Accessor to the feedback panel if any.
-	// *
-	// * @return null by default.
-	// */
-	// public FeedbackWindow getFeedbackWindow()
-	// {
-	// return null;
-	// }
-
 	public static String getStepId() {
 		return "step";
 	}
@@ -444,8 +473,18 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		add(new AttributeModifier("class", new Model(cssClassName)));
 	}
 
-	protected void processErrors(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-
+	abstract protected void processErrors(AjaxRequestTarget target);
+	
+	protected void disableWizardForm(Long sessionId, String errorMessage)
+	{	
+		if (sessionId == null)
+		{
+			this.setEnabled(false);
+			this.error(errorMessage);
+		}
+		else
+		{
+			this.setEnabled(true);
+		}
 	}
 }
