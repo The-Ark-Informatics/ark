@@ -18,7 +18,7 @@
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					<input wicket:id="subjectUID"/> 
+					<input wicket:id="subjectStudy.subjectUID"/> 
 				</div>
 			</div>
 			
@@ -188,7 +188,7 @@
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
-			
+			<!--  Row 6 -->
 			<div id="panelContentLeft">&nbsp;</div>
 			
 			<div id="fldLabel">
@@ -206,23 +206,93 @@
 	       			</select>
 				</div>
 			</div>
-			
+			<!--  Supposed to be rendered as a List of Custom Controls for Custom Fields. For LifePool First Release we are adding them as regular fields -->
 			<div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
 				<div class="label">
-					&nbsp;
+					<wicket:message key="subject.amdrifId">AMDRIF ID:</wicket:message>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label" >
-					&nbsp;
+					<input wicket:id="subjectStudy.amdrifId"/> 
 				</div>
 			</div>
 			
 			<div id="searchPanelContentRight">&nbsp;</div>
 			
 			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<!--  Row 7 -->
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="studyApproachDate">
+						<wicket:message key="studyApproachDate">Study Approach Date:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="subjectStudy.studyApproachDate"/> 
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<wicket:message key="yearOfFirstMamogram">Year of First Mamogram:</wicket:message>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label" >
+					<input wicket:id="subjectStudy.yearOfFirstMamogram"/> 
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<!--  Row 7 Ends -->
+			
+			<!--  Row 8 -->
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="yearOfRecentMamogram">
+						<wicket:message key="yearOfRecentMamogram">Year of Recent Mamogram:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="subjectStudy.yearOfRecentMamogram"/> 
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<wicket:message key="totalNumberOfMamograms">Total Mamograms:</wicket:message>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label" >
+					<input wicket:id="subjectStudy.totalNumberOfMamograms"/> 
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<!--  Row 8 Ends -->
 			<!--  the custom component 
 		    <div wicket:id="ddpanel">
 		     
