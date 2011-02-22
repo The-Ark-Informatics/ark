@@ -51,7 +51,7 @@ public class LoginPage<T> extends WebPage {
 		//Create an new form object and add it to the Page
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
+		//ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
 		this.add( new Link("resetPasswordLink"){
 			@Override
@@ -63,7 +63,7 @@ public class LoginPage<T> extends WebPage {
 		 // Add images
 		 add(hostedByImage);
 		 add(productImage);
-		 add(bannerImage);
+		 //add(bannerImage);
 		 
 		 
 	}

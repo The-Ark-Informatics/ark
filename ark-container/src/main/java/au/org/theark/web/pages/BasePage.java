@@ -36,7 +36,7 @@ public abstract class BasePage extends WebPage{
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/"+Constants.NO_STUDY_LOGO_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
+		//ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
 		Subject currentUser = SecurityUtils.getSubject();
 
@@ -69,7 +69,7 @@ public abstract class BasePage extends WebPage{
 		add(studyNameMarkup);
 		add(studyLogoMarkup);
 		add(productImage);
-		add(bannerImage);
+		//add(bannerImage);
 		
 		add(userNameLbl);
 		add(new BookmarkablePageLink<Void>("logoutLink", LogoutPage.class));
