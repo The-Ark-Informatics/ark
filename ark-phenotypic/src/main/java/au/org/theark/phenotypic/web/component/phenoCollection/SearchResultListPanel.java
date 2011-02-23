@@ -184,7 +184,6 @@ public class SearchResultListPanel extends Panel
 				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
 				
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.resetContextLabel(target, arkContextMarkup);
 				contextHelper.setStudyContextLabel(target, phenoCollection.getStudy().getName(), arkContextMarkup);
 				contextHelper.setPhenoContextLabel(target, phenoCollection.getName(), arkContextMarkup);
 
