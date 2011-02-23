@@ -1,6 +1,5 @@
 package au.org.theark.phenotypic.service;
 
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -168,7 +167,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		phenotypicDao.createFieldData(fieldData);
 	}
 	
-	public java.util.Collection<String> validatePhenotypicDataFile()
+	public java.util.Collection<String> validateMatrixPhenoFileFormat()
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -184,8 +183,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			File file = new File(Constants.TEST_FILE);
 			InputStream is = new FileInputStream(file);
 			
-			log.info("Importing file");
-			validationMessages = pi.validateMatrixPhenoFile(is, file.length());
+			log.info("Valifdating file format");
+			validationMessages = pi.validateMatrixPhenoFileFormat(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -202,7 +201,41 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return validationMessages;
 	}
 	
-	public java.util.Collection<String> validatePhenotypicDataFile(org.apache.wicket.util.file.File file)
+	public java.util.Collection<String> validateMatrixPhenoFileData()
+	{
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+	
+		try
+		{
+			File file = new File(Constants.TEST_FILE);
+			InputStream is = new FileInputStream(file);
+			
+			log.info("Valifdating file format");
+			validationMessages = pi.validateMatrixPhenoFileData(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return validationMessages;
+	}
+	
+	public java.util.Collection<String> validateMatrixPhenoFileFormat(org.apache.wicket.util.file.File file)
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -217,7 +250,39 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{	
 			log.info("Importing file");
 			InputStream is = new FileInputStream(file);
-			validationMessages = pi.validateMatrixPhenoFile(is, file.length());
+			validationMessages = pi.validateMatrixPhenoFileFormat(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return validationMessages;
+	}
+	
+	public java.util.Collection<String> validateMatrixPhenoFileData(org.apache.wicket.util.file.File file)
+	{
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+	
+		try
+		{	
+			log.info("Importing file");
+			InputStream is = new FileInputStream(file);
+			validationMessages = pi.validateMatrixPhenoFileData(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -265,6 +330,70 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
+	}
+	
+	public void importPhenotypicDataFile(org.apache.wicket.util.file.File file)
+	{
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+	
+		try
+		{
+			InputStream is = new FileInputStream(file);
+			
+			log.info("Importing file");
+			pi.importMatrixPhenoFile(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+	}
+	
+	public StringBuffer importAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file)
+	{
+		StringBuffer importReport = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+	
+		try
+		{
+			InputStream is = new FileInputStream(file);
+			
+			log.info("Importing file");
+			importReport = pi.importAndReportMatrixPhenoFile(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return importReport;
 	}
 
 	public java.util.Collection<FieldType> getFieldTypes()
