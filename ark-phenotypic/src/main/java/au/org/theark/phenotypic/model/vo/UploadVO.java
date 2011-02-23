@@ -5,6 +5,7 @@ package au.org.theark.phenotypic.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -147,5 +148,24 @@ public class UploadVO implements Serializable
 	public java.util.Collection<String> getValidationMessages()
 	{
 		return validationMessages;
+	}
+	
+	/**
+	 * @return the validationMessages
+	 */
+	public String getValidationMessagesAsString()
+	{
+		StringBuffer stringBuffer = new StringBuffer("");
+		java.util.Collection<String> msgs = getValidationMessages();
+		
+		if(getValidationMessages() != null)
+		{
+			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
+				String string = (String) iterator.next();
+				stringBuffer.append(string);
+				stringBuffer.append("\n");
+			}
+		}
+		return stringBuffer.toString();
 	}
 }
