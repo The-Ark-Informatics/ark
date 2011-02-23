@@ -261,8 +261,10 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		cancelLink.setEnabled(true);
 		finishButton.setVisible(true);
 		finishButton.setEnabled(false);
-		target.addComponent(wizardButtonContainer);
 		
+		searchPanelContainer.setVisible(true);
+		target.addComponent(wizardButtonContainer);
+		target.addComponent(resultListContainer);
 		onFinish(target, form);
 	}
 
@@ -285,6 +287,11 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		if (historyAjaxBehavior != null) {
 			historyAjaxBehavior.registerAjaxEvent(target, this);
 		}
+		
+		// Make search results hidden until finish or cancel
+		resultListContainer.setVisible(false);
+		target.addComponent(resultListContainer);
+		
 		AbstractWizardForm.this.gotoNext(target);
 	}
 
@@ -308,6 +315,9 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		finishButton.setVisible(true);
 		finishButton.setEnabled(false);
 		target.addComponent(wizardButtonContainer);
+		
+		resultListContainer.setVisible(true);
+		target.addComponent(resultListContainer);
 		
 		onCancel(target);
 	}
