@@ -616,7 +616,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		dateNow = new Date(System.currentTimeMillis());
 		phenoUpload.setInsertTime(dateNow);
 		phenoUpload.setUserId(currentUser.getPrincipal().toString());
-		phenoUpload.setStartTime(dateNow);
+		
+		if(phenoUpload.getStartTime() == null)
+			phenoUpload.setStartTime(dateNow);
 
 		session.save(phenoUpload);
 	}
@@ -628,7 +630,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		phenoUploadVo.getUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		phenoUploadVo.getUpload().setInsertTime(dateNow);
-		phenoUploadVo.getUpload().setStartTime(dateNow);
+		
+		if(phenoUploadVo.getUpload().getStartTime() == null)
+			phenoUploadVo.getUpload().setStartTime(dateNow);
 
 		phenoUploadVo.getPhenoCollectionUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
 		phenoUploadVo.getPhenoCollectionUpload().setInsertTime(dateNow);
