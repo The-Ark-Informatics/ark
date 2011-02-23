@@ -96,21 +96,13 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	@Override
 	public void onFinish(AjaxRequestTarget target, Form form)
 	{
-		// Save Data Upload
-		if(containerForm.getModelObject().getUpload() != null)
-		{
-			phenotypicService.createUpload(containerForm.getModelObject());
-			this.info("Data upload of file: " + containerForm.getModelObject().getUpload().getFilename() + " was uploaded successfully");
-		}
+		this.info("Data upload of file: " + containerForm.getModelObject().getUpload().getFilename() + " was uploaded successfully");
 		onCancel(target);
 	}
 
 	@Override
 	protected void onCancel(AjaxRequestTarget target)
 	{
-		// Delete any partially saved Uploads
-		phenotypicService.deleteUpload(containerForm.getModelObject().getUpload());
-		
 		// Implement Cancel
 		UploadVO uploadVO = new UploadVO();
 		containerForm.setModelObject(uploadVO);
