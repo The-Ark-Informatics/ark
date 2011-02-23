@@ -254,8 +254,11 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	protected void onFinishSubmit(AjaxRequestTarget target, Form<?> form) 
 	{
 		log.debug("finish.onSubmit");
-		previousLink.setVisible(true);
-		previousLink.setEnabled(false);
+		previousLink.setVisible(false);
+		nextButton.setVisible(true);
+		nextButton.setEnabled(true);
+		cancelLink.setVisible(true);
+		cancelLink.setEnabled(true);
 		finishButton.setVisible(true);
 		finishButton.setEnabled(false);
 		target.addComponent(wizardButtonContainer);
