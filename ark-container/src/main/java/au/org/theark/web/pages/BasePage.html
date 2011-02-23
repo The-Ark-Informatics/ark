@@ -2,17 +2,19 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="da" lang="da">
 	<head>
-		<title><wicket:message key="page.title">Page Title will be inserted here</wicket:message></title>
+		<title>
+			<wicket:message key="page.title">Page Title will be inserted here</wicket:message>
+		</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css"/>
 		<link rel="stylesheet" type="text/css" href="css/header.css"/>
 		<link rel="stylesheet" type="text/css" href="css/welcome.css"/>
 		<link rel="stylesheet" type="text/css" href="css/context.css"/>
 		<link rel="stylesheet" type="text/css" href="css/searchForm.css"/>
 		<link rel="stylesheet" type="text/css" href="css/detailForm.css"/>
+		<link rel="stylesheet" type="text/css" href="css/wizardForm.css"/>
 		<link rel="stylesheet" type="text/css" href="css/context.css"/>
 		<link rel="stylesheet" type="text/css" href="css/panel.css"/>
 		<link rel="stylesheet" type="text/css" href="css/palette.css"/>
-		<link rel="stylesheet" type="text/css" href="css/wizard.css"/>
 		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
 	</head>
 	<body>
@@ -51,7 +53,8 @@
 							</div>
 							<!--  Login/Logout Welcome panel must be made a re-usable panel-->
 							<div id="welcomePanel">
-								<div>Welcome&nbsp;<span wicket:id="loggedInUser" id="loggedInUser"></span>&nbsp;<a wicket:id="logoutLink" href="#">Logout</a>
+								<div id="welcomeMessage">
+									Welcome&nbsp;<span wicket:id="loggedInUser" id="loggedInUser"></span>&nbsp;<a wicket:id="logoutLink" href="#">Logout</a>
 								</div>
 							</div>
 				  		</div>
@@ -71,14 +74,16 @@
 				<!-- Start of Application -->
 				<div id="application">
 					<wicket:child />
-					</div>
+				</div>
 				<!-- Endof Application -->
 	        </div>
 			<!-- End div main -->
-			<div class="push"></div>
+			<div class="push" />
 		<!-- End div wrap -->	
 		</div>
 		<!--  Page footer -->
-		<div id="footer" class="footer"><wicket:message key="page.copyright">Copyright message</wicket:message></div>
+		<div id="footer" class="footer">
+			<wicket:message key="page.copyright">Copyright message</wicket:message>
+		</div>
      </body>
 </html>
