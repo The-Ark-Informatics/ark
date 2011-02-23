@@ -10,7 +10,7 @@ import au.org.theark.phenotypic.model.entity.PhenoUpload;
 
 public class PhenoUploadReport
 {
-	private static StringBuffer report = new StringBuffer();
+	private StringBuffer report = new StringBuffer();
 	private Date		dateNow;
 
 	public PhenoUploadReport(){
@@ -31,43 +31,41 @@ public class PhenoUploadReport
 		 */
 		
 		dateNow = new Date(System.currentTimeMillis());
-		PhenoUploadReport.appendAndNewLine("************************************************************");
-		PhenoUploadReport.appendAndNewLine("the-ark.org.au Upload Report");
-		PhenoUploadReport.appendAndNewLine(dateNow.toString());
-		PhenoUploadReport.appendAndNewLine("************************************************************");
+		this.appendAndNewLine("************************************************************");
+		this.appendAndNewLine("the-ark.org.au Upload Report");
+		this.appendAndNewLine(dateNow.toString());
+		this.appendAndNewLine("************************************************************");
 	}
 	
 	/**
 	 * @param report the report to set
 	 */
-	public static void setReport(StringBuffer report)
+	public void setReport(StringBuffer report)
 	{
-		PhenoUploadReport.report = report;
+		this.report = report;
 	}
 
 	/**
 	 * @return the report
 	 */
-	public static StringBuffer getReport()
+	public StringBuffer getReport()
 	{
 		return report;
 	}
 	
-	public static void append(String string)
+	public void append(String string)
 	{
 		report.append(string);
 	}
 	
-	public static void appendAndNewLine(String string)
+	public void appendAndNewLine(String string)
 	{
 		report.append(string);
 		report.append("\n");
 	}
 	
-	public static void appendDetails(PhenoUpload phenoUpload)
+	public void appendDetails(PhenoUpload phenoUpload)
 	{
-		append("UploadID: ");
-		appendAndNewLine(phenoUpload.getId().toString());
 		append("Study: ");
 		appendAndNewLine(phenoUpload.getStudy().getName());
 		append("UserID: ");
@@ -91,4 +89,3 @@ public class PhenoUploadReport
 		return report.toString().getBytes();
 	};
 }
-
