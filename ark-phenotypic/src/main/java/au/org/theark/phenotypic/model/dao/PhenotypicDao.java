@@ -619,12 +619,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		phenoUpload.setStartTime(dateNow);
 
 		session.save(phenoUpload);
-
-		// Set Upload report
-		PhenoUploadReport uploadReport = new PhenoUploadReport();
-		PhenoUploadReport.appendDetails(phenoUpload);
-		phenoUpload.setUploadReport(uploadReport.getReportAsBlob());
-		session.update(phenoUpload);
 	}
 
 	public void createUpload(UploadVO phenoUploadVo)
@@ -642,12 +636,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Session session = getSession();
 		session.save(phenoUploadVo.getUpload());
 		session.save(phenoUploadVo.getPhenoCollectionUpload());
-
-		// Set Upload report
-		PhenoUploadReport uploadReport = new PhenoUploadReport();
-		PhenoUploadReport.appendDetails(phenoUploadVo.getUpload());
-		phenoUploadVo.getUpload().setUploadReport(uploadReport.getReportAsBlob());
-		session.update(phenoUploadVo.getUpload());
 	}
 
 	public void updateUpload(PhenoUpload upload)
