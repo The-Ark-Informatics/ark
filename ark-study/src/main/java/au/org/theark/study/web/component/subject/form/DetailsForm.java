@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.subject.form;
 
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -20,11 +21,17 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.value.LongValue;
 import org.apache.wicket.validation.validator.DateValidator;
+import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
+import org.odlabs.wiquery.ui.datepicker.DatePickerDuration;
+import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -64,7 +71,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	
 	private TextField<String> amdrifIdTxtFld;
 	private DatePicker<Date> studyApproachDate;
-	private TextField<String> yearOfFirstMamogramTxtFld;
+	private TextField<Long> yearOfFirstMamogramTxtFld;
 	private TextField<String> yearOfRecentMamogramTxtFld;
 	private TextField<String> totalNumberOfMamogramsTxtFld;
 	
@@ -150,7 +157,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		studyApproachDate.setChangeMonth(true);
 		studyApproachDate.setChangeYear(true);
 		
-		yearOfFirstMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfFirstMamogram");
+		yearOfFirstMamogramTxtFld =  new TextField<Long>("subjectStudy.yearOfFirstMamogram",Long.class);
 		yearOfRecentMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfRecentMamogram");
 		totalNumberOfMamogramsTxtFld = new TextField<String>("subjectStudy.totalNumberOfMamograms");
 		
@@ -180,10 +187,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	
 	private void initialiaseCountryDropDown(){
 		
-		List<Country> countryList = iArkCommonService.getCountries();
+		final List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-		countryChoice = new DropDownChoice<Country>("subjectStudy.country", countryList, defaultChoiceRenderer);
-		
+		class TestVO{
+			public Country selected= countryList.get(0);
+		}
+		countryChoice = new DropDownChoice<Country>("subjectStudy.country", new PropertyModel(new TestVO(),"selected"),countryList, defaultChoiceRenderer);
 		//Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
@@ -260,11 +269,13 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		firstNameTxtFld.setRequired(true);
 		dateOfBirth.setRequired(true);
 		dateOfBirth.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.dateofbirth.max.range", this, null));
+		
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
 		subjectUIDTxtFld.setRequired(true);
 		subjectUIDTxtFld.add(StringValidator.lengthBetween(1, 8));
 		titleTypeDdc.setRequired(true);
+		
 		
 	}
 
@@ -279,13 +290,28 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		onCancel(target);
 		
 	}
+	
+	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
+		boolean validFlag=true;
+		Calendar calendar = Calendar.getInstance();
+		int calYear = calendar.get(Calendar.YEAR);
+		System.out.println("\n ---- Calendar Year " + calYear);
+		if(fieldToValidate > calYear){
+			this.error(message);
+			processErrors(target);
+			validFlag=false;
+		}
+		
+		return validFlag;
+	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
 	protected void onSave(Form<SubjectVO> containerForm,	AjaxRequestTarget target) {
-		
+		boolean firstMammogramFlag =false;
+		boolean recentMamogramFlag = false;
 		target.addComponent(detailPanelContainer);
 		
 		Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -296,22 +322,38 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		}
 		else{
 			study = iArkCommonService.getStudy(studyId);
+			boolean validFlag=false;
+			Calendar calendar = Calendar.getInstance();
+			int calYear = calendar.get(Calendar.YEAR);
+			System.out.println("\n ---- Calendar Year " + calYear);
 			
-			if(containerForm.getModelObject().getPerson().getId() == null || containerForm.getModelObject().getPerson().getId() == 0){
-				
-				containerForm.getModelObject().setStudy(study);
-				studyService.createSubject(containerForm.getModelObject());
-				this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
-				processErrors(target);
 			
-			}else{
+			 firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram(),
+								"Year of Fist Mammogram cannot be in the future.",
+								target);
 			
-				studyService.updateSubject(containerForm.getModelObject());
-				this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
-				processErrors(target);
+			 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram(),
+					"Year of recent Mammogram cannot be in the future.",
+					target);
 			
+			
+			if(firstMammogramFlag  && recentMamogramFlag){
+				if(containerForm.getModelObject().getPerson().getId() == null || 
+						containerForm.getModelObject().getPerson().getId() == 0){
+			
+					containerForm.getModelObject().setStudy(study);
+					studyService.createSubject(containerForm.getModelObject());
+					this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+					processErrors(target);
+		
+				}else{
+		
+					studyService.updateSubject(containerForm.getModelObject());
+					this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+					processErrors(target);
+		
+				}
 			}
-			
 			
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
@@ -323,7 +365,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
 		}
-		onSavePostProcess(target);
+		//Only if the validations were good process onSavePostProcess otherwise stay on the same page as we are using custom validations
+		if(firstMammogramFlag && recentMamogramFlag){
+			onSavePostProcess(target);	
+		}
+		
+		
 	}
 
 }
