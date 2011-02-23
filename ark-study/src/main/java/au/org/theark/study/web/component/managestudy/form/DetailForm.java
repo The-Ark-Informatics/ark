@@ -1,7 +1,5 @@
 package au.org.theark.study.web.component.managestudy.form;
 
-import java.io.IOException;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -35,13 +33,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.hibernate.Hibernate;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -49,8 +46,8 @@ import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
+import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
 @SuppressWarnings({ "unchecked", "serial", "unused" })
 public class DetailForm extends Form<StudyModelVO>
@@ -378,9 +375,14 @@ public class DetailForm extends Form<StudyModelVO>
 		// TODO Have to stop the validator posting the content with the error message
 		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded",null, new Model<String>("Study Synopsis")));
 		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
+		
+		// Max dateOfApplicationDp can be only today
 		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.doa.max.range", this, null));
-		// Can be only today
-		// Estimate year of completion - should be a valid year. Must be less than dateOfApplication
+		
+		// TODO: Write CustomValidator to handle numeric validation
+		// Estimated Year of completion a numeric year field, greater than dateOfApplicationDp 
+		//estYearOfCompletionTxtFld.add(new PatternValidator("^\\d{4}$")).setLabel(new StringResourceModel("error.study.yearOfCompletion", this, new Model<String>("Estimated Year of Completion")));
+		
 		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.chief", this, new Model<String>("Chief Investigator")));
 		chiefInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50));
 
