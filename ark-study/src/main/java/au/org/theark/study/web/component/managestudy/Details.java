@@ -2,6 +2,8 @@ package au.org.theark.study.web.component.managestudy;
 
 import java.io.IOException;
 import java.sql.Blob;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -106,7 +108,8 @@ public class Details  extends Panel{
 	}
 	
 	@SuppressWarnings("serial")
-	public void initialisePanel(){
+	public void initialisePanel()
+	{
 		
 		detailForm = new DetailForm("detailForm", 
 									detailsContainer,
@@ -119,45 +122,53 @@ public class Details  extends Panel{
 									studyLogoImageContainer,
 									arkContextMarkup,
 									studyContainerForm
-									){
+									)
+		{
 			
 			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target, FileUploadField fileUploadField){
 				
 				try
 				{
-					// Store Study logo image
-					if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+					String message = "Estimated Year of Completion must be greater than Date Of Application";
+					if(validateEstYearOfComp(studyModel.getStudy().getEstimatedYearOfCompletion(), 
+											studyModel.getStudy().getDateOfApplication(), 
+											message, 
+											target))
 					{
-						// Retrieve file and store as Blob in databasse
-						FileUpload fileUpload = fileUploadField.getFileUpload(); 
+						// Store Study logo image
+						if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+						{
+							// Retrieve file and store as Blob in databasse
+							FileUpload fileUpload = fileUploadField.getFileUpload(); 
+							
+							// Copy file to Blob object
+							Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+							studyModel.getStudy().setStudyLogoBlob(payload);
+							studyModel.getStudy().setFilename(fileUpload.getClientFileName());
+						}
 						
-						// Copy file to Blob object
-						Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-						studyModel.getStudy().setStudyLogoBlob(payload);
-						studyModel.getStudy().setFilename(fileUpload.getClientFileName());
+						if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
+							service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
+							this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
+							postSaveUpdate(target);
+	
+						}else{
+							//Update
+							service.updateStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps() );
+							this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
+							postSaveUpdate(target);
+						}
+						
+						SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
+						SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+						SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+						studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
+						
+						// Set Study into context items
+						ContextHelper contextHelper = new ContextHelper();
+						contextHelper.resetContextLabel(target, arkContextMarkup);
+						contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), arkContextMarkup);
 					}
-					
-					if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
-						service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
-						this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
-						postSaveUpdate(target);
-
-					}else{
-						//Update
-						service.updateStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps() );
-						this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
-						postSaveUpdate(target);
-					}
-					
-					SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
-					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-					studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
-					
-					// Set Study into context items
-					ContextHelper contextHelper = new ContextHelper();
-					contextHelper.resetContextLabel(target, arkContextMarkup);
-					contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), arkContextMarkup);
 
 				}
 				catch(EntityExistsException eee){
@@ -227,8 +238,25 @@ public class Details  extends Panel{
 				}
 				target.addComponent(feedBackPanel);
 			}
+			
+			private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target)
+			{ 
+		        boolean validFlag = true; 
+		        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+		        int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication)); 
+		        
+		        if(yearOfCompletion < dateOfApplicationYear){ 
+		                this.error(message); 
+		                processErrors(target); 
+		                validFlag = false; 
+		        } 
+		        
+		        return validFlag; 
+			}
 		};
 		add(detailForm); //Add the form to the panel
 	}
+	
+	
 		
 }
