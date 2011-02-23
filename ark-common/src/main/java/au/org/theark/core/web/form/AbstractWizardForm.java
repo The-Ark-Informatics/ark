@@ -19,18 +19,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * Abstract class for Wizard Form sub-classes. It provides some common
- * functionality that sub-classes inherit. Provides the skeleton methods for
- * onSave,onDelete,onCancel etc.Defines the core buttons like
- * save,delete,cancel, edit and editCancel. Provides method to toggle the view
- * from read only to edit mode which is usually a common behavior the
- * sub-classes can re-use.
+ * Abstract class for Wizard Form sub-classes. 
+ * It provides some common functionality that sub-classes inherit. 
+ * Defines the core buttons like: Previous,Next,Cancel, and Finish.
+ * Provides methods to access buttons for sub-class definition of use (e.g. disable Previous)
+ * Provides method to toggle the view from read only to edit mode which 
+ * is usually a common behaviour the sub-classes can re-use.
  * </p>
  * 
  * @author cellis
  * @param <T>
  * 
  */
+@SuppressWarnings({"rawtypes", "unchecked"})
 public abstract class AbstractWizardForm<T> extends Form<T> {
 
 	private static final long serialVersionUID = 1L;
@@ -52,10 +53,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 	protected IBehavior buttonStyleBehavior;
 
-	/**
-	 * Indicates whether the action was cancelled or not. TODO: should probably
-	 * go in an Action interface or abstract class of some sort
-	 */
 	private boolean cancelled = false;
 
 	public AbstractWizardForm(String id) {
@@ -83,7 +80,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param wizardButtonContainer
 	 * @param containerForm
 	 */
-	@SuppressWarnings("unchecked")
 	public AbstractWizardForm(String id, FeedbackPanel feedBackPanel,
 			WebMarkupContainer resultListContainer,
 			WebMarkupContainer wizardPanelContainer,
@@ -108,7 +104,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	protected void initialiseForm() {
 		// previous button
 		previousLink = createPrevious();
-		previousLink.setVisible(true);
+		previousLink.setVisible(false);
 		previousLink.setEnabled(false);
 		previousLink.setOutputMarkupId(true);
 		previousLink.setOutputMarkupPlaceholderTag(true);
@@ -167,6 +163,10 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		this.nextButton = nextButton;
 	}
 
+	public void setPreviousLink(AjaxLink previousLink) {
+		this.previousLink = previousLink;
+	}
+
 	protected void onCancelPostProcess(AjaxRequestTarget target) {
 		wizardPanelContainer.setVisible(true);
 		resultListContainer.setVisible(true);
@@ -189,13 +189,10 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
 				onNextSubmit(target, form);
 			}
 
 		};
-		// nextButton.add(new AttributeModifier("value", true,
-		// getLabelModel("Next")));
 
 		return nextButton;
 	}
@@ -210,8 +207,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 			}
 
 		};
-		// link.add(new AttributeModifier("value", true,
-		// getLabelModel("Previous")));
 
 		return link;
 	}
@@ -230,10 +225,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				onFinishError(target, form);
 			}
-
 		};
-		// finishButton.add(new AttributeModifier("value", true,
-		// getLabelModel("Finish")));
 
 		return finishButton;
 	}
@@ -246,15 +238,11 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 			public void onClick(AjaxRequestTarget target) {
 				onCancelClick(target);
 			}
-
 		};
-		// link.add(new AttributeModifier("value", true,
-		// getLabelModel("Cancel")));
 
 		return link;
 	}
 
-	@SuppressWarnings("rawtypes")
 	public LoadableDetachableModel getLabelModel(String label) {
 		return new StringResourceModel(label, AbstractWizardForm.this, null);
 	}
@@ -300,6 +288,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	protected void onNextError(AjaxRequestTarget target, Form<?> form) 
 	{
 		log.debug("next.onError");
+		// Wizard steps are contained within a WebMarkupContainer
 		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
 		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
 		currentStep.onStepOutNextError(AbstractWizardForm.this, target);
@@ -309,7 +298,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	{
 		cancelled = true;
 		
-		previousLink.setVisible(true);
+		previousLink.setVisible(false);
 		previousLink.setEnabled(false);
 		nextButton.setVisible(true);
 		nextButton.setEnabled(true);
@@ -321,29 +310,89 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	}
 
 	/**
-	 * Called after wizard form submission generates an error (on next or finish
-	 * click).
+	 * Warn the current step panel we are going out by next, and ask which is
+	 * the next step.
 	 * 
 	 * @param target
-	 * @param form
 	 */
-	public abstract void onError(AjaxRequestTarget target, Form form);
+	protected void gotoNext(AjaxRequestTarget target) {
+		// Wizard steps are contained within a WebMarkupContainer
+		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
+		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
+		
+		log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
+		
+		// Handle wizard step state on Next press
+		currentStep.onStepOutNext(AbstractWizardForm.this, target);
+		currentStep.handleWizardState(this, target);
+		
+		AbstractWizardStepPanel next = currentStep.getNextStep();
+		if (next != null) {
+			currentStep.replaceWith(next);
+			
+			// If no more steps, on final step
+			if(next.getNextStep() == null)
+			{
+				nextButton.setEnabled(false);	
+				cancelLink.setEnabled(false);
+				finishButton.setEnabled(true);	
+			}
+			
+			target.addComponent(wizardButtonContainer);
+		}
+		target.addComponent(wmc);
+		target.addComponent(feedBackPanel);
+		
+	}
 
 	/**
-	 * Called when finish is clicked.
-	 * 
-	 * @param target
-	 * @param form
-	 */
-	public abstract void onFinish(AjaxRequestTarget target, Form form);
-
-	/**
-	 * Called when cancel is clicked.
+	 * Warn the current step panel we are going out by previous, 
+	 * and ask which is the previous step.
 	 * 
 	 * @param target
 	 */
-	protected abstract void onCancel(AjaxRequestTarget target);
+	protected void gotoPrevious(AjaxRequestTarget target) {
+		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
+		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
+		log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
+		currentStep.onStepOutPrevious(AbstractWizardForm.this, target);
 
+		AbstractWizardStepPanel previous = currentStep.getPreviousStep();
+		if (previous != null) {
+			currentStep.replaceWith(previous);
+			previous.onStepInPrevious(this, target);
+			previous.handleWizardState(this, target);
+		}
+		target.addComponent(wmc);
+		target.addComponent(feedBackPanel);
+	}
+
+	public HistoryAjaxBehavior getHistoryAjaxBehavior() {
+		// Start here
+		Component current = getParent();
+
+		// Walk up containment hierarchy
+		while (current != null) {
+			// Is current an instance of this class?
+			if (IHistoryAjaxBehaviorOwner.class.isInstance(current)) {
+				return ((IHistoryAjaxBehaviorOwner) current)
+						.getHistoryAjaxBehavior();
+			}
+
+			// Check parent
+			current = current.getParent();
+		}
+		return null;
+	}
+	
+	public boolean isCancelled() {
+		return cancelled;
+	}
+
+	public void setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
+	}
+	
 	/**
 	 * Get the "next" component.
 	 * 
@@ -381,100 +430,59 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	}
 
 	/**
-	 * Warn the current step panel we are going out by next, and ask which is
-	 * the next step.
+	 * Get the id of the step.
 	 * 
-	 * @param target
+	 * @return
 	 */
-	protected void gotoNext(AjaxRequestTarget target) {
-		//AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) get("wizardFormContainer");
-		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
-		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
-		
-		log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
-		
-		// Handle wizard step state on Next press
-		currentStep.onStepOutNext(AbstractWizardForm.this, target);
-		currentStep.handleWizardState(this, target);
-		
-		AbstractWizardStepPanel next = currentStep.getNextStep();
-		if (next != null) {
-			currentStep.replaceWith(next);
-			
-			// If no more steps, on final step
-			if(next.getNextStep() == null)
-			{
-				nextButton.setEnabled(false);	
-				finishButton.setEnabled(true);	
-			}
-			
-			target.addComponent(wizardButtonContainer);
-		}
-		target.addComponent(wmc);
-		target.addComponent(feedBackPanel);
-		
-	}
-
-	/**
-	 * Warn the current step panel we are going out by previous, and ask which
-	 * is the previous step.
-	 * 
-	 * @param target
-	 */
-	protected void gotoPrevious(AjaxRequestTarget target) {
-		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
-		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
-		log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
-		currentStep.onStepOutPrevious(AbstractWizardForm.this, target);
-
-		AbstractWizardStepPanel previous = currentStep.getPreviousStep();
-		if (previous != null) {
-			currentStep.replaceWith(previous);
-			previous.onStepInPrevious(this, target);
-			previous.handleWizardState(this, target);
-		}
-		target.addComponent(wmc);
-		target.addComponent(feedBackPanel);
-	}
-
-	public boolean isCancelled() {
-		return cancelled;
-	}
-
-	public void setCancelled(boolean cancelled) {
-		this.cancelled = cancelled;
-	}
-
-	@SuppressWarnings("unchecked")
-	public HistoryAjaxBehavior getHistoryAjaxBehavior() {
-		// Start here
-		Component current = getParent();
-
-		// Walk up containment hierarchy
-		while (current != null) {
-			// Is current an instance of this class?
-			if (IHistoryAjaxBehaviorOwner.class.isInstance(current)) {
-				return ((IHistoryAjaxBehaviorOwner) current)
-						.getHistoryAjaxBehavior();
-			}
-
-			// Check parent
-			current = current.getParent();
-		}
-		return null;
-	}
-
 	public static String getStepId() {
 		return "step";
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Called to change/overrride the css of the Wizard.
+	 * 
+	 * @param target
+	 */
 	public void changeWizardFormStyle(String cssClassName) {
 		add(new AttributeModifier("class", new Model(cssClassName)));
 	}
-
-	abstract protected void processErrors(AjaxRequestTarget target);
 	
+	/**
+	 * Called after wizard form submission generates an error (on next or finish
+	 * click).
+	 * 
+	 * @param target
+	 * @param form
+	 */
+	public abstract void onError(AjaxRequestTarget target, Form form);
+
+	/**
+	 * Called when finish is clicked.
+	 * 
+	 * @param target
+	 * @param form
+	 */
+	public abstract void onFinish(AjaxRequestTarget target, Form form);
+
+	/**
+	 * Called when cancel is clicked.
+	 * 
+	 * @param target
+	 */
+	protected abstract void onCancel(AjaxRequestTarget target);
+
+	/**
+	 * Called to handle errors.
+	 * 
+	 * @param target
+	 */
+	protected abstract void processErrors(AjaxRequestTarget target);
+	
+	/**
+	 * Called to disable entire WizardForm, and display reason.
+	 * 
+	 * @param target
+	 */
 	protected void disableWizardForm(Long sessionId, String errorMessage)
 	{	
 		if (sessionId == null)
