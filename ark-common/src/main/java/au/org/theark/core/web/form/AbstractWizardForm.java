@@ -392,14 +392,14 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
 		
 		log.debug("gotoNext.currentStep={}", currentStep.getClass().getName());
+		
+		// Handle wizard step state on Next press
 		currentStep.onStepOutNext(AbstractWizardForm.this, target);
 		currentStep.handleWizardState(this, target);
 		
 		AbstractWizardStepPanel next = currentStep.getNextStep();
 		if (next != null) {
 			currentStep.replaceWith(next);
-			next.onStepInNext(this, target);
-			next.handleWizardState(this, target);
 			
 			// If no more steps, on final step
 			if(next.getNextStep() == null)
