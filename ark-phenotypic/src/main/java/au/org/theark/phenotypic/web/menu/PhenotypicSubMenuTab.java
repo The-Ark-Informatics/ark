@@ -19,7 +19,6 @@ import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoUpload.PhenoUploadContainer;
-import au.org.theark.phenotypic.web.component.phenoUpload2.PhenoUpload2Container;
 import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
@@ -80,11 +79,6 @@ public class PhenotypicSubMenuTab extends Panel
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU);
-		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD2_RESOURCEKEY);
-		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.REPORT_SUBMENU);
 		menuModule.setResourceKey(Constants.REPORT_RESOURCEKEY);
 		moduleTabs.add(menuModule);
@@ -118,10 +112,6 @@ public class PhenotypicSubMenuTab extends Panel
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
 					{
 						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
-					}
-					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU))
-					{
-						panelToReturn = new PhenoUpload2Container(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
 					{
@@ -203,10 +193,6 @@ public class PhenotypicSubMenuTab extends Panel
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
 					{
 						panelToReturn = new PhenoUploadContainer(panelId); // Note the constructor
-					}
-					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD2_SUBMENU))
-					{
-						panelToReturn = new PhenoUpload2Container(panelId); // Note the constructor
 					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
 					{
