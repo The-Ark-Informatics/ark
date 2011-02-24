@@ -35,7 +35,7 @@ public class LoginPage<T> extends WebPage {
 	/**
 	 * Page Constructor
 	 */
-	@SuppressWarnings({ "serial", "unchecked" })
+	@SuppressWarnings({ "serial" })
 	public LoginPage(){
 
 		log.info("LoginPage() constructor");
@@ -51,6 +51,7 @@ public class LoginPage<T> extends WebPage {
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
 		
+		@SuppressWarnings("rawtypes")
 		Link resetPasswordLink = new Link("resetPasswordLink"){
 			@Override
 			public void onClick() {
@@ -58,7 +59,8 @@ public class LoginPage<T> extends WebPage {
 			}
 		 };
 		
-		resetPasswordLink.setVisible(true);
+		//TODO: Implement ResetPage.resetForm.onReset
+		resetPasswordLink.setVisible(false);
 		this.add(resetPasswordLink);
 		 
 		 // Add images
