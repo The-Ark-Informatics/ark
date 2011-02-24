@@ -3,7 +3,7 @@
 	<form wicket:id="detailForm">
 		<div id="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- Row 1 ID and Name-->
 				
@@ -12,7 +12,7 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="id">
-							<wicket:message key="collection.id">Collection ID:</wicket:message>
+							<wicket:message key="phenoCollection.id">Collection ID:</wicket:message>
 						</label>
 					</div>
 				</div>
@@ -26,7 +26,7 @@
 				
 				<div id="fldLabel">
 					<div class="label">
-						<label for="name"><wicket:message	key="collection.name">Name:</wicket:message></label>
+						<label for="name"><wicket:message	key="phenoCollection.name">Name:</wicket:message></label>
 					</div>
 				</div>
 				<div id="fldControl">
@@ -35,15 +35,15 @@
 					</div>
 				</div>
 				
-				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="detailPanelContentRight">&nbsp;</div>
 			
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
 					<div class="label">
-						<label for="status"><wicket:message	key="collection.status">Status:</wicket:message></label> 
+						<label for="status"><wicket:message	key="phenoCollection.status">Status:</wicket:message></label> 
 					</div>
 				</div>
 				<div id="fldControl">
@@ -61,7 +61,7 @@
 							
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="fieldDescription"><wicket:message key="collection.description">Description:</wicket:message></label>
+						<label for="fieldDescription"><wicket:message key="phenoCollection.description">Description:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
@@ -71,13 +71,13 @@
 					</div>
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="startDate"><wicket:message key="collection.startDate">Start Date:</wicket:message></label>
+						<label for="startDate"><wicket:message key="phenoCollection.startDate">Start Date:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
@@ -91,24 +91,25 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="expiryDate"><wicket:message key="collection.expiryDate">Expiry Date:</wicket:message></label>
+						<label for="expiryDate"><wicket:message key="phenoCollection.expiryDate">Expiry Date:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.expiryDate"  type="text" />
+						<input wicket:id="phenoCollection.expiryDate"  type="text" maxLength="10"/>
 					</div>
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
-		 			<div class="label">
-						<span wicket:id="phenoCollection.fieldPalette"></span>
-		 			</div> 
+					<div class="label">
+						<wicket:message	key="phenoCollection.fieldPalette">Fields in Collection:</wicket:message>
+					</div>
+		 			<span wicket:id="phenoCollection.fieldPalette"></span> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
@@ -117,27 +118,7 @@
 					</div>
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
-		       	
-		       	<div id="panelContentLeft">&nbsp;</div>
-		       	   		       			
-		       	<div id="fldLabel">
-		 			<div class="label">
-						&nbsp;
-		 			</div> 
-		 		</div> 			       			
-				
-				<div id="panelMargin">&nbsp;</div>
-				
-				<div id="fldControl">
-					<div class="label">
-						&nbsp;
-					</div>
-				</div>
-				
-				<div id="searchPanelContentRight">&nbsp;</div>
-				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- ModalWindow for confirm Delete window -->
 				<div wicket:id="modalwindow"></div>
@@ -172,7 +153,8 @@
 				  	</div>
 				</div>
 			</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 		</div>
-	
 	</form>
+	<br>&nbsp;<br>&nbsp;<br>&nbsp;
 </wicket:panel>

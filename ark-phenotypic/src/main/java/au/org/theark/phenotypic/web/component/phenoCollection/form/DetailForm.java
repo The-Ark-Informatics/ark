@@ -246,21 +246,22 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	/**
 	 * 
 	 */
-	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow){
+	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	{
 		//TODO:(CE) To handle Business and System Exceptions here
 		phenotypicService.deleteCollection(containerForm.getModelObject());
-   	this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
+		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
    		
-   	// Display delete confirmation message
-   	target.addComponent(feedBackPanel);
-   	//TODO Implement Exceptions in PhentoypicService
+	   	// Display delete confirmation message
+	   	target.addComponent(feedBackPanel);
+	   	//TODO Implement Exceptions in PhentoypicService
 		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
      
 		// Close the confirm modal window
-   	selectModalWindow.close(target);
-   	// Move focus back to Search form
+	   	selectModalWindow.close(target);
+	   	// Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		setModelObject(phenoCollectionVo);
 		onCancel(target);
