@@ -3,7 +3,7 @@
 	<form wicket:id="detailForm">
 		<div id="detailsPanelBorder">
 			<div wicket:id="detailFormContainer">
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- Row 1 Study ID and Name-->
 				
@@ -27,17 +27,22 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="fieldName"><wicket:message	key="field.name">Name:</wicket:message></label>
+						<!-- 
+						<div id="note">
+							<wicket:message key="field.name.note">[Note]</wicket:message>
+						</div>
+						-->
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="field.name" type="text" /> 
+						<input wicket:id="field.name" type="text" />
 					</div>
 				</div>
 				
-				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="detailPanelContentRight">&nbsp;</div>
 			
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<div id="panelContentLeft">&nbsp;</div>
 				
@@ -66,11 +71,11 @@
 				
 				<div id="fldControl">
 					<div class="label">
-						<textarea wicket:id="field.description" rows="5" cols="35"></textarea> 
+						<textarea wicket:id="field.description" rows="4" cols="25"></textarea> 
 					</div>
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
@@ -90,19 +95,22 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="fieldDiscreteValues"><wicket:message key="field.discreteValues">Discrete Values:</wicket:message></label>
+						<label for="fieldEncodedValues"><wicket:message key="field.encodedValues">Encoded Values:</wicket:message></label>
+						<div id="note">
+							<wicket:message key="field.encodedValues.note">[Note]</wicket:message>
+						</div>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="field.discreteValues"  type="text" />
+						<textarea wicket:id="field.encodedValues" cols="25"></textarea>
 					</div>
 				</div>
 				
-				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="detailPanelContentRight">&nbsp;</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
@@ -132,37 +140,9 @@
 					</div>
 				</div>
 				
-				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
-		       	<div id="panelContentLeft">&nbsp;</div>
-				
-				<div id="fldLabel">
-		 			<div class="label">
-						<label for="fieldSeqNum"><wicket:message key="field.seqNum">Sequence Number:</wicket:message></label>
-		 			</div> 
-		 		</div> 			       			
-				
-				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="field.seqNum"  type="text" />
-					</div>
-				</div>
-		       	   		       			
-		       	<div id="panelMargin">&nbsp;</div>
-						
-				<div id="fldLabel">
-		 			<div class="label">
-						&nbsp;
-		 			</div> 
-		 		</div> 			       			
-				
-				<div id="fldControl">
-					<div class="label">
-						&nbsp;
-					</div>
-				</div>
-				
-				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="detailPanelContentRight">&nbsp;</div>
 				<!-- ModalWindow for confirm Delete window -->
 				<div wicket:id="modalwindow"></div>
 				
@@ -197,7 +177,8 @@
 				  	</div>
 				</div>
 			</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 		</div>
-	
 	</form>
+	<br>&nbsp;<br>&nbsp;<br>&nbsp;
 </wicket:panel>
