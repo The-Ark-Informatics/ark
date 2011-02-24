@@ -36,7 +36,7 @@ public class Field implements java.io.Serializable {
 	private Long seqNum;
 	private String minValue;
 	private String maxValue;
-	private String discreteValues;
+	private String encodedValues;
 	private String userId;
 	private Date insertTime;
 	private String updateUserId;
@@ -60,7 +60,7 @@ public class Field implements java.io.Serializable {
 	/** full constructor */
 	public Field(Long id, FieldType fieldType, String name,
 			String description, String units, Long seqNum, String minValue,
-			String maxValue, String discreteValues, String userId,
+			String maxValue, String encodedValues, String userId,
 			Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.fieldType = fieldType;
@@ -70,7 +70,7 @@ public class Field implements java.io.Serializable {
 		this.seqNum = seqNum;
 		this.minValue = minValue;
 		this.maxValue = maxValue;
-		this.discreteValues = discreteValues;
+		this.encodedValues = encodedValues;
 		this.userId = userId;
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
@@ -154,13 +154,13 @@ public class Field implements java.io.Serializable {
 		this.maxValue = maxValue;
 	}
 
-	@Column(name = "DISCRETE_VALUES", length = 100)
-	public String getDiscreteValues() {
-		return this.discreteValues;
+	@Column(name = "ENCODED_VALUES")
+	public String getEncodedValues() {
+		return this.encodedValues;
 	}
 
-	public void setDiscreteValues(String discreteValues) {
-		this.discreteValues = discreteValues;
+	public void setEncodedValues(String encodedValues) {
+		this.encodedValues = encodedValues;
 	}
 
 	@Column(name = "USER_ID", nullable = false, length = 50)
