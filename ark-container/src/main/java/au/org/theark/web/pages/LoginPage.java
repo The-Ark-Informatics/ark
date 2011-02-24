@@ -45,35 +45,32 @@ public class LoginPage<T> extends WebPage {
 		LoginForm form = new LoginForm("loginForm");
 		
 		this.add(form);
-		this.add(feedBackPanel);//Add the Feedback panel
+		this.add(feedBackPanel);
 		
 		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
-		//Create an new form object and add it to the Page
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		//ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
-		this.add( new Link("resetPasswordLink"){
+		Link resetPasswordLink = new Link("resetPasswordLink"){
 			@Override
 			public void onClick() {
 				setResponsePage(ResetPage.class);
 			}
-		 });
+		 };
+		
+		resetPasswordLink.setVisible(true);
+		this.add(resetPasswordLink);
 		 
 		 // Add images
 		 add(hostedByImage);
 		 add(productImage);
-		 //add(bannerImage);
-		 
-		 
 	}
 	
 	@Override
 	protected void configureResponse() {
 	    super.configureResponse();
 	    WebResponse response = getWebRequestCycle().getWebResponse();
-	    response.setHeader("Cache-Control",
-	          "no-cache, max-age=0,must-revalidate, no-store");
+	    response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
 	    response.setHeader("Expires", "-1");
 	    response.setHeader("Pragma", "no-cache");
 	}
@@ -87,7 +84,6 @@ public class LoginPage<T> extends WebPage {
 		TextField<String> userNameTxtFld = new TextField<String>("userName");
 		PasswordTextField passwordTxtFld = new PasswordTextField("password");	
 		Button subButton;
-		
 		
 		private void decorateComponents(){
 			ThemeUiHelper.buttonRoundedFocused(subButton);
