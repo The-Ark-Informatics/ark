@@ -76,7 +76,7 @@ public class Constants {
 	public static final String FIELDVO_FIELD_SEQ_NUM = "field.seqNum";
 	public static final String	FIELDVO_FIELD_MIN_VALUE	= "field.minValue";
 	public static final String	FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
-	public static final String	FIELDVO_FIELD_DISCRETE_VALUES	= "field.discreteValues";
+	public static final String	FIELDVO_FIELD_ENCODED_VALUES	= "field.encodedValues";
 	
 	public static final String	FIELD_DATAVO_FIELD_DATA_ID = "fieldData.id";
 	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION	= "fieldData.collection";
