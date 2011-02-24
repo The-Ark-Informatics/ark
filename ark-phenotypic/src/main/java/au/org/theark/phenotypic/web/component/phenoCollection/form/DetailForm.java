@@ -11,7 +11,9 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -25,7 +27,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.ContextHelper;
@@ -60,8 +61,8 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	private TextField<String>			nameTxtFld;
 	private DropDownChoice<Status>	statusDdc;
 	private TextArea<String>			descriptionTxtAreaFld;
-	private DatePicker<Date>			startDateTxtFld;
-	private DatePicker<Date>			expiryDateTxtFld;
+	private DateTextField			startDateTxtFld;
+	private DateTextField			expiryDateTxtFld;
 	
 	// Field selection Palette
 	private Palette	fieldPalette;
@@ -119,11 +120,30 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		idTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID);
 		nameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME);
 		descriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
-		startDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE);
-		expiryDateTxtFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE);
-
-		startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-		expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
+		startDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		expiryDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		 
+		DatePicker startDatePicker = new DatePicker()
+		{ 
+			@Override 
+			protected boolean enableMonthYearSelection() 
+			{ 
+			return true; 
+			} 
+		}; 
+		startDatePicker.bind(startDateTxtFld);
+		startDateTxtFld.add(startDatePicker);
+		
+		DatePicker endDatePicker = new DatePicker()
+		{ 
+			@Override 
+			protected boolean enableMonthYearSelection() 
+			{ 
+				return true; 
+			} 
+		}; 
+		endDatePicker.bind(expiryDateTxtFld);
+		expiryDateTxtFld.add(endDatePicker);
 
 		// Initialise Drop Down Choices
 		initStatusDdc();

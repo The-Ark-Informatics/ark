@@ -8,6 +8,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -18,8 +20,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
@@ -50,8 +52,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private TextField<String>									phenoCollectionNameTxtFld;
 	private TextArea<String>									phenoCollectionDescriptionTxtAreaFld;
 	private DropDownChoice<Status>							statusDdc;
-	private DatePicker<Date>									phenoCollectionStartDateFld;
-	private DatePicker<Date>									phenoCollectionExpiryDateFld;
+	private DateTextField									phenoCollectionStartDateFld;
+	private DateTextField									phenoCollectionExpiryDateFld;
 	private DetailPanel											detailPanel;
 	private Long 													sessionStudyId;
 	private WebMarkupContainer arkContextMarkup;
@@ -102,12 +104,31 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		phenoCollectionIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID);
 		phenoCollectionNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME);
 		phenoCollectionDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
-		phenoCollectionStartDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE);
-		phenoCollectionExpiryDateFld = new DatePicker<Date>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE);
-
-		phenoCollectionStartDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-		phenoCollectionExpiryDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-
+		phenoCollectionStartDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, Constants.DD_MM_YYYY);
+		phenoCollectionExpiryDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, Constants.DD_MM_YYYY);
+		 
+		DatePicker startDatePicker = new DatePicker()
+		{ 
+			@Override 
+			protected boolean enableMonthYearSelection() 
+			{ 
+			return true; 
+			} 
+		}; 
+		startDatePicker.bind(phenoCollectionStartDateFld);
+		phenoCollectionStartDateFld.add(startDatePicker);
+		
+		DatePicker endDatePicker = new DatePicker()
+		{ 
+			@Override 
+			protected boolean enableMonthYearSelection() 
+			{ 
+				return true; 
+			} 
+		}; 
+		endDatePicker.bind(phenoCollectionExpiryDateFld);
+		phenoCollectionExpiryDateFld.add(endDatePicker);
+		
 		initStatusDdc();
 		addFieldComponents();
 	}
