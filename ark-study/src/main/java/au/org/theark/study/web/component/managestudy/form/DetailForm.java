@@ -11,7 +11,9 @@ import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -33,10 +35,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.model.study.entity.Study;
@@ -85,7 +85,10 @@ public class DetailForm extends Form<StudyModelVO>
 	private TextField<String>				subjectKeyPrefixTxtFld;
 	private TextField<Integer>				subjectKeyStartAtTxtFld;
 	private TextField<String>				bioSpecimenPrefixTxtFld;
-	private DatePicker<Date>				dateOfApplicationDp;
+	//private DatePicker<Date>				dateOfApplicationDp;
+	private DateTextField					dateOfApplicationDp;
+	
+	
 	private DropDownChoice<StudyStatus>	studyStatusDpChoices;
 	private RadioChoice<Boolean>			autoGenSubIdRdChoice;
 	private RadioChoice<Boolean>			autoConsentRdChoice;
@@ -289,11 +292,20 @@ public class DetailForm extends Form<StudyModelVO>
 		subjectKeyPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
 		subjectKeyStartAtTxtFld = new TextField<Integer>(Constants.SUBJECT_KEY_START, Integer.class);
 		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
-		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_DATE_OF_APPLICATION);
-		dateOfApplicationDp.setChangeMonth(true);
-		dateOfApplicationDp.setChangeYear(true);
-		// dateOfApplicationDp.setDateFormat("dd/mm/yy").getLocale();
-		dateOfApplicationDp.setDateFormat("dd/mm/yy");
+		
+		// Create new DateTextField and assign date format
+		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
+		DatePicker datePicker = new DatePicker(){
+					@Override
+					protected boolean enableMonthYearSelection()
+					{
+						return true;
+					}
+		};
+		// Bind DatePicker to particular date field
+		datePicker.bind(dateOfApplicationDp);
+		dateOfApplicationDp.add(datePicker);
+		
 		initPalette();
 
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();

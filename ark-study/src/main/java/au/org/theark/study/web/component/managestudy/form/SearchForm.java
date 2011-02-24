@@ -1,6 +1,5 @@
 package au.org.theark.study.web.component.managestudy.form;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -9,6 +8,8 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -16,7 +17,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.model.study.entity.Study;
@@ -25,12 +25,17 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.study.web.Constants;
 
+@SuppressWarnings("serial")
 public class SearchForm extends Form<StudyModelVO>{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5468677674413992897L;
 	/* The Input Components that will be part of the Search Form */
 	private TextField<String> studyIdTxtFld; 
 	private TextField<String> studyNameTxtFld;
-	private DatePicker<Date> dateOfApplicationDp;
+	private DateTextField dateOfApplicationDp;
 	private TextField<String> principalContactTxtFld;
 	private DropDownChoice<StudyStatus> studyStatusDpChoices;
 	private AjaxButton searchButton;
@@ -42,13 +47,23 @@ public class SearchForm extends Form<StudyModelVO>{
 	public SearchForm(String id, CompoundPropertyModel<StudyModelVO> model, List<StudyStatus>  statusList) {
 		
 		super(id);
+		setMultiPart(true);
 		cpmModel = model;
 		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
-		dateOfApplicationDp = new DatePicker<Date>(Constants.STUDY_SEARCH_DOA);
-		dateOfApplicationDp.setChangeMonth(true);
-		dateOfApplicationDp.setChangeYear(true);
-		dateOfApplicationDp.setDateFormat("dd/mm/yy");
+		// Create new DateTextField and assign date format
+		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
+		DatePicker datePicker = new DatePicker(){
+					@Override
+					protected boolean enableMonthYearSelection()
+					{
+						return true;
+					}
+		};
+		// Bind DatePicker to particular date field
+		datePicker.bind(dateOfApplicationDp);
+		dateOfApplicationDp.add(datePicker);
+		
 		principalContactTxtFld = new TextField<String>(Constants.STUDY_SEARCH_CONTACT);
 		this.studyStatusList = statusList;
 		
@@ -73,7 +88,6 @@ public class SearchForm extends Form<StudyModelVO>{
 				//if it is a Super or Study admin then make the new available
 				return flag;
 			}
-			
 		};
 		
 		searchButton = new AjaxButton(Constants.SEARCH){
@@ -98,9 +112,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		initStudyStatusDropDown(pmStudyStatus);
 		//decorateComponents();
 		addComponentsToForm();
-
 	}
-	
 	
 	protected void onSearch(AjaxRequestTarget target){}
 	
@@ -113,6 +125,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		
 	}
 
+	@SuppressWarnings("unused")
 	private void decorateComponents(){
 		ThemeUiHelper.componentRounded(studyNameTxtFld);
 		ThemeUiHelper.componentRounded(studyIdTxtFld);
@@ -136,11 +149,9 @@ public class SearchForm extends Form<StudyModelVO>{
 		add(resetButton.setDefaultFormProcessing(false));
 	}
 	
-	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private void initStudyStatusDropDown(PropertyModel<StudyStatus> pmStudyStatus){
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,pmStudyStatus,studyStatusList,defaultChoiceRenderer);
 	}
-
 }
