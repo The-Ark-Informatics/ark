@@ -56,11 +56,9 @@ public class ResetPage<T> extends WebPage{
 		log.info("ResetPage() constructor");
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
 		add(hostedByImage);
 		add(productImage);
-		add(bannerImage);
 		
 		ResetForm resetForm = new ResetForm("resetForm"){
 			
