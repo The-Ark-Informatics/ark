@@ -11,6 +11,12 @@
 	font-weight: bold;
 }
 
+#detailPanel {
+	float: left;
+	width: 100%;
+	height: 90%;
+}
+
 #detailFormContainer{
 	border-style: solid;
 	border-width: 1px;
@@ -36,6 +42,18 @@
 	float: left;
 	width: 100%;
 	height: 100%;
+}
+
+#detailPanelContentRight {
+	float: right;
+	height: 5%;
+	width: 5%;
+}
+
+#detailPanelBreaker {
+	float: left;
+	width: 100%;
+	height: 20%;
 }
 
 #summaryPanelBorder{
