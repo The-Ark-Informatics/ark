@@ -14,6 +14,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -94,10 +96,10 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 	 */
 	@Override
 	protected void attachValidators() {
-		componentNameTxtFld.setRequired(true);
-		componentNameTxtFld.add(StringValidator.lengthBetween(3, 100));
-		componentDescription.add(StringValidator.lengthBetween(5, 500));
-		keywordTxtArea.add(StringValidator.lengthBetween(1,255));
+		componentNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.component.name.required", componentNameTxtFld, new Model<String>("Study Component Name")));
+		componentNameTxtFld.add(StringValidator.lengthBetween(3, 100)).setLabel(new StringResourceModel("error.study.component.name.length", componentNameTxtFld, new Model<String>("Study Component Name")));
+		componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", null, new Model<String>("Description")));
+		keywordTxtArea.add(StringValidator.lengthBetween(1,255)).setLabel(new StringResourceModel("error.study.component.keywords.length", null, new Model<String>("Keywords")));
 	}
 
 	/* (non-Javadoc)
