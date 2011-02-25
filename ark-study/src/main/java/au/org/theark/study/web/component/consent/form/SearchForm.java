@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -14,7 +16,6 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -54,8 +55,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	 * Form Components
 	 */
 	protected TextField<String> consentedBy;
-	protected DatePicker<Date> consentedDatePicker;
-	protected DatePicker<Date> endConsentedDatePicker;
+	protected DateTextField consentedDatePicker;
+	protected DateTextField endConsentedDatePicker;
 	protected DropDownChoice<StudyComp> studyComponentChoice;
 	protected DropDownChoice<StudyCompStatus> studyComponentStatusChoice;
 	protected DropDownChoice<ConsentStatus> consentStatusChoice;
@@ -90,8 +91,32 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 
 	protected void initialiseSearchForm(){
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
-		consentedDatePicker = new DatePicker<Date>(Constants.CONSENT_CONSENT_DATE);
-		endConsentedDatePicker = new DatePicker<Date>("consentDateEnd");
+		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		DatePicker datePicker = new DatePicker(){
+			@Override
+			protected boolean enableMonthYearSelection()
+			{
+				return true;
+			}
+		};
+		// Bind DatePicker to particular date field
+		datePicker.bind(consentedDatePicker);
+		consentedDatePicker.add(datePicker);
+		
+		endConsentedDatePicker = new DateTextField("consentDateEnd", au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		DatePicker datePicker2 = new DatePicker(){
+			@Override
+			protected boolean enableMonthYearSelection()
+			{
+				return true;
+			}
+		};
+		// Bind DatePicker to particular date field
+		datePicker2.bind(endConsentedDatePicker);
+		endConsentedDatePicker.add(datePicker);
+		
 		initialiseConsentTypeChoice();
 		initialiseConsentStatusChoice();
 		initialiseComponentChoice();

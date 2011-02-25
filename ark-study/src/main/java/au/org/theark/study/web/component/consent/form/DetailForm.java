@@ -12,6 +12,8 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -22,7 +24,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -55,7 +56,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	 * Form Components
 	 */
 	protected TextField<String> consentedBy;
-	protected DatePicker<Date> consentedDatePicker;
+	protected DateTextField consentedDatePicker;
 	protected DropDownChoice<StudyComp> studyComponentChoice;
 	protected DropDownChoice<StudyCompStatus> studyComponentStatusChoice;
 	protected DropDownChoice<ConsentStatus> consentStatusChoice;
@@ -90,7 +91,20 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	
 	public void initialiseDetailForm(){
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
-		consentedDatePicker = new DatePicker<Date>(Constants.CONSENT_CONSENT_DATE);
+		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		@SuppressWarnings("serial")
+		DatePicker datePicker = new DatePicker(){
+			@Override
+			protected boolean enableMonthYearSelection()
+			{
+				return true;
+			}
+		};
+		// Bind DatePicker to particular date field
+		datePicker.bind(consentedDatePicker);
+		consentedDatePicker.add(datePicker);
+		
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
 		initialiseConsentTypeChoice();
 		initialiseConsentStatusChoice();
