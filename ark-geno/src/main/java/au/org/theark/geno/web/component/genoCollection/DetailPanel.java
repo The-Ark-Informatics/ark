@@ -6,6 +6,8 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -16,8 +18,8 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.Constants;
 import au.org.theark.geno.model.entity.Status;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.service.IGenoService;
@@ -79,8 +81,8 @@ public class DetailPanel extends Panel {
 		private TextField<String> nameTxtFld;
 		private DropDownChoice<Status> statusDdc;
 		private TextArea<String> descriptionTxtAreaFld;
-		private DatePicker<Date> startDateTxtFld;
-		private DatePicker<Date> expiryDateTxtFld;
+		private DateTextField startDateTxtFld;
+		private DateTextField expiryDateTxtFld;
 
 		/**
 		 * Constructor
@@ -101,11 +103,29 @@ public class DetailPanel extends Panel {
 			idTxtFld = new TextField<String>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_ID);
 			nameTxtFld = new TextField<String>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_NAME);
 			descriptionTxtAreaFld = new TextArea<String>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_DESCRIPTION);
-			startDateTxtFld = new DatePicker<Date>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_START_DATE);
-			expiryDateTxtFld = new DatePicker<Date>(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_EXPIRY_DATE);
-
-			startDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-			expiryDateTxtFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
+			startDateTxtFld = new DateTextField(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_START_DATE, Constants.DD_MM_YYYY);
+			DatePicker datePicker = new DatePicker(){
+				@Override
+				protected boolean enableMonthYearSelection()
+				{
+					return true;
+				}
+			};
+			// Bind DatePicker to particular date field
+			datePicker.bind(startDateTxtFld);
+			startDateTxtFld.add(datePicker);
+			
+			expiryDateTxtFld = new DateTextField(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_EXPIRY_DATE, Constants.DD_MM_YYYY);
+			DatePicker datePicker2 = new DatePicker(){
+				@Override
+				protected boolean enableMonthYearSelection()
+				{
+					return true;
+				}
+			};
+			// Bind DatePicker to particular date field
+			datePicker2.bind(expiryDateTxtFld);
+			expiryDateTxtFld.add(datePicker2);
 
 			// Initialise Drop Down Choices
 			initStatusDdc();

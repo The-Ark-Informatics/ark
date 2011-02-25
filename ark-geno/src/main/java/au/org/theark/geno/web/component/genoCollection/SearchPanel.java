@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -16,7 +18,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -78,8 +79,8 @@ public class SearchPanel extends Panel {
 		private TextField<String> genoCollectionNameTxtFld;
 		private TextArea<String> genoCollectionDescriptionTxtAreaFld;
 		private DropDownChoice<Status> genoStatusDdc;
-		private DatePicker<Date> genoCollectionStartDateFld;
-		private DatePicker<Date> genoCollectionExpiryDateFld;
+		private DateTextField genoCollectionStartDateFld;
+		private DateTextField genoCollectionExpiryDateFld;
 
 		public SearchForm(String id,
 				CompoundPropertyModel<GenoCollectionVO> model) {
@@ -96,11 +97,30 @@ public class SearchPanel extends Panel {
 			genoCollectionIdTxtFld = new TextField<String>(Constants.GENO_COLLECTION_VO_ID);
 			genoCollectionNameTxtFld = new TextField<String>(Constants.GENO_COLLECTION_VO_NAME);
 			genoCollectionDescriptionTxtAreaFld = new TextArea<String>(Constants.GENO_COLLECTION_VO_DESCRIPTION);
-			genoCollectionStartDateFld = new DatePicker<Date>(Constants.GENO_COLLECTION_VO_START_DATE);
-			genoCollectionExpiryDateFld = new DatePicker<Date>(Constants.GENO_COLLECTION_VO_EXPIRY_DATE);
-
-			genoCollectionStartDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
-			genoCollectionExpiryDateFld.setDateFormat(au.org.theark.core.Constants.DATE_PICKER_DD_MM_YY);
+			// Create new DateTextField and assign date format
+			genoCollectionStartDateFld = new DateTextField(Constants.GENO_COLLECTION_VO_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+			DatePicker datePicker = new DatePicker(){
+						@Override
+						protected boolean enableMonthYearSelection()
+						{
+							return true;
+						}
+			};
+			// Bind DatePicker to particular date field
+			datePicker.bind(genoCollectionStartDateFld);
+			genoCollectionStartDateFld.add(datePicker);
+						
+			genoCollectionExpiryDateFld = new DateTextField(Constants.GENO_COLLECTION_VO_EXPIRY_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+			DatePicker datePicker2 = new DatePicker(){
+				@Override
+				protected boolean enableMonthYearSelection()
+				{
+					return true;
+				}
+			};
+			// Bind DatePicker to particular date field
+			datePicker2.bind(genoCollectionExpiryDateFld);
+			genoCollectionExpiryDateFld.add(datePicker2);
 
 			initStatusDdc();
 			addFieldComponents();
