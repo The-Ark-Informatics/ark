@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.service.IPhenotypicService;
