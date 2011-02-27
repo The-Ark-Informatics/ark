@@ -104,6 +104,8 @@ public class Constants {
 	public static final String FIELD_TYPE_CHARACTER ="CHARACTER";
 	public static final String FIELD_TYPE_DATE ="DATE";
 	public static final String DISCRETE_RANGE_TOKEN =",";
+	public static final String ENCODED_VALUES_TOKEN = ";";
+	public static final String ENCODED_VALUES_SEPARATOR = "=";
 	
 	/* Button names/labels */
 	public static final String SEARCH="search";
