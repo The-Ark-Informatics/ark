@@ -328,6 +328,7 @@ public class SearchResultListPanel extends Panel {
 				if (upload.getId() != null)
 					phenotypicService.deleteUpload(upload);
 
+				// TODO: Work out how to set feedBackMessage 
 				this.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
 				
 				// Update the result panel
