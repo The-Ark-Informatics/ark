@@ -66,19 +66,19 @@ public class PhenotypicValidationMessage
 	}
 	
 	/**
-	 * Returns field not within the defined discrete values error message
+	 * Returns field not within the defined encoded values error message
 	 * @param field
 	 * @param fieldData
 	 * @return String
 	 */
-	public static String fieldDataNotInDiscreteValues(Field field, FieldData fieldData){
+	public static String fieldDataNotInEncodedValues(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
 		stringBuffer.append(fieldData.getValue().toString());
-		stringBuffer.append(" is not in the discrete value: ");
-		stringBuffer.append(field.getDiscreteValues());
+		stringBuffer.append(" is not in the encoded value: ");
+		stringBuffer.append(field.getEncodedValues());
 		return(stringBuffer.toString());
 	}
 }

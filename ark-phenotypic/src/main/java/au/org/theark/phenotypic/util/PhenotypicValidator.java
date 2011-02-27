@@ -159,48 +159,53 @@ public class PhenotypicValidator
 	 * @param fieldData
 	 * @return boolean
 	 */
-	public static boolean isInDiscreteValues(FieldData fieldData, java.util.Collection<String> errorMessages)
+	public static boolean isInEncodedValues(FieldData fieldData, java.util.Collection<String> errorMessages)
 	{
-		boolean inDiscreteValues = false;
+		boolean inEncodedValues = false;
 
 		Field field = (Field) fieldData.getField();
 
-		// Validate if discrete values is defined
-		if (field.getDiscreteValues() != null)
+		// Validate if encoded values is defined
+		if (field.getEncodedValues() != null)
 		{
 			try
 			{
-				StringTokenizer stringTokenizer = new StringTokenizer(field.getDiscreteValues(), Constants.DISCRETE_RANGE_TOKEN);
+				StringTokenizer stringTokenizer = new StringTokenizer(field.getEncodedValues(), Constants.ENCODED_VALUES_TOKEN);
 
 				// Iterate through all discrete defined values and compare to field data value
 				while (stringTokenizer.hasMoreTokens())
 				{
-					String stringToken = stringTokenizer.nextToken();
-					if (stringToken.equalsIgnoreCase(fieldData.getValue()))
+					String encodedValueToken = stringTokenizer.nextToken();
+					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
+					while (encodedValueSeparator.hasMoreTokens())
 					{
-						inDiscreteValues = true;
-						break;
-					}
-					else
-					{
-						inDiscreteValues = false;
+						String encodedValue = encodedValueSeparator.nextToken().trim();
+						if (encodedValue.equalsIgnoreCase(fieldData.getValue().trim()))
+						{
+							inEncodedValues = true;
+							break;
+						}
+						else
+						{
+							inEncodedValues = false;
+						}
 					}
 				}
 
-				if (!inDiscreteValues)
+				if (!inEncodedValues)
 				{
-					errorMessages.add(PhenotypicValidationMessage.fieldDataNotInDiscreteValues(field, fieldData));
+					errorMessages.add(PhenotypicValidationMessage.fieldDataNotInEncodedValues(field, fieldData));
 				}
 
 			}
 			catch (NullPointerException npe)
 			{
 				log.error("Field data null format exception " + npe.getMessage());
-				inDiscreteValues = false;
+				inEncodedValues = false;
 			}
 
 		}
-		return inDiscreteValues;
+		return inEncodedValues;
 	}
 
 	public static void validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages)
@@ -211,7 +216,7 @@ public class PhenotypicValidator
 			// log.info("Field data valid");
 		}
 
-		if (isInDiscreteValues(fieldData, errorMessages))
+		if (isInEncodedValues(fieldData, errorMessages))
 		{
 			// log.info("Field data in discrete values");
 		}
