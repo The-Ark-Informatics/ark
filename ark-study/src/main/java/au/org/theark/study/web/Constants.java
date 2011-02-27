@@ -2,7 +2,6 @@ package au.org.theark.study.web;
 
 
 public class Constants {
-	
 	public static final String ADMIN_TAB="Administration";
 	public static final String STUDY_TAB="Study";
 	public static final String SUBJECT_TAB="Subject";
@@ -194,6 +193,11 @@ public class Constants {
 	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
 	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
 	
+	public static final String CONSENT_FILE_ID="consentFile.id";
+	public static final String CONSENT_FILE_FILENAME="consentFile.filename";
+	public static final String CONSENT_FILE_PAYLOAD="consentFile.payload";
+	public static final String CONSENT_FILE_USER_ID="consentFile.userId";
+	
 	public static final int		PALETTE_ROWS = 5;
 	public static final long	STUDY_LOGO_FILESIZE = 100;
 	
@@ -202,4 +206,6 @@ public class Constants {
 	public static final String CUSTOM_FIELD_FIELD_NAME="customField.name";
 	public static final String SEARCH_RESULT_LIST="searchResultList";
 	public static final String CUSTOM_FIELD_LABEL="fieldTitleLabel";
+	public static final String DOWNLOAD_FILE = "downloadFile";
+	public static final String DELETE_FILE = "deleteFile";
 }
