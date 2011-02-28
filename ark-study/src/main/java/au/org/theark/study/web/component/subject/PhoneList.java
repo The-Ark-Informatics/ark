@@ -75,7 +75,7 @@ public class PhoneList extends Panel{
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				//SubjectVO subjectVO = phoneContainerForm.getModelObject();//In order to get to the ModelObject we have created a new PhoneContainerForm and gain access to it
-				subjectContainerForm.getModelObject().setPhone(phone);
+				//subjectContainerForm.getModelObject().setPhone(phone);
 				//subjectVO.setPhone(phone);
 				phoneDetailPanelContainer.setVisible(true);
 				phoneListPanelContainer.setVisible(false);

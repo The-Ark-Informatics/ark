@@ -85,7 +85,7 @@ public class PhoneListContainer extends Panel {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 
 				//phoneContainerForm.getModelObject().setPhone(new Phone());
-				subjectContainerForm.getModelObject().setPhone(new Phone());
+				//subjectContainerForm.getModelObject().getSubjectStudy().setPhone(new Phone());
 				//onAddPhone(phoneContainerForm.getModelObject(), target);
 				onAddPhone(subjectContainerForm.getModelObject(), target);
 			}
