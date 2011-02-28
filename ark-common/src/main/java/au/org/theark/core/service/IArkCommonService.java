@@ -41,7 +41,7 @@ public interface IArkCommonService {
 	public Study getStudy(Long id);
 	
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
-	
+
 	public Collection<SubjectStatus> getSubjectStatus();
 	
 	public Collection<TitleType> getTitleType();
