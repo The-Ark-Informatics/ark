@@ -8,6 +8,7 @@ package au.org.theark.study.web.component.consent;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -116,6 +117,9 @@ public class SearchResultListPanel extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 
 				containerForm.getModelObject().setConsent(consent);
+				
+				// Add consentId into context (for use with consentFile(s))
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consent.getId()); 
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
