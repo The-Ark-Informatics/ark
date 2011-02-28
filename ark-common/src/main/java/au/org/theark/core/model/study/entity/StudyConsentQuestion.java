@@ -9,6 +9,7 @@ package au.org.theark.core.model.study.entity;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,17 +17,59 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
  *
  */
+@Entity
+@Table(name = "STUDY_CONSENT_QUESTION", schema = Constants.STUDY_SCHEMA)
 public class StudyConsentQuestion implements Serializable{
 	
 	private Long id;
 	private String question;
 	private Study study;
+	private DataType dataType;
+	private String discreteValues;
+	private Long postion;
 	
+	public DataType getDataType() {
+		return dataType;
+	}
+
+
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+
+	public String getDiscreteValues() {
+		return discreteValues;
+	}
+
+
+	public void setDiscreteValues(String discreteValues) {
+		this.discreteValues = discreteValues;
+	}
+
+
+	public Long getPostion() {
+		return postion;
+	}
+
+
+	public void setPostion(Long postion) {
+		this.postion = postion;
+	}
+
+
+	/**
+	 * Constrcutor
+	 */
 	public StudyConsentQuestion(){
 		
 	}
