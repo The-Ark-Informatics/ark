@@ -24,19 +24,16 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.value.LongValue;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.NumberValidator;
-import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
-import org.odlabs.wiquery.ui.datepicker.DatePickerDuration;
-import org.odlabs.wiquery.ui.datepicker.DatePickerYearRange;
 
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -128,21 +125,29 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		ChoiceRenderer<TitleType> defaultChoiceRenderer = new ChoiceRenderer<TitleType>(Constants.NAME,Constants.ID);
 		titleTypeDdc = new DropDownChoice<TitleType>(Constants.PERSON_TYTPE_TYPE,(List)titleTypeList,defaultChoiceRenderer);
 		
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(containerForm.getModelObject(),"subjectStudy");
+		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,"person");
+
+		
+		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
-		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
+		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,vitalStatusPm,(List)vitalStatusList,vitalStatusRenderer);
 		
+		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,Constants.GENDER_TYPE);
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
-		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
+		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,genderTypePm,(List)genderTypeList,genderTypeRenderer);
 		
+		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm,"subjectStatus");
 		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_ID);
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
+		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
 		
 		Collection<MaritalStatus> maritalStatusList = iArkCommonService.getMaritalStatus(); 
+		PropertyModel<MaritalStatus> msPM = new  PropertyModel<MaritalStatus>(personPm,"maritalStatus");
 		ChoiceRenderer<MaritalStatus> maritalStatusRender = new ChoiceRenderer<MaritalStatus>(Constants.NAME,Constants.ID);
-		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS,(List) maritalStatusList, maritalStatusRender);
+		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS,msPM,(List) maritalStatusList, maritalStatusRender);
 		
 		initCustomFields();
 		
@@ -274,6 +279,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		genderTypeDdc.setRequired(true);
 		subjectUIDTxtFld.setRequired(true);
 		subjectUIDTxtFld.add(StringValidator.lengthBetween(1, 8));
+	
+		
 		titleTypeDdc.setRequired(true);
 		
 		
@@ -338,10 +345,10 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			
 			
 			if(firstMammogramFlag  && recentMamogramFlag){
-				if(containerForm.getModelObject().getPerson().getId() == null || 
-						containerForm.getModelObject().getPerson().getId() == 0){
+				if(containerForm.getModelObject().getSubjectStudy().getPerson().getId() == null || 
+						containerForm.getModelObject().getSubjectStudy().getPerson().getId() == 0){
 			
-					containerForm.getModelObject().setStudy(study);
+					containerForm.getModelObject().getSubjectStudy().setStudy(study);
 					studyService.createSubject(containerForm.getModelObject());
 					this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
 					processErrors(target);
@@ -360,7 +367,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
 			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getSubjectUID(), arkContextMarkupContainer);
 			
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getPerson().getId());
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getSubjectStudy().getPerson().getId());
 			//We specify the type of person here as Subject
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
