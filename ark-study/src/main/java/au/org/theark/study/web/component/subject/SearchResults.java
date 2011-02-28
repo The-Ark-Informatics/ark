@@ -1,9 +1,3 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.study.web.component.subject;
 
 import java.util.Collection;
@@ -21,6 +15,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
@@ -72,15 +67,16 @@ public class SearchResults extends Panel{
 	}
 	  
 	
-	public PageableListView<SubjectVO> buildPageableListView(IModel iModel){
+	public PageableListView<SubjectVO> buildListView(IModel iModel){
 		
 		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, 10){
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {
-				// TODO Auto-generated method stub
-				SubjectVO subject = item.getModelObject();
-				item.add(buildLink(subject));
+				SubjectVO subjectVO = item.getModelObject();
+				LinkSubjectStudy subject = item.getModelObject().getSubjectStudy();
+				item.add(buildLink(item.getModelObject()));
+				
 				StringBuffer sb = new StringBuffer();
 				sb.append(subject.getPerson().getFirstName());
 				sb.append(" ");
@@ -91,20 +87,20 @@ public class SearchResults extends Panel{
 				if(subject.getPerson().getLastName() != null){
 					sb.append(subject.getPerson().getLastName());
 				}
-				subject.setSubjectFullName(sb.toString());
-				item.add(new Label(Constants.SUBJECT_FULL_NAME, subject.getSubjectFullName()));
+				item.getModelObject().setSubjectFullName(sb.toString());
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 			
-				if(subject.getPerson().getPreferredName() != null){
-					item.add(new Label(Constants.PERSON_PREFERRED_NAME,subject.getPerson().getPreferredName()));
+				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
+					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}else{
-					item.add(new Label(Constants.PERSON_PREFERRED_NAME,""));
+					item.add(new Label("subjectStudy.person.preferredName",""));
 				}
 				
-				item.add(new Label(Constants.PERSON_GENDER_TYPE_NAME,subject.getPerson().getGenderType().getName()));
+				item.add(new Label("subjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
 				
-				item.add(new Label(Constants.PERSON_VITAL_STATUS_NAME,subject.getPerson().getVitalStatus().getName()));
+				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
 				
-				item.add(new Label(Constants.SUBJECT_STATUS_NAME,subject.getSubjectStatus().getName()));
+				item.add(new Label("subjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
 				
 				
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
@@ -118,17 +114,18 @@ public class SearchResults extends Panel{
 		return listView;
 	}
 	
-	private AjaxLink buildLink(final SubjectVO subject){
-		
-		//AjaxLink link = new AjaxLink(Constants.PERSON_PERSON_KEY) {
+	private AjaxLink buildLink(final  SubjectVO subject){
 		AjaxLink link = new AjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
+				
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				subject.getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getSubjectStudy().getPerson().getId());
 				//We specify the type of person here as Subject
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT);
-				
 				SubjectVO subjectFromBackend = new SubjectVO();
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
 				for (SubjectVO subjectVO2 : subjects) {
@@ -137,17 +134,10 @@ public class SearchResults extends Panel{
 				}
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
-				//Refresh the details of the SubjectVO attached to the Model
-				SubjectVO subjectVOInModel = subjectContainerForm.getModelObject();
-				subjectVOInModel.setPerson(subjectFromBackend.getPerson());
-				subjectVOInModel.setSubjectUID(subjectFromBackend.getSubjectUID());
-				subjectVOInModel.setLinkSubjectStudyId(subjectFromBackend.getLinkSubjectStudyId());
-				subjectVOInModel.setSubjectStatus(subjectFromBackend.getSubjectStatus());
-				
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.resetContextLabel(target, arkContextMarkup);
-				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
-				contextHelper.setSubjectContextLabel(target, subjectVOInModel.getSubjectUID(), arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, subjectFromBackend.getSubjectStudy().getStudy().getName(), arkContextMarkup);
+				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
@@ -166,11 +156,8 @@ public class SearchResults extends Panel{
 				
 			}
 		};
-		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectStudy().getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
 	}
-	
-	
-
 }
