@@ -12,6 +12,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -61,15 +62,13 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		Collection<SubjectVO> subjectVOCollection = new ArrayList<SubjectVO>();
-		
 		if(sessionStudyId != null && sessionStudyId > 0){
 			
-			containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
-			subjectVOCollection = iArkCommonService.getSubject(containerForm.getModelObject());	
+			containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+			subjectVOCollection = iArkCommonService.getSubject(containerForm.getModelObject());
 		}
 		
 		cpModel.getObject().setSubjectList(subjectVOCollection);
-		
 		searchPanel = new Search("searchComponentPanel",
 									feedBackPanel,
 									searchPanelContainer,
@@ -105,15 +104,15 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 			@Override
 			protected Object load() {
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
-				Collection<SubjectVO> subjects = iArkCommonService.getSubject(containerForm.getModelObject());
-				containerForm.getModelObject().setSubjectList(subjects);
+				containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				Collection<SubjectVO> participants = iArkCommonService.getSubject(containerForm.getModelObject());
+				containerForm.getModelObject().setSubjectList(participants);
 				pageableListView.removeAll();
-				return subjects;
+				return participants;
 			}
 		};
 
-		pageableListView  = searchResultsPanel.buildPageableListView(iModel);
+		pageableListView  = searchResultsPanel.buildListView(iModel); 
 		pageableListView.setReuseItems(true);
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
