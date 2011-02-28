@@ -107,7 +107,7 @@ public class PhoneForm extends Form{
 	}
 	
 	protected void onPhoneAddCancel(SubjectVO subjectVO, AjaxRequestTarget target){
-		subjectContainerForm.getModelObject().setPhone(new Phone());
+		//subjectContainerForm.getModelObject().setPhone(new Phone());
 		phoneListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
 		target.addComponent(phoneListContainer);
@@ -115,10 +115,10 @@ public class PhoneForm extends Form{
 	}
 	
 	protected void onPhoneAdd(SubjectVO subjectVO, AjaxRequestTarget target){
-		Phone phone = subjectVO.getPhone();
-		if(phone.getId() == null){
-			subjectContainerForm.getModelObject().getPhoneList().add(phone);	
-		}
+		//Phone phone = subjectVO.getPhone();
+//		if(phone.getId() == null){
+//			subjectContainerForm.getModelObject().getPhoneList().add(phone);	
+//		}
 		pageableListView.removeAll();
 		phoneListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
