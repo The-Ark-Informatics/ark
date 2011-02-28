@@ -48,7 +48,7 @@ public class Constants {
 	public static final String PERSON ="person";
 	public static final String GENDER_TYPE="genderType";
 	public static final String ID="id";
-	public static final String SUBJECT_STATUS ="subjectStudy.person.subjectStatus";
+	public static final String SUBJECT_STATUS ="subjectStudy.subjectStatus";
 	public static final String SUBJECT_STATUS_ID ="id";
 	public static final String VITAL_STATUS="vitalStatus";
 	public static final String STATUS_NAME ="statusName";
