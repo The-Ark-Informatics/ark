@@ -49,6 +49,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
+
 @SuppressWarnings({ "unchecked", "serial", "unused" })
 public class DetailForm extends Form<StudyModelVO>
 {
@@ -66,7 +67,6 @@ public class DetailForm extends Form<StudyModelVO>
 	private WebMarkupContainer	studyNameMarkupContainer;
 	private WebMarkupContainer	studyLogoMarkupContainer;
 	private WebMarkupContainer arkContextMarkup;
-
 	private int						mode;
 	private TextField<String>	studyIdTxtFld;
 
@@ -401,7 +401,6 @@ public class DetailForm extends Form<StudyModelVO>
 		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("error.study.co.investigator", this, new Model<String>("Co Investigator")));
 		// selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
 		subjectKeyStartAtTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
-	
 		// file image validator, checking size, type etc
 		fileUploadField.add(new StudyLogoValidator());
 	}
