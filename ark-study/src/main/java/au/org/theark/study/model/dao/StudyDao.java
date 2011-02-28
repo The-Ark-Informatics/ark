@@ -176,14 +176,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.save(person); 
 		
 		LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-		
-		//LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-		//linkSubjectStudy.setPerson(person);
-		//linkSubjectStudy.setStudy(subjectVO.getSubjectStudy().getStudy());
-		//linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
-		//linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());//the ui must be mapped to the subjectStudy instance variable
-		Long  amdrfid = linkSubjectStudy.getAmdrifId();
-		System.out.println("AMDRF ID: " + amdrfid);
 		session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
 		
 	}
@@ -196,31 +188,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
 			session.update(person);//Update Person and associated Phones
-			//Get the LinkSubjectStudy reference based on the id
-			LinkSubjectStudy linkSubjectStudy =getLinkSubjectStudy(subjectVO.getSubjectStudy().getId());	
-			//Update this linkSubjectStudy instance with any details the user may have changed from front end
-			linkSubjectStudy.setStudy(subjectVO.getSubjectStudy().getStudy());
-			//No need to set Person here since, there would not be a change to the actual person ID primary key
-			linkSubjectStudy.setSubjectStatus(subjectVO.getSubjectStatus());
-			
-			linkSubjectStudy.setAmdrifId(subjectVO.getSubjectStudy().getAmdrifId());
-			linkSubjectStudy.setSubjectUID(subjectVO.getSubjectUID());
-			linkSubjectStudy.setStudyApproachDate(subjectVO.getSubjectStudy().getStudyApproachDate());
-			linkSubjectStudy.setYearOfFirstMamogram(subjectVO.getSubjectStudy().getYearOfFirstMamogram());
-			linkSubjectStudy.setYearOfRecentMamogram(subjectVO.getSubjectStudy().getYearOfRecentMamogram());
-			linkSubjectStudy.setTotalNumberOfMamograms(subjectVO.getSubjectStudy().getTotalNumberOfMamograms());
-			linkSubjectStudy.setCity(subjectVO.getSubjectStudy().getCity());
-			linkSubjectStudy.setPostCode(subjectVO.getSubjectStudy().getPostCode());
-			linkSubjectStudy.setState(subjectVO.getSubjectStudy().getState());
-			linkSubjectStudy.setCountry(subjectVO.getSubjectStudy().getCountry());
-			linkSubjectStudy.setSiteAddress(subjectVO.getSubjectStudy().getSiteAddress());
-			
-			//Update the instance
-			session.update(linkSubjectStudy);
-			
-		}catch(EntityNotFoundException entityNotFound){
-			log.error("The LinkSubjectStudy entity does not exist to update this subject " );
-			//Throw an appropriate exception to the user
+			session.update(subjectVO.getSubjectStudy());
 		}catch(Exception  ae){
 			log.error("A System Exception occured while update of Subject " + ae.getStackTrace());
 			//TODO throw ArkSystemException back to caller
