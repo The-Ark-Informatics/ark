@@ -170,7 +170,5 @@ public interface IStudyDao {
 	
 	public List<ConsentAnswer> getConsentAnswer();
 	
-	
-	
 
 }

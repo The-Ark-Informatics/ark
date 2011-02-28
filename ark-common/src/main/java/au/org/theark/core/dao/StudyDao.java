@@ -9,6 +9,7 @@ package au.org.theark.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -184,118 +185,67 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return criteria.list();		
 	}
 	
-	
 	/**
 	 * Look up the Link Subject Study for subjects linked to a study
 	 * @param subjectVO
 	 * @return
 	 */
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
+		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.createAlias("person", "p");
+		criteria.add(Restrictions.eq("study.id",subjectVO.getSubjectStudy().getStudy().getId()));	
+		
+		if(subjectVO.getSubjectStudy().getPerson() != null){
+		
+			if(subjectVO.getSubjectStudy().getPerson().getId() != null){
+				criteria.add(Restrictions.eq("p.id",subjectVO.getSubjectStudy().getPerson().getId() ));	
+			}
 
-		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" select linkSubStudy.person,linkSubStudy.subjectStatus, linkSubStudy.id, linkSubStudy.study, linkSubStudy.subjectUID, linkSubStudy.amdrifId, linkSubStudy.studyApproachDate, linkSubStudy.yearOfFirstMamogram, linkSubStudy.yearOfRecentMamogram, linkSubStudy.totalNumberOfMamograms");
-		hqlString.append(" from LinkSubjectStudy as linkSubStudy ");
-		hqlString.append(" where linkSubStudy.study.id = ");
-		hqlString.append( subjectVO.getStudy().getId());
+			if(subjectVO.getSubjectStudy().getPerson().getFirstName() != null){
+				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getMiddleName() != null){
+				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
+			}
 		
-		if(subjectVO.getPerson().getId() != null){
-			hqlString.append(" and linkSubStudy.person.id = ");
-			hqlString.append( subjectVO.getPerson().getId());
+			if(subjectVO.getSubjectStudy().getPerson().getLastName() != null){
+				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getGenderType() != null){
+				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getSubjectStudy().getPerson().getGenderType().getId()));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getVitalStatus() != null){
+				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getSubjectStudy().getPerson().getVitalStatus().getId()));
+			}
+			
 		}
 		
-		if(subjectVO.getSubjectUID() != null  && subjectVO.getSubjectUID().length() > 0){
-			hqlString.append(" and linkSubStudy.subjectUID = ");
-			hqlString.append("\'");
-			hqlString.append( subjectVO.getSubjectUID());
-			hqlString.append("\'");
+		if( subjectVO.getSubjectStudy().getSubjectUID()!= null && subjectVO.getSubjectStudy().getSubjectUID().length() > 0){
+			criteria.add(Restrictions.eq("subjectUID",subjectVO.getSubjectStudy().getSubjectUID()));
 		}
 		
-		if(subjectVO.getPerson().getFirstName() != null){
-			hqlString.append(" and linkSubStudy.person.firstName like");
-			hqlString.append("\'%");
-			hqlString.append(subjectVO.getPerson().getFirstName().trim());
-			hqlString.append("%\'");
+		if(subjectVO.getSubjectStudy().getSubjectStatus() != null){
+			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getSubjectStudy().getSubjectStatus()));
 		}
 		
-		if(subjectVO.getPerson().getMiddleName() != null){
-			hqlString.append(" and linkSubStudy.person.middleName like ");
-			hqlString.append("\'%");
-			hqlString.append(subjectVO.getPerson().getMiddleName().trim());
-			hqlString.append("%\'");
-		}
-							
-		if(subjectVO.getPerson().getLastName() != null){
-			hqlString.append(" and linkSubStudy.person.lastName  like");
-			hqlString.append("\'%");
-			hqlString.append(subjectVO.getPerson().getLastName().trim());
-			hqlString.append("%\'");
-		}
-		
-		if(subjectVO.getPerson().getGenderType() != null){
-			hqlString.append(" and linkSubStudy.person.genderType.id = ");
-			hqlString.append(subjectVO.getPerson().getGenderType().getId());
-		}
-		
-		if(subjectVO.getPerson().getVitalStatus() != null){
-			hqlString.append(" and linkSubStudy.person.vitalStatus.id = ");
-			hqlString.append(subjectVO.getPerson().getVitalStatus().getId());
-		}
-		
-		if(subjectVO.getSubjectStatus() != null){
-			hqlString.append(" and linkSubStudy.subjectStatus.id = ");
-			hqlString.append(subjectVO.getSubjectStatus().getId());
-		}
-		
-		hqlString.append(" order by  linkSubStudy.subjectUID");
-		Query query = getSession().createQuery(hqlString.toString());
-		List<Object[]> list  = query.list();
+		criteria.addOrder(Order.asc("subjectUID"));
+		List<LinkSubjectStudy> list = criteria.list();
 		
 		Collection<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
 		
-		if(list.size() > 0){
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 			
-			SubjectVO subject = null;
-			
-			log.info("Number of rows fetched " + list.size());
-			//The Length is determined by the number of select columns specified in the hqlString above
-			for (Object[] objects : list) {
-				if(objects.length > 0 ){
-					log.info("objects.length= " + objects.length);
-					subject = new SubjectVO();
-					subject.setPerson((Person) objects[0]);
-					subject.setSubjectStatus((SubjectStatus) objects[1]);
-					subject.setLinkSubjectStudyId((Long)objects[2]);
-					subject.getSubjectStudy().setSubjectUID((String)objects[4]);
-					subject.setStudy((Study)objects[3]);
-					subject.setSubjectUID((String)objects[4]);
-					subject.getSubjectStudy().setSubjectUID((String)objects[4]);
-					
-					if(objects[5] != null){
-						subject.getSubjectStudy().setAmdrifId((Long)objects[5]);
-					}
-					
-					if(objects[6] != null){
-						subject.getSubjectStudy().setStudyApproachDate( (Date) objects[6]);
-					}
-					
-					if(objects[7] != null){
-						subject.getSubjectStudy().setYearOfFirstMamogram((Long) objects[7]);
-					}
-					
-					if(objects[8] != null){
-						subject.getSubjectStudy().setYearOfRecentMamogram((Long) objects[8]);
-					}
-					if(objects[9] != null){
-						subject.getSubjectStudy().setTotalNumberOfMamograms((Long) objects[9]);
-					}
-					
-					subjectVOList.add(subject);
-					
-				}
-			}
-			log.info("Size : " + subjectVOList.size());
+			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+			//Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
+			SubjectVO subject = new SubjectVO();
+			subject.setSubjectStudy(linkSubjectStudy);
+			subjectVOList.add(subject);
 		}
 		return subjectVOList;
+
 	}
 	
 	
