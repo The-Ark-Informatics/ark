@@ -45,6 +45,9 @@ public class Constants {
 	public static final String PERSON_TYPE="personType";
 	public static final String PERSON_CONTEXT_TYPE_SUBJECT= "subject";
 	public static final String PERSON_CONTEXT_TYPE_CONTACT= "contact";
+	public static final String PERSON_CONTEXT_CONSENT_ID = "consentId";
+	
+	
 	public static final String TAB_SUBJECT_DETAIL="Subject Management";
 	public static final String TAB_PERSON_PHONE="Phone";
 	public static final String TAB_PERSON_ADDRESS="Address";
@@ -53,6 +56,9 @@ public class Constants {
 	
 	public static final String TAB_SUBJECT_CONSENT="Consent";
 	public static final String TAB_MODULE_SUBJECT_CONSENT="tab.module.subject.consent";
+	
+	public static final String TAB_SUBJECT_CONSENT_FILE = "Consent File";
+	public static final String TAB_MODULE_SUBJECT_CONSENT_FILE = "tab.module.subject.consentFile";
 	
 	public static final String TAB_MODULE_SUBJECT_DETAIL ="tab.module.subject.detail";
 	public static final String DD_MM_YYYY="dd/MM/yyyy";	//cap M is for month, low m is for minute 
