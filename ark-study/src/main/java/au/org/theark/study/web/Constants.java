@@ -38,28 +38,28 @@ public class Constants {
 	
 	/* Person */
 	
-	public static final String PERSON_PREFERRED_NAME="person.preferredName";
-	public static final String PERSON_VITAL_STATUS ="person.vitalStatus";
-	public static final String PERSON_PERSON_ID="person.id";
-	public static final String SUBJECT_UID="subjectUID";
-	public static final String PERSON_FIRST_NAME = "person.firstName";
-	public static final String PERSON_MIDDLE_NAME = "person.middleName";
-	public static final String PERSON_LAST_NAME = "person.lastName";
+	public static final String PERSON_PREFERRED_NAME="subjectStudy.person.preferredName";
+	public static final String PERSON_VITAL_STATUS ="subjectStudy.person.vitalStatus";
+	public static final String PERSON_PERSON_ID="subjectStudy.person.id";
+	public static final String SUBJECT_UID="subjectStudy.subjectUID";
+	public static final String PERSON_FIRST_NAME = "subjectStudy.person.firstName";
+	public static final String PERSON_MIDDLE_NAME = "subjectStudy.person.middleName";
+	public static final String PERSON_LAST_NAME = "subjectStudy.person.lastName";
 	public static final String PERSON ="person";
 	public static final String GENDER_TYPE="genderType";
 	public static final String ID="id";
-	public static final String SUBJECT_STATUS ="subjectStatus";
+	public static final String SUBJECT_STATUS ="subjectStudy.person.subjectStatus";
 	public static final String SUBJECT_STATUS_ID ="id";
 	public static final String VITAL_STATUS="vitalStatus";
 	public static final String STATUS_NAME ="statusName";
-	public static final String PERSON_MARITAL_STATUS ="person.maritalStatus";
-	public static final String PERSON_DOB="person.dateOfBirth";
-	public static final String PERSON_TYTPE_TYPE = "person.titleType";
-	public static final String PERSON_GENDER_TYPE ="person.genderType";
-	public static final String PERSON_GENDER_TYPE_NAME ="person.genderType.name";
+	public static final String PERSON_MARITAL_STATUS ="subjectStudy.person.maritalStatus";
+	public static final String PERSON_DOB="subjectStudy.person.dateOfBirth";
+	public static final String PERSON_TYTPE_TYPE = "subjectStudy.person.titleType";
+	public static final String PERSON_GENDER_TYPE ="subjectStudy.person.genderType";
+	public static final String PERSON_GENDER_TYPE_NAME ="subjectStudy.person.genderType.name";
 	public static final String SUBJECT_FULL_NAME ="subjectFullName";
-	public static final String PERSON_VITAL_STATUS_NAME="person.vitalStatus.statusName";
-	public static final String SUBJECT_STATUS_NAME ="subjectStatus.name";
+	public static final String PERSON_VITAL_STATUS_NAME="subjectStudy.person.vitalStatus.statusName";
+	public static final String SUBJECT_STATUS_NAME ="subjectStudy.person.subjectStatus.name";
 	public static final String EVEN="even";
 	public static final String ODD="odd";
 	public static final String CLASS="class";
