@@ -161,6 +161,8 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	/** default constructor */
 	public LinkSubjectStudy() {
+		person = new Person();
+		
 	}
 
 	/** minimal constructor */
