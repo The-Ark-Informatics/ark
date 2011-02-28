@@ -22,6 +22,7 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -111,8 +112,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	
 	private void initVitalStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
-		
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,"person");
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
@@ -122,7 +123,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	private void initSubjectStatusDdc(){
 		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(subjectCpm,Constants.SUBJECT_STATUS);
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm,"subjectStatus");
 		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_ID);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
@@ -131,7 +133,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	private void initGenderTypeDdc(){
 		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<Person> personPm = new PropertyModel<Person>(subjectCpm,Constants.PERSON);
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,Constants.GENDER_TYPE);
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME,Constants.ID);
@@ -147,7 +150,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
+		getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 		Collection<SubjectVO> subjects = iArkCommonService.getSubject(getModelObject());
 		
