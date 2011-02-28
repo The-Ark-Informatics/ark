@@ -29,6 +29,7 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 /**
@@ -185,5 +186,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return studyDao.getConsentAnswer();
 	}
 	
+	public List<YesNo> getYesNoList(){
+		return studyDao.getYesNoList();
+	}
 
 }

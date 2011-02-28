@@ -44,7 +44,41 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private CountryState state;
 	private String city;
 	private String postCode;
+	private YesNo consentToActiveContact;
+	private YesNo consentToPassiveDataGathering;
+	private YesNo consentToUseData;
 	
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
+	public YesNo getConsentToPassiveDataGathering() {
+		return consentToPassiveDataGathering;
+	}
+
+	public void setConsentToPassiveDataGathering(YesNo consentToPassiveDataGathering) {
+		this.consentToPassiveDataGathering = consentToPassiveDataGathering;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TO_USE_DATA_ID")
+	public YesNo getConsentToUseData() {
+		return consentToUseData;
+	}
+
+	public void setConsentToUseData(YesNo consentToUseData) {
+		this.consentToUseData = consentToUseData;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TO_ACTIVE_CONTACT_ID")
+	public YesNo getConsentToActiveContact() {
+		return consentToActiveContact;
+	}
+
+	public void setConsentToActiveContact(YesNo consentToActiveContact) {
+		this.consentToActiveContact = consentToActiveContact;
+	}
+
 	// Property accessors
 	@Id
 	@SequenceGenerator(name="link_subject_study_generator", sequenceName="LINK_SUBJECT_STUDY_SEQUENCE")
