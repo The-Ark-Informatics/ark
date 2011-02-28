@@ -184,5 +184,6 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public List<ConsentAnswer> getConsentAnswer(){
 		return studyDao.getConsentAnswer();
 	}
+	
 
 }
