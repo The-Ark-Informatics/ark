@@ -38,6 +38,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
@@ -65,12 +66,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private TextField<String> preferredNameTxtFld;
 	private TextField<String> subjectUIDTxtFld;
 	private DatePicker<Date> dateOfBirth;
-	
+	//Custom Fields and Consents at Subject Study Level
 	private TextField<String> amdrifIdTxtFld;
 	private DatePicker<Date> studyApproachDate;
 	private TextField<Long> yearOfFirstMamogramTxtFld;
 	private TextField<String> yearOfRecentMamogramTxtFld;
 	private TextField<String> totalNumberOfMamogramsTxtFld;
+	private DropDownChoice<YesNo> consentToActiveContactDdc;
+	private DropDownChoice<YesNo> consentToUseDataDdc;
+	private DropDownChoice<YesNo> consentToPassDataGatheringDdc;
 	
 	//Address Stuff comes here 
 	private TextField<String> streetAddressTxtFld;
@@ -166,6 +170,14 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		
+		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
+		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
+		consentToActiveContactDdc = new DropDownChoice<YesNo>("subjectStudy.consentToActiveContact",(List)yesNoList,yesnoRenderer);
+		
+		consentToUseDataDdc = new DropDownChoice<YesNo>("subjectStudy.consentToUseData",(List)yesNoList,yesnoRenderer);
+		
+		consentToPassDataGatheringDdc  = new DropDownChoice<YesNo>("subjectStudy.consentToPassiveDataGathering",(List)yesNoList,yesnoRenderer);
+		
 	}
 	
 	private void initialiseCountrySelector(){
@@ -238,8 +250,11 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(postCodeTxtFld);
 		detailPanelFormContainer.add(countryChoice);
 		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-downn for State
+		detailPanelFormContainer.add(consentToActiveContactDdc);
+		detailPanelFormContainer.add(consentToUseDataDdc);
+		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
 		
-		
+	
 	}
 
 
