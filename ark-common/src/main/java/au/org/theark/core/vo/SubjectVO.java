@@ -14,9 +14,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyConsentQuestion;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 
@@ -29,13 +27,27 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 @SuppressWarnings("serial")
 public class SubjectVO implements Serializable{
 	
-	protected String subjectFullName;
-	protected Person person;
-	protected Phone phone;
-	protected Address address;
-	protected EmailAccount emailAccount;
-	protected Study study;
-	protected Long linkSubjectStudyId;
+	private String subjectFullName;
+	public String getSubjectFullName() {
+		return subjectFullName;
+	}
+
+	public void setSubjectFullName(String subjectFullName) {
+		this.subjectFullName = subjectFullName;
+	}
+
+
+	protected Collection<LinkSubjectStudy> participants;
+	
+	public Collection<LinkSubjectStudy> getParticipants() {
+		return participants;
+	}
+
+	public void setParticipants(Collection<LinkSubjectStudy> participants) {
+		this.participants = participants;
+	}
+
+
 	protected SubjectStatus subjectStatus;
 	protected String subjectUID;
 
@@ -66,10 +78,6 @@ public class SubjectVO implements Serializable{
 	 * Constructor
 	 */
 	public SubjectVO(){
-		person = new Person();
-		phone = new Phone();
-		address = new Address();
-		emailAccount = new EmailAccount();
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
@@ -77,37 +85,7 @@ public class SubjectVO implements Serializable{
 		subjectStudy = new LinkSubjectStudy();
 	}
 
-	public Person getPerson() {
-		return person;
-	}
-
-	public void setPerson(Person person) {
-		this.person = person;
-	}
-
-	public Phone getPhone() {
-		return phone;
-	}
-
-	public void setPhone(Phone phone) {
-		this.phone = phone;
-	}
-
-	public Address getAddress() {
-		return address;
-	}
-
-	public void setAddress(Address address) {
-		this.address = address;
-	}
-
-	public EmailAccount getEmailAccount() {
-		return emailAccount;
-	}
-
-	public void setEmailAccount(EmailAccount emailAccount) {
-		this.emailAccount = emailAccount;
-	}
+	
 
 	public Collection<Phone> getPhoneList() {
 		return phoneList;
@@ -141,37 +119,12 @@ public class SubjectVO implements Serializable{
 		this.subjectStatus = subjectStatus;
 	}
 
-	public Study getStudy() {
-		return study;
-	}
-
-	public void setStudy(Study study) {
-		this.study = study;
-	}
-
 	public Collection<SubjectVO> getSubjectList() {
 		return subjectList;
 	}
 
 	public void setSubjectList(Collection<SubjectVO> subjectList) {
 		this.subjectList = subjectList;
-	}
-
-	public String getSubjectFullName() {
-		return subjectFullName;
-	}
-
-	public void setSubjectFullName(String subjectFullName) {
-		this.subjectFullName = subjectFullName;
-	}
-
-
-	public Long getLinkSubjectStudyId() {
-		return linkSubjectStudyId;
-	}
-
-	public void setLinkSubjectStudyId(Long linkSubjectStudyId) {
-		this.linkSubjectStudyId = linkSubjectStudyId;
 	}
 
 	public String getSubjectUID() {
