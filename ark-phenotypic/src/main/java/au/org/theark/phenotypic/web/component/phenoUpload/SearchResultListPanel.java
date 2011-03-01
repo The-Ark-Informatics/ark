@@ -327,13 +327,12 @@ public class SearchResultListPanel extends Panel {
 				// Attempt to delete upload
 				if (upload.getId() != null)
 					phenotypicService.deleteUpload(upload);
-
-				// TODO: Work out how to set feedBackMessage 
-				this.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+ 
+				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
 				
-				// Update the result panel
+				// Update the result panel and contianerForm (for feedBack message)
 				target.addComponent(searchResultContainer);
-				target.addComponent(feedBackPanel);
+				target.addComponent(containerForm);
 			}
 		};
 
