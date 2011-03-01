@@ -21,6 +21,7 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
@@ -268,8 +269,38 @@ public class StudyServiceImpl implements IStudyService{
 		 studyDao.delete(consent);
 	}
 	
+	public Consent getConsent(Long id) throws ArkSystemException {
+		 return studyDao.getConsent(id);
+	}
+	
 	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld){
 		return studyDao.searchStudyFields(subjectCustmFld);
+	}
+
+	@Override
+	public void create(ConsentFile consentFile) throws ArkSystemException {
+		studyDao.create(consentFile);
+	}
+
+	@Override
+	public void update(ConsentFile consentFile) throws ArkSystemException,
+			EntityNotFoundException {
+		studyDao.update(consentFile);
+		
+	}
+
+	@Override
+	public void delete(ConsentFile consentFile) throws ArkSystemException,
+			EntityNotFoundException {
+		studyDao.delete(consentFile);
+		
+	}
+
+	@Override
+	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)
+			throws EntityNotFoundException, ArkSystemException {
+		// TODO Auto-generated method stub
+		return studyDao.searchConsentFile(consentFile);
 	}
 		
 }
