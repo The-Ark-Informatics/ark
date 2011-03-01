@@ -120,19 +120,19 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 
 #contentZoneLeft {
 	float: left;
-	width: 20%;
 	height: 75%;
+	width: 20%;
 }
 
 #contentZoneCenter {
-	width: 60%;
-	height: 75%;
+	height: 80%;
+	width: 80%;
 }
 
 #contentZoneRight {
 	float: right;
-	width: 20%;
 	height: 75%;
+	width: 20%;
 }
 
 #contentZone {
