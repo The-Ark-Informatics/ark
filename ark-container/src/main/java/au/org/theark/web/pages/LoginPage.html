@@ -85,7 +85,7 @@
 							<div id="contentZoneCenter">
 								<!--  Start div login -->
 								<div id="login">
-									<table border="0" width="100%" height="100" cellpadding="15">
+									<table border="0" width="100%" height="100" cellpadding="5">
 									<!--  Information row -->
 									<tr>
 										<td align="left" colspan="3">
@@ -102,31 +102,47 @@
 									</tr>
 									<!-- Form Row -->
 									<tr>
-										<td width="35%">&nbsp;</td>
-										<td width="30%">
+										<td width="10%"></td>
+										<td width="80%">
 											<form wicket:id="loginForm" >
-												<div class="label" ><wicket:message key="page.label.emailId"></wicket:message></div>
-												<div class="text"><input wicket:id="userName" type="text" ></input></div>
-												<div class="label"><wicket:message key="page.label.passwordTxt"></wicket:message></div>
-												<div class="text"><input wicket:id="password" type="password" ></input></div>
-												<div class="label"><input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" /></div>
+											<table border="0" width="100%">	
+												<tr>	
+													<td>
+														<wicket:message key="page.label.emailId">Email Address:</wicket:message>
+													</td>
+													<td>
+														<input wicket:id="userName" type="text" ></input>
+													</td>
+												</tr>
+												<tr>
+													<td>
+														<wicket:message key="page.label.passwordTxt">Password:</wicket:message>
+													</td>
+													<td>
+														<input wicket:id="password" type="password" ></input>
+													</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td>
+														<input wicket:id="submitBtn" type="submit" wicket:message="value:page.signIn" />
+													</td>
+												</tr>
+											</table>
 											</form>
 										</td>
-										<td width="35%">&nbsp;</td>
+										<td width="10%"></td>
 									</tr>
 									<tr>
-										<td width="35%"></td>
-										<td width="30%">
+										<td width="100%" align="center" colspan="3">
 											<br/>
 											<div id="resetPasswordLink">
-												<a wicket:id="resetPasswordLink" href="#" ><wicket:message key="page.forgotpassword.link"></wicket:message></a>
+												<a wicket:id="resetPasswordLink" href="#" ><wicket:message key="page.forgotpassword.link">[Password link]</wicket:message></a>
 											</div>
 										</td>
-										<td width="35%">&nbsp;</td>
 									</tr>
 									<tr>
-										<td width="35%"></td>
-										<td width="30%">
+										<td width="100%" align="center" colspan="3">
 											<br/>
 											<div id="bestResolution">
 												<div id="note">
@@ -134,7 +150,6 @@
 												</div>
 											</div>
 										</td>
-										<td width="35%">&nbsp;</td>
 									</tr>
 								</table>
 								</div>
