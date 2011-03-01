@@ -1,5 +1,8 @@
 #contextMenu {
 	float: center;
+	height: 15px;
+	width: 100%;
+	background: url("../images/context_bg.gif") repeat-x scroll center bottom #000000;
 }
 
 #contextMenu ul {
@@ -7,21 +10,20 @@
 	float: left;
 	padding: 0;
 	margin-left: 0;
-	font: bold 12px Verdana, sans-serif;
+	font: bold 11px Verdana, sans-serif;
 }
 
 #contextMenu ul li {
-	list-style: none;
-	margin: 0; 
+	list-style: none; 
 	float: left;
-	padding: 1px;
-	margin-left: 5%;
+	padding: 0px;
+	margin-left: 1%;
 	border-bottom: none;
 	text-decoration: none;
 	background-position: 50%;
 	background-repeat: repeat-x;
 	display: block;
-	width: 15%;
+	width: 25%;
 }
 
 .clearfix:after {
