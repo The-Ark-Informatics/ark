@@ -31,9 +31,7 @@ import org.odlabs.wiquery.ui.datepicker.DatePicker;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -310,7 +308,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		boolean validFlag=true;
 		Calendar calendar = Calendar.getInstance();
 		int calYear = calendar.get(Calendar.YEAR);
-		System.out.println("\n ---- Calendar Year " + calYear);
 		if(fieldToValidate > calYear){
 			this.error(message);
 			processErrors(target);
@@ -320,6 +317,25 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		return validFlag;
 	}
 
+	
+	private void saveUpdateProcess(SubjectVO subjectVO,AjaxRequestTarget target){
+		
+		if(subjectVO.getSubjectStudy().getPerson().getId() == null || 		containerForm.getModelObject().getSubjectStudy().getPerson().getId() == 0){
+	
+			subjectVO.getSubjectStudy().setStudy(study);
+			studyService.createSubject(subjectVO);
+			this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+			processErrors(target);
+
+		}else{
+
+			studyService.updateSubject(subjectVO);
+			this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+			processErrors(target);
+
+		}
+		
+	}
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
@@ -336,38 +352,38 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			processErrors(target);
 		}
 		else{
+			
 			study = iArkCommonService.getStudy(studyId);
 			boolean validFlag=false;
 			Calendar calendar = Calendar.getInstance();
 			int calYear = calendar.get(Calendar.YEAR);
 			System.out.println("\n ---- Calendar Year " + calYear);
 			
+			//validate if the fields were supplied
+			if(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram() != null){
+				firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram(),
+						"Year of Fist Mammogram cannot be in the future.",
+						target);
+			}
+			 
+			if(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram() != null){
+				 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram(),
+							"Year of recent Mammogram cannot be in the future.",
+							target);
+			}
 			
-			 firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram(),
-								"Year of Fist Mammogram cannot be in the future.",
-								target);
+			Long yearOfFirstMammogram = containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram();
+			Long yearOfRecentMammogram =containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram();
 			
-			 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram(),
-					"Year of recent Mammogram cannot be in the future.",
-					target);
-			
-			
-			if(firstMammogramFlag  && recentMamogramFlag){
-				if(containerForm.getModelObject().getSubjectStudy().getPerson().getId() == null || 
-						containerForm.getModelObject().getSubjectStudy().getPerson().getId() == 0){
-			
-					containerForm.getModelObject().getSubjectStudy().setStudy(study);
-					studyService.createSubject(containerForm.getModelObject());
-					this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
-					processErrors(target);
-		
-				}else{
-		
-					studyService.updateSubject(containerForm.getModelObject());
-					this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
-					processErrors(target);
-		
-				}
+			//When both the year fields were supplied, save only if they are valid
+			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
+				saveUpdateProcess(containerForm.getModelObject(), target);
+			}
+			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
+				saveUpdateProcess(containerForm.getModelObject(), target);
+			}
+			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
+				
 			}
 			
 			ContextHelper contextHelper = new ContextHelper();
