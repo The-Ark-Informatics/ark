@@ -1,13 +1,36 @@
 package au.org.theark.study.web.component.subject.form;
 
+import java.util.Calendar;
+
 import org.apache.wicket.validation.IValidatable;
 import org.apache.wicket.validation.IValidationError;
 import org.apache.wicket.validation.IValidator;
+import org.apache.wicket.validation.Validatable;
+import org.apache.wicket.validation.ValidationError;
 import org.apache.wicket.validation.validator.NumberValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
-public class SubjectValidator   {
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
-	
+public class SubjectValidator implements IValidator<Long>  {
+
+	/* (non-Javadoc)
+	 * @see org.apache.wicket.validation.IValidator#validate(org.apache.wicket.validation.IValidatable)
+	 */
+	public void validate(IValidatable<Long> arg0) {
+		// TODO Auto-generated method stub
+		if(arg0.getValue() != null ){
+			Calendar calendar = Calendar.getInstance();
+			int calYear = calendar.get(Calendar.YEAR);
+			if(arg0.getValue() > calYear){
+				
+				ValidationError ve = new ValidationError().addMessageKey("error.found");
+				//ve.setVariables(vars);
+			}
+		}
+		
+	}
+
 
 
 
