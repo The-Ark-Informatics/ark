@@ -41,6 +41,8 @@ public class Field implements java.io.Serializable {
 	private Date insertTime;
 	private String updateUserId;
 	private Date updateTime;
+	private Boolean qualityControlStatus;
+	private String missingValue;
 	
 	// Constructors
 
@@ -88,6 +90,24 @@ public class Field implements java.io.Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+	
+	/**
+	 * @param study the study to set
+	 */
+	public void setStudy(Study study)
+	{
+		this.study = study;
+	}
+
+	/**
+	 * @return the study
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy()
+	{
+		return study;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -192,30 +212,33 @@ public class Field implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "UPDATE_TIME")
+    @Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
+	/**
+	 * @param updateTime the updateTime to set
+	 */ 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
-	/**
-	 * @param study the study to set
-	 */
-	public void setStudy(Study study)
-	{
-		this.study = study;
+	public void setQualityControlStatus(Boolean qualityControlStatus) {
+		this.qualityControlStatus = qualityControlStatus;
 	}
 
-	/**
-	 * @return the study
-	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
-		return study;
+	@Column(name="QUALITY_CONTROL_STATUS")
+	public Boolean getQualityControlStatus() {
+		return qualityControlStatus;
+	}
+
+	public void setMissingValue(String missingValue) {
+		this.missingValue = missingValue;
+	}
+
+	@Column(name="MISSING_VALUE")
+	public String getMissingValue() {
+		return missingValue;
 	}
 }
