@@ -135,7 +135,6 @@ public class SearchResults extends Panel{
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.resetContextLabel(target, arkContextMarkup);
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
