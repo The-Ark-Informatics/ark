@@ -37,7 +37,7 @@ public class ContextHelper
 	@SuppressWarnings("unchecked")
 	public void setSubjectContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup)
 	{
-		subjectLabel =  new Label("subjectLabel", new Model("SubjectUID: " + label));
+		subjectLabel =  new Label("subjectLabel", new Model("Subject UID: " + label));
 		arkContextMarkup.addOrReplace(subjectLabel);
 		target.addComponent(arkContextMarkup);
 	}
