@@ -715,6 +715,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_MAX_VALUE, field.getMaxValue(), MatchMode.ANYWHERE));
 		}
 
+		// Return fields ordered alphabetically
+		criteria.addOrder(Order.asc(au.org.theark.phenotypic.web.Constants.FIELD_NAME));
 		fieldCollection = criteria.list();
 
 		return fieldCollection;
