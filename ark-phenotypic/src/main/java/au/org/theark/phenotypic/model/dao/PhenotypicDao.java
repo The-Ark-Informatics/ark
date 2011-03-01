@@ -34,7 +34,6 @@ import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
-import au.org.theark.phenotypic.util.PhenoUploadReport;
 
 @SuppressWarnings("unchecked")
 @Repository("phenotypicDao")
