@@ -6,6 +6,7 @@
  */
 package au.org.theark.phenotypic.web.component.field.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -31,6 +34,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.odlabs.wiquery.ui.datepicker.DatePicker;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldType;
@@ -61,6 +66,8 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	private TextField<String>				fieldMinValueTxtFld;
 	private TextField<String>				fieldMaxValueTxtFld;
 	private TextArea<String>				fieldEncodedValuesTxtFld;
+	private RadioChoice<Boolean>			fieldQualityControlStatusRdChoice;
+	private TextField<String>				fieldMissingValueTxtFld;
 
 	/**
 	 * Constructor
@@ -99,12 +106,55 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		fieldMinValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MIN_VALUE);
 		fieldMaxValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE);
 		fieldEncodedValuesTxtFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ENCODED_VALUES);
-
+		PropertyModel<Field> pm = new PropertyModel<Field>((CompoundPropertyModel<FieldVO>) containerForm.getModel(), "field");
+		fieldQualityControlStatusRdChoice = initRadioButtonChoice(pm, "qualityControlStatus", "qualityControlStatus");
+		fieldMissingValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MISSING_VALUE);
+		
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 
 		attachValidators();
 		addComponents();
+	}
+
+	/**
+	 * A common method that can be used to render Yes/No using RadioChoice controls
+	 * 
+	 * @param study
+	 * @param propertyModelExpr
+	 * @param radioChoiceId
+	 * @return
+	 */
+	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Field> pm, String propertyModelExpr, String radioChoiceId)
+	{
+
+		List<Boolean> list = new ArrayList<Boolean>();
+		list.add(Boolean.TRUE);
+		list.add(Boolean.FALSE);
+		/* Implement the IChoiceRenderer */
+
+		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>()
+		{
+			public Object getDisplayValue(final Boolean choice)
+			{
+
+				String displayValue = au.org.theark.core.Constants.NO;
+
+				if (choice != null && choice.booleanValue())
+				{
+					displayValue = au.org.theark.core.Constants.YES;
+				}
+				return displayValue;
+			}
+
+			public String getIdValue(final Boolean object, final int index)
+			{
+				return object.toString();
+			}
+		};
+
+		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
+		return new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
 	}
 
 	protected void attachValidators()
@@ -117,6 +167,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 
 	private void addComponents()
 	{
+		// Disable ID field editing
 		detailPanelFormContainer.add(fieldIdTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(fieldNameTxtFld);
 		detailPanelFormContainer.add(fieldDescriptionTxtAreaFld);
@@ -125,6 +176,9 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		detailPanelFormContainer.add(fieldMinValueTxtFld);
 		detailPanelFormContainer.add(fieldMaxValueTxtFld);
 		detailPanelFormContainer.add(fieldEncodedValuesTxtFld);
+		// Disable Quality Control Status field editing
+		detailPanelFormContainer.add(fieldQualityControlStatusRdChoice.setEnabled(false));
+		detailPanelFormContainer.add(fieldMissingValueTxtFld);
 
 		add(detailPanelFormContainer);
 	}
