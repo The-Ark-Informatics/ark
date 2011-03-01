@@ -26,7 +26,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.datepicker.DatePicker;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -63,10 +64,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private TextField<String> lastNameTxtFld;
 	private TextField<String> preferredNameTxtFld;
 	private TextField<String> subjectUIDTxtFld;
-	private DatePicker<Date> dateOfBirth;
+	
+	private DateTextField dateOfBirthTxtFld;
+	
 	//Custom Fields and Consents at Subject Study Level
 	private TextField<String> amdrifIdTxtFld;
-	private DatePicker<Date> studyApproachDate;
+	private DateTextField studyApproachDate;
 	private TextField<Long> yearOfFirstMamogramTxtFld;
 	private TextField<String> yearOfRecentMamogramTxtFld;
 	private TextField<String> totalNumberOfMamogramsTxtFld;
@@ -117,9 +120,16 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
 		subjectUIDTxtFld = new TextField<String>("subjectStudy.subjectUID"); //Constants.SUBJECT_UID);
 		
-		dateOfBirth = new DatePicker<Date>(Constants.PERSON_DOB);
-		dateOfBirth.setChangeMonth(true);
-		dateOfBirth.setChangeYear(true);
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB,au.org.theark.core.Constants.DD_MM_YYYY);
+		DatePicker dobDatePicker = new DatePicker(){
+			@Override
+			protected boolean enableMonthYearSelection()
+			{
+				return true;
+			}
+		};
+		dobDatePicker.bind(dateOfBirthTxtFld);
+		dateOfBirthTxtFld.add(dobDatePicker);
 		
 		//Initialise Drop Down Choices 
 		//Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
@@ -129,11 +139,11 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
-		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List)vitalStatusList,vitalStatusRenderer);
+		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List<VitalStatus>)vitalStatusList,vitalStatusRenderer);
 		
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
-		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List)genderTypeList,genderTypeRenderer);
+		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List<GenderType>)genderTypeList,genderTypeRenderer);
 		
 		
 		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
@@ -153,9 +163,18 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private void initCustomFields(){
 		amdrifIdTxtFld = new TextField<String>("subjectStudy.amdrifId");
 		
-		studyApproachDate = new DatePicker<Date>("subjectStudy.studyApproachDate");
-		studyApproachDate.setChangeMonth(true);
-		studyApproachDate.setChangeYear(true);
+		studyApproachDate = new DateTextField("subjectStudy.studyApproachDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		DatePicker dobStudyApproachDatePicker = new DatePicker(){
+			@Override
+			protected boolean enableMonthYearSelection()
+			{
+				return true;
+			}
+		};
+		
+		dobStudyApproachDatePicker.bind(studyApproachDate);
+		studyApproachDate.add(dobStudyApproachDatePicker);
 		
 		yearOfFirstMamogramTxtFld =  new TextField<Long>("subjectStudy.yearOfFirstMamogram",Long.class);
 		yearOfRecentMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfRecentMamogram");
@@ -231,7 +250,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(middleNameTxtFld);
 		detailPanelFormContainer.add(lastNameTxtFld);
 		detailPanelFormContainer.add(preferredNameTxtFld);
-		detailPanelFormContainer.add(dateOfBirth);
+		detailPanelFormContainer.add(dateOfBirthTxtFld);
 		detailPanelFormContainer.add(vitalStatusDdc);
 		detailPanelFormContainer.add(genderTypeDdc);
 		detailPanelFormContainer.add(subjectStatusDdc);
@@ -251,8 +270,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(consentToActiveContactDdc);
 		detailPanelFormContainer.add(consentToUseDataDdc);
 		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
-		
-	
 	}
 
 
@@ -278,18 +295,14 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	@Override
 	protected void attachValidators() {
 		firstNameTxtFld.setRequired(true);
-		dateOfBirth.setRequired(true);
-		dateOfBirth.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.dateofbirth.max.range", this, null));
+		dateOfBirthTxtFld.setRequired(true);
+		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.dateofbirth.max.range", this, null));
 		
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
 		subjectUIDTxtFld.setRequired(true);
 		subjectUIDTxtFld.add(StringValidator.lengthBetween(1, 8));
-	
-		
 		titleTypeDdc.setRequired(true);
-		
-		
 	}
 
 	/* (non-Javadoc)
