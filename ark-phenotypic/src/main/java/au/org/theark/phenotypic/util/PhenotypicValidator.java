@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 public class PhenotypicValidator
 {
 	static Logger	log	= LoggerFactory.getLogger(PhenotypicValidator.class);
+	boolean qualityControl = false;
 
 	/**
 	 * PhenotypicValidator constructor
@@ -30,6 +31,14 @@ public class PhenotypicValidator
 	 */
 	public PhenotypicValidator()
 	{
+	}
+
+	public boolean isQualityControl() {
+		return qualityControl;
+	}
+
+	public void setQualityControl(boolean qualityControl) {
+		this.qualityControl = qualityControl;
 	}
 
 	/**
