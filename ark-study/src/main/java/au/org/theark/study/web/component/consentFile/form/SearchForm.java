@@ -85,7 +85,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	protected void onSearch(AjaxRequestTarget target)
 	{
 		target.addComponent(feedbackPanel);
-		ConsentFile consentFile  = getModelObject().getConsentFile();
+		ConsentFile consentFile  = new ConsentFile();
 
 		try 
 		{
