@@ -68,15 +68,16 @@ public class Constants {
 	public static final String PHENO_COLLECTIONVO_UPLOAD_FILE_FORMAT_NAME = "phenoCollection.upload.fileFormat.name";
 	
 	public static final String FIELDVO_FIELD_ID = "field.id";
-	public static final String	FIELDVO_FIELD_STUDY	= "field.study";
+	public static final String FIELDVO_FIELD_STUDY	= "field.study";
 	public static final String FIELDVO_FIELD_FIELD_TYPE = "field.fieldType";
 	public static final String FIELDVO_FIELD_NAME = "field.name";
 	public static final String FIELDVO_FIELD_DESCRIPTION = "field.description";
 	public static final String FIELDVO_FIELD_UNITS = "field.units";
 	public static final String FIELDVO_FIELD_SEQ_NUM = "field.seqNum";
-	public static final String	FIELDVO_FIELD_MIN_VALUE	= "field.minValue";
-	public static final String	FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
-	public static final String	FIELDVO_FIELD_ENCODED_VALUES	= "field.encodedValues";
+	public static final String FIELDVO_FIELD_MIN_VALUE	= "field.minValue";
+	public static final String FIELDVO_FIELD_MAX_VALUE	= "field.maxValue";
+	public static final String FIELDVO_FIELD_ENCODED_VALUES	= "field.encodedValues";
+	public static final String FIELDVO_FIELD_MISSING_VALUE = "field.missingValue";
 	
 	public static final String	FIELD_DATAVO_FIELD_DATA_ID = "fieldData.id";
 	public static final String	FIELD_DATAVO_FIELD_DATA_COLLECTION	= "fieldData.collection";
@@ -205,7 +206,5 @@ public class Constants {
 
 	public static final String	DOWNLOAD_FILE	= "downloadFile";
 	public static final String	DELETE_FILE	= "deleteFile";
-	public static final String	DELETE	= "Delete";
-
-	
+	public static final String	DELETE	= "Delete";	
 }
