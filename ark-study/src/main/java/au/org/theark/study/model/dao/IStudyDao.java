@@ -8,6 +8,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
@@ -145,11 +146,23 @@ public interface IStudyDao {
 	
 	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException;
 	
-	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
+	public Consent getConsent(Long id) throws ArkSystemException;
 	
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException;
 	
 	public List<Consent> searchConsent(ConsentVO consentVo) throws EntityNotFoundException,ArkSystemException;
 	
 	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld);
+	
+	/**
+	 * 
+	 * @param consentFile
+	 * @throws ArkSystemException
+	 */
+	public void create(ConsentFile consentFile) throws ArkSystemException;
+	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
+	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
+	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
 
+	
 }

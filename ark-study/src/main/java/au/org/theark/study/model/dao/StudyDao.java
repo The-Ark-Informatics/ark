@@ -1,13 +1,17 @@
 package au.org.theark.study.model.dao;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +23,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -39,6 +44,8 @@ import au.org.theark.study.service.Constants;
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
+	private Subject	currentUser;
+	private Date		dateNow;
 
 	public void create(Study study) {
 		getSession().save(study);
@@ -477,5 +484,85 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return list;
 	}
 	
+	public Consent getConsent(Long id) throws ArkSystemException {
+		Consent consent = (Consent)getSession().get(Consent.class, id);
+		return consent;
+	}
 	
+	public void create(ConsentFile consentFile) throws ArkSystemException
+	{
+		Session session = getSession();
+		
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		consentFile.setInsertTime(dateNow);
+		consentFile.setUserId(currentUser.getPrincipal().toString());
+		
+		session.save(consentFile);
+	}
+	
+	public void update(ConsentFile consentFile) throws ArkSystemException,EntityNotFoundException{
+		Session session = getSession();
+		
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		consentFile.setUserId(currentUser.getPrincipal().toString());
+		consentFile.setUpdateTime(dateNow);
+		
+		if((ConsentFile)session.get(ConsentFile.class,consentFile.getId()) != null){
+			session.update(consentFile);	
+		}else{
+			throw new EntityNotFoundException("The Consent file record you tried to update does not exist in the Ark System");
+		}
+		
+	}
+	
+	/**
+	 * If a consentFile is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * @param consentFile
+	 * @throws ArkSystemException
+	 */
+	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException{
+		try{
+			Session session = getSession();
+			consentFile = (ConsentFile)session.get(ConsentFile.class,consentFile.getId());	
+			if(consentFile != null){
+				getSession().delete(consentFile);	
+			}else{
+				throw new EntityNotFoundException("The Consent file record you tried to remove does not exist in the Ark System");
+			}
+			
+		}catch(HibernateException someHibernateException){
+			log.error("An Exception occured while trying to delete this consent file " + someHibernateException.getStackTrace());
+		}catch(Exception e){
+			log.error("An Exception occured while trying to delete this consent file " + e.getStackTrace());
+			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
+		}
+	}
+	
+	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)
+			throws EntityNotFoundException, ArkSystemException {
+		Criteria criteria =  getSession().createCriteria(ConsentFile.class);
+		if(consentFile != null){
+			
+			if(consentFile.getId() != null){
+				criteria.add(Restrictions.eq("id", consentFile.getId()));
+			}
+			
+			if(consentFile.getConsent() != null){
+				criteria.add(Restrictions.eq("consent", consentFile.getConsent()));
+			}
+			
+			if(consentFile.getFilename() != null){
+				criteria.add(Restrictions.ilike("fileName", consentFile.getFilename(),MatchMode.ANYWHERE));
+			}
+		}
+		criteria.addOrder(Order.desc("id"));
+		
+		@SuppressWarnings("unchecked")
+		List<ConsentFile> list = criteria.list();
+		return list;
+	}
 }
