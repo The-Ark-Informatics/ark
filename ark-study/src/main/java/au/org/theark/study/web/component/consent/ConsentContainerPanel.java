@@ -159,10 +159,10 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 						consentList = studyService.searchConsent(containerForm.getModelObject());
 					}
 				} catch (EntityNotFoundException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 				} catch (ArkSystemException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				
 				pageableListView.removeAll();
