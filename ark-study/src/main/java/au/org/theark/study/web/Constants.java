@@ -191,6 +191,10 @@ public class Constants {
 	public static final String CONSENT_STUDY_COMP="consent.studyComp";
 	public static final String CONSENT_STUDY_COMP_STATUS = "consent.studyComponentStatus";
 	public static final String CONSENT_CONSENT_DATE="consent.consentDate";
+	public static final String CONSENT_REQUESTED_DATE="consent.requestedDate";
+	public static final String CONSENT_RECEIVED_DATE="consent.receivedDate";
+	public static final String CONSENT_COMPLETED_DATE="consent.completedDate";
+	
 	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
 	
 	public static final String CONSENT_FILE_ID="consentFile.id";
