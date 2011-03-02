@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.mydetails;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -23,22 +24,30 @@ public class MyDetails extends Panel{
 	
 	private transient Logger log = LoggerFactory.getLogger(MyDetails.class);
 	private UserForm userForm;
+	private FeedbackPanel feedBackPanel;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 
 	private CompoundPropertyModel<ArkUserVO> arkUserModelCpm;
-	public MyDetails(String id, ArkUserVO arkUserVO){
+	public MyDetails(String id, ArkUserVO arkUserVO, final FeedbackPanel feedBackPanel)
+	{
 		super(id);
 		/*Initialise the CPM */
 		arkUserModelCpm = new CompoundPropertyModel<ArkUserVO>(arkUserVO);
+		this.feedBackPanel = feedBackPanel;
+		
 		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm){
 			
 			protected void onSave(AjaxRequestTarget target){
 				ArkUserVO arkUser  = getModelObject();
-				arkUser.setChangePassword(true);//Temporary allow the user to select if he wants to change it
+				//Temporary allow the user to select if he wants to change it
+				arkUser.setChangePassword(true);
+				
 				try{
-					userService.updateLdapUser(arkUser);	
+					userService.updateLdapUser(arkUser);
+					this.info("Details for user: " + arkUser.getUserName() + " updated");
+					target.addComponent(feedBackPanel);
 				}
 				catch (ArkSystemException arkSystemException) {
 					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
@@ -99,7 +108,4 @@ public class MyDetails extends Panel{
 //		add(userForm);
 //		
 //	}
-
-	
-
 }

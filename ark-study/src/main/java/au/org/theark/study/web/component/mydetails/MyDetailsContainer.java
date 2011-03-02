@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.mydetails;
 
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class MyDetailsContainer extends Panel{
 	 */
 	@SpringBean( name = "userService")
 	private IUserService userService;
+	private FeedbackPanel feedBackPanel;
+	
 	
 	/**
 	 * Construct the panel that will contain the User Details
@@ -41,9 +44,19 @@ public class MyDetailsContainer extends Panel{
 		}catch(ArkSystemException ine){
 			log.error("Exception occured :" + ine.getMessage());
 		}
+		
+		// Add feedbackpanel
+		add(initialiseFeedBackPanel());
+		
 		//Add the details panel into the container
 		userVO.setMode(Constants.MODE_EDIT);
-		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO));
+		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO, feedBackPanel));
 	}
-
+	
+	private FeedbackPanel initialiseFeedBackPanel(){
+		/* Feedback Panel */
+		feedBackPanel= new FeedbackPanel("feedbackMessage");
+		feedBackPanel.setOutputMarkupId(true);
+		return feedBackPanel;
+	}
 }
