@@ -93,7 +93,6 @@ public class SiteContainerPanel extends Panel{
 	
 	private WebMarkupContainer initialiseSearchPanel(){
 		SiteVO siteVo = new SiteVO();
-		
 		List<SiteVO> resultList = studyService.getSite(siteVo);
 		//List<SiteVO> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
 		siteContainerForm.getModelObject().setSiteVoList(resultList);
@@ -113,13 +112,16 @@ public class SiteContainerPanel extends Panel{
 
 	private WebMarkupContainer initialiseSearchResults(){
 	
-		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,siteContainerForm);
+		searchResultPanel = new SearchResultList("searchResults",detailPanelContainer,searchPanelContainer,resultListContainer,siteContainerForm);
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Object load() {
+				SiteVO siteVo = new SiteVO();
+				List<SiteVO> resultList = studyService.getSite(siteVo);
+				siteContainerForm.getModelObject().setSiteVoList(resultList);
 				return siteContainerForm.getModelObject().getSiteVoList();
 			}
 		};

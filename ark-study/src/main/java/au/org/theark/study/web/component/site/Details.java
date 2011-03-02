@@ -31,6 +31,7 @@ public class Details extends Panel{
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
 	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer resultPanelContainer;
 	private ContainerForm containerForm;
 
 	public Details(String id, final WebMarkupContainer resultListContainer, FeedbackPanel feedBackPanel,
@@ -40,6 +41,7 @@ public class Details extends Panel{
 		this.listContainer = resultListContainer;
 		this.detailsContainer = detailPanelContainer;
 		this.searchPanelContainer = searchPanelContainer;
+		this.resultPanelContainer = resultListContainer;
 		containerForm = siteContainerForm;
 	}
 	
@@ -82,8 +84,11 @@ public class Details extends Panel{
 			protected void onCancel(AjaxRequestTarget target){
 				SiteModelVO siteModelVO = new SiteModelVO();
 				containerForm.setModelObject(siteModelVO);
+				
 				searchPanelContainer.setVisible(true);
+				resultPanelContainer.setVisible(true);
 				target.addComponent(searchPanelContainer);
+				target.addComponent(resultPanelContainer);
 			}
 			
 			protected void processFeedback(AjaxRequestTarget target){

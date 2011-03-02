@@ -22,17 +22,17 @@ public class SearchResultList extends Panel{
 	
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer searchPanelContainer;
+	private WebMarkupContainer resultPanelContainer;
 	private ContainerForm containerForm;
 	
-	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm siteContainerForm){
+	public SearchResultList(String id, WebMarkupContainer  detailPanelContainer, WebMarkupContainer searchPanelContainer, WebMarkupContainer resultPanelContainer, ContainerForm siteContainerForm){
 		super(id);
 		this.detailPanelContainer = detailPanelContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.containerForm = siteContainerForm;
+		this.resultPanelContainer = resultPanelContainer;
 	}
 
-	
-	
 	public PageableListView<SiteVO> buildPageableListView(IModel iModel){
 		
 		PageableListView<SiteVO> sitePageableListView = new PageableListView<SiteVO>("siteVoList", iModel, 10) {
@@ -48,6 +48,24 @@ public class SearchResultList extends Panel{
 				}else{
 					item.add(new Label("siteDescription", ""));//the ID here must match the ones in mark-up
 				}
+				
+				/*
+				 * TODO: Implement getSiteContact()
+				if(site.getSiteContactPerson() != null){
+					item.add(new Label("siteContact", site.getSiteContact()));//the ID here must match the ones in mark-up	
+				}else{
+					item.add(new Label("siteContact", ""));//the ID here must match the ones in mark-up
+				}
+				*/
+				
+				/*
+				 * TODO: Implement getSiteAddress()
+				if(site.getSiteAddress() != null){
+					item.add(new Label("siteAddress", site.getSiteAddress()));//the ID here must match the ones in mark-up	
+				}else{
+					item.add(new Label("siteAddress", ""));//the ID here must match the ones in mark-up
+				}
+				*/
 
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					@Override
@@ -74,9 +92,11 @@ public class SearchResultList extends Panel{
 				containerForm.getModelObject().setSiteVo(site);
 				detailPanelContainer.setVisible(true);
 				searchPanelContainer.setVisible(false);
+				resultPanelContainer.setVisible(false);
 		
 				target.addComponent(detailPanelContainer);
 				target.addComponent(searchPanelContainer);
+				target.addComponent(resultPanelContainer);
 			}
 		};
 		
@@ -84,8 +104,5 @@ public class SearchResultList extends Panel{
 		Label nameLinkLabel = new Label("siteNameLbl", site.getSiteName());
 		link.add(nameLinkLabel);
 		return link;
-
 	}
-	
-
 }
