@@ -15,9 +15,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
@@ -28,9 +25,6 @@ import au.org.theark.study.web.component.consentFile.form.ContainerForm;
 public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO> {
 
 	private static final long serialVersionUID = 1L;
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -100,14 +94,16 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 		
 		//Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
 		
 		try{
-			//Initialise the phoneList;
 			Collection<ConsentFile> consentFileList = new ArrayList<ConsentFile>();
+			Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 			
-			if(sessionPersonId != null){
-				containerForm.getModelObject().getConsent().setSubject(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
+			if(sessionPersonId != null && sessionConsentId != null){
+				Consent consent = new Consent();
+				consent = studyService.getConsent(sessionConsentId);
+				consent.setSubject(studyService.getPerson(sessionPersonId));
+				containerForm.getModelObject().setConsent(consent);
 			}
 				
 			//All the phone items related to the person if one found in session or an empty list
@@ -166,10 +162,13 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 				
 				try 
 				{
-					consent = studyService.getConsent(sessionConsentId);
-					ConsentFile consentFile = new ConsentFile();
-					consentFile.setConsent(consent);
-					consentFileList = studyService.searchConsentFile(consentFile);
+					if(sessionConsentId != null)
+					{	
+						consent = studyService.getConsent(sessionConsentId);
+						ConsentFile consentFile = new ConsentFile();
+						consentFile.setConsent(consent);
+						consentFileList = studyService.searchConsentFile(consentFile);
+					}
 				} 
 				catch (EntityNotFoundException e) 
 				{
@@ -177,7 +176,6 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 				} 
 				catch (ArkSystemException e) 
 				{
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				

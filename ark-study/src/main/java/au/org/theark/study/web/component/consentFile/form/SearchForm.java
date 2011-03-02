@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.consentFile.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -86,20 +87,24 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	{
 		target.addComponent(feedbackPanel);
 		ConsentFile consentFile  = new ConsentFile();
-
+		Collection<ConsentFile> consentFileList = new ArrayList<ConsentFile>();
+		
 		try 
 		{
 			Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 			Consent consent = new Consent();
 			
 			// Set consentFile.consent reference
-			consent = studyService.getConsent(sessionConsentId);
-			consentFile.setConsent(consent);
+			if(sessionConsentId != null)
+			{
+				consent = studyService.getConsent(sessionConsentId);
+				consentFile.setConsent(consent);
+				// Look up based on criteria via back end.
+				consentFileList =  studyService.searchConsentFile(consentFile);
+			}
 			
-			//Look up based on criteria via back end.
-			Collection<ConsentFile> consentFileList =  studyService.searchConsentFile(consentFile);
-			
-			if(consentFileList != null && consentFileList.size() == 0){
+			if(consentFileList != null && consentFileList.size() == 0)
+			{
 				this.info("There are no consent files for the specified criteria.");
 				target.addComponent(feedbackPanel);
 			}
