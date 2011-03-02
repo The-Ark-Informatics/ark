@@ -17,6 +17,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;
@@ -142,6 +143,12 @@ public class SearchResultListPanel extends Panel {
 				
 				// Place the selected collection in session context for the user (passes to Shiro)
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.geno.web.Constants.SESSION_GENO_COLLECTION_ID, genoCollection.getId());
+				
+				// TODO: Implement context item (need to pass in arkContextMarkup through tabs/container
+				//ContextHelper contextHelper = new ContextHelper();
+				//contextHelper.resetContextLabel(target, containerForm.);
+				//contextHelper.setStudyContextLabel(target, genoCollection.getName(), arkContextMarkup);
+				
 		
 /* Moved to TransitionToDetail
  				detailPanelContainer.setVisible(true);
