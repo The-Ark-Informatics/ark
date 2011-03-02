@@ -71,20 +71,20 @@ public class StudySubMenuTab extends Panel
 		menuModule.setResourceKey(Constants.TAB_MODULE_STUDY_DETAIL);
 		moduleTabs.add(menuModule);
 
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.SITE);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SITE);
-		moduleTabs.add(menuModule);
+//		menuModule = new MenuModule();
+//		menuModule.setModuleName(Constants.SITE);
+//		menuModule.setResourceKey(Constants.TAB_MODULE_SITE);
+//		moduleTabs.add(menuModule);
 
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.STUDY_COMPONENT);
 		menuModule.setResourceKey(Constants.TAB_MODULE_STUDY_COMPONENT);
 		moduleTabs.add(menuModule);
 
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.CUSTOM_FIELD);
-		menuModule.setResourceKey(Constants.TAB_CUSTOM_FIELD);
-		moduleTabs.add(menuModule);
+//		menuModule = new MenuModule();
+//		menuModule.setModuleName(Constants.CUSTOM_FIELD);
+//		menuModule.setResourceKey(Constants.TAB_CUSTOM_FIELD);
+//		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.USER);
@@ -145,23 +145,23 @@ public class StudySubMenuTab extends Panel
 						panelToReturn = new StudyContainer(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup);
 
 					}
-					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.SITE))
-					{
-
-						panelToReturn = new SiteContainerPanel(panelId);
-
-					}
+//					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.SITE))
+//					{
+//
+//						panelToReturn = new SiteContainerPanel(panelId);
+//
+//					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.STUDY_COMPONENT))
 					{
 
 						panelToReturn = new StudyComponentContainerPanel(panelId);
 
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.CUSTOM_FIELD)){
-						
-						panelToReturn = new CustomFieldContainer(panelId); 
-						
-					}
+//					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.CUSTOM_FIELD)){
+//						
+//						panelToReturn = new CustomFieldContainer(panelId); 
+//						
+//					}
 					else if (moduleName.getModuleName().equalsIgnoreCase(Constants.MY_DETAIL))
 					{
 
