@@ -91,11 +91,11 @@ public class SearchResults extends Panel{
 				
 				Study study = item.getModelObject();
 				
-				if(study.getId() != null){
-					item.add(new Label("id", study.getId().toString()));	
-				}else{
-					item.add(new Label("id",""));
-				}
+//				if(study.getId() != null){
+//					item.add(new Label("id", study.getId().toString()));	
+//				}else{
+//					item.add(new Label("id",""));
+//				}
 				
 				item.add(buildLink(study,searchResultsContainer));
 				

@@ -219,7 +219,7 @@ public class StudyContainer extends Panel{
 		
 	}
 	
-public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
+	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
 		
 		super(id);
 		this.studyNameMarkup = studyNameMarkup;

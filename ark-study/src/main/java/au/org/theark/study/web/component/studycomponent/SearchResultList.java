@@ -72,13 +72,13 @@ public class SearchResultList extends Panel{
 				
 				StudyComp studyComponent = item.getModelObject();
 				
-				/* The Component ID */
-				if(studyComponent.getId() != null){
-					//Add the study Component Key here
-					item.add(new Label("studyComponent.id", studyComponent.getId().toString()));	
-				}else{
-					item.add(new Label("studyComponent.id",""));
-				}
+//				/* The Component ID */
+//				if(studyComponent.getId() != null){
+//					//Add the study Component Key here
+//					item.add(new Label("studyComponent.id", studyComponent.getId().toString()));	
+//				}else{
+//					item.add(new Label("studyComponent.id",""));
+//				}
 				/* Component Name Link */
 				item.add(buildLink(studyComponent));
 				
@@ -91,7 +91,12 @@ public class SearchResultList extends Panel{
 				}
 				
 				/* Add the Keyword */
-				//TODO when displaying text escape any special characters\
+				//TODO when displaying text escape any special characters
+				if(studyComponent.getKeyword() != null){
+					item.add(new Label("studyComponent.keyword", studyComponent.getKeyword()));//the ID here must match the ones in mark-up	
+				}else{
+					item.add(new Label("studyComponent.keyword", ""));//the ID here must match the ones in mark-up
+				}
 				
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
