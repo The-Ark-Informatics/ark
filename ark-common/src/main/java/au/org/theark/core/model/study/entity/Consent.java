@@ -43,6 +43,9 @@ public class Consent implements Serializable {
 	private Date consentDate; 
 	private String consentedBy; //Staff
 	private String comments;
+	private Date requestedDate;
+	private Date receivedDate;
+	private Date completedDate;
 	
 	public Consent(){
 		
@@ -142,5 +145,31 @@ public class Consent implements Serializable {
 		this.consentType = consentType;
 	}
 	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "REQUESTED_DATE", length = 7)
+	public Date getRequestedDate() {
+		return requestedDate;
+	}
+	public void setRequestedDate(Date requestedDate) {
+		this.requestedDate = requestedDate;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "RECEIVED_DATE", length = 7)
+	public Date getReceivedDate() {
+		return receivedDate;
+	}
+	public void setReceivedDate(Date receivedDate) {
+		this.receivedDate = receivedDate;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "COMPLETED_DATE", length = 7)
+	public Date getCompletedDate() {
+		return completedDate;
+	}
+	public void setCompletedDate(Date completedDate) {
+		this.completedDate = completedDate;
+	}
 	
 }
