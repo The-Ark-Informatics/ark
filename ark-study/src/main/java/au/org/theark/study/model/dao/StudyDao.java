@@ -368,11 +368,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void update(Consent consent) throws ArkSystemException,EntityNotFoundException{
-		Session session = getSession();
-		if((Consent)session.get(Consent.class,consent.getId()) != null){
+		try{
+			Session session = getSession();
 			session.update(consent);	
-		}else{
-			throw new EntityNotFoundException("The Consent record you tried to update does not exist in the Ark System");
+		}catch(HibernateException someHibernateException){
+			log.error("An Exception occured while trying to update this consent " + someHibernateException.getStackTrace());
+		}catch(Exception e){
+			log.error("An Exception occured while trying to update this consent " + e.getStackTrace());
+			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
 		}
 		
 	}
