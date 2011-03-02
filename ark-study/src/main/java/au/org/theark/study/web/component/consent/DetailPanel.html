@@ -27,22 +27,79 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="studyComponentStatus"><wicket:message key="studyComponent.status">Study Component Status:</wicket:message></label>
+					&nbsp;
 				</div>
 			</div>
 			
 			<div id="fldControl">
 				<div class="label">
-				  <select wicket:id="consent.studyComponentStatus">
+				  &nbsp;
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  Row 1 Study component Drop Down Choice-->
+			<div id="fldLabel">
+				<div class="label">
+					<label for="studyComponentStatus"><wicket:message key="studyComponent.status">Study Component Status:</wicket:message></label>	
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+				   <select wicket:id="consent.studyComponentStatus">
 		       		<option>Completed</option>
 					<option>Not Completed</option>
 		       	  </select>
 				</div>
 			</div>
 			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div wicket:id="wmc-plain">
+				<div id="fldLabel">
+					<div class="label">
+						 &nbsp;
+					</div>
+				</div>
+			
+				<div id="fldControl">
+					<div class="label">&nbsp;</div>
+				</div>
+			</div>
+			
+			<div wicket:id="wmc-requested">
+				<div id="fldLabel">
+					<div class="label">
+						 <label for="requestedDate"><wicket:message key="consent.requestedDate">Requested Date:</wicket:message></label>
+					</div>
+				</div>
+			
+				<div id="fldControl">
+					<div class="label">
+					 	<input wicket:id="consent.requestedDate"  type="text" maxLength="10"/>
+					</div>
+				</div>
+			</div>
+			
+			<div wicket:id="wmc-received">
+				<div id="fldLabel">
+					<div class="label">
+						 <label for="recievedDate"><wicket:message key="consent.receivedDate">Received Date:</wicket:message></label>
+					</div>
+				</div>
+			
+				<div id="fldControl">
+					<div class="label"><input wicket:id="consent.receivedDate"  type="text" maxLength="10"/></div>
+				</div>
+			</div>
 			<div id="searchPanelContentRight">&nbsp;</div>
 			<div id="searchPanelBreaker">&nbsp;</div>
+			
 
+			
 			<!--  Row 2 -->
 			<div id="panelContentLeft">&nbsp;</div>
 			<div id="fldLabel">
