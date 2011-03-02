@@ -101,12 +101,17 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO>{
 		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
+			Collection<SubjectVO> participants = new ArrayList<SubjectVO>();
+			
 			@Override
 			protected Object load() {
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-				Collection<SubjectVO> participants = iArkCommonService.getSubject(containerForm.getModelObject());
-				containerForm.getModelObject().setSubjectList(participants);
+				
+				if(sessionStudyId != null){
+					containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+					participants = iArkCommonService.getSubject(containerForm.getModelObject());
+					containerForm.getModelObject().setSubjectList(participants);
+				}
 				pageableListView.removeAll();
 				return participants;
 			}
