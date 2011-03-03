@@ -157,7 +157,10 @@ public class Constants {
 	public static final String YES = "Yes";
 	
 	
-	/***/
+	/*Action Type - Audit History */
 	public static final String  ACTION_TYPE_CREATED= "CREATED";
+	
+	/* Entity Type */
+	public static final String  ENTITY_TYPE_STUDY= "Study";
 	
 }
