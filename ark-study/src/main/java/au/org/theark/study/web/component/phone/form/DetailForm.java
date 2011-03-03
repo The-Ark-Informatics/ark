@@ -143,6 +143,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	protected void onCancel(AjaxRequestTarget target) {
 		PhoneVO phoneVO = new PhoneVO();
 		containerForm.setModelObject(phoneVO);
+		editButtonContainer.get("delete").setVisible(true);
 		onCancelPostProcess(target);
 	}
 
@@ -199,6 +200,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 					processErrors(target);
 					//Update 
 				}
+				editButtonContainer.get("delete").setVisible(true);
 				onSavePostProcess(target);
 			}
 			//Invoke backend to persist the phone
