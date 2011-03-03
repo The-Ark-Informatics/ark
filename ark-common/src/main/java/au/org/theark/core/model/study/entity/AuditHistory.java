@@ -22,7 +22,7 @@ public class AuditHistory implements java.io.Serializable {
 	private Long id;
 	private StudyStatus studyStatus;
 	private Date dateTime;
-	private ActionType actionType;
+	private String actionType;
 	private String arkUserId;
 	private String comment;
 	private Long entityId;
@@ -41,7 +41,7 @@ public class AuditHistory implements java.io.Serializable {
 
 	/** full constructor */
 	public AuditHistory(Long id, StudyStatus studyStatus,
-			Date dateTime, ActionType actionType, String etaUserId,
+			Date dateTime, String actionType, String etaUserId,
 			String comment, Long entityKey, EntityType entityType) {
 		this.id = id;
 		this.studyStatus = studyStatus;
@@ -100,16 +100,6 @@ public class AuditHistory implements java.io.Serializable {
 	public void setStudyStatus(StudyStatus studyStatus) {
 		this.studyStatus = studyStatus;
 	}
-
-	@Column(name = "ACTION_TYPE_ID", precision = 22, scale = 0)
-	public ActionType getActionType() {
-		return actionType;
-	}
-
-	public void setActionType(ActionType actionType) {
-		this.actionType = actionType;
-	}
-
 	
 	@Column(name = "ARK_USER_ID", length = 50)
 	public String getArkUserId() {
@@ -127,6 +117,15 @@ public class AuditHistory implements java.io.Serializable {
 
 	public void setEntityType(EntityType entityType) {
 		this.entityType = entityType;
+	}
+
+	@Column(name = "ACTION_TYPE")
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 
 }
