@@ -97,6 +97,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		initialiseCountrySelector();
 		initialiseAddressTypeDropDown();
 		initialiseRadioButton();
+		attachValidators();
 		addDetailFormComponents();
 	}
 	
@@ -198,13 +199,15 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	protected void attachValidators() {
 		// TODO Auto-generated method stub
 		//studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
-		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("error.city.required", this, new Model<String>("City")));
-		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("error.street.address.required", this, new Model<String>("Street Address")));
+		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("city", this, new Model<String>("City")));
+		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("street.address", this, new Model<String>("Street Address")));
 		streetAddressTxtFld.add(StringValidator.maximumLength(255));
 		
-		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("error.postcode.required", this, new Model<String>("Post Code")));
-		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("error.postcode.max.length", this , new Model<String>("Post Code Max Length")));
+		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code")));
+		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("postcode", this , new Model<String>("Post Code Max Length")));
 		postCodeTxtFld.add(StringValidator.minimumLength(4));
+		
+		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("addressType", this, new Model<String>("Address Type")));
 		
 	}
 
