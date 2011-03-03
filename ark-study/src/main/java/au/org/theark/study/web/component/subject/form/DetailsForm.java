@@ -330,9 +330,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		Calendar calendar = Calendar.getInstance();
 		int calYear = calendar.get(Calendar.YEAR);
 		if(fieldToValidate > calYear){
+			validFlag=false;
 			this.error(message);
 			processErrors(target);
-			validFlag=false;
 		}
 		
 		return validFlag;
@@ -375,36 +375,37 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		else{
 			
 			study = iArkCommonService.getStudy(studyId);
-			boolean validFlag=false;
-			Calendar calendar = Calendar.getInstance();
-			int calYear = calendar.get(Calendar.YEAR);
-			//System.out.println("\n ---- Calendar Year " + calYear);
-			
+			Long yearOfFirstMammogram = containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram();
+			Long yearOfRecentMammogram =containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram();	
 			//validate if the fields were supplied
-			if(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram() != null){
+			if(yearOfFirstMammogram != null){
 				firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram(),
 						"Year of Fist Mammogram cannot be in the future.",
 						target);
 			}
 			 
-			if(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram() != null){
+			if(yearOfRecentMammogram != null){
 				 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram(),
 							"Year of recent Mammogram cannot be in the future.",
 							target);
 			}
 			
-			Long yearOfFirstMammogram = containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram();
-			Long yearOfRecentMammogram =containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram();
-			
 			//When both the year fields were supplied, save only if they are valid
 			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
+				onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
 				saveUpdateProcess(containerForm.getModelObject(), target);
+				onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
-				
+				saveUpdateProcess(containerForm.getModelObject(), target);
+				onSavePostProcess(target);	
+			}else if(yearOfFirstMammogram == null && yearOfRecentMammogram == null){
+				//When other
+				saveUpdateProcess(containerForm.getModelObject(), target);
+				onSavePostProcess(target);	
 			}
 			
 			ContextHelper contextHelper = new ContextHelper();
@@ -417,11 +418,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
 		}
-		//Only if the validations were good process onSavePostProcess otherwise stay on the same page as we are using custom validations
-		if(firstMammogramFlag && recentMamogramFlag){
-			onSavePostProcess(target);	
-		}
-		
 		
 	}
 
