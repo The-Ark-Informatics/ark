@@ -1,113 +1,166 @@
-<wicket:panel>
-	&nbsp;
+<wicket:panel>&nbsp;
 	<form wicket:id="userDetailsForm">
-		
 		<div id="detailsPanelBorder">
-					
-			<div id="searchPanelBreaker">&nbsp;</div>
-			
-			<div id="panelContentLeft">&nbsp;</div>
-			
+			<div id="searchPanelBreaker">
+				&nbsp;
+			</div>
+
+			<div id="panelContentLeft">
+				&nbsp;
+			</div>
+
 			<div id="fldLabel">
 				<div class="label">
-					<label for="userName"><wicket:message key="user.id.key">User Name:</wicket:message></label>
-				</div> 
+					<label for="userName">
+						<wicket:message key="user.id.key">
+							User Name:
+						</wicket:message>
+					</label>
+				</div>
 			</div>
 			<div id="fldControl">
-			<div class="label">
-				<input wicket:id="userName"  type="text" />
+				<div class="label">
+					<input wicket:id="userName"	type="text" />
+				</div>
 			</div>
-		</div>
-			<div  id="panelMargin">&nbsp;</div>
+			<div	id="panelMargin">
+				&nbsp;
+			</div>
 			<div id="fldLabel">
 				<div class="label">
-					<label for="firstName"><wicket:message key="user.first.name.key">First Name:</wicket:message></label>
-				</div> 
+					<label for="firstName">
+						<wicket:message key="user.first.name.key">
+							First Name:
+						</wicket:message>
+					</label>
+				</div>
 			</div>
 			<div id="fldControl">
-			<div class="label">
-				<input wicket:id="firstName"  type="text" />
+				<div class="label">
+					<input wicket:id="firstName" type="text" />
+				</div>
 			</div>
-		</div>
-		<div id="searchPanelContentRight">&nbsp;</div>
-		<div id="searchPanelBreaker">&nbsp;</div>		
-			   		<div id="panelContentLeft">&nbsp;</div>	
-		<div id="fldLabel">
-			<div class="label">
-	     					<label for="lastName">
-	     						<label for="lastName"><wicket:message key="user.last.name.key">Last Name:</wicket:message></label>
-	     					</label>
-	    			</div>
-	   				</div>
-		<div id="fldControl">
-	     				<div class="label">
-	     					<input wicket:id="lastName"  type="text" />
-	     				</div>
-	     		</div>
-	     		<div  id="panelMargin">&nbsp;</div>
-	     		<div id="fldLabel">
-			<div class="label">
-	     					<label for="lastName">
-	     						<label for="email"><wicket:message key="user.email.key">Email:</wicket:message></label>
-	     					</label>
-	    			</div>
-	   				</div>
-		<div id="fldControl">
-	     				<div class="label">
-	     					<input wicket:id="email"  type="text" />
-	     				</div>
-	     		</div>
-	     		<div id="searchPanelContentRight">&nbsp;</div>
-				<div id="searchPanelBreaker">&nbsp;</div>		
-			   	<div id="panelContentLeft">&nbsp;</div>	
-	     		
-	     		<div wicket:id="groupPasswordContainer">
-		      		<div id="fldLabel">
-		      				<div class="label">
-		      					<label for="password"><wicket:message key="user.password.key">Password:</wicket:message></label>
-		      				</div>
-		      		</div>
-		      		<div id="fldControl">
-		      				<div class="label">
-		      					<input wicket:id="password"  type="password" />
-		      				</div>
-		      		</div>
-	      			<div  id="panelMargin">&nbsp;</div>
-		      		<div id="fldLabel">
-		      				<div class="label">
-		      					<label for="confirmPassword"><wicket:message key="user.confirm.password.key">Password:</wicket:message></label>
-		      				</div>
-		      		</div>
-		      		<div id="fldControl">
-		      				<div class="label">
-		      					<input wicket:id="confirmPassword"  type="password" />
-		      				</div>
-		      		</div>
-	     		</div>
-	     		
-	     		<div id="searchPanelBreaker">&nbsp;</div>
-	     		<div id="panelContentLeft">&nbsp;</div>
-	     			
-	     		<!-- Accordion Component is a custom accordion  that will contain the Applications and associated Roles -->	
-	     		<div wicket:id="appRoleAccordion"></div>
-	     		<!----->
-	     		
-	     		<div id="searchPanelContentRight">&nbsp;</div>
-	     		<div id="searchPanelBreaker">&nbsp;</div>
-	     		
-	     		<div id="panelContentLeft">&nbsp;</div>
-		<div id="fldLabel">&nbsp;</div>
-		<div id="fldControl">&nbsp;</div>
-		<div id="panelMargin">&nbsp;</div>
-		<div id="actionButtons">&nbsp;
-			<div class="label">
-	     		<input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
-	     		<div  id="panelMargin">&nbsp;</div>
-	     		<input wicket:id="cancel" type="submit" wicket:message="value:page.cancel" />	
-	     		<div  id="panelMargin">&nbsp;</div>
-	     		<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;	
+			<div id="searchPanelContentRight">
+				&nbsp;
 			</div>
-		</div>
+			<div id="searchPanelBreaker">
+				&nbsp;
+			</div>
+			<div id="panelContentLeft">
+				&nbsp;
+			</div>
+			<div id="fldLabel">
+				<div class="label">
+					<label for="lastName">
+						<label for="lastName">
+							<wicket:message key="user.last.name.key">
+								Last Name:
+							</wicket:message>
+						</label>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="lastName"	type="text" />
+				</div>
+			</div>
+			<div	id="panelMargin">
+				&nbsp;
+			</div>
+			<div id="fldLabel">
+				<div class="label">
+					<label for="lastName">
+						<label for="email">
+							<wicket:message key="user.email.key">
+								Email:
+							</wicket:message>
+						</label>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="email" type="text" size="25"/>
+				</div>
+			</div>
+			<div id="searchPanelContentRight">
+				&nbsp;
+			</div>
+			<div id="searchPanelBreaker">
+				&nbsp;
+			</div>
+			<div id="panelContentLeft">
+				&nbsp;
+			</div>
+
+			<div wicket:id="groupPasswordContainer">
+				<div id="fldLabel">
+					<div class="label">
+						<label for="password">
+							<wicket:message key="user.password.key">
+								Password:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="password"	type="password" />
+					</div>
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="confirmPassword">
+							<wicket:message key="user.confirm.password.key">
+								Confirm Password:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="confirmPassword"	type="password" />
+					</div>
+				</div>
+			</div>
+
+			<div id="searchPanelBreaker">
+				&nbsp;
+			</div>
+			<div id="panelContentLeft">
+				&nbsp;
+			</div>
+
+			<!-- Accordion Component is a custom accordion	that will contain the Applications and associated Roles -->
+			<div wicket:id="appRoleAccordion">
+			</div>
+			<!----->
+
+			<div id="searchPanelContentRight">
+				&nbsp;
+			</div>
+			<div id="searchPanelBreaker">
+				&nbsp;
+			</div>
+
+			<div id="actionButtons">
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<input wicket:id="cancel" type="submit" wicket:message="value:page.cancel" />
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
+			</div>
 		</div>
 	</form>
 </wicket:panel>
