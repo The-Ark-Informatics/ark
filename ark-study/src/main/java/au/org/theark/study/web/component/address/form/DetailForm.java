@@ -235,8 +235,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 			e.printStackTrace();
 		}
 		selectModalWindow.close(target);
-		AddressVO addressVO = new AddressVO();
-		containerForm.setModelObject(addressVO);
 		onCancel(target);
 	}
 

@@ -153,8 +153,13 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
 		selectModalWindow.close(target);
-		PhoneVO phoneVO = new PhoneVO();
-		containerForm.setModelObject(phoneVO);
+		try {
+			studyService.delete(containerForm.getModelObject().getPhone());
+		} catch (ArkSystemException e) {
+			this.error("An error occured while processing your delete. Please contact Support");
+			//TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to admin
+			e.printStackTrace();
+		}
 		onCancel(target);
 	}
 
@@ -164,7 +169,6 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	 */
 	@Override
 	protected void onSave(Form<PhoneVO> containerForm, AjaxRequestTarget target) {
-		System.out.println("onSave invoked");
 		//Persist the phone number to the backend, associate the person in context with the phone object
 		Long personSessionId =(Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		//Get the person and set it on the Phone object.

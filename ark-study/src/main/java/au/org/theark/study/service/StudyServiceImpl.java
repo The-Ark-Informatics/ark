@@ -248,6 +248,17 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
+	public void delete(Phone phone) throws ArkSystemException {
+		studyDao.delete(phone);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Phone " + phone.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
+		ah.setEntityId(phone.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+	
 	public void createSubject(SubjectVO subjectVO){
 		studyDao.createSubject(subjectVO);
 		

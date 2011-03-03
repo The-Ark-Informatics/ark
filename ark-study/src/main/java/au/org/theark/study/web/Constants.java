@@ -67,7 +67,7 @@ public class Constants {
 	public static final String SUBJECT_KEY_LBL ="subjectKeyLbl";
 	public static final String SUBJECT_LIST ="subjectList";
 	public static final String PHONE_LIST = "phoneList";
-	public static final String PHONE_NUMBER_LABEL="phoneNumberLabel";
+	public static final String PHONE_NUMBER_VALUE = "phoneNumberValue";
 	public static final String CONSENT_LIST = "consentList";
 	public static final String CONSENT_COMPONENT_LABEL="consentComponentLabel";
 	
@@ -217,6 +217,5 @@ public class Constants {
 	public static final String STUDY_STATUS_COMPLETED ="Completed";
 	public static final String STUDY_STATUS_REQUESTED="Requested";
 	public static final String STUDY_STATUS_RECEIVED="Recieved";
-	public static final String PHONE_NUMBER_VALUE = "phoneNumberValue";
 	
 }

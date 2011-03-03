@@ -69,6 +69,8 @@ public interface IStudyService {
 	public void create(Phone phone) throws ArkSystemException;
 	
 	public void update(Phone phone) throws ArkSystemException;
+
+	public void delete(Phone phone) throws ArkSystemException;
 	
 	/**
 	 * A method to create a Subject.
@@ -148,5 +150,6 @@ public interface IStudyService {
 	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
+
 
 }

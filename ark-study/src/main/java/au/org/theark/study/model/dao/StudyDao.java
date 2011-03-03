@@ -157,6 +157,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	
+	public void delete(Phone phone) throws ArkSystemException {
+		try{
+			getSession().delete(phone);			
+		}catch(HibernateException someHibernateException){
+			log.error("An Exception occured while trying to delete this Phone record. Cause: " + someHibernateException.getStackTrace());
+			throw new ArkSystemException("Unable to delete a Phone record.");
+		}
+	}
 	
 	public Collection<TitleType> getTitleType(){
 		Example example = Example.create(new TitleType());
@@ -568,4 +576,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<ConsentFile> list = criteria.list();
 		return list;
 	}
+
 }
