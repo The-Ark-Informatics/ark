@@ -71,6 +71,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected WebMarkupContainer wmcPlain;
 	protected WebMarkupContainer wmcRequested;
 	protected WebMarkupContainer wmcRecieved;
+	protected WebMarkupContainer wmcCompleted;
 	
 	
 	/**
@@ -131,13 +132,14 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		wmcRecieved.add(consentReceivedDtf);
 		
 		
-		
-		
-//		consentCompletedDtf = new DateTextField(Constants.CONSENT_RECEIVED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-//		ArkDatePicker completedDatePicker = new ArkDatePicker();
-//		completedDatePicker.bind(consentCompletedDtf);
-//		consentCompletedDtf.add(recievedDatePicker);
-		
+		wmcCompleted = new WebMarkupContainer("wmc-completed");
+		wmcCompleted.setOutputMarkupPlaceholderTag(true);
+		consentCompletedDtf = new DateTextField(Constants.CONSENT_COMPLETED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker completedDatePicker = new ArkDatePicker();
+		completedDatePicker.bind(consentCompletedDtf);
+		consentCompletedDtf.add(recievedDatePicker);
+		wmcCompleted.setVisible(false);
+		wmcCompleted.add(consentCompletedDtf);
 	
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
 		initialiseConsentTypeChoice();
@@ -155,7 +157,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		detailPanelFormContainer.add(wmcPlain);
 		detailPanelFormContainer.add(wmcRecieved);
 		detailPanelFormContainer.add(wmcRequested);
-		//detailPanelFormContainer.add(consentReceivedDtf);
+		detailPanelFormContainer.add(wmcCompleted);
 		
 		detailPanelFormContainer.add(studyComponentChoice);
 		detailPanelFormContainer.add(studyComponentStatusChoice);
@@ -203,11 +205,38 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
-				// TODO Auto-generated method stub
-				wmcPlain.setVisible(false);
-				wmcRequested.setVisible(true);
-				target.addComponent(wmcPlain);
-				target.addComponent(wmcRequested);
+				//Check what was selected and then toggle
+				StudyCompStatus status  = studyComponentStatusChoice.getModelObject();
+				String statusName  = status.getName();
+				
+				if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED))){
+					wmcPlain.setVisible(false);
+					wmcRequested.setVisible(false);
+					wmcRecieved.setVisible(true);
+					wmcCompleted.setVisible(false);
+					target.addComponent(wmcPlain);
+					target.addComponent(wmcRecieved);
+					target.addComponent(wmcRequested);
+					target.addComponent(wmcCompleted);
+				}else if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))){
+					wmcPlain.setVisible(false);
+					wmcRecieved.setVisible(false);
+					wmcRequested.setVisible(true);
+					wmcCompleted.setVisible(false);
+					target.addComponent(wmcRecieved);
+					target.addComponent(wmcRequested);
+					target.addComponent(wmcPlain);
+					target.addComponent(wmcCompleted);
+				}else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))){
+					wmcPlain.setVisible(false);
+					wmcRecieved.setVisible(false);
+					wmcRequested.setVisible(false);
+					wmcCompleted.setVisible(true);
+					target.addComponent(wmcCompleted);
+					target.addComponent(wmcRecieved);
+					target.addComponent(wmcRequested);
+					target.addComponent(wmcPlain);
+				}
 			}
 			
 		});
