@@ -22,6 +22,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -195,4 +196,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		studyDao.createAuditHistory(auditHistory);
 	}
 
+	public List<PersonContactMethod> getPersonContactMethodList()
+	{
+		return studyDao.getPersonContactMethodList();
+	}
 }

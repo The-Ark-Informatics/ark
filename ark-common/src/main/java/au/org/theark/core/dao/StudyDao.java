@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
@@ -362,9 +363,14 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	}
 	
 	public void createAuditHistory(AuditHistory auditHistory){
-		
 	    Date date = new Date(System.currentTimeMillis());
 	    auditHistory.setDateTime(date);
-		getSession().save(auditHistory);
+	    getSession().save(auditHistory);
+	}
+
+	public List<PersonContactMethod> getPersonContactMethodList()
+	{
+		Criteria criteria = getSession().createCriteria(PersonContactMethod.class);
+		return criteria.list();
 	}
 }

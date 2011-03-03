@@ -38,7 +38,7 @@ public class Person implements java.io.Serializable {
 	private TitleType titleType;
 	private MaritalStatus maritalStatus;
 	private Date dateOfBirth;
-	
+	private PersonContactMethod personContactMethod;
 	
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
@@ -253,4 +253,21 @@ public class Person implements java.io.Serializable {
 		this.personAddresses = personAddresses;
 	}
 
+	/**
+	 * @param personContactMethod the personContactMethod to set
+	 */
+	public void setPersonContactMethod(PersonContactMethod personContactMethod)
+	{
+		this.personContactMethod = personContactMethod;
+	}
+
+	/**
+	 * @return the personContactMethod
+	 */
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_CONTACT_METHOD_ID")
+	public PersonContactMethod getPersonContactMethod()
+	{
+		return personContactMethod;
+	}
 }

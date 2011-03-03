@@ -15,6 +15,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -88,9 +89,7 @@ public interface IArkCommonService {
 	 */
 	public List<StudyComp> getStudyComponent();	
 	
-	
 	public List<ConsentType> getConsentType();
-	
 	
 	public List<StudyCompStatus> getStudyComponentStatus();
 	
@@ -99,7 +98,6 @@ public interface IArkCommonService {
 	public List<YesNo> getYesNoList();
 	
 	public void createAuditHistory(AuditHistory auditHistory);
-	
-		
-	
+
+	public List<PersonContactMethod> getPersonContactMethodList();
 }
