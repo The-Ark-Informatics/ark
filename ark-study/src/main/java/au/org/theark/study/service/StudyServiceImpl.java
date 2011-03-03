@@ -105,11 +105,9 @@ public class StudyServiceImpl implements IStudyService{
 				
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-				ah.setArkUserId((String) currentUser.getPrincipal());
 				ah.setComment("Created Study " + studyEntity.getName());
 				ah.setEntityId(studyEntity.getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
-				ah.setStudyStatus(studyEntity.getStudyStatus());
 				arkCommonService.createAuditHistory(ah);
 				
 			}else{
@@ -128,6 +126,13 @@ public class StudyServiceImpl implements IStudyService{
 		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 			studyDao.updateStudy(studyEntity);
 			iLdapUserDao.updateStudyApplication(studyEntity.getName(), selectedApplications,au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
+			
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated Study " + studyEntity.getName());
+			ah.setEntityId(studyEntity.getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+			arkCommonService.createAuditHistory(ah);
 		}else{
 		 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
 		}
@@ -151,10 +156,25 @@ public class StudyServiceImpl implements IStudyService{
 		StudyStatus status = studyDao.getStudyStatus(au.org.theark.study.service.Constants.STUDY_STATUS_ARCHIVE);
 		studyEntity.setStudyStatus(status);
 		studyDao.updateStudy(studyEntity);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Archived Study " + studyEntity.getName());
+		ah.setEntityId(studyEntity.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void updateSite(SiteVO siteVo)throws ArkSystemException{
 		iLdapUserDao.updateSite(siteVo);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Site " + siteVo.getSiteName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException{
@@ -173,7 +193,14 @@ public class StudyServiceImpl implements IStudyService{
 
 		studyDao.create(studyComponent);
 	
-		//Add Audit Log here
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		
+		ah.setComment("Created Study Component " + studyComponent.getName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
+		ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
+		ah.setEntityId(studyComponent.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException{
@@ -186,23 +213,65 @@ public class StudyServiceImpl implements IStudyService{
 			throw new UnAuthorizedOperation("The logged in user does not have the permission to update this Study Component.");
 		}
 		studyDao.update(studyComponent);
-		//Add audit log
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		
+		ah.setComment("Updated Study Component " + studyComponent.getName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
+		ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
+		ah.setEntityId(studyComponent.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void create(Phone phone) throws ArkSystemException{
 		studyDao.create(phone);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		
+		ah.setComment("Created Phone " + phone.getPhoneNumber());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
+		ah.setEntityId(phone.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void update(Phone phone) throws ArkSystemException{
 		studyDao.update(phone);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		
+		ah.setComment("Updated Phone " + phone.getPhoneNumber());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
+		ah.setEntityId(phone.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void createSubject(SubjectVO subjectVO){
 		studyDao.createSubject(subjectVO);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		
+		ah.setComment("Created Subject " + subjectVO.getSubjectUID());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
+		ah.setEntityId(subjectVO.getSubjectStudy().getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void updateSubject(SubjectVO subjectVO){
 		studyDao.updateSubject(subjectVO);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Subject " + subjectVO.getSubjectUID());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
+		ah.setEntityId(subjectVO.getSubjectStudy().getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	/**
@@ -256,19 +325,47 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void create(Address address) throws ArkSystemException{
 		studyDao.create(address);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Address " + address.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(address.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void update(Address address) throws ArkSystemException{
 		studyDao.update(address);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Address " + address.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(address.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void delete(Address address) throws ArkSystemException{
 		//Add business rules to check if this address is in use/active and referred elsewhere
 		studyDao.delete(address);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Address " + address.getStreetAddress());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_ADDRESS);
+		ah.setEntityId(address.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void create(Consent consent) throws ArkSystemException{
 		studyDao.create(consent);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Consent " + consent.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
+		ah.setEntityId(consent.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
@@ -281,6 +378,12 @@ public class StudyServiceImpl implements IStudyService{
 	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException {
 		studyDao.update(consent);
 		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Consent " + consent.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
+		ah.setEntityId(consent.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException,ArkSystemException{
@@ -291,7 +394,14 @@ public class StudyServiceImpl implements IStudyService{
 	 * @see au.org.theark.study.service.IStudyService#delete(au.org.theark.core.model.study.entity.Consent)
 	 */
 	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException {
-		 studyDao.delete(consent);
+		studyDao.delete(consent);
+		 
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Consent " + consent.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT);
+		ah.setEntityId(consent.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public Consent getConsent(Long id) throws ArkSystemException {
@@ -305,26 +415,40 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void create(ConsentFile consentFile) throws ArkSystemException {
 		studyDao.create(consentFile);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created ConsentFile " + consentFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
+		ah.setEntityId(consentFile.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public void update(ConsentFile consentFile) throws ArkSystemException,
 			EntityNotFoundException {
 		studyDao.update(consentFile);
 		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated ConsentFile " + consentFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
+		ah.setEntityId(consentFile.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public void delete(ConsentFile consentFile) throws ArkSystemException,
 			EntityNotFoundException {
 		studyDao.delete(consentFile);
 		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted ConsentFile " + consentFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CONSENT_FILE);
+		ah.setEntityId(consentFile.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 
-	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)
-			throws EntityNotFoundException, ArkSystemException {
-		// TODO Auto-generated method stub
+	public List<ConsentFile> searchConsentFile(ConsentFile consentFile) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.searchConsentFile(consentFile);
-	}
-
-
-		
+	}		
 }
