@@ -12,6 +12,8 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Example;
@@ -364,6 +366,14 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	
 	public void createAuditHistory(AuditHistory auditHistory){
 	    Date date = new Date(System.currentTimeMillis());
+	    Subject currentUser = SecurityUtils.getSubject();
+	    auditHistory.setArkUserId((String) currentUser.getPrincipal());
+	    
+	    if(auditHistory.getStudyStatus() == null){
+	   	 Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+	   	 auditHistory.setStudyStatus(getStudy(sessionStudyId).getStudyStatus());
+	    }
+	    
 	    auditHistory.setDateTime(date);
 	    getSession().save(auditHistory);
 	}
