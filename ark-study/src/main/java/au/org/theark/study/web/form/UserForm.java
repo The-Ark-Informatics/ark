@@ -143,7 +143,7 @@ public class UserForm extends Form<ArkUserVO>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(detailsContainer);
-				onSave(containerForm.getModelObject(), target);
+				onDelete(containerForm.getModelObject(), target);
 			}
 		};
 
