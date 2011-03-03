@@ -158,9 +158,17 @@ public class Constants {
 	
 	
 	/*Action Type - Audit History */
-	public static final String  ACTION_TYPE_CREATED= "CREATED";
+	public static final String ACTION_TYPE_CREATED= "CREATED";
+	public static final String	ACTION_TYPE_UPDATED	= "UPDATED";
+	public static final String	ACTION_TYPE_DELETED	= "DELETED";
 	
 	/* Entity Type */
-	public static final String  ENTITY_TYPE_STUDY= "Study";
-	
+	public static final String ENTITY_TYPE_STUDY= "Study";
+	public static final String	ENTITY_TYPE_STUDY_COMPONENT = "Study Component";
+	public static final String	ENTITY_TYPE_PHONE	= "Phone";
+	public static final String	ENTITY_TYPE_SUBJECT	= "Subject";
+	public static final String	ENTITY_TYPE_ADDRESS	= "Address";
+	public static final String	ENTITY_TYPE_CONSENT	= "Consent";
+	public static final String	ENTITY_TYPE_CONSENT_FILE	= "Consent File";
+	public static final String	ENTITY_TYPE_USER	= "User";
 }
