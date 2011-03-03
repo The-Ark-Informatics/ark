@@ -4,6 +4,12 @@
 	<table width="100%" cellspacing="0" class="dataview">
 		<tr>
 			<th width="5%">&nbsp;</th>
+			<th width="15%>
+				<label for="studyComponentId">
+					<wicket:message	key="study.component.id">Component ID:</wicket:message>
+				</label>
+			</th>
+			<th width="5%">&nbsp;</th>
 			<th width="15%">
 				<label for="studyCompName">
 					<wicket:message	key="study.component.name">Component Name:</wicket:message>
@@ -25,6 +31,12 @@
 		</tr>
 		<!--  The Data Result Set -->
 		<tr wicket:id="studyCompList">
+			<td width="5%">&nbsp;</td>
+
+			<td width="15%">
+				<span wicket:id="studyComponent.id">100</span>
+			</td>
+
 			<td width="5%"></td>
 
 			<td width="15%">
@@ -45,8 +57,10 @@
 		</tr>
 		<tr>
 			<td width="5%">&nbsp;</td>
-			<td colspan="5"><span wicket:id="navigator" class="a"></span></td>
+			<td colspan="7"><span wicket:id="navigator" class="a"></span></td>
 			<!--<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
 			<td width="15%">&nbsp;</td>
 			<td width="5%">&nbsp;</td>
 			<td width="15%">&nbsp;</td>

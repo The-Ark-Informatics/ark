@@ -12,6 +12,20 @@
 				
 				<div id="fldLabel">
 		 			<div class="label">
+		 				<label for="componentId"><wicket:message key="study.component.id">Component Id:</wicket:message></label>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label"> <!--  this will change to ID -->
+						<input wicket:id="studyComponent.id"  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
 						<label for="componentId"><wicket:message key="study.component.name">Name:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
@@ -21,8 +35,12 @@
 						<input wicket:id="studyComponent.name"  type="text" />
 					</div>
 				</div>
-
-				<div  id="panelMargin">&nbsp;</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>		
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
 					<div class="label">
@@ -37,12 +55,23 @@
 		       			 <textarea wicket:id="studyComponent.keyword" cols="25"></textarea> 
 		       		</div>
 		       	</div>
-			       		       					
+			       		       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				
 				<div id="searchPanelContentRight">&nbsp;</div>
 				
 				<div id="searchPanelBreaker">&nbsp;</div>		
-		       	
-		
 				<!--  Defines the location for buttons -->			
 				
 				<div id="panelContentLeft">&nbsp;</div>
