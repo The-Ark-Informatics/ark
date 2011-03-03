@@ -9,13 +9,13 @@
 			<div id="fldLabel">
 				<div class="label">
 					<label for="phoneID">
-						<label for="areaCode"><wicket:message	key="areaCode">Area Code:</wicket:message></label>
+						<label for="phoneID"><wicket:message key="phoneId">phId:</wicket:message></label>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
 				<div class="label">
-					 <input wicket:id="phone.areaCode" type="text" />
+					 <input wicket:id="phone.id" type="text" />
 				</div>
 			</div>
 			
@@ -23,27 +23,8 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<wicket:message	key="phoneNumber">Number:</wicket:message>
-				</div>
-			</div>
-			
-			<div id="fldControl">
-				<div class="label">
-					<input wicket:id="phone.phoneNumber" type="text" /> 
-				</div>
-			</div>
-			
-			<div id="searchPanelContentRight">&nbsp;</div>
-		
-			<div id="searchPanelBreaker">&nbsp;</div>
-
-		
-			<div id="panelContentLeft">&nbsp;</div>
-			<!--  Row 1 -->
-			<div id="fldLabel">
-				<div class="label">
 					<label for="phoneNumber">
-						<label for="phoneType"><wicket:message	key="phoneType">Phone Type:</wicket:message></label>
+						<label for="phoneType"><wicket:message key="phoneType">Phone Type:</wicket:message></label>
 					</label>
 				</div>
 			</div>
@@ -56,17 +37,37 @@
 				</div>
 			</div>
 			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  wmc-areaCode is a WebMarkupContainer to allow updates to areaCode textfield -->
+			<!--<div wicket:id="wmc-areaCode"> -->
+				<div id="fldLabel">
+					<div class="label">
+						<label for="areaCode">
+							<label for="areaCode"><wicket:message key="areaCode">Area Code:</wicket:message></label>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						 <input wicket:id="phone.areaCode" type="text" />
+					</div>
+				</div>
+			<!-- </div>-->			
 			<div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
 				<div class="label">
-					&nbsp;
+					<wicket:message	key="phoneNumber">Number:</wicket:message>
 				</div>
 			</div>
 			
 			<div id="fldControl">
 				<div class="label">
-					&nbsp;
+					<input wicket:id="phone.phoneNumber" type="text" /> 
 				</div>
 			</div>
 			
@@ -91,7 +92,7 @@
 					<div class="label">
 					  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
 					  <div id="panelMargin">&nbsp;</div>
-					  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
+					  <input wicket:id="cancel" type="submit" wicket:message="value:page.cancel" />
 					  <div id="panelMargin">&nbsp;</div>
 					  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
 				  	</div>

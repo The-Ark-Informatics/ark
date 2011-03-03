@@ -44,6 +44,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	private PageableListView<Phone> pageableListView;
 	private CompoundPropertyModel<PhoneVO>	cpmModel;
 	
+	private TextField<String> phoneIdTxtFld;
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
@@ -75,7 +76,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	}
 
 	protected void initialiseSearchForm(){
-		
+		phoneIdTxtFld = new TextField<String>("phone.id");
 		areaCodeTxtFld = new TextField<String>("phone.areaCode");
 		phoneNumberTxtFld = new TextField<String>("phone.phoneNumber");
 
@@ -86,6 +87,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	}
 
 	protected void addSearchComponentsToForm(){
+		add(phoneIdTxtFld);
 		add(areaCodeTxtFld);
 		add(phoneNumberTxtFld);
 		add(phoneTypeChoice);

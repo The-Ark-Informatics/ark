@@ -68,6 +68,12 @@ public class SearchResultListPanel extends Panel{
 				
 				item.add(buildLink(phone));
 				
+				if(phone.getId() != null){
+					item.add(new Label("id", phone.getId().toString()));
+				}else{
+					item.add(new Label("id", ""));
+				}
+				
 				if(phone.getAreaCode() != null){
 					item.add(new Label("areaCode",phone.getAreaCode()));	
 				}else{
@@ -86,7 +92,7 @@ public class SearchResultListPanel extends Panel{
 	
 	private AjaxLink buildLink(final Phone phone){
 		
-		AjaxLink link = new AjaxLink("phoneNumber") {
+		AjaxLink link = new AjaxLink("phoneNumberLink") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
@@ -110,7 +116,7 @@ public class SearchResultListPanel extends Panel{
 			}
 			
 		};
-		Label nameLinkLabel = new Label(Constants.PHONE_NUMBER_LABEL, phone.getPhoneNumber());
+		Label nameLinkLabel = new Label(Constants.PHONE_NUMBER_VALUE, phone.getPhoneNumber());
 		link.add(nameLinkLabel);
 		return link;
 	}
