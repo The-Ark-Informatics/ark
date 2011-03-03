@@ -21,8 +21,10 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.EtaUser;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
@@ -34,6 +36,9 @@ import au.org.theark.study.model.dao.IUserDao;
 public class UserServiceImpl implements IUserService {
 
 	final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	private IArkCommonService arkCommonService;
+	
 	/* DAO to access database */
 	private IUserDao userDAO;
 	
@@ -56,6 +61,15 @@ public class UserServiceImpl implements IUserService {
 	
 	public IUserDao getUserDAO() {
 		return userDAO;
+	}
+	
+	public IArkCommonService getArkCommonService() {
+		return arkCommonService;
+	}
+
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
 	}
 
 	public Person createPerson(Person personEntity){
@@ -103,6 +117,12 @@ public class UserServiceImpl implements IUserService {
 	public void createLdapUser(ArkUserVO userVO) throws  InvalidNameException,UserNameExistsException,Exception {
 		log.info("UserServiceImpl.createLdapUser() ");
 		iLdapUserDao.create(userVO);		
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created User (in LDAP) " + userVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	
@@ -125,14 +145,26 @@ public class UserServiceImpl implements IUserService {
 	
 	public void updateLdapUser(ArkUserVO userVO) throws ArkSystemException{
 		iLdapUserDao.update(userVO);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated User (in LDAP) " + userVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public List<Person> searchPerson(Person person) throws PersonNotFoundException{
 		return userDAO.searchPerson(person);
 	}
 	
-	public void deleteLdapUser(ArkUserVO etaUserVO) throws UnAuthorizedOperation, ArkSystemException{
-		 iLdapUserDao.delete(etaUserVO);
+	public void deleteLdapUser(ArkUserVO userVO) throws UnAuthorizedOperation, ArkSystemException{
+		 iLdapUserDao.delete(userVO);
+		 
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted User (in LDAP) " + userVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public ArkUserVO getCurrentUser(String username) throws ArkSystemException{
