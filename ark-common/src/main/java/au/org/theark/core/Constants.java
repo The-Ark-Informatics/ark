@@ -155,4 +155,9 @@ public class Constants {
 	public static final String DEFAULT_COUNTRY="Australia";
 	public static final String NO = "No";
 	public static final String YES = "Yes";
+	
+	
+	/***/
+	public static final String  ACTION_TYPE_CREATED= "CREATED";
+	
 }
