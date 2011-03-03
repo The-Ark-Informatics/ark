@@ -21,7 +21,7 @@
 				</div>
 			
 				<div id="fldControl">
-					<div class="label"><input wicket:id="email" type="text" /></div>
+					<div class="label"><input wicket:id="email" type="text" size="25"/></div>
 				</div>
 				
 				<div id="searchPanelContentRight">&nbsp;</div>
@@ -48,16 +48,13 @@
 				<div id="searchPanelBreaker">&nbsp;</div>
 			
 				<!--  Defines the location for buttons -->
-				<div id="panelContentLeft">&nbsp;</div>
-				<div id="fldLabel">&nbsp;</div>
-				<div id="fldControl">&nbsp;</div>
-				<div id="panelMargin">&nbsp;</div>
-				<div id="fldLabel">&nbsp;
-					<div class="label">
-						<input wicket:id="search" type="submit" wicket:message="value:page.search" />
-						<div id="panelMargin">&nbsp;</div>
-						<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+				<div id="actionButtons">
+					<div id="panelMargin">
+						&nbsp;
 					</div>
+					<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+					<div id="panelMargin">&nbsp;</div>
+					<input wicket:id="new" type="submit" wicket:message="value:page.new" />
 				</div>
 				<div id="searchPanelBreaker">&nbsp;</div>
 			</div>
