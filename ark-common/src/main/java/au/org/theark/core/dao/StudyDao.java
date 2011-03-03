@@ -46,7 +46,6 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.vo.StudySubjectVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -363,6 +362,9 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	}
 	
 	public void createAuditHistory(AuditHistory auditHistory){
+		
+	    Date date = new Date(System.currentTimeMillis());
+	    auditHistory.setDateTime(date);
 		getSession().save(auditHistory);
 	}
 }
