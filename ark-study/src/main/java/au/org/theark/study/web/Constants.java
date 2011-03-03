@@ -213,4 +213,9 @@ public class Constants {
 	public static final String CUSTOM_FIELD_LABEL="fieldTitleLabel";
 	public static final String DOWNLOAD_FILE = "downloadFile";
 	public static final String DELETE_FILE = "deleteFile";
+	
+	public static final String STUDY_STATUS_COMPLETED ="Completed";
+	public static final String STUDY_STATUS_REQUESTED="Requested";
+	public static final String STUDY_STATUS_RECEIVED="Recieved";
+	
 }
