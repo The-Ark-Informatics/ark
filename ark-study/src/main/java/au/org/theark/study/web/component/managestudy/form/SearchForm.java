@@ -49,7 +49,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		super(id);
 		setMultiPart(true);
 		cpmModel = model;
-//		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
+		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
 		// Create new DateTextField and assign date format
 		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
@@ -128,7 +128,7 @@ public class SearchForm extends Form<StudyModelVO>{
 	@SuppressWarnings("unused")
 	private void decorateComponents(){
 		ThemeUiHelper.componentRounded(studyNameTxtFld);
-//		ThemeUiHelper.componentRounded(studyIdTxtFld);
+		ThemeUiHelper.componentRounded(studyIdTxtFld);
 		ThemeUiHelper.componentRounded(dateOfApplicationDp);
 		ThemeUiHelper.componentRounded(principalContactTxtFld);
 		ThemeUiHelper.buttonRounded(searchButton);
@@ -139,7 +139,7 @@ public class SearchForm extends Form<StudyModelVO>{
 	}
 	
 	private void addComponentsToForm(){
-//		add(studyIdTxtFld);
+		add(studyIdTxtFld);
 		add(studyNameTxtFld);
 		add(dateOfApplicationDp);
 		add(principalContactTxtFld);
