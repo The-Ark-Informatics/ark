@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,9 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.ActionType;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
@@ -29,6 +32,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -43,6 +47,7 @@ public class StudyServiceImpl implements IStudyService{
 	
 	private static Logger log = LoggerFactory.getLogger(StudyServiceImpl.class);
 	
+	private IArkCommonService arkCommonService;
 	private IStudyDao studyDao;
 	private ILdapUserDao iLdapUserDao;
 
@@ -65,6 +70,15 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao;
 	}
 
+	public IArkCommonService getArkCommonService() {
+		return arkCommonService;
+	}
+
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
+	}
+	
 	public List<StudyStatus> getListOfStudyStatus(){
 		return studyDao.getListOfStudyStatus();
 	}
@@ -88,6 +102,16 @@ public class StudyServiceImpl implements IStudyService{
 			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
 				studyDao.create(studyEntity);
 				iLdapUserDao.createStudy(studyEntity.getName(), selectedApplications, au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
+				
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+				ah.setArkUserId((String) currentUser.getPrincipal());
+				ah.setComment("Created Study " + studyEntity.getName());
+				ah.setEntityId(studyEntity.getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+				ah.setStudyStatus(studyEntity.getStudyStatus());
+				arkCommonService.createAuditHistory(ah);
+				
 			}else{
 			 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
 			}
@@ -148,6 +172,7 @@ public class StudyServiceImpl implements IStudyService{
 		}
 
 		studyDao.create(studyComponent);
+	
 		//Add Audit Log here
 	}
 	
@@ -299,5 +324,7 @@ public class StudyServiceImpl implements IStudyService{
 		// TODO Auto-generated method stub
 		return studyDao.searchConsentFile(consentFile);
 	}
+
+
 		
 }
