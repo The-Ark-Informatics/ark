@@ -82,7 +82,7 @@ public class Phone implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@Column(name = "PHONE_NUMBER", length = 50)
+	@Column(name = "PHONE_NUMBER", length = 10)
 	public String getPhoneNumber() {
 		return this.phoneNumber;
 	}
@@ -91,7 +91,7 @@ public class Phone implements java.io.Serializable {
 		this.phoneNumber = phoneNumber;
 	}
 	
-	@Column(name = "AREA_CODE", precision = 22, scale = 0)
+	@Column(name = "AREA_CODE", length = 10)
 	public String getAreaCode() {
 		return this.areaCode;
 	}
