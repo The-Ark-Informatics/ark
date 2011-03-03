@@ -73,8 +73,8 @@ public class AuditHistory implements java.io.Serializable {
 	}
 
 
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DATE_TIME", length = 7)
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_TIME")
 	public Date getDateTime() {
 		return this.dateTime;
 	}
@@ -111,7 +111,7 @@ public class AuditHistory implements java.io.Serializable {
 		this.studyStatus = studyStatus;
 	}
 	
-	@Column(name = "ARK_USER_ID", length = 50)
+	@Column(name = "ARK_USER_ID", length = 255)
 	public String getArkUserId() {
 		return arkUserId;
 	}
