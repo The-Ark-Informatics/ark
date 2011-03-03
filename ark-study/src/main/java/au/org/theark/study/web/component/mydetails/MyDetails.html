@@ -1,7 +1,7 @@
 <wicket:panel>&nbsp;
 	<form wicket:id="userDetailsForm">
 		<div id="detailsPanelBorder">
-			<div id="searchPanelBreaker">
+			<div id="detailPanelBreaker">
 				&nbsp;
 			</div>
 			<div id="panelContentLeft">
@@ -38,10 +38,10 @@
 					<input wicket:id="firstName" type="text" />
 				</div>
 			</div>
-			<div id="searchPanelContentRight">
+			<div id="detailPanelContentRight">
 				&nbsp;
 			</div>
-			<div id="searchPanelBreaker">
+			<div id="detailPanelBreaker">
 				&nbsp;
 			</div>
 			<div id="panelContentLeft">
@@ -77,15 +77,15 @@
 					</label>
 				</div>
 			</div>
-			<div id="fldControl">
-				<div class="label">
-					<input wicket:id="email" type="text" />
+			<div id="fldLabel">
+				<div class="email">
+					<input wicket:id="email" type="text" size="25" />
 				</div>
 			</div>
-			<div id="searchPanelContentRight">
+			<div id="detailPanelContentRight">
 				&nbsp;
 			</div>
-			<div id="searchPanelBreaker">
+			<div id="detailPanelBreaker">
 				&nbsp;
 			</div>
 			<div id="panelContentLeft">
@@ -125,24 +125,20 @@
 				</div>
 			</div>
 
-			<div id="searchPanelBreaker">
+			<div id="detailPanelBreaker">
 				&nbsp;
 			</div>
 
 			<div id="actionButtons">
-				&nbsp;
-				<div class="label">
-					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
-					&nbsp;
-					<div	id="panelMargin">
-						&nbsp;
-					</div>
-					&nbsp;
-					<div	id="panelMargin">
-						&nbsp;
-					</div>
+				<div id="panelMargin">
 					&nbsp;
 				</div>
+				<div class="label">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+				</div>
+			</div>
+			<div id="detailPanelBreaker">
+				&nbsp;
 			</div>
 		</div>
 	</form>
