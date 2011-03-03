@@ -210,12 +210,19 @@
 				
 				<div id="fldLabel">
 					<div class="label">
-						&nbsp;
+						<label for="personContactMethod">
+							<wicket:message key="personContactMethod">Preferred Contact Method:</wicket:message>
+						</label>
 					</div>
 				</div>
 				<div id="fldControl">
-					<div class="label" >
-						&nbsp; 
+					<div class="label">
+						<select wicket:id="subjectStudy.person.personContactMethod">
+		       				<option>Home telephone</option>
+		       				<option>Mobile telephone</option>
+		       				<option>Email</option>
+		       				<option>Post</option>
+		       			</select>
 					</div>
 				</div>
 				

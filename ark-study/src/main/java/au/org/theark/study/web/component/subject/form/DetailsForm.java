@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.subject.form;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -15,6 +16,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,13 +29,12 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
@@ -91,6 +93,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private DropDownChoice<GenderType> genderTypeDdc;
 	private DropDownChoice<SubjectStatus> subjectStatusDdc;
 	private DropDownChoice<MaritalStatus> maritalStatusDdc;
+	private DropDownChoice<PersonContactMethod> personContactMethodDdc;
 	
 	private Study study;
 	
@@ -154,6 +157,10 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		ChoiceRenderer<MaritalStatus> maritalStatusRender = new ChoiceRenderer<MaritalStatus>(Constants.NAME,Constants.ID);
 		maritalStatusDdc = new DropDownChoice<MaritalStatus>(Constants.PERSON_MARITAL_STATUS,(List) maritalStatusList, maritalStatusRender);
 		
+		Collection<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList(); 
+		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME,Constants.ID);
+		personContactMethodDdc= new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD,(List) contactMethodList, contactMethodRender);
+		
 		initCustomFields();
 		
 		attachValidators();
@@ -216,7 +223,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		
 		final List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-		class TestVO{
+		class TestVO implements Serializable{
 			public Country selected= countryList.get(0);
 		}
 		countryChoice = new DropDownChoice<Country>("subjectStudy.country", new PropertyModel(new TestVO(),"selected"),countryList, defaultChoiceRenderer);
@@ -255,6 +262,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(genderTypeDdc);
 		detailPanelFormContainer.add(subjectStatusDdc);
 		detailPanelFormContainer.add(maritalStatusDdc);
+		detailPanelFormContainer.add(personContactMethodDdc);
 		
 		//Add the supposed-to-be custom controls into the form container.
 		detailPanelFormContainer.add(amdrifIdTxtFld);
@@ -370,7 +378,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			boolean validFlag=false;
 			Calendar calendar = Calendar.getInstance();
 			int calYear = calendar.get(Calendar.YEAR);
-			System.out.println("\n ---- Calendar Year " + calYear);
+			//System.out.println("\n ---- Calendar Year " + calYear);
 			
 			//validate if the fields were supplied
 			if(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram() != null){
