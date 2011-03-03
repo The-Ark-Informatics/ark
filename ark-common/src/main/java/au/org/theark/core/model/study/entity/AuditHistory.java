@@ -3,7 +3,13 @@ package au.org.theark.core.model.study.entity;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,7 +32,7 @@ public class AuditHistory implements java.io.Serializable {
 	private String arkUserId;
 	private String comment;
 	private Long entityId;
-	private EntityType entityType;
+	private String entityType;
 
 	// Constructors
 
@@ -42,7 +48,7 @@ public class AuditHistory implements java.io.Serializable {
 	/** full constructor */
 	public AuditHistory(Long id, StudyStatus studyStatus,
 			Date dateTime, String actionType, String etaUserId,
-			String comment, Long entityKey, EntityType entityType) {
+			String comment, Long entityKey, String entityType) {
 		this.id = id;
 		this.studyStatus = studyStatus;
 		this.dateTime = dateTime;
@@ -55,6 +61,8 @@ public class AuditHistory implements java.io.Serializable {
 
 	// Property accessors
 	@Id
+	@SequenceGenerator(name="ah_generator", sequenceName="AUDIT_HISTORY_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "ah_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -93,6 +101,8 @@ public class AuditHistory implements java.io.Serializable {
 		this.entityId = entityId;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_STATUS_ID")
 	public StudyStatus getStudyStatus() {
 		return studyStatus;
 	}
@@ -110,14 +120,6 @@ public class AuditHistory implements java.io.Serializable {
 		this.arkUserId = arkUserId;
 	}
 
-	@Column(name = "ENTITY_TYPE_ID", precision = 22, scale = 0)
-	public EntityType getEntityType() {
-		return entityType;
-	}
-
-	public void setEntityType(EntityType entityType) {
-		this.entityType = entityType;
-	}
 
 	@Column(name = "ACTION_TYPE")
 	public String getActionType() {
@@ -126,6 +128,15 @@ public class AuditHistory implements java.io.Serializable {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
+	}
+
+	@Column(name = "ENTITY_TYPE")
+	public String getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(String entityType) {
+		this.entityType = entityType;
 	}
 
 }
