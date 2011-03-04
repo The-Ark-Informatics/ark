@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Phone;
@@ -185,21 +186,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 	
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException {
-		
-		try
-		{
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException{
 			//Add Business Validations here as well apart from UI validation
-			Session session = getSession();
-			Person person  = subjectVO.getSubjectStudy().getPerson();
-			session.save(person); 
-			
-			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-		}
-		catch(HibernateException hie){
-			throw new ArkUniqueException("Subject UID must be unique");
-		}
+			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId())){
+				Session session = getSession();
+				Person person  = subjectVO.getSubjectStudy().getPerson();
+				session.save(person); 
+				LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+				session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+			}else{
+				throw new ArkUniqueException("Subject UID must be unique");
+			}
 	}
 	
 	
@@ -582,6 +579,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		@SuppressWarnings("unchecked")
 		List<ConsentFile> list = criteria.list();
 		return list;
+	}
+	
+	
+	private boolean isSubjectUIDUnique(String subjectUID, Long studyId){
+		boolean isUnique = true;
+		
+		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("subjectUID", subjectUID));
+		criteria.add(Restrictions.eq("study.id", studyId));
+		if (criteria.list().size() > 0){
+			isUnique = false;
+		}
+		return isUnique;
 	}
 
 }

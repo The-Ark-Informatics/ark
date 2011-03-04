@@ -261,13 +261,14 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	public void createSubject(SubjectVO subjectVO)  throws ArkUniqueException{
+		
 		studyDao.createSubject(subjectVO);
 		
 		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		
-		ah.setComment("Created Subject " + subjectVO.getSubjectUID());
+		ah.setComment("Created Subject " + subjectVO.getSubjectStudy().getSubjectUID());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getSubjectStudy().getId());
 		arkCommonService.createAuditHistory(ah);
@@ -278,7 +279,7 @@ public class StudyServiceImpl implements IStudyService{
 		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Subject " + subjectVO.getSubjectUID());
+		ah.setComment("Updated Subject " + subjectVO.getSubjectStudy().getSubjectUID());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
 		ah.setEntityId(subjectVO.getSubjectStudy().getId());
 		arkCommonService.createAuditHistory(ah);
