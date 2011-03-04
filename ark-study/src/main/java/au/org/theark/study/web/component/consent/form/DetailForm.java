@@ -197,9 +197,13 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
-			{
-				//Check if the subject in context has already consented to this component and display a message if so.
-				
+			{	
+				boolean isConsented  = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject());
+				processErrors(target);
+				if(isConsented){
+					containerForm.info(" Please choose another component. The Subject has already consented to Component : " + studyComponentChoice.getModelObject().getName() );
+					processErrors(target);
+				}
 			}
 		});
 	
