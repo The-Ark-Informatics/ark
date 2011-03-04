@@ -13,8 +13,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
@@ -51,7 +54,7 @@ import au.org.theark.study.web.Constants;
  * @author nivedann
  *
  */
-public class DetailsForm extends AbstractDetailForm<SubjectVO>{
+public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -316,14 +319,14 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDeleteConfirmed(org.apache.wicket.ajax.AjaxRequestTarget, java.lang.String, org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
 	 */
-	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
-		
-		selectModalWindow.close(target);
-		containerForm.setModelObject(new SubjectVO());
-		onCancel(target);
-		
-	}
+//	@Override
+//	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
+//		
+//		selectModalWindow.close(target);
+//		containerForm.setModelObject(new SubjectVO());
+//		onCancel(target);
+//		
+//	}
 	
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
 		boolean validFlag=true;
