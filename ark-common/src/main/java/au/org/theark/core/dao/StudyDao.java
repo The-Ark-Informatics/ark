@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectStudycomp;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -342,7 +343,21 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	
 	public List<StudyComp> getStudyComponent(){
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		List<StudyComp> studyCompList = criteria.list();
 		return criteria.list();
+	}
+	
+	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent){
+		boolean isConsented = false;
+		//Check the Link
+		LinkSubjectStudycomp subjectStudyComponent = new LinkSubjectStudycomp();
+		subjectStudyComponent.setStudyComp(studyComponent);
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudycomp.class);
+		
+		
+		return isConsented;
+		
+		
 	}
 	
 	/**
