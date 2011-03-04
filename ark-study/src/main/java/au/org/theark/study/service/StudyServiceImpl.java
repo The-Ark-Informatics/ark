@@ -274,7 +274,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
-	public void updateSubject(SubjectVO subjectVO){
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
 		studyDao.updateSubject(subjectVO);
 		
 		AuditHistory ah = new AuditHistory();

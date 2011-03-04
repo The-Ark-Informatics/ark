@@ -201,17 +201,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	
  
-	public void updateSubject(SubjectVO subjectVO){
-		
-		try{
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
+		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId())){
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
 			session.update(person);//Update Person and associated Phones
 			session.update(subjectVO.getSubjectStudy());
-		}catch(Exception  ae){
-			log.error("A System Exception occured while update of Subject " + ae.getStackTrace());
-			//TODO throw ArkSystemException back to caller
+		}else{
+			throw new ArkUniqueException("Subject UID must be unique");
 		}
+		
 		
 	}
 	

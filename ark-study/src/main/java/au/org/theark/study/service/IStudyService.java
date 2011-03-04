@@ -79,7 +79,7 @@ public interface IStudyService {
 	 */
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException;
 	
-	public void updateSubject(SubjectVO subjectVO);
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException;
 	
 	/**
 	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
