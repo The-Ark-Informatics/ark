@@ -28,6 +28,22 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 public class SubjectVO implements Serializable{
 	
 	private String subjectFullName;
+	protected SubjectStatus subjectStatus;
+	protected LinkSubjectStudy subjectStudy;
+	protected Collection<SubjectVO> subjectList;
+
+	/** A List of phone numbers linked to this person/subject*/
+	protected Collection<Phone> phoneList;
+	/** A List of Address linked to this person/subject*/
+	protected Collection<Address> addressList;
+	/** A List of Email account linked to this person/subject*/
+	protected Collection<EmailAccount> emailAccountList;
+	
+	protected Collection<StudyConsentQuestion> consentQuestions;
+	
+	private ConsentAnswer consentAnswerSelect;
+	
+	
 	public String getSubjectFullName() {
 		return subjectFullName;
 	}
@@ -48,11 +64,7 @@ public class SubjectVO implements Serializable{
 	}
 
 
-	protected SubjectStatus subjectStatus;
-	protected String subjectUID;
-
-	protected LinkSubjectStudy subjectStudy;
-	
+		
 	public LinkSubjectStudy getSubjectStudy() {
 		return subjectStudy;
 	}
@@ -61,18 +73,7 @@ public class SubjectVO implements Serializable{
 		this.subjectStudy = subjectStudy;
 	}
 
-	protected Collection<SubjectVO> subjectList;
-
-	/** A List of phone numbers linked to this person/subject*/
-	protected Collection<Phone> phoneList;
-	/** A List of Address linked to this person/subject*/
-	protected Collection<Address> addressList;
-	/** A List of Email account linked to this person/subject*/
-	protected Collection<EmailAccount> emailAccountList;
 	
-	protected Collection<StudyConsentQuestion> consentQuestions;
-	
-	private ConsentAnswer consentAnswerSelect;
 	
 	/**
 	 * Constructor
@@ -81,7 +82,6 @@ public class SubjectVO implements Serializable{
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
-		subjectUID = new String();
 		subjectStudy = new LinkSubjectStudy();
 	}
 
@@ -127,13 +127,6 @@ public class SubjectVO implements Serializable{
 		this.subjectList = subjectList;
 	}
 
-	public String getSubjectUID() {
-		return subjectUID;
-	}
-
-	public void setSubjectUID(String subjectUID) {
-		this.subjectUID = subjectUID;
-	}
 
 	public ConsentAnswer getConsentAnswerSelect() {
 		return consentAnswerSelect;
