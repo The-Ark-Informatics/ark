@@ -33,6 +33,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -229,7 +230,16 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
 		class TestVO implements Serializable{
 			public Country selected= countryList.get(0);
+			public void setSelected(Country c){
+				this.selected = c;
+			}
+			
+			public Country getSelected(){
+				return selected;
+			}
 		}
+		//final TestVO tvo = new TestVO();
+		
 		countryChoice = new DropDownChoice<Country>("subjectStudy.country", new PropertyModel(new TestVO(),"selected"),countryList, defaultChoiceRenderer);
 		//Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -237,8 +247,10 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());
 				target.addComponent(countryStateSelector);
+				//getModelObject().getSubjectStudy().setCountry(tvo.getSelected());
 			}
 		});
+	
 	}
 	
 	/**
@@ -356,15 +368,19 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			}
 			catch (ArkUniqueException ex)
 			{
-				this.error("Subject UID must be unique");
+				this.error("Subject UID must be unique.");
 			}
-			
 			processErrors(target);
 
 		}else{
 
-			studyService.updateSubject(subjectVO);
-			this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+			try {
+				studyService.updateSubject(subjectVO);
+				this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+			} catch (ArkUniqueException e) {
+				this.error("Subject UID must be unique.");
+			}
+			
 			processErrors(target);
 
 		}
@@ -424,7 +440,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
-			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getSubjectUID(), arkContextMarkupContainer);
+			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getSubjectStudy().getSubjectUID(), arkContextMarkupContainer);
 			
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getSubjectStudy().getPerson().getId());
 			//We specify the type of person here as Subject
