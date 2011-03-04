@@ -116,10 +116,13 @@
 	 		</div> 			       			
 				
 			<div id="fldControl">
-			  	<span wicket:id="addressStatus">
-			  		<input type="radio">Active</input>
-			  		<input type="radio">Inactive</input>
-				</span>
+				<div class="label">
+					<select wicket:id="address.addressStatus">
+						<option>Work</option>
+						<option>Home</option>
+		       		</select>
+				</div>
+
 			</div>
 		       	   		       			
 		    <div id="panelMargin">&nbsp;</div>

@@ -185,6 +185,7 @@ public class Constants {
 	public static final String ADDRESS_COUNTRY="address.country";
 	public static final String ADDRESS_COUNTRYSTATE_STATE="address.countryState";
 	public static final String ADDRESS_ADDRESSTYPE="address.addressType";
+	public static final String ADDRESS_ADDRESSSTATUS = "address.addressStatus";
 	public static final String ADDRESS_DATE_RECEIVED = "address.dateReceived";
 	public static final String ADDRESS_COMMENTS = "address.comments";
 	

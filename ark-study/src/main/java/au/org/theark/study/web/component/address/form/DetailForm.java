@@ -6,7 +6,6 @@
  */
 package au.org.theark.study.web.component.address.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -19,19 +18,17 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -62,7 +59,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DropDownChoice<CountryState> stateChoice;
 	private DropDownChoice<AddressType> addressTypeChoice;
 	private WebMarkupContainer countryStateSelector;
-	private RadioChoice<Boolean> addressStatusRadioChoice;
+	private DropDownChoice<AddressStatus> addressStatusChoice;
 	private DateTextField		dateReceivedDp;
 	private TextArea<String> commentsTxtArea;
 	
@@ -100,7 +97,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		initialiaseCountryDropDown();
 		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
-		initialiseRadioButton();
+		initialiseAddressStatusDropDown();
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
@@ -113,7 +110,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(countryChoice);
 		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-down for State
 		detailPanelFormContainer.add(addressTypeChoice);
-		detailPanelFormContainer.add(addressStatusRadioChoice);
+		detailPanelFormContainer.add(addressStatusChoice);
 		detailPanelFormContainer.add(dateReceivedDp);
 		detailPanelFormContainer.add(commentsTxtArea);
 	}
@@ -170,32 +167,12 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		stateChoice.setChoices(countryStateList);
 	}
 	
-	private void initialiseRadioButton(){
+	private void initialiseAddressStatusDropDown(){
 		
-		//The list that the Radio Button will use
-		List<Boolean> list = new ArrayList<Boolean>();
-		list.add(Boolean.TRUE);
-		list.add(Boolean.FALSE);
-		
-		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>() {
-			public Object getDisplayValue(final Boolean choice){
-				
-				String displayValue="Inactive";
-				
-				if(choice !=null && choice.booleanValue()){
-					displayValue = "Active";
-				}
-				return displayValue;
-			}
-			
-			public String getIdValue(final Boolean object,final int index){
-				return object.toString();
-			}
-		};
-		
-		PropertyModel<Boolean> addressStatusModel = new PropertyModel<Boolean>(containerForm.getModelObject().getAddress(),"addressStatus");
-		addressStatusModel.setObject(true);	// default to "active"
-		addressStatusRadioChoice = new RadioChoice<Boolean>("addressStatus",addressStatusModel,list,radioChoiceRender);
+		List<AddressStatus> statusList = iArkCommonService.getAddressStatuses();
+		ChoiceRenderer<AddressStatus> defaultChoiceRenderer = new ChoiceRenderer<AddressStatus>(Constants.NAME, Constants.ID);
+		addressStatusChoice = new DropDownChoice<AddressStatus>(Constants.ADDRESS_ADDRESSSTATUS, statusList, defaultChoiceRenderer);
+
 	}
 	
 	private void initialiseDatePicker() {
@@ -229,6 +206,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		postCodeTxtFld.add(StringValidator.minimumLength(4));
 		
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("addressType", this, new Model<String>("Address Type")));
+		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("addressStatus", this, new Model<String>("Address Status")));
+		stateChoice.setRequired(true).setLabel(new StringResourceModel("state", this, new Model<String>("State")));
 	}
 
 	/* (non-Javadoc)

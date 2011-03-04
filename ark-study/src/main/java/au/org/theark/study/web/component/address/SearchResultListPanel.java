@@ -20,6 +20,7 @@ import org.apache.wicket.model.IModel;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
+import au.org.theark.study.web.component.address.form.SearchForm;
 
 /**
  * @author nivedann
@@ -62,7 +63,7 @@ public class SearchResultListPanel extends Panel{
 	
 	public PageableListView<Address> buildPageableListView(IModel iModel){
 		
-		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST,iModel,5) {
+		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST,iModel, 10) {
 
 			@Override
 			protected void populateItem(ListItem<Address> item) {
@@ -131,6 +132,10 @@ public class SearchResultListPanel extends Panel{
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
 				editButtonContainer.setVisible(false);
+				
+				// Update the state choices based on selected address pre-render...
+				SearchForm searchForm = (SearchForm) ((SearchPanel) searchPanelContainer.get("searchComponentPanel")).get("searchForm");
+				searchForm.updateDetailFormPrerender(address);
 				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
