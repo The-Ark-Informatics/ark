@@ -3,7 +3,7 @@
 	<form wicket:id="detailsForm">
 		 <div id="detailsPanelBorder">
 		  <div wicket:id="detailFormContainer">
-		    <div id="searchPanelBreaker">&nbsp;</div>
+		    <div id="detailPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
 			<!--  Row 1 -->
 			<div id="fldLabel">
@@ -33,8 +33,8 @@
 				</div>
 			</div>
 			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 		
 			<div id="panelContentLeft">&nbsp;</div>
 			<!--  Row 1 -->
@@ -68,8 +68,8 @@
 				</div>
 			</div>
 			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 			
 			<div id="panelContentLeft">&nbsp;</div>
 			<div id="fldLabel">
@@ -106,8 +106,8 @@
 				</div>
 			</div>
 			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
 			<div id="fldLabel">
 	 			<div class="label">
@@ -140,11 +140,45 @@
 				</div>
 			</div>
 
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="comments"><wicket:message key="address.comments">Comments:</wicket:message></label>
+	 			</div> 
+	 		</div> 			       			
+				
+			<div id="fldControl">
+			  	<div class="label">
+					<textarea wicket:id="address.comments" maxlength="255" cols="25"></textarea>
+				</div>
+			</div>
+		       	   		       			
+		    <div id="panelMargin">&nbsp;</div>
+						
+			<div id="fldLabel">
+				<div class="label">
+					<label for="label">
+						&nbsp;
+					</label>
+				</div>
+			</div>
+	
+			<div id="fldControl">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			
+			
 			<!-- ModalWindow for confirm Delete window -->
 			<div wicket:id="modalwindow"></div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 				
 			</div>
 			
@@ -177,7 +211,7 @@
 				  	</div>
 				</div>
 			</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 		</div>
 	</form>
 </wicket:panel>	

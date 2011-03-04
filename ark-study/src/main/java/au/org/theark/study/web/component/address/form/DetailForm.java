@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RadioChoice;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
@@ -63,6 +64,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private WebMarkupContainer countryStateSelector;
 	private RadioChoice<Boolean> addressStatusRadioChoice;
 	private DateTextField		dateReceivedDp;
+	private TextArea<String> commentsTxtArea;
 	
 	/**
 	 * @param id
@@ -94,6 +96,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		streetAddressTxtFld = new TextField<String>("address.streetAddress");
 		cityTxtFld = new TextField<String>("address.city");
 		postCodeTxtFld = new TextField<String>("address.postCode");
+		commentsTxtArea = new TextArea<String>("address.comments");
 		initialiaseCountryDropDown();
 		initialiseCountrySelector();
 		initialiseAddressTypeDropDown();
@@ -112,8 +115,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(addressTypeChoice);
 		detailPanelFormContainer.add(addressStatusRadioChoice);
 		detailPanelFormContainer.add(dateReceivedDp);
+		detailPanelFormContainer.add(commentsTxtArea);
 	}
-	
 	
 	private void initialiseAddressTypeDropDown(){
 		List<AddressType> addressTypeList = iArkCommonService.getAddressTypes();
