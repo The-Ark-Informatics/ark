@@ -185,6 +185,8 @@ public class Constants {
 	public static final String ADDRESS_COUNTRY="address.country";
 	public static final String ADDRESS_COUNTRYSTATE_STATE="address.countryState";
 	public static final String ADDRESS_ADDRESSTYPE="address.addressType";
+	public static final String ADDRESS_DATE_RECEIVED = "address.dateReceived";
+	public static final String ADDRESS_COMMENTS = "address.comments";
 	
 	public static final String CONSENT_CONSENT_TYPE="consent.consentType";
 	public static final String CONSENT_CONSENTED_BY="consent.consentedBy";
@@ -217,5 +219,6 @@ public class Constants {
 	public static final String STUDY_STATUS_COMPLETED ="Completed";
 	public static final String STUDY_STATUS_REQUESTED="Requested";
 	public static final String STUDY_STATUS_RECEIVED="Recieved";
+	
 	
 }
