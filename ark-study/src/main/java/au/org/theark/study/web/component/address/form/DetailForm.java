@@ -13,6 +13,8 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -45,7 +47,6 @@ import au.org.theark.study.web.Constants;
  */
 public class DetailForm  extends AbstractDetailForm<AddressVO>{
 
-	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
@@ -61,6 +62,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DropDownChoice<AddressType> addressTypeChoice;
 	private WebMarkupContainer countryStateSelector;
 	private RadioChoice<Boolean> addressStatusRadioChoice;
+	private DateTextField		dateReceivedDp;
 	
 	/**
 	 * @param id
@@ -88,7 +90,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		
 	}
 	
-	
 	public void initialiseDetailForm(){
 		streetAddressTxtFld = new TextField<String>("address.streetAddress");
 		cityTxtFld = new TextField<String>("address.city");
@@ -97,19 +98,20 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		initialiseCountrySelector();
 		initialiseAddressTypeDropDown();
 		initialiseRadioButton();
+		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
 	}
-	
-	
+
 	public void addDetailFormComponents(){
 		detailPanelFormContainer.add(streetAddressTxtFld);
 		detailPanelFormContainer.add(cityTxtFld);
 		detailPanelFormContainer.add(postCodeTxtFld);
 		detailPanelFormContainer.add(countryChoice);
-		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-downn for State
+		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-down for State
 		detailPanelFormContainer.add(addressTypeChoice);
 		detailPanelFormContainer.add(addressStatusRadioChoice);
+		detailPanelFormContainer.add(dateReceivedDp);
 	}
 	
 	
@@ -191,6 +193,21 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		PropertyModel<Boolean> addressStatusModel = new PropertyModel<Boolean>(containerForm.getModelObject().getAddress(),"addressStatus");
 		addressStatusRadioChoice = new RadioChoice<Boolean>("addressStatus",addressStatusModel,list,radioChoiceRender);
 	}
+	
+	private void initialiseDatePicker() {
+		// Create new DateTextField and assign date format
+		dateReceivedDp = new DateTextField(Constants.ADDRESS_DATE_RECEIVED, au.org.theark.core.Constants.DD_MM_YYYY);
+		DatePicker datePicker = new DatePicker(){
+					@Override
+					protected boolean enableMonthYearSelection()
+					{
+						return true;
+					}
+		};
+		// Bind DatePicker to particular date field
+		datePicker.bind(dateReceivedDp);
+		dateReceivedDp.add(datePicker);
+	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#attachValidators()
@@ -208,7 +225,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		postCodeTxtFld.add(StringValidator.minimumLength(4));
 		
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("addressType", this, new Model<String>("Address Type")));
-		
 	}
 
 	/* (non-Javadoc)
@@ -271,8 +287,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 	}
 
 	/* (non-Javadoc)
@@ -283,5 +297,4 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		target.addComponent(feedBackPanel);
 		
 	}
-
 }

@@ -125,14 +125,18 @@
 		    <div id="panelMargin">&nbsp;</div>
 						
 			<div id="fldLabel">
-		 			<div class="label">
-						&nbsp;		
-		 			</div> 
-		 	</div> 			       			
-				
+				<div class="label">
+					<label for="address.dateReceived">
+						<wicket:message key="address.dateReceived">
+							Date Received:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+	
 			<div id="fldControl">
 				<div class="label">
-					  &nbsp;
+					<input wicket:id="address.dateReceived" type="text"	maxlength="10" />
 				</div>
 			</div>
 
@@ -173,6 +177,7 @@
 				  	</div>
 				</div>
 			</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
 		</div>
 	</form>
 </wicket:panel>	

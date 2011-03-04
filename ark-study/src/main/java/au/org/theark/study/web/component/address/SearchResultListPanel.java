@@ -6,6 +6,8 @@
  */
 package au.org.theark.study.web.component.address;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -96,6 +98,15 @@ public class SearchResultListPanel extends Panel{
 					item.add(new Label("addressType.name",address.getAddressType().getName()));
 				}else{
 					item.add(new Label("addressType.name",""));
+				}
+				
+				if(address.getDateReceived() != null){
+					SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					String dateReceived ="";
+					dateReceived = simpleDateFormat.format(address.getDateReceived());
+					item.add(new Label("address.dateReceived",dateReceived));
+				}else{
+					item.add(new Label("address.dateReceived",""));
 				}
 				
 			}
