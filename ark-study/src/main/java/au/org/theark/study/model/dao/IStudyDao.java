@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -69,7 +70,7 @@ public interface IStudyDao {
 	
 	public Collection<SubjectStatus> getSubjectStatus();
 	
-	public void createSubject(SubjectVO subjectVO);
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException;
 	
 	public void updateSubject(SubjectVO subjectVO);
 	

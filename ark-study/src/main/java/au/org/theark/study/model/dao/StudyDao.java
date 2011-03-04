@@ -13,12 +13,14 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -183,16 +185,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 	
-	public void createSubject(SubjectVO subjectVO){
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException {
 		
-		//Add Business Validations here as well apart from UI validation
-		Session session = getSession();
-		Person person  = subjectVO.getSubjectStudy().getPerson();
-		session.save(person); 
-		
-		LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-		session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-		
+		try
+		{
+			//Add Business Validations here as well apart from UI validation
+			Session session = getSession();
+			Person person  = subjectVO.getSubjectStudy().getPerson();
+			session.save(person); 
+			
+			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+		}
+		catch(HibernateException hie){
+			throw new ArkUniqueException("Subject UID must be unique");
+		}
 	}
 	
 	
