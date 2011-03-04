@@ -40,6 +40,7 @@ public class Address implements java.io.Serializable {
 	private boolean addressStatus;
 	private AddressType addressType;
 	private Date dateReceived;
+	private String comments;
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	// Constructors
@@ -134,6 +135,15 @@ public class Address implements java.io.Serializable {
 
 	public void setDateReceived(Date dateReceived) {
 		this.dateReceived = dateReceived;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+
+	@Column(name = "COMMENTS", length = 255)
+	public String getComments() {
+		return comments;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY )
