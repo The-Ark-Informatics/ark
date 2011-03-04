@@ -204,7 +204,20 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		setModelObject(new AddressVO());
+		// Set default for the Country on new
+		final List<Country> countryList = iArkCommonService.getCountries();
+		Address defaultedCountryAddress = new Address();
+		defaultedCountryAddress.setCountry(countryList.get(0));
+		AddressVO newAddressVO = new AddressVO();
+		newAddressVO.setAddress(defaultedCountryAddress);
+		setModelObject(newAddressVO);
+		// Ensure we update the CountyStateChoices in DetailsForm
+		// like what happens via DetailForm's updateCountryStateChoices(..) 
+		List<CountryState> countryStateList = iArkCommonService.getStates(defaultedCountryAddress.getCountry());
+		WebMarkupContainer wmc_stateSelector = (WebMarkupContainer) detailFormCompContainer.get("countryStateSelector");
+		DropDownChoice<CountryState> detail_stateSelector = (DropDownChoice<CountryState>) wmc_stateSelector.get("address.countryState");
+		detail_stateSelector.getChoices().clear();
+		detail_stateSelector.setChoices(countryStateList);
 		preProcessDetailPanel(target);
 	}
 

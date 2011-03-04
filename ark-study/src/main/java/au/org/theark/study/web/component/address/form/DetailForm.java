@@ -98,7 +98,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		postCodeTxtFld = new TextField<String>("address.postCode");
 		commentsTxtArea = new TextArea<String>("address.comments");
 		initialiaseCountryDropDown();
-		initialiseCountrySelector();
+		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
 		initialiseRadioButton();
 		initialiseDatePicker();
@@ -127,7 +127,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	/**
 	 * The MarkupContainer for The State DropDOwn control
 	 */
-	private void initialiseCountrySelector(){
+	private void initialiseStateSelector(){
 		
 		countryStateSelector = new WebMarkupContainer("countryStateSelector");
 		countryStateSelector.setOutputMarkupPlaceholderTag(true);
@@ -194,6 +194,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		};
 		
 		PropertyModel<Boolean> addressStatusModel = new PropertyModel<Boolean>(containerForm.getModelObject().getAddress(),"addressStatus");
+		addressStatusModel.setObject(true);	// default to "active"
 		addressStatusRadioChoice = new RadioChoice<Boolean>("addressStatus",addressStatusModel,list,radioChoiceRender);
 	}
 	
