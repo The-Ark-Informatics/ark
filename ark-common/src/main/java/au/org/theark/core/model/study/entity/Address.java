@@ -98,7 +98,7 @@ public class Address implements java.io.Serializable {
 	}
 
 
-	@Column(name = "ADDRESS_STATUS", precision = 1, scale = 0)
+	@Column(name = "ADDRESS_STATUS_ID", precision = 22, scale = 0)
 	public boolean getAddressStatus() {
 		return this.addressStatus;
 	}
