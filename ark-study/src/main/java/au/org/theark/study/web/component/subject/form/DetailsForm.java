@@ -33,6 +33,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -347,8 +348,17 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		if(subjectVO.getSubjectStudy().getPerson().getId() == null || 		containerForm.getModelObject().getSubjectStudy().getPerson().getId() == 0){
 	
 			subjectVO.getSubjectStudy().setStudy(study);
-			studyService.createSubject(subjectVO);
-			this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+			try
+			{
+				studyService.createSubject(subjectVO);
+				onSavePostProcess(target);
+				this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+			}
+			catch (ArkUniqueException ex)
+			{
+				this.error("Subject UID must be unique");
+			}
+			
 			processErrors(target);
 
 		}else{
@@ -396,19 +406,19 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			//When both the year fields were supplied, save only if they are valid
 			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
+				//onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
+				//onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
+				//onSavePostProcess(target);	
 			}else if(yearOfFirstMammogram == null && yearOfRecentMammogram == null){
 				//When other
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
+				//onSavePostProcess(target);	
 			}
 			
 			ContextHelper contextHelper = new ContextHelper();
