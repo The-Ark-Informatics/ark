@@ -27,6 +27,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -331,6 +332,15 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return criteria.list();
 	}
 	
+	/**
+	 * Gets  a list of all Address Statuses
+	 * @return
+	 */
+	public List<AddressStatus> getAddressStatuses() {
+		Criteria criteria = getSession().createCriteria(AddressStatus.class);
+		return criteria.list();
+	}
+
 	public List<ConsentStatus> getConsentStatus(){
 		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
 		return criteria.list();
@@ -399,4 +409,5 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		Criteria criteria = getSession().createCriteria(PersonContactMethod.class);
 		return criteria.list();
 	}
+
 }

@@ -12,6 +12,7 @@ import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -166,6 +167,10 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	
 	public List<AddressType> getAddressTypes(){
 		return studyDao.getAddressTypes();
+	}
+
+	public List<AddressStatus> getAddressStatuses() {
+		return studyDao.getAddressStatuses();
 	}
 	
 	public List<ConsentStatus> getConsentStatus(){

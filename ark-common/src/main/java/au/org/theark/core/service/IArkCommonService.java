@@ -5,6 +5,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -79,6 +80,12 @@ public interface IArkCommonService {
 	public List<AddressType> getAddressTypes();
 	
 	/**
+	 * Looks up all address statuses
+	 * @return
+	 */
+	public List<AddressStatus> getAddressStatuses();
+
+	/**
 	 * 
 	 * @return a list of Consent Status
 	 */
@@ -102,4 +109,5 @@ public interface IArkCommonService {
 	public List<PersonContactMethod> getPersonContactMethodList();
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent);
+
 }

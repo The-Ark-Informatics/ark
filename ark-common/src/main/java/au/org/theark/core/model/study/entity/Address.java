@@ -37,7 +37,7 @@ public class Address implements java.io.Serializable {
 	private Country country;
 	private CountryState countryState;
 	private String otherState;
-	private boolean addressStatus;
+	private AddressStatus addressStatus;
 	private AddressType addressType;
 	private Date dateReceived;
 	private String comments;
@@ -97,13 +97,13 @@ public class Address implements java.io.Serializable {
 		this.city = city;
 	}
 
-
-	@Column(name = "ADDRESS_STATUS_ID", precision = 22, scale = 0)
-	public boolean getAddressStatus() {
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ADDRESS_STATUS_ID")
+	public AddressStatus getAddressStatus() {
 		return this.addressStatus;
 	}
 
-	public void setAddressStatus(boolean addressStatus) {
+	public void setAddressStatus(AddressStatus addressStatus) {
 		this.addressStatus = addressStatus;
 	}
 
