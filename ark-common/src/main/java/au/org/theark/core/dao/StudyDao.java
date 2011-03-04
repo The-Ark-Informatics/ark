@@ -353,11 +353,12 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		LinkSubjectStudycomp subjectStudyComponent = new LinkSubjectStudycomp();
 		subjectStudyComponent.setStudyComp(studyComponent);
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudycomp.class);
-		
-		
+		criteria.createAlias("studyComp", "sc");
+		criteria.add(Restrictions.eq("sc.id",studyComponent.getId()));
+		if (criteria.list() != null && criteria.list().size() > 0){
+			isConsented = true;
+		}
 		return isConsented;
-		
-		
 	}
 	
 	/**

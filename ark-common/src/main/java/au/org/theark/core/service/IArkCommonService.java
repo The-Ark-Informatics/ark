@@ -100,4 +100,6 @@ public interface IArkCommonService {
 	public void createAuditHistory(AuditHistory auditHistory);
 
 	public List<PersonContactMethod> getPersonContactMethodList();
+	
+	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent);
 }

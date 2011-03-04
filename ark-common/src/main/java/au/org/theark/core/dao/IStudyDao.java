@@ -178,5 +178,7 @@ public interface IStudyDao {
 	public void createAuditHistory(AuditHistory auditHistory);
 
 	public List<PersonContactMethod> getPersonContactMethodList();
+	
+	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent);
 
 }

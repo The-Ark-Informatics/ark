@@ -200,4 +200,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	{
 		return studyDao.getPersonContactMethodList();
 	}
+	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent){
+		return studyDao.isSubjectConsentedToComponent(studyComponent);
+	}
+	
 }
