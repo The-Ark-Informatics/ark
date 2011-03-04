@@ -119,7 +119,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 
 		
 	 public void initialiseDetailForm(){
-
+	
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
