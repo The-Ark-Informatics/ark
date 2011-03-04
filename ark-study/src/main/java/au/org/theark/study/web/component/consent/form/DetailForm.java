@@ -192,6 +192,16 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice  = new DropDownChoice(Constants.CONSENT_STUDY_COMP, studyCompList,defaultChoiceRenderer);
+		
+		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+				//Check if the subject in context has already consented to this component and display a message if so.
+				
+			}
+		});
 	
 	}
 	
@@ -210,32 +220,38 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 				String statusName  = status.getName();
 				
 				if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED))){
+					wmcRecieved.setVisible(true);
 					wmcPlain.setVisible(false);
 					wmcRequested.setVisible(false);
-					wmcRecieved.setVisible(true);
 					wmcCompleted.setVisible(false);
 					target.addComponent(wmcPlain);
 					target.addComponent(wmcRecieved);
 					target.addComponent(wmcRequested);
 					target.addComponent(wmcCompleted);
 				}else if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))){
+				
+					wmcRequested.setVisible(true);
 					wmcPlain.setVisible(false);
 					wmcRecieved.setVisible(false);
-					wmcRequested.setVisible(true);
 					wmcCompleted.setVisible(false);
 					target.addComponent(wmcRecieved);
 					target.addComponent(wmcRequested);
 					target.addComponent(wmcPlain);
 					target.addComponent(wmcCompleted);
 				}else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))){
+					
+					wmcCompleted.setVisible(true);
 					wmcPlain.setVisible(false);
 					wmcRecieved.setVisible(false);
 					wmcRequested.setVisible(false);
-					wmcCompleted.setVisible(true);
 					target.addComponent(wmcCompleted);
 					target.addComponent(wmcRecieved);
 					target.addComponent(wmcRequested);
 					target.addComponent(wmcPlain);
+				}else{
+					
+					setDatePickerDefaultMarkup(target);
+				
 				}
 			}
 			
@@ -259,13 +275,25 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 	}
 
+	private void setDatePickerDefaultMarkup(AjaxRequestTarget target){
+		wmcPlain.setVisible(true);
+		wmcRecieved.setVisible(false);
+		wmcRequested.setVisible(false);
+		wmcCompleted.setVisible(false);
+		target.addComponent(wmcCompleted);
+		target.addComponent(wmcRecieved);
+		target.addComponent(wmcRequested);
+		target.addComponent(wmcPlain);
+	}
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onCancel(org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
+		
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
+		setDatePickerDefaultMarkup(target);
 		onCancelPostProcess(target);
 	}
 
