@@ -1,5 +1,6 @@
 package au.org.theark.core.model.study.entity;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,6 +16,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
 
@@ -36,6 +39,7 @@ public class Address implements java.io.Serializable {
 	private String otherState;
 	private boolean addressStatus;
 	private AddressType addressType;
+	private Date dateReceived;
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	// Constructors
@@ -121,6 +125,17 @@ public class Address implements java.io.Serializable {
 		this.addressType = addressType;
 	}
 
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_RECEIVED", length = 10)
+	public Date getDateReceived() {
+		return dateReceived;
+	}
+
+	public void setDateReceived(Date dateReceived) {
+		this.dateReceived = dateReceived;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY )
 	@JoinColumn(name = "COUNTRY_ID")
 	public Country getCountry() {
@@ -159,9 +174,4 @@ public class Address implements java.io.Serializable {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-
-
-
-	
-
 }
