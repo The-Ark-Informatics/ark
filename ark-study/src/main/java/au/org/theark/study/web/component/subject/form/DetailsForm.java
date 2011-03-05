@@ -299,15 +299,14 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-		firstNameTxtFld.setRequired(true);
-		dateOfBirthTxtFld.setRequired(true);
-		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.date.max.range", this, null));
+		firstNameTxtFld.setRequired(true).setLabel(new StringResourceModel("firstName.required", this, null));;
+		dateOfBirthTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("dob.range", this, null));
+		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("approach.date", this, null));
 		
-		vitalStatusDdc.setRequired(true);
-		genderTypeDdc.setRequired(true);
-		subjectUIDTxtFld.setRequired(true);
-		subjectUIDTxtFld.add(StringValidator.lengthBetween(1, 8));
-		titleTypeDdc.setRequired(true);
+		vitalStatusDdc.setRequired(true).setLabel(new StringResourceModel("vital.status.required", this, null));
+		genderTypeDdc.setRequired(true).setLabel(new StringResourceModel("gender.type.required", this, null));
+		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
+		titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
 	}
 
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
