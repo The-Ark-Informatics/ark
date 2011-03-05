@@ -188,7 +188,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException{
 			//Add Business Validations here as well apart from UI validation
-			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId())){
+			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")){
 				Session session = getSession();
 				Person person  = subjectVO.getSubjectStudy().getPerson();
 				session.save(person); 
@@ -202,11 +202,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
  
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
-		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId())){
+	
+		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Update")){
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
 			session.update(person);//Update Person and associated Phones
-			session.update(subjectVO.getSubjectStudy());
+			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+			session.update(linkSubjectStudy);
 		}else{
 			throw new ArkUniqueException("Subject UID must be unique");
 		}
@@ -581,14 +583,20 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	
-	private boolean isSubjectUIDUnique(String subjectUID, Long studyId){
+	private boolean isSubjectUIDUnique(String subjectUID, Long studyId,String action){
 		boolean isUnique = true;
-		
-		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		Session session = getSession();
+		Criteria criteria =  session.createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("subjectUID", subjectUID));
 		criteria.add(Restrictions.eq("study.id", studyId));
-		if (criteria.list().size() > 0){
-			isUnique = false;
+		if(action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_INSERT)){
+			if (criteria.list().size() > 0){
+				isUnique = false;
+			}
+		}else if(action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_UPDATE)){
+			if (criteria.list().size() > 1 ){
+				isUnique = false;
+			}
 		}
 		return isUnique;
 	}
