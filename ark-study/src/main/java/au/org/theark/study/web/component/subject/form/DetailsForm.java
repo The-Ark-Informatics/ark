@@ -6,19 +6,14 @@
  */
 package au.org.theark.study.web.component.subject.form;
 
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.form.AjaxFormSubmitBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -27,13 +22,11 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
@@ -48,7 +41,6 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -228,26 +220,14 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		
 		final List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-		class TestVO implements Serializable{
-			public Country selected= countryList.get(0);
-			public void setSelected(Country c){
-				this.selected = c;
-			}
-			
-			public Country getSelected(){
-				return selected;
-			}
-		}
-		//final TestVO tvo = new TestVO();
 		
-		countryChoice = new DropDownChoice<Country>("subjectStudy.country", new PropertyModel(new TestVO(),"selected"),countryList, defaultChoiceRenderer);
+		countryChoice = new DropDownChoice<Country>("subjectStudy.country", countryList, defaultChoiceRenderer);
 		//Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());
 				target.addComponent(countryStateSelector);
-				//getModelObject().getSubjectStudy().setCountry(tvo.getSelected());
 			}
 		});
 	
@@ -320,7 +300,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	protected void attachValidators() {
 		firstNameTxtFld.setRequired(true);
 		dateOfBirthTxtFld.setRequired(true);
-		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.dateofbirth.max.range", this, null));
+		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.date.max.range", this, null));
 		
 		vitalStatusDdc.setRequired(true);
 		genderTypeDdc.setRequired(true);
@@ -329,18 +309,6 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		titleTypeDdc.setRequired(true);
 	}
 
-	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDeleteConfirmed(org.apache.wicket.ajax.AjaxRequestTarget, java.lang.String, org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
-	 */
-//	@Override
-//	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
-//		
-//		selectModalWindow.close(target);
-//		containerForm.setModelObject(new SubjectVO());
-//		onCancel(target);
-//		
-//	}
-	
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
 		boolean validFlag=true;
 		Calendar calendar = Calendar.getInstance();
@@ -363,28 +331,28 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			try
 			{
 				studyService.createSubject(subjectVO);
-				onSavePostProcess(target);
+				//onSavePostProcess(target);
 				this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
 			}
 			catch (ArkUniqueException ex)
 			{
 				this.error("Subject UID must be unique.");
 			}
-			processErrors(target);
 
 		}else{
 
 			try {
 				studyService.updateSubject(subjectVO);
+				//onSavePostProcess(target);
 				this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
 			} catch (ArkUniqueException e) {
 				this.error("Subject UID must be unique.");
 			}
 			
-			processErrors(target);
+			
 
 		}
-		
+		processErrors(target);
 	}
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onSave(org.apache.wicket.markup.html.form.Form, org.apache.wicket.ajax.AjaxRequestTarget)
@@ -422,19 +390,20 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			//When both the year fields were supplied, save only if they are valid
 			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				//onSavePostProcess(target);	
+				onSavePostProcess(target);	
+				System.out.println("onSavePostProcess  completed");
 			}
 			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				//onSavePostProcess(target);	
+				onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				//onSavePostProcess(target);	
+				onSavePostProcess(target);	
 			}else if(yearOfFirstMammogram == null && yearOfRecentMammogram == null){
 				//When other
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				//onSavePostProcess(target);	
+				onSavePostProcess(target);	
 			}
 			
 			ContextHelper contextHelper = new ContextHelper();
