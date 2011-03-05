@@ -21,6 +21,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Country;
+import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -142,8 +144,22 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	}
 	
 	protected void onNew(AjaxRequestTarget target){
-		setModelObject(new SubjectVO());
+		
+		final List<Country> countryList = iArkCommonService.getCountries();
+		SubjectVO subjectVO = new SubjectVO();
+		subjectVO.getSubjectStudy().setCountry(countryList.get(0));
+		setModelObject(subjectVO);
+		updateDetailFormPrerender(subjectVO.getSubjectStudy());
 		preProcessDetailPanel(target);
+	}
+	
+	
+	public void updateDetailFormPrerender(LinkSubjectStudy linkSubjectStudy){
+		List<CountryState> countryStateList = iArkCommonService.getStates(linkSubjectStudy.getCountry());
+		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get("countryStateSelector");
+		DropDownChoice<CountryState> detailStateSelector = (DropDownChoice<CountryState>) wmcStateSelector.get("subjectStudy.state");
+		detailStateSelector.getChoices().clear();
+		detailStateSelector.setChoices(countryStateList);
 	}
 
 	protected void onSearch(AjaxRequestTarget target){
