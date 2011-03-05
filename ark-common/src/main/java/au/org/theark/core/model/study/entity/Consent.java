@@ -46,6 +46,7 @@ public class Consent implements Serializable {
 	private Date requestedDate;
 	private Date receivedDate;
 	private Date completedDate;
+	private YesNo consentDownloaded;
 	
 	public Consent(){
 		
@@ -170,6 +171,15 @@ public class Consent implements Serializable {
 	}
 	public void setCompletedDate(Date completedDate) {
 		this.completedDate = completedDate;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_DOWNLOADED_ID")
+	public YesNo getConsentDownloaded() {
+		return consentDownloaded;
+	}
+	public void setConsentDownloaded(YesNo consentDownloaded) {
+		this.consentDownloaded = consentDownloaded;
 	}
 	
 }
