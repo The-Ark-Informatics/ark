@@ -171,4 +171,7 @@ public class Constants {
 	public static final String	ENTITY_TYPE_CONSENT	= "Consent";
 	public static final String	ENTITY_TYPE_CONSENT_FILE	= "Consent File";
 	public static final String	ENTITY_TYPE_USER	= "User";
+	
+	public static final String ACTION_INSERT="Insert";
+	public static final String ACTION_UPDATE="Update";
 }
