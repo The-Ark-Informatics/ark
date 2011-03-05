@@ -146,6 +146,7 @@ public class SearchResults extends Panel{
 				searchPanelContainer.setVisible(false);
 				editButtonContainer.setVisible(false);
 				
+				detailPanelFormContainer.get("subjectStudy.subjectUID").setEnabled(false);
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
 				target.addComponent(detailPanelFormContainer);
