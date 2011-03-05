@@ -200,6 +200,7 @@ public class Constants {
 	public static final String CONSENT_COMPLETED_DATE="consent.completedDate";
 	
 	public static final String CONSENT_CONSENT_COMMENT = "consent.comments";
+	public static final String CONSENT_CONSENT_DOWNLOADED = "consent.consentDownloaded";
 	
 	public static final String CONSENT_FILE_ID="consentFile.id";
 	public static final String CONSENT_FILE_FILENAME="consentFile.filename";
