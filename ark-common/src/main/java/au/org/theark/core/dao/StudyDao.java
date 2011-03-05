@@ -121,6 +121,24 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return studyList;
 	}
 	
+	
+	public  SubjectStatus getSubjectStatus(String statusName){
+		
+		SubjectStatus statusToReturn = null;
+		
+		SubjectStatus subjectStatus = new SubjectStatus();
+		subjectStatus.setName("Archive");
+		Example example = Example.create(subjectStatus);
+		
+		
+		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
+		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
+			statusToReturn =  (SubjectStatus)criteria.list().get(0);	
+		}
+		
+		return statusToReturn;
+	}
+	
 	/**
 	 * Given a status name will return the StudyStatus object.
 	 */
@@ -235,6 +253,15 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		
 		if(subjectVO.getSubjectStudy().getSubjectStatus() != null){
 			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getSubjectStudy().getSubjectStatus()));
+			SubjectStatus subjectStatus = getSubjectStatus("Archive");
+			if(subjectStatus != null){
+				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
+			}
+		}else{
+			SubjectStatus subjectStatus = getSubjectStatus("Archive");
+			if(subjectStatus != null){
+				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
+			}
 		}
 		
 		criteria.addOrder(Order.asc("subjectUID"));
