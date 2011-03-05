@@ -19,6 +19,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.form.ContainerForm;
 
@@ -51,7 +52,6 @@ public class SearchResultListPanel extends Panel{
 			ContainerForm containerForm) {
 		
 		super(id);
-		// TODO Auto-generated constructor stub
 	 	this.detailPanelContainer = detailPanelContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
@@ -67,7 +67,6 @@ public class SearchResultListPanel extends Panel{
 
 			@Override
 			protected void populateItem(ListItem<Consent> item) {
-				// TODO Auto-generated method stub
 				Consent consent = item.getModelObject();
 				
 				item.add(buildLink(consent));
@@ -117,7 +116,6 @@ public class SearchResultListPanel extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 
 				containerForm.getModelObject().setConsent(consent);
-				
 				// Add consentId into context (for use with consentFile(s))
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consent.getId()); 
 				
