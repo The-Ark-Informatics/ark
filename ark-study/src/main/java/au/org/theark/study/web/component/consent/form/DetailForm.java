@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.consent.form;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
+import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -34,6 +35,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -72,6 +74,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected WebMarkupContainer wmcRequested;
 	protected WebMarkupContainer wmcRecieved;
 	protected WebMarkupContainer wmcCompleted;
+	protected DropDownChoice<YesNo> consentDownloadedDdc;
 	
 	
 	/**
@@ -124,6 +127,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 		wmcRecieved = new  WebMarkupContainer("wmc-received");
 		wmcRecieved.setOutputMarkupPlaceholderTag(true);
+		
 		consentReceivedDtf = new DateTextField(Constants.CONSENT_RECEIVED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker recievedDatePicker = new ArkDatePicker();
 		recievedDatePicker.bind(consentReceivedDtf);
@@ -137,7 +141,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		consentCompletedDtf = new DateTextField(Constants.CONSENT_COMPLETED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker completedDatePicker = new ArkDatePicker();
 		completedDatePicker.bind(consentCompletedDtf);
-		consentCompletedDtf.add(recievedDatePicker);
+		consentCompletedDtf.add(completedDatePicker);
 		wmcCompleted.setVisible(false);
 		wmcCompleted.add(consentCompletedDtf);
 	
@@ -146,10 +150,19 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		initialiseConsentStatusChoice();
 		initialiseComponentChoice();
 		initialiseComponentStatusChoice();
+		initialiseConsentDownloadChoice();
 		addDetailFormComponents();
 		attachValidators();
 	}
 	
+	
+	private void initialiseConsentDownloadChoice(){
+		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
+		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
+		consentDownloadedDdc = new DropDownChoice<YesNo>(Constants.CONSENT_CONSENT_DOWNLOADED,(List)yesNoList,yesnoRenderer);
+		
+		
+	}
 	public void addDetailFormComponents(){
 		detailPanelFormContainer.add(consentedBy);
 		detailPanelFormContainer.add(consentedDatePicker);
@@ -164,6 +177,8 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		detailPanelFormContainer.add(consentStatusChoice);
 		detailPanelFormContainer.add(consentTypeChoice);
 		detailPanelFormContainer.add(commentTxtArea);
+		detailPanelFormContainer.add(consentDownloadedDdc);
+		
 	}
 	
 	/**
@@ -269,13 +284,13 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-	
-		consentedBy.setRequired(true);
-		studyComponentChoice.setRequired(true);
-		consentStatusChoice.setRequired(true);
-		consentTypeChoice.setRequired(true);
+	    commentTxtArea.add(StringValidator.maximumLength(100)).setLabel(new StringResourceModel("comments.max.length", this, null));
+		consentedBy.add(StringValidator.maximumLength(100)).setLabel(new StringResourceModel("consentedBy.max.length", this, null));
+		studyComponentChoice.setRequired(true).setLabel(new StringResourceModel("study.component.choice.required", this, null));
+		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consent.status.required", this, null));
+		consentTypeChoice.setRequired(true).setLabel(new StringResourceModel("consent.type.required", this, null));
+		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.consentdate", this,null ));
 		consentedDatePicker.setRequired(true);
-		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.consentdate.max.range", this, null));
 		
 	}
 
