@@ -40,11 +40,8 @@ public abstract class AbstractSubjectDetailForm<T> extends Form<T>
 
 	protected AjaxButton				saveButton;
 	protected AjaxButton				cancelButton;
-//	protected AjaxButton				deleteButton;
 	protected AjaxButton				editButton;
 	protected AjaxButton				editCancelButton;
-
-//	protected ModalWindow			selectModalWindow;
 
 	/**
 	 * Implement this to add all the form components/objects
@@ -57,11 +54,6 @@ public abstract class AbstractSubjectDetailForm<T> extends Form<T>
 
 	abstract protected void attachValidators();
 
-//	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target)
-//	{
-//		selectModalWindow.show(target);
-//		target.addComponent(selectModalWindow);
-//	}
 
 	abstract protected void onCancel(AjaxRequestTarget target);
 
@@ -144,23 +136,10 @@ public abstract class AbstractSubjectDetailForm<T> extends Form<T>
 			}
 		};
 
-//		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-//		{
-//			@Override
-//			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-//			{
-//				// target.addComponent(detailPanelContainer);
-//				onDelete(containerForm, target);
-//
-//			}
-//		};
-
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-//				deleteButton.setEnabled(true);
-//				deleteButton.setVisible(true);
 				viewButtonContainer.setVisible(false);
 				editButtonContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(true);
@@ -188,21 +167,16 @@ public abstract class AbstractSubjectDetailForm<T> extends Form<T>
 			}
 		};
 
-//		selectModalWindow = initialiseModalWindow();
-
 		addComponentsToForm();
 	}
 
 	protected void addComponentsToForm()
 	{
 
-//		detailPanelFormContainer.add(selectModalWindow);
 		add(detailPanelFormContainer);
 
 		editButtonContainer.add(saveButton);
 		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-//		editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
-
 		viewButtonContainer.add(editButton);
 		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
 
@@ -238,32 +212,4 @@ public abstract class AbstractSubjectDetailForm<T> extends Form<T>
 
 	}
 
-//	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
-
-//	protected void onDeleteCancel(AjaxRequestTarget target, ModalWindow selectModalWindow)
-//	{
-//		selectModalWindow.close(target);
-//	}
-
-//	protected ModalWindow initialiseModalWindow()
-//	{
-//
-//		// The ModalWindow, showing some choices for the user to select.
-//		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow")
-//		{
-//
-//			protected void onSelect(AjaxRequestTarget target, String selection)
-//			{
-//				onDeleteConfirmed(target, selection, selectModalWindow);
-//			}
-//
-//			protected void onCancel(AjaxRequestTarget target)
-//			{
-//				onDeleteCancel(target, selectModalWindow);
-//			}
-//		};
-//
-//		return selectModalWindow;
-//
-//	}
 }
