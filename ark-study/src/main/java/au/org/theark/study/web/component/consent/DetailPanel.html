@@ -92,7 +92,9 @@
 				</div>
 			
 				<div id="fldControl">
-					<div class="label"><input wicket:id="consent.receivedDate"  type="text" maxLength="10"/></div>
+					<div class="label">
+						<input wicket:id="consent.receivedDate"  type="text" maxLength="10"/>
+					</div>
 				</div>
 			</div>
 
@@ -104,7 +106,9 @@
 				</div>
 			
 				<div id="fldControl">
-					<div class="label"><input wicket:id="consent.completedDate"  type="text" maxLength="10"/></div>
+					<div class="label">
+					  <input wicket:id="consent.completedDate"  type="text" maxLength="10"/>
+					</div>
 				</div>
 			</div>
 			<div id="searchPanelContentRight">&nbsp;</div>
@@ -154,26 +158,29 @@
 			<div id="panelContentLeft">&nbsp;</div>
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="consentedBy"><wicket:message key="consent.consentedBy">Consented By:</wicket:message></label>
+						<label for="consentedBy"><wicket:message key="consent.downloaded">Consented Downloaded:</wicket:message></label>
 		 			</div> 
 		 	</div> 			       			
 			<div id="fldControl">
 			  <div class="label">
-				<input wicket:id="consent.consentedBy"  type="text" />
+					<select wicket:id="consent.consentDownloaded">
+		       			<option>Yes</option>
+		       			<option>No</option>
+		       		</select>
 		      </div>
 			</div>
 		       	
 		    <div id="panelMargin">&nbsp;</div>
 				
 			<div id="fldLabel">
-		 			<div class="label">
-						<label for="consentDate"><wicket:message key="consent.date">Consent Date:</wicket:message></label>
-		 			</div> 
+		 		<div class="label">
+					<label for="consentedBy"><wicket:message key="consent.consentedBy">Consented By:</wicket:message></label>	
+		 		</div> 
 		 	</div> 	
 				
 			<div id="fldControl">
 				<div class="label">
-				  <input wicket:id="consent.consentDate"  type="text" maxLength="10"/>
+				  	<input wicket:id="consent.consentedBy"  type="text" />
 		       	</div>
 			</div>
 				
@@ -184,9 +191,24 @@
 			<div id="panelContentLeft">&nbsp;</div>
 				<div id="fldLabel">
 		 		 <div class="label">
-				  <label for="consentedBy"><wicket:message key="consent.comments">Comments:</wicket:message></label>
+				  	<label for="consentDate"><wicket:message key="consent.date">Consent Date:</wicket:message></label>
 		 		 </div> 
 		 	</div> 			       			
+			<div id="fldControl">
+				<div class="label">
+				   <input wicket:id="consent.consentDate"  type="text" maxLength="10"/>
+		       	</div>
+			</div>
+			
+			
+			<div id="panelMargin">&nbsp;</div>
+				
+			<div id="fldLabel">
+		 			<div class="label">
+						 <label for="consentedBy"><wicket:message key="consent.comments">Comments:</wicket:message></label>
+		 			</div> 
+		 	</div> 	
+				
 			<div id="fldControl">
 				<div class="label">
 				  <textarea wicket:id="consent.comments" cols="25" maxLength="500"> </textarea>
