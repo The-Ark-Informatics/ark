@@ -188,22 +188,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException{
 			//Add Business Validations here as well apart from UI validation
-			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")){
-				Session session = getSession();
-				Person person  = subjectVO.getSubjectStudy().getPerson();
-				session.save(person); 
-				LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-				session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-			}else{
-				throw new ArkUniqueException("Subject UID must be unique");
-			}
+		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")){
+			Session session = getSession();
+			Person person  = subjectVO.getSubjectStudy().getPerson();
+			session.save(person); 
+			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+		}else{
+			throw new ArkUniqueException("Subject UID must be unique");
+		}
 	}
 	
 	
  
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
 	
-		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Update")){
+		if(true){			
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
 			session.update(person);//Update Person and associated Phones
