@@ -309,7 +309,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-		
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
 		setDatePickerDefaultMarkup(target);
