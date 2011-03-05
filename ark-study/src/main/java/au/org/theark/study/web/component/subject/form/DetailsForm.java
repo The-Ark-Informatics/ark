@@ -286,6 +286,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	}
 	
 	protected  void onCancel(AjaxRequestTarget target){
+		subjectUIDTxtFld.setEnabled(true);
 		SubjectVO subjectVO = new SubjectVO();
 		containerForm.setModelObject(subjectVO);
 		onCancelPostProcess(target);
@@ -331,8 +332,12 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			try
 			{
 				studyService.createSubject(subjectVO);
-				//onSavePostProcess(target);
-				this.info("Subject has been saved successfully and linked to the study in context " + study.getName());
+				StringBuffer sb = new StringBuffer();
+				sb.append("The Subject with Subject UID: ");
+				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+				sb.append(" has been created successfully and linked to the study in context " );
+				sb.append(study.getName());
+				this.info(sb.toString());
 			}
 			catch (ArkUniqueException ex)
 			{
@@ -343,8 +348,12 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 
 			try {
 				studyService.updateSubject(subjectVO);
-				//onSavePostProcess(target);
-				this.info("Subject has been updated successfully and linked to the study in context " + study.getName());
+				StringBuffer sb = new StringBuffer();
+				sb.append("The Subject with Subject UID: ");
+				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+				sb.append(" has been updated successfully and linked to the study in context " );
+				sb.append(study.getName());
+				this.info(sb.toString());
 			} catch (ArkUniqueException e) {
 				this.error("Subject UID must be unique.");
 			}
