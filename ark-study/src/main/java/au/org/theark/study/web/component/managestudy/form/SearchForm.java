@@ -23,6 +23,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.study.web.Constants;
 
 @SuppressWarnings("serial")
@@ -53,14 +54,7 @@ public class SearchForm extends Form<StudyModelVO>{
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
 		// Create new DateTextField and assign date format
 		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
-		DatePicker datePicker = new DatePicker(){
-					@Override
-					protected boolean enableMonthYearSelection()
-					{
-						return true;
-					}
-		};
-		// Bind DatePicker to particular date field
+		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);
 		
