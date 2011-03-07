@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -178,14 +179,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private void initialiseDatePicker() {
 		// Create new DateTextField and assign date format
 		dateReceivedDp = new DateTextField(Constants.ADDRESS_DATE_RECEIVED, au.org.theark.core.Constants.DD_MM_YYYY);
-		DatePicker datePicker = new DatePicker(){
-					@Override
-					protected boolean enableMonthYearSelection()
-					{
-						return true;
-					}
-		};
-		// Bind DatePicker to particular date field
+		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateReceivedDp);
 		dateReceivedDp.add(datePicker);
 	}
