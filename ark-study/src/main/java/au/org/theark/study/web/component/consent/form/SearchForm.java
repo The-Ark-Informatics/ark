@@ -1,13 +1,11 @@
 package au.org.theark.study.web.component.consent.form;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -28,6 +26,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -93,27 +92,13 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
 		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		
-		DatePicker datePicker = new DatePicker(){
-			@Override
-			protected boolean enableMonthYearSelection()
-			{
-				return true;
-			}
-		};
-		// Bind DatePicker to particular date field
+		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(consentedDatePicker);
 		consentedDatePicker.add(datePicker);
 		
 		endConsentedDatePicker = new DateTextField("consentDateEnd", au.org.theark.core.Constants.DD_MM_YYYY);
 		
-		DatePicker datePicker2 = new DatePicker(){
-			@Override
-			protected boolean enableMonthYearSelection()
-			{
-				return true;
-			}
-		};
-		// Bind DatePicker to particular date field
+		ArkDatePicker datePicker2 = new ArkDatePicker();
 		datePicker2.bind(endConsentedDatePicker);
 		endConsentedDatePicker.add(datePicker);
 		
