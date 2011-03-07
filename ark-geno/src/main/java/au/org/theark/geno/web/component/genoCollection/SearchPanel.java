@@ -22,6 +22,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.Status;
@@ -99,26 +100,12 @@ public class SearchPanel extends Panel {
 			genoCollectionDescriptionTxtAreaFld = new TextArea<String>(Constants.GENO_COLLECTION_VO_DESCRIPTION);
 			// Create new DateTextField and assign date format
 			genoCollectionStartDateFld = new DateTextField(Constants.GENO_COLLECTION_VO_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-			DatePicker datePicker = new DatePicker(){
-						@Override
-						protected boolean enableMonthYearSelection()
-						{
-							return true;
-						}
-			};
-			// Bind DatePicker to particular date field
+			ArkDatePicker datePicker = new ArkDatePicker();
 			datePicker.bind(genoCollectionStartDateFld);
 			genoCollectionStartDateFld.add(datePicker);
 						
 			genoCollectionExpiryDateFld = new DateTextField(Constants.GENO_COLLECTION_VO_EXPIRY_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-			DatePicker datePicker2 = new DatePicker(){
-				@Override
-				protected boolean enableMonthYearSelection()
-				{
-					return true;
-				}
-			};
-			// Bind DatePicker to particular date field
+			ArkDatePicker datePicker2 = new ArkDatePicker();
 			datePicker2.bind(genoCollectionExpiryDateFld);
 			genoCollectionExpiryDateFld.add(datePicker2);
 
