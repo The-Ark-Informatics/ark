@@ -21,10 +21,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
-import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.form.ContainerForm;
+import au.org.theark.study.web.component.consent.form.FormHelper;
 
 
 /**
@@ -126,6 +126,15 @@ public class SearchResultListPanel extends Panel{
 					// Add consentId into context (for use with consentFile(s))
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consentFromBackend.getId()); 
 					
+					
+					WebMarkupContainer wmcPlain  = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_PLAIN);
+					WebMarkupContainer wmcRequested  = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_REQUESTED);
+					WebMarkupContainer wmcRecieved  = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_RECIEVED);
+					WebMarkupContainer wmcCompleted  = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_COMPLETED);
+					
+					
+					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
+					
 					detailPanelContainer.setVisible(true);
 					viewButtonContainer.setVisible(true);
 					viewButtonContainer.setEnabled(true);
@@ -144,9 +153,7 @@ public class SearchResultListPanel extends Panel{
 				} catch (ArkSystemException e) {
 					containerForm.error("A System Error has occured please contact Support");
 				}
-				
 			}
-			
 		};
 		Label nameLinkLabel = new Label(Constants.CONSENT_COMPONENT_LABEL,consent.getStudyComp().getName());
 		link.add(nameLinkLabel);
