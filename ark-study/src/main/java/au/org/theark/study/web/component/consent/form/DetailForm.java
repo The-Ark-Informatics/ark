@@ -75,6 +75,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected WebMarkupContainer wmcRecieved;
 	protected WebMarkupContainer wmcCompleted;
 	protected DropDownChoice<YesNo> consentDownloadedDdc;
+	protected DropDownChoice<StudyCompStatus> testDdc;
 	
 	
 	/**
@@ -174,6 +175,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 		detailPanelFormContainer.add(studyComponentChoice);
 		detailPanelFormContainer.add(studyComponentStatusChoice);
+		detailPanelFormContainer.add(testDdc);
 		detailPanelFormContainer.add(consentStatusChoice);
 		detailPanelFormContainer.add(consentTypeChoice);
 		detailPanelFormContainer.add(commentTxtArea);
@@ -213,12 +215,28 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{	
-				boolean isConsented  = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject());
-				processErrors(target);
-				if(isConsented){
-					containerForm.info(" Please choose another component. The Subject has already consented to Component : " + studyComponentChoice.getModelObject().getName() );
+
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				
+				
+				try {
+					Study study =	iArkCommonService.getStudy(sessionStudyId);
+					Person subject = studyService.getPerson(sessionPersonId);
+					boolean isConsented  = iArkCommonService.isSubjectConsentedToComponent(studyComponentChoice.getModelObject(),subject,study);				
 					processErrors(target);
+					if(isConsented){
+						containerForm.info(" Please choose another component. The Subject has already consented to Component : " + studyComponentChoice.getModelObject().getName() );
+						processErrors(target);
+					}
+					
+				} catch (EntityNotFoundException e) {
+					containerForm.error("The subject in context does not exist in system anymore.Please re-do the operation.");
+						
+				} catch (ArkSystemException e) {
+					containerForm.error("There was a system error. Please contact support.");
 				}
+				
 			}
 		});
 	
