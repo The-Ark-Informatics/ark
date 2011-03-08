@@ -39,6 +39,8 @@ public class Person implements java.io.Serializable {
 	private MaritalStatus maritalStatus;
 	private Date dateOfBirth;
 	private PersonContactMethod personContactMethod;
+	private String preferredEmail;
+	private String otherEmail;
 	
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
@@ -269,5 +271,39 @@ public class Person implements java.io.Serializable {
 	public PersonContactMethod getPersonContactMethod()
 	{
 		return personContactMethod;
+	}
+
+	/**
+	 * @param preferredEmail the preferredEmail to set
+	 */
+	public void setPreferredEmail(String preferredEmail)
+	{
+		this.preferredEmail = preferredEmail;
+	}
+
+	/**
+	 * @return the preferredEmail
+	 */
+	@Column(name = "PREFERRED_EMAIL", length = 150)
+	public String getPreferredEmail()
+	{
+		return preferredEmail;
+	}
+
+	/**
+	 * @param otherEmail the otherEmail to set
+	 */
+	public void setOtherEmail(String otherEmail)
+	{
+		this.otherEmail = otherEmail;
+	}
+
+	/**
+	 * @return the otherEmail
+	 */
+	@Column(name = "OTHER_EMAIL", length = 150)
+	public String getOtherEmail()
+	{
+		return otherEmail;
 	}
 }
