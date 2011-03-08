@@ -77,7 +77,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected DropDownChoice<YesNo> consentDownloadedDdc;
 
 	
-	
 	/**
 	 * @param id
 	 * @param feedBackPanel
@@ -97,54 +96,56 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
 			Form<ConsentVO> containerForm) {
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer,
-				detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
 		
+			super(id, feedBackPanel, resultListContainer, detailPanelContainer,
+					detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
+					editButtonContainer, containerForm);
+			
 	}
 	
 	public void initialiseDetailForm(){
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
+		
+		wmcPlain = new WebMarkupContainer(Constants.WMC_PLAIN);
+		wmcPlain.setOutputMarkupPlaceholderTag(true);
+		wmcPlain.setVisible(true);
+		
+		wmcRequested  = new WebMarkupContainer(Constants.WMC_REQUESTED);
+		wmcRequested.setOutputMarkupPlaceholderTag(true);
+		wmcRequested.setVisible(false);
+		
+		wmcRecieved = new  WebMarkupContainer(Constants.WMC_RECIEVED);
+		wmcRecieved.setOutputMarkupPlaceholderTag(true);
+		wmcRecieved.setVisible(false);
+		
+		wmcCompleted = new WebMarkupContainer(Constants.WMC_COMPLETED);
+		wmcCompleted.setOutputMarkupPlaceholderTag(true);
+		wmcCompleted.setVisible(false);
+		
 		
 		consentedDatePicker = new DateTextField(Constants.CONSENT_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker arkDatePicker = new ArkDatePicker();
 		arkDatePicker.bind(consentedDatePicker);
 		consentedDatePicker.add(arkDatePicker);
 		
-		
-		wmcPlain = new WebMarkupContainer("wmc-plain");
-		wmcPlain.setOutputMarkupPlaceholderTag(true);
-		wmcPlain.setVisible(true);
-		
-		wmcRequested  = new WebMarkupContainer("wmc-requested");
-		wmcRequested.setOutputMarkupPlaceholderTag(true);
-		
 		consentRequestedDtf =  new DateTextField(Constants.CONSENT_REQUESTED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker requestedDatePicker = new ArkDatePicker();
 		requestedDatePicker.bind(consentRequestedDtf);
 		consentRequestedDtf.add(requestedDatePicker);
-		wmcRequested.setVisible(false);
 		wmcRequested.add(consentRequestedDtf);
-		
-		wmcRecieved = new  WebMarkupContainer("wmc-received");
-		wmcRecieved.setOutputMarkupPlaceholderTag(true);
-		
+
 		consentReceivedDtf = new DateTextField(Constants.CONSENT_RECEIVED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker recievedDatePicker = new ArkDatePicker();
 		recievedDatePicker.bind(consentReceivedDtf);
 		consentReceivedDtf.add(recievedDatePicker);
-		wmcRecieved.setVisible(false);
 		wmcRecieved.add(consentReceivedDtf);
 		
-		
-		wmcCompleted = new WebMarkupContainer("wmc-completed");
-		wmcCompleted.setOutputMarkupPlaceholderTag(true);
 		consentCompletedDtf = new DateTextField(Constants.CONSENT_COMPLETED_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker completedDatePicker = new ArkDatePicker();
 		completedDatePicker.bind(consentCompletedDtf);
 		consentCompletedDtf.add(completedDatePicker);
-		wmcCompleted.setVisible(false);
 		wmcCompleted.add(consentCompletedDtf);
+		
 	
 		commentTxtArea = new TextArea<String>(Constants.CONSENT_CONSENT_COMMENT);
 		initialiseConsentTypeChoice();
@@ -241,44 +242,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	
 	}
 	
-	public void updateStudyCompStatusDates(AjaxRequestTarget target, String statusName){
-		
-		if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED))){
-			wmcRecieved.setVisible(true);
-			wmcPlain.setVisible(false);
-			wmcRequested.setVisible(false);
-			wmcCompleted.setVisible(false);
-			target.addComponent(wmcPlain);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcCompleted);
-		}else if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))){
-		
-			wmcRequested.setVisible(true);
-			wmcPlain.setVisible(false);
-			wmcRecieved.setVisible(false);
-			wmcCompleted.setVisible(false);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcPlain);
-			target.addComponent(wmcCompleted);
-		}else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))){
-			
-			wmcCompleted.setVisible(true);
-			wmcPlain.setVisible(false);
-			wmcRecieved.setVisible(false);
-			wmcRequested.setVisible(false);
-			target.addComponent(wmcCompleted);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcPlain);
-		}else{
-			
-			setDatePickerDefaultMarkup(target);
-		
-		}
-		
-	}
 	protected void initialiseComponentStatusChoice(){
 		List<StudyCompStatus> studyCompList = iArkCommonService.getStudyComponentStatus();
 		ChoiceRenderer<StudyCompStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyCompStatus>(Constants.NAME, Constants.ID);
@@ -291,9 +254,8 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 				//Check what was selected and then toggle
 				StudyCompStatus status  = studyComponentStatusChoice.getModelObject();
 				String statusName  = status.getName();
-				updateStudyCompStatusDates(target,statusName);
+				new FormHelper().updateStudyCompStatusDates(target,statusName, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 			}
-			
 		});
 	
 	}
@@ -314,16 +276,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 	}
 
-	private void setDatePickerDefaultMarkup(AjaxRequestTarget target){
-		wmcPlain.setVisible(true);
-		wmcRecieved.setVisible(false);
-		wmcRequested.setVisible(false);
-		wmcCompleted.setVisible(false);
-		target.addComponent(wmcCompleted);
-		target.addComponent(wmcRecieved);
-		target.addComponent(wmcRequested);
-		target.addComponent(wmcPlain);
-	}
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onCancel(org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
@@ -331,7 +283,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected void onCancel(AjaxRequestTarget target) {
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
-		setDatePickerDefaultMarkup(target);
+		new FormHelper().setDatePickerDefaultMarkup(target, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 		onCancelPostProcess(target);
 	}
 
