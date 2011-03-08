@@ -75,7 +75,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	protected WebMarkupContainer wmcRecieved;
 	protected WebMarkupContainer wmcCompleted;
 	protected DropDownChoice<YesNo> consentDownloadedDdc;
-	protected DropDownChoice<StudyCompStatus> testDdc;
+
 	
 	
 	/**
@@ -175,7 +175,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 		detailPanelFormContainer.add(studyComponentChoice);
 		detailPanelFormContainer.add(studyComponentStatusChoice);
-		detailPanelFormContainer.add(testDdc);
 		detailPanelFormContainer.add(consentStatusChoice);
 		detailPanelFormContainer.add(consentTypeChoice);
 		detailPanelFormContainer.add(commentTxtArea);
@@ -242,11 +241,48 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	
 	}
 	
-	protected void initialiseComponentStatusChoice(){
+	public void updateStudyCompStatusDates(AjaxRequestTarget target, String statusName){
 		
+		if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED))){
+			wmcRecieved.setVisible(true);
+			wmcPlain.setVisible(false);
+			wmcRequested.setVisible(false);
+			wmcCompleted.setVisible(false);
+			target.addComponent(wmcPlain);
+			target.addComponent(wmcRecieved);
+			target.addComponent(wmcRequested);
+			target.addComponent(wmcCompleted);
+		}else if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))){
+		
+			wmcRequested.setVisible(true);
+			wmcPlain.setVisible(false);
+			wmcRecieved.setVisible(false);
+			wmcCompleted.setVisible(false);
+			target.addComponent(wmcRecieved);
+			target.addComponent(wmcRequested);
+			target.addComponent(wmcPlain);
+			target.addComponent(wmcCompleted);
+		}else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))){
+			
+			wmcCompleted.setVisible(true);
+			wmcPlain.setVisible(false);
+			wmcRecieved.setVisible(false);
+			wmcRequested.setVisible(false);
+			target.addComponent(wmcCompleted);
+			target.addComponent(wmcRecieved);
+			target.addComponent(wmcRequested);
+			target.addComponent(wmcPlain);
+		}else{
+			
+			setDatePickerDefaultMarkup(target);
+		
+		}
+		
+	}
+	protected void initialiseComponentStatusChoice(){
 		List<StudyCompStatus> studyCompList = iArkCommonService.getStudyComponentStatus();
 		ChoiceRenderer<StudyCompStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyCompStatus>(Constants.NAME, Constants.ID);
-		studyComponentStatusChoice  = new DropDownChoice(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList,defaultChoiceRenderer);
+		studyComponentStatusChoice  = new DropDownChoice<StudyCompStatus>(Constants.CONSENT_STUDY_COMP_STATUS, studyCompList,defaultChoiceRenderer);
 		
 		studyComponentStatusChoice.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 
@@ -255,41 +291,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 				//Check what was selected and then toggle
 				StudyCompStatus status  = studyComponentStatusChoice.getModelObject();
 				String statusName  = status.getName();
-				
-				if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED))){
-					wmcRecieved.setVisible(true);
-					wmcPlain.setVisible(false);
-					wmcRequested.setVisible(false);
-					wmcCompleted.setVisible(false);
-					target.addComponent(wmcPlain);
-					target.addComponent(wmcRecieved);
-					target.addComponent(wmcRequested);
-					target.addComponent(wmcCompleted);
-				}else if( (statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))){
-				
-					wmcRequested.setVisible(true);
-					wmcPlain.setVisible(false);
-					wmcRecieved.setVisible(false);
-					wmcCompleted.setVisible(false);
-					target.addComponent(wmcRecieved);
-					target.addComponent(wmcRequested);
-					target.addComponent(wmcPlain);
-					target.addComponent(wmcCompleted);
-				}else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))){
-					
-					wmcCompleted.setVisible(true);
-					wmcPlain.setVisible(false);
-					wmcRecieved.setVisible(false);
-					wmcRequested.setVisible(false);
-					target.addComponent(wmcCompleted);
-					target.addComponent(wmcRecieved);
-					target.addComponent(wmcRequested);
-					target.addComponent(wmcPlain);
-				}else{
-					
-					setDatePickerDefaultMarkup(target);
-				
-				}
+				updateStudyCompStatusDates(target,statusName);
 			}
 			
 		});
@@ -346,8 +348,6 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 			this.error("The consent you tried to delete does not exist");
 		}
 		catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			//Report this to the user
 			this.error("A system exception has occured during delete operation of the Consent");
 		}
 		
