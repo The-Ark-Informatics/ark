@@ -17,9 +17,12 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.form.ContainerForm;
 
@@ -30,7 +33,8 @@ import au.org.theark.study.web.component.consent.form.ContainerForm;
  */
 public class SearchResultListPanel extends Panel{
 
-	
+	@SpringBean( name = Constants.STUDY_SERVICE)
+	protected IStudyService studyService;
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer searchPanelContainer;
@@ -114,25 +118,33 @@ public class SearchResultListPanel extends Panel{
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
-				containerForm.getModelObject().setConsent(consent);
-				// Add consentId into context (for use with consentFile(s))
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consent.getId()); 
+				Long id  = consent.getId();
 				
-				detailPanelContainer.setVisible(true);
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				editButtonContainer.setVisible(false);
+				try {
+					Consent consentFromBackend = studyService.getConsent(id);
+					containerForm.getModelObject().setConsent(consentFromBackend);
+					// Add consentId into context (for use with consentFile(s))
+					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consentFromBackend.getId()); 
+					
+					detailPanelContainer.setVisible(true);
+					viewButtonContainer.setVisible(true);
+					viewButtonContainer.setEnabled(true);
+					detailPanelFormContainer.setEnabled(false);
+					searchResultContainer.setVisible(false);
+					searchPanelContainer.setVisible(false);
+					editButtonContainer.setVisible(false);
+					
+					target.addComponent(searchResultContainer);
+					target.addComponent(detailPanelContainer);
+					target.addComponent(detailPanelFormContainer);
+					target.addComponent(searchPanelContainer);
+					target.addComponent(viewButtonContainer);
+					target.addComponent(editButtonContainer);
+					
+				} catch (ArkSystemException e) {
+					containerForm.error("A System Error has occured please contact Support");
+				}
 				
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailPanelContainer);
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
 			}
 			
 		};
