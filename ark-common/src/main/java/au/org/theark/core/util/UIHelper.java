@@ -39,7 +39,7 @@ public class UIHelper {
 		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_LAB_PERSON)){
 		
 			ldapRoleName = Constants.ROLE_LAB_PERSON;
-		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_WADB_ADMNIN)){
+		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_WADB_ADMIN)){
 			
 			ldapRoleName = Constants.ROLE_WADB_ADMINISTRATOR;
 		}else if(roleName.equalsIgnoreCase(Constants.DISPLAY_ROLE_WADB_PERSON)){
@@ -69,7 +69,7 @@ public class UIHelper {
 			displayName = Constants.DISPLAY_ROLE_LAB_PERSON;
 		}else if(roleName.equalsIgnoreCase(Constants.ROLE_WADB_ADMINISTRATOR)){
 			
-			displayName = Constants.DISPLAY_ROLE_WADB_ADMNIN;
+			displayName = Constants.DISPLAY_ROLE_WADB_ADMIN;
 		}else if(roleName.equalsIgnoreCase(Constants.ROLE_WADB_PERSON)){
 			
 			displayName = Constants.DISPLAY_ROLE_WADB_PERSON;
@@ -95,13 +95,15 @@ public class UIHelper {
 			
 			moduleName = Constants.DISP_MODULE_GWAS;
 		
+		}else if(moduleName.equals(Constants.MODULE_PHENOTYPIC)){
+			
+			moduleName = Constants.DISP_MODULE_PHENOTYPIC;
+		
 		}else if(moduleName.equals(Constants.MODULE_WAGER_LAB )){
 		
 			moduleName = Constants.DISP_MODULE_WAGER_LAB;
-
 		}
 		 return moduleName;
-		
 	}
 	
 	public static void getDisplayModuleName(List<ModuleVO> modules){

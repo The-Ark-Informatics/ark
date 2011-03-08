@@ -10,7 +10,7 @@ public class Constants {
 	public static final String DISPLAY_ROLE_ORDINARY_USER="Ordinary User";
 	public static final String DISPLAY_ROLE_POWER_USER="Power User";
 	public static final String DISPLAY_ROLE_LAB_PERSON="Lab Person";
-	public static final String DISPLAY_ROLE_WADB_ADMNIN="WADB Admin";
+	public static final String DISPLAY_ROLE_WADB_ADMIN="WADB Admin";
 	public static final String DISPLAY_ROLE_WADB_PERSON="WADB Person";
 	public static final String DISPLAY_ROLE_SUPER_ADMIN="Super Admin";
 	
