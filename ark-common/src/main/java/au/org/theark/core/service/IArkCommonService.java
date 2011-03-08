@@ -16,6 +16,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
@@ -108,6 +109,6 @@ public interface IArkCommonService {
 
 	public List<PersonContactMethod> getPersonContactMethodList();
 	
-	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent);
+	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 
 }
