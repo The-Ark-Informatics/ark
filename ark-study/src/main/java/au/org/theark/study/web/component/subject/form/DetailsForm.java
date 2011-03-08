@@ -336,7 +336,9 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
 				sb.append(" has been created successfully and linked to the study in context " );
 				sb.append(study.getName());
+				onSavePostProcess(target);
 				this.info(sb.toString());
+				
 			}
 			catch (ArkUniqueException ex)
 			{
@@ -347,11 +349,13 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 
 			try {
 				studyService.updateSubject(subjectVO);
+				onSavePostProcess(target);	
 				StringBuffer sb = new StringBuffer();
 				sb.append("The Subject with Subject UID: ");
 				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
 				sb.append(" has been updated successfully and linked to the study in context " );
 				sb.append(study.getName());
+				onSavePostProcess(target);
 				this.info(sb.toString());
 			} catch (ArkUniqueException e) {
 				this.error("Subject UID must be unique.");
@@ -398,20 +402,15 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			//When both the year fields were supplied, save only if they are valid
 			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
-				System.out.println("onSavePostProcess  completed");
 			}
 			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
 			}
 			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
 			}else if(yearOfFirstMammogram == null && yearOfRecentMammogram == null){
 				//When other
 				saveUpdateProcess(containerForm.getModelObject(), target);
-				onSavePostProcess(target);	
 			}
 			
 			ContextHelper contextHelper = new ContextHelper();
