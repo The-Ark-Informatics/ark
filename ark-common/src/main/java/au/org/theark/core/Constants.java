@@ -23,10 +23,11 @@ public class Constants {
 	public static final String ROLE_WADB_PERSON="wadb_person";
 	
 	/* Module Names for display */
-	public static final String DISP_MODULE_STUDY_MANAGER="Study Manager";
+	public static final String DISP_MODULE_STUDY_MANAGER="Study Management";
 	public static final String DISP_MODULE_ARK="ARK";
 	public static final String DISP_MODULE_WAGER_LAB="LIMS";
 	public static final String DISP_MODULE_GWAS ="GWAS";
+	public static final String DISP_MODULE_PHENOTYPIC ="Phenotypic";
 	public static final String DISP_MODULE_DATA_ANALYSIS ="Data Analysis";
 
 	/* Module Names stored in the system*/
@@ -34,6 +35,7 @@ public class Constants {
 	public static final String MODULE_ARK="ark";
 	public static final String MODULE_WAGER_LAB="wager_lab";
 	public static final String MODULE_GWAS ="gwas";
+	public static final String MODULE_PHENOTYPIC ="phenotypic";
 	public static final String MODULE_DATA_ANALYSIS ="data_analysis";
 	
 	/* Common Service Names */
