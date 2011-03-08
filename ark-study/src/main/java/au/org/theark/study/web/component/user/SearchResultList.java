@@ -225,7 +225,7 @@ public class SearchResultList extends Panel{
 						//userService.getUserRole(etaUserVO,modules);//Gets a list of currents roles for the given study for each of the module
 						
 						UIHelper.getDisplayModuleName(modules);
-						appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, arkUserVo, modules);
+						appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, arkUserVo, modules, userContainerForm);
 						
 
 					} catch (ArkSystemException e) {

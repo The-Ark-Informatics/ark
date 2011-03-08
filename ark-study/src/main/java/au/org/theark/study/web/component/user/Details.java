@@ -24,7 +24,6 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.core.vo.StudyVO;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.user.form.ContainerForm;
@@ -48,39 +47,7 @@ public class Details extends Panel{
 	
 	private Search searchPanel;
 	private UserForm userForm;
-	private AppRoleAccordion appRoleAccordion;
-
-	
-	/**
-	 * Setters and Getters for private members
-	 * @return
-	 */
-	public Search getSearchPanel() {
-		return searchPanel;
-	}
-
-	public void setSearchPanel(Search searchPanel) {
-		this.searchPanel = searchPanel;
-	}
-
-	public UserForm getUserForm() {
-		return userForm;
-	}
-
-	public void setUserForm(UserForm userForm) {
-		this.userForm = userForm;
-	}
-
-	
-	private String customValidation(PasswordTextField password, PasswordTextField confirmPassword){
-		String error ="";
-		if(!StringUtils.hasText(password.getModelObject()) &&  !StringUtils.hasText(confirmPassword.getModelObject())){
-			error ="Password fields are required.";//Resource bundle to add this error message
-		}
-		return error;
-	}
-	
-	
+	private AppRoleAccordion appRoleAccordion;	
 	private FeedbackPanel feedBackPanel;
 	private WebMarkupContainer listContainer;
 	private WebMarkupContainer detailsContainer;
@@ -179,7 +146,7 @@ public class Details extends Panel{
 			/* Get A list of Module/Application names from the backend */
 			List<ModuleVO> modules = userService.getModules(true);
 			containerForm.getModelObject().setAvailableModules(modules);
-			appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, containerForm.getModelObject(), modules);
+			appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION, containerForm.getModelObject(), modules, containerForm);
 			//appRoleAccordion = new AppRoleAccordion(Constants.APP_ROLE_ACCORDION,containerForm);
 			//Accordion will have its own form object
 			userForm.add(appRoleAccordion);
@@ -253,6 +220,26 @@ public class Details extends Panel{
 				roleVO.setRole( UIHelper.getSystemRoleName(roleVO.getRole()));
 			}
 		}
+	}
+	
+	/**
+	 * Setters and Getters for private members
+	 * @return
+	 */
+	public Search getSearchPanel() {
+		return searchPanel;
+	}
+
+	public void setSearchPanel(Search searchPanel) {
+		this.searchPanel = searchPanel;
+	}
+
+	public UserForm getUserForm() {
+		return userForm;
+	}
+
+	public void setUserForm(UserForm userForm) {
+		this.userForm = userForm;
 	}
 
 }

@@ -6,17 +6,23 @@ import java.util.List;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.odlabs.wiquery.ui.accordion.Accordion;
 
@@ -25,6 +31,7 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.RoleVO;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.user.form.ContainerForm;
 import au.org.theark.study.web.form.AppRoleForm;
 
 public class AppRoleAccordion extends Panel{
@@ -33,17 +40,19 @@ public class AppRoleAccordion extends Panel{
 	private static final long serialVersionUID = 1L;
 	private List<ModuleVO> membershipModules;
 	
-	//private ContainerForm containerForm;
+	private ContainerForm containerForm;
 	//Application Select Palette
 	
 	@SuppressWarnings("unchecked")
-	public AppRoleAccordion(String id, ArkUserVO etaUserVO, List<ModuleVO> moduleList){
+	public AppRoleAccordion(String id, ArkUserVO etaUserVO, List<ModuleVO> moduleList, final ContainerForm containerForm){
 		
 		super(id);
 		
 		this.etaUserVO = etaUserVO;//Set the private instance of etaUserVO
 		membershipModules = etaUserVO.getModules();//List of Applications the user is a member of
 		final AppRoleForm appRoleForm = new AppRoleForm(Constants.APP_ROLE_FORM, etaUserVO);
+		
+		this.containerForm = containerForm;
 		
 		//Create an instance of Wiquery Accordion widget
 		Accordion moduleAccordion = new Accordion(Constants.ACCORDION);
@@ -78,6 +87,9 @@ public class AppRoleAccordion extends Panel{
 				}
 				groupSelectorContainer  = initGroupSelectorContainer(appRoleForm, moduleName, selectedModule.getRole(),currentModule.getRole());
 				listItem.add(groupSelectorContainer);
+				
+				Palette rolePalette = initialiseRolePalette(containerForm,selectedModule,currentModule);
+				listItem.add(rolePalette);
 			}
 		};
 		
@@ -145,23 +157,34 @@ public class AppRoleAccordion extends Panel{
 //	}
 	
 	
-//	private Palette initialiseRolePalette(ContainerForm containerForm, ModuleVO selectedModuleVO, ModuleVO availableModuleVO){
-//		
-//		CompoundPropertyModel<ArkUserVO> arkUserCpm = (CompoundPropertyModel<ArkUserVO>)containerForm.getModel();
-//		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("role", "role");
-//		Model availableRolesModel = new Model(availableModuleVO);
-//		PropertyModel<List<RoleVO>> availableRoleChoicesPM = new PropertyModel<List<RoleVO>>(availableRolesModel,"role");
-//		
-//		RoleVO roleVO = new RoleVO();
-//		roleVO.setRole("Test");
-//		selectedModuleVO.getRole().add(roleVO);
-//		
-//		Model selectedRolesModel = new Model(selectedModuleVO);
-//		PropertyModel<List<RoleVO>> selectedRolesPM = new PropertyModel<List<RoleVO>>(selectedRolesModel,"role");
-//		
-//		return new Palette("rolePalette", selectedRolesPM, availableRoleChoicesPM, renderer, 5, false);
-//		
-//	}
+	private Palette initialiseRolePalette(ContainerForm containerForm, ModuleVO selectedModuleVO, ModuleVO availableModuleVO){
+		
+		CompoundPropertyModel<ArkUserVO> arkUserCpm = (CompoundPropertyModel<ArkUserVO>)containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("role", "role");
+		Model availableRolesModel = new Model(availableModuleVO);
+		PropertyModel<List<RoleVO>> availableRoleChoicesPM = new PropertyModel<List<RoleVO>>(availableRolesModel,"role");
+		
+		RoleVO roleVO = new RoleVO();
+		roleVO.setRole("Test");
+		selectedModuleVO.getRole().add(roleVO);
+		
+		Model selectedRolesModel = new Model(selectedModuleVO);
+		PropertyModel<List<RoleVO>> selectedRolesPM = new PropertyModel<List<RoleVO>>(selectedRolesModel,"role");
+		
+		Palette palette = new Palette("userRolesPalette", selectedRolesPM, availableRoleChoicesPM, renderer, 5, false)
+		{
+			@Override
+			public ResourceReference getCSS()
+			{
+				return null;
+			}
+		};
+		
+		//TODO: Make palette visible when properly determined model access
+		palette.setVisible(false);
+		return palette;
+		
+	}
 	
 	
 	/**
