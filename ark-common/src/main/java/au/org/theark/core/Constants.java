@@ -23,19 +23,27 @@ public class Constants {
 	public static final String ROLE_WADB_PERSON="wadb_person";
 	
 	/* Module Names for display */
-	public static final String DISP_MODULE_STUDY_MANAGER="Study Management";
 	public static final String DISP_MODULE_ARK="ARK";
-	public static final String DISP_MODULE_WAGER_LAB="LIMS";
-	public static final String DISP_MODULE_GWAS ="GWAS";
+	public static final String DISP_MODULE_STUDY_MANAGER="Study Management";
+	public static final String DISP_MODULE_SUBJECT="Subject Management";
+	public static final String DISP_MODULE_GWAS ="Genotypic";
 	public static final String DISP_MODULE_PHENOTYPIC ="Phenotypic";
-	public static final String DISP_MODULE_DATA_ANALYSIS ="Data Analysis";
+	public static final String DISP_MODULE_REGISTRY ="Registry";
+	// TODO: All wager_lab references to become lims
+	public static final String DISP_MODULE_WAGER_LAB="LIMS";
+	public static final String DISP_MODULE_LIMS="LIMS";
+	public static final String DISP_MODULE_DATA_ANALYSIS ="Data Extraction";
 
 	/* Module Names stored in the system*/
 	public static final String MODULE_STUDY_MANAGER="study_manager";
 	public static final String MODULE_ARK="ark";
-	public static final String MODULE_WAGER_LAB="wager_lab";
+	public static final String MODULE_SUBJECT="subject";
 	public static final String MODULE_GWAS ="gwas";
 	public static final String MODULE_PHENOTYPIC ="phenotypic";
+	public static final String MODULE_REGISTRY ="registry";
+	// TODO: All wager_lab references to become lims
+	public static final String MODULE_WAGER_LAB="wager_lab";
+	public static final String MODULE_LIMS="lims";
 	public static final String MODULE_DATA_ANALYSIS ="data_analysis";
 	
 	/* Common Service Names */
