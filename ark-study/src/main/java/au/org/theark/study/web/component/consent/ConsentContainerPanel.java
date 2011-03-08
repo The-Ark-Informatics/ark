@@ -36,12 +36,10 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	
 	//Container Form
 	private ContainerForm containerForm;
-	//Panels
-	//private SearchResultListPanel searchResultListPanel;
+
 	private SearchPanel searchPanel;
 	private DetailPanel detailPanel;
 	private PageableListView<Consent> pageableListView;
-	
 	
 	/**
 	 * Constructor
@@ -136,7 +134,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 																			searchResultPanelContainer,
 																			viewButtonContainer,
 																			editButtonContainer,
-																			containerForm																				);
+																			containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long serialVersionUID = 1L;
@@ -159,12 +157,12 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 						consentList = studyService.searchConsent(containerForm.getModelObject());
 					}
 				} catch (EntityNotFoundException e) {
-					//e.printStackTrace();
+					containerForm.error("Subject is not available in the system");
+					
 				} catch (ArkSystemException e) {
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					containerForm.error("A System Error has occured please contact Support");
 				}
-				
+			
 				pageableListView.removeAll();
 				return consentList;
 			}
