@@ -75,3 +75,86 @@ div.tabpanel div.tab-row li.selected a {
     color: #333;
     padding-bottom: 5px;
 }
+
+#paletteBreaker {
+	float: left;
+	width: 100%;
+}
+
+#paletteBorder {
+	float: left;
+	width: 100%;
+}
+
+#paletteAvailableLabel {
+	background-color: #EEEEEE;
+    border-bottom: 1px solid #6F6F6F;
+    border-top: 1px solid #6F6F6F;
+    font-size: 10pt;
+    font-weight: bold;
+    float: left;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+#paletteSelectedLabel {
+	background-color: #EEEEEE;
+    border-bottom: 1px solid #6F6F6F;
+    border-top: 1px solid #6F6F6F;
+    font-size: 10pt;
+    font-weight: bold;
+    float: right;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+}
+
+#paletteAvailable {
+	float: left;
+    height: 100%;
+    width: 40%;
+}
+
+#paletteSelected {
+	float: right;
+    height: 100%;
+    width: 40%;
+}
+
+#paletteButtons {
+    display: block;
+    height: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    width: 10%;
+}
+
+#paletteCenter {
+	float: center;
+    height: 100%;
+    width: 10%;
+}
+
+#paletteAddAllButtons {
+	float: left;
+    height: 20%;
+    width: 100%;
+}
+
+#addSelectedBtn {
+	width: 100%;
+}
+
+#removeSelectedBtn {
+	width: 100%;
+}
+
+#addAllBtn {
+	width: 100%;
+}
+
+#removeAllBtn {
+	width: 100%;
+}
