@@ -37,7 +37,8 @@ public class Constants {
 	public static final int MODE_READ =3;
 	
 	/* Person */
-	
+	public static final String	PERSON_PREFERRED_EMAIL	= "subjectStudy.person.preferredEmail";
+	public static final String	PERSON_OTHER_EMAIL	= "subjectStudy.person.otherEmail";
 	public static final String PERSON_PREFERRED_NAME="subjectStudy.person.preferredName";
 	public static final String PERSON_VITAL_STATUS ="subjectStudy.person.vitalStatus";
 	public static final String PERSON_PERSON_ID="subjectStudy.person.id";
@@ -220,7 +221,6 @@ public class Constants {
 	
 	public static final String STUDY_STATUS_COMPLETED ="Completed";
 	public static final String STUDY_STATUS_REQUESTED="Requested";
-	public static final String STUDY_STATUS_RECEIVED="Received";
-	
+	public static final String STUDY_STATUS_RECEIVED="Received";	
 	
 }

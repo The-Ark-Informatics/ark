@@ -25,7 +25,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.StringValidator;
+import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.Country;
@@ -34,6 +34,7 @@ import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -41,6 +42,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -83,6 +85,8 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	private DropDownChoice<Country> countryChoice;
 	private DropDownChoice<CountryState> stateChoice;
 	private WebMarkupContainer countryStateSelector;
+	private TextField<String> preferredEmailTxtFld;
+	private TextField<String> otherEmailTxtFld;
 	
 	//Reference Data 
 	private DropDownChoice<TitleType> titleTypeDdc;
@@ -91,6 +95,8 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	private DropDownChoice<SubjectStatus> subjectStatusDdc;
 	private DropDownChoice<MaritalStatus> maritalStatusDdc;
 	private DropDownChoice<PersonContactMethod> personContactMethodDdc;
+	
+	private WebMarkupContainer wmcPreferredEmail;
 	
 	private Study study;
 	
@@ -118,16 +124,12 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
-		subjectUIDTxtFld = new TextField<String>("subjectStudy.subjectUID"); //Constants.SUBJECT_UID);
+		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
+		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
 		
 		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB,au.org.theark.core.Constants.DD_MM_YYYY);
-		DatePicker dobDatePicker = new DatePicker(){
-			@Override
-			protected boolean enableMonthYearSelection()
-			{
-				return true;
-			}
-		};
+		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
 		
@@ -156,7 +158,29 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		
 		Collection<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList(); 
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME,Constants.ID);
+		
+		wmcPreferredEmail = new  WebMarkupContainer("preferredEmailContainer");
+		wmcPreferredEmail.setOutputMarkupPlaceholderTag(true);
+		
 		personContactMethodDdc= new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD,(List) contactMethodList, contactMethodRender);
+		personContactMethodDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Check what was selected and then toggle
+				PersonContactMethod personContactMethod = containerForm.getModelObject().getSubjectStudy().getPerson().getPersonContactMethod();
+				String personContactMethodName  = personContactMethod.getName();
+				
+				if(personContactMethodName.equalsIgnoreCase("EMAIL")){
+					// Add a validator making preferredEmail required
+					preferredEmailTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.preferredEmail.required", null));
+				}
+				else{
+					preferredEmailTxtFld.setRequired(false);
+					
+				}
+				target.addComponent(wmcPreferredEmail);
+			}
+		});
 		
 		initCustomFields();
 		
@@ -169,13 +193,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		
 		studyApproachDate = new DateTextField("subjectStudy.studyApproachDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		
-		DatePicker dobStudyApproachDatePicker = new DatePicker(){
-			@Override
-			protected boolean enableMonthYearSelection()
-			{
-				return true;
-			}
-		};
+		ArkDatePicker dobStudyApproachDatePicker = new ArkDatePicker();
 		
 		dobStudyApproachDatePicker.bind(studyApproachDate);
 		studyApproachDate.add(dobStudyApproachDatePicker);
@@ -260,6 +278,12 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(maritalStatusDdc);
 		detailPanelFormContainer.add(personContactMethodDdc);
 		
+		// Prerred email becomes required when selected as preferred contact method
+		wmcPreferredEmail.add(preferredEmailTxtFld);
+		detailPanelFormContainer.add(wmcPreferredEmail);
+		
+		detailPanelFormContainer.add(otherEmailTxtFld);
+		
 		//Add the supposed-to-be custom controls into the form container.
 		detailPanelFormContainer.add(amdrifIdTxtFld);
 		detailPanelFormContainer.add(studyApproachDate);
@@ -299,14 +323,17 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-		firstNameTxtFld.setRequired(true).setLabel(new StringResourceModel("firstName.required", this, null));;
+		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("dob.range", this, null));
 		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("approach.date", this, null));
 		
+		titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
 		vitalStatusDdc.setRequired(true).setLabel(new StringResourceModel("vital.status.required", this, null));
 		genderTypeDdc.setRequired(true).setLabel(new StringResourceModel("gender.type.required", this, null));
-		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
-		titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
+		subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.subjectStatus.required", this, null));
+		
+		preferredEmailTxtFld.add(EmailAddressValidator.getInstance());
+		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
 	}
 
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
