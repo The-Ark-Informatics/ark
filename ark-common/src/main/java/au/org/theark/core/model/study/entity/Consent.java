@@ -94,6 +94,7 @@ public class Consent implements Serializable {
 		this.studyComp = studyComp;
 	}
 	
+	
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDY_COMP_STATUS_ID")
 	public StudyCompStatus getStudyComponentStatus() {
