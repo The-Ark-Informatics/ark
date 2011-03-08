@@ -222,5 +222,11 @@ public class Constants {
 	public static final String STUDY_STATUS_COMPLETED ="Completed";
 	public static final String STUDY_STATUS_REQUESTED="Requested";
 	public static final String STUDY_STATUS_RECEIVED="Received";	
+	public static final String WMC_RECIEVED="wmc-received";
+	public static final String WMC_COMPLETED="wmc-completed";
+	public static final String WMC_REQUESTED="wmc-requested";
+	public static final String WMC_PLAIN="wmc-plain";
+	
+	
 	
 }
