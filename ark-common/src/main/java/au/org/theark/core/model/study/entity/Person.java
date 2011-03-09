@@ -49,6 +49,7 @@ public class Person implements java.io.Serializable {
 	private Set<LinkSiteContact> linkSiteContacts = new HashSet<LinkSiteContact>(0);
 	private Set<PersonAddress> personAddresses = new HashSet<PersonAddress>(0);
 	private Set<LinkSubjectContact> linkSubjectContactsForSubjectKey = new HashSet<LinkSubjectContact>(0);
+	private Set<PersonLastnameHistory> personLastnameHistory = new HashSet<PersonLastnameHistory>(0);
 
 	// Constructors
 
@@ -305,5 +306,22 @@ public class Person implements java.io.Serializable {
 	public String getOtherEmail()
 	{
 		return otherEmail;
+	}
+
+	/**
+	 * @param personLastnameHistory the personLastnameHistory to set
+	 */
+	public void setPersonLastnameHistory(Set<PersonLastnameHistory> personLastnameHistory)
+	{
+		this.personLastnameHistory = personLastnameHistory;
+	}
+
+	/**
+	 * @return the personLastnameHistory
+	 */
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
+	public Set<PersonLastnameHistory> getPersonLastnameHistory()
+	{
+		return personLastnameHistory;
 	}
 }
