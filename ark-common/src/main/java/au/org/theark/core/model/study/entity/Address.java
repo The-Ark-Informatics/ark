@@ -41,6 +41,8 @@ public class Address implements java.io.Serializable {
 	private AddressType addressType;
 	private Date dateReceived;
 	private String comments;
+	private YesNo preferredMailingAddress;
+	
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
 	// Constructors
@@ -183,5 +185,15 @@ public class Address implements java.io.Serializable {
 
 	public void setPerson(Person person) {
 		this.person = person;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PREFERRED_MAILING_ADDRESS_ID")
+	public YesNo getPreferredMailingAddress() {
+		return preferredMailingAddress;
+	}
+
+	public void setPreferredMailingAddress(YesNo preferredMailingAddress) {
+		this.preferredMailingAddress = preferredMailingAddress;
 	}
 }
