@@ -42,6 +42,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudycomp;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
@@ -437,4 +438,79 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return criteria.list();
 	}
 
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory){
+		PersonLastnameHistory personLastnameHistoryToReturn = null;
+		
+		Example example = Example.create(personSurnameHistory);
+		
+		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class).add(example);
+		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
+			personLastnameHistoryToReturn =  (PersonLastnameHistory)criteria.list().get(0);	
+		}
+		
+		return personLastnameHistoryToReturn;
+	}
+	
+	public void createPersonLastnameHistory(Person person){
+		PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+		personLastNameHistory.setPerson(person);
+		personLastNameHistory.setLastName(person.getLastName());
+		
+		getSession().save(personLastNameHistory);
+	}
+	
+	public void updatePersonLastnameHistory(Person person){
+		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
+		personLastnameHistory.setPerson(person);
+		personLastnameHistory.setLastName(person.getLastName());
+		
+		String currentLastName = getCurrentLastname(person);
+		
+		if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+			getSession().save(personLastnameHistory);
+	}
+
+	public String getPreviousLastname(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		criteria.addOrder(Order.desc("id"));
+		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory(); 
+		if(!criteria.list().isEmpty()){
+			if (criteria.list().size() > 1)
+				personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
+		}
+		
+		return personLastameHistory.getLastName();
+	}
+	
+	public String getCurrentLastname(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		criteria.addOrder(Order.desc("id"));
+		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory(); 
+		if(!criteria.list().isEmpty()){
+			personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0);
+		}
+		
+		return personLastnameHistory.getLastName();
+	}
+
+	public List<PersonLastnameHistory> getLastnameHistory(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		
+		return criteria.list();
+	}
 }

@@ -18,6 +18,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -189,5 +190,25 @@ public interface IStudyDao {
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 
-
+	public void createPersonLastnameHistory(Person person);
+	
+	public void updatePersonLastnameHistory(Person person);
+	
+	/**
+	 * Returns previousSurnameHistory
+	 * @return
+	 */
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory);
+	
+	/**
+	 * Returns previous surname
+	 * @return
+	 */
+	public String getPreviousLastname(Person person);
+	
+	/**
+	 * Returns a list of PersonSurnameHistory
+	 * @return
+	 */
+	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 }
