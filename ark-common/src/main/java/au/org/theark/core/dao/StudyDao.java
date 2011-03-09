@@ -30,6 +30,7 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
@@ -386,15 +387,12 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study){
 		boolean isConsented = false;
-		//Check the Link
-		LinkSubjectStudycomp subjectStudyComponent = new LinkSubjectStudycomp();
-		subjectStudyComponent.setStudyComp(studyComponent);
-		Criteria criteria = getSession().createCriteria(LinkSubjectStudycomp.class);
-		criteria.createAlias("studyComp", "sc");
-		criteria.add(Restrictions.eq("sc.id",studyComponent.getId()));
-		criteria.add(Restrictions.eq("study", study));
-		criteria.add(Restrictions.eq("person", subject));
-		if (criteria.list() != null && criteria.list().size() > 0){
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("studyComp.id",studyComponent.getId()));
+		criteria.add(Restrictions.eq("study.id", study.getId()));
+		criteria.add(Restrictions.eq("subject.id", subject.getId()));
+		List list  = criteria.list();
+		if (list != null && criteria.list().size() > 0){
 			isConsented = true;
 		}
 		return isConsented;
