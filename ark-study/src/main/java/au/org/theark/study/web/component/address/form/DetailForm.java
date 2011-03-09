@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.address.form;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -13,7 +14,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -33,6 +33,7 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -61,6 +62,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DropDownChoice<AddressType> addressTypeChoice;
 	private WebMarkupContainer countryStateSelector;
 	private DropDownChoice<AddressStatus> addressStatusChoice;
+	private DropDownChoice<YesNo> preferredMailingAddressChoice;
 	private DateTextField		dateReceivedDp;
 	private TextArea<String> commentsTxtArea;
 	
@@ -99,6 +101,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
 		initialiseAddressStatusDropDown();
+		initialisePreferredMailingAddressDropDown();
 		initialiseDatePicker();
 		attachValidators();
 		addDetailFormComponents();
@@ -114,12 +117,19 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(addressStatusChoice);
 		detailPanelFormContainer.add(dateReceivedDp);
 		detailPanelFormContainer.add(commentsTxtArea);
+		detailPanelFormContainer.add(preferredMailingAddressChoice);
 	}
 	
 	private void initialiseAddressTypeDropDown(){
 		List<AddressType> addressTypeList = iArkCommonService.getAddressTypes();
 		ChoiceRenderer<AddressType> defaultChoiceRenderer = new ChoiceRenderer<AddressType>(Constants.NAME, Constants.ID);
 		addressTypeChoice = new DropDownChoice<AddressType>(Constants.ADDRESS_ADDRESSTYPE,addressTypeList,defaultChoiceRenderer);
+	}
+	
+	private void initialisePreferredMailingAddressDropDown(){
+		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
+		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
+		preferredMailingAddressChoice = new DropDownChoice<YesNo>(Constants.ADDRESS_PREFERRED_MAILING,(List) yesNoList, yesnoRenderer);
 	}
 	
 	/**
@@ -189,8 +199,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-		// TODO Auto-generated method stub
-		//studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this, new Model<String>("Name")));
 		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("city", this, new Model<String>("City")));
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("street.address", this, new Model<String>("Street Address")));
 		streetAddressTxtFld.add(StringValidator.maximumLength(255));
@@ -238,31 +246,38 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	protected void onSave(Form<AddressVO> containerForm,AjaxRequestTarget target) {
 		
 		Long personSessionId =(Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		
+		
 		//Get the person and set it on the Phone object.
 		try {
 			Person person = studyService.getPerson(personSessionId);
-			containerForm.getModelObject().getAddress().setPerson(person);
-			if(containerForm.getModelObject().getAddress().getId() == null ){
-				studyService.create(containerForm.getModelObject().getAddress());
-				this.info("Address was successfully added and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
-				processErrors(target);
-				//Call the create
-			}else{
-				
-				studyService.update(containerForm.getModelObject().getAddress());
-				this.info("Address was successfully updated and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
-				processErrors(target);
-				//Update 
-			}
 			
-			onSavePostProcess(target);
+			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person);
+			if(hasPreferredMailing){
+				containerForm.error("The person has already specified a Preferred Mailing address. This address cannot be set as Preferred Mailing address.");
+				processErrors(target);
+			}
+			else{
+				containerForm.getModelObject().getAddress().setPerson(person);
+				if(containerForm.getModelObject().getAddress().getId() == null ){
+					studyService.create(containerForm.getModelObject().getAddress());
+					this.info("Address was successfully added and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
+					processErrors(target);
+				}else {
+					
+					studyService.update(containerForm.getModelObject().getAddress());
+					this.info("Address was successfully updated and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
+					processErrors(target);
+				}
+				
+				onSavePostProcess(target);
+			}
 			//Invoke backend to persist the phone
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			containerForm.error("The Specified subject is not available any more in the system. Please re-do the operation");
+			
 		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			containerForm.error("A system error has occured, Pleas contact support.");
 		}
 	}
 
