@@ -100,7 +100,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 		
 		ArkDatePicker datePicker2 = new ArkDatePicker();
 		datePicker2.bind(endConsentedDatePicker);
-		endConsentedDatePicker.add(datePicker);
+		endConsentedDatePicker.add(datePicker2);
 		
 		initialiseConsentTypeChoice();
 		initialiseConsentStatusChoice();
