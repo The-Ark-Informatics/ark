@@ -18,6 +18,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -110,5 +111,12 @@ public interface IArkCommonService {
 	public List<PersonContactMethod> getPersonContactMethodList();
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
+	
+	public void createPersonLastnameHistory(Person person);
+	public void updatePersonLastnameHistory(Person person);
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory);
+	
+	public String getPreviousLastname(Person person);
+	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 
 }

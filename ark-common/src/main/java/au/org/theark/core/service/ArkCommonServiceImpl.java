@@ -25,6 +25,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -209,5 +210,32 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study){
 		return studyDao.isSubjectConsentedToComponent(studyComponent,subject,study);
 	}
+
+	public void createPersonLastnameHistory(Person person)
+	{
+		studyDao.createPersonLastnameHistory(person);
+	}
+
+	public List<PersonLastnameHistory> getLastnameHistory(Person person)
+	{
+		return studyDao.getLastnameHistory(person);
+	}
+
+	public String getPreviousLastname(Person person)
+	{
+		return studyDao.getPreviousLastname(person);
+	}
+
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory)
+	{
+		return studyDao.getPreviousSurnameHistory(personSurnameHistory);
+	}
+
+	public void updatePersonLastnameHistory(Person person)
+	{
+		studyDao.updatePersonLastnameHistory(person);
+	}
+	
+	
 	
 }
