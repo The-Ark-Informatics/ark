@@ -43,6 +43,7 @@ public class SubjectVO implements Serializable{
 	
 	private ConsentAnswer consentAnswerSelect;
 	
+	private String subjectPreviousLastname;
 	
 	public String getSubjectFullName() {
 		return subjectFullName;
@@ -136,5 +137,19 @@ public class SubjectVO implements Serializable{
 		this.consentAnswerSelect = consentAnswerSelect;
 	}
 
+	/**
+	 * @param subjectPreviousLastname the subjectPreviousLastname to set
+	 */
+	public void setSubjectPreviousLastname(String subjectPreviousLastname)
+	{
+		this.subjectPreviousLastname = subjectPreviousLastname;
+	}
 
+	/**
+	 * @return the subjectPreviousLastname
+	 */
+	public String getSubjectPreviousLastname()
+	{
+		return subjectPreviousLastname;
+	}
 }
