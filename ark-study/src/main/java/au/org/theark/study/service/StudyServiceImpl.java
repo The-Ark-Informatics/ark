@@ -460,5 +460,9 @@ public class StudyServiceImpl implements IStudyService{
 
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.searchConsentFile(consentFile);
-	}		
+	}
+	
+	public boolean personHasPreferredMailingAddress(Person person){
+		return studyDao.personHasPreferredMailingAddress(person);
+	}
 }

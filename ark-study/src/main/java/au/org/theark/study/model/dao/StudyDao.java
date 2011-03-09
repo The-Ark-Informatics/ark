@@ -39,6 +39,7 @@ import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
@@ -599,6 +600,30 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			}
 		}
 		return isUnique;
+	}
+	
+
+	private YesNo getYesNo(String value){
+
+		Criteria criteria = getSession().createCriteria(YesNo.class);
+		criteria.add(Restrictions.ilike("name", value));
+		return (YesNo)criteria.list().get(0);
+	}
+	public boolean personHasPreferredMailingAddress(Person person){
+		
+		boolean hasPreferredMailing = false;
+
+			Criteria criteria = getSession().createCriteria(Address.class);
+			
+			YesNo yes = getYesNo("Yes");
+			criteria.add(Restrictions.eq("person.id",person.getId()));
+			criteria.add(Restrictions.eq("preferredMailingAddress",yes));
+		
+			List list  = criteria.list();
+			if(list.size() > 0){
+				hasPreferredMailing = true;
+			}
+		return hasPreferredMailing;
 	}
 
 }

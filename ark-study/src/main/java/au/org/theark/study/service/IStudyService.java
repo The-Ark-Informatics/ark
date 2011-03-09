@@ -152,5 +152,5 @@ public interface IStudyService {
 	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
 
-
+	public boolean personHasPreferredMailingAddress(Person person);
 }
