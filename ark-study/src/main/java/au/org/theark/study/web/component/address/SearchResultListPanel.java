@@ -8,6 +8,7 @@ package au.org.theark.study.web.component.address;
 
 import java.text.SimpleDateFormat;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,6 +16,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Address;
@@ -66,7 +68,7 @@ public class SearchResultListPanel extends Panel{
 		PageableListView<Address> pageableListView = new PageableListView<Address>(Constants.ADDRESS_LIST,iModel, 10) {
 
 			@Override
-			protected void populateItem(ListItem<Address> item) {
+			protected void populateItem(final ListItem<Address> item) {
 			
 				Address address = item.getModelObject();
 				item.add(buildLink(address));
@@ -109,6 +111,13 @@ public class SearchResultListPanel extends Panel{
 				}else{
 					item.add(new Label("address.dateReceived",""));
 				}
+				
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
 				
 			}
 		};
