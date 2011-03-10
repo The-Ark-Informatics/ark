@@ -38,6 +38,8 @@ public class Person implements java.io.Serializable {
 	private TitleType titleType;
 	private MaritalStatus maritalStatus;
 	private Date dateOfBirth;
+	private Date dateOfDeath;
+	private String causeOfDeath;
 	private PersonContactMethod personContactMethod;
 	private String preferredEmail;
 	private String otherEmail;
@@ -148,7 +150,7 @@ public class Person implements java.io.Serializable {
 	}
 	
 	@Temporal(TemporalType.DATE)
-	@Column(name = "DATE_OF_BIRTH", length = 7)
+	@Column(name = "DATE_OF_BIRTH", length = 10)
 	public Date getDateOfBirth() {
 		return this.dateOfBirth;
 	}
@@ -323,5 +325,40 @@ public class Person implements java.io.Serializable {
 	public Set<PersonLastnameHistory> getPersonLastnameHistory()
 	{
 		return personLastnameHistory;
+	}
+
+	/**
+	 * @param causeOfDeath the causeOfDeath to set
+	 */
+	public void setCauseOfDeath(String causeOfDeath)
+	{
+		this.causeOfDeath = causeOfDeath;
+	}
+
+	/**
+	 * @return the causeOfDeath
+	 */
+	@Column(name = "CAUSE_OF_DEATH", length = 255)
+	public String getCauseOfDeath()
+	{
+		return causeOfDeath;
+	}
+
+	/**
+	 * @param dateOfDeath the dateOfDeath to set
+	 */
+	public void setDateOfDeath(Date dateOfDeath)
+	{
+		this.dateOfDeath = dateOfDeath;
+	}
+
+	/**
+	 * @return the dateOfDeath
+	 */
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_OF_DEATH", length = 10)
+	public Date getDateOfDeath()
+	{
+		return dateOfDeath;
 	}
 }
