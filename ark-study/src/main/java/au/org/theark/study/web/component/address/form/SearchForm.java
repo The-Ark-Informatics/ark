@@ -219,10 +219,10 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		// Ensure we update the CountyStateChoices in DetailsForm
 		// like what happens via DetailForm's updateCountryStateChoices(..) 
 		List<CountryState> countryStateList = iArkCommonService.getStates(address.getCountry());
-		WebMarkupContainer wmc_stateSelector = (WebMarkupContainer) detailFormCompContainer.get("countryStateSelector");
-		DropDownChoice<CountryState> detail_stateSelector = (DropDownChoice<CountryState>) wmc_stateSelector.get("address.countryState");
-		detail_stateSelector.getChoices().clear();
-		detail_stateSelector.setChoices(countryStateList);
+		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get("countryStateSelector");
+		DropDownChoice<CountryState> detailStateSelector = (DropDownChoice<CountryState>) wmcStateSelector.get("address.countryState");
+		detailStateSelector.getChoices().clear();
+		detailStateSelector.setChoices(countryStateList);
 
 	}
 
