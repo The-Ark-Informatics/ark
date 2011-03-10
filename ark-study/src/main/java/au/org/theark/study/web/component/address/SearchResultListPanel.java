@@ -112,6 +112,12 @@ public class SearchResultListPanel extends Panel{
 					item.add(new Label("address.dateReceived",""));
 				}
 				
+				if(address.getPreferredMailingAddress() != null && address.getPreferredMailingAddress().getName().equalsIgnoreCase("YES")){
+					item.add(new Label("address.preferredMailingAddress",address.getPreferredMailingAddress().getName()));
+				}else{
+					item.add(new Label("address.preferredMailingAddress",""));
+				}
+				
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
