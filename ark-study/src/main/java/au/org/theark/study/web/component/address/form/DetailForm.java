@@ -133,7 +133,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	}
 	
 	/**
-	 * The MarkupContainer for The State DropDOwn control
+	 * The MarkupContainer for The State DropDown control
 	 */
 	private void initialiseStateSelector(){
 		
@@ -248,12 +248,15 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		Long personSessionId =(Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		
 		
-		//Get the person and set it on the Phone object.
+		//Get the person and set it on the AddressVO.
 		try {
 			Person person = studyService.getPerson(personSessionId);
 			
 			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person);
-			if(hasPreferredMailing){
+			boolean preferredMailingAdressIsYes = containerForm.getModelObject().getAddress().getPreferredMailingAddress().getName().equalsIgnoreCase("YES");
+			
+			// Check if other address already set to preferredMailingAddress
+			if(hasPreferredMailing && preferredMailingAdressIsYes){
 				containerForm.error("The person has already specified a Preferred Mailing address. This address cannot be set as Preferred Mailing address.");
 				processErrors(target);
 			}
@@ -272,7 +275,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 				
 				onSavePostProcess(target);
 			}
-			//Invoke backend to persist the phone
+			//Invoke backend to persist the AddressVO
 		} catch (EntityNotFoundException e) {
 			containerForm.error("The Specified subject is not available any more in the system. Please re-do the operation");
 			
