@@ -138,7 +138,6 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	protected void onNew(AjaxRequestTarget target)
 	{
 		setModelObject(new PhoneVO());
-		editButtonContainer.get("delete").setVisible(false);
 		preProcessDetailPanel(target);
 	}
 
