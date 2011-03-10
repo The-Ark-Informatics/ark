@@ -13,7 +13,6 @@ import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -27,9 +26,9 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
-import au.org.theark.core.model.study.entity.LinkStudySubstudy;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
@@ -192,29 +191,47 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")){
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
-			session.save(person); 
+			session.save(person);
+			
+			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+			personLastNameHistory.setPerson(person);
+			personLastNameHistory.setLastName(person.getLastName());
+			session.save(personLastNameHistory);
+			
+			// Update subjectPreviousLastname
+			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+			
 			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
 			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
 		}else{
 			throw new ArkUniqueException("Subject UID must be unique");
 		}
 	}
-	
-	
- 
+
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
 	
+		// TODO: Needed?
 		if(true){			
 			Session session = getSession();
 			Person person  = subjectVO.getSubjectStudy().getPerson();
-			session.update(person);//Update Person and associated Phones
+			session.update(person);// Update Person and associated Phones
+			
+			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+			personLastNameHistory.setPerson(person);
+			personLastNameHistory.setLastName(person.getLastName());
+			String currentLastName = getCurrentLastname(person);
+			
+			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+				session.save(personLastNameHistory);
+			
+			// Update subjectPreviousLastname
+			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+			
 			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
 			session.update(linkSubjectStudy);
 		}else{
 			throw new ArkUniqueException("Subject UID must be unique");
-		}
-		
-		
+		}		
 	}
 	
 	public Collection<SubjectStatus> getSubjectStatus(){
@@ -224,8 +241,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	
 	}
-	
-	
+
 	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
 		
 		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
@@ -626,4 +642,80 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return hasPreferredMailing;
 	}
 
+	
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory){
+		PersonLastnameHistory personLastnameHistoryToReturn = null;
+		
+		Example example = Example.create(personSurnameHistory);
+		
+		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class).add(example);
+		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
+			personLastnameHistoryToReturn =  (PersonLastnameHistory)criteria.list().get(0);	
+		}
+		
+		return personLastnameHistoryToReturn;
+	}
+	
+	public void createPersonLastnameHistory(Person person){
+		PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+		personLastNameHistory.setPerson(person);
+		personLastNameHistory.setLastName(person.getLastName());
+		
+		getSession().save(personLastNameHistory);
+	}
+	
+	public void updatePersonLastnameHistory(Person person){
+		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
+		personLastnameHistory.setPerson(person);
+		personLastnameHistory.setLastName(person.getLastName());
+		
+		String currentLastName = getCurrentLastname(person);
+		
+		if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+			getSession().save(personLastnameHistory);
+	}
+
+	public String getPreviousLastname(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		criteria.addOrder(Order.desc("id"));
+		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory(); 
+		if(!criteria.list().isEmpty()){
+			if (criteria.list().size() > 1)
+				personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
+		}
+		
+		return personLastameHistory.getLastName();
+	}
+	
+	public String getCurrentLastname(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		criteria.addOrder(Order.desc("id"));
+		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory(); 
+		if(!criteria.list().isEmpty()){
+			personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0);
+		}
+		
+		return personLastnameHistory.getLastName();
+	}
+
+	public List<PersonLastnameHistory> getLastnameHistory(Person person)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
+		
+		if(person.getId() != null){
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		}
+		
+		return criteria.list();
+	}
 }

@@ -12,6 +12,7 @@ import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
@@ -167,6 +168,33 @@ public interface IStudyDao {
 	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
 
+   public void createPersonLastnameHistory(Person person);
+	
+	public void updatePersonLastnameHistory(Person person);
+	
+	/**
+	 * Returns previousSurnameHistory
+	 * @return
+	 */
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory);
+	
+	/**
+	 * Returns previous surname
+	 * @return
+	 */
+	public String getPreviousLastname(Person person);
+	
+	/**
+	 * Returns current surname
+	 * @return
+	 */
+	public String getCurrentLastname(Person person);
+	
 	public boolean personHasPreferredMailingAddress(Person person);
 	
+	/**
+	 * Returns a list of PersonSurnameHistory
+	 * @return
+	 */
+	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 }
