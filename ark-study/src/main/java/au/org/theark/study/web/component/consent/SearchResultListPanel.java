@@ -9,6 +9,7 @@ package au.org.theark.study.web.component.consent;
 import java.text.SimpleDateFormat;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -16,6 +17,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -70,7 +72,7 @@ public class SearchResultListPanel extends Panel{
 		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST,iModel,5) {
 
 			@Override
-			protected void populateItem(ListItem<Consent> item) {
+			protected void populateItem(final ListItem<Consent> item) {
 				Consent consent = item.getModelObject();
 				
 				item.add(buildLink(consent));
@@ -106,6 +108,13 @@ public class SearchResultListPanel extends Panel{
 				}else{
 					item.add( new Label("consentDate",consentDate));
 				}
+				
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
 			}
 		};
 		return pageableListView;
