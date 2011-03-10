@@ -26,6 +26,7 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  * @author nivedann
  *
  */
+@SuppressWarnings({ "unchecked", "serial" })
 public class SearchResults extends Panel{
 	
 	
@@ -68,15 +69,13 @@ public class SearchResults extends Panel{
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.arkContextMarkup = arkContextMarkup;
 	}
-	  
-	
+
 	public PageableListView<SubjectVO> buildListView(IModel iModel){
 		
 		PageableListView<SubjectVO> listView = new PageableListView<SubjectVO>(Constants.SUBJECT_LIST, iModel, 10){
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {
-				SubjectVO subjectVO = item.getModelObject();
 				LinkSubjectStudy subject = item.getModelObject().getSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
 				
@@ -117,18 +116,18 @@ public class SearchResults extends Panel{
 		return listView;
 	}
 	
+	
 	private AjaxLink buildLink(final  SubjectVO subject){
 		AjaxLink link = new AjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				
-				
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				subject.getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 				
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getSubjectStudy().getPerson().getId());
 				// We specify the type of person here as Subject
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getSubjectStudy().getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT);
+				
 				SubjectVO subjectFromBackend = new SubjectVO();
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
 				for (SubjectVO subjectVO2 : subjects) {
