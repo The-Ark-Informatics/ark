@@ -16,7 +16,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
@@ -30,6 +29,10 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
 public class SearchResults extends Panel{
 	
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8517602411833622907L;
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer searchPanelContainer;
@@ -124,7 +127,7 @@ public class SearchResults extends Panel{
 				subject.getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 				
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getSubjectStudy().getPerson().getId());
-				//We specify the type of person here as Subject
+				// We specify the type of person here as Subject
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT);
 				SubjectVO subjectFromBackend = new SubjectVO();
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
@@ -132,9 +135,6 @@ public class SearchResults extends Panel{
 					subjectFromBackend = subjectVO2;
 					break;
 				}
-				
-				//String subjectPreviousLastname = iArkCommonService.getPreviousLastname(subjectFromBackend.getSubjectStudy().getPerson());
-				//subjectFromBackend.setSubjectPreviousLastname(subjectPreviousLastname);
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
