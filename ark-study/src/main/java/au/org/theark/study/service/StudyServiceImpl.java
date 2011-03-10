@@ -25,6 +25,7 @@ import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -460,6 +461,50 @@ public class StudyServiceImpl implements IStudyService{
 
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.searchConsentFile(consentFile);
+	}
+
+	public void createPersonLastnameHistory(Person person)
+	{
+		studyDao.createPersonLastnameHistory(person);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created PersonLastnameHistory " + person.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY);
+		ah.setEntityId(person.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+	
+	public void updatePersonLastnameHistory(Person person)
+	{
+		studyDao.updatePersonLastnameHistory(person);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Updated PersonLastnameHistory " + person.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PERSON_LASTNAME_HISTORY);
+		ah.setEntityId(person.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public List<PersonLastnameHistory> getLastnameHistory(Person person)
+	{
+		return studyDao.getLastnameHistory(person);
+	}
+
+	public String getPreviousLastname(Person person)
+	{
+		return studyDao.getPreviousLastname(person);
+	}
+	
+	public String getCurrentLastname(Person person)
+	{
+		return studyDao.getCurrentLastname(person);
+	}
+
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory)
+	{
+		return studyDao.getPreviousSurnameHistory(personSurnameHistory);
 	}
 	
 	public boolean personHasPreferredMailingAddress(Person person){

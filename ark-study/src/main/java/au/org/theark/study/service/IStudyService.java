@@ -14,6 +14,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -151,6 +152,13 @@ public interface IStudyService {
 	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
+	
+	public void createPersonLastnameHistory(Person person);
+	public void updatePersonLastnameHistory(Person person);
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory);
+	public String getPreviousLastname(Person person);
+	public String getCurrentLastname(Person person);
+	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 
 	public boolean personHasPreferredMailingAddress(Person person);
 }
