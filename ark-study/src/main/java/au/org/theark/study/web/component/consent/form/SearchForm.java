@@ -200,7 +200,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		setModelObject(new ConsentVO());
+		// ARK-108:: no longer do full reset to VO
 		preProcessDetailPanel(target);
 	}
 

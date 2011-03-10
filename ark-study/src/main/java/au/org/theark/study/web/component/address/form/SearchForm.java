@@ -204,14 +204,18 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		// Set default for the Country on new
-		final List<Country> countryList = iArkCommonService.getCountries();
-		Address defaultedCountryAddress = new Address();
-		defaultedCountryAddress.setCountry(countryList.get(0));
-		AddressVO newAddressVO = new AddressVO();
-		newAddressVO.setAddress(defaultedCountryAddress);
-		setModelObject(newAddressVO);
-		updateDetailFormPrerender(defaultedCountryAddress);
+		// ARK-108:: no longer do full reset to VO
+		// Set a default Country on new when the Country field is empty
+		if (getModelObject().getAddress() == null || getModelObject().getAddress().getCountry() == null) {
+			final List<Country> countryList = iArkCommonService.getCountries();
+			Address defaultedCountryAddress = new Address();
+			defaultedCountryAddress.setCountry(countryList.get(0));
+			AddressVO newAddressVO = getModelObject();
+			newAddressVO.setAddress(defaultedCountryAddress);
+			setModelObject(newAddressVO);			
+		}
+		updateDetailFormPrerender(getModelObject().getAddress());
+
 		preProcessDetailPanel(target);
 	}
 	

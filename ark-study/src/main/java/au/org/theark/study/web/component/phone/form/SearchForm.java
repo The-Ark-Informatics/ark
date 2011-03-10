@@ -13,6 +13,8 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.StringValidator;
+import org.apache.wicket.validation.validator.RangeValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -20,7 +22,6 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhoneVO;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -44,7 +45,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	private PageableListView<Phone> pageableListView;
 	private CompoundPropertyModel<PhoneVO>	cpmModel;
 	
-	private TextField<String> phoneIdTxtFld;
+	private TextField<Long> phoneIdTxtFld;
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
@@ -76,7 +77,8 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	}
 
 	protected void initialiseSearchForm(){
-		phoneIdTxtFld = new TextField<String>("phone.id");
+		phoneIdTxtFld = new TextField<Long>("phone.id");
+		phoneIdTxtFld.setType(Long.class);
 		areaCodeTxtFld = new TextField<String>("phone.areaCode");
 		phoneNumberTxtFld = new TextField<String>("phone.phoneNumber");
 
@@ -91,6 +93,11 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 		add(areaCodeTxtFld);
 		add(phoneNumberTxtFld);
 		add(phoneTypeChoice);
+	}
+	
+	protected void attachValidators() {
+		phoneIdTxtFld.add(new RangeValidator<Long>(new Long(0), Long.MAX_VALUE));
+		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 	}
 	
 	@Override
@@ -137,7 +144,8 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		setModelObject(new PhoneVO());
+		// ARK-108:: no longer do full reset to VO
+		getModelObject().getPhone().setId(null);	//only reset ID (not user definable)
 		preProcessDetailPanel(target);
 	}
 
