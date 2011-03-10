@@ -133,6 +133,9 @@ public class SearchResults extends Panel{
 					break;
 				}
 				
+				//String subjectPreviousLastname = iArkCommonService.getPreviousLastname(subjectFromBackend.getSubjectStudy().getPerson());
+				//subjectFromBackend.setSubjectPreviousLastname(subjectPreviousLastname);
+				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getSubjectStudy().getStudy().getName(), arkContextMarkup);

@@ -85,10 +85,18 @@
 							<wicket:message key="lastName">Last Name:</wicket:message>
 						</label>
 					</div>
+					<div class="label">
+						<label for="lastName">
+							<wicket:message key="subjectPreviousLastname">(previous)</wicket:message>
+						</label>
+					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
 						<input wicket:id="subjectStudy.person.lastName"/> 
+					</div>
+					<div class="label" style="padding-top: 5px;">
+						<input wicket:id="subjectPreviousLastname"/> 
 					</div>
 				</div>
 				
@@ -123,7 +131,7 @@
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="subjectStudy.person.dateOfBirth"/> 
+						<input wicket:id="subjectStudy.person.dateOfBirth" maxLength="10"/>
 					</div>
 				</div>
 				
@@ -148,8 +156,45 @@
 				<div id="detailPanelBreaker">&nbsp;</div>
 				<!-- Row 4 Ends-->
 				
-				
 				<!-- Row 5 -->
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div wicket:id="deathDetailsContainer">
+					<div id="fldLabel">
+						<div class="label">
+							<label for="dateOfDeath">
+								<wicket:message key="dateOfDeath">Date Of Death:</wicket:message>
+							</label>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<input wicket:id="subjectStudy.person.dateOfDeath" maxLength="10"/> 
+						</div>
+					</div>
+					
+					<div id="panelMargin">&nbsp;</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<label for="causeOfDeath">
+								<wicket:message key="causeOfDeath">Cause of Death:</wicket:message>
+							</label> 
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label" >
+							<input wicket:id="subjectStudy.person.causeOfDeath" maxLength="255"/>
+						</div>
+					</div>
+				</div>
+				
+				<div id="detailPanelContentRight">&nbsp;</div>
+				
+				<div id="detailPanelBreaker">&nbsp;</div>
+				<!-- Row 5 ends -->
+				
+				<!-- Row 6 -->
 				<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
@@ -187,7 +232,7 @@
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
-				<!--  Row 6 -->
+				<!--  Row 7 -->
 				<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
@@ -230,7 +275,7 @@
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
-				<!--  Row 7 -->
+				<!--  Row 8 -->
 				<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
@@ -270,7 +315,7 @@
 				<div id="panelContentLeft">&nbsp;</div>
 				<!--  Supposed to be rendered as a List of Custom Controls for Custom Fields. For LifePool First Release we are adding them as regular fields -->
 				<div id="customPanelBorder">
-					<!--  Row 8 -->
+					<!--  Row 9 -->
 					
 					<div id="customPanelContentLeft">&nbsp;</div>
 					

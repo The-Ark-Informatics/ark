@@ -63,10 +63,13 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	private TextField<String> firstNameTxtFld;
 	private TextField<String> middleNameTxtFld;
 	private TextField<String> lastNameTxtFld;
+	private TextField<String> previousLastNameTxtFld;
 	private TextField<String> preferredNameTxtFld;
 	private TextField<String> subjectUIDTxtFld;
 	
 	private DateTextField dateOfBirthTxtFld;
+	private DateTextField dateOfDeathTxtFld;
+	private TextField<String> causeOfDeathTxtFld;
 	
 	//Custom Fields and Consents at Subject Study Level
 	private TextField<String> amdrifIdTxtFld;
@@ -96,7 +99,8 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 	private DropDownChoice<MaritalStatus> maritalStatusDdc;
 	private DropDownChoice<PersonContactMethod> personContactMethodDdc;
 	
-	private WebMarkupContainer wmcPreferredEmail;
+	private WebMarkupContainer wmcPreferredEmailContainer;
+	private WebMarkupContainer wmcDeathDetailsContainer;
 	
 	private Study study;
 	
@@ -123,15 +127,31 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
+		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME);
+		previousLastNameTxtFld.setEnabled(false);
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
+		
 		
 		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB,au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
+		
+		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD,au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		causeOfDeathTxtFld = new TextField<String>(Constants.PERSON_CAUSE_OF_DEATH);
+		ArkDatePicker dodDatePicker = new ArkDatePicker();
+		dodDatePicker.bind(dateOfDeathTxtFld);
+		dateOfDeathTxtFld.add(dodDatePicker);
+		
+		wmcDeathDetailsContainer = new  WebMarkupContainer("deathDetailsContainer");
+		wmcDeathDetailsContainer.setOutputMarkupPlaceholderTag(true);
+		// Default death details to disabled (enable onChange of vitalStatus)
+		setDeathDetailsContainer();
 		
 		//Initialise Drop Down Choices 
 		//Title We can also have the reference data populated on Application start and refer to a static list instead of hitting the database
@@ -142,6 +162,14 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS,(List<VitalStatus>)vitalStatusList,vitalStatusRenderer);
+		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				setDeathDetailsContainer();
+				target.addComponent(wmcDeathDetailsContainer);
+			}
+		});
+		
 		
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 
 		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME,Constants.ID);
@@ -159,33 +187,61 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		Collection<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList(); 
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME,Constants.ID);
 		
-		wmcPreferredEmail = new  WebMarkupContainer("preferredEmailContainer");
-		wmcPreferredEmail.setOutputMarkupPlaceholderTag(true);
+		wmcPreferredEmailContainer = new  WebMarkupContainer("preferredEmailContainer");
+		wmcPreferredEmailContainer.setOutputMarkupPlaceholderTag(true);
+		// Depends on preferredContactMethod
+		setPreferredEmailContainer();
 		
 		personContactMethodDdc= new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD,(List) contactMethodList, contactMethodRender);
 		personContactMethodDdc.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				//Check what was selected and then toggle
-				PersonContactMethod personContactMethod = containerForm.getModelObject().getSubjectStudy().getPerson().getPersonContactMethod();
-				String personContactMethodName  = personContactMethod.getName();
-				
-				if(personContactMethodName.equalsIgnoreCase("EMAIL")){
-					// Add a validator making preferredEmail required
-					preferredEmailTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.preferredEmail.required", null));
-				}
-				else{
-					preferredEmailTxtFld.setRequired(false);
-					
-				}
-				target.addComponent(wmcPreferredEmail);
+				setPreferredEmailContainer();
+				target.addComponent(wmcPreferredEmailContainer);
 			}
 		});
+		
+		String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
+		containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
 		
 		initCustomFields();
 		
 		attachValidators();
 		addDetailFormComponents();
+	}
+	 
+	private void setDeathDetailsContainer()
+	{
+		VitalStatus vitalStatus = containerForm.getModelObject().getSubjectStudy().getPerson().getVitalStatus();
+		if(vitalStatus != null){
+			String vitalStatusName  = vitalStatus.getName();
+			
+			if(vitalStatusName.equalsIgnoreCase("DECEASED")){
+				dateOfDeathTxtFld.setEnabled(true);
+				causeOfDeathTxtFld.setEnabled(true);
+			}
+			else{
+				dateOfDeathTxtFld.setEnabled(false);
+				causeOfDeathTxtFld.setEnabled(false);
+			}
+		}
+	}
+	
+	private void setPreferredEmailContainer(){
+		PersonContactMethod personContactMethod = containerForm.getModelObject().getSubjectStudy().getPerson().getPersonContactMethod();
+		
+		if(personContactMethod != null){
+			String personContactMethodName  = personContactMethod.getName();
+			if(personContactMethodName.equalsIgnoreCase("EMAIL")){
+				// Add a validator making preferredEmail required
+				preferredEmailTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.preferredEmail.required", null));
+			}
+			else{
+				preferredEmailTxtFld.setRequired(false);
+				
+			}
+		}
 	}
 	 
 	private void initCustomFields(){
@@ -206,7 +262,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		cityTxtFld = new TextField<String>("subjectStudy.city");
 		postCodeTxtFld = new TextField<String>("subjectStudy.postCode");
 		
-		initialiaseCountryDropDown();
+		initialiseCountryDropDown();
 		initialiseCountrySelector();
 		
 		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
@@ -234,7 +290,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		countryStateSelector.add(stateChoice);
 	}
 	
-	private void initialiaseCountryDropDown(){
+	private void initialiseCountryDropDown(){
 		
 		final List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
@@ -270,18 +326,24 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(firstNameTxtFld);
 		detailPanelFormContainer.add(middleNameTxtFld);
 		detailPanelFormContainer.add(lastNameTxtFld);
+		detailPanelFormContainer.add(previousLastNameTxtFld);
 		detailPanelFormContainer.add(preferredNameTxtFld);
 		detailPanelFormContainer.add(dateOfBirthTxtFld);
 		detailPanelFormContainer.add(vitalStatusDdc);
+		
+		// Death deatils only editable when vital status set to deceased
+		wmcDeathDetailsContainer.add(dateOfDeathTxtFld);
+		wmcDeathDetailsContainer.add(causeOfDeathTxtFld);
+		detailPanelFormContainer.add(wmcDeathDetailsContainer);
+		
 		detailPanelFormContainer.add(genderTypeDdc);
 		detailPanelFormContainer.add(subjectStatusDdc);
 		detailPanelFormContainer.add(maritalStatusDdc);
 		detailPanelFormContainer.add(personContactMethodDdc);
 		
 		// Prerred email becomes required when selected as preferred contact method
-		wmcPreferredEmail.add(preferredEmailTxtFld);
-		detailPanelFormContainer.add(wmcPreferredEmail);
-		
+		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
+		detailPanelFormContainer.add(wmcPreferredEmailContainer);
 		detailPanelFormContainer.add(otherEmailTxtFld);
 		
 		//Add the supposed-to-be custom controls into the form container.
@@ -376,7 +438,6 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 
 			try {
 				studyService.updateSubject(subjectVO);
-				onSavePostProcess(target);	
 				StringBuffer sb = new StringBuffer();
 				sb.append("The Subject with Subject UID: ");
 				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
@@ -387,9 +448,6 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			} catch (ArkUniqueException e) {
 				this.error("Subject UID must be unique.");
 			}
-			
-			
-
 		}
 		processErrors(target);
 	}
@@ -440,6 +498,9 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 				saveUpdateProcess(containerForm.getModelObject(), target);
 			}
 			
+			//String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
+			//containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
+			
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
@@ -449,8 +510,6 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			//We specify the type of person here as Subject
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
-		}
-		
+		}	
 	}
-
 }
