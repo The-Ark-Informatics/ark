@@ -207,6 +207,12 @@ public interface IStudyDao {
 	public String getPreviousLastname(Person person);
 	
 	/**
+	 * Returns current surname
+	 * @return
+	 */
+	public String getCurrentLastname(Person person);
+	
+	/**
 	 * Returns a list of PersonSurnameHistory
 	 * @return
 	 */
