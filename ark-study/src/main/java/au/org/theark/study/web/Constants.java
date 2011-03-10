@@ -46,6 +46,7 @@ public class Constants {
 	public static final String PERSON_FIRST_NAME = "subjectStudy.person.firstName";
 	public static final String PERSON_MIDDLE_NAME = "subjectStudy.person.middleName";
 	public static final String PERSON_LAST_NAME = "subjectStudy.person.lastName";
+	public static final String	SUBJECT_PREVIOUS_LAST_NAME	= "subjectPreviousLastname";
 	public static final String PERSON ="person";
 	public static final String GENDER_TYPE="genderType";
 	public static final String ID="id";
@@ -56,6 +57,8 @@ public class Constants {
 	public static final String PERSON_MARITAL_STATUS ="subjectStudy.person.maritalStatus";
 	public static final String	PERSON_CONTACT_METHOD	= "subjectStudy.person.personContactMethod";
 	public static final String PERSON_DOB="subjectStudy.person.dateOfBirth";
+	public static final String	PERSON_DOD	= "subjectStudy.person.dateOfDeath";
+	public static final String	PERSON_CAUSE_OF_DEATH	= "subjectStudy.person.causeOfDeath";
 	public static final String PERSON_TYTPE_TYPE = "subjectStudy.person.titleType";
 	public static final String PERSON_GENDER_TYPE ="subjectStudy.person.genderType";
 	public static final String PERSON_GENDER_TYPE_NAME ="subjectStudy.person.genderType.name";
@@ -222,7 +225,7 @@ public class Constants {
 	
 	public static final String STUDY_STATUS_COMPLETED ="Completed";
 	public static final String STUDY_STATUS_REQUESTED="Requested";
-	public static final String STUDY_STATUS_RECEIVED="Received";	
+	public static final String STUDY_STATUS_RECEIVED="Received";
 	public static final String WMC_RECIEVED="wmc-received";
 	public static final String WMC_COMPLETED="wmc-completed";
 	public static final String WMC_REQUESTED="wmc-requested";
