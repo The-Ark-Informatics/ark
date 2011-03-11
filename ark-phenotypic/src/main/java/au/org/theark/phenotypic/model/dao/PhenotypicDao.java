@@ -372,6 +372,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		// Format the Field name before creating
 		field.setName(formatFieldName(field.getName()));
 
+		// Default quality control boolean
+		if(field.getQualityControlStatus() == null)
+			field.setQualityControlStatus(true);
+
 		getSession().save(field);
 	}
 
