@@ -138,6 +138,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		fieldVo.getField().setStudy(study);
+		fieldVo.getField().setQualityControlStatus(true);
 		setModelObject(fieldVo);
 		preProcessDetailPanel(target);
 		// Hide Delete button on New
