@@ -92,12 +92,13 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 				}
 				
 				if (contextLoaded) {
+					// Put into Detail View mode
 					searchPanelContainer.setVisible(false);
 					searchResultPanelContainer.setVisible(false);
-					viewButtonContainer.setVisible(false);
 					detailPanelContainer.setVisible(true);
-					detailPanelFormContainer.setEnabled(true);
-					editButtonContainer.setVisible(true);
+					detailPanelFormContainer.setEnabled(false);
+					viewButtonContainer.setVisible(true);
+					editButtonContainer.setVisible(false);
 				}
 			}			
 		}
