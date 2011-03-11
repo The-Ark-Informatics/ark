@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.exception.FileFormatException;
@@ -34,7 +35,6 @@ import au.org.theark.phenotypic.util.PhenotypicImport;
 
 @Transactional
 @Service("phenotypicService")
-@SuppressWarnings("unused")
 public class PhenotypicServiceImpl implements IPhenotypicService
 {
 	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
@@ -84,6 +84,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		col.setStudy(iArkCommonService.getStudy(studyId));
 
 		phenotypicDao.createPhenoCollection(col);
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Pheno Collection " + col.getName());
+		ah.setEntityId(col.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	/**
@@ -95,16 +101,37 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createCollection(PhenoCollectionVO phenoVo)
 	{
 		phenotypicDao.createPhenoCollection(phenoVo);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Pheno Collection " + phenoVo.getPhenoCollection().getName());
+		ah.setEntityId(phenoVo.getPhenoCollection().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	public void deleteCollection(PhenoCollectionVO phenoVo)
 	{
 		phenotypicDao.deletePhenoCollection(phenoVo);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Pheno Collection " + phenoVo.getPhenoCollection().getName());
+		ah.setEntityId(phenoVo.getPhenoCollection().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void updateCollection(PhenoCollectionVO phenoVo)
 	{
 		phenotypicDao.updatePhenoCollection(phenoVo);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Pheno Collection " + phenoVo.getPhenoCollection().getName());
+		ah.setEntityId(phenoVo.getPhenoCollection().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	/**
@@ -116,16 +143,37 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createCollectionImport(PhenoCollectionUpload colImport)
 	{
 		phenotypicDao.createCollectionUpload(colImport);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Pheno Collection Upload " + colImport.getId());
+		ah.setEntityId(colImport.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	public void updateCollection(PhenoCollection colEntity)
 	{
 		phenotypicDao.updatePhenoCollection(colEntity);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Pheno Collection " + colEntity.getName());
+		ah.setEntityId(colEntity.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void createField(Field field)
 	{
 		phenotypicDao.createField(field);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Field " + field.getName());
+		ah.setEntityId(field.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public FieldType getFieldTypeByName(String fieldTypeName)
@@ -165,6 +213,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createFieldData(FieldData fieldData)
 	{
 		phenotypicDao.createFieldData(fieldData);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Field Data For Field " + fieldData.getField().getName());
+		ah.setEntityId(fieldData.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD_DATA);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	public java.util.Collection<String> validateMatrixPhenoFileFormat()
@@ -404,21 +459,38 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void deleteCollection(PhenoCollection collection)
 	{
 		phenotypicDao.createPhenoCollection(collection);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Pheno Collection " + collection.getName());
+		ah.setEntityId(collection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void deleteCollectionImport(PhenoCollectionUpload collectionImport)
-	{
-		phenotypicDao.deleteCollectionUpload(collectionImport);
-	}
 
 	public void deleteField(Field field)
 	{
 		phenotypicDao.deleteField(field);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Field " + field.getName());
+		ah.setEntityId(field.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void deleteFieldData(FieldData fieldData)
 	{
-		phenotypicDao.deleteFieldData(fieldData);		
+		phenotypicDao.deleteFieldData(fieldData);	
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Field Data for Field " + fieldData.getField().getName());
+		ah.setEntityId(fieldData.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD_DATA);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public PhenoCollectionUpload getCollectionImport(Long id)
@@ -436,11 +508,6 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.searchField(field);
 	}
 
-	public void updateCollectionImport(PhenoCollectionUpload collectionImport)
-	{
-		phenotypicDao.updateCollectionUpload(collectionImport);
-	}
-
 	public Field getFieldByNameAndStudy(String fieldName, Study study)
 	{
 		return phenotypicDao.getFieldByNameAndStudy(fieldName, study);
@@ -449,11 +516,25 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void updateField(Field field)
 	{
 		phenotypicDao.updateField(field);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Field " + field.getName());
+		ah.setEntityId(field.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void updateFieldData(FieldData fieldData)
 	{
 		phenotypicDao.updateFieldData(fieldData);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Field Data for Field " + fieldData.getField().getName());
+		ah.setEntityId(fieldData.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_FIELD_DATA);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection)
@@ -474,21 +555,49 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createUpload(PhenoUpload upload)
 	{
 		phenotypicDao.createUpload(upload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created PhenoUpload for File " + upload.getFilename());
+		ah.setEntityId(upload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	public void createUpload(UploadVO uploadVo)
 	{
 		phenotypicDao.createUpload(uploadVo);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created PhenoUpload for File " + uploadVo.getUpload().getFilename());
+		ah.setEntityId(uploadVo.getUpload().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 	
 	public void updateUpload(PhenoUpload upload)
 	{
 		phenotypicDao.updateUpload(upload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Created PhenoUpload for File " + upload.getFilename());
+		ah.setEntityId(upload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void deleteUpload(PhenoUpload upload)
 	{
 		phenotypicDao.deleteUpload(upload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted PhenoUpload " + upload.getFilename());
+		ah.setEntityId(upload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public Collection<FileFormat> getFileFormats()
@@ -529,11 +638,25 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void createPhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		phenotypicDao.createCollectionUpload(phenoCollectionUpload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created PhenoCollectionUpload " + phenoCollectionUpload.getId());
+		ah.setEntityId(phenoCollectionUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public void deletePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		phenotypicDao.deleteCollectionUpload(phenoCollectionUpload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted PhenoCollectionUpload " + phenoCollectionUpload.getId());
+		ah.setEntityId(phenoCollectionUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 
 	public PhenoCollectionUpload getPhenoCollectionUpload(Long id)
@@ -549,5 +672,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		phenotypicDao.updateCollectionUpload(phenoCollectionUpload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated PhenoCollectionUpload " + phenoCollectionUpload.getId());
+		ah.setEntityId(phenoCollectionUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
+		iArkCommonService.createAuditHistory(ah);
 	}
 }

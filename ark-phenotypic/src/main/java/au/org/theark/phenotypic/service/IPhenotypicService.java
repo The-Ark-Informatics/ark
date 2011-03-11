@@ -30,12 +30,6 @@ public interface IPhenotypicService {
 	public void updateCollection(PhenoCollectionVO colVo);
 	public void deleteCollection(PhenoCollection col);
 	public void deleteCollection(PhenoCollectionVO colVo);
-	
-	// Collection Import
-	public PhenoCollectionUpload getCollectionImport(Long id);
-	public void createCollectionImport(PhenoCollectionUpload collectionImport);
-	public void updateCollectionImport(PhenoCollectionUpload collectionImport);
-	public void deleteCollectionImport(PhenoCollectionUpload collectionImport);
 
 	// Field
 	public Field getField(Long fieldId);
