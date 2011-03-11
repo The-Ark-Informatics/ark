@@ -166,7 +166,6 @@ public class Constants {
 	public static final String NO = "No";
 	public static final String YES = "Yes";
 	
-	
 	/*Action Type - Audit History */
 	public static final String ACTION_TYPE_CREATED= "CREATED";
 	public static final String	ACTION_TYPE_UPDATED	= "UPDATED";
@@ -182,10 +181,14 @@ public class Constants {
 	public static final String	ENTITY_TYPE_CONSENT_FILE	= "Consent File";
 	public static final String	ENTITY_TYPE_USER	= "User";
 	public static final String	ENTITY_TYPE_PERSON_LASTNAME_HISTORY	= "Person Lastname History";
+	public static final String ENTITY_TYPE_PHENO_COLLECTION = "Phenotypic Collection";
+	public static final String ENTITY_TYPE_PHENO_COLLECTION_UPLOAD = "Pheno Collection Upload";
+	public static final String ENTITY_TYPE_FIELD = "Field";
+	public static final String ENTITY_TYPE_FIELD_DATA = "Field Data";
+	public static final String ENTITY_TYPE_PHENO_UPLOAD = "Upload";
 	
 	public static final String ACTION_INSERT="Insert";
 	public static final String ACTION_UPDATE="Update";
 	public static final String	PERSON_SURNAME_HISTORY_PERSON	= "person";
 	public static final String	PERSON_SURNAME_HISTORY_SURNAME	= "surname";
-	
 }
