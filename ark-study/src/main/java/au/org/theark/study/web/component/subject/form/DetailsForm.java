@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -41,6 +42,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
@@ -48,7 +50,7 @@ import au.org.theark.study.web.Constants;
  * @author nivedann
  *
  */
-public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
+public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -207,6 +209,8 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		
 		attachValidators();
 		addDetailFormComponents();
+		
+		deleteButton.setVisible(false);
 	}
 	 
 	private void setDeathDetailsContainer()
@@ -396,6 +400,7 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
 	}
 
+	
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){
 		boolean validFlag=true;
 		Calendar calendar = Calendar.getInstance();
@@ -510,4 +515,17 @@ public class DetailsForm extends AbstractSubjectDetailForm<SubjectVO>{
 			detailPanelContainer.setVisible(true);
 		}	
 	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDeleteConfirmed(org.apache.wicket.ajax.AjaxRequestTarget, java.lang.String, org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
+	 */
+	@Override
+	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
+		// This should never happen for Subject Management because the Delete button
+		// should never be visible/disabled
+		selectModalWindow.close(target);
+		onCancel(target);
+		
+	}
+
 }

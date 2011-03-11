@@ -157,7 +157,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				deleteButton.setEnabled(true);
-				deleteButton.setVisible(true);
+				// The visibility of the delete button should not be changed from 
+				// any of the abstract classes.  This allows the implementation
+				// to control the visibility of the delete button. 
+				// NB: SearchForm onNew has the Delete button's setEnabled(false)
+//				deleteButton.setVisible(true);
 				viewButtonContainer.setVisible(false);
 				editButtonContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(true);

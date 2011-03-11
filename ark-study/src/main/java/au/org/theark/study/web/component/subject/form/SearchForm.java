@@ -143,13 +143,15 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE,genderTypePm, (List)genderTypeList,genderTypeRenderer);
 	}
 	
-	protected void onNew(AjaxRequestTarget target){
-		
-		final List<Country> countryList = iArkCommonService.getCountries();
-		SubjectVO subjectVO = new SubjectVO();
-		subjectVO.getSubjectStudy().setCountry(countryList.get(0));
-		setModelObject(subjectVO);
-		updateDetailFormPrerender(subjectVO.getSubjectStudy());
+	protected void onNew(AjaxRequestTarget target) {
+		// ARK-108:: no longer do full reset to VO
+		// Set a default Country on new when the Country field is empty
+		if (getModelObject().getSubjectStudy().getCountry() == null) {
+			final List<Country> countryList = iArkCommonService.getCountries();
+			getModelObject().getSubjectStudy().setCountry(countryList.get(0));
+		}
+		updateDetailFormPrerender(getModelObject().getSubjectStudy());
+
 		preProcessDetailPanel(target);
 	}
 	
