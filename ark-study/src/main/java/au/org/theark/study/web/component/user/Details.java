@@ -68,6 +68,8 @@ public class Details extends Panel{
 		this.searchPanelContainer = searchPanelContainer;
 		this.containerForm = containerForm;
 		
+		// Enables Ajax refresh
+		setOutputMarkupId(true);
 	}
 	
 	public void initialisePanel(){

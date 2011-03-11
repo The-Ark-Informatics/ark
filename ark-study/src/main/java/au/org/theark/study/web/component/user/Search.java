@@ -121,7 +121,11 @@ public class Search extends Panel{
 		listContainer.setVisible(false);
 		searchMarkupContainer.setVisible(false);
 		
+		// Disable Delete button
+		userDetailPanel.getUserForm().getDeleteBtn().setEnabled(false);
+		
 		/*Associate the containers with Ajax request target*/
+		target.addComponent(userDetailPanel);
 		target.addComponent(detailsContainer);
 		target.addComponent(listContainer);
 		target.addComponent(searchMarkupContainer);

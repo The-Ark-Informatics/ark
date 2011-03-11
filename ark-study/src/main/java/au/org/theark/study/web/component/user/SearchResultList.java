@@ -233,6 +233,13 @@ public class SearchResultList extends Panel{
 					}
 					//Accordion will have its own form object
 					userForm.add(appRoleAccordion);
+					
+					// Enable Delete button
+					detailsPanel.getUserForm().getDeleteBtn().setEnabled(true);
+					
+					/*Associate the containers with Ajax request target*/
+					target.addComponent(detailsPanel);
+					
 					searchMarkupContainer.setVisible(false);
 					searchResultsContainer.setVisible(false);
 					target.addComponent(detailsMarkupContainer);
