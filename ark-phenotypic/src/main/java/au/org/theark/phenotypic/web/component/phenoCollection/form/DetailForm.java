@@ -32,6 +32,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -123,25 +124,11 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		startDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		expiryDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		 
-		DatePicker startDatePicker = new DatePicker()
-		{ 
-			@Override 
-			protected boolean enableMonthYearSelection() 
-			{ 
-			return true; 
-			} 
-		}; 
+		ArkDatePicker startDatePicker = new ArkDatePicker(); 
 		startDatePicker.bind(startDateTxtFld);
 		startDateTxtFld.add(startDatePicker);
 		
-		DatePicker endDatePicker = new DatePicker()
-		{ 
-			@Override 
-			protected boolean enableMonthYearSelection() 
-			{ 
-				return true; 
-			} 
-		}; 
+		ArkDatePicker endDatePicker = new ArkDatePicker(); 
 		endDatePicker.bind(expiryDateTxtFld);
 		expiryDateTxtFld.add(endDatePicker);
 
@@ -165,7 +152,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, 10, true){
 			@Override
 			public ResourceReference getCSS(){ 
-		      return null;
+				return null;
 			}
 		};
 	}
@@ -246,7 +233,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	/**
 	 * 
 	 */
-	protected  void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		//TODO:(CE) To handle Business and System Exceptions here
 		phenotypicService.deleteCollection(containerForm.getModelObject());
@@ -263,7 +250,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	   	selectModalWindow.close(target);
 	   	// Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
-		setModelObject(phenoCollectionVo);
+		containerForm.setModelObject(phenoCollectionVo);
 		onCancel(target);
 	}
 }
