@@ -136,11 +136,12 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				// Make the details panel visible, disabling delete button
+				// Make the details panel visible, disabling delete button (if found)
 				AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
-				ajaxButton.setEnabled(false);
-				target.addComponent(ajaxButton);
-				
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.addComponent(ajaxButton);
+				}
 				// Call abstract method
 				onNew(target);
 			}
