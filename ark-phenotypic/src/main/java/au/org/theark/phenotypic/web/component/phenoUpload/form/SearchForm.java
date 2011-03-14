@@ -166,8 +166,11 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		UploadVO uploadVo = new UploadVO();
+		//NB: Should not be possible to get here (GUI should be using Wizard for new)
+		// Due to ARK-108 :: No longer reset the VO onNew(..)
+		UploadVO uploadVo = getModelObject();
 		uploadVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		uploadVo.getUpload().setId(null);	//must ensure Id is blank onNew
 		setModelObject(uploadVo);
 		
 		listContainer.setVisible(false);

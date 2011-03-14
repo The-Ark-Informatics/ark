@@ -154,8 +154,12 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		//NB: Should not be possible to get here (not allowed to create a new FieldData via GUI)
+		// Due to ARK-108 :: No longer reset the VO onNew(..)
+		PhenoCollectionVO phenoCollectionVo = getModelObject();
 		phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		phenoCollectionVo.getFieldData().setId(null);	//must ensure Id is blank onNew
+		
 		// Set study for the new field of the fieldData
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);

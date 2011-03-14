@@ -132,8 +132,11 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		FieldVO fieldVo = new FieldVO();
+		// Due to ARK-108 :: No longer reset the VO onNew(..)
+		FieldVO fieldVo = getModelObject();
 		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		fieldVo.getField().setId(null);	//must ensure Id is blank onNew
+
 		// Set study for the new field
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);

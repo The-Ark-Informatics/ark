@@ -146,9 +146,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
+		// Due to ARK-108 :: No longer reset the VO onNew(..)
 		// Show the details panel name and description
-		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		PhenoCollectionVO phenoCollectionVo = getModelObject();
 		phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
+		phenoCollectionVo.getPhenoCollection().setId(null);	//must ensure Id is blank onNew
 
 		// Set study for the new collection and fields available
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
