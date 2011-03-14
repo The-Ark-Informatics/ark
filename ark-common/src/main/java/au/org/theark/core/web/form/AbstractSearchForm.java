@@ -115,6 +115,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			{
 				return isSecure(Constants.SEARCH);
 			}
+			
+			@Override
+			 protected void onError(final AjaxRequestTarget target, Form form) {
+				target.addComponent(feedbackPanel);
+			} 
 		};
 
 		resetButton = new Button(Constants.RESET)
@@ -150,6 +155,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			public boolean isVisible()
 			{
 				return isSecure(Constants.NEW);
+			}
+			
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form form) {
+				target.addComponent(feedbackPanel);
 			}
 		};
 
