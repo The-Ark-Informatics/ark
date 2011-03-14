@@ -1,6 +1,5 @@
 package au.org.theark.phenotypic.web.component.phenoCollection.form;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -9,7 +8,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,6 +24,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.Status;
@@ -107,25 +106,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		phenoCollectionStartDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, Constants.DD_MM_YYYY);
 		phenoCollectionExpiryDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, Constants.DD_MM_YYYY);
 		 
-		DatePicker startDatePicker = new DatePicker()
-		{ 
-			@Override 
-			protected boolean enableMonthYearSelection() 
-			{ 
-			return true; 
-			} 
-		}; 
+		ArkDatePicker startDatePicker = new ArkDatePicker(); 
 		startDatePicker.bind(phenoCollectionStartDateFld);
 		phenoCollectionStartDateFld.add(startDatePicker);
 		
-		DatePicker endDatePicker = new DatePicker()
-		{ 
-			@Override 
-			protected boolean enableMonthYearSelection() 
-			{ 
-				return true; 
-			} 
-		}; 
+		ArkDatePicker endDatePicker = new ArkDatePicker(); 
 		endDatePicker.bind(phenoCollectionExpiryDateFld);
 		phenoCollectionExpiryDateFld.add(endDatePicker);
 		
