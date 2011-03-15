@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.MenuModule;
-import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
