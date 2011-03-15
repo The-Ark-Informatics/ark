@@ -47,15 +47,23 @@
     <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
 
-
-    <!-- An Oracle RDBMS data source.-->
+	<!-- New MySQL data source -->
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
+        <property name="username" value="arkadmin"/>
+        <property name="password" value="veTum1n"/>
+    </bean>
+    
+    <!-- Deprecated - old Oracle RDBMS data source.
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"/>
         <property name="url" value="Jdbc:oracle:thin:@192.168.2.227:1521:dbdevel"/>
         <property name="username" value="eta"/>
         <property name="password" value="veTum1n"/>
     </bean>
-
+	-->
+	
     <!--  A LDAP data source -->
 <!-- 
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
