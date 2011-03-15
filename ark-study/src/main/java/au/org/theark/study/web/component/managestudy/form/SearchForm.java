@@ -70,7 +70,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 						FeedbackPanel feedbackPanel, 
 						Container containerForm){
 		
-		super(id,studyModelVOCpm);
+		super(id,studyModelVOCpm,feedbackPanel,studyCrudContainerVO);
 		
 		this.containerForm = containerForm;
 		this.studyCrudContainerVO = studyCrudContainerVO;
