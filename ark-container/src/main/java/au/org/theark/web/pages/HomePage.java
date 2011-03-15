@@ -1,7 +1,6 @@
 package au.org.theark.web.pages;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
@@ -16,7 +15,7 @@ import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
- * Homepage aka Index page of The ARK
+ * Index page of The ARK
  */
 public class HomePage extends BasePage
 {
@@ -41,7 +40,7 @@ public class HomePage extends BasePage
 	{
 		this.arkContextPanelMarkup = new WebMarkupContainer("contextMarkupContainer");
 		
-		// Require a Label for each context item (currently hardcoded in markup)
+		// Require a Label for each context item (currently hard coded in mark up)
 		//TODO: Use dynamic component to remove hard-coded Labels
 		Label studyLabel = new Label("studyLabel","");
 		arkContextPanelMarkup.add(studyLabel);
@@ -58,14 +57,14 @@ public class HomePage extends BasePage
 	@Override
 	protected void buildModuleTabs()
 	{
-		//this.studyLogoMarkup
 		List<ITab> moduleTabsList = new ArrayList<ITab>();
 
+		// Study
 		MainTabProviderImpl studyMainTabProvider = new MainTabProviderImpl("study");
-		// Pass in the Study logo markup, to allow dynamic logo reference
+		// Pass in the Study logo mark up, to allow dynamic logo reference
 		moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup, this.arkContextPanelMarkup);
 
-		//Pheno
+		// Pheno
 		PhenotypicTabProviderImpl phenotypicTabs = new PhenotypicTabProviderImpl("phenotypic");
 		List<ITab> phenotypicTabsList = phenotypicTabs.buildTabs(this.arkContextPanelMarkup);
 		for (ITab itab : phenotypicTabsList)
@@ -73,20 +72,19 @@ public class HomePage extends BasePage
 			moduleTabsList.add(itab);
 		}
 
-		//Geno
+		// Geno
 		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
 		List<ITab> genoTabsList = genoTabs.buildTabs();
 		for (ITab itab : genoTabsList)
 		{
 			moduleTabsList.add(itab);
 		}
-		//Registry
+		// Registry
 		RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
 		List<ITab> registryTabList =	registryTabProvider.buildTabs();
 		for(ITab tab : registryTabList){
 			moduleTabsList.add(tab);
 		}
-		
 		
 		moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
 		add(moduleTabbedPanel);
@@ -95,13 +93,11 @@ public class HomePage extends BasePage
 	@Override
 	protected void buildTabMenu()
 	{
-		// TODO Auto-generated method stub
 	}
 
 	@Override
 	String getTitle()
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 }
