@@ -38,7 +38,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	protected WebMarkupContainer	detailFormCompContainer;
 	protected FeedbackPanel			feedbackPanel;
 	
-	private ArkCrudContainerVO arkCrudContainerVO;
 	
 
 	/**
@@ -77,11 +76,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 */
 	public AbstractSearchForm(	String id, 
 								IModel<T> cpmModel, 
-								FeedbackPanel feedBackPanel,
-								ArkCrudContainerVO arkCrudContainerVO){
+								FeedbackPanel feedBackPanel){
 		super(id,cpmModel);
 		this.feedbackPanel = feedBackPanel;
-		this.arkCrudContainerVO = arkCrudContainerVO;
 		initialiseForm();
 	}
 
@@ -196,15 +193,26 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param target
 	 * @param flag
 	 */
-	protected void preProcessDetailPanel(AjaxRequestTarget target, boolean flag)
+	protected void preProcessDetailPanel(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO)
 	{
+		
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setVisible(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+	
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
 		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
-		detailFormCompContainer.setEnabled(true);
+		
+		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		
+		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
+		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
+		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+		
 	}
 
 	protected void disableSearchButtons(Long sessionId, String errorMessage)
