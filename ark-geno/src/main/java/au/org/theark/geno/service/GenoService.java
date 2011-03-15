@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.geno.exception.DataAcceptorIOException;
 import au.org.theark.geno.model.dao.ICollectionDao;
@@ -33,7 +34,6 @@ import au.org.theark.geno.model.entity.MetaData;
 import au.org.theark.geno.model.entity.MetaDataField;
 import au.org.theark.geno.model.entity.MetaDataType;
 import au.org.theark.geno.model.entity.Status;
-import au.org.theark.geno.model.entity.Upload;
 import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.util.IMapDataAcceptor;
 import au.org.theark.geno.util.IPedDataAcceptor;
@@ -93,6 +93,13 @@ public class GenoService implements IGenoService {
 		col.setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
 		col.setInsertTime(dateNow);
         collectionDao.createCollection(col);
+        
+        AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno Collection " + col.getName());
+		ah.setEntityId(col.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_COLLECTION);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public void createCollectionImport(CollectionImport colImport) {
@@ -103,6 +110,13 @@ public class GenoService implements IGenoService {
 		colImport.setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
 		colImport.setInsertTime(dateNow);
 		collectionDao.createCollectionImport(colImport);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno Collection Import " + colImport.getId());
+		ah.setEntityId(colImport.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_COLLECTION_IMPORT);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void createMetaData(MetaData metaData) {
@@ -112,10 +126,24 @@ public class GenoService implements IGenoService {
 		metaData.setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
         metaData.setInsertTime(dateNow);
 		collectionDao.createMetaData(metaData);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno MetaData " + metaData.getMetaDataField().getName());
+		ah.setEntityId(metaData.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_METADATA);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public void createEncodedData(EncodedData ed) {
 		gwasDao.createEncodedData(ed);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno EncodedData " + ed.getId());
+		ah.setEntityId(ed.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_ENCODED_DATA);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public void createUploadCollection(UploadCollection uploadCollection) {
@@ -127,6 +155,13 @@ public class GenoService implements IGenoService {
 		uploadCollection.getUpload().setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
 		uploadCollection.getUpload().setInsertTime(dateNow);
 		collectionDao.createUploadCollection(uploadCollection);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno Upload Collection " + uploadCollection.getId());
+		ah.setEntityId(uploadCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_UPLOAD_COLLECTION);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	
@@ -194,6 +229,13 @@ public class GenoService implements IGenoService {
         mdf.setUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
         mdf.setInsertTime(dateNow);
 		collectionDao.createMetaDataField(mdf);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Geno MetaDataField " + mdf.getName());
+		ah.setEntityId(mdf.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_METADATA_FIELD);
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public MetaDataType getMetaDataTypeByName(String typeName) {
@@ -233,16 +275,37 @@ public class GenoService implements IGenoService {
         colEntity.setUpdateUserId(currentUser.getPrincipal().toString());	//use Shiro to get username
 		colEntity.setUpdateTime(dateNow);		
 		collectionDao.updateCollection(colEntity);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Geno Collection " + colEntity.getName());
+		ah.setEntityId(colEntity.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_COLLECTION);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	
 	// Delete 
 	public void deleteCollection(GenoCollection col) {
 		collectionDao.deleteCollection(col);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Geno Collection " + col.getName());
+		ah.setEntityId(col.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_COLLECTION);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	public void deleteUploadCollection(UploadCollection uploadCollection) {
 		collectionDao.deleteUploadCollection(uploadCollection);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted Geno Upload Collection " + uploadCollection.getId());
+		ah.setEntityId(uploadCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_GENO_UPLOAD_COLLECTION);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	// Test
