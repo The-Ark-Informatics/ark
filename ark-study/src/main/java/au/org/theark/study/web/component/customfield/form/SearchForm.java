@@ -58,7 +58,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO>{
 						DetailPanel detailPanel,
 						ArkCrudContainerVO arkCrudContainerVO) {
 		
-		super(id, cpmModel,feedBackPanel);
+		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
 		
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		initialiseSearchForm();
