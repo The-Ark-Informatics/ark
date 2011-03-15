@@ -204,7 +204,7 @@ public class UploadContainerPanel extends AbstractContainerPanel<UploadCollectio
 	public void showNewDetail(AjaxRequestTarget target) {
 
 		deleteButton.setEnabled(false);	//disable the delete button in new mode
-		deleteButton.setVisible(false);
+//		deleteButton.setVisible(false);
 
 		detailPanelContainer.setVisible(true);
 		searchResultPanelContainer.setVisible(false);

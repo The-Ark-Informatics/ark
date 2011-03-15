@@ -29,6 +29,7 @@ import au.org.theark.geno.model.entity.Status;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.service.Constants;
 import au.org.theark.geno.service.IGenoService;
+import au.org.theark.geno.web.component.genoCollection.DetailPanel.DetailForm;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;
 
 public class SearchPanel extends Panel {
@@ -88,6 +89,14 @@ public class SearchPanel extends Panel {
 			
 			super(id, model);
 			this.cpmModel = model;
+			// TODO: Fix ARK-122:: To fix a NullPointer exception must add this hack, 
+			// because Geno doesn't follow the AbstractSearchForm perfectly.
+			// Remove this when switching over to the new Abstract classes.
+			feedbackPanel = (FeedbackPanel) containerForm.get("feedbackMessage");
+			WebMarkupContainer detailContainer = (WebMarkupContainer) containerForm.get("detailContainer");
+			Panel detailPanel = (Panel) detailContainer.get("detailPanel");
+			DetailForm detailForm = (DetailForm) detailPanel.get("detailForm");
+			editButtonContainer = (WebMarkupContainer) detailForm.get("editButtonContainer");
 		}
 		
 		/**

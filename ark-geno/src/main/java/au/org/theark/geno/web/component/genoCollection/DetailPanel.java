@@ -177,6 +177,11 @@ public class DetailPanel extends Panel {
 					genoCollectionContainerPanel.refreshDetail(target);
 					showConfirmModalWindow(target);
 				}
+				
+				public void onError(AjaxRequestTarget target, Form<?> form){
+					processErrors(target);
+				}
+				
 			};
 			
 			editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
@@ -229,7 +234,7 @@ public class DetailPanel extends Panel {
 
 			editButtonContainer.add(saveButton);
 			editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-			editButtonContainer.add(deleteButton);
+			editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
 			
 			viewButtonContainer.add(editButton);
 			viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));

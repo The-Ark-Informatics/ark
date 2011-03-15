@@ -59,7 +59,8 @@ public class DetailPanel extends Panel {
 	public void initialisePanel()
 	{
 		detailForm = new DetailForm("detailForm");
-		
+		detailForm.setMultiPart(true);
+
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}
@@ -120,6 +121,7 @@ public class DetailPanel extends Panel {
 		}
 		
 		protected void initialiseForm() {
+
 			//Contains the controls of the details
 			detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
 			detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
@@ -141,13 +143,13 @@ public class DetailPanel extends Panel {
 			
 			cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 			{
-
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					
 					uploadContainerPanel.showSearch(target);
 					onCancel(target);//Invoke a onCancel() that the sub-class can use to build anything more specific
 				}
+				
 			};
 			
 			saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
@@ -169,12 +171,20 @@ public class DetailPanel extends Panel {
 					uploadContainerPanel.refreshDetail(target);
 					showConfirmModalWindow(target);
 				}
+				
+				public void onError(AjaxRequestTarget target, Form<?> form) {
+					processErrors(target);
+				}
 			};
 			
 			editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
 			{
 				public void onSubmit(AjaxRequestTarget target, Form<?> form)
 				{
+//					fileUploadField.setRequired(false);
+//					fileUploadField.setEnabled(false);
+//					fileUploadField.setVisible(false);
+					//target.addComponent(fileUploadField);
 					uploadContainerPanel.showEditDetail(target);
 				}
 				
@@ -212,7 +222,7 @@ public class DetailPanel extends Panel {
 
 			editButtonContainer.add(saveButton);
 			editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-			editButtonContainer.add(deleteButton);
+			editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
 			
 			viewButtonContainer.add(editButton);
 			viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
@@ -275,10 +285,8 @@ public class DetailPanel extends Panel {
 
 		protected void onSave(Form<UploadCollectionVO> containerForm, AjaxRequestTarget target)
 		{
-			setMultiPart(true);	//multipart required for file uploads
-			
 			//NB: We are dealing with the GenoCollection (not Marker)
-			
+
 			// create new UploadCollection that is linked with the new Upload
 			if (containerForm.getModelObject().getUploadCollection().getId() == null)
 			{				
@@ -328,8 +336,6 @@ public class DetailPanel extends Panel {
 						
 			uploadContainerPanel.showViewDetail(target);
 			//TODO:(CE) To handle Business and System Exceptions here
-			
-			setMultiPart(false);	//multipart required for file uploads
 		}
 
 		protected void onCancel(AjaxRequestTarget target)
@@ -337,7 +343,7 @@ public class DetailPanel extends Panel {
 			// reset the collection VO
 			UploadCollectionVO uploadCollectionVO = new UploadCollectionVO();
 			containerForm.setModelObject(uploadCollectionVO);
-			
+
 			uploadContainerPanel.showSearch(target);
 		}
 		
