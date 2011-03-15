@@ -1,10 +1,7 @@
 package au.org.theark.study.web.component.managestudy;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
@@ -13,230 +10,103 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
-public class StudyContainer extends Panel{
+public class StudyContainer extends AbstractContainerPanel<StudyModelVO>{
 
 
 	private static final long serialVersionUID = 1L;
 	private Container containerForm;
+	private Details detailsPanel;
+	private SearchResults searchResultsPanel;
+	private Search searchStudyPanel;
 	
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
 	private IModel<Object> iModel;
-	private PageableListView<Study> pageableListView;
-	private WebMarkupContainer resultListContainer;//Search Results Container
-	
-	//Child Components
-	private Search searchStudyPanel;
-	private WebMarkupContainer detailsContainer;
-	private WebMarkupContainer detailFormContainer;
-	private WebMarkupContainer searchWebMarkupContainer;
-	private WebMarkupContainer saveArchivebuttonContainer;
-	private WebMarkupContainer editbuttonContainer;
-	private WebMarkupContainer summaryContainer;
-	private WebMarkupContainer studyNameMarkup;
-	private WebMarkupContainer studyLogoMarkup;
-	private WebMarkupContainer studyLogoImageContainer;
-	private WebMarkupContainer studyLogoUploadContainer;
-	private WebMarkupContainer arkContextMarkup;
-	
-	private Details detailsPanel;
-	
-	private FeedbackPanel feedBackPanel;
+	private StudyCrudContainerVO studyCrudContainerVO;
 	
 	
-	private void initialiseMarkupContainers(){
-		/* The markup container for search panel */
-		searchWebMarkupContainer = new WebMarkupContainer("searchContainer");
-		searchWebMarkupContainer.setOutputMarkupPlaceholderTag(true);
+	
+	/**
+	 * Constructor
+	 * @param id
+	 * @param studyNameMarkup
+	 * @param studyLogoMarkup
+	 * @param arkContextMarkup
+	 */
+	public StudyContainer(String id, 
+							WebMarkupContainer studyNameMarkup,
+							WebMarkupContainer studyLogoMarkup,
+							WebMarkupContainer arkContextMarkup) {
 		
-		detailsContainer = new WebMarkupContainer("detailsContainer");
-		detailsContainer.setOutputMarkupPlaceholderTag(true);
-		detailsContainer.setVisible(false);
+		super(id, true);
+		cpModel = new CompoundPropertyModel<StudyModelVO>(new StudyModelVO());
+		//Create the form that will hold the other controls
+		containerForm = new Container("containerForm",cpModel);
+		
+		/* Initialise the study crud container vo that has all the WebMarkups */
+		studyCrudContainerVO = new StudyCrudContainerVO();
+		//Set the Markups that was passed in into the VO
+		studyCrudContainerVO.setStudyNameMarkup(studyNameMarkup);
+		studyCrudContainerVO.setStudyLogoMarkup(studyLogoMarkup);
+		studyCrudContainerVO.setArkContextMarkup(arkContextMarkup);
+		
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());		
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+		
+		add(containerForm);
+		
+	}
+	
 
-		//Contains the controls of the details
-		detailFormContainer = new WebMarkupContainer("detailFormContainer");
-		detailFormContainer.setOutputMarkupPlaceholderTag(true);
-		detailFormContainer.setEnabled(false);
+	protected WebMarkupContainer initialiseSearchPanel(){
 		
-		//The wrapper for ResultsList panel that will contain a ListView
-		resultListContainer = new WebMarkupContainer("resultListContainer");
-		resultListContainer.setOutputMarkupPlaceholderTag(true);
-		resultListContainer.setVisible(true);
-	
-		saveArchivebuttonContainer = new WebMarkupContainer("saveArchContainer");
-		saveArchivebuttonContainer.setOutputMarkupPlaceholderTag(true);
-		saveArchivebuttonContainer.setVisible(false);
-		
-		editbuttonContainer = new WebMarkupContainer("editButtonContainer");
-		editbuttonContainer.setOutputMarkupPlaceholderTag(true);
-		editbuttonContainer.setVisible(false);
+		searchStudyPanel = new Search("searchStudyPanel",studyCrudContainerVO,feedBackPanel,containerForm);
+		searchStudyPanel.initialisePanel(cpModel);
+		studyCrudContainerVO.getSearchPanelContainer().add(searchStudyPanel);							
+		return studyCrudContainerVO.getSearchPanelContainer();
+	}
 
-		summaryContainer = new WebMarkupContainer("summaryPanel");
-		summaryContainer.setOutputMarkupPlaceholderTag(true);
-		summaryContainer.setVisible(false);
-		
-		studyLogoImageContainer = new WebMarkupContainer("studyLogoImageContainer");
-		studyLogoImageContainer.setOutputMarkupPlaceholderTag(true);
-		
-		studyLogoUploadContainer = new WebMarkupContainer("studyLogoUploadContainer");
-		studyLogoUploadContainer.setOutputMarkupPlaceholderTag(true);
-	}
-	
-	private WebMarkupContainer initialiseDetailPanel(){
-		detailsPanel = new Details("detailsPanel", 
-									resultListContainer,
-									feedBackPanel,
-									detailsContainer,
-									searchWebMarkupContainer,
-									saveArchivebuttonContainer,
-									editbuttonContainer,
-									summaryContainer,
-									detailFormContainer,
-									studyNameMarkup,
-									studyLogoMarkup,
-									studyLogoImageContainer,
-									studyLogoUploadContainer,
-									arkContextMarkup,
-									containerForm);//Need to pass feedback panel
-				
-				detailsPanel.initialisePanel();
-				detailsContainer.add(detailsPanel);
-				return detailsContainer;
-	}
-	
-	private WebMarkupContainer initialiseSearchPanel(){
-		
-		searchStudyPanel = new Search(	"searchStudyPanel",
-										feedBackPanel,
-										iArkCommonService.getListOfStudyStatus(),
-										searchWebMarkupContainer,
-										pageableListView,
-										resultListContainer,
-										detailsContainer,
-										detailsPanel,
-										saveArchivebuttonContainer,
-										summaryContainer,
-										editbuttonContainer,
-										detailFormContainer,
-										studyNameMarkup,
-										studyLogoMarkup,
-										studyLogoImageContainer,
-										studyLogoUploadContainer,
-										arkContextMarkup,
-										containerForm);
-		
-		searchStudyPanel.initialisePanel();
-		searchWebMarkupContainer.add(searchStudyPanel);
-		return searchWebMarkupContainer;
-	}
-	
-	private FeedbackPanel initialiseFeedBackPanel(){
-		/* Feedback Panel */
-		feedBackPanel= new FeedbackPanel("feedbackMessage");
-		feedBackPanel.setOutputMarkupId(true);
-		return feedBackPanel;
-	}
-	
-	private WebMarkupContainer initialiseSearchResults(){
-		
-		//Initialise with a default list of study	
+
+	@Override
+	protected WebMarkupContainer initialiseSearchResults() {
 		Study study = new Study();
-		
-		//Invoke the Common Service to look up the Study
 		containerForm.getModelObject().setStudyList(iArkCommonService.getStudy(study));
 		
-		//Pass this to the SearchResultListView control that will use this to render its values.
-		//Also pass in the markup container for searchPanel i.e the searchContainer 
-		SearchResults searchResultsPanel = new SearchResults(	"resultsPanel",
-																searchWebMarkupContainer,
-																detailsContainer,
-																saveArchivebuttonContainer,
-																editbuttonContainer, 
-																summaryContainer,
-																detailFormContainer,
-																studyNameMarkup,
-																studyLogoMarkup,
-																studyLogoImageContainer,
-																arkContextMarkup,
-																containerForm);
+		searchResultsPanel = new SearchResults("searchResults", studyCrudContainerVO, containerForm);
+		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Object load() {
-				pageableListView.removeAll();
+				studyCrudContainerVO.getPageableListView().removeAll();
 				return iArkCommonService.getStudy(containerForm.getModelObject().getStudy()); 
 			}
 		};
 		
-		pageableListView = searchResultsPanel.buildPageableListView(iModel,resultListContainer);
-		pageableListView.setReuseItems(true);
-		
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		studyCrudContainerVO.setPageableListView(searchResultsPanel.buildPageableListView(iModel,studyCrudContainerVO.getSearchResultPanelContainer()));
+		studyCrudContainerVO.getPageableListView().setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", studyCrudContainerVO.getPageableListView());
 		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(pageableListView);
-		
-		resultListContainer.add(searchResultsPanel);
-		return resultListContainer;
-
-	}
-	
-	
-	public StudyContainer(String id) {
-	
-		super(id);
-
-		initialiseMarkupContainers();
-		//Create the form that will hold the other controls
-		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
-		
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());		
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-		
-		add(containerForm);
-		
-	}
-	
-	public StudyContainer(String id, WebMarkupContainer studyLogoMarkup) {
-		
-		super(id);
-		this.studyLogoMarkup = studyLogoMarkup; 
-		initialiseMarkupContainers();
-		//Create the form that will hold the other controls
-		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
-		
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());		
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-		
-		add(containerForm);
-		
-	}
-	
-	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
-		
-		super(id);
-		this.studyNameMarkup = studyNameMarkup;
-		this.studyLogoMarkup = studyLogoMarkup;
-		this.arkContextMarkup = arkContextMarkup;
-		
-		initialiseMarkupContainers();
-		//Create the form that will hold the other controls
-		containerForm = new Container("containerForm",new CompoundPropertyModel<StudyModelVO>(new StudyModelVO()));
-		
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());		
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-		
-		add(containerForm);
-		
+		searchResultsPanel.add(studyCrudContainerVO.getPageableListView());
+		studyCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		return studyCrudContainerVO.getSearchResultPanelContainer();
 	}
 
+
+	@Override
+	protected WebMarkupContainer initialiseDetailPanel() {
+		detailsPanel = new Details("detailsPanel",feedBackPanel,studyCrudContainerVO,containerForm);
+		detailsPanel.initialisePanel();
+		studyCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		return studyCrudContainerVO.getDetailPanelContainer();
+	}
+	
+	
 }
