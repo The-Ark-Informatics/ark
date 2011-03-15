@@ -422,10 +422,18 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	    Date date = new Date(System.currentTimeMillis());
 	    Subject currentUser = SecurityUtils.getSubject();
 	    auditHistory.setArkUserId((String) currentUser.getPrincipal());
-	    
-	    if(auditHistory.getStudyStatus() == null){
-	   	 Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+	    Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+	    if(sessionStudyId != null && auditHistory.getStudyStatus() == null ){
 	   	 auditHistory.setStudyStatus(getStudy(sessionStudyId).getStudyStatus());
+	    }else{
+	    	
+	    	if( auditHistory.getEntityType().equalsIgnoreCase(au.org.theark.core.Constants.ENTITY_TYPE_STUDY)){
+	    		Study study = getStudy(auditHistory.getEntityId());
+		    	if(study != null){
+		    		auditHistory.setStudyStatus(study.getStudyStatus());	
+		    	}
+	    	}
+
 	    }
 	    
 	    auditHistory.setDateTime(date);
