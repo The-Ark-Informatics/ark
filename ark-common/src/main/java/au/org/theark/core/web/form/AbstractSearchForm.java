@@ -76,10 +76,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 */
 	public AbstractSearchForm(	String id, 
 								IModel<T> cpmModel, 
-								FeedbackPanel feedBackPanel){
+								FeedbackPanel feedBackPanel,
+								ArkCrudContainerVO arkCrudContainerVO){
 		super(id,cpmModel);
 		this.feedbackPanel = feedBackPanel;
-		initialiseForm();
+		initialiseForm(arkCrudContainerVO);
 	}
 
 	abstract protected void onSearch(AjaxRequestTarget target);
@@ -163,6 +164,74 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		addComponentsToForm();
 	}
 
+	
+	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO)
+	{
+		searchButton = new AjaxButton(Constants.SEARCH)
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				// Make the details panel visible
+				onSearch(target);
+			}
+
+			@Override
+			public boolean isVisible()
+			{
+				return isSecure(Constants.SEARCH);
+			}
+			
+			@Override
+			 protected void onError(final AjaxRequestTarget target, Form form) {
+				target.addComponent(feedbackPanel);
+			} 
+		};
+
+		resetButton = new Button(Constants.RESET)
+		{
+			public void onSubmit()
+			{
+				onReset();
+			}
+
+			@Override
+			public boolean isVisible()
+			{
+				return isSecure(Constants.RESET);
+			}
+		};
+
+		newButton = new AjaxButton(Constants.NEW)
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				// Make the details panel visible, disabling delete button (if found)
+				//AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.addComponent(ajaxButton);
+				}
+				// Call abstract method
+				onNew(target);
+			}
+
+			@Override
+			public boolean isVisible()
+			{
+				return isSecure(Constants.NEW);
+			}
+			
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form form) {
+				target.addComponent(feedbackPanel);
+			}
+		};
+
+		addComponentsToForm();
+	}
 	protected void addComponentsToForm()
 	{
 		add(searchButton);
