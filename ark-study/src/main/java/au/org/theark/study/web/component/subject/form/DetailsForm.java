@@ -28,6 +28,8 @@ import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -65,50 +67,54 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 
 	private WebMarkupContainer arkContextMarkupContainer;
 
-	private TextField<String> firstNameTxtFld;
-	private TextField<String> middleNameTxtFld;
-	private TextField<String> lastNameTxtFld;
-	private TextField<String> previousLastNameTxtFld;
-	private TextField<String> preferredNameTxtFld;
-	private TextField<String> subjectUIDTxtFld;
+	protected TextField<String> firstNameTxtFld;
+	protected TextField<String> middleNameTxtFld;
+	protected TextField<String> lastNameTxtFld;
+	protected TextField<String> previousLastNameTxtFld;
+	protected TextField<String> preferredNameTxtFld;
+	protected TextField<String> subjectUIDTxtFld;
 	
-	private DateTextField dateOfBirthTxtFld;
-	private DateTextField dateOfDeathTxtFld;
-	private TextField<String> causeOfDeathTxtFld;
+	protected DateTextField dateOfBirthTxtFld;
+	protected DateTextField dateOfDeathTxtFld;
+	protected TextField<String> causeOfDeathTxtFld;
 	
 	// Custom Fields and Consents at Subject Study Level
-	private TextField<String> amdrifIdTxtFld;
-	private DateTextField studyApproachDate;
-	private TextField<Long> yearOfFirstMamogramTxtFld;
-	private TextField<String> yearOfRecentMamogramTxtFld;
-	private TextField<String> totalNumberOfMamogramsTxtFld;
-	private DropDownChoice<YesNo> consentToActiveContactDdc;
-	private DropDownChoice<YesNo> consentToUseDataDdc;
-	private DropDownChoice<YesNo> consentToPassDataGatheringDdc;
+	protected TextField<String> amdrifIdTxtFld;
+	protected DateTextField studyApproachDate;
+	protected TextField<Long> yearOfFirstMamogramTxtFld;
+	protected TextField<String> yearOfRecentMamogramTxtFld;
+	protected TextField<String> totalNumberOfMamogramsTxtFld;
+	protected DropDownChoice<YesNo> consentToActiveContactDdc;
+	protected DropDownChoice<YesNo> consentToUseDataDdc;
+	protected DropDownChoice<YesNo> consentToPassDataGatheringDdc;
 	
 	// Address Stuff comes here 
-	private TextField<String> streetAddressTxtFld;
-	private TextField<String> cityTxtFld;
-	private TextField<String> postCodeTxtFld;
-	private DropDownChoice<Country> countryChoice;
-	private DropDownChoice<CountryState> stateChoice;
-	private WebMarkupContainer countryStateSelector;
-	private TextField<String> preferredEmailTxtFld;
-	private TextField<String> otherEmailTxtFld;
+	protected TextField<String> streetAddressTxtFld;
+	protected TextField<String> cityTxtFld;
+	protected TextField<String> postCodeTxtFld;
+	protected DropDownChoice<Country> countryChoice;
+	protected DropDownChoice<CountryState> stateChoice;
+	protected WebMarkupContainer countryStateSelector;
+	protected TextField<String> preferredEmailTxtFld;
+	protected TextField<String> otherEmailTxtFld;
 	
 	// Reference Data 
-	private DropDownChoice<TitleType> titleTypeDdc;
-	private DropDownChoice<VitalStatus> vitalStatusDdc;
-	private DropDownChoice<GenderType> genderTypeDdc;
-	private DropDownChoice<SubjectStatus> subjectStatusDdc;
-	private DropDownChoice<MaritalStatus> maritalStatusDdc;
-	private DropDownChoice<PersonContactMethod> personContactMethodDdc;
+	protected DropDownChoice<TitleType> titleTypeDdc;
+	protected DropDownChoice<VitalStatus> vitalStatusDdc;
+	protected DropDownChoice<GenderType> genderTypeDdc;
+	protected DropDownChoice<SubjectStatus> subjectStatusDdc;
+	protected DropDownChoice<MaritalStatus> maritalStatusDdc;
+	protected DropDownChoice<PersonContactMethod> personContactMethodDdc;
 	
+	//Study Level Consent Controls
+	protected DropDownChoice<ConsentStatus> consentStatusChoice;
+	protected DropDownChoice<ConsentType> consentTypeChoice;
+	protected DateTextField consentDateTxtFld;
 	// Webmarkup for Ajax refreshing of items based on particular criteria
-	private WebMarkupContainer wmcPreferredEmailContainer;
-	private WebMarkupContainer wmcDeathDetailsContainer;
+	protected WebMarkupContainer wmcPreferredEmailContainer;
+	protected WebMarkupContainer wmcDeathDetailsContainer;
 	
-	private Study study;
+	protected Study study;
 	
 	
 	public DetailsForm(	String id,
@@ -145,6 +151,11 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
+		
+		consentDateTxtFld =  new DateTextField(Constants.PERSON_CONSENT_DATE,au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker consentDatePicker = new ArkDatePicker();
+		consentDatePicker.bind(consentDateTxtFld);
+		consentDateTxtFld.add(consentDatePicker);
 		
 		dateOfDeathTxtFld = new DateTextField(Constants.PERSON_DOD,au.org.theark.core.Constants.DD_MM_YYYY);
 		
@@ -217,11 +228,27 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
 		
 		initCustomFields();
-		
+		initialiseConsentStatusChoice();
+		initialiseConsentTypeChoice();
 		attachValidators();
 		addDetailFormComponents();
 		
 		deleteButton.setVisible(false);
+	}
+	
+	/**
+	 * Initialise the Consent Status Drop Down Choice Control
+	 */
+	protected void initialiseConsentStatusChoice(){
+		List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
+		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
+		consentStatusChoice  = new DropDownChoice(Constants.SUBJECT_CONSENT_STATUS, consentStatusList,defaultChoiceRenderer);
+	}
+	
+	protected void initialiseConsentTypeChoice(){
+		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
+		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		consentTypeChoice = new DropDownChoice(Constants.SUBJECT_CONSENT_TYPE,consentTypeList,defaultChoiceRenderer);
 	}
 	
 	// Death details dependent on Vital Status selected to "Deceased"
@@ -375,6 +402,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(consentToActiveContactDdc);
 		detailPanelFormContainer.add(consentToUseDataDdc);
 		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
+		detailPanelFormContainer.add(consentStatusChoice);
+		detailPanelFormContainer.add(consentTypeChoice);
+		detailPanelFormContainer.add(consentDateTxtFld);
 	}
 
 	/* (non-Javadoc)
@@ -401,7 +431,11 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("dob.range", this, null));
 		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("approach.date", this, null));
+		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consentDate.range", this, null));
 		
+//		if(studyApproachDate != null){
+//			consentDateTxtFld.add(DateValidator.range(studyApproachDate.getConvertedInput(),new Date()));
+//		}
 		titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
 		vitalStatusDdc.setRequired(true).setLabel(new StringResourceModel("vital.status.required", this, null));
 		genderTypeDdc.setRequired(true).setLabel(new StringResourceModel("gender.type.required", this, null));
