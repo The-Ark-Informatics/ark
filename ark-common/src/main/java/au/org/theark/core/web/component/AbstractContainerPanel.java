@@ -51,7 +51,7 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	
 	public AbstractContainerPanel(String id, boolean flag){
 		super(id);
-		initCrudContainerVO();
+		//initCrudContainerVO();
 	}
 	
 	public void initCrudContainerVO(){
