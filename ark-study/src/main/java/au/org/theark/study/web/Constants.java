@@ -55,10 +55,13 @@ public class Constants {
 	public static final String VITAL_STATUS="vitalStatus";
 	public static final String STATUS_NAME ="statusName";
 	public static final String PERSON_MARITAL_STATUS ="subjectStudy.person.maritalStatus";
-	public static final String	PERSON_CONTACT_METHOD	= "subjectStudy.person.personContactMethod";
+	public static final String PERSON_CONTACT_METHOD	= "subjectStudy.person.personContactMethod";
 	public static final String PERSON_DOB="subjectStudy.person.dateOfBirth";
-	public static final String	PERSON_DOD	= "subjectStudy.person.dateOfDeath";
-	public static final String	PERSON_CAUSE_OF_DEATH	= "subjectStudy.person.causeOfDeath";
+	public static final String PERSON_DOD	= "subjectStudy.person.dateOfDeath";
+	public static final String PERSON_CONSENT_DATE="subjectStudy.consentDate";
+	public static final String SUBJECT_CONSENT_STATUS="subjectStudy.consentStatus";
+	public static final String SUBJECT_CONSENT_TYPE="subjectStudy.consentType";
+	public static final String PERSON_CAUSE_OF_DEATH	= "subjectStudy.person.causeOfDeath";
 	public static final String PERSON_TYTPE_TYPE = "subjectStudy.person.titleType";
 	public static final String PERSON_GENDER_TYPE ="subjectStudy.person.genderType";
 	public static final String PERSON_GENDER_TYPE_NAME ="subjectStudy.person.genderType.name";
