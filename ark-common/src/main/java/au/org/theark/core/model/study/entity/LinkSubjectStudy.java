@@ -48,6 +48,11 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private YesNo consentToPassiveDataGathering;
 	private YesNo consentToUseData;
 	
+	private ConsentStatus consentStatus;
+	private ConsentType consentType;
+	private Date consentDate;
+	
+	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
@@ -263,6 +268,33 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_STATUS_ID")
+	public ConsentStatus getConsentStatus() {
+		return consentStatus;
+	}
+	public void setConsentStatus(ConsentStatus consentStatus) {
+		this.consentStatus = consentStatus;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_TYPE_ID")
+	public ConsentType getConsentType() {
+		return consentType;
+	}
+	public void setConsentType(ConsentType consentType) {
+		this.consentType = consentType;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CONSENT_DATE", length = 7)
+	public Date getConsentDate() {
+		return consentDate;
+	}
+	public void setConsentDate(Date consentDate) {
+		this.consentDate = consentDate;
 	}
 
 }
