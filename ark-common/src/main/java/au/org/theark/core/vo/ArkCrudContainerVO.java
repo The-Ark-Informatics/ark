@@ -22,7 +22,8 @@ public class ArkCrudContainerVO implements Serializable{
 	protected WebMarkupContainer detailPanelFormContainer;
 	protected WebMarkupContainer viewButtonContainer;
 	protected WebMarkupContainer editButtonContainer;
-	
+	protected WebMarkupContainer wizardPanelContainer;
+	protected WebMarkupContainer wizardPanelFormContainer;
 	
 	public ArkCrudContainerVO(){
 		
@@ -35,10 +36,6 @@ public class ArkCrudContainerVO implements Serializable{
 		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
 		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
 
-		detailPanelContainer.setVisible(false);
-		detailPanelFormContainer.setEnabled(false);
-
-		
 		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
 		searchResultPanelContainer.setOutputMarkupPlaceholderTag(true);
 		
@@ -47,13 +44,21 @@ public class ArkCrudContainerVO implements Serializable{
 		
 		editButtonContainer = new WebMarkupContainer("editButtonContainer");
 		editButtonContainer.setOutputMarkupPlaceholderTag(true);
+				
+		wizardPanelContainer = new WebMarkupContainer("wizardContainer");
+		wizardPanelContainer.setOutputMarkupPlaceholderTag(true);
 		
-		
-		
+		//Contains the controls of the Wizard
+		wizardPanelFormContainer = new WebMarkupContainer("wizardFormContainer");
+		wizardPanelFormContainer.setOutputMarkupPlaceholderTag(true);
 
+		detailPanelContainer.setVisible(false);
+		detailPanelFormContainer.setEnabled(false);
 		searchResultPanelContainer.setVisible(true);
 		viewButtonContainer.setVisible(false);
 		editButtonContainer.setVisible(false);
+		wizardPanelContainer.setVisible(true);
+		wizardPanelFormContainer.setEnabled(true);
 		
 	}
 	
