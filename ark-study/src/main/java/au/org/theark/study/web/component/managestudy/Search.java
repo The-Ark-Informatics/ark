@@ -1,199 +1,41 @@
 package au.org.theark.study.web.component.managestudy;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.SearchForm;
 
 public class Search extends Panel{
-
-	/* Search Results returned based on the search criteria */
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4770548021154298531L;
 	private Container containerForm;
+	private FeedbackPanel feedBackPanel;
+	private StudyCrudContainerVO studyCrudContainerVO;
 	
-	private List<Study> resultList;
-	private List<StudyStatus> studyStatusList;
-	private FeedbackPanel fbPanel;
-	PageableListView<Study> pageListView;
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer summaryContainer;
-	private WebMarkupContainer searchWebMarkupContainer;
-	private WebMarkupContainer detailsWebMarkupContainer;
-	private WebMarkupContainer saveArchivebuttonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailFormContainer;
-	private WebMarkupContainer studyNameMarkup;
-	private WebMarkupContainer studyLogoMarkup;
-	private WebMarkupContainer studyLogoImageContainer;
-	private WebMarkupContainer	studyLogoUploadContainer;
-	private WebMarkupContainer arkContextMarkup;
-	private Details details;
-	private transient StudyHelper studyHelper;
-	
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	public List<Study> getResultList() {
-		return resultList;
-	}
-	
-	public void setResultList(List<Study> resultList) {
-		this.resultList = resultList;
-	}
-	
-	/* Constructor for Search */
-	public Search(	String id,
-					FeedbackPanel feedbackpanel,
-					List<StudyStatus> studyStatusList,
-					WebMarkupContainer searchMarkupContainer,
-					PageableListView<Study> pageableListView,
-					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailsContainer, 
-					Details detailsPanel,
-					WebMarkupContainer saveArchBtnContainer,
-					WebMarkupContainer summaryContainer,
-					WebMarkupContainer editBtnContainer,
-					WebMarkupContainer detailFormCompContainer,
-					WebMarkupContainer studyNameMarkup,
-					WebMarkupContainer studyLogoMarkup,
-					WebMarkupContainer studyLogoImageContainer,
-					WebMarkupContainer studyLogoUploadContainer,
-					WebMarkupContainer arkContextMarkup,
-					Container containerForm
-					) {
+	/**
+	 * Constructor That uses the VO
+	 * @param id
+	 * @param studyCrudContainerVO
+	 */
+	public Search(String id, StudyCrudContainerVO studyCrudContainerVO,	FeedbackPanel feedbackPanel, Container containerForm){
 		
 		super(id);
-		this.studyStatusList = studyStatusList;
-		this.summaryContainer = summaryContainer;
-		this.studyNameMarkup = studyNameMarkup;
-		this.studyLogoMarkup = studyLogoMarkup;
-		this.studyLogoImageContainer = studyLogoImageContainer; 
-		this.studyLogoUploadContainer = studyLogoUploadContainer;
-		this.studyLogoUploadContainer = studyLogoUploadContainer;
-		this.arkContextMarkup = arkContextMarkup;
-		
-		pageListView = pageableListView;
-		listContainer = resultListContainer;
-		searchWebMarkupContainer = searchMarkupContainer;
-		detailsWebMarkupContainer = detailsContainer;
-		details = detailsPanel;
-		saveArchivebuttonContainer = saveArchBtnContainer;
-		editButtonContainer = editBtnContainer;
-		detailFormContainer = detailFormCompContainer;
-		fbPanel = feedbackpanel;
+		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.containerForm = containerForm;
 	}
 	
-	public void initialisePanel(){
-		
-		SearchForm sform = new SearchForm("searchForm",(CompoundPropertyModel<StudyModelVO>)containerForm.getModel(), studyStatusList){
-			
-			/*Event handler for user's search request*/
-			protected  void onSearch(AjaxRequestTarget target){
 
-				target.addComponent(fbPanel);
-				resultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
-				if(resultList != null && resultList.size() == 0){
-					containerForm.getModelObject().setStudyList(resultList);
-					this.info("There are no records that matched your query. Please modify your filter");
-					target.addComponent(fbPanel);
-				}
-
-				containerForm.getModelObject().setStudyList(resultList);
-				pageListView.removeAll();
-				listContainer.setVisible(true);
-				target.addComponent(listContainer);
-								
-			}
-			
-			protected  void onNew(AjaxRequestTarget target){
-				
-				containerForm.setModelObject(new StudyModelVO());
-
-				List<ModuleVO> modules = new ArrayList<ModuleVO>();
-				
-				try {
-					modules = userService.getModules(true);//source this from a static list or on application startup 
-				} catch (ArkSystemException e) {
-					//log the error message and notify sys admin to take appropriate action
-					this.error("A system error has occured. Please try after some time.");
-				}
-				
-				containerForm.getModelObject().setModulesAvailable(modules);
-				
-				// Hide Summary details on new
-				summaryContainer.setVisible(false);
-				target.addComponent(summaryContainer);
-				
-				// Show upload item for new Study
-				studyLogoMarkup.setVisible(true);
-				studyLogoImageContainer.setVisible(true);
-				studyLogoUploadContainer.setVisible(true);
-				
-				studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyNameMarkup, studyLogoMarkup);
-				studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyLogoImageContainer);
-				
-				target.addComponent(studyLogoMarkup);
-				target.addComponent(studyLogoUploadContainer);
-				target.addComponent(studyLogoImageContainer);
-				
-				// Clear context items
-				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.resetContextLabel(target, arkContextMarkup);
-				
-				//If the selected side has items then its re-using the first object
-				processDetail(target, Constants.MODE_NEW);
-			}
-			
-		};
-		
-		//Add the SearchForm 
-		add(sform);
-	}
+	public void initialisePanel(CompoundPropertyModel<StudyModelVO> studyModelVOCpm){
 	
-	public void processSearch(){
-		
-	}
-	
-	public void processDetail(AjaxRequestTarget target, int mode){
-		if(mode == Constants.MODE_NEW){
-			//save archive container must be visible and edit must be disabled
-		}
-		details.getStudyForm().getStudyNameTxtFld().setEnabled(true);
-		detailsWebMarkupContainer.setVisible(true);
-		listContainer.setVisible(false);
-		saveArchivebuttonContainer.setVisible(true);
-		editButtonContainer.setVisible(false);
-		searchWebMarkupContainer.setVisible(false);
-		detailFormContainer.setEnabled(true);
-		target.addComponent(detailsWebMarkupContainer);
-		target.addComponent(listContainer);
-		target.addComponent(searchWebMarkupContainer);
-		target.addComponent(saveArchivebuttonContainer);
-		target.addComponent(editButtonContainer);
-		target.addComponent(detailFormContainer);
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, studyModelVOCpm, studyCrudContainerVO, feedBackPanel, containerForm);
+		add(searchForm);
 	}
 
 }
