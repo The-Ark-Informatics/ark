@@ -11,7 +11,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.image.NonCachingImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -38,49 +37,18 @@ public class SearchResults extends Panel{
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
-	
-	private WebMarkupContainer searchMarkupContainer;
-	private WebMarkupContainer detailsMarkupContainer;
-	private WebMarkupContainer saveBtnContainer;
-	private WebMarkupContainer editBtnContainer;
-	private WebMarkupContainer detailSummaryContainer;
-	private WebMarkupContainer detailFormContainer;
-	private WebMarkupContainer studyNameMarkup;
-	private WebMarkupContainer studyLogoMarkup;
-	private WebMarkupContainer studyLogoImageContainer;
-	private WebMarkupContainer arkContextMarkup;
-	
-	private ContextImage noStudyLogoImage;
 	private NonCachingImage studyLogoImage;
 	private transient StudyHelper studyHelper;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	private Container studyContainerForm;
-	public SearchResults(	String id, 
-							WebMarkupContainer searchWebMarkupContainer, 
-							WebMarkupContainer detailsWebMarkupContainer,
-							WebMarkupContainer saveButtonContainer,
-							WebMarkupContainer editButtonContainer, 
-							WebMarkupContainer detailSumContainer,
-							WebMarkupContainer detailFormCompContainer,
-							WebMarkupContainer studyNameMarkup,
-							WebMarkupContainer studyLogoMarkup,
-							WebMarkupContainer studyLogoImageContainer,
-							WebMarkupContainer arkContextMarkup,
-							Container containerForm){
+	
+	private StudyCrudContainerVO studyCrudContainerVO;
+	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO,Container containerForm){
 		super(id);
-		searchMarkupContainer = searchWebMarkupContainer;
-		detailsMarkupContainer = detailsWebMarkupContainer;
-		saveBtnContainer =saveButtonContainer;
-		editBtnContainer = editButtonContainer;
-		detailSummaryContainer = detailSumContainer;
-		detailFormContainer = detailFormCompContainer;
+		this.studyCrudContainerVO = studyCrudContainerVO;
 		studyContainerForm = containerForm;
-		this.studyNameMarkup = studyNameMarkup;
-		this.studyLogoMarkup = studyLogoMarkup;
-		this.studyLogoImageContainer = studyLogoImageContainer;
-		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
@@ -156,31 +124,34 @@ public class SearchResults extends Panel{
 					this.error("A system error has occured. Please try after some time.");
 				}
 				
-				searchResultsContainer.setVisible(false);//List view container
-				searchMarkupContainer.setVisible(false);//Hide the Search panel container
-				detailsMarkupContainer.setVisible(true);
-				detailFormContainer.setEnabled(false);
-				saveBtnContainer.setVisible(false);
-				editBtnContainer.setVisible(true);
-				editBtnContainer.setEnabled(true);
-				detailSummaryContainer.setVisible(true);
+				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
+				studyCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				studyCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 				
+				studyCrudContainerVO.getViewButtonContainer().setVisible(true);//saveBtn
+				studyCrudContainerVO.getViewButtonContainer().setEnabled(true);//saveBtn
+				
+				studyCrudContainerVO.getEditButtonContainer().setVisible(false);
+				
+				studyCrudContainerVO.getSummaryContainer().setVisible(true);
 				studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(searchStudy, target, studyNameMarkup, studyLogoMarkup);
-				studyHelper.setStudyLogoImage(searchStudy, "study.studyLogoImage", studyLogoImageContainer);
-
+				studyHelper.setStudyLogo(searchStudy, target,studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+				studyHelper.setStudyLogoImage(searchStudy, "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.resetContextLabel(target, arkContextMarkup);
-				contextHelper.setStudyContextLabel(target, searchStudy.getName(), arkContextMarkup);
-				
-				target.addComponent(studyLogoImageContainer);
-				target.addComponent(searchMarkupContainer);
-				target.addComponent(detailsMarkupContainer);
-				target.addComponent(searchResultsContainer);
-				target.addComponent(saveBtnContainer);
-				target.addComponent(editBtnContainer);
-				target.addComponent(detailSummaryContainer);
-				target.addComponent(detailFormContainer);
+				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
+				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
+						
+
+				target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
+				target.addComponent(studyCrudContainerVO.getSearchPanelContainer());
+				target.addComponent(studyCrudContainerVO.getDetailPanelContainer());
+				target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
+				target.addComponent(studyCrudContainerVO.getViewButtonContainer());
+				target.addComponent(studyCrudContainerVO.getEditButtonContainer());
+				target.addComponent(studyCrudContainerVO.getSummaryContainer());
+				target.addComponent(studyCrudContainerVO.getDetailPanelFormContainer());
+	
 			}
 			
 		};
