@@ -1,5 +1,8 @@
 package au.org.theark.study.web.component.managestudy.form;
 
+import java.io.IOException;
+import java.sql.Blob;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -7,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
@@ -26,6 +30,7 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.image.NonCachingImage;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -36,251 +41,92 @@ import org.apache.wicket.util.time.Duration;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
+import org.hibernate.Hibernate;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.form.AbstractArchiveDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
 
 @SuppressWarnings({ "unchecked", "serial", "unused" })
-public class DetailForm extends Form<StudyModelVO>
+public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 {
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService		studyService;
+	private IStudyService studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
-
-	private WebMarkupContainer	detailsFormContainer;
-	private WebMarkupContainer	summaryPanelContainer;
-	private WebMarkupContainer	saveArchivebuttonContainer;
-	private WebMarkupContainer	editbuttonContainer;
-	private WebMarkupContainer	searchContainer;
-	private WebMarkupContainer	studyNameMarkupContainer;
-	private WebMarkupContainer	studyLogoMarkupContainer;
-	private WebMarkupContainer arkContextMarkup;
-	private int						mode;
+	
+	private int	mode;
 	private TextField<String>	studyIdTxtFld;
-
-	public void setStudyNameTxtFld(TextField<String> studyNameTxtFld)
-	{
-		this.studyNameTxtFld = studyNameTxtFld;
-	}
-
-	private TextField<String>				studyNameTxtFld;
-	private TextArea<String>				studyDescriptionTxtArea;
-	private TextField<String>				estYearOfCompletionTxtFld;
-	private TextField<String>				principalContactTxtFld;
-	private TextField<String>				principalContactPhoneTxtFld;
-	private TextField<String>				chiefInvestigatorTxtFld;
-	private TextField<String>				coInvestigatorTxtFld;
-	private TextField<String>				subjectKeyPrefixTxtFld;
-	private TextField<Integer>				subjectKeyStartAtTxtFld;
-	private TextField<String>				bioSpecimenPrefixTxtFld;
-	//private DatePicker<Date>				dateOfApplicationDp;
-	private DateTextField					dateOfApplicationDp;
-	
-	
+	private TextField<String> studyNameTxtFld;
+	private TextArea<String> studyDescriptionTxtArea;
+	private TextField<String> estYearOfCompletionTxtFld;
+	private TextField<String> principalContactTxtFld;
+	private TextField<String> principalContactPhoneTxtFld;
+	private TextField<String> chiefInvestigatorTxtFld;
+	private TextField<String> coInvestigatorTxtFld;
+	private TextField<String> subjectKeyPrefixTxtFld;
+	private TextField<Integer> subjectKeyStartAtTxtFld;
+	private TextField<String> bioSpecimenPrefixTxtFld;
+	private DateTextField dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>	studyStatusDpChoices;
-	private RadioChoice<Boolean>			autoGenSubIdRdChoice;
-	private RadioChoice<Boolean>			autoConsentRdChoice;
+	private RadioChoice<Boolean> autoGenSubIdRdChoice;
+	private RadioChoice<Boolean> autoConsentRdChoice;
 	// Application Select Palette
-	
-	private Palette							appPalette;
+	private Palette	appPalette;
 
 	// Study logo uploader
-	private FileUploadField					fileUploadField;
+	private FileUploadField	fileUploadField;
 
 	// Study Logo image
-	public NonCachingImage					studyLogoImage;
-	private ContextImage						noStudyLogoImage;
-
-	private WebMarkupContainer				studyLogoUploadContainer;
-	private WebMarkupContainer				studyLogoContainer;
-
-	private Container							containerForm;
+	public NonCachingImage	studyLogoImage;
+	private ContextImage noStudyLogoImage;
+	private Container	containerForm;
+	
 	/* Summary Details */
 
-	Label											studySummaryLabel;
-	AjaxButton									saveButton;
-	AjaxButton									cancelButton;
-	AjaxButton									editButton;
-	AjaxButton									editCancelButton;
-	List<ModuleVO>								modules;
-
-	private transient StudyHelper			studyHelper;
-
-	protected void onEdit(StudyModelVO studyModel, AjaxRequestTarget target)
-	{
-
-	}
-
-	protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target)
-	{
-
-	}
+	Label studySummaryLabel;
 	
-	protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target, FileUploadField fileUploadField)
-	{
+	List<ModuleVO>	modules;
 
-	}
+	private transient StudyHelper	studyHelper;
+	
+	protected StudyCrudContainerVO studyCrudVO;
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
-
-	}
-
-	protected void onArchive(StudyModelVO studyModel, AjaxRequestTarget target)
-	{
-
-	}
-
-	protected void processErrors(AjaxRequestTarget target)
-	{
-
-	}
-
-	public AjaxButton getSaveButton()
-	{
-		return saveButton;
-	}
-
-	public AjaxButton getCancelButton()
-	{
-		return cancelButton;
-	}
 
 	/**
-	 * Constructor:
-	 * 
+	 * Constructor
 	 * @param id
-	 * @param detailsPanel
-	 *           The panel that is linked to this Form instance
-	 * @param container
-	 *           The WebMarkupContainer that will wrap the SearchResults
+	 * @param crudVO
+	 * @param feedbackPanel
+	 * @param containerForm
 	 */
-	public DetailForm(String id, final WebMarkupContainer detailsContainer, WebMarkupContainer saveArchiveContainer, WebMarkupContainer editBtnContainer, WebMarkupContainer sumContainer,
-			WebMarkupContainer detailFormContainer, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer studyLogoImageContainer, 
-			WebMarkupContainer arkContextMarkup, Container studyContainerForm)
-	{
-
-		super(id);
-		this.containerForm = studyContainerForm;
-		// Set the Markup containers
-		saveArchivebuttonContainer = saveArchiveContainer;
-		editbuttonContainer = editBtnContainer;
-		summaryPanelContainer = sumContainer;
-		detailsFormContainer = detailFormContainer;
-		this.studyLogoContainer = studyLogoImageContainer;
-		this.studyNameMarkupContainer = studyNameMarkup;
-		this.studyLogoMarkupContainer = studyLogoMarkup;
-		this.arkContextMarkup = arkContextMarkup;
-
-		// Multipart required for file uploads
+	public DetailForm(String id, StudyCrudContainerVO crudVO,FeedbackPanel feedbackPanel, Container containerForm){
+		super(id,feedbackPanel,crudVO,containerForm);
+		this.studyCrudVO = crudVO;
+		this.containerForm= containerForm;
 		setMultiPart(true);
-
 		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
+	}
+	
 
-		/* Initialise and define the events for the buttons */
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-
-				StudyModelVO model = containerForm.getModelObject();
-				Collection<ModuleVO> moduleVoCollection = containerForm.getModelObject().getModulesSelected();
-				// Convert to Set<String> this can be removed later by changing the interface
-				Set<String> moduleList = new HashSet<String>();
-				for (ModuleVO moduleVO : moduleVoCollection)
-				{
-					moduleList.add(moduleVO.getModule());
-				}
-				model.setLmcSelectedApps(moduleList);
-
-				onSave(model, target, fileUploadField);
-
-				// Set Study logo (both on application header, and within study detail form)
-				StudyHelper studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(model.getStudy(), target, studyNameMarkupContainer, studyLogoMarkupContainer);
-				studyHelper.setStudyLogoImage(model.getStudy(), "study.studyLogoImage", studyLogoContainer);
-				
-				target.addComponent(detailsContainer);
-				target.addComponent(studyLogoContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-
-		};
-
-		editButton = new AjaxButton("edit", new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				editbuttonContainer.setVisible(false);
-				saveArchivebuttonContainer.setVisible(true);
-				detailsFormContainer.setEnabled(true);
-				getStudyNameTxtFld().setEnabled(false);
-				summaryPanelContainer.setVisible(false);
-				
-				// Enable logo upload button
-				studyLogoUploadContainer.setVisible(true);
-				target.addComponent(studyLogoContainer);
-				
-				target.addComponent(summaryPanelContainer);
-
-				target.addComponent(editbuttonContainer);
-				target.addComponent(saveArchivebuttonContainer);
-				target.addComponent(saveArchivebuttonContainer);
-
-				target.addComponent(detailsFormContainer);
-				target.addComponent(editbuttonContainer);
-				target.addComponent(saveArchivebuttonContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				processErrors(target);
-			}
-		};
-
+	public void initialiseDetailForm(){
+		
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_KEY);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
 		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
@@ -310,26 +156,32 @@ public class DetailForm extends Form<StudyModelVO>
 		
 		studyIdTxtFld.setEnabled(false);
 		studySummaryLabel = new Label("studySummaryLabel");
-
-		studyLogoUploadContainer = new WebMarkupContainer("studyLogoUploadContainer");
-		studyLogoUploadContainer.setOutputMarkupPlaceholderTag(true);
-
+		studyCrudVO.setStudyLogoUploadContainer( new WebMarkupContainer("studyLogoUploadContainer"));
+		studyCrudVO.getStudyLogoUploadContainer().setOutputMarkupPlaceholderTag(true);
 		// fileUpload for logo
 		fileUploadField = new FileUploadField("study.filename",new Model<FileUpload>());
-		studyLogoUploadContainer.add(fileUploadField);
+		studyCrudVO.getStudyLogoUploadContainer().add(fileUploadField);
+	
 		// Set maximum logo image size to 100K
 		setMaxSize(Bytes.kilobytes(100));
 
 		// Add default image regardless
 		noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
-		studyLogoContainer.add(noStudyLogoImage);
+		studyCrudVO.getStudyLogoImageContainer().add(noStudyLogoImage);
 		studyHelper = new StudyHelper();
-		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyLogoContainer);
+		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
 
-		attachValidation();
-		// decorateComponents();
+		attachValidators();
 		addComponents();
+		
 	}
+	
+	protected  void onCancel(AjaxRequestTarget target){
+		containerForm.setModelObject(new StudyModelVO());
+		studyCrudVO.getSummaryContainer().setVisible(true);
+		onCancelPostProcess(target);
+	}
+	
 
 	private void initPalette()
 	{
@@ -350,18 +202,8 @@ public class DetailForm extends Form<StudyModelVO>
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel)
 	{
 		List<StudyStatus> studyStatusList = iArkCommonService.getListOfStudyStatus();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
+		ChoiceRenderer<StudyStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyStatus>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS, studyStatusList, defaultChoiceRenderer);
-	}
-
-	public TextField<String> getStudyIdTxtFld()
-	{
-		return studyIdTxtFld;
-	}
-
-	public TextField<String> getStudyNameTxtFld()
-	{
-		return studyNameTxtFld;
 	}
 
 	public int getMode()
@@ -374,86 +216,29 @@ public class DetailForm extends Form<StudyModelVO>
 		this.mode = mode;
 	}
 
-	private void attachValidation()
-	{
-		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", null, new Model<String>("Study Name")));
-		// TODO Have to stop the validator posting the content with the error message
-		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded",null, new Model<String>("Study Synopsis")));
-		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
-		
-		// Max dateOfApplicationDp can be only today
-		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.doa.max.range", this, null));
-		
-		// TODO: Write CustomValidator to handle numeric validation
-		// Estimated Year of completion a numeric year field, greater than dateOfApplicationDp 
-		//estYearOfCompletionTxtFld.add(new PatternValidator("^\\d{4}$")).setLabel(new StringResourceModel("error.study.yearOfCompletion", this, new Model<String>("Estimated Year of Completion")));
-		
-		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.chief", this, new Model<String>("Chief Investigator")));
-		chiefInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50));
-
-		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("error.study.co.investigator", this, new Model<String>("Co Investigator")));
-		// selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
-		subjectKeyStartAtTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
-		// file image validator, checking size, type etc
-		fileUploadField.add(new StudyLogoValidator());
-	}
-
-	private void decorateComponents()
-	{
-		ThemeUiHelper.componentRounded(studyIdTxtFld);
-		ThemeUiHelper.componentRounded(studyNameTxtFld);
-		ThemeUiHelper.componentRounded(studyDescriptionTxtArea);
-		ThemeUiHelper.componentRounded(estYearOfCompletionTxtFld);
-		ThemeUiHelper.componentRounded(studyStatusDpChoices);
-		ThemeUiHelper.componentRounded(dateOfApplicationDp);
-		ThemeUiHelper.componentRounded(principalContactPhoneTxtFld);
-		ThemeUiHelper.componentRounded(principalContactTxtFld);
-		ThemeUiHelper.componentRounded(chiefInvestigatorTxtFld);
-		ThemeUiHelper.componentRounded(coInvestigatorTxtFld);
-		ThemeUiHelper.componentRounded(subjectKeyPrefixTxtFld);
-		ThemeUiHelper.componentRounded(subjectKeyStartAtTxtFld);
-		ThemeUiHelper.componentRounded(bioSpecimenPrefixTxtFld);
-		ThemeUiHelper.buttonRounded(saveButton);
-		ThemeUiHelper.buttonRounded(cancelButton);
-		ThemeUiHelper.buttonRounded(editButton);
-		ThemeUiHelper.buttonRounded(editCancelButton);
-	}
-
 	private void addComponents()
 	{
-		detailsFormContainer.add(studyIdTxtFld);
-		detailsFormContainer.add(studyNameTxtFld);
-		detailsFormContainer.add(studyDescriptionTxtArea);
-		detailsFormContainer.add(estYearOfCompletionTxtFld);
-		detailsFormContainer.add(studyStatusDpChoices);
-		detailsFormContainer.add(dateOfApplicationDp);
-		detailsFormContainer.add(principalContactPhoneTxtFld);
-		detailsFormContainer.add(principalContactTxtFld);
-		detailsFormContainer.add(chiefInvestigatorTxtFld);
-		detailsFormContainer.add(coInvestigatorTxtFld);
-		detailsFormContainer.add(subjectKeyPrefixTxtFld);
-		detailsFormContainer.add(subjectKeyStartAtTxtFld);
-		detailsFormContainer.add(bioSpecimenPrefixTxtFld);
-		detailsFormContainer.add(autoGenSubIdRdChoice);
-		detailsFormContainer.add(autoConsentRdChoice);
-		detailsFormContainer.add(appPalette);
-		detailsFormContainer.add(studyLogoUploadContainer);
-		detailsFormContainer.add(studyLogoContainer);
-
-		// Summary related fields into another container
-		summaryPanelContainer.add(studySummaryLabel);
-
-		saveArchivebuttonContainer.add(saveButton);
-		saveArchivebuttonContainer.add(cancelButton.setDefaultFormProcessing(false));
-
-		editbuttonContainer.add(editButton);
-		editbuttonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-
-		add(detailsFormContainer);
-		add(saveArchivebuttonContainer);
-		add(editbuttonContainer);
-		add(summaryPanelContainer);
-
+		studyCrudVO.getDetailPanelFormContainer().add(studyIdTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(studyNameTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(studyDescriptionTxtArea);
+		studyCrudVO.getDetailPanelFormContainer().add(estYearOfCompletionTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(studyStatusDpChoices);
+		studyCrudVO.getDetailPanelFormContainer().add(dateOfApplicationDp);
+		studyCrudVO.getDetailPanelFormContainer().add(principalContactPhoneTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(principalContactTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(chiefInvestigatorTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(coInvestigatorTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(subjectKeyPrefixTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(subjectKeyStartAtTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(bioSpecimenPrefixTxtFld);
+		studyCrudVO.getDetailPanelFormContainer().add(autoGenSubIdRdChoice);
+		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
+		studyCrudVO.getDetailPanelFormContainer().add(appPalette);
+		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
+		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
+		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoImageContainer());
+		add(studyCrudVO.getDetailPanelFormContainer());
+		add(studyCrudVO.getSummaryContainer());
 	}
 
 	/**
@@ -496,18 +281,155 @@ public class DetailForm extends Form<StudyModelVO>
 		return new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
 	}
 
-	public DetailForm getDetailsForm()
-	{
-		return this;
+
+
+	@Override
+	protected void attachValidators() {
+		
+		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", null, new Model<String>("Study Name")));
+		// TODO Have to stop the validator posting the content with the error message
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded",null, new Model<String>("Study Synopsis")));
+		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
+		
+		// Max dateOfApplicationDp can be only today
+		dateOfApplicationDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.doa.max.range", this, null));
+		
+		// TODO: Write CustomValidator to handle numeric validation
+		// Estimated Year of completion a numeric year field, greater than dateOfApplicationDp 
+		//estYearOfCompletionTxtFld.add(new PatternValidator("^\\d{4}$")).setLabel(new StringResourceModel("error.study.yearOfCompletion", this, new Model<String>("Estimated Year of Completion")));
+		
+		chiefInvestigatorTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.chief", this, new Model<String>("Chief Investigator")));
+		chiefInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50));
+
+		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("error.study.co.investigator", this, new Model<String>("Co Investigator")));
+		// selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
+		subjectKeyStartAtTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
+		// file image validator, checking size, type etc
+		fileUploadField.add(new StudyLogoValidator());
+
+	}
+	
+	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target)
+	{ 
+        boolean validFlag = true; 
+        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
+        int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication)); 
+        
+        if(yearOfCompletion < dateOfApplicationYear){ 
+                this.error(message); 
+                processErrors(target); 
+                validFlag = false; 
+        } 
+        
+        return validFlag; 
+	}
+	
+	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved{
+		
+		
+		Collection<ModuleVO> moduleVoCollection = studyModel.getModulesSelected();
+		// Convert to Set<String> this can be removed later by changing the interface
+		Set<String> moduleList = new HashSet<String>();
+		for (ModuleVO moduleVO : moduleVoCollection)
+		{
+			moduleList.add(moduleVO.getModule());
+		}
+		studyModel.setLmcSelectedApps(moduleList);
+
+		if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
+			studyService.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
+			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
+			onSavePostProcess(target,studyCrudVO);
+			studyCrudVO.getSummaryContainer().setVisible(true);//added as part of refactoring
+
+		}else{
+			//Update
+			studyService.updateStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps() );
+			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
+			onSavePostProcess(target,studyCrudVO);
+			studyCrudVO.getSummaryContainer().setVisible(true);
+		}
+		
+		SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+		containerForm.getModelObject().setStudy(studyModel.getStudy());
+		
+		// Set Study into context items
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.resetContextLabel(target, studyCrudVO.getArkContextMarkup());
+		contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), studyCrudVO.getArkContextMarkup());
+		
+		StudyHelper studyHelper = new StudyHelper();
+		studyHelper.setStudyLogo(studyModel.getStudy(), target, studyCrudVO.getStudyNameMarkup(), studyCrudVO.getStudyLogoMarkup());
+		studyHelper.setStudyLogoImage(studyModel.getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
+		target.addComponent(studyCrudVO.getDetailPanelContainer());
+		target.addComponent(studyCrudVO.getStudyLogoMarkup());
+		
+	}
+		 
+
+	@Override
+	protected void onSave(Form<StudyModelVO> containerForm,	AjaxRequestTarget target) {
+		
+		try
+		{
+			String message = "Estimated Year of Completion must be greater than Date Of Application";
+			
+			boolean customValidationFlag = false;
+			
+			if(containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null ){
+				
+				customValidationFlag = 	validateEstYearOfComp(containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion(), 
+										containerForm.getModelObject().getStudy().getDateOfApplication(), 
+										message, 
+										target);
+			}
+			
+			// Store Study logo image
+			if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+			{
+				// Retrieve file and store as Blob in databasse
+				FileUpload fileUpload = fileUploadField.getFileUpload(); 
+				
+				// Copy file to Blob object
+				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+				containerForm.getModelObject().getStudy().setStudyLogoBlob(payload);
+				containerForm.getModelObject().getStudy().setFilename(fileUpload.getClientFileName());
+			}
+				
+			//If there was a value provided then upon successful validation proceed with save or update
+			if(containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null && customValidationFlag)
+			{
+				processSaveUpdate(containerForm.getModelObject(),target);
+			}else if(containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() == null){//If the value for estimate year of completion was not provided then we can proceed with save or update.
+				processSaveUpdate(containerForm.getModelObject(), target);					
+			}
+
+		}
+		catch(EntityExistsException eee){
+			this.error("The specified study already exists in the system.");
+		}
+		catch(EntityCannotBeRemoved ecbr){
+			
+			this.error("The Study cannot be removed from the system.There are participants linked to the study");
+		}
+		catch(IOException ioe){
+			//TODO: NNThis error is not related to a user. Have to mask this/log it and report it as business exception ie why the file was not transferred 
+			//due to file size etc..or if it was a system exception as a ArkSystemException
+			this.error("There was an error transferring the specified Study logo image.");
+		}
+		catch(ArkSystemException arkSystemExeption)	{
+			this.error("A System exception has occurred. Please contact Support");
+		}
+		catch (UnAuthorizedOperation e)	{
+			this.error("You (logged in user) is unauthorised to create/update or archive this study.");
+		}
+		
 	}
 
-	public AjaxButton getEditButton()
-	{
-		return editButton;
-	}
-
-	public void setEditButton(AjaxButton editButton)
-	{
-		this.editButton = editButton;
+	@Override
+	protected void processErrors(AjaxRequestTarget target) {
+		target.addComponent(feedBackPanel);
 	}
 }
