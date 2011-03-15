@@ -494,28 +494,99 @@
 					</div>
 					
 					<div id="customPanelContentRight">&nbsp;</div>
+					<div id="detailPanelBreaker">&nbsp;</div>
+				<!--  End subject custom fields -->
+				</div>
+				
+				<div id="detailPanelContentRight">&nbsp;</div>
+				<!--  Place consent fields here -->
+				<div id="customPanelBorder">
 					
-					<!--  Row 11 Ends -->
+					<div id="customPanelContentLeft">&nbsp;</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="consentDate">Consent Date:</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label" >
+							<input wicket:id="subjectStudy.consentDate"/> 
+						</div>
+					</div>
+					
+					<div id="customPanelMargin">&nbsp;</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<label for="consentStatus">
+								<wicket:message key="consentStatus">Consent Status:</wicket:message>
+							</label>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<select wicket:id="subjectStudy.consentStatus">
+				       			<option>Consented</option>
+				       			<option>Not Consented</option>
+		       				</select>
+						</div>
+					</div>
+					
+					<div id="customPanelContentRight">&nbsp;</div>
 					
 					<div id="detailPanelBreaker">&nbsp;</div>
 					
-					<!--  Row 12 Begins -->
+					<div id="customPanelContentLeft">&nbsp;</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<wicket:message key="consentType">Consent Type:</wicket:message>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label" >
+							<select wicket:id="subjectStudy.consentType">
+				       			<option>Hard Copy</option>
+		       					<option>Electronic Copy</option>
+		       				</select>
+						</div>
+					</div>
+					
+					<div id="customPanelMargin">&nbsp;</div>
+					
+					<div id="fldLabel">
+						<div class="label">
+							<label for="consentToActiveContact"><wicket:message key="consentToPassiveDataGathering">Consent to Passive Data Gathering To Active Contact:</wicket:message></label>
+						</div>
+					</div>
+					<div id="fldControl">
+						<div class="label">
+							<select wicket:id="subjectStudy.consentToPassiveDataGathering">
+				       			<option>Yes</option>
+								<option>No</option>
+				       	  </select>
+						</div>
+					</div>
+					<div id="customPanelContentRight">&nbsp;</div>
+					
+					<div id="detailPanelBreaker">&nbsp;</div>
 					
 					<div id="customPanelContentLeft">&nbsp;</div>
-					<div id="fldLabel">
-				 		<div class="label">
-							<label for="consentToActiveContact"><wicket:message key="consentToActiveContact">Consent To Active Contact:</wicket:message></label>
-				 		</div> 
-				 	</div> 			       			
+						<div id="fldLabel">
+					 		<div class="label">
+								<label for="consentToActiveContact"><wicket:message key="consentToActiveContact">Consent To Active Contact:</wicket:message></label>
+					 		</div> 
+					 	</div> 			       			
 						
-					<div id="fldControl">
-					  <div class="label">
-						  <select wicket:id="subjectStudy.consentToActiveContact">
-				       		<option>Yes</option>
-							<option>No</option>
-				       	  </select>
-				       </div>
-					</div>
+						<div id="fldControl">
+						  <div class="label">
+							  <select wicket:id="subjectStudy.consentToActiveContact">
+					       		<option>Yes</option>
+								<option>No</option>
+					       	  </select>
+					       </div>
+						</div>
 				       	   		       			
 				    <div id="customPanelMargin">&nbsp;</div>
 								
@@ -535,48 +606,12 @@
 					</div>
 					
 					<div id="customPanelContentRight">&nbsp;</div>
-					<!--  Row 12 Ends -->
 					
-					<div id="detailPanelBreaker">&nbsp;</div>
 					
-					<!--  Row 13  -->
-					<div id="customPanelContentLeft">&nbsp;</div>
-					<div id="fldLabel">
-				 		<div class="label">
-							<label for="consentToActiveContact"><wicket:message key="consentToPassiveDataGathering">Consent to Passive Data Gathering To Active Contact:</wicket:message></label>
-				 		</div> 
-				 	</div> 			       			
-						
-					<div id="fldControl">
-					  <div class="label">
-						  <select wicket:id="subjectStudy.consentToPassiveDataGathering">
-				       		<option>Yes</option>
-							<option>No</option>
-				       	  </select>
-				       </div>
-					</div>
-				       	   		       			
-				    <div id="customPanelMargin">&nbsp;</div>
-								
-					<div id="fldLabel">
-				 		<div class="label">
-				 		 	&nbsp;
-				 		</div> 
-				 	</div> 			       			
-						
-					<div id="fldControl">
-						<div class="label">
-							 &nbsp;
-						</div>
-					</div>
 					
-					<div id="customPanelContentRight">&nbsp;</div>
-					<!--  Row 13 Ends -->
-				<!--  End subject custom fields -->
 				</div>
-				
 				<div id="detailPanelContentRight">&nbsp;</div>
-				
+
 				<!--  the custom component 
 			    <div wicket:id="ddpanel"></div>
 				-->
