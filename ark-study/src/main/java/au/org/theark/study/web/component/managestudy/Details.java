@@ -1,272 +1,44 @@
 package au.org.theark.study.web.component.managestudy;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.Hibernate;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.StudyModelVO;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
 public class Details  extends Panel{
 
-	//A container for SearchResults
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer detailsContainer;
-	private WebMarkupContainer summaryContainer;
-	private WebMarkupContainer searchContainer;
-	private WebMarkupContainer saveArchivebuttonContainer;
-	private WebMarkupContainer editbuttonContainer;
-	private WebMarkupContainer detailFormContainer;
-	private WebMarkupContainer studyLogoImageContainer;
-	private WebMarkupContainer studyNameMarkup;
-	private WebMarkupContainer studyLogoMarkup;
-	private WebMarkupContainer studyLogoUploadMarkup;
-	WebMarkupContainer arkContextMarkup;
+	
+	private FeedbackPanel fbPanel;
+	private WebMarkupContainer arkContextMarkup;
 	private Container studyContainerForm;
 	
-	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService service;
-	
-	
-	public DetailForm getStudyForm() {
-		return detailForm;
-	}
-
 	private DetailForm detailForm;
+	private StudyCrudContainerVO studyCrudContainerVO;
 	
-	private FeedbackPanel feedBackPanel;
-	
+
 	/**
-	 * Sets the id and the container reference for the search results.
+	 * Constructor
 	 * @param id
-	 * @param listContainer
+	 * @param feedbackPanel
+	 * @param studyCrudContainerVO
+	 * @param containerForm
 	 */
-	public Details(	String id, 
-					final WebMarkupContainer listContainer, 
-					FeedbackPanel feedBackPanel, 
-					WebMarkupContainer detailsContainer, 
-					WebMarkupContainer searchWebMarkupContainer, 
-					WebMarkupContainer saveArchBtnContainer, 
-					WebMarkupContainer editBtnContainer,
-					WebMarkupContainer detailSumContainer,
-					WebMarkupContainer detailFormContainer,
-					WebMarkupContainer studyNameMarkup,
-					WebMarkupContainer studyLogoMarkup,
-					WebMarkupContainer studyLogoImageContainer,
-					WebMarkupContainer studyLogoUploadMarkup,
-					WebMarkupContainer arkContextMarkup,
-					Container studyContainerForm) {
+	public Details(String id,FeedbackPanel feedbackPanel, StudyCrudContainerVO studyCrudContainerVO, Container containerForm){
 		super(id);
-		this.listContainer = listContainer;
-		this.feedBackPanel = feedBackPanel;
-		this.detailsContainer = detailsContainer;
-		this.searchContainer = searchWebMarkupContainer;
-		this.saveArchivebuttonContainer = saveArchBtnContainer;
-		this.editbuttonContainer = editBtnContainer;
-		this.summaryContainer = detailSumContainer;
-		this.detailFormContainer = detailFormContainer;
-		this.studyContainerForm = studyContainerForm;
-		this.studyNameMarkup = studyNameMarkup;
-		this.studyLogoMarkup = studyLogoMarkup;
-		this.studyLogoImageContainer = studyLogoImageContainer;
-		this.studyLogoUploadMarkup = studyLogoUploadMarkup; 
-		this.arkContextMarkup = arkContextMarkup;
-	}
-
-	
-	private void postSaveUpdate(AjaxRequestTarget target){
-		detailFormContainer.setEnabled(false);
-		saveArchivebuttonContainer.setVisible(false);
-		editbuttonContainer.setVisible(true);
-		summaryContainer.setVisible(true);
-		target.addComponent(detailFormContainer);
-		target.addComponent(feedBackPanel);
-		target.addComponent(saveArchivebuttonContainer);
-		target.addComponent(editbuttonContainer);
-		target.addComponent(summaryContainer);
+		studyContainerForm = containerForm;
+		this.studyCrudContainerVO = studyCrudContainerVO;
+		fbPanel = feedbackPanel;
 	}
 	
-	
-	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved{
-		if(studyModel.getStudy()!= null && studyModel.getStudy().getId() == null){
-			service.createStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps());
-			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
-			postSaveUpdate(target);
-
-		}else{
-			//Update
-			service.updateStudy(studyModel.getStudy(),studyModel.getLmcSelectedApps() );
-			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
-			postSaveUpdate(target);
-		}
-		
-		SecurityUtils.getSubject().getSession().setAttribute("studyId", studyModel.getStudy().getId());
-		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-		studyContainerForm.getModelObject().setStudy(studyModel.getStudy());
-		
-		// Set Study into context items
-		ContextHelper contextHelper = new ContextHelper();
-		contextHelper.resetContextLabel(target, arkContextMarkup);
-		contextHelper.setStudyContextLabel(target, studyModel.getStudy().getName(), arkContextMarkup);
-	}
 	@SuppressWarnings("serial")
 	public void initialisePanel()
 	{
-		
-		detailForm = new DetailForm("detailForm", 
-									detailsContainer,
-									saveArchivebuttonContainer, 
-									editbuttonContainer, 
-									summaryContainer,
-									detailFormContainer,
-									studyNameMarkup,
-									studyLogoMarkup,
-									studyLogoImageContainer,
-									arkContextMarkup,
-									studyContainerForm
-									)
-		{
-			
-			protected void onSave(StudyModelVO studyModel, AjaxRequestTarget target, FileUploadField fileUploadField){
-				
-				try
-				{
-					String message = "Estimated Year of Completion must be greater than Date Of Application";
-					
-					boolean customValidationFlag = false;
-					
-					if(studyModel.getStudy().getEstimatedYearOfCompletion() != null ){
-						
-						customValidationFlag = 	validateEstYearOfComp(studyModel.getStudy().getEstimatedYearOfCompletion(), 
-												studyModel.getStudy().getDateOfApplication(), 
-												message, 
-												target);
-					}
-					
-					// Store Study logo image
-					if (fileUploadField != null && fileUploadField.getFileUpload() != null)
-					{
-						// Retrieve file and store as Blob in databasse
-						FileUpload fileUpload = fileUploadField.getFileUpload(); 
-						
-						// Copy file to Blob object
-						Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
-						studyModel.getStudy().setStudyLogoBlob(payload);
-						studyModel.getStudy().setFilename(fileUpload.getClientFileName());
-					}
-						
-					//If there was a value provided then upon successful validation proceed with save or update
-					if(studyModel.getStudy().getEstimatedYearOfCompletion() != null && customValidationFlag)
-					{
-						processSaveUpdate(studyModel,target);
-					}else if(studyModel.getStudy().getEstimatedYearOfCompletion() == null){//If the value for estimate year of completion was not provided then we can proceed with save or update.
-						processSaveUpdate(studyModel, target);					
-					}
-
-				}
-				catch(EntityExistsException eee){
-					this.error(eee.getMessage());
-				}
-				catch(EntityCannotBeRemoved ecbr){
-					
-					this.error(ecbr.getMessage());
-				}
-				catch(IOException ioe)
-				{
-					this.error("There was an error transferring the specified Study logo image.");
-				}
-				catch(ArkSystemException arkSystemExeption)
-				{
-					this.error(arkSystemExeption.getMessage());
-				}
-				catch (UnAuthorizedOperation e)
-				{
-					this.error("User was unauthorised to perform this operation.");
-				}
-			}
-			
-			protected void processErrors(AjaxRequestTarget target){
-				target.addComponent(feedBackPanel);
-			}
-		
-		
-			protected void onCancel(AjaxRequestTarget target){
-				
-				//Reset the model object.This is very important at this event.
-				studyContainerForm.setModelObject(new StudyModelVO());
-				
-				summaryContainer.setVisible(true);
-				listContainer.setVisible(true);
-				detailsContainer.setVisible(false);
-				searchContainer.setVisible(true);
-				editbuttonContainer.setVisible(true);
-				target.addComponent(summaryContainer);
-				target.addComponent(detailsContainer);
-				target.addComponent(listContainer);
-				target.addComponent(searchContainer);
-				target.addComponent(editbuttonContainer);
-				target.addComponent(feedBackPanel);
-			}
-			
-			protected void onArchive(StudyModelVO studyModel,AjaxRequestTarget target){
-				try{
-					
-					service.archiveStudy(studyModel.getStudy());
-					this.info("The study " + studyModel.getStudy().getName() + " has been archived. You cannot edit this study anymore.");
-					postSaveUpdate(target);
-					detailForm.getEditButton().setEnabled(false);
-				}catch(StatusNotAvailableException statusNotAvailable){
-					
-					this.error("The study cannot be archived at the moment.An administrator will get back to you.");
-				}
-				catch(ArkSystemException arkException){
-					this.error(arkException.getMessage());
-				} catch (UnAuthorizedOperation e) {
-					this.error(e.getMessage());
-				}
-				target.addComponent(feedBackPanel);
-			}
-			
-			private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target)
-			{ 
-		        boolean validFlag = true; 
-		        SimpleDateFormat simpleDateformat=new SimpleDateFormat("yyyy");
-		        int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication)); 
-		        
-		        if(yearOfCompletion < dateOfApplicationYear){ 
-		                this.error(message); 
-		                processErrors(target); 
-		                validFlag = false; 
-		        } 
-		        
-		        return validFlag; 
-			}
-		};
+		detailForm = new DetailForm("detailForm", studyCrudContainerVO,fbPanel,studyContainerForm);
+		detailForm.initialiseDetailForm();
 		add(detailForm); //Add the form to the panel
 	}
-	
 	
 		
 }
