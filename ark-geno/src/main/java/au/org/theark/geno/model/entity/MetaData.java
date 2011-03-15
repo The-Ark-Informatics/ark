@@ -121,7 +121,7 @@ public class MetaData implements java.io.Serializable {
 		this.value = value;
 	}
 
-	@Column(name = "USER_ID", nullable = false, length = 50)
+	@Column(name = "USER_ID", nullable = false)
 	public String getUserId() {
 		return this.userId;
 	}
@@ -140,7 +140,7 @@ public class MetaData implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	@Column(name = "UPDATE_USER_ID", length = 50)
+	@Column(name = "UPDATE_USER_ID")
 	public String getUpdateUserId() {
 		return this.updateUserId;
 	}

@@ -89,7 +89,7 @@ public class UploadMarkerGroup implements java.io.Serializable {
 		this.markerGroup = markerGroup;
 	}
 
-	@Column(name = "USER_ID", length = 50)
+	@Column(name = "USER_ID")
 	public String getUserId() {
 		return this.userId;
 	}
@@ -107,7 +107,7 @@ public class UploadMarkerGroup implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	@Column(name = "UPDATE_USER_ID", length = 50)
+	@Column(name = "UPDATE_USER_ID")
 	public String getUpdateUserId() {
 		return this.updateUserId;
 	}

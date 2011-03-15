@@ -93,7 +93,7 @@ public class UploadCollection implements java.io.Serializable {
 		this.upload = upload;
 	}
 
-	@Column(name = "USER_ID", length = 50)
+	@Column(name = "USER_ID")
 	public String getUserId() {
 		return this.userId;
 	}
@@ -112,7 +112,7 @@ public class UploadCollection implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	@Column(name = "UPDATE_USER_ID", length = 50)
+	@Column(name = "UPDATE_USER_ID")
 	public String getUpdateUserId() {
 		return this.updateUserId;
 	}
