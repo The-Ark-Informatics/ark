@@ -19,6 +19,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -197,4 +198,15 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
+	
+	/**
+	 * 
+	 * @param subjectFile
+	 * @throws ArkSystemException
+	 */
+	public void create(SubjectFile subjectFile) throws ArkSystemException;
+	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile)  throws EntityNotFoundException,ArkSystemException;
+
 }

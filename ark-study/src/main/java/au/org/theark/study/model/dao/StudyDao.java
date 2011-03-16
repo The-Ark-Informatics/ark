@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
@@ -593,7 +594,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			}
 			
 			if(consentFile.getFilename() != null){
-				criteria.add(Restrictions.ilike("fileName", consentFile.getFilename(),MatchMode.ANYWHERE));
+				criteria.add(Restrictions.ilike("filename", consentFile.getFilename(),MatchMode.ANYWHERE));
 			}
 		}
 		criteria.addOrder(Order.desc("id"));
@@ -721,5 +722,81 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		
 		return criteria.list();
+	}
+	
+	public void create(SubjectFile subjectFile) throws ArkSystemException
+	{
+		Session session = getSession();
+		currentUser = SecurityUtils.getSubject();
+		subjectFile.setUserId(currentUser.getPrincipal().toString());
+		
+		session.save(subjectFile);
+	}
+
+	public void update(SubjectFile subjectFile) throws ArkSystemException,EntityNotFoundException{
+		Session session = getSession();
+		
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+
+		subjectFile.setUserId(currentUser.getPrincipal().toString());
+		
+		if((ConsentFile)session.get(ConsentFile.class,subjectFile.getId()) != null){
+			session.update(subjectFile);	
+		}else{
+			throw new EntityNotFoundException("The Subject file record you tried to update does not exist in the Ark System");
+		}
+		
+	}
+	
+	/**
+	 * If a subjectFile is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * @param subjectFile
+	 * @throws ArkSystemException
+	 */
+	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException{
+		try{
+			Session session = getSession();
+			subjectFile = (SubjectFile)session.get(SubjectFile.class,subjectFile.getId());	
+			if(subjectFile != null){
+				getSession().delete(subjectFile);	
+			}else{
+				throw new EntityNotFoundException("The Consent file record you tried to remove does not exist in the Ark System");
+			}
+			
+		}catch(HibernateException someHibernateException){
+			log.error("An Exception occured while trying to delete this consent file " + someHibernateException.getStackTrace());
+		}catch(Exception e){
+			log.error("An Exception occured while trying to delete this consent file " + e.getStackTrace());
+			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
+		}
+	}
+
+	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException
+	{
+		Criteria criteria =  getSession().createCriteria(SubjectFile.class);
+		if(subjectFile != null){
+			
+			if(subjectFile.getId() != null){
+				criteria.add(Restrictions.eq("id", subjectFile.getId()));
+			}
+			
+			if(subjectFile.getLinkSubjectStudy() != null){
+				criteria.add(Restrictions.eq("linkSubjectStudy", subjectFile.getLinkSubjectStudy()));
+			}
+			
+			if(subjectFile.getStudyComp() != null){
+				criteria.add(Restrictions.eq("studyComp", subjectFile.getStudyComp()));
+			}
+			
+			if(subjectFile.getFilename() != null){
+				criteria.add(Restrictions.ilike("filename", subjectFile.getFilename(),MatchMode.ANYWHERE));
+			}
+		}
+		criteria.addOrder(Order.desc("id"));
+		
+		@SuppressWarnings("unchecked")
+		List<SubjectFile> list = criteria.list();
+		return list;
 	}
 }
