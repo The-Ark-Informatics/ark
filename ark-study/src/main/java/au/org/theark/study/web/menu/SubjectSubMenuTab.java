@@ -20,10 +20,9 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
-import au.org.theark.study.web.component.consentFile.ConsentFileContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
-import au.org.theark.study.web.component.subject.form.PhoneContainerForm;
+import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
 
 /**
  * @author nivedann
@@ -70,8 +69,8 @@ public class SubjectSubMenuTab extends Panel{
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_CONSENT_FILE);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CONSENT_FILE);
+		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_FILE);
+		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_FILE);
 		moduleTabs.add(menuModule);
 
 		
@@ -110,10 +109,9 @@ public class SubjectSubMenuTab extends Panel{
 						panelToReturn = new ConsentContainerPanel(panelId);
 					
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CONSENT_FILE)){
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_FILE)){
 						
-						panelToReturn = new ConsentFileContainerPanel(panelId);
-					
+						panelToReturn = new SubjectFileContainerPanel(panelId);
 					}
 					return panelToReturn;
 				};
