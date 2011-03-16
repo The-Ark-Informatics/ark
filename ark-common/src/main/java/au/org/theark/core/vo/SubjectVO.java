@@ -16,6 +16,7 @@ import au.org.theark.core.model.study.entity.EmailAccount;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.StudyConsentQuestion;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 
 
@@ -31,6 +32,7 @@ public class SubjectVO implements Serializable{
 	protected SubjectStatus subjectStatus;
 	protected LinkSubjectStudy subjectStudy;
 	protected Collection<SubjectVO> subjectList;
+	protected SubjectFile subjectFile;
 
 	/** A List of phone numbers linked to this person/subject*/
 	protected Collection<Phone> phoneList;
@@ -41,6 +43,21 @@ public class SubjectVO implements Serializable{
 	
 	protected Collection<StudyConsentQuestion> consentQuestions;
 	
+	/** A List of Files linked to this person/subject*/
+	protected Collection<SubjectFile> subjectFileList;
+	
+	/**
+	 * Constructor
+	 */
+	public SubjectVO(){
+		phoneList = new ArrayList<Phone>();
+		addressList = new ArrayList<Address>();
+		emailAccountList = new ArrayList<EmailAccount>();
+		subjectStudy = new LinkSubjectStudy();
+		subjectFile = new SubjectFile();
+		subjectFileList = new ArrayList<SubjectFile>();
+	}
+
 	private ConsentAnswer consentAnswerSelect;
 	
 	private String subjectPreviousLastname;
@@ -53,7 +70,6 @@ public class SubjectVO implements Serializable{
 		this.subjectFullName = subjectFullName;
 	}
 
-
 	protected Collection<LinkSubjectStudy> participants;
 	
 	public Collection<LinkSubjectStudy> getParticipants() {
@@ -63,8 +79,6 @@ public class SubjectVO implements Serializable{
 	public void setParticipants(Collection<LinkSubjectStudy> participants) {
 		this.participants = participants;
 	}
-
-
 		
 	public LinkSubjectStudy getSubjectStudy() {
 		return subjectStudy;
@@ -73,21 +87,7 @@ public class SubjectVO implements Serializable{
 	public void setSubjectStudy(LinkSubjectStudy subjectStudy) {
 		this.subjectStudy = subjectStudy;
 	}
-
 	
-	
-	/**
-	 * Constructor
-	 */
-	public SubjectVO(){
-		phoneList = new ArrayList<Phone>();
-		addressList = new ArrayList<Address>();
-		emailAccountList = new ArrayList<EmailAccount>();
-		subjectStudy = new LinkSubjectStudy();
-	}
-
-	
-
 	public Collection<Phone> getPhoneList() {
 		return phoneList;
 	}
@@ -128,6 +128,15 @@ public class SubjectVO implements Serializable{
 		this.subjectList = subjectList;
 	}
 
+	public SubjectFile getSubjectFile()
+	{
+		return subjectFile;
+	}
+
+	public void setSubjectFile(SubjectFile subjectFile)
+	{
+		this.subjectFile = subjectFile;
+	}
 
 	public ConsentAnswer getConsentAnswerSelect() {
 		return consentAnswerSelect;
@@ -151,5 +160,15 @@ public class SubjectVO implements Serializable{
 	public String getSubjectPreviousLastname()
 	{
 		return subjectPreviousLastname;
+	}
+	
+	public Collection<SubjectFile> getSubjectFileList()
+	{
+		return subjectFileList;
+	}
+
+	public void setSubjectFileList(Collection<SubjectFile> subjectFileList)
+	{
+		this.subjectFileList = subjectFileList;
 	}
 }

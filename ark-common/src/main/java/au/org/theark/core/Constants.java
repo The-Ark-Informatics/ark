@@ -70,6 +70,9 @@ public class Constants {
 	public static final String TAB_SUBJECT_CONSENT_FILE = "Consent File";
 	public static final String TAB_MODULE_SUBJECT_CONSENT_FILE = "tab.module.subject.consentFile";
 	
+	public static final String	TAB_SUBJECT_SUBJECT_FILE	= "Attachments";
+	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
+	
 	public static final String TAB_MODULE_SUBJECT_DETAIL ="tab.module.subject.detail";
 	public static final String DD_MM_YYYY="dd/MM/yyyy";	//cap M is for month, low m is for minute 
 	public static final String MENU_SUBJECT_SUBMENU="subjectSubMenus";
@@ -186,9 +189,12 @@ public class Constants {
 	public static final String ENTITY_TYPE_FIELD = "Field";
 	public static final String ENTITY_TYPE_FIELD_DATA = "Field Data";
 	public static final String ENTITY_TYPE_PHENO_UPLOAD = "Upload";
+	public static final String	ENTITY_TYPE_SUBJECT_FILE	= "Subject File";
 	
 	public static final String ACTION_INSERT="Insert";
 	public static final String ACTION_UPDATE="Update";
 	public static final String	PERSON_SURNAME_HISTORY_PERSON	= "person";
 	public static final String	PERSON_SURNAME_HISTORY_SURNAME	= "surname";
+	
+	
 }
