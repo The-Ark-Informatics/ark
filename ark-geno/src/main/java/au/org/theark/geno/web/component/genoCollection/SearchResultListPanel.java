@@ -143,13 +143,8 @@ public class SearchResultListPanel extends Panel {
 				
 				// Place the selected collection in session context for the user (passes to Shiro)
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.geno.web.Constants.SESSION_GENO_COLLECTION_ID, genoCollection.getId());
-				
-				// TODO: Implement context item (need to pass in arkContextMarkup through tabs/container
-				//ContextHelper contextHelper = new ContextHelper();
-				//contextHelper.resetContextLabel(target, containerForm.);
-				//contextHelper.setStudyContextLabel(target, genoCollection.getName(), arkContextMarkup);
-				
 		
+				genoCollectionContainerPanel.updateContext(target, genoCollection);
 /* Moved to TransitionToDetail
  				detailPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);

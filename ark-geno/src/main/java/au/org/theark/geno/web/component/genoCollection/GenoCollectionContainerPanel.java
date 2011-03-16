@@ -18,6 +18,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
@@ -47,7 +48,8 @@ public class GenoCollectionContainerPanel extends AbstractContainerPanel<GenoCol
 	private DetailPanel detailPanel;
 	private SearchPanel searchComponentPanel;
 	private SearchResultListPanel searchResultPanel;
-	
+	private WebMarkupContainer arkContextMarkup = null;
+
 	// Buttons
 	private AjaxButton saveButton;
 	private AjaxButton cancelButton;
@@ -76,7 +78,6 @@ public class GenoCollectionContainerPanel extends AbstractContainerPanel<GenoCol
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 
-		
 		// Attach containerForm to this container panel
 		add(containerForm);
 	}
@@ -255,6 +256,17 @@ public class GenoCollectionContainerPanel extends AbstractContainerPanel<GenoCol
 		
 	}
 
+	public void updateContext(AjaxRequestTarget target, GenoCollection genoCollection) {
+		// Acquire the contextMarkupContainer after this component has been added to the page
+		if (arkContextMarkup == null) {			
+			arkContextMarkup = (WebMarkupContainer) this.getPage().get("contextMarkupContainer");		
+		}
+
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.setStudyContextLabel(target, genoCollection.getStudy().getName(), arkContextMarkup);
+		contextHelper.setGenoContextLabel(target, genoCollection.getName(), arkContextMarkup);
+	}
+	
 	@Deprecated
 	public void showDetail(AjaxRequestTarget target) {
 		detailPanelContainer.setVisible(true);
