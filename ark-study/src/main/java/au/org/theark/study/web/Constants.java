@@ -233,6 +233,10 @@ public class Constants {
 	public static final String WMC_COMPLETED="wmc-completed";
 	public static final String WMC_REQUESTED="wmc-requested";
 	public static final String WMC_PLAIN="wmc-plain";
+	public static final String	SUBJECT_FILE_ID	= "subjectFile.id";
+	public static final String	SUBJECT_FILE_FILENAME	= "subjectFile.filename";
+	public static final String	SUBJECT_FILE_STUDY_COMP	= "subjectFile.studyComp";
+	public static final String	SUBJECT_FILE_USER_ID	= "subjectFile.userId";
 	
 	
 	
