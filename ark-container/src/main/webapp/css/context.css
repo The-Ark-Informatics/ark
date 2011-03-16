@@ -18,12 +18,12 @@
 	float: left;
 	padding: 0px;
 	margin-left: 1%;
+    margin-right: 2%;
 	border-bottom: none;
 	text-decoration: none;
 	background-position: 50%;
 	background-repeat: repeat-x;
 	display: block;
-	width: 25%;
 }
 
 .clearfix:after {
