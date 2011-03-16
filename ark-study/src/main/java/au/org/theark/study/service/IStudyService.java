@@ -19,6 +19,7 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -161,4 +162,15 @@ public interface IStudyService {
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 
 	public boolean personHasPreferredMailingAddress(Person person);
+	
+	/**
+	 * 
+	 * @param subjectFile
+	 * @throws ArkSystemException
+	 */
+	public void create(SubjectFile subjectFile) throws ArkSystemException;
+	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
+	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile)  throws EntityNotFoundException,ArkSystemException;
+	
 }

@@ -31,6 +31,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
@@ -509,5 +510,44 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public boolean personHasPreferredMailingAddress(Person person){
 		return studyDao.personHasPreferredMailingAddress(person);
+	}
+	
+	public void create(SubjectFile subjectFile) throws ArkSystemException {
+		studyDao.create(subjectFile);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created subjectFile " + subjectFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
+		ah.setEntityId(subjectFile.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public void update(SubjectFile subjectFile) throws ArkSystemException,
+			EntityNotFoundException {
+		studyDao.update(subjectFile);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated subjectFile " + subjectFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
+		ah.setEntityId(subjectFile.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public void delete(SubjectFile subjectFile) throws ArkSystemException,
+			EntityNotFoundException {
+		studyDao.delete(subjectFile);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted subjectFile " + subjectFile.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT_FILE);
+		ah.setEntityId(subjectFile.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException {
+		return studyDao.searchSubjectFile(subjectFile);
 	}
 }
