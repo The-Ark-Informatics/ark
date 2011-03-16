@@ -106,6 +106,9 @@ public interface IStudyDao {
 	 */
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
 	
+	
+	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException;
+	
 	/**
 	 * Look up a list of subjects linked to the current study by passing in a primary key of the
 	 * LinkSubjectStudy. 

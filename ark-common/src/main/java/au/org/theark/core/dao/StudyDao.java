@@ -70,7 +70,8 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public List<Study> getStudy(Study study)
 	{
 		
-	
+		LinkSubjectStudy ls = getSubject(new Long(0));
+		
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
 		if(study.getId() != null){
@@ -520,5 +521,17 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		}
 		
 		return criteria.list();
+	}
+	
+	public LinkSubjectStudy getSubject(Long id)  throws EntityNotFoundException{
+		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.add(Restrictions.eq("person.id",id));
+		LinkSubjectStudy ls = (LinkSubjectStudy)criteria.uniqueResult();
+		if(ls == null){
+			throw new EntityNotFoundException("The Subject does not exist in the system");
+		}
+		//log.info(ls.getPerson().getFirstName());
+		return ls;
+		
 	}
 }

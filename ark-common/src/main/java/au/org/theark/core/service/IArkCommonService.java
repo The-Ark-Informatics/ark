@@ -111,4 +111,6 @@ public interface IArkCommonService {
 	public List<PersonContactMethod> getPersonContactMethodList();
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
+	
+	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException;
 }

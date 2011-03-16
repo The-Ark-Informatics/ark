@@ -210,4 +210,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study){
 		return studyDao.isSubjectConsentedToComponent(studyComponent,subject,study);
 	}
+	
+	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException{
+		return studyDao.getSubject(id);
+	}
 }
