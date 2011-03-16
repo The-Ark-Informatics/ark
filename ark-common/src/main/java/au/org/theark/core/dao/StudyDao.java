@@ -70,8 +70,6 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public List<Study> getStudy(Study study)
 	{
 		
-		LinkSubjectStudy ls = getSubject(new Long(0));
-		
 		Criteria studyCriteria =  getSession().createCriteria(Study.class);
 		
 		if(study.getId() != null){
