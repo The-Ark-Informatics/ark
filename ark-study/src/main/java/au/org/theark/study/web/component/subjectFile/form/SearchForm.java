@@ -32,96 +32,103 @@ import au.org.theark.study.web.component.subjectFile.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial" })
-public class SearchForm extends AbstractSearchForm<SubjectVO>
-{
+@SuppressWarnings({ "serial" })
+public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService						iArkCommonService;
+	protected IArkCommonService iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	protected IStudyService								studyService;
+	protected IStudyService studyService;
 
-	protected DetailPanel								detailPanel;
-	protected PageableListView<SubjectFile>		pageableListView;
-	protected CompoundPropertyModel<SubjectVO>	cpmModel;
+	protected DetailPanel detailPanel;
+	protected PageableListView<SubjectFile> pageableListView;
+	protected CompoundPropertyModel<SubjectVO> cpmModel;
 
 	/**
 	 * Form Components
 	 */
-	protected TextField<String>						subjectFileId;
-	protected TextField<String>						subjectFileName;
+	protected TextField<String> subjectFileId;
+	protected TextField<String> subjectFileName;
 	private DropDownChoice<StudyCompStatus> studyComponentChoice;
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<SubjectVO> model, PageableListView<SubjectFile> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer)
-	{
+	public SearchForm(String id, CompoundPropertyModel<SubjectVO> model,
+			PageableListView<SubjectFile> listView,
+			FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer,
+			WebMarkupContainer detailContainer,
+			WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer) {
 
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+		super(id, model, detailContainer, detailPanelFormContainer,
+				viewButtonContainer, editButtonContainer,
+				searchMarkupContainer, listContainer, feedBackPanel);
 
 		this.cpmModel = model;
 		this.pageableListView = listView;
-		
+
 		initialiseSearchForm();
 		addSearchComponentsToForm();
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchButtons(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
-	}
-	
-	@SuppressWarnings("unchecked")
-	private void initialiseDropDownChoices()
-	{
-		// Initialise Drop Down Choices
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
-		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice  = new DropDownChoice(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList,defaultChoiceRenderer);	
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession()
+				.getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableSearchButtons(
+				sessionPersonId,
+				"There is no subject or contact in context. Please select a Subject or Contact.");
 	}
 
-	protected void initialiseSearchForm()
-	{
+	@SuppressWarnings("unchecked")
+	private void initialiseDropDownChoices() {
+		// Initialise Drop Down Choices
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
+		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(
+				Constants.NAME, Constants.ID);
+		studyComponentChoice = new DropDownChoice(
+				Constants.SUBJECT_FILE_STUDY_COMP, studyCompList,
+				defaultChoiceRenderer);
+	}
+
+	protected void initialiseSearchForm() {
 		subjectFileId = new TextField<String>(Constants.SUBJECT_FILE_ID);
 		subjectFileName = new TextField<String>(Constants.SUBJECT_FILE_FILENAME);
 		initialiseDropDownChoices();
 	}
 
-	protected void addSearchComponentsToForm()
-	{
+	protected void addSearchComponentsToForm() {
 		add(subjectFileId);
 		add(subjectFileName);
 		add(studyComponentChoice);
 	}
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 		SubjectFile subjectFile = new SubjectFile();
+		subjectFile = getModelObject().getSubjectFile();
 		Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
 
-		try
-		{
+		try {
 			LinkSubjectStudy linkSubjectStudy = null;
-			Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+			Long sessionPersonId = (Long) SecurityUtils
+					.getSubject()
+					.getSession()
+					.getAttribute(
+							au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
 			subjectFile.setLinkSubjectStudy(linkSubjectStudy);
-		}
-		catch (EntityNotFoundException e1)
-		{
+		} catch (EntityNotFoundException e1) {
 			this.error("There is no subject in context.");
 			target.addComponent(feedbackPanel);
 		}
 
-		try
-		{
+		try {
 			// Look up based on criteria via back end.
 			subjectFileList = studyService.searchSubjectFile(subjectFile);
 
-			if (subjectFileList != null && subjectFileList.size() == 0)
-			{
+			if (subjectFileList != null && subjectFileList.size() == 0) {
 				this.info("There are no subject files for the specified criteria.");
 				target.addComponent(feedbackPanel);
 			}
@@ -131,24 +138,20 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 			listContainer.setVisible(true);
 			target.addComponent(listContainer);
 
-		}
-		catch (EntityNotFoundException e)
-		{
+		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch (ArkSystemException e)
-		{
+		} catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
-		getModelObject().getSubjectFile().setId(null); // only reset ID (not user definable)
+		getModelObject().getSubjectFile().setId(null); // only reset ID (not
+														// user definable)
 
 		preProcessDetailPanel(target);
 	}
@@ -156,11 +159,11 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
+	 * @see
+	 * au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
 	 */
 	@Override
-	protected boolean isSecure(String actionType)
-	{
+	protected boolean isSecure(String actionType) {
 		// TODO Auto-generated method stub
 		return true;
 	}
