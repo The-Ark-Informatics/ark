@@ -191,7 +191,7 @@ public interface IStudyDao {
 	 */
 	public String getCurrentLastname(Person person);
 	
-	public boolean personHasPreferredMailingAddress(Person person);
+	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId);
 	
 	/**
 	 * Returns a list of PersonSurnameHistory

@@ -630,7 +630,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.add(Restrictions.ilike("name", value));
 		return (YesNo)criteria.list().get(0);
 	}
-	public boolean personHasPreferredMailingAddress(Person person){
+	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId){
 		
 		boolean hasPreferredMailing = false;
 
@@ -639,7 +639,10 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			YesNo yes = getYesNo("Yes");
 			criteria.add(Restrictions.eq("person.id",person.getId()));
 			criteria.add(Restrictions.eq("preferredMailingAddress",yes));
-		
+			if(currentAddressId != null){
+				criteria.add(Restrictions.ne("id", currentAddressId));
+			}
+			
 			List list  = criteria.list();
 			if(list.size() > 0){
 				hasPreferredMailing = true;
