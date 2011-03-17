@@ -508,8 +508,8 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getPreviousSurnameHistory(personSurnameHistory);
 	}
 	
-	public boolean personHasPreferredMailingAddress(Person person){
-		return studyDao.personHasPreferredMailingAddress(person);
+	public boolean personHasPreferredMailingAddress(Person person,Long currentAddressId){
+		return studyDao.personHasPreferredMailingAddress(person,currentAddressId);
 	}
 	
 	public void create(SubjectFile subjectFile) throws ArkSystemException {

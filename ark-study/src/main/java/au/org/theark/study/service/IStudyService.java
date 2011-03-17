@@ -161,7 +161,7 @@ public interface IStudyService {
 	public String getCurrentLastname(Person person);
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 
-	public boolean personHasPreferredMailingAddress(Person person);
+	public boolean personHasPreferredMailingAddress(Person person,Long currentAddressId);
 	
 	/**
 	 * 
