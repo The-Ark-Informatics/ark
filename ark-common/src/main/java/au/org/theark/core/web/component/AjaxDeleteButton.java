@@ -16,7 +16,6 @@ public class AjaxDeleteButton extends IndicatingAjaxButton
 	 */
 	private static final long serialVersionUID = 2845373897903023596L;
 	private final IModel confirm;
-	//private transient Logger log = LoggerFactory.getLogger(AjaxDeleteButton.class);
 
 	public AjaxDeleteButton(String id, IModel confirm, IModel label) {
 		super(id);
@@ -31,7 +30,14 @@ public class AjaxDeleteButton extends IndicatingAjaxButton
 
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
-				return "if(!confirm('" + confirm.getObject() + "')) return false;" + script;
+				return "if(!confirm('" + confirm.getObject() + "'))" +
+						"{ " +
+						"	return false " +
+						"} " +
+						"else " +
+						"{ " +
+						"	this.disabled = true; " +
+						"};" + script;
 			}
 		};
 	}
