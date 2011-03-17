@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.subject;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -15,12 +16,14 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
+import au.org.theark.study.web.component.subject.form.SearchForm;
 
 /**
  * @author nivedann
@@ -139,6 +142,14 @@ public class SearchResults extends Panel{
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectStudy().getSubjectUID(), arkContextMarkup);
+				
+				Search searchPanel = (Search) searchPanelContainer.get("searchComponentPanel");
+				SearchForm sfs = (SearchForm) searchPanel.get("searchForm");
+				List<Country> countryList = iArkCommonService.getCountries();
+				if(subjectFromBackend.getSubjectStudy().getCountry() ==  null){
+					subjectFromBackend.getSubjectStudy().setCountry(countryList.get(0));
+				}
+				sfs.updateDetailFormPrerender(subjectFromBackend.getSubjectStudy());
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
