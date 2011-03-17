@@ -279,28 +279,34 @@
 			
 			<div id="panelContentLeft">&nbsp;</div>
 			
-			<div id="fldLabel">
-				<div class="label">
-					<label for="subjectIdStartAt">
-						<wicket:message	key="study.subject.key.start.at">Start Subject ID at:</wicket:message>
+			<div wicket:id="subjectUidContainer">
+				<div id="fldLabel">
+					<label for="subjectUidPrefix">
+						<wicket:message	key="study.subject.key.prefix">SubjectUID Prefix:</wicket:message>
 					</label>
 				</div>
-			</div>
-			<div id="fldControl">
-				<div class="text">
-					<input wicket:id="study.subjectUIdStart" type="text"/>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="study.subjectIdPrefix" type="text" maxLength="3" size="3"/>-<input id="study.subjectIdIncrementor" type="text" maxLength="9" size="9"/>
+					</div>
+					<div class="label">
+						<span wicket:id="study.subject.key.example">ABC-#########</span>
+					</div>
 				</div>
-			</div>
-			
-			<div id="panelMargin">&nbsp;</div>
-			<div id="fldLabel">
-				<label for="subjectIdPrefix">
-					<wicket:message	key="study.subject.key.prefix">SubjectID Prefix:</wicket:message>
-				</label>
-			</div>
-			<div id="fldControl">
-				<div class="label">
-					<input wicket:id="study.subjectIdPrefix" type="text" maxLength="3"/>
+				
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="subjectUidStartAt">
+							<wicket:message	key="study.subject.key.start.at">Start Subject UID at:</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="text">
+						<input wicket:id="study.subjectUIdStart" type="text"/>
+					</div>
 				</div>
 			</div>
 			<div id="searchPanelContentRight">&nbsp;</div>
