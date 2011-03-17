@@ -238,6 +238,22 @@ public class Constants {
 	public static final String	SUBJECT_FILE_STUDY_COMP	= "subjectFile.studyComp";
 	public static final String	SUBJECT_FILE_USER_ID	= "subjectFile.userId";
 	
+	public static final String COUNTRY_STATE_SELECTOR_WMC = "countryStateSelector";//WebMarkupContainer that will house the DropDowns for States
+	public static final String SUBJECT_STATE ="subjectStudy.state";
+	public static final String SUBJECT_OTHER_STATE ="subjectStudy.otherState";
+	public static final String SUBJECT_COUNTRY ="subjectStudy.country";
+	public static final String SUBJECT_AMDRIFID ="subjectStudy.amdrifId";
+	public static final String SUBJECT_STUDY_APPROACH_DATE ="subjectStudy.studyApproachDate";
+	public static final String SUBJECT_YR_FIRST_MAMMOGRAM ="subjectStudy.yearOfFirstMamogram";
+	public static final String SUBJECT_YR_RECENT_MAMMOGRAM ="subjectStudy.yearOfRecentMamogram";
+	public static final String SUBJECT_TOTAL_MAMMOGRAM ="subjectStudy.totalNumberOfMamograms";
+	public static final String SUBJECT_SITE_ADDRESS ="subjectStudy.siteAddress";
+	public static final String SUBJECT_CITY="subjectStudy.city";
+	public static final String SUBJECT_POST_CODE ="subjectStudy.postCode";
+	public static final String SUBJECT_CONSENT_TO_ACTIVE_CONTACT ="subjectStudy.consentToActiveContact";
+	public static final String SUBJECT_CONSENT_TO_USEDATA ="subjectStudy.consentToUseData";
+	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="subjectStudy.consentToPassiveDataGathering";
+
 	
 	
 }
