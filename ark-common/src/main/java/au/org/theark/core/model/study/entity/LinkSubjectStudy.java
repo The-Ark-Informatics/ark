@@ -34,6 +34,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private SubjectStatus subjectStatus;
 	private Person person;
 	private String subjectUID;
+	private String otherState;
 	private Long amdrifId;
 	private Date studyApproachDate;
 	private Long yearOfFirstMamogram;
@@ -295,6 +296,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 	public void setConsentDate(Date consentDate) {
 		this.consentDate = consentDate;
+	}
+
+	@Column(name = "OTHER_STATE", length = 255)
+	public String getOtherState() {
+		return otherState;
+	}
+
+	public void setOtherState(String otherState) {
+		this.otherState = otherState;
 	}
 
 }
