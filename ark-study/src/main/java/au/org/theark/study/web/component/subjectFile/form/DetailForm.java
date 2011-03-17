@@ -224,6 +224,17 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 
 	protected void onCancel(AjaxRequestTarget target)
 	{
+		SubjectVO subjectVo = new SubjectVO();
+		LinkSubjectStudy linkSubjectStudy = null;
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		try {
+			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+		} catch (EntityNotFoundException e) {
+			e.printStackTrace();
+		}
+		subjectVo.setSubjectStudy(linkSubjectStudy);
+		containerForm.setModelObject(subjectVo);
+		
 		onCancelPostProcess(target);
 	}
 
