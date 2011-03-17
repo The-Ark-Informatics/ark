@@ -20,7 +20,10 @@ public class Country implements Serializable {
 	private Long id;
 	private String name;
 	private String description;
+	private String countryCode;
 	
+
+
 	public Country(){
 	}
 	
@@ -54,6 +57,15 @@ public class Country implements Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Column(name = "COUNTRY_CODE", length = 2)
+	public String getCountryCode() {
+		return countryCode;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
 	}
 
 	@Override
