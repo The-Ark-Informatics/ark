@@ -12,7 +12,10 @@ import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -47,6 +50,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -82,11 +86,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private TextField<String> coInvestigatorTxtFld;
 	private TextField<String> subjectKeyPrefixTxtFld;
 	private TextField<Integer> subjectKeyStartAtTxtFld;
+	private Label subjectUidExample;
 	private TextField<String> bioSpecimenPrefixTxtFld;
 	private DateTextField dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>	studyStatusDpChoices;
 	private RadioChoice<Boolean> autoGenSubIdRdChoice;
 	private RadioChoice<Boolean> autoConsentRdChoice;
+	
 	// Application Select Palette
 	private Palette	appPalette;
 
@@ -98,17 +104,18 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private ContextImage noStudyLogoImage;
 	private Container	containerForm;
 	
-	/* Summary Details */
-
+	// Summary Details
 	Label studySummaryLabel;
-	
 	List<ModuleVO>	modules;
+	
+	private WebMarkupContainer subjectUidContainer;
 
 	private transient StudyHelper	studyHelper;
 	
 	protected StudyCrudContainerVO studyCrudVO;
 
-
+	String subjectUidExampleTxt = "ABC-#########";
+	
 	/**
 	 * Constructor
 	 * @param id
@@ -135,8 +142,28 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		principalContactPhoneTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PERSON_PHONE);
 		chiefInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CHIEF_INVESTIGATOR);
 		coInvestigatorTxtFld = new TextField<String>(Constants.STUDY_CO_INVESTIGATOR);
+		
+		// Container for subjectUid auto-generation details
+		subjectUidContainer = new  WebMarkupContainer("subjectUidContainer");
+		subjectUidContainer.setOutputMarkupPlaceholderTag(true);
+		//setSubjectUidContainer();
+		
+		
+		subjectUidExample = new Label("study.subject.key.example", new PropertyModel(this, "subjectUidExampleTxt")){
+			  {setOutputMarkupId(true);}
+		};
+		
+		
 		subjectKeyPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
+		subjectKeyPrefixTxtFld.add(new AjaxEventBehavior( "onKeyUp" ) {
+		      protected void onEvent( AjaxRequestTarget target ) {
+		    	  subjectUidExampleTxt = subjectKeyPrefixTxtFld.getModelObject();
+		          target.addComponent(subjectUidExample);
+		        }
+		      });
+		
 		subjectKeyStartAtTxtFld = new TextField<Integer>(Constants.SUBJECT_KEY_START, Integer.class);
+		
 		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
 		
 		// Create new DateTextField and assign date format
@@ -152,6 +179,20 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModelVO>) containerForm.getModel(), "study");
 		autoGenSubIdRdChoice = initRadioButtonChoice(pm, "autoGenerateSubjectUId", "autoGenSubId");
+		autoGenSubIdRdChoice.add(new AjaxFormChoiceComponentUpdatingBehavior(){
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Check what was selected and then toggle
+				boolean autoGenerateSubjectUId = containerForm.getModelObject().getStudy().getAutoGenerateSubjectUId();
+				subjectUidContainer.setEnabled(false);
+				
+				if(autoGenerateSubjectUId){
+					subjectUidContainer.setEnabled(true);
+				}
+				target.addComponent(subjectUidContainer);
+			}
+		});
+		
 		autoConsentRdChoice = initRadioButtonChoice(pm, "autoConsent", "autoConsent");
 		
 		studyIdTxtFld.setEnabled(false);
@@ -181,7 +222,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getSummaryContainer().setVisible(true);
 		onCancelPostProcess(target);
 	}
-	
 
 	private void initPalette()
 	{
@@ -228,8 +268,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getDetailPanelFormContainer().add(principalContactTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(chiefInvestigatorTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(coInvestigatorTxtFld);
-		studyCrudVO.getDetailPanelFormContainer().add(subjectKeyPrefixTxtFld);
-		studyCrudVO.getDetailPanelFormContainer().add(subjectKeyStartAtTxtFld);
+		
+		// subjectUid auto-generator fields within their own container
+		subjectUidContainer.add(subjectKeyPrefixTxtFld);
+		subjectUidContainer.add(subjectKeyStartAtTxtFld);
+		subjectUidContainer.add(subjectUidExample);
+		studyCrudVO.getDetailPanelFormContainer().add(subjectUidContainer);
+		
 		studyCrudVO.getDetailPanelFormContainer().add(bioSpecimenPrefixTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(autoGenSubIdRdChoice);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
@@ -261,7 +306,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		{
 			public Object getDisplayValue(final Boolean choice)
 			{
-
 				String displayValue = Constants.NO;
 
 				if (choice != null && choice.booleanValue())
