@@ -284,33 +284,33 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	}
 	 
 	private void initCustomFields(){
-		amdrifIdTxtFld = new TextField<String>("subjectStudy.amdrifId");
+		amdrifIdTxtFld = new TextField<String>(Constants.SUBJECT_AMDRIFID);
 		
-		studyApproachDate = new DateTextField("subjectStudy.studyApproachDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		studyApproachDate = new DateTextField(Constants.SUBJECT_STUDY_APPROACH_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		
 		ArkDatePicker dobStudyApproachDatePicker = new ArkDatePicker();
 		
 		dobStudyApproachDatePicker.bind(studyApproachDate);
 		studyApproachDate.add(dobStudyApproachDatePicker);
 		
-		yearOfFirstMamogramTxtFld =  new TextField<Long>("subjectStudy.yearOfFirstMamogram",Long.class);
-		yearOfRecentMamogramTxtFld =  new TextField<String>("subjectStudy.yearOfRecentMamogram");
-		totalNumberOfMamogramsTxtFld = new TextField<String>("subjectStudy.totalNumberOfMamograms");
+		yearOfFirstMamogramTxtFld =  new TextField<Long>(Constants.SUBJECT_YR_FIRST_MAMMOGRAM,Long.class);
+		yearOfRecentMamogramTxtFld =  new TextField<String>(Constants.SUBJECT_YR_RECENT_MAMMOGRAM);
+		totalNumberOfMamogramsTxtFld = new TextField<String>(Constants.SUBJECT_TOTAL_MAMMOGRAM);
 		
-		streetAddressTxtFld = new TextField<String>("subjectStudy.siteAddress");
-		cityTxtFld = new TextField<String>("subjectStudy.city");
-		postCodeTxtFld = new TextField<String>("subjectStudy.postCode");
-		otherState = new TextField<String>("subjectStudy.otherState");
+		streetAddressTxtFld = new TextField<String>(Constants.SUBJECT_SITE_ADDRESS);
+		cityTxtFld = new TextField<String>(Constants.SUBJECT_CITY);
+		postCodeTxtFld = new TextField<String>(Constants.SUBJECT_POST_CODE);
+		otherState = new TextField<String>(Constants.SUBJECT_OTHER_STATE);
 		initialiseCountryDropDown();
 		initialiseCountrySelector();
 		
 		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
 		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
-		consentToActiveContactDdc = new DropDownChoice<YesNo>("subjectStudy.consentToActiveContact",(List)yesNoList,yesnoRenderer);
+		consentToActiveContactDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_TO_ACTIVE_CONTACT,(List)yesNoList,yesnoRenderer);
 		
-		consentToUseDataDdc = new DropDownChoice<YesNo>("subjectStudy.consentToUseData",(List)yesNoList,yesnoRenderer);
+		consentToUseDataDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_TO_USEDATA,(List)yesNoList,yesnoRenderer);
 		
-		consentToPassDataGatheringDdc  = new DropDownChoice<YesNo>("subjectStudy.consentToPassiveDataGathering",(List)yesNoList,yesnoRenderer);
+		consentToPassDataGatheringDdc  = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER,(List)yesNoList,yesnoRenderer);
 		
 	}
 	
@@ -324,7 +324,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		//If there is no country selected, back should default to current country and pull the states
 		List<CountryState> countryStateList  = iArkCommonService.getStates(selectedCountry);
 		ChoiceRenderer<CountryState> defaultStateChoiceRenderer = new ChoiceRenderer<CountryState>("state", Constants.ID);
-		stateChoice = new DropDownChoice<CountryState>("subjectStudy.state",countryStateList,defaultStateChoiceRenderer);
+		stateChoice = new DropDownChoice<CountryState>(Constants.SUBJECT_STATE,countryStateList,defaultStateChoiceRenderer);
 		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		countryStateSelector.add(stateChoice);
 		countryStateSelector.add(otherState);
@@ -344,7 +344,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		final List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
 		
-		countryChoice = new DropDownChoice<Country>("subjectStudy.country", countryList, defaultChoiceRenderer);
+		countryChoice = new DropDownChoice<Country>(Constants.SUBJECT_COUNTRY, countryList, defaultChoiceRenderer);
 		//Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
 			@Override
@@ -435,6 +435,10 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		subjectUIDTxtFld.setEnabled(true);
 		SubjectVO subjectVO = new SubjectVO();
 		containerForm.setModelObject(subjectVO);
+		
+		stateChoice.setVisible(true);
+		otherState.setVisible(false);
+		target.addComponent(countryStateSelector);
 		onCancelPostProcess(target);
 		
 	}
