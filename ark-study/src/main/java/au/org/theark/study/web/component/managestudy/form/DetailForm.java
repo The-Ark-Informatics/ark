@@ -146,13 +146,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		// Container for subjectUid auto-generation details
 		subjectUidContainer = new  WebMarkupContainer("subjectUidContainer");
 		subjectUidContainer.setOutputMarkupPlaceholderTag(true);
-		//setSubjectUidContainer();
 		
-		
+		//TODO: Implement SubjectUid generator/example
 		subjectUidExample = new Label("study.subject.key.example", new PropertyModel(this, "subjectUidExampleTxt")){
 			  {setOutputMarkupId(true);}
 		};
-		
+		subjectUidExample.setVisible(false);
 		
 		subjectKeyPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
 		subjectKeyPrefixTxtFld.add(new AjaxEventBehavior( "onKeyUp" ) {
