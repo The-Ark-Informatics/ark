@@ -28,11 +28,13 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 @SuppressWarnings("serial")
 public class SubjectVO implements Serializable{
 	
-	private String subjectFullName;
+	protected String subjectFullName;
 	protected SubjectStatus subjectStatus;
 	protected LinkSubjectStudy subjectStudy;
 	protected Collection<SubjectVO> subjectList;
 	protected SubjectFile subjectFile;
+	protected ConsentAnswer consentAnswerSelect;
+	protected String subjectPreviousLastname;
 
 	/** A List of phone numbers linked to this person/subject*/
 	protected Collection<Phone> phoneList;
@@ -56,12 +58,9 @@ public class SubjectVO implements Serializable{
 		subjectStudy = new LinkSubjectStudy();
 		subjectFile = new SubjectFile();
 		subjectFileList = new ArrayList<SubjectFile>();
+		subjectPreviousLastname = new String();
 	}
 
-	private ConsentAnswer consentAnswerSelect;
-	
-	private String subjectPreviousLastname;
-	
 	public String getSubjectFullName() {
 		return subjectFullName;
 	}
