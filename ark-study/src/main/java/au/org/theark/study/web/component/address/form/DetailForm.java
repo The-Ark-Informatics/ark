@@ -273,7 +273,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		try {
 			Person person = studyService.getPerson(personSessionId);
 			
-			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person);
+			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person,containerForm.getModelObject().getAddress().getId());
 			boolean preferredMailingAdressIsYes = false;
 			
 			if(containerForm.getModelObject().getAddress().getPreferredMailingAddress() != null){ 
