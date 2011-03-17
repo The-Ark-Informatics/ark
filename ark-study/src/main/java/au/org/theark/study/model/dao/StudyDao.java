@@ -682,11 +682,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public String getPreviousLastname(Person person)
 	{
-		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 		
 		// Only get previous lastname if person in context
 		if(person.getId() != null){
+			Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
 			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));
 			criteria.addOrder(Order.desc("id"));
 			if(!criteria.list().isEmpty()){
