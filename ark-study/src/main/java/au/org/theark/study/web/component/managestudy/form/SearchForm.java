@@ -32,7 +32,6 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 
-@SuppressWarnings("serial")
 public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 
 	
@@ -103,8 +102,6 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 	
 
 	protected void onSearch(AjaxRequestTarget target){
-		
-		target.addComponent(feedbackPanel);
 		List<Study> studyResultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
 		if(studyResultList != null && studyResultList.size() == 0){
 			containerForm.getModelObject().setStudyList(studyResultList);
@@ -116,9 +113,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 		studyCrudContainerVO.getPageableListView().removeAll();
 		studyCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
-	
 	}
-
 
 	private void addSearchComponentsToForm(){
 		add(studyIdTxtFld);
@@ -189,6 +184,10 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 			studyNameTxtFld.setEnabled(true);
+			
+			// Default boolean selections
+			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUId(false);
+			containerForm.getModelObject().getStudy().setAutoConsent(false);
 			
 			preProcessDetailPanel(target,studyCrudContainerVO);
 			
