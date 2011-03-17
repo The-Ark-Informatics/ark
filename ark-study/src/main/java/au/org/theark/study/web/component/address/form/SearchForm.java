@@ -225,8 +225,19 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		List<CountryState> countryStateList = iArkCommonService.getStates(address.getCountry());
 		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get(Constants.COUNTRY_STATE_SELECTOR_WMC);
 		DropDownChoice<CountryState> detailStateSelector = (DropDownChoice<CountryState>) wmcStateSelector.get("address.countryState");
-		detailStateSelector.getChoices().clear();
-		detailStateSelector.setChoices(countryStateList);
+	
+		TextField<String> otherState = (TextField<String>)wmcStateSelector.get("address.otherState");
+		
+		if(countryStateList != null && countryStateList.size() > 0){
+			detailStateSelector.getChoices().clear();
+			detailStateSelector.setChoices(countryStateList);
+			detailStateSelector.setVisible(true);
+			otherState.setVisible(false);
+		}else{
+			//hide it
+			detailStateSelector.setVisible(false);
+			otherState.setVisible(true);
+		}
 
 	}
 
