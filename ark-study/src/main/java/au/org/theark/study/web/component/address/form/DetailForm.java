@@ -66,6 +66,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DateTextField		dateReceivedDp;
 	private TextArea<String> commentsTxtArea;
 	
+	protected TextField<String> otherState;
+	
 	/**
 	 * @param id
 	 * @param feedBackPanel
@@ -97,6 +99,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		cityTxtFld = new TextField<String>("address.city");
 		postCodeTxtFld = new TextField<String>("address.postCode");
 		commentsTxtArea = new TextArea<String>("address.comments");
+		otherState = new TextField<String>("address.otherState");
 		initialiaseCountryDropDown();
 		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
@@ -148,6 +151,15 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		stateChoice = new DropDownChoice<CountryState>(Constants.ADDRESS_COUNTRYSTATE_STATE,countryStateList,defaultStateChoiceRenderer);
 		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		countryStateSelector.add(stateChoice);
+		countryStateSelector.add(otherState);
+		if(countryStateList.size() > 0){
+			otherState.setVisible(false);
+			stateChoice.setVisible(true);
+		}
+		else{
+			otherState.setVisible(true);
+			stateChoice.setVisible(false);
+		}
 	}
 
 	private void initialiaseCountryDropDown(){
@@ -174,8 +186,17 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private void updateCountryStateChoices(Country country){
 		
 		List<CountryState> countryStateList = iArkCommonService.getStates(country);
-		stateChoice.getChoices().clear();
-		stateChoice.setChoices(countryStateList);
+		if(countryStateList != null && countryStateList.size() > 0){
+			stateChoice.setVisible(true);
+			stateChoice.getChoices().clear();
+			stateChoice.setChoices(countryStateList);	
+			otherState.setVisible(false);
+		}else{
+			//hide it
+			stateChoice.setVisible(false);
+			otherState.setVisible(true);
+		}
+		
 	}
 	
 	private void initialiseAddressStatusDropDown(){
@@ -253,7 +274,11 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 			Person person = studyService.getPerson(personSessionId);
 			
 			boolean hasPreferredMailing = studyService.personHasPreferredMailingAddress(person);
-			boolean preferredMailingAdressIsYes = containerForm.getModelObject().getAddress().getPreferredMailingAddress().getName().equalsIgnoreCase("YES");
+			boolean preferredMailingAdressIsYes = false;
+			
+			if(containerForm.getModelObject().getAddress().getPreferredMailingAddress() != null){ 
+				preferredMailingAdressIsYes =  containerForm.getModelObject().getAddress().getPreferredMailingAddress().getName().equalsIgnoreCase("YES");
+			}
 			
 			// Check if other address already set to preferredMailingAddress
 			if(hasPreferredMailing && preferredMailingAdressIsYes){
