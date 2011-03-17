@@ -132,7 +132,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 			{
 				// Get the PersonId from session and get the subjectFileList from back end
 				Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
-				SubjectFile subjectFile = new SubjectFile();
+				SubjectFile subjectFile = containerForm.getModelObject().getSubjectFile();
 				
 				try
 				{
