@@ -186,6 +186,12 @@ public class Constants {
 	public static final String	ENTITY_TYPE_PERSON_LASTNAME_HISTORY	= "Person Lastname History";
 	public static final String ENTITY_TYPE_PHENO_COLLECTION = "Phenotypic Collection";
 	public static final String ENTITY_TYPE_PHENO_COLLECTION_UPLOAD = "Pheno Collection Upload";
+	public static final String ENTITY_TYPE_GENO_COLLECTION = "Geno Collection";
+	public static final String ENTITY_TYPE_GENO_COLLECTION_IMPORT = "Geno Collection Import";
+	public static final String ENTITY_TYPE_GENO_METADATA = "MetaDAta";
+	public static final String ENTITY_TYPE_GENO_ENCODED_DATA = "Encoded data";
+	public static final String ENTITY_TYPE_GENO_UPLOAD_COLLECTION = "Upload Collection";
+	public static final String ENTITY_TYPE_GENO_METADATA_FIELD = "Meta Data Field";
 	public static final String ENTITY_TYPE_FIELD = "Field";
 	public static final String ENTITY_TYPE_FIELD_DATA = "Field Data";
 	public static final String ENTITY_TYPE_PHENO_UPLOAD = "Upload";
