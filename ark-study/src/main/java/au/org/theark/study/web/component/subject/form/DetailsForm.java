@@ -97,6 +97,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	protected WebMarkupContainer countryStateSelector;
 	protected TextField<String> preferredEmailTxtFld;
 	protected TextField<String> otherEmailTxtFld;
+	protected TextField<String> otherState;
 	
 	// Reference Data 
 	protected DropDownChoice<TitleType> titleTypeDdc;
@@ -302,7 +303,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		streetAddressTxtFld = new TextField<String>("subjectStudy.siteAddress");
 		cityTxtFld = new TextField<String>("subjectStudy.city");
 		postCodeTxtFld = new TextField<String>("subjectStudy.postCode");
-		
+		otherState = new TextField<String>("subjectStudy.otherState");
 		initialiseCountryDropDown();
 		initialiseCountrySelector();
 		
@@ -329,6 +330,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		stateChoice = new DropDownChoice<CountryState>("subjectStudy.state",countryStateList,defaultStateChoiceRenderer);
 		//Add the Country State Dropdown into the WebMarkupContainer - countrySelector
 		countryStateSelector.add(stateChoice);
+		countryStateSelector.add(otherState);
+		if(countryStateList.size() > 0){
+			otherState.setVisible(false);
+			stateChoice.setVisible(true);
+		}
+		else{
+			otherState.setVisible(true);
+			stateChoice.setVisible(false);
+		}
 	}
 	
 	@SuppressWarnings("serial")
@@ -357,8 +367,17 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	private void updateCountryStateChoices(Country country){
 		
 		List<CountryState> countryStateList = iArkCommonService.getStates(country);
-		stateChoice.getChoices().clear();
-		stateChoice.setChoices(countryStateList);
+		if(countryStateList != null && countryStateList.size() > 0){
+			stateChoice.setVisible(true);
+			stateChoice.getChoices().clear();
+			stateChoice.setChoices(countryStateList);	
+			otherState.setVisible(false);
+		}else{
+			//hide it
+			stateChoice.setVisible(false);
+			otherState.setVisible(true);
+		}
+	
 	}
 	
 	public void addDetailFormComponents(){
