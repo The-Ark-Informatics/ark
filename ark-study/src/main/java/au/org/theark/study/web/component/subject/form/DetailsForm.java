@@ -225,9 +225,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			}
 		});
 		
-		String subjectPreviousLastname = studyService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
-		containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
-		
 		initCustomFields();
 		initialiseConsentStatusChoice();
 		initialiseConsentTypeChoice();
