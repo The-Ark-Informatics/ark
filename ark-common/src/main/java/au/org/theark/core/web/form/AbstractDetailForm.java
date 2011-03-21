@@ -66,8 +66,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
-	protected void onCancelPostProcess(AjaxRequestTarget target)
-	{
+	protected void onEditCancel(AjaxRequestTarget target){
 
 		resultListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
@@ -77,6 +76,26 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		target.addComponent(searchPanelContainer);
 		target.addComponent(detailPanelContainer);
 		target.addComponent(resultListContainer);
+	}
+	
+	protected void onCancelPostProcess(AjaxRequestTarget target)
+	{
+
+		detailPanelContainer.setVisible(true);
+		viewButtonContainer.setVisible(true);
+		viewButtonContainer.setEnabled(true);
+		detailPanelFormContainer.setEnabled(false);
+		resultListContainer.setVisible(false);
+		searchPanelContainer.setVisible(false);
+		editButtonContainer.setVisible(false);
+		
+		target.addComponent(feedBackPanel);
+		target.addComponent(searchPanelContainer);
+		target.addComponent(detailPanelContainer);
+		target.addComponent(resultListContainer);
+		target.addComponent(viewButtonContainer);
+		target.addComponent(detailPanelFormContainer);
+		target.addComponent(editButtonContainer);
 	}
 
 	/**
@@ -180,7 +199,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				onCancel(target);
+				onEditCancel(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
