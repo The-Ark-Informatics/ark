@@ -66,18 +66,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
-	protected void onEditCancel(AjaxRequestTarget target){
-
-		resultListContainer.setVisible(true);
-		detailPanelContainer.setVisible(false);
-		searchPanelContainer.setVisible(true);
-
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
-	}
-	
 	protected void onCancelPostProcess(AjaxRequestTarget target)
 	{
 
@@ -143,6 +131,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				target.addComponent(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
 				target.addComponent(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
 				onCancel(target);// Invoke a onCancel() that the sub-class can use to build anything more specific
+				onCancelPostProcess(target);
 			}
 		};
 
@@ -199,7 +188,16 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				onEditCancel(target);
+				
+				resultListContainer.setVisible(true);
+				detailPanelContainer.setVisible(false);
+				searchPanelContainer.setVisible(true);
+
+				target.addComponent(feedBackPanel);
+				target.addComponent(searchPanelContainer);
+				target.addComponent(detailPanelContainer);
+				target.addComponent(resultListContainer);
+				onCancel(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
