@@ -439,7 +439,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		stateChoice.setVisible(true);
 		otherState.setVisible(false);
 		target.addComponent(countryStateSelector);
-		onCancelPostProcess(target);
+		//onCancelPostProcess(target);
 		
 	}
 	
