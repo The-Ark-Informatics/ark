@@ -36,6 +36,7 @@ public class SubjectFile implements java.io.Serializable {
 	private Blob payload;
 	private String checksum;
 	private String userId;
+	private String comments;
 
 	// Constructors
 
@@ -134,5 +135,22 @@ public class SubjectFile implements java.io.Serializable {
 
 	public void setUserId(String userId) {
 		this.userId = userId;
+	}
+
+	/**
+	 * @param comments the comments to set
+	 */
+	public void setComments(String comments)
+	{
+		this.comments = comments;
+	}
+
+	/**
+	 * @return the comments
+	 */
+	@Column(name = "COMMENTS", length = 500)
+	public String getComments()
+	{
+		return comments;
 	}
 }
