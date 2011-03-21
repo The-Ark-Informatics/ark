@@ -210,7 +210,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	{
 		FieldVO fieldVo = new FieldVO();
 		containerForm.setModelObject(fieldVo);
-		onCancelPostProcess(target);
+		//onCancelPostProcess(target);
 	}
 
 	@Override

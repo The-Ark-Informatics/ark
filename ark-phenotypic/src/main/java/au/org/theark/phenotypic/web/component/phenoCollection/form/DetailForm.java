@@ -210,8 +210,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollectionVO.getPhenoCollection());
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
-		
-		onCancelPostProcess(target);
 	}
 	
 	@Override

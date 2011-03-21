@@ -233,7 +233,6 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		// Implement Cancel
 		UploadVO uploadVO = new UploadVO();
 		containerForm.setModelObject(uploadVO);
-		onCancelPostProcess(target);
 	}
 
 	@Override

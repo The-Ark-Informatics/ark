@@ -131,7 +131,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		// Implement Cancel
 		PhenoCollectionVO phenoCollectionVO = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVO);
-		onCancelPostProcess(target);
 	}
 	
 	@Override
