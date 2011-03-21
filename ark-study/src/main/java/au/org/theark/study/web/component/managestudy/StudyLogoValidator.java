@@ -48,7 +48,7 @@ public class StudyLogoValidator implements IValidator<FileUpload>
 				// Read image, to work out width and height
 				image = new SerializableBufferedImage(ImageIO.read(fileUploadImage.getInputStream()));
 				
-				if (image.getWidth() > 100 || image.getHeight() > 100)
+				if (image.getHeight() > 100)
 				{
 					error.addMessageKey("study.studyLogoPixelSize");
 					pValidatable.error(error);
