@@ -12,6 +12,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
@@ -25,11 +26,8 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
-import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -56,6 +54,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 	private TextField<String>	consentFileFilenameTxtFld;
 	private FileUploadField		fileSubjectFileField;
 	private DropDownChoice<StudyCompStatus> studyComponentChoice;
+	private TextArea<String>		commentsTxtArea;
 
 	// private ConsentFileProgressBar uploadProgressBar;
 
@@ -100,6 +99,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
 
+		commentsTxtArea = new TextArea<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS);
+		
 		attachValidators();
 		addComponents();
 	}
@@ -117,7 +118,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		detailPanelFormContainer.add(subjectFileIdTxtFld);
 		detailPanelFormContainer.add(fileSubjectFileField);
 		detailPanelFormContainer.add(studyComponentChoice);
-
+		detailPanelFormContainer.add(commentsTxtArea);
+		
 		// TODO: AJAXify the form to show progress bar
 		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
