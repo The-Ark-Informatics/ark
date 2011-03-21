@@ -284,8 +284,8 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
 		new FormHelper().setDatePickerDefaultMarkup(target, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
-		onCancelPostProcess(target);
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDeleteConfirmed(org.apache.wicket.ajax.AjaxRequestTarget, java.lang.String, org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)

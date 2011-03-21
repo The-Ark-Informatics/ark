@@ -143,9 +143,8 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	protected void onCancel(AjaxRequestTarget target) {
 		PhoneVO phoneVO = new PhoneVO();
 		containerForm.setModelObject(phoneVO);
-		onCancelPostProcess(target);
 	}
-
+	
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#onDeleteConfirmed(org.apache.wicket.ajax.AjaxRequestTarget, java.lang.String, org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)

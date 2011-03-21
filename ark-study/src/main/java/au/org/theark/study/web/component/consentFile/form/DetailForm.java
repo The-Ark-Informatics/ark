@@ -245,6 +245,13 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 		containerForm.getModelObject().setConsent(consent);
 		onCancelPostProcess(target);
 	}
+	
+	protected void onEditCancel(AjaxRequestTarget target){
+		ConsentVO consentVO = new ConsentVO();
+		Consent consent = containerForm.getModelObject().getConsent(); 
+		containerForm.setModelObject(consentVO);
+		containerForm.getModelObject().setConsent(consent);
+	}
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target)

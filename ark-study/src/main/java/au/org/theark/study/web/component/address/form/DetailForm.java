@@ -240,7 +240,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	protected void onCancel(AjaxRequestTarget target) {
 		AddressVO addressVO = new AddressVO();
 		containerForm.setModelObject(addressVO);
-		onCancelPostProcess(target);
 	}
 
 	/* (non-Javadoc)

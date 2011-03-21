@@ -234,8 +234,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		}
 		subjectVo.setSubjectStudy(linkSubjectStudy);
 		containerForm.setModelObject(subjectVo);
-		
-		onCancelPostProcess(target);
 	}
 
 	@Override

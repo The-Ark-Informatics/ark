@@ -110,8 +110,6 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 
 		StudyCompVo studyCompVo = new StudyCompVo();
 		containerForm.setModelObject(studyCompVo);
-		onCancelPostProcess(target);
-		
 	}
 
 	/* (non-Javadoc)
