@@ -238,6 +238,10 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
 			}
 			
+			if(subjectVO.getSubjectStudy().getPerson().getDateOfBirth() != null){
+				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getSubjectStudy().getPerson().getDateOfBirth()));
+			}
+			
 			if(subjectVO.getSubjectStudy().getPerson().getGenderType() != null){
 				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getSubjectStudy().getPerson().getGenderType().getId()));
 			}
