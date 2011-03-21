@@ -130,7 +130,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				detailPanelContainer.setVisible(false); // Hide the Detail Panle via the WebMarkupContainer
 				target.addComponent(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
 				target.addComponent(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
-				onCancel(target);// Invoke a onCancel() that the sub-class can use to build anything more specific
 				onCancelPostProcess(target);
 			}
 		};
