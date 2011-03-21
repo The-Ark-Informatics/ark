@@ -43,14 +43,23 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 	abstract protected void processErrors(AjaxRequestTarget target);
 
 	protected void onCancelPostProcess(AjaxRequestTarget target){
-		crudVO.getSearchResultPanelContainer().setVisible(true);
-		crudVO.getDetailPanelContainer().setVisible(false);
-		crudVO.getSearchPanelContainer().setVisible(true);
+		
+		crudVO.getViewButtonContainer().setVisible(true);
+		crudVO.getViewButtonContainer().setEnabled(true);
+		crudVO.getDetailPanelContainer().setVisible(true);
+		crudVO.getDetailPanelFormContainer().setEnabled(false);
+		crudVO.getSearchResultPanelContainer().setVisible(false);
+		crudVO.getSearchPanelContainer().setVisible(false);
+		crudVO.getEditButtonContainer().setVisible(false);
 		
 		target.addComponent(feedBackPanel);
 		target.addComponent(crudVO.getSearchPanelContainer());
-		target.addComponent(crudVO.getDetailPanelContainer());
 		target.addComponent(crudVO.getSearchResultPanelContainer());
+		target.addComponent(crudVO.getDetailPanelContainer());
+		target.addComponent(crudVO.getDetailPanelFormContainer());
+
+		target.addComponent(crudVO.getViewButtonContainer());
+		target.addComponent(crudVO.getEditButtonContainer());
 	}
 
 
@@ -78,11 +87,13 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
+				
 				crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
 				crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
 				target.addComponent(crudVO.getDetailPanelContainer());// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
 				target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
-				onCancel(target);// Invoke a onCancel() that the sub-class can use to build anything more specific
+				//onCancel(target);// Invoke a onCancel() that the sub-class can use to build anything more specific
+				onCancelPostProcess(target);
 			}
 		};
 
@@ -120,6 +131,14 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)){
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
+				crudVO.getSearchResultPanelContainer().setVisible(true);// Hide the Search Result List Panel via the WebMarkupContainer
+				crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
+				crudVO.getSearchPanelContainer().setVisible(true);
+
+				target.addComponent(feedBackPanel);
+				target.addComponent(crudVO.getSearchPanelContainer());
+				target.addComponent(crudVO.getDetailPanelContainer());
+				target.addComponent(crudVO.getSearchResultPanelContainer());
 				onCancel(target);
 			}
 
