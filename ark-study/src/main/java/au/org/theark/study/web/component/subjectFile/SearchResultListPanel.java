@@ -143,10 +143,11 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Download file link button
-				item.add(buildDownloadButton(subjectFile));
+				AjaxButton downloadButton = buildDownloadButton(subjectFile); 
+				item.add(downloadButton);
 
 				// Delete the upload file
-				item.add(buildDeleteButton(subjectFile));
+				item.add(buildDeleteButton(subjectFile, downloadButton));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", true,
@@ -222,7 +223,7 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile)
+	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton)
 	{
 		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this)
 		{
@@ -232,6 +233,9 @@ public class SearchResultListPanel extends Panel {
 				if (subjectFile.getId() != null)
 				{
 					try {
+						//TODO: implement disabling of other buttons on row when buttons clicked once
+						downloadButton.setEnabled(false);
+						target.addComponent(downloadButton);
 						studyService.delete(subjectFile);
 					} catch (ArkSystemException e) {
 						// TODO Auto-generated catch block
