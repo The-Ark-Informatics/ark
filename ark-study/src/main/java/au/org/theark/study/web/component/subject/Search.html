@@ -51,6 +51,21 @@
 				<div id="panelContentLeft">&nbsp;</div>
 			
 				<div id="fldLabel">
+					<div class="label">
+						<label for="dateOfBirth">
+							<wicket:message key="dateOfBirth">Date Of Birth:</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="subjectStudy.person.dateOfBirth" maxLength="10"/>
+					</div>
+				</div>
+			
+				<div id="panelMargin">&nbsp;</div>
+			
+				<div id="fldLabel">
 					<div class="label"><label for="vitalStatus"> <wicket:message key="vitalStatus">Vital Status:</wicket:message> </label></div>
 				</div>
 				<div id="fldControl">
@@ -61,23 +76,11 @@
 		       			</select>
 		       		</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
-				<div id="fldLabel">
-					<div class="label"><label for="subjectStatus"> <wicket:message key="subjectStatus">Last Name:</wicket:message> </label></div>
-				</div>
-				<div id="fldControl">
-					<select wicket:id="subjectStudy.subjectStatus">
-		       				<option>Prospect</option>
-							<option>Subject</option>
-		       		</select>
-				</div>	
-			
+					
 				<div id="searchPanelContentRight">&nbsp;</div>
-				
-
+			
 				<div id="searchPanelBreaker">&nbsp;</div>
+				
 				<div id="panelContentLeft">&nbsp;</div>
 			
 				<div id="fldLabel">
@@ -95,16 +98,13 @@
 				<div id="panelMargin">&nbsp;</div>
 			
 				<div id="fldLabel">
-					<div class="label">
-						<label for="dateOfBirth">
-							<wicket:message key="dateOfBirth">Date Of Birth:</wicket:message>
-						</label>
-					</div>
+					<div class="label"><label for="subjectStatus"> <wicket:message key="subjectStatus">Last Name:</wicket:message> </label></div>
 				</div>
 				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="subjectStudy.person.dateOfBirth" maxLength="10"/>
-					</div>
+					<select wicket:id="subjectStudy.subjectStatus">
+		       				<option>Prospect</option>
+							<option>Subject</option>
+		       		</select>
 				</div>
 			
 				<div id="searchPanelContentRight">&nbsp;</div>

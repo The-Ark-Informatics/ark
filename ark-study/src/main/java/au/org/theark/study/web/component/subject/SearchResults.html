@@ -31,13 +31,6 @@
 				</label>
 			</th>
 			<th width="10%">
-				<label for="gender">
-					<wicket:message	key="gender">
-						Gender:
-					</wicket:message>
-				</label>
-			</th>
-			<th width="10%">
 				<label for="dob">
 					<wicket:message	key="dateOfBirth">
 						Date Of Birth:
@@ -45,16 +38,23 @@
 				</label>
 			</th>
 			<th width="10%">
-				<label for="subjectStatus">
-					<wicket:message	key="subjectStatus">
-						Subject Status:
+				<label for="vitalStatus">
+					<wicket:message	key="vitalStatus">
+						Vital Status:
 					</wicket:message>
 				</label>
 			</th>
 			<th width="10%">
-				<label for="vitalStatus">
-					<wicket:message	key="vitalStatus">
-						Vital Status:
+				<label for="gender">
+					<wicket:message	key="gender">
+						Gender:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="subjectStatus">
+					<wicket:message	key="subjectStatus">
+						Subject Status:
 					</wicket:message>
 				</label>
 			</th>
@@ -85,11 +85,6 @@
 				</span>
 			</td>
 			<td width="10%">
-				<span wicket:id="subjectStudy.person.genderType.name">
-					Gender
-				</span>
-			</td>
-			<td width="10%">
 				<span wicket:id="subjectStudy.person.dateOfBirth">
 					Date Of Birth:
 				</span>
@@ -97,6 +92,11 @@
 			<td width="10%">
 				<span wicket:id="person.vitalStatus.statusName">
 					Subject Status
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="subjectStudy.person.genderType.name">
+					Gender
 				</span>
 			</td>
 			<td width="10%">
