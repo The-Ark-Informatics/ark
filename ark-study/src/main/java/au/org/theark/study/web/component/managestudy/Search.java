@@ -29,6 +29,7 @@ public class Search extends Panel{
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedBackPanel = feedbackPanel;
 	}
 	
 
