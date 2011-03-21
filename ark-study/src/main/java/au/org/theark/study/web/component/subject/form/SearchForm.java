@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -30,6 +31,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -54,6 +56,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	private DropDownChoice<VitalStatus> vitalStatusDdc;
 	private DropDownChoice<GenderType> genderTypeDdc;
 	private DropDownChoice<SubjectStatus> subjectStatusDdc;
+	private DateTextField dateOfBirthTxtFld;
 	private PageableListView<SubjectVO> listView;
 	private CompoundPropertyModel<SubjectVO> cpmModel;
 	
@@ -99,6 +102,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		add(vitalStatusDdc);
 		add(subjectStatusDdc);
 		add(genderTypeDdc);
+		add(dateOfBirthTxtFld);
 	}
 	
 	protected void initialiseSearchForm(){
@@ -109,9 +113,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		initVitalStatusDdc();
 		initSubjectStatusDdc();
 		initGenderTypeDdc();
+		
+		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB,au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker dobDatePicker = new ArkDatePicker();
+		dobDatePicker.bind(dateOfBirthTxtFld);
+		dateOfBirthTxtFld.add(dobDatePicker);
 	}
-	
-	
+
 	private void initVitalStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
@@ -123,7 +131,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	}
 	
 	private void initSubjectStatusDdc(){
-		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm,"subjectStatus");
@@ -133,7 +140,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	}
 	
 	private void initGenderTypeDdc(){
-		
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,Constants.PERSON);

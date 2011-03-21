@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.subject;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
 
@@ -102,6 +103,15 @@ public class SearchResults extends Panel{
 				}
 				
 				item.add(new Label("subjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				String dateOfBirth ="";
+				if(subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null){
+					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
+					item.add(new Label("subjectStudy.person.dateOfBirth", dateOfBirth));
+				}else{
+					item.add(new Label("subjectStudy.person.dateOfBirth",""));
+				}
 				
 				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
 				
