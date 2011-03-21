@@ -237,6 +237,7 @@ public class Constants {
 	public static final String	SUBJECT_FILE_FILENAME	= "subjectFile.filename";
 	public static final String	SUBJECT_FILE_STUDY_COMP	= "subjectFile.studyComp";
 	public static final String	SUBJECT_FILE_USER_ID	= "subjectFile.userId";
+	public static final String	SUBJECT_FILE_COMMENTS	= "subjectFile.comments";
 	
 	public static final String COUNTRY_STATE_SELECTOR_WMC = "countryStateSelector";//WebMarkupContainer that will house the DropDowns for States
 	public static final String SUBJECT_STATE ="subjectStudy.state";
@@ -253,6 +254,7 @@ public class Constants {
 	public static final String SUBJECT_CONSENT_TO_ACTIVE_CONTACT ="subjectStudy.consentToActiveContact";
 	public static final String SUBJECT_CONSENT_TO_USEDATA ="subjectStudy.consentToUseData";
 	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="subjectStudy.consentToPassiveDataGathering";
+	
 
 	
 	
