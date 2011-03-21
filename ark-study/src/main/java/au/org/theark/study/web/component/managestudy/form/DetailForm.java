@@ -219,7 +219,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	protected  void onCancel(AjaxRequestTarget target){
 		containerForm.setModelObject(new StudyModelVO());
 		studyCrudVO.getSummaryContainer().setVisible(true);
-		onCancelPostProcess(target);
 	}
 
 	private void initPalette()
