@@ -42,6 +42,8 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
+	abstract protected boolean isNew();
+	
 	protected void onCancelPostProcess(AjaxRequestTarget target){
 		
 		crudVO.getViewButtonContainer().setVisible(true);
@@ -87,13 +89,15 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				
-				crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
-				crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
-				target.addComponent(crudVO.getDetailPanelContainer());// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-				target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
-				//onCancel(target);// Invoke a onCancel() that the sub-class can use to build anything more specific
-				onCancelPostProcess(target);
+				if(isNew()){
+					editCancelProcess(target);
+				}else{
+					crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
+					crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
+					target.addComponent(crudVO.getDetailPanelContainer());// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
+					target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
+					onCancelPostProcess(target);
+				}
 			}
 		};
 
@@ -131,15 +135,7 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)){
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				crudVO.getSearchResultPanelContainer().setVisible(true);// Hide the Search Result List Panel via the WebMarkupContainer
-				crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
-				crudVO.getSearchPanelContainer().setVisible(true);
-
-				target.addComponent(feedBackPanel);
-				target.addComponent(crudVO.getSearchPanelContainer());
-				target.addComponent(crudVO.getDetailPanelContainer());
-				target.addComponent(crudVO.getSearchResultPanelContainer());
-				onCancel(target);
+				editCancelProcess(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
@@ -162,6 +158,17 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		add(crudVO.getViewButtonContainer());
 	}
 
+	protected void editCancelProcess(AjaxRequestTarget target){
+		crudVO.getSearchResultPanelContainer().setVisible(true);// Hide the Search Result List Panel via the WebMarkupContainer
+		crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
+		crudVO.getSearchPanelContainer().setVisible(true);
+
+		target.addComponent(feedBackPanel);
+		target.addComponent(crudVO.getSearchPanelContainer());
+		target.addComponent(crudVO.getDetailPanelContainer());
+		target.addComponent(crudVO.getSearchResultPanelContainer());
+		onCancel(target);
+	}
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
 	 * implementation.Once the user has pressed Save either to create a new entity or update, invoking this method will place the new/edited record
