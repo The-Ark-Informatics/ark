@@ -548,18 +548,29 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 
 	public String getSubjectUidExample(Study study)
 	{
-		String subjectUidPrefix = new String();
-		String subjectUidToken = new String();
-		String subjectUidPaddedIncrementor = new String();
-		String subjectUidPadChar = new String();
-		String subjectUidStart = new String();
-		String subjectUidExample = new String();
+		String subjectUidPrefix = new String("");
+		String subjectUidToken = new String("");
+		String subjectUidPaddedIncrementor = new String("");
+		String subjectUidPadChar = new String("0");
+		String subjectUidStart = new String("");
+		String subjectUidExample = new String("");
 		
 		if(study.getId() != null && study.getAutoGenerateSubjectUId() != null)
 		{
-			subjectUidToken = study.getSubjectUidToken();
-			subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
-			subjectUidStart = study.getSubjectUidStart().toString();
+			if(study.getSubjectUidPrefix() != null)
+				subjectUidPrefix = study.getSubjectUidPrefix();
+			
+			if(study.getSubjectUidToken() != null)
+				subjectUidToken = study.getSubjectUidToken();
+			
+			if(study.getSubjectUidPadChar() != null)
+			{
+				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();	
+			}
+			
+			if(study.getSubjectUidStart() != null)
+				subjectUidStart = study.getSubjectUidStart().toString();
+			
 			int size = Integer.parseInt(subjectUidPadChar);
 			subjectUidPaddedIncrementor = StringUtils.leftPad(subjectUidStart, size, "0");
 			subjectUidExample = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
@@ -568,6 +579,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		{
 			subjectUidPrefix = "";
 			subjectUidToken = "";
+			subjectUidPadChar = "";
 			subjectUidPaddedIncrementor = "";
 			subjectUidExample = null;
 		}
