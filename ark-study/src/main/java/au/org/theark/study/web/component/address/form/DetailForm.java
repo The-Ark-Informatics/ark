@@ -37,6 +37,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -86,7 +87,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 			WebMarkupContainer searchPanelContainer,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
-			Form<AddressVO> containerForm) {
+			AbstractContainerForm<AddressVO> containerForm) {
 		
 		super(id, feedBackPanel, resultListContainer, detailPanelContainer,
 				detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
@@ -314,6 +315,19 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getAddress().getId() == null){
+			return true;
+		}else{
+			return false;	
+		}
 		
 	}
 }

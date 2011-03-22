@@ -550,4 +550,7 @@ public class StudyServiceImpl implements IStudyService{
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.searchSubjectFile(subjectFile);
 	}
+	public void delete(StudyComp studyComp) throws ArkSystemException{
+		studyDao.delete(studyComp);
+	}
 }

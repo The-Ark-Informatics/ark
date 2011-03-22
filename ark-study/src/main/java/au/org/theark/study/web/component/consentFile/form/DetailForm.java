@@ -28,6 +28,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 
@@ -70,7 +71,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 			WebMarkupContainer searchPanelContainer,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
-			Form<ConsentVO> containerForm) {
+			AbstractContainerForm<ConsentVO> containerForm) {
+		
 		super(id, feedBackPanel, resultListContainer, detailPanelContainer,
 				detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
 				editButtonContainer, containerForm);
@@ -294,5 +296,18 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 		ConsentVO consentVo = new ConsentVO();
 		setModelObject(consentVo);
 		onCancel(target);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getConsent().getId() == null){
+			return true;
+		}else{
+			return false;	
+		}
+		
 	}
 }

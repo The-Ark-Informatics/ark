@@ -536,4 +536,18 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
+
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractArchiveDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getStudy().getId() == null){
+			return true;
+		}else{
+			return false;	
+		}
+		
+	}
 }

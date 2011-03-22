@@ -29,6 +29,7 @@ public class SearchPanel extends Panel
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer detailFormContainer;
 	private PageableListView<Phone> pageableListView;
+	private ContainerForm containerForm;
 	
 	/* Constructor */
 	public SearchPanel(	String id, 
@@ -52,6 +53,7 @@ public class SearchPanel extends Panel
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailPanelFormContainer;
+		this.containerForm = containerForm;
 	}
 
 
@@ -67,7 +69,8 @@ public class SearchPanel extends Panel
 				detailsContainer,
 				detailFormContainer,
 				viewButtonContainer,
-				editButtonContainer	);
+				editButtonContainer,
+				containerForm		);
 		
 		add(searchForm);
 	}

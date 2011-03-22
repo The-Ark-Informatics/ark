@@ -116,6 +116,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	
+	public void delete(StudyComp studyComp) throws ArkSystemException{
+		try{
+			getSession().delete(studyComp);	
+		}catch(HibernateException hibException){
+			log.error("A hibernate exception occured. Cannot detele the study component ID: " + studyComp.getId() + " Cause " + hibException.getStackTrace());
+			throw new ArkSystemException("Cannot update Study component due to system error");
+		}
+		
+	}
+	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria){
 		
 		Criteria criteria = getSession().createCriteria(StudyComp.class);

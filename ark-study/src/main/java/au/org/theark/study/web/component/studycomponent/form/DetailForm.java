@@ -107,7 +107,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 	 */
 	@Override
 	protected void onCancel(AjaxRequestTarget target) {
-
+		
 		StudyCompVo studyCompVo = new StudyCompVo();
 		containerForm.setModelObject(studyCompVo);
 	}
@@ -164,10 +164,30 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target,String selection, ModalWindow selectModalWindow) {
-		selectModalWindow.close(target);
-		StudyCompVo studyCompVo = new StudyCompVo();
-		containerForm.setModelObject(studyCompVo);
-		onCancel(target);
+		try {
+			studyService.delete(containerForm.getModelObject().getStudyComponent());
+			selectModalWindow.close(target);
+			StudyCompVo studyCompVo = new StudyCompVo();
+			containerForm.setModelObject(studyCompVo);
+			onCancel(target);
+		} catch (ArkSystemException e) {
+			containerForm.error("Cannot Delete this Study Component. This component is associated with a Subject");
+			processErrors(target);
+		}
+		
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getStudyComponent().getId() == null){
+			return true;
+		}else{
+			return false;	
+		}
 		
 	}
 

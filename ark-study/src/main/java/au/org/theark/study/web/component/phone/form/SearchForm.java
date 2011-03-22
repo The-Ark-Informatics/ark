@@ -49,6 +49,32 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
+
+	
+	
+	public SearchForm(String id,
+			CompoundPropertyModel<PhoneVO> model, 
+			PageableListView<Phone> listView, 
+			FeedbackPanel feedBackPanel, 
+			WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, 
+			WebMarkupContainer detailContainer, 
+			WebMarkupContainer detailPanelFormContainer, 
+			WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer,
+			ContainerForm containerForm)
+	{
+	
+		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+		this.cpmModel = model;
+		this.pageableListView = listView;
+		initialiseSearchForm();
+		addSearchComponentsToForm();
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableSearchButtons(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+	}
+	
+	
 	
 	
 	/**

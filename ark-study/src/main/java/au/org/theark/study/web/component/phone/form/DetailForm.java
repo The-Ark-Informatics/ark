@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhoneVO;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -66,7 +67,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 			WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer searchPanelContainer,
 			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, Form<PhoneVO> containerForm) {
+			WebMarkupContainer editButtonContainer, AbstractContainerForm<PhoneVO> containerForm) {
 		
 		
 			super(id, 
@@ -217,5 +218,19 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#getMode()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getPhone().getId() == null){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 }

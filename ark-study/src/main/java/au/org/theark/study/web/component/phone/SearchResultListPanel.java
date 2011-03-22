@@ -107,7 +107,6 @@ public class SearchResultListPanel extends Panel{
 			public void onClick(AjaxRequestTarget target) {
 
 				containerForm.getModelObject().setPhone(phone);
-				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
 				viewButtonContainer.setEnabled(true);

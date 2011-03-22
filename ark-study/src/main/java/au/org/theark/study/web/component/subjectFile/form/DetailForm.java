@@ -30,6 +30,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -70,7 +71,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 	 * @param containerForm
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, Form<SubjectVO> containerForm)
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<SubjectVO> containerForm)
 	{
 		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 
@@ -279,5 +280,18 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		SubjectVO subjectVO = new SubjectVO();
 		setModelObject(subjectVO);
 		onCancel(target);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getSubjectFile().getId() == null){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 }
