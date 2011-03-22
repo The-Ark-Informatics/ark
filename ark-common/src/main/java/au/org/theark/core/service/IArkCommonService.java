@@ -25,6 +25,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -113,4 +114,8 @@ public interface IArkCommonService {
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 	
 	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException;
+
+	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
+	
+	public String getSubjectUidExample(Study study);
 }

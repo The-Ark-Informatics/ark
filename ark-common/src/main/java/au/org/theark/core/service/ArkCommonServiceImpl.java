@@ -32,6 +32,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -213,5 +214,15 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	
 	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException{
 		return studyDao.getSubject(id);
+	}
+
+	public List<SubjectUidPadChar> getListOfSubjectUidPadChar()
+	{
+		return studyDao.getListOfSubjectUidPadChar();
+	}
+	
+	public String getSubjectUidExample(Study study)
+	{
+		return studyDao.getSubjectUidExample(study);
 	}
 }

@@ -12,6 +12,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
@@ -38,7 +39,6 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.LinkSubjectStudycomp;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -114,8 +115,6 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 
 		}
 		
-		
-
 		studyCriteria.addOrder(Order.asc(Constants.STUDY_NAME));
 		List<Study> studyList  = studyCriteria.list();
 		
@@ -537,5 +536,41 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		//log.info(ls.getPerson().getFirstName());
 		return ls;
 		
+	}
+
+	public List<SubjectUidPadChar> getListOfSubjectUidPadChar()
+	{
+		Example subjectUidPadChar = Example.create(new SubjectUidPadChar());
+		Criteria studyStatusCriteria = getSession().createCriteria(SubjectUidPadChar.class).add(subjectUidPadChar);
+		return   studyStatusCriteria.list();
+	}
+
+
+	public String getSubjectUidExample(Study study)
+	{
+		String subjectUidPrefix = new String();
+		String subjectUidToken = new String();
+		String subjectUidPaddedIncrementor = new String();
+		String subjectUidPadChar = new String();
+		String subjectUidStart = new String();
+		String subjectUidExample = new String();
+		
+		if(study.getId() != null && study.getAutoGenerateSubjectUId() != null)
+		{
+			subjectUidToken = study.getSubjectUidToken();
+			subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
+			subjectUidStart = study.getSubjectUidStart().toString();
+			int size = Integer.parseInt(subjectUidPadChar);
+			subjectUidPaddedIncrementor = StringUtils.leftPad(subjectUidStart, size, "0");
+			subjectUidExample = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
+		}
+		else
+		{
+			subjectUidPrefix = "";
+			subjectUidToken = "";
+			subjectUidPaddedIncrementor = "";
+			subjectUidExample = null;
+		}
+		return subjectUidExample;
 	}
 }

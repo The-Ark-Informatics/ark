@@ -25,6 +25,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -220,4 +221,8 @@ public interface IStudyDao {
 	 * @return
 	 */
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
+
+	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
+	
+	public String getSubjectUidExample(Study study);
 }
