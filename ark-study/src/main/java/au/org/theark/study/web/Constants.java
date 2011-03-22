@@ -128,8 +128,11 @@ public class Constants {
 	public static final String STUDY_CHIEF_INVESTIGATOR ="study.chiefInvestigator";
 	public static final String STUDY_CO_INVESTIGATOR ="study.coInvestigator";
 	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "study.autoGenerateSubjectUId";
-	public static final String SUBJECT_KEY_START="study.subjectUIdStart";
-	public static final String SUBJECT_ID_PREFIX = "study.subjectIdPrefix";
+	public static final String SUBJECT_UID_START="study.subjectUidStart";
+	public static final String SUBJECT_UID_PREFIX = "study.subjectUidPrefix";
+	public static final String SUBJECT_UID_TOKEN = "study.subjectUidToken";
+	public static final String SUBJECT_UID_PADCHARS = "study.subjectUidPadChars";
+	public static final String SUBJECT_UID_PADCHAR = "study.subjectUidPadChar";
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
 	public static final String STUDY_AUTO_CONSENT="study.autoConsent";
 	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="study.subStudyBiospecimenPrefix";
