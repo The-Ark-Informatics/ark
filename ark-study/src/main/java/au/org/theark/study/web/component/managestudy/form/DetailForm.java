@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxEventBehavior;
@@ -17,7 +18,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -50,9 +50,9 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
-import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
@@ -84,8 +84,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private TextField<String> principalContactPhoneTxtFld;
 	private TextField<String> chiefInvestigatorTxtFld;
 	private TextField<String> coInvestigatorTxtFld;
-	private TextField<String> subjectKeyPrefixTxtFld;
-	private TextField<Integer> subjectKeyStartAtTxtFld;
+	private TextField<String> subjectUidPrefixTxtFld;
+	private TextField<String> subjectUidTokenTxtFld;
+	//private TextField<String> subjectUidPadCharsTxtFld;
+	private DropDownChoice<Long>	subjectUidPadCharsDpChoices;
+	private TextField<Integer> subjectUidStartTxtFld;
 	private Label subjectUidExample;
 	private TextField<String> bioSpecimenPrefixTxtFld;
 	private DateTextField dateOfApplicationDp;
@@ -114,7 +117,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	
 	protected StudyCrudContainerVO studyCrudVO;
 
-	String subjectUidExampleTxt = "ABC-#########";
+	private String subjectUidExampleTxt = "";
 	
 	/**
 	 * Constructor
@@ -147,21 +150,39 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		subjectUidContainer = new  WebMarkupContainer("subjectUidContainer");
 		subjectUidContainer.setOutputMarkupPlaceholderTag(true);
 		
-		//TODO: Implement SubjectUid generator/example
-		subjectUidExample = new Label("study.subject.key.example", new PropertyModel(this, "subjectUidExampleTxt")){
+		// SubjectUID prefix (e.g. three char representation of the Study name
+		subjectUidPrefixTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_UID_PREFIX);
+		subjectUidPrefixTxtFld.add(new AjaxEventBehavior( "onChange" ) {
+			protected void onEvent( AjaxRequestTarget target ) {
+				updateSubjectUidExample(target);
+      	}
+   	});
+		
+		// Token to separate the string (e.g. "-")
+		subjectUidTokenTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_UID_TOKEN);
+		subjectUidTokenTxtFld.add(new AjaxEventBehavior( "onChange" ) {
+			protected void onEvent( AjaxRequestTarget target ) {
+				updateSubjectUidExample(target);
+      	}
+   	});
+		
+		// How many padded chars in SubjectUID incrementor
+		initSubjectUidPadCharsDropDown();
+		
+		// If the Study wishes to start the incrementor at a particular value
+		subjectUidStartTxtFld = new TextField<Integer>(au.org.theark.study.web.Constants.SUBJECT_UID_START, Integer.class);
+		subjectUidStartTxtFld.add(new AjaxEventBehavior( "onChange" ) {
+			protected void onEvent( AjaxRequestTarget target ) {
+				updateSubjectUidExample(target);
+      	}
+   	});
+		
+		// Label showing example auto-generated SubjectUID
+		subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
+		subjectUidExample = new Label("study.subjectUid.example", new PropertyModel(this, "subjectUidExampleTxt")){
 			  {setOutputMarkupId(true);}
 		};
-		subjectUidExample.setVisible(false);
-		
-		subjectKeyPrefixTxtFld = new TextField<String>(Constants.SUBJECT_ID_PREFIX);
-		subjectKeyPrefixTxtFld.add(new AjaxEventBehavior( "onKeyUp" ) {
-		      protected void onEvent( AjaxRequestTarget target ) {
-		    	  subjectUidExampleTxt = subjectKeyPrefixTxtFld.getModelObject();
-		          target.addComponent(subjectUidExample);
-		        }
-		      });
-		
-		subjectKeyStartAtTxtFld = new TextField<Integer>(Constants.SUBJECT_KEY_START, Integer.class);
+		subjectUidExample.setVisible(true);
 		
 		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
 		
@@ -212,8 +233,31 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
 
 		attachValidators();
-		addComponents();
+		addComponents();	
+	}
+	
+	protected void updateSubjectUidExample(AjaxRequestTarget target)
+	{
+		String lpadStr = new String();
+		String selectPaddedLength = subjectUidPadCharsDpChoices.getDefaultModelObjectAsString();
 		
+		if(subjectUidPadCharsDpChoices.getChoices() != null)
+		{
+			List<Long> subjectUidPadCharsList = (List<Long>) subjectUidPadCharsDpChoices.getChoices();
+			
+			subjectUidPadCharsDpChoices.getModelObject().toString();
+			if(subjectUidPadCharsDpChoices.getDefaultModelObjectAsString().trim() == "")
+				subjectUidPadCharsDpChoices.setModelObject(new Long("0"));
+			
+			int size = Integer.parseInt(subjectUidPadCharsDpChoices.getDefaultModelObjectAsString().trim());
+			lpadStr = StringUtils.leftPad(subjectUidStartTxtFld.getDefaultModelObjectAsString(), size, "0");
+		}
+		else
+		{
+			lpadStr = "";
+		}
+		subjectUidExampleTxt = subjectUidPrefixTxtFld.getDefaultModelObjectAsString() + subjectUidTokenTxtFld.getDefaultModelObjectAsString() + lpadStr;
+		target.addComponent(subjectUidExample);
 	}
 	
 	protected  void onCancel(AjaxRequestTarget target){
@@ -244,6 +288,21 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS, studyStatusList, defaultChoiceRenderer);
 	}
 
+	private void initSubjectUidPadCharsDropDown()
+	{
+		List<SubjectUidPadChar> subjectUidPadCharList = iArkCommonService.getListOfSubjectUidPadChar();
+		ChoiceRenderer<SubjectUidPadChar> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidPadChar>(Constants.NAME, Constants.STUDY_STATUS_KEY);
+		subjectUidPadCharsDpChoices = new DropDownChoice(au.org.theark.study.web.Constants.SUBJECT_UID_PADCHAR, subjectUidPadCharList, defaultChoiceRenderer);
+		subjectUidPadCharsDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange"){
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
+				//Check what was selected and then toggle
+				String subjectUidPadChar = containerForm.getModelObject().getStudy().getSubjectUidPadChar().getName();
+				updateSubjectUidExample(target);
+			}
+		});
+	}
+	
 	public int getMode()
 	{
 		return mode;
@@ -268,8 +327,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getDetailPanelFormContainer().add(coInvestigatorTxtFld);
 		
 		// subjectUid auto-generator fields within their own container
-		subjectUidContainer.add(subjectKeyPrefixTxtFld);
-		subjectUidContainer.add(subjectKeyStartAtTxtFld);
+		subjectUidContainer.add(subjectUidPrefixTxtFld);
+		subjectUidContainer.add(subjectUidTokenTxtFld);
+		//subjectUidContainer.add(subjectUidPadCharsTxtFld);
+		subjectUidContainer.add(subjectUidPadCharsDpChoices);
+		subjectUidContainer.add(subjectUidStartTxtFld);
 		subjectUidContainer.add(subjectUidExample);
 		studyCrudVO.getDetailPanelFormContainer().add(subjectUidContainer);
 		
@@ -345,7 +407,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		coInvestigatorTxtFld.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("error.study.co.investigator", this, new Model<String>("Co Investigator")));
 		// selectedApplicationsLmc.setRequired(true).setLabel( new StringResourceModel("error.study.selected.app", this, null));
-		subjectKeyStartAtTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
+		subjectUidStartTxtFld.add(new RangeValidator<Integer>(1, Integer.MAX_VALUE)).setLabel(new StringResourceModel("error.study.subject.key.prefix", this, null));
 		// file image validator, checking size, type etc
 		fileUploadField.add(new StudyLogoValidator());
 
