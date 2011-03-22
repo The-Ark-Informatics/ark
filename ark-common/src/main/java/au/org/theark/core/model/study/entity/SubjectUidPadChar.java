@@ -22,7 +22,6 @@ public class SubjectUidPadChar implements java.io.Serializable {
 	private Long id;
 	private String name;
 	private String description;
-	private Set<Study> studies = new HashSet<Study>(0);
 
 	// Constructors
 
