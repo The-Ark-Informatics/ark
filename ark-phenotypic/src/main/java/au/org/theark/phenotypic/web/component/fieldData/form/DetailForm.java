@@ -188,4 +188,17 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		containerForm.setModelObject(phenoCollectionVo);
 		onCancel(target);
 	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getFieldData().getId() == null){
+			return true;
+		}else{
+			return false;	
+		}
+		
+	}
 }

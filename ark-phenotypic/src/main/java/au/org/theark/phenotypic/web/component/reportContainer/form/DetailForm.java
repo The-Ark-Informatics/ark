@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -54,7 +55,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 						DetailPanel detailPanel, 
 						WebMarkupContainer listContainer, 
 						WebMarkupContainer detailsContainer, 
-						Form<PhenoCollectionVO> containerForm,
+						AbstractContainerForm<PhenoCollectionVO> containerForm,
 						WebMarkupContainer viewButtonContainer,
 						WebMarkupContainer editButtonContainer,
 						WebMarkupContainer detailFormContainer,
@@ -171,5 +172,14 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		setModelObject(phenoCollectionVo);
 		onCancel(target);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		//TODO Determine if you need a Report Entity
+		return false;
 	}
 }

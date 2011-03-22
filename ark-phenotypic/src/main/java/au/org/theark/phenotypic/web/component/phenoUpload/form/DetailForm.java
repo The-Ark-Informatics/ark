@@ -24,6 +24,7 @@ import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
@@ -72,7 +73,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, Form<UploadVO> containerForm,
+	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, AbstractContainerForm<UploadVO> containerForm,
 			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
 	{
 
@@ -275,5 +276,18 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		UploadVO uploadVo = new UploadVO();
 		setModelObject(uploadVo);
 		onCancel(target);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getUpload().getId() == null){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 }

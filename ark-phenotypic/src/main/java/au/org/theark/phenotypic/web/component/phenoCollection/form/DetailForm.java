@@ -33,6 +33,7 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -88,7 +89,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 						DetailPanel detailPanel, 
 						WebMarkupContainer listContainer, 
 						WebMarkupContainer detailsContainer, 
-						Form<PhenoCollectionVO> containerForm,
+						AbstractContainerForm<PhenoCollectionVO> containerForm,
 						WebMarkupContainer viewButtonContainer,
 						WebMarkupContainer editButtonContainer,
 						WebMarkupContainer detailFormContainer,
@@ -250,5 +251,18 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
 		onCancel(target);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
+	 */
+	@Override
+	protected boolean isNew() {
+		if(containerForm.getModelObject().getPhenoCollection().getId() == null){
+			return true;
+		}else{
+			return false;
+		}
+		
 	}
 }
