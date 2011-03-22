@@ -40,8 +40,6 @@ public class Study implements java.io.Serializable {
 	private String chiefInvestigator;
 	private String coInvestigator;
 	private Boolean autoGenerateSubjectUId;
-	private Long subjectUIdStart;
-	private String subjectIdPrefix;
 	private String contactPerson;
 	private String contactPersonPhone;
 	private String ldapGroupName;
@@ -49,6 +47,12 @@ public class Study implements java.io.Serializable {
 	private String subStudyBiospecimenPrefix;
 	private Blob studyLogoBlob;
 	private String filename;
+	
+	// SubjectUID autogeneration parameters
+	private Long subjectUidStart;
+	private String subjectUidPrefix;
+	private String subjectUidToken;
+	private SubjectUidPadChar subjectUidPadChar;
 	
 	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(0);
 	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(0);
@@ -79,6 +83,7 @@ public class Study implements java.io.Serializable {
 			Long subjectUIdStart, String subjectIdPrefix, String contactPerson,
 			String contactPersonPhone, String ldapGroupName,
 			Boolean autoConsent, String subStudyBiospecimenPrefix,
+			String filename, String subjectIdToken, SubjectUidPadChar subjectUIdPadChar,
 			Set<LinkStudySubstudy> linkStudySubstudiesForid,
 			Set<LinkStudyStudysite> linkStudyStudysites,
 			Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds,
@@ -96,13 +101,16 @@ public class Study implements java.io.Serializable {
 		this.chiefInvestigator = chiefInvestigator;
 		this.coInvestigator = coInvestigator;
 		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
-		this.subjectUIdStart = subjectUIdStart;
-		this.subjectIdPrefix = subjectIdPrefix;
+		this.subjectUidStart = subjectUIdStart;
+		this.subjectUidPrefix = subjectIdPrefix;
 		this.contactPerson = contactPerson;
 		this.contactPersonPhone = contactPersonPhone;
 		this.ldapGroupName = ldapGroupName;
 		this.autoConsent = autoConsent;
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
+		this.subjectUidPrefix = subjectIdPrefix;
+		this.subjectUidToken = subjectIdToken;
+		this.subjectUidPadChar = subjectUIdPadChar; 
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 		this.linkStudyStudysites = linkStudyStudysites;
 		this.studyComps = studyComps;
@@ -194,22 +202,22 @@ public class Study implements java.io.Serializable {
 		this.coInvestigator = coInvestigator;
 	}
 
-	@Column(name = "SUBJECT_UID_START", precision = 22, scale = 0)
-	public Long getSubjectUIdStart() {
-		return subjectUIdStart;
+	@Column(name = "SUBJECTUID_START", precision = 22, scale = 0)
+	public Long getSubjectUidStart() {
+		return subjectUidStart;
 	}
 
-	public void setSubjectUIdStart(Long subjectUIdStart) {
-		this.subjectUIdStart = subjectUIdStart;
+	public void setSubjectUidStart(Long subjectUIdStart) {
+		this.subjectUidStart = subjectUIdStart;
 	}
 
-	@Column(name = "SUBJECT_KEY_PREFIX", length = 20)
-	public String getSubjectIdPrefix() {
-		return this.subjectIdPrefix;
+	@Column(name = "SUBJECTUID_PREFIX", length = 3)
+	public String getSubjectUidPrefix() {
+		return this.subjectUidPrefix;
 	}
 
-	public void setSubjectIdPrefix(String subjectIdPrefix) {
-		this.subjectIdPrefix = subjectIdPrefix;
+	public void setSubjectUidPrefix(String subjectIdPrefix) {
+		this.subjectUidPrefix = subjectIdPrefix;
 	}
 
 	@Column(name = "CONTACT_PERSON", length = 50)
@@ -248,7 +256,7 @@ public class Study implements java.io.Serializable {
 		this.autoConsent = autoConsent;
 	}
 	
-	@Column(name = "AUTO_GENERATE_SUBJECT_UID", precision = 1, scale = 0)
+	@Column(name = "AUTO_GENERATE_SUBJECTUID", precision = 1, scale = 0)
 	public Boolean getAutoGenerateSubjectUId() {
 		return autoGenerateSubjectUId;
 	}
@@ -379,5 +387,32 @@ public class Study implements java.io.Serializable {
 	public String getFilename()
 	{
 		return filename;
+	}
+
+	/**
+	 * @param subjectIdToken the subjectIdToken to set
+	 */
+	public void setSubjectUidToken(String subjectIdToken)
+	{
+		this.subjectUidToken = subjectIdToken;
+	}
+
+	/**
+	 * @return the subjectIdToken
+	 */
+	@Column(name = "SUBJECTUID_TOKEN")
+	public String getSubjectUidToken()
+	{
+		return subjectUidToken;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECTUID_PADCHAR_ID")
+	public SubjectUidPadChar getSubjectUidPadChar() {
+		return this.subjectUidPadChar;
+	}
+
+	public void setSubjectUidPadChar(SubjectUidPadChar subjectUidPadChar) {
+		this.subjectUidPadChar = subjectUidPadChar;
 	}
 }
