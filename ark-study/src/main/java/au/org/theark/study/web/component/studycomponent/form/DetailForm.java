@@ -20,6 +20,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -27,6 +28,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+
 
 /**
  * @author nivedann
@@ -166,12 +168,17 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 	protected void onDeleteConfirmed(AjaxRequestTarget target,String selection, ModalWindow selectModalWindow) {
 		try {
 			studyService.delete(containerForm.getModelObject().getStudyComponent());
-			selectModalWindow.close(target);
 			StudyCompVo studyCompVo = new StudyCompVo();
 			containerForm.setModelObject(studyCompVo);
-			onCancel(target);
-		} catch (ArkSystemException e) {
+			selectModalWindow.close(target);
+			containerForm.info("The Study Component was deleted successfully.");
+			editCancelProcess(target);
+		}catch(EntityCannotBeRemoved cannotRemoveException){
 			containerForm.error("Cannot Delete this Study Component. This component is associated with a Subject");
+			processErrors(target);
+		} 
+		catch (ArkSystemException e) {
+			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}
 		

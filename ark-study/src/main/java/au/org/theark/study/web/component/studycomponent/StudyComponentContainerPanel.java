@@ -10,9 +10,12 @@ import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import au.org.theark.core.web.component.AbstractContainerPanel;
+
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -35,6 +38,9 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	
 	public StudyComponentContainerPanel(String id) {
@@ -75,6 +81,16 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 			@Override
 			protected Object load() {
+				
+				 try {
+					
+					 Long studySessionId  = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					 Study studyInContext = iArkCommonService.getStudy(studySessionId);
+					 containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
+					 containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent()));
+				} catch (ArkSystemException e) {
+					containerForm.error("A System Exception has occured please contact Support");
+				}
 				pageableListView.removeAll();
 				return containerForm.getModelObject().getStudyCompList();
 			}
