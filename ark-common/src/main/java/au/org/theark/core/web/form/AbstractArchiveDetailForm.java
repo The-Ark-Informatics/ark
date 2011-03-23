@@ -194,7 +194,8 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		target.addComponent(crudVO.getSearchPanelContainer());
 		target.addComponent(crudVO.getViewButtonContainer());
 		target.addComponent(crudVO.getEditButtonContainer());
-
+		
+		target.addComponent(feedBackPanel);
 	}
 
 
