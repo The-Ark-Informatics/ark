@@ -12,6 +12,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -27,6 +29,7 @@ import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.LinkSubjectStudycomp;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -116,14 +119,30 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 	
-	public void delete(StudyComp studyComp) throws ArkSystemException{
+	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved{
 		try{
-			getSession().delete(studyComp);	
+			if(!isStudyComponentUsed(studyComp)){
+				getSession().delete(studyComp);	
+			}else{
+				throw new EntityCannotBeRemoved("The Study component is used and cannot be removed.");
+			}
 		}catch(HibernateException hibException){
 			log.error("A hibernate exception occured. Cannot detele the study component ID: " + studyComp.getId() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot update Study component due to system error");
 		}
 		
+	}
+	
+	public boolean isStudyComponentUsed(StudyComp studyComp){
+		boolean flag = false;
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		criteria.add(Restrictions.eq("studyComp", studyComp));
+		criteria.setProjection(Projections.rowCount());
+		Integer i  = (Integer)criteria.list().get(0);
+		if(i > 0){
+			flag = true;
+		}
+		return flag;
 	}
 	
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria){

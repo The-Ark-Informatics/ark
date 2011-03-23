@@ -5,6 +5,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -35,7 +36,7 @@ public interface IStudyDao {
 	
 	public void update(StudyComp studyComponent) throws ArkSystemException;
 	
-	public void delete(StudyComp studyComp) throws ArkSystemException;
+	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved;
 	
 	/**
 	 * Interface to get a list of Study Status reference data from the backend.
