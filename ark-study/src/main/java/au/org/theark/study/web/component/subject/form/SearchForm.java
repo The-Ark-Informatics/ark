@@ -163,7 +163,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		{
 			WebMarkupContainer wmcDetailFormContainer = (WebMarkupContainer) detailFormCompContainer;
 			TextField<String> subjectUID = (TextField<String>)wmcDetailFormContainer.get(Constants.SUBJECT_UID);
-			getModelObject().getSubjectStudy().setSubjectUID("Auto-generated");
+			getModelObject().getSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
 			subjectUID.setEnabled(false);
 		}
 
