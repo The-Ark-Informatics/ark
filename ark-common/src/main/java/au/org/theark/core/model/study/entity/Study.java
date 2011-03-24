@@ -39,7 +39,7 @@ public class Study implements java.io.Serializable {
 	private Long estimatedYearOfCompletion;
 	private String chiefInvestigator;
 	private String coInvestigator;
-	private Boolean autoGenerateSubjectUId;
+	
 	private String contactPerson;
 	private String contactPersonPhone;
 	private String ldapGroupName;
@@ -49,6 +49,7 @@ public class Study implements java.io.Serializable {
 	private String filename;
 	
 	// SubjectUID autogeneration parameters
+	private Boolean autoGenerateSubjectUid;
 	private Long subjectUidStart;
 	private String subjectUidPrefix;
 	private String subjectUidToken;
@@ -79,7 +80,7 @@ public class Study implements java.io.Serializable {
 	public Study(Long id, StudyStatus studyStatus, String name,
 			String description, Date dateOfApplication,
 			Long estimatedYearOfCompletion, String chiefInvestigator,
-			String coInvestigator, Boolean autoGenerateSubjectUId,
+			String coInvestigator, Boolean autoGenerateSubjectUid,
 			Long subjectUIdStart, String subjectIdPrefix, String contactPerson,
 			String contactPersonPhone, String ldapGroupName,
 			Boolean autoConsent, String subStudyBiospecimenPrefix,
@@ -100,7 +101,7 @@ public class Study implements java.io.Serializable {
 		this.estimatedYearOfCompletion = estimatedYearOfCompletion;
 		this.chiefInvestigator = chiefInvestigator;
 		this.coInvestigator = coInvestigator;
-		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
+		this.autoGenerateSubjectUid = autoGenerateSubjectUid;
 		this.subjectUidStart = subjectUIdStart;
 		this.subjectUidPrefix = subjectIdPrefix;
 		this.contactPerson = contactPerson;
@@ -257,12 +258,12 @@ public class Study implements java.io.Serializable {
 	}
 	
 	@Column(name = "AUTO_GENERATE_SUBJECTUID", precision = 1, scale = 0)
-	public Boolean getAutoGenerateSubjectUId() {
-		return autoGenerateSubjectUId;
+	public Boolean getAutoGenerateSubjectUid() {
+		return autoGenerateSubjectUid;
 	}
 
-	public void setAutoGenerateSubjectUId(Boolean autoGenerateSubjectUId) {
-		this.autoGenerateSubjectUId = autoGenerateSubjectUId;
+	public void setAutoGenerateSubjectUid(Boolean autoGenerateSubjectUid) {
+		this.autoGenerateSubjectUid = autoGenerateSubjectUid;
 	}
 
 	@Column(name = "SUB_STUDY_BIOSPECIMEN_PREFIX", length = 20)
