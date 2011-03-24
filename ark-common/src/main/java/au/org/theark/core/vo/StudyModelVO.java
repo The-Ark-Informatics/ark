@@ -19,6 +19,7 @@ public class StudyModelVO implements Serializable{
 	private Collection<ModuleVO> modulesAvailable;
 	private Collection<ModuleVO> modulesSelected;
 	private String studySummaryLabel;
+	private String subjectUidExample;
 	
 	public StudyModelVO(){
 		study = new Study();
@@ -27,6 +28,7 @@ public class StudyModelVO implements Serializable{
 		studyList = new ArrayList<Study>();
 		modulesAvailable = new ArrayList<ModuleVO>();
 		modulesSelected = new ArrayList<ModuleVO>();
+		setSubjectUidExample(new String());
 	}
 	
 	public Study getStudy() {
@@ -74,12 +76,35 @@ public class StudyModelVO implements Serializable{
 		this.modulesSelected = modulesSelected;
 	}
 
-	public String getStudySummaryLabel() {
-		return study.getName();
-	}
-
-	public void setStudySummaryLabel(String studySummaryLabel) {
+	/**
+	 * @param studySummaryLabel the studySummaryLabel to set
+	 */
+	public void setStudySummaryLabel(String studySummaryLabel)
+	{
 		this.studySummaryLabel = studySummaryLabel;
 	}
+
+	/**
+	 * @return the studySummaryLabel
+	 */
+	public String getStudySummaryLabel()
+	{
+		return study.getName();
+	}
 	
+	/**
+	 * @return the subjectUidExample
+	 */
+	public String getSubjectUidExample()
+	{
+		return subjectUidExample;
+	}
+	
+	/**
+	 * @param subjectUidExample the subjectUidExample to set
+	 */
+	public void setSubjectUidExample(String subjectUidExample)
+	{
+		this.subjectUidExample = subjectUidExample;
+	}
 }
