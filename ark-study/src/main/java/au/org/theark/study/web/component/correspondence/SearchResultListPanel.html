@@ -1,0 +1,96 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="5%">&nbsp;</th>
+			<th width="5%>
+				<label for="date">
+					<wicket:message	key="date">Date:</wicket:message>
+				</label>
+			</th>
+			
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="correspondenceStatus">
+					<wicket:message	key="correspondenceStatus">Status:</wicket:message>
+				</label>
+			</th>
+
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="studyManager">
+					<wicket:message	key="studyManager">Study manager:</wicket:message>
+				</label>
+			</th>
+			
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="correspondenceDirection">
+					<wicket:message	key="correspondenceDirection">Direction:</wicket:message>
+				</label>
+			</th>
+
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="correspondenceOutcome">
+					 <wicket:message key="correspondenceOutcome">Outcome:</wicket:message>
+				</label>
+			</th>
+			
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="something">
+					&nbsp;
+				</label>
+			</th>
+			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="correspondenceList">
+			
+			<td width="5%"></td>
+			<td width="10%">
+			  <a href="#" wicket:id="correspondence">
+				  <span wicket:id="correspondenceLabel">A correspondence link</span>
+			  </a>
+			</td>
+
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+  				<span wicket:id="correspondenceStatusType.name">Active</span>			   
+			</td>
+
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<span wicket:id="studyManager">John Smith</span>		
+			</td>
+
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<span wicket:id="correspondenceDirectionType.name">Outgoing</span>		
+			</td>
+
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<span wicket:id="correspondenceModeType.name">Mail</span>		
+			</td>
+
+			<td width="5%">&nbsp;</td>
+			<td width="5%">
+			  	&nbsp;
+			</td>
+			
+		</tr>
+		<tr>
+			<td width="5%">&nbsp;</td>
+			<td width="15%"><span wicket:id="correspondenceNavigator" class="a"></span></td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+			<td width="5%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
