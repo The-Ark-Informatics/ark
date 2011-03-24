@@ -89,4 +89,7 @@ public interface IPhenotypicService {
 	
 	// Delimiter Type
 	public Collection<DelimiterType> getDelimiterTypes();
+	
+	public int getCountOfFieldsInStudy(Study study);
+	public int getCountOfFieldsWithDataInStudy(Study study);
 }

@@ -680,4 +680,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION_UPLOAD);
 		iArkCommonService.createAuditHistory(ah);
 	}
+
+	public int getCountOfFieldsInStudy(Study study) {
+		return phenotypicDao.getCountOfFieldsInStudy(study);
+	}
+
+	public int getCountOfFieldsWithDataInStudy(Study study) {
+		return phenotypicDao.getCountOfFieldsWithDataInStudy(study);
+	}
 }
