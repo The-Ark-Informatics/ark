@@ -186,7 +186,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			studyNameTxtFld.setEnabled(true);
 			
 			// Default boolean selections
-			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUId(false);
+			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
 			containerForm.getModelObject().getStudy().setAutoConsent(false);
 			
 			preProcessDetailPanel(target,studyCrudContainerVO);
