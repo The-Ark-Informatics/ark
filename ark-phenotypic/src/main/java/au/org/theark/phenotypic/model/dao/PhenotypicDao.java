@@ -26,6 +26,7 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
+import au.org.theark.phenotypic.model.entity.FieldSummary;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -995,5 +996,39 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void updatePhenoCollectionUpload(PhenoCollectionUpload phenoCollectionUpload)
 	{
 		getSession().update(phenoCollectionUpload);
+	}
+
+	public int getCountOfFieldsInStudy(Study study) {
+		int count = 0;
+		
+		if(study.getId() != null)
+		{
+			FieldSummary fieldSummary = new FieldSummary();
+			Criteria criteria = getSession().createCriteria(FieldSummary.class);
+			criteria.add(Restrictions.eq("id", study.getId()));
+				
+			List<FieldSummary> list =  (List<FieldSummary>) criteria.list();
+			fieldSummary = (FieldSummary) list.get(0);
+			count = fieldSummary.getFields();
+		}
+		
+		return count;
+	}
+
+	public int getCountOfFieldsWithDataInStudy(Study study) {
+		int count = 0;
+		
+		if(study.getId() != null)
+		{
+			FieldSummary fieldSummary = new FieldSummary();
+			Criteria criteria = getSession().createCriteria(FieldSummary.class);
+			criteria.add(Restrictions.eq("id", study.getId()));
+				
+			List<FieldSummary> list =  (List<FieldSummary>) criteria.list();
+			fieldSummary = (FieldSummary) list.get(0);
+			count = fieldSummary.getFieldsWithData();
+		}
+		   
+		return count;
 	}
 }

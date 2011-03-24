@@ -110,4 +110,7 @@ public interface IPhenotypicDao {
 	
 	// Delimiter Types
 	public java.util.Collection<DelimiterType> getDelimiterTypes();
+	
+	public int getCountOfFieldsInStudy(Study study);
+	public int getCountOfFieldsWithDataInStudy(Study study);
 }
