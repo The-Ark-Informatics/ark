@@ -9,6 +9,7 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -29,6 +30,7 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.Details;
 import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 
@@ -188,6 +190,17 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			// Default boolean selections
 			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
 			containerForm.getModelObject().getStudy().setAutoConsent(false);
+			
+			// Disable SubjectUID pattern fields by default for New study
+			WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
+			Details detailsPanel = (Details) wmc.get("detailsPanel");
+			DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
+			WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
+			WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
+			
+			autoSubjectUidcontainer.setEnabled(true);
+			subjectUidcontainer.setEnabled(false);
+			target.addComponent(subjectUidcontainer);
 			
 			preProcessDetailPanel(target,studyCrudContainerVO);
 			
