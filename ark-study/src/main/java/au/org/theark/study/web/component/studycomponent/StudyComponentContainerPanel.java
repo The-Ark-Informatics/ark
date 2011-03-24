@@ -64,7 +64,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 		
 	}
 
-	
+
 	protected WebMarkupContainer initialiseSearchResults(){
 		
 		searchResultPanel = new SearchResultList("searchResults",
@@ -85,9 +85,12 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 				 try {
 					
 					 Long studySessionId  = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					 Study studyInContext = iArkCommonService.getStudy(studySessionId);
-					 containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
-					 containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent()));
+					 if(studySessionId!= null){
+						 Study studyInContext = iArkCommonService.getStudy(studySessionId);
+						 containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
+						 containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent())); 
+					 }
+					 
 				} catch (ArkSystemException e) {
 					containerForm.error("A System Exception has occured please contact Support");
 				}
