@@ -27,6 +27,7 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
+import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
 public class SearchResults extends Panel{
 	
@@ -110,6 +111,28 @@ public class SearchResults extends Panel{
 				
 				Study searchStudy = iArkCommonService.getStudy(study.getId()); 
 				studyContainerForm.getModelObject().setStudy(searchStudy);
+				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
+				
+				WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
+				Details detailsPanel = (Details) wmc.get("detailsPanel");
+				DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
+				
+				// All SubjectUID generator fields grouped within a container(s)
+				WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
+				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
+				
+				// Disable all SubjectUID generation fields is subjects exist
+				if(iArkCommonService.getSubjectCount(searchStudy) > 0)
+				{
+					autoSubjectUidcontainer.setEnabled(false);
+					subjectUidcontainer.setEnabled(false);
+					target.addComponent(subjectUidcontainer);
+				}
+				
+				// Example auto-generated SubjectUID
+				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
+				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
+				target.addComponent(subjectUidExampleLbl);
 				
 				List<ModuleVO> modules = new ArrayList<ModuleVO>();
 				Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
@@ -141,8 +164,7 @@ public class SearchResults extends Panel{
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
-						
-
+				
 				target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
 				target.addComponent(studyCrudContainerVO.getSearchPanelContainer());
 				target.addComponent(studyCrudContainerVO.getDetailPanelContainer());

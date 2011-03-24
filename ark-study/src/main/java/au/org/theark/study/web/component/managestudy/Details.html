@@ -70,7 +70,7 @@
 			
 			<div id="fldLabel">
 				<div class="label">
-					<label for="studyName"><wicket:message	key="study.studyName">Name:</wicket:message></label>
+					<label for="studyName"><wicket:message	key="study.studyName">Study Name:</wicket:message></label>
 				</div>
 			</div>
 			<div id="fldControl">
@@ -240,18 +240,21 @@
 			
 			<div id="panelContentLeft">&nbsp;</div>
 			
-			<div id="fldLabel">
-				<div class="label">
-					<label for="autoGenSubId">
-						<wicket:message	key="study.subjectUid.autogen">Autogenerate Subject UID:</wicket:message>
-					</label>
+			<div wicket:id="autoSubjectUidContainer">
+				<div id="fldLabel">
+					<div class="label">
+						<label for="autoGenSubId">
+							<wicket:message	key="study.subjectUid.autogen">Autogenerate Subject UID:</wicket:message>
+						</label>
+					</div>
 				</div>
-			</div>
-			<div id="fldControl">
-				<span wicket:id="autoGenSubId">
-				  <input type="radio">Yes</input>
-				  <input type="radio">No</input>
-				</span>
+				<div id="fldControl">
+					<span wicket:id="autoGenSubId">
+					  <input type="radio">Yes</input>
+					  <input type="radio">No</input>
+					</span>
+					<input type="checkbox" wicket:id="autoGenSubIdChkBox"/>
+				</div>
 			</div>
 			
 			<div id="panelMargin">&nbsp;</div>
@@ -268,6 +271,7 @@
 					<input type="radio">Yes</input>
 				  	<input type="radio">No</input>
 				</span>
+				<input type="checkbox" wicket:id="autoConsentChkBox"/>
 			</div>
 			
 			<div id="detailPanelContentRight">&nbsp;</div>
