@@ -61,7 +61,7 @@ public class StudyServiceImpl implements IStudyService{
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
 	}
-	
+
 	@Autowired
 	public void setiLdapUserDao(ILdapUserDao iLdapUserDao) {
 		this.iLdapUserDao = iLdapUserDao;
