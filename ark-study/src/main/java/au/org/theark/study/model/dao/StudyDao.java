@@ -27,6 +27,11 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeType;
+import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
+import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -50,6 +55,7 @@ import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
 public class StudyDao extends HibernateSessionDao implements IStudyDao {
+
 
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
 	private Subject	currentUser;
@@ -625,7 +631,131 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		List<SubjectCustmFld> list = criteria.list();
 		return list;
 	}
+
+
+	public void create(Correspondences correspondence)
+			throws ArkSystemException {
+		
+		try{
+			getSession().save(correspondence);
+		}catch(HibernateException ex) {
+			log.error("A Hibernate exception occurred when creating a correspondence record. Cause: " + ex.getStackTrace());
+			throw new ArkSystemException("Unable to create a correspondence record.");
+		}
+		
+	}
+
 	
+	public void update(Correspondences correspondence)
+			throws ArkSystemException, EntityNotFoundException {
+
+		try{
+			getSession().update(correspondence);
+		}catch(HibernateException ex) {
+			log.error("A Hibernate exception occurred when updating a correspondence record. Cause: " + ex.getStackTrace());
+			throw new ArkSystemException("Unable to update a correspondence record.");
+		}
+		
+	}
+	
+	
+	public void delete(Correspondences correspondence)
+			throws ArkSystemException, EntityNotFoundException {
+		
+		try{
+			getSession().update(correspondence);
+		}catch(HibernateException ex) {
+			log.error("A Hibernate exception occurred when deleting a correspondence record. Cause: " + ex.getStackTrace());
+			throw new ArkSystemException("Unable to delete a correspondence record.");
+		}
+		
+	}
+
+
+	public List<Correspondences> getPersonCorrespondenceList(Long personId,
+			Correspondences correspondence) throws ArkSystemException,
+			EntityNotFoundException {
+		
+		Criteria criteria = getSession().createCriteria(Correspondences.class);
+		
+		if(personId != null) {
+			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
+		}
+		
+		if(correspondence != null) {
+			
+			if(correspondence.getCorrespondenceDirectionType() != null) {
+				criteria.add(Restrictions.eq("correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
+			}
+			if(correspondence.getCorrespondenceModeType() != null) {
+				criteria.add(Restrictions.eq("correspondenceModeType", correspondence.getCorrespondenceModeType()));
+			}
+			if(correspondence.getCorrespondenceOutcomeType() != null) {
+				criteria.add(Restrictions.eq("correspondenceOutcomeType", correspondence.getCorrespondenceOutcomeType()));
+			}
+			if(correspondence.getCorrespondenceStatusType() != null) {
+				criteria.add(Restrictions.eq("correspondenceStatusType", correspondence.getCorrespondenceStatusType()));
+			}
+			if(correspondence.getDate() != null) {
+				criteria.add(Restrictions.eq("date", correspondence.getDate()));
+			}
+			if(correspondence.getTime() != null) {
+				criteria.add(Restrictions.eq("time", correspondence.getTime()));
+			}
+			if(correspondence.getDetails() != null) {
+				criteria.add(Restrictions.ilike("details", correspondence.getDetails(), MatchMode.ANYWHERE));
+			}
+			if(correspondence.getReason() != null) {
+				criteria.add(Restrictions.ilike("reason", correspondence.getDetails(), MatchMode.ANYWHERE));
+			}
+			if(correspondence.getComments() != null) {
+				criteria.add(Restrictions.ilike("comments", correspondence.getComments(), MatchMode.ANYWHERE));
+			}
+			if(correspondence.getStudyManager() != null) {
+				criteria.add(Restrictions.ilike("studyManager", correspondence.getStudyManager()));
+			}
+		}
+		
+		List<Correspondences> personCorrespondenceList = criteria.list();
+		if(personCorrespondenceList != null && personCorrespondenceList.size() == 0) {
+			throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
+		}
+		
+		return personCorrespondenceList;
+	}
+
+
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes() {
+		
+		Example directionTypeExample = Example.create(new CorrespondenceDirectionType());
+		Criteria criteria = getSession().createCriteria(CorrespondenceDirectionType.class).add(directionTypeExample);
+		return criteria.list();
+	}
+
+	
+	public List<CorrespondenceModeType> getCorrespondenceModeTypes() {
+
+		Example modeTypeExample = Example.create(new CorrespondenceModeType());
+		Criteria criteria = getSession().createCriteria(CorrespondenceModeType.class).add(modeTypeExample);
+		return criteria.list();
+	}
+
+
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes() {
+
+		Example outcomeTypeExample = Example.create(new CorrespondenceOutcomeType());
+		Criteria criteria = getSession().createCriteria(CorrespondenceOutcomeType.class).add(outcomeTypeExample);
+		return criteria.list();
+	}
+
+
+	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
+
+		Example statusTypeExample = Example.create(new CorrespondenceStatusType());
+		Criteria criteria = getSession().createCriteria(CorrespondenceStatusType.class).add(statusTypeExample);
+		return criteria.list();
+	}
+
 	public Consent getConsent(Long id) throws ArkSystemException {
 		Consent consent = (Consent)getSession().get(Consent.class, id);
 		return consent;
