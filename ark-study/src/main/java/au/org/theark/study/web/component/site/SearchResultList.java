@@ -35,7 +35,7 @@ public class SearchResultList extends Panel{
 
 	public PageableListView<SiteVO> buildPageableListView(IModel iModel){
 		
-		PageableListView<SiteVO> sitePageableListView = new PageableListView<SiteVO>("siteVoList", iModel, 10) {
+		PageableListView<SiteVO> sitePageableListView = new PageableListView<SiteVO>("siteVoList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
 			protected void populateItem(final ListItem<SiteVO> item) {
 				

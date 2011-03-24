@@ -61,7 +61,7 @@ public class SearchResultListPanel extends Panel{
 	
 	public PageableListView<Phone> buildPageableListView(IModel iModel){
 		
-		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST,iModel,5) {
+		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST,iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			@Override
 			protected void populateItem(final ListItem<Phone> item) {

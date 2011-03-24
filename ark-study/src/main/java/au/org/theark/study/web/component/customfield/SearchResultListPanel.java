@@ -41,7 +41,7 @@ public class SearchResultListPanel extends Panel{
 
 	public PageableListView<SubjectCustmFld> buildPageableListView(IModel iModel) {
 		
-		PageableListView<SubjectCustmFld> pageableListView = new PageableListView<SubjectCustmFld>(Constants.SEARCH_RESULT_LIST,iModel,10){
+		PageableListView<SubjectCustmFld> pageableListView = new PageableListView<SubjectCustmFld>(Constants.SEARCH_RESULT_LIST,iModel,au.org.theark.core.Constants.ROWS_PER_PAGE){
 
 			@Override
 			protected void populateItem(ListItem<SubjectCustmFld> item) {

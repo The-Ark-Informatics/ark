@@ -69,7 +69,7 @@ public class SearchResultListPanel extends Panel{
 	
 	public PageableListView<Consent> buildPageableListView(IModel iModel){
 		
-		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST,iModel,5) {
+		PageableListView<Consent> pageableListView = new PageableListView<Consent>(Constants.CONSENT_LIST,iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			@Override
 			protected void populateItem(final ListItem<Consent> item) {

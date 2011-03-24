@@ -97,7 +97,7 @@ public class SearchResultList extends Panel{
 	 */
 	public PageableListView<ArkUserVO> buildUserPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
 		
-		PageableListView<ArkUserVO>  pageableListView = new PageableListView<ArkUserVO>("userList", iModel, 10){
+		PageableListView<ArkUserVO>  pageableListView = new PageableListView<ArkUserVO>("userList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE){
 
 			@Override
 			protected void populateItem(final ListItem<ArkUserVO> item) {
