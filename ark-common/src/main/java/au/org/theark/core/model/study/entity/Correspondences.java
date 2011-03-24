@@ -1,0 +1,171 @@
+package au.org.theark.core.model.study.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import au.org.theark.core.Constants;
+
+@Entity
+@Table(name = "correspondences", schema = Constants.STUDY_SCHEMA)
+public class Correspondences implements Serializable {
+
+	private Long id;
+	private Person person;
+	private Study study;
+	private CorrespondenceStatusType correspondenceStatusType;
+	private String studyManager;
+	private Date date;
+	private String time;
+	private String reason;
+	private CorrespondenceModeType correspondenceModeType;
+	private CorrespondenceDirectionType correspondenceDirectionType;
+	private CorrespondenceOutcomeType correspondenceOutcomeType;
+	private String details;
+	private String comments;
+	
+    @Id
+    @SequenceGenerator(name="correspondences_generator", sequenceName="CORRESPONDENCES_SEQUENCE")
+    @GeneratedValue(strategy=GenerationType.AUTO, generator = "correspondences_generator")
+    @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_ID")
+	public Person getPerson() {
+		return person;
+	}
+
+	public void setPerson(Person person) {
+		this.person = person;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STUDY_ID")
+	public Study getStudy() {
+		return study;
+	}
+
+	public void setStudy(Study study) {
+		this.study = study;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STATUS_TYPE_ID")
+	public CorrespondenceStatusType getCorrespondenceStatusType() {
+		return correspondenceStatusType;
+	}
+	
+	public void setCorrespondenceStatusType(
+			CorrespondenceStatusType correspondenceStatusType) {
+		this.correspondenceStatusType = correspondenceStatusType;
+	}
+	
+	@Column(name = "STUDY_MANAGER", length = 255)
+	public String getStudyManager() {
+		return studyManager;
+	}
+	
+	public void setStudyManager(String studyManager) {
+		this.studyManager = studyManager;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE", length = 7)
+	public Date getDate() {
+		return date;
+	}
+	
+	public void setDate(Date date) {
+		this.date = date;
+	}
+	
+	@Column(name = "TIME", length = 255)	
+	public String getTime() {
+		return time;
+	}
+	
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	@Column(name = "REASON", length = 4096)
+	public String getReason() {
+		return reason;
+	}
+	
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MODE_TYPE_ID")
+	public CorrespondenceModeType getCorrespondenceModeType() {
+		return correspondenceModeType;
+	}
+	
+	public void setCorrespondenceModeType(
+			CorrespondenceModeType correspondenceModeType) {
+		this.correspondenceModeType = correspondenceModeType;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "DIRECTION_TYPE_ID")
+	public CorrespondenceDirectionType getCorrespondenceDirectionType() {
+		return correspondenceDirectionType;
+	}
+	
+	public void setCorrespondenceDirectionType(
+			CorrespondenceDirectionType correspondenceDirectionType) {
+		this.correspondenceDirectionType = correspondenceDirectionType;
+	}
+	
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OUTCOME_TYPE_ID")
+	public CorrespondenceOutcomeType getCorrespondenceOutcomeType() {
+		return correspondenceOutcomeType;
+	}
+	
+	public void setCorrespondenceOutcomeType(
+			CorrespondenceOutcomeType correspondenceOutcomeType) {
+		this.correspondenceOutcomeType = correspondenceOutcomeType;
+	}
+	
+	@Column(name = "DETAILS", length = 4096)
+	public String getDetails() {
+		return details;
+	}
+	
+	public void setDetails(String details) {
+		this.details = details;
+	}
+	
+	@Column(name = "COMMENTS", length = 4096)	
+	public String getComments() {
+		return comments;
+	}
+	
+	public void setComments(String comments) {
+		this.comments = comments;
+	}
+	
+	
+}
