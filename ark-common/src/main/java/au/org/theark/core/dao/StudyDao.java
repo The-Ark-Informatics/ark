@@ -544,8 +544,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		Criteria studyStatusCriteria = getSession().createCriteria(SubjectUidPadChar.class).add(subjectUidPadChar);
 		return   studyStatusCriteria.list();
 	}
-
-
+	
 	public String getSubjectUidExample(Study study)
 	{
 		String subjectUidPrefix = new String("");
@@ -555,7 +554,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		String subjectUidStart = new String("");
 		String subjectUidExample = new String("");
 		
-		if(study.getId() != null && study.getAutoGenerateSubjectUId() != null)
+		if(study.getId() != null && study.getAutoGenerateSubjectUid() != null)
 		{
 			if(study.getSubjectUidPrefix() != null)
 				subjectUidPrefix = study.getSubjectUidPrefix();
@@ -584,5 +583,20 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			subjectUidExample = null;
 		}
 		return subjectUidExample;
+	}
+	
+	public Long getSubjectCount(Study study)
+	{
+		Long subjectCount = new Long(0);
+	   if(study.getId() != null)
+	   {
+		   Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+			criteria.add(Restrictions.eq("study", study));
+			
+			List<LinkSubjectStudy> listOfSubjects =  (List<LinkSubjectStudy>) criteria.list();
+			subjectCount = new Long(listOfSubjects.size());
+	   }
+	   
+		return subjectCount;
 	}
 }
