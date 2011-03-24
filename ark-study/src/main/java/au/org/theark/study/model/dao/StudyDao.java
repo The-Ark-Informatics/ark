@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
@@ -224,16 +225,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			session.save(person);
 			
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-			personLastNameHistory.setPerson(person);
-			personLastNameHistory.setLastName(person.getLastName());
-			session.save(personLastNameHistory);
+			if(person.getLastName() != null)
+			{
+				personLastNameHistory.setPerson(person);
+				personLastNameHistory.setLastName(person.getLastName());
+				session.save(personLastNameHistory);	
+			}
 			
 			// Update subjectPreviousLastname
 			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
 			
 			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
 			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-		}else{
+			
+			// Auto-generate SubjectUID
+			if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+			{
+				String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
+				linkSubjectStudy.setSubjectUID(subjectUID);
+				session.update(linkSubjectStudy);
+			}
+		}
+		else
+		{
 			throw new ArkUniqueException("Subject UID must be unique");
 		}
 	}
@@ -247,8 +261,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			session.update(person);// Update Person and associated Phones
 			
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-			personLastNameHistory.setPerson(person);
-			personLastNameHistory.setLastName(person.getLastName());
+			if(person.getLastName() != null)
+			{
+				personLastNameHistory.setPerson(person);
+				personLastNameHistory.setLastName(person.getLastName());
+				session.save(personLastNameHistory);	
+			}
+			
 			String currentLastName = getCurrentLastname(person);
 			
 			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
@@ -262,6 +281,62 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}else{
 			throw new ArkUniqueException("Subject UID must be unique");
 		}		
+	}
+	
+	public String getNextGeneratedSubjectUID(Study study)
+	{
+		String subjectUidPrefix = new String("");
+		String subjectUidToken = new String("");
+		String subjectUidPaddedIncrementor = new String("");
+		String subjectUidPadChar = new String("0");
+		String nextIncrementedsubjectUid = new String("");
+		String subjectUid = new String("");
+		
+		if(study.getId() != null && study.getAutoGenerateSubjectUid() != null)
+		{
+			if(study.getSubjectUidPrefix() != null)
+				subjectUidPrefix = study.getSubjectUidPrefix();
+			
+			if(study.getSubjectUidToken() != null)
+				subjectUidToken = study.getSubjectUidToken();
+			
+			if(study.getSubjectUidPadChar() != null)
+			{
+				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();	
+			}
+			
+			if(study.getSubjectUidStart() != null)
+			{
+				Long subjectUidStart = study.getSubjectUidStart();
+				//TODO: Work out a safer method of getting next incremented number
+				Long incrementedValue = subjectUidStart +  getSubjectCount(study)-1;
+				nextIncrementedsubjectUid = incrementedValue.toString();
+			}
+			
+			int size = Integer.parseInt(subjectUidPadChar);
+			subjectUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedsubjectUid, size, "0");
+			subjectUid = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
+		}
+		else
+		{
+			subjectUid = null;
+		}
+		return subjectUid;
+	}
+	
+	public Long getSubjectCount(Study study)
+	{
+		Long subjectCount = new Long(0);
+	   if(study.getId() != null)
+	   {
+		   Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+			criteria.add(Restrictions.eq("study", study));
+			
+			List<LinkSubjectStudy> listOfSubjects =  (List<LinkSubjectStudy>) criteria.list();
+			subjectCount = new Long(listOfSubjects.size());
+	   }
+	   
+		return subjectCount;
 	}
 	
 	public Collection<SubjectStatus> getSubjectStatus(){
@@ -717,7 +792,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
 		
 		// Only get previous lastname if person in context
-		if(person.getId() != null){
+		if(person.getId() != null && person.getLastName() != null){
 			Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
 			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));
 			criteria.addOrder(Order.desc("id"));
