@@ -225,4 +225,9 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	{
 		return studyDao.getSubjectUidExample(study);
 	}
+
+	public Long getSubjectCount(Study study)
+	{
+		return studyDao.getSubjectCount(study);
+	}
 }

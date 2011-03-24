@@ -118,4 +118,6 @@ public interface IArkCommonService {
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
 	
 	public String getSubjectUidExample(Study study);
+
+	public Long getSubjectCount(Study study);
 }
