@@ -157,6 +157,15 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 			getModelObject().getSubjectStudy().setCountry(countryList.get(0));
 		}
 		updateDetailFormPrerender(getModelObject().getSubjectStudy());
+		
+		// Disable SubjectUID if auto-generation set
+		if(getModelObject().getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+		{
+			WebMarkupContainer wmcDetailFormContainer = (WebMarkupContainer) detailFormCompContainer;
+			TextField<String> subjectUID = (TextField<String>)wmcDetailFormContainer.get(Constants.SUBJECT_UID);
+			getModelObject().getSubjectStudy().setSubjectUID("Auto-generated");
+			subjectUID.setEnabled(false);
+		}
 
 		preProcessDetailPanel(target);
 	}
