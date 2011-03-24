@@ -73,7 +73,7 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<PhenoCollectionUpload> buildPageableListView(
 			IModel iModel) {
 		PageableListView<PhenoCollectionUpload> sitePageableListView = new PageableListView<PhenoCollectionUpload>(
-				Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE) {
+				Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
 			protected void populateItem(
 					final ListItem<PhenoCollectionUpload> item) {

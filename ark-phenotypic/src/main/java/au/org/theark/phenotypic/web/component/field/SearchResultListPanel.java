@@ -53,7 +53,7 @@ public class SearchResultListPanel extends Panel
 	public PageableListView<Field> buildPageableListView(IModel iModel)
 	{
 
-		PageableListView<Field> sitePageableListView = new PageableListView<Field>("fieldList", iModel, 10)
+		PageableListView<Field> sitePageableListView = new PageableListView<Field>("fieldList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
 		{
 			@Override
 			protected void populateItem(final ListItem<Field> item)
