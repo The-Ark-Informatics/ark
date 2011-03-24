@@ -219,7 +219,7 @@ public class Constants {
 	public static final String CONSENT_FILE_USER_ID="consentFile.userId";
 	
 	public static final int		PALETTE_ROWS = 5;
-	public static final long	STUDY_LOGO_FILESIZE = 100;
+	public static final long	STUDY_LOGO_FILESIZE_KB = 100;
 	
 	/*Custom Field*/
 	public static final String CUSTOM_FIELD_FIELD_TITLE = "customField.fieldTitle";
@@ -257,8 +257,5 @@ public class Constants {
 	public static final String SUBJECT_CONSENT_TO_ACTIVE_CONTACT ="subjectStudy.consentToActiveContact";
 	public static final String SUBJECT_CONSENT_TO_USEDATA ="subjectStudy.consentToUseData";
 	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="subjectStudy.consentToPassiveDataGathering";
-	
-
-	
-	
+	public static final String SUBJECT_AUTO_GENERATED = "Auto-generated";
 }
