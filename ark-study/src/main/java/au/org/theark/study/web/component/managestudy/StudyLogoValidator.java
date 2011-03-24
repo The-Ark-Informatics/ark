@@ -20,7 +20,7 @@ public class StudyLogoValidator implements IValidator<FileUpload>
 
 	private static final long			serialVersionUID	= -8116224338791429342L;
 	public static final List<String>	fileExtensions			= Arrays.asList("jpg", "gif", "jpeg", "png");
-	public static final Bytes fileSize	= Bytes.kilobytes(au.org.theark.study.web.Constants.STUDY_LOGO_FILESIZE);
+	public static final Bytes fileSize	= Bytes.kilobytes(au.org.theark.study.web.Constants.STUDY_LOGO_FILESIZE_KB);
    private SerializableBufferedImage image;
    
 	public void validate(IValidatable<FileUpload> pValidatable)
