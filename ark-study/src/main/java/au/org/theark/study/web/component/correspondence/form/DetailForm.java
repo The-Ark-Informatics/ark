@@ -176,4 +176,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		target.addComponent(feedBackPanel);
 	}
 
+
+	@Override
+	protected boolean isNew() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }
