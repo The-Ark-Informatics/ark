@@ -10,6 +10,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -190,13 +191,19 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			// Default boolean selections
 			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
 			containerForm.getModelObject().getStudy().setAutoConsent(false);
-			
+					
 			// Disable SubjectUID pattern fields by default for New study
 			WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
 			Details detailsPanel = (Details) wmc.get("detailsPanel");
 			DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 			WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 			WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
+			
+			// Example auto-generated SubjectUID null on new
+			containerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy()));
+			Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
+			subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
+			target.addComponent(subjectUidExampleLbl);
 			
 			autoSubjectUidcontainer.setEnabled(true);
 			subjectUidcontainer.setEnabled(false);
