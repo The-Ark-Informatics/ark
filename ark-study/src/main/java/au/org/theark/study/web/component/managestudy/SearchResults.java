@@ -54,7 +54,7 @@ public class SearchResults extends Panel{
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
 		
-		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, 10) {
+		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
 			protected void populateItem(final ListItem<Study> item) {
 				
