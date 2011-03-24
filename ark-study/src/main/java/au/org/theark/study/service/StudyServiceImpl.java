@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +24,11 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeType;
+import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
+import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -422,6 +428,39 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld){
 		return studyDao.searchStudyFields(subjectCustmFld);
+	}
+	
+	/*** correspondence service functions ***/
+	public void create(Correspondences correspondence) throws ArkSystemException {
+		studyDao.create(correspondence);
+	}
+	
+	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
+		studyDao.update(correspondence);
+	}
+		
+	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException {
+		studyDao.delete(correspondence);
+	}
+	
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws EntityNotFoundException, ArkSystemException {
+		return studyDao.getPersonCorrespondenceList(personId, correspondence);
+	}
+
+	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
+		return studyDao.getCorrespondenceStatusTypes();
+	}
+	
+	public List<CorrespondenceModeType> getCorrespondenceModeTypes() {
+		return studyDao.getCorrespondenceModeTypes();
+	}
+
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes() {
+		return studyDao.getCorrespondenceDirectionTypes();
+	}
+
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes() {
+		return studyDao.getCorrespondenceOutcomeTypes();
 	}
 
 	

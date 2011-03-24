@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,11 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
+import au.org.theark.core.model.study.entity.CorrespondenceModeType;
+import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
+import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
+import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -29,7 +35,7 @@ import au.org.theark.core.vo.SubjectVO;
 
 public interface IStudyService {
 	/**
-	 * This interface must be accessible to only super administator role
+	 * This interface must be accessible to only super administrator role
 	 * @param studyEntity
 	 * @param selectedApplications
 	 * @throws ArkSystemException
@@ -153,6 +159,16 @@ public interface IStudyService {
 	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException;
 	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)  throws EntityNotFoundException,ArkSystemException;
+	
+	public void create(Correspondences correspondence) throws ArkSystemException;
+	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
+	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws EntityNotFoundException, ArkSystemException;
+	
+	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes();
+	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes();
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
 	
 	public void createPersonLastnameHistory(Person person);
 	public void updatePersonLastnameHistory(Person person);
