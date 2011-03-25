@@ -70,7 +70,9 @@ public class SearchUserForm extends Form<ArkUserVO>{
 				SecurityManager securityManager =  ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();		
 				boolean flag = false;
-				if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+				if(		
+						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
+						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
 						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
 					flag = true;
 				}
