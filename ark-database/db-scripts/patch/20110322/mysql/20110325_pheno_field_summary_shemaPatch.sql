@@ -1,0 +1,1 @@
+CREATE VIEW `pheno`.`field_summary` AS select `fc`.`STUDY_ID` AS `study_id`,sum(`fc`.`FIELD_ID`) AS `fields`,(select sum(`fd`.`FIELD_ID`) AS `SUM(fd.field_id)` from `pheno`.`field_data` `fd` where (`fd`.`COLLECTION_ID` = `fc`.`COLLECTION_ID`)) AS `fields_with_data` from `pheno`.`field_collection` `fc`
