@@ -109,7 +109,7 @@ public class StudySubMenuTab extends Panel
 
 						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
 						Subject currentUser = SecurityUtils.getSubject();
-						if ((arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN) || (arkSecurityManager.subjectHasRole(RoleConstants.STUDY_ADMIN))))
+						if (  (arkSecurityManager.subjectHasRole(RoleConstants.SUPER_ADMIN))|| (arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN) || (arkSecurityManager.subjectHasRole(RoleConstants.STUDY_ADMIN))))
 						{
 
 							flag = currentUser.isAuthenticated();
