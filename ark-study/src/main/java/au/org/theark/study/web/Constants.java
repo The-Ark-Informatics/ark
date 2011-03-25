@@ -116,8 +116,7 @@ public class Constants {
 	public static final String STUDY_SITE_NAME="studySite.name";
 	
 	
-	public static final String STUDY_KEY = "study.id";
-	
+	public static final String STUDY_ID = "study.id";
 	public static final String STUDY_NAME="study.name";
 	public static final String STUDY_DESCRIPTION="study.description";
 	public static final String STUDY_STATUS = "study.studyStatus";
@@ -127,7 +126,7 @@ public class Constants {
 	public static final String STUDY_ESTIMATED_YEAR_OF_COMPLETION="study.estimatedYearOfCompletion";
 	public static final String STUDY_CHIEF_INVESTIGATOR ="study.chiefInvestigator";
 	public static final String STUDY_CO_INVESTIGATOR ="study.coInvestigator";
-	public static final String STUDY_AUTO_GENERATE_SUBJECT_KEY = "study.autoGenerateSubjectUId";
+	public static final String STUDY_AUTO_GENERATE_SUBJECTUID = "study.autoGenerateSubjectUid";
 	public static final String SUBJECT_UID_START="study.subjectUidStart";
 	public static final String SUBJECT_UID_PREFIX = "study.subjectUidPrefix";
 	public static final String SUBJECT_UID_TOKEN = "study.subjectUidToken";
@@ -136,6 +135,8 @@ public class Constants {
 	public static final String STUDY_LDAP_GROUP_NAME="ldapGroupName";
 	public static final String STUDY_AUTO_CONSENT="study.autoConsent";
 	public static final String SUB_STUDY_BIOSPECIMENT_PREFIX="study.subStudyBiospecimenPrefix";
+	public static final String	STUDY_FILENAME	= "study.filename";
+	
 	public static final String STUDY_MAIN_TAB="Study";
 	public static final String SUBJECT_MAIN_TAB="Subject";
 	//public static final String STUDY_STATUS_KEY="studyStatusId";
@@ -150,8 +151,8 @@ public class Constants {
 	public static final String LMC_AVAILABLE_APPS="lmcAvailableApps";
 	public static final String PHONE_TYPE_ID="phoneTypeId";
 	public static final String AUTO_GEN_SUBJECT_KEY ="autoGenerateSubjectKey";
+	public static final String AUTO_GENERATE_SUBJECTUID ="autoGenerateSubjectUid";
 	public static final String AUTO_CONSENT ="autoConsent";
-	public static final String 	AUTO_GEN_SUB_ID ="autoGenSubId";
 	public static final String MODULE_NAME ="moduleName";
 	public static final String MODULES_SELECTED="modulesSelected";
 	public static final String MODULES_AVAILABLE="modulesAvailable";
@@ -258,4 +259,5 @@ public class Constants {
 	public static final String SUBJECT_CONSENT_TO_USEDATA ="subjectStudy.consentToUseData";
 	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="subjectStudy.consentToPassiveDataGathering";
 	public static final String SUBJECT_AUTO_GENERATED = "Auto-generated";
+	
 }
