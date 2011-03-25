@@ -5,9 +5,10 @@ CREATE TABLE `subjectuid_padchar` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(25) NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=latin1;
 
 -- Cellis modified study table to connect to new table [subjectuid_padchar] and neaten it up
+-- (taken from Navicat Structure Synchronization)
 ALTER TABLE `study` DROP FOREIGN KEY `study_ibfk_1`;
 ALTER TABLE `study` DROP COLUMN `AUTO_GENERATE_SUBJECT_UID`;
 ALTER TABLE `study` DROP COLUMN `SUBJECT_UID_START`;
@@ -26,3 +27,5 @@ ALTER TABLE `study` ADD CONSTRAINT `fk_study_subjectuid_padchar` FOREIGN KEY (`S
 
 ALTER TABLE `study` MODIFY COLUMN `CONTACT_PERSON`  varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `SUBJECTUID_PREFIX`;
 ALTER TABLE `study` MODIFY COLUMN `SUBJECT_KEY_PREFIX`  varchar(45) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `SUBJECTUID_PADCHAR_ID`;
+ALTER TABLE `study` MODIFY COLUMN `CONTACT_PERSON_PHONE`  varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `CONTACT_PERSON`;
+ALTER TABLE `study` MODIFY COLUMN `SUBJECT_KEY_START`  varchar(45) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL AFTER `SUBJECT_KEY_PREFIX`;
