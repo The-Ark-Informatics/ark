@@ -1004,12 +1004,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if(study.getId() != null)
 		{
 			FieldSummary fieldSummary = new FieldSummary();
-			Criteria criteria = getSession().createCriteria(FieldSummary.class);
-			criteria.add(Restrictions.eq("id", study.getId()));
-				
-			List<FieldSummary> list =  (List<FieldSummary>) criteria.list();
-			fieldSummary = (FieldSummary) list.get(0);
-			count = fieldSummary.getFields();
+			fieldSummary = (FieldSummary) getSession().get(FieldSummary.class, study.getId());
+			if(fieldSummary != null)
+				count = fieldSummary.getFields();
 		}
 		
 		return count;
@@ -1021,12 +1018,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if(study.getId() != null)
 		{
 			FieldSummary fieldSummary = new FieldSummary();
-			Criteria criteria = getSession().createCriteria(FieldSummary.class);
-			criteria.add(Restrictions.eq("id", study.getId()));
-				
-			List<FieldSummary> list =  (List<FieldSummary>) criteria.list();
-			fieldSummary = (FieldSummary) list.get(0);
-			count = fieldSummary.getFieldsWithData();
+			fieldSummary = (FieldSummary) getSession().get(FieldSummary.class, study.getId());
+			if(fieldSummary != null)
+				count = fieldSummary.getFieldsWithData();
 		}
 		   
 		return count;
