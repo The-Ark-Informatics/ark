@@ -96,7 +96,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private DateTextField					dateOfApplicationDp;
 	private DropDownChoice<StudyStatus>	studyStatusDpChoices;
 	private RadioChoice<Boolean>			autoGenSubIdRdChoice;
-	private CheckBox							autoGenSubIdChkBox;
+	private CheckBox						autoGenSubIdChkBox;
 	private CheckBox							autoConsentChkBox;
 	private RadioChoice<Boolean>			autoConsentRdChoice;
 
@@ -166,8 +166,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 	public void initialiseDetailForm()
 	{
-
-		studyIdTxtFld = new TextField<String>(Constants.STUDY_KEY);
+		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
 		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
 		estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);
@@ -186,13 +185,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		// Label showing example auto-generated SubjectUID
 		subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
-		subjectUidExampleLbl = new Label("study.subjectUid.example", new PropertyModel(this, "subjectUidExampleTxt"))
-		{
-			{
-				setOutputMarkupId(true);
-			}
-		};
-
+		subjectUidExampleLbl = new Label("study.subjectUid.example", new PropertyModel(this, "subjectUidExampleTxt"));
+		subjectUidExampleLbl.setOutputMarkupId(true);
 		subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
 		subjectUidExampleLbl.setVisible(true);
 
@@ -251,12 +245,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
+		// Radio buttons having issue with setting correct model, hiding and using checkBox
 		PropertyModel<Study> pm = new PropertyModel<Study>((CompoundPropertyModel<StudyModelVO>) containerForm.getModel(), "study");
-		autoGenSubIdRdChoice = initRadioButtonChoice(pm, "autoGenerateSubjectUid", "autoGenSubId");
+		autoGenSubIdRdChoice = initRadioButtonChoice(null, Constants.STUDY_AUTO_GENERATE_SUBJECTUID, "autoGenerateSubjectUid");
+		autoGenSubIdRdChoice.setVisible(false);
 
-		// TODO: If user wishes to have check boxes instead of radio buttons, remove setVisible method and hide/remove radio buttons
-		autoGenSubIdChkBox = initCheckBox(pm, "autoGenerateSubjectUid", "autoGenSubIdChkBox", containerForm.getModel().getObject().getStudy().getAutoGenerateSubjectUid());
-		autoGenSubIdChkBox.setVisible(false);
+		autoGenSubIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_SUBJECTUID);
+		autoGenSubIdChkBox.setVisible(true);
 
 		autoGenSubIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
@@ -274,6 +269,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 				target.addComponent(subjectUidContainer);
 			}
 		});
+		autoGenSubIdChkBox.setOutputMarkupId(true);
 
 		autoGenSubIdRdChoice.add(new AjaxFormChoiceComponentUpdatingBehavior()
 		{
@@ -292,10 +288,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 			}
 		});
 
-		autoConsentRdChoice = initRadioButtonChoice(pm, "autoConsent", "autoConsent");
-		// TODO: If user wishes to have check boxes instead of radio buttons, remove setVisible method and hide/remove radio buttons
-		autoConsentChkBox = initCheckBox(pm, "autoConsent", "autoConsentChkBox", containerForm.getModel().getObject().getStudy().getAutoConsent());
-		autoConsentChkBox.setVisible(false);
+		// Radio buttons having issue with setting correct model, hiding and using checkBox
+		autoConsentRdChoice = initRadioButtonChoice(pm, Constants.STUDY_AUTO_CONSENT, "autoConsent");
+		autoConsentRdChoice.setVisible(false);
+		
+		autoConsentChkBox = new CheckBox(Constants.STUDY_AUTO_CONSENT);
+		autoConsentChkBox.setVisible(true);
 		
 		studyIdTxtFld.setEnabled(false);
 		studySummaryLabel = new Label("studySummaryLabel");
@@ -303,7 +301,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getStudyLogoUploadContainer().setOutputMarkupPlaceholderTag(true);
 
 		// fileUpload for logo
-		fileUploadField = new FileUploadField("study.filename", new Model<FileUpload>());
+		fileUploadField = new FileUploadField(Constants.STUDY_FILENAME, new Model<FileUpload>());
 		studyCrudVO.getStudyLogoUploadContainer().add(fileUploadField);
 
 		// Set maximum logo image size to 100K
@@ -473,26 +471,16 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 			}
 		};
 
-		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
-		return new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
-	}
-
-	/**
-	 * A common method that can be used to render CheckBox controls
-	 * 
-	 * @param pm
-	 * @param propertyModelExpr
-	 * @param checkBoxId
-	 * @param defaultModelObject
-	 * @return
-	 */
-	private CheckBox initCheckBox(PropertyModel<Study> pm, String propertyModelExpr, String checkBoxId, Object defaultModelObject)
-	{
-		PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
-		//TODO: Had issues:
-		// java.lang.IllegalStateException: Attempt to set model object on null model of component 
-		//this.setDefaultModelObject(defaultModelObject);
-		return new CheckBox(checkBoxId, propertyModel);
+		
+		RadioChoice<Boolean> radioBtn = null;
+		if(pm == null)
+			radioBtn = new RadioChoice<Boolean>(radioChoiceId);
+		else
+		{
+			PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
+			radioBtn = new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
+		}
+		return radioBtn;
 	}
 
 	@Override

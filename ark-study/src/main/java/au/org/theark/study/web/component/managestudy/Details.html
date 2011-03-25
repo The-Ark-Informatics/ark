@@ -245,15 +245,18 @@
 					<div class="label">
 						<label for="autoGenSubId">
 							<wicket:message	key="study.subjectUid.autogen">Autogenerate Subject UID:</wicket:message>
+							<div id="note">
+								<wicket:message	key="study.subjectUid.autogenNote">[Note replaced from properties]</wicket:message>
+							</div>
 						</label>
 					</div>
 				</div>
 				<div id="fldControl">
-					<span wicket:id="autoGenSubId">
+					<span wicket:id="autoGenerateSubjectUid">
 					  <input type="radio">Yes</input>
 					  <input type="radio">No</input>
 					</span>
-					<input type="checkbox" wicket:id="autoGenSubIdChkBox"/>
+					<input type="checkbox" wicket:id="study.autoGenerateSubjectUid"/>
 				</div>
 			</div>
 			
@@ -271,7 +274,7 @@
 					<input type="radio">Yes</input>
 				  	<input type="radio">No</input>
 				</span>
-				<input type="checkbox" wicket:id="autoConsentChkBox"/>
+				<input type="checkbox" wicket:id="study.autoConsent"/>
 			</div>
 			
 			<div id="detailPanelContentRight">&nbsp;</div>
