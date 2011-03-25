@@ -324,6 +324,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	 */
 	public List<Country> getCountries(){
 		Criteria criteria  = getSession().createCriteria(Country.class);
+		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
 	
@@ -341,19 +342,14 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	
 	public List<CountryState>  getStates(Country country){
 		
-		if(country == null ){
-			//Default it to local one like australia, this can be based on locale
-			//Get the default Country from backend and then use that to fetch the state
+		if(country == null){
 			country = getCountry(Constants.DEFAULT_COUNTRY);
 		}
-		StringBuffer hqlString =	new StringBuffer();
-		hqlString.append(" from CountryState as cs ");
-		hqlString.append(" where cs.country.id = ");
-		hqlString.append( country.getId());
-		
-		Query query = getSession().createQuery(hqlString.toString());
-		List<CountryState> list =  (List<CountryState>) query.list();
-		return list;
+		Criteria stateCriteria = getSession().createCriteria(CountryState.class);
+		stateCriteria.add(Restrictions.eq("country", country));
+		stateCriteria.addOrder(Order.asc("state"));
+		List<CountryState> stateList = (List<CountryState>)stateCriteria.list();
+		return stateList;
 	}
 	
 	/**
@@ -362,6 +358,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	 */
 	public List<AddressType> getAddressTypes(){
 		Criteria criteria  = getSession().createCriteria(AddressType.class);
+		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
 	}
 	
