@@ -1,5 +1,7 @@
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
+import java.awt.Color;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -86,8 +88,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
                  true,		// Show legend  
                  true,		// Show tooltips
                  true);		// Show urls
-        //chart.setBackgroundPaint(Color.white);
-        //chart.setBorderVisible(false);
+        chart.setBackgroundPaint(Color.white);
+        chart.setBorderVisible(false);
 		add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
 		
 		// For summary module, override the default search form buttons isVisible method to false
