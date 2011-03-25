@@ -189,6 +189,6 @@ public interface IStudyService {
 	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException;
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile)  throws EntityNotFoundException,ArkSystemException;
 	
-	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved;
+	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation;
 	
 }

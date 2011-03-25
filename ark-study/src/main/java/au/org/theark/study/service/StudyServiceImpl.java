@@ -193,7 +193,9 @@ public class StudyServiceImpl implements IStudyService{
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
-		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
+		if(
+				(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)) &&
+		        (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)) ){
 			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
 			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
 		}
@@ -215,7 +217,8 @@ public class StudyServiceImpl implements IStudyService{
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
-		if(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
+		if( (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN))&&
+		    (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))){
 			log.warn("Unauthorised request to update study component by " + currentUser .getPrincipal());			
 			throw new UnAuthorizedOperation("The logged in user does not have the permission to update this Study Component.");
 		}
@@ -589,7 +592,16 @@ public class StudyServiceImpl implements IStudyService{
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException {
 		return studyDao.searchSubjectFile(subjectFile);
 	}
-	public void delete(StudyComp studyComp) throws EntityCannotBeRemoved, ArkSystemException{
+
+	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation{
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if(	(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)) && 
+		    (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)) ){
+			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
+			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
+		}
+		
 		studyDao.delete(studyComp);
 	}
 }

@@ -10,6 +10,9 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -29,6 +32,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -215,7 +219,20 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	@Override
 	protected boolean isSecure(String actionType) {
 		// TODO Auto-generated method stub
-		return true;
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();		
+		boolean flag = false;
+		
+		if(actionType.equalsIgnoreCase(Constants.NEW)){
+			if(		
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+				flag = true;
+			}
+			
+		}
+		return flag;
 	}
 	
 

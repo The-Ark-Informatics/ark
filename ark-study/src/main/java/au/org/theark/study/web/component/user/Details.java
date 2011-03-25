@@ -81,11 +81,20 @@ public class Details extends Panel{
 				log.info("Delete the user details from ldap");
 				try{
 					userService.deleteLdapUser(arkUserVO);
-					this.info(arkUserVO.getUserName() + " was deleted successfully.");
+					containerForm.info("The user has been deleted from the system");
 					processFeedback(target);
+					arkUserVO = new ArkUserVO();
+					containerForm.setModelObject(arkUserVO);
+					searchPanelContainer.setVisible(true);
+					detailsContainer.setVisible(false);
+					target.addComponent(searchPanelContainer);
+					target.addComponent(detailsContainer);
+					
 				}catch(ArkSystemException arkSystemException){
+					this.error(" A System Error has occured. Please contact Suppport");
 					log.error("Exception occured while performing a delete on the user details in LDAP " + arkSystemException.getMessage());
 				}catch(Exception ex){
+					this.error(" A System Error has occured. Please contact Suppport");
 					log.error("Exception occured when saving user details " + ex.getMessage());
 				}
 			}
@@ -117,14 +126,14 @@ public class Details extends Panel{
 					}
 					
 				}catch (InvalidNameException e) {
-
+					containerForm.error("An error occurred while saving this user. Please contact support.");
 					log.error("Exception occured while performing an update on the user details in LDAP " + e.getMessage());
 					//userForm.info(userVO.getUserName() + " could not be added or updated. There seems to be a problem with the server. Please try again later");
 				}catch(UserNameExistsException userNameExists){
-					//userForm.error(userNameExists.getMessage());
+					containerForm.error("This user is already registered in the system. Please contact support.");
 				}catch(Exception ex){
+					containerForm.error("An error occurred while saving this user. Please contact support.");
 					log.error("Exception occured when saving user details " + ex.getMessage());
-					userForm.info("A System error has occured. We will have someone contact you.");
 				}
 				
 				target.addComponent(feedBackPanel);

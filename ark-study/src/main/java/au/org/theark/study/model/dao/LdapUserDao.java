@@ -195,12 +195,12 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 		catch(org.springframework.ldap.NameAlreadyBoundException nabe){
 		
-			log.warn("The given username " + userVO.getUserName()  + "  exists in LDAP. " + nabe.getMessage());
+			log.error("The given username " + userVO.getUserName()  + "  exists in LDAP. " + nabe.getMessage());
 			throw new UserNameExistsException("A user with the username " + userVO.getUserName() + " already exists in our system. Please provide a unique username.");
 
 		}catch(InvalidNameException ine){
 		
-			log.warn("A System exception occured " + ine.getMessage());
+			log.error("A System exception occured " + ine.getMessage());
 			//TODO Implement a LDAP ContextSourceTransactionManager for client side Transaction management
 			//Note LDAP as such does not participate in Txn management.
 			throw new ArkSystemException("A System exception occured.");
@@ -1232,8 +1232,10 @@ public class LdapUserDao implements ILdapUserDao{
 			/*Logged in user*/
 			SecurityManager securityManager =  ThreadContext.getSecurityManager();
 			Subject loggedInSubject = SecurityUtils.getSubject();
-			boolean isSuperAdmin = securityManager.hasRole(loggedInSubject.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN);
-			if(isSuperAdmin){
+			boolean isArkSuperAdmin = securityManager.hasRole(loggedInSubject.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN);
+			boolean isSuperAdmin = securityManager.hasRole(loggedInSubject.getPrincipals(), RoleConstants.SUPER_ADMIN);
+			boolean isStudyAdmin = securityManager.hasRole(loggedInSubject.getPrincipals(), RoleConstants.STUDY_ADMIN);
+			if(isSuperAdmin || isStudyAdmin || isArkSuperAdmin){
 				etaUserVO = getUser(etaUserVO.getUserName());
 				
 				LdapName ldapName = new LdapName(baseDC);
@@ -1270,7 +1272,7 @@ public class LdapUserDao implements ILdapUserDao{
 				ldapName = new LdapName(getBasePeopleDn());
 				ldapName.add(new Rdn(Constants.CN,etaUserVO.getUserName()));
 				ldapTemplate.unbind(ldapName);
-				//TODO Add Audit Log for this event
+				log.info("The user has been removed from the system");
 			}else{
 				log.warn("The logged in subject does not have the privileges to delete this user");
 				//TODO Audit Log

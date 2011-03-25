@@ -173,7 +173,11 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 			selectModalWindow.close(target);
 			containerForm.info("The Study Component was deleted successfully.");
 			editCancelProcess(target);
-		}catch(EntityCannotBeRemoved cannotRemoveException){
+		}catch(UnAuthorizedOperation unAuthorisedexception){
+			containerForm.error("You are not authorised to delete this study component.");
+			processErrors(target);
+		}
+		catch(EntityCannotBeRemoved cannotRemoveException){
 			containerForm.error("Cannot Delete this Study Component. This component is associated with a Subject");
 			processErrors(target);
 		} 
@@ -181,8 +185,6 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 			containerForm.error("A System Error has occured please contact support.");
 			processErrors(target);
 		}
-		
-		
 	}
 
 	/* (non-Javadoc)
