@@ -10,8 +10,8 @@ public class Constants {
 	// Sub tabs/menus
 	public static final String PHENOTYPIC_SUBMENU = "phenotypicSubMenus";
 	public static final String	PHENOTYPIC_SUMMARY_SUBMENU	= "Summary";
-	public static final String PHENO_COLLECTION_SUBMENU = "Collections";
 	public static final String FIELD_SUBMENU = "Data Dictionary";
+	public static final String PHENO_COLLECTION_SUBMENU = "Collection";
 	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
 	public static final String PHENOTYPIC_DATA_UPLOAD_SUBMENU = "Data Upload";
 	public static final String REPORT_SUBMENU = "Reports";
