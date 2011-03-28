@@ -51,6 +51,7 @@ import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -557,7 +558,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 				subjectUidPrefix = study.getSubjectUidPrefix();
 			
 			if(study.getSubjectUidToken() != null)
-				subjectUidToken = study.getSubjectUidToken();
+				subjectUidToken = study.getSubjectUidToken().getName();
 			
 			if(study.getSubjectUidPadChar() != null)
 			{
@@ -595,5 +596,13 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	   }
 	   
 		return subjectCount;
+	}
+
+
+	public List<SubjectUidToken> getListOfSubjectUidToken()
+	{
+		Example subjectUidToken = Example.create(new SubjectUidToken());
+		Criteria studyStatusCriteria = getSession().createCriteria(SubjectUidToken.class).add(subjectUidToken);
+		return   studyStatusCriteria.list();
 	}
 }
