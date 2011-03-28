@@ -53,6 +53,7 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
@@ -86,6 +87,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private TextField<String>				coInvestigatorTxtFld;
 	private TextField<String>				subjectUidPrefixTxtFld;
 	private TextField<String>				subjectUidTokenTxtFld;
+	private DropDownChoice<SubjectUidToken>			subjectUidTokenDpChoices;
 	//private TextField<String> 				subjectUidPadCharsTxtFld;
 	private DropDownChoice<Long>			subjectUidPadCharsDpChoices;
 	private TextField<Integer>				subjectUidStartTxtFld;
@@ -183,8 +185,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		subjectUidContainer = new WebMarkupContainer("subjectUidContainer");
 		subjectUidContainer.setOutputMarkupPlaceholderTag(true);
 
-		// Label showing example auto-generated SubjectUID
+		// Label showing example auto-generated SubjectUIDs
 		subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
+		if(subjectUidExampleTxt == null || subjectUidExampleTxt.length() == 0)
+			subjectUidExampleTxt = Constants.SUBJECTUID_EXAMPLE;
+		
 		subjectUidExampleLbl = new Label("study.subjectUid.example", new PropertyModel(this, "subjectUidExampleTxt"));
 		subjectUidExampleLbl.setOutputMarkupId(true);
 		subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
@@ -204,7 +209,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		});
 
 		// Token to separate the string (e.g. "-")
-		subjectUidTokenTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_UID_TOKEN);
+		subjectUidTokenTxtFld = new TextField<String>("subjectUidToken");
 		subjectUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
 			@Override
@@ -215,6 +220,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 				target.addComponent(subjectUidExampleLbl);
 			}
 		});
+		subjectUidTokenTxtFld.setVisible(false);
+		
+		// Token selection
+		initSubjectUidTokenDropDown();
 
 		// How many padded chars in SubjectUID incrementor
 		initSubjectUidPadCharsDropDown();
@@ -327,34 +336,24 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		String subjectUidStart = new String("");
 		String subjectUidExample = new String("");
 
-		if (study.getId() != null && study.getAutoGenerateSubjectUid() != null)
+		if (study.getSubjectUidPrefix() != null)
+			subjectUidPrefix = study.getSubjectUidPrefix();
+
+		if (study.getSubjectUidToken() != null)
+			subjectUidToken = study.getSubjectUidToken().getName();
+
+		if (study.getSubjectUidPadChar() != null)
 		{
-			if (study.getSubjectUidPrefix() != null)
-				subjectUidPrefix = study.getSubjectUidPrefix();
-
-			if (study.getSubjectUidToken() != null)
-				subjectUidToken = study.getSubjectUidToken();
-
-			if (study.getSubjectUidPadChar() != null)
-			{
-				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
-			}
-
-			if (study.getSubjectUidStart() != null)
-				subjectUidStart = study.getSubjectUidStart().toString();
-
-			int size = Integer.parseInt(subjectUidPadChar);
-			subjectUidPaddedIncrementor = StringUtils.leftPad(subjectUidStart, size, "0");
-			subjectUidExample = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
+			subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
 		}
-		else
-		{
-			subjectUidPrefix = "";
-			subjectUidToken = "";
-			subjectUidPadChar = "";
-			subjectUidPaddedIncrementor = "";
-			subjectUidExample = null;
-		}
+
+		if (study.getSubjectUidStart() != null)
+			subjectUidStart = study.getSubjectUidStart().toString();
+
+		int size = Integer.parseInt(subjectUidPadChar);
+		subjectUidPaddedIncrementor = StringUtils.leftPad(subjectUidStart, size, "0");
+		subjectUidExample = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
+		
 		return subjectUidExample;
 	}
 
@@ -381,6 +380,23 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS, studyStatusList, defaultChoiceRenderer);
 	}
 
+	private void initSubjectUidTokenDropDown()
+	{
+		List<SubjectUidToken> subjectUidTokenList = iArkCommonService.getListOfSubjectUidToken();
+		ChoiceRenderer<SubjectUidToken> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidToken>(Constants.NAME, Constants.STUDY_STATUS_KEY);
+		subjectUidTokenDpChoices = new DropDownChoice(au.org.theark.study.web.Constants.SUBJECT_UID_TOKEN, subjectUidTokenList, defaultChoiceRenderer);
+		subjectUidTokenDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange")
+		{
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+				String subjectUidToken = containerForm.getModelObject().getStudy().getSubjectUidToken().getName();
+				subjectUidExampleTxt = getSubjectUidExample();
+				target.addComponent(subjectUidExampleLbl);
+			}
+		});
+	}
+	
 	private void initSubjectUidPadCharsDropDown()
 	{
 		List<SubjectUidPadChar> subjectUidPadCharList = iArkCommonService.getListOfSubjectUidPadChar();
@@ -414,6 +430,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		// SubjectUID auto-generator fields need own container to be disabled on certain criteria
 		subjectUidContainer.add(subjectUidPrefixTxtFld);
 		subjectUidContainer.add(subjectUidTokenTxtFld);
+		subjectUidContainer.add(subjectUidTokenDpChoices);
 		// subjectUidContainer.add(subjectUidPadCharsTxtFld);
 		subjectUidContainer.add(subjectUidPadCharsDpChoices);
 		subjectUidContainer.add(subjectUidStartTxtFld);

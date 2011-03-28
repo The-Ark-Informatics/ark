@@ -298,7 +298,12 @@
 				<div id="fldControl">
 					<div class="label">
 						<input wicket:id="study.subjectUidPrefix" type="text" maxLength="3" size="3"/>
-						<input wicket:id="study.subjectUidToken" type="text" maxLength="1" size="1"/>
+						<input wicket:id="subjectUidToken" type="text" maxLength="1" size="1"/>
+						<select wicket:id="study.subjectUidToken">
+		       				<option>-</option>
+							<option>@</option>
+							<option>#</option>
+		       			</select>
 						<select wicket:id="study.subjectUidPadChar">
 		       				<option>1</option>
 							<option>2</option>

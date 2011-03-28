@@ -200,8 +200,8 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 			WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
 			
-			// Example auto-generated SubjectUID null on new
-			containerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy()));
+			// Example auto-generated SubjectUID to "AAA-0000000001" on new
+			containerForm.getModelObject().setSubjectUidExample(Constants.SUBJECTUID_EXAMPLE);
 			Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
 			subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
 			target.addComponent(subjectUidExampleLbl);
