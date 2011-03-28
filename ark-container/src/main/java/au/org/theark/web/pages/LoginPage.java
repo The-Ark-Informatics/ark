@@ -25,12 +25,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.form.ArkFormVisitor;
 
 public class LoginPage<T> extends WebPage {
 	
 	private transient Logger log = LoggerFactory.getLogger(LoginPage.class);
 
-	FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");	
+	FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
+	
+	// Add a visitor class for required field marking/validation/highlighting
+	IVisitor formVisitor = new ArkFormVisitor();
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
+	}
 	
 	/**
 	 * Page Constructor
@@ -94,8 +103,8 @@ public class LoginPage<T> extends WebPage {
 		}
 		
 		private void addComponentsToForm(){
-			add(userNameTxtFld);
-			add(passwordTxtFld);
+			add(userNameTxtFld.setRequired(true));
+			add(passwordTxtFld.setRequired(true));
 			add(subButton);
 		}
 		
