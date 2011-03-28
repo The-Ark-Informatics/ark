@@ -93,8 +93,16 @@ public class SearchResults extends Panel{
 				if(subject.getPerson().getLastName() != null){
 					sb.append(subject.getPerson().getLastName());
 				}
-				item.getModelObject().setSubjectFullName(sb.toString());
-				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
+				
+				if(subject.getPerson().getFirstName() != null && subject.getPerson().getLastName() != null)
+				{
+					item.getModelObject().setSubjectFullName(sb.toString());
+					item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
+				}
+				else
+				{
+					item.add(new Label(Constants.SUBJECT_FULL_NAME, ""));
+				}
 			
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
 					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
