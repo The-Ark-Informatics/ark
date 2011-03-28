@@ -401,7 +401,8 @@ public class Study implements java.io.Serializable {
 	/**
 	 * @return the subjectIdToken
 	 */
-	@Column(name = "SUBJECTUID_TOKEN")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECTUID_TOKEN_ID")
 	public SubjectUidToken getSubjectUidToken()
 	{
 		return subjectUidToken;
