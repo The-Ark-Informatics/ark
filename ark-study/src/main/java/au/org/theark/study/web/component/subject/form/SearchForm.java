@@ -231,6 +231,10 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 				flag = true;
 			}
 			
+		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
+			flag = true;
+		}else{
+			flag = true;
 		}
 		return flag;
 	}
