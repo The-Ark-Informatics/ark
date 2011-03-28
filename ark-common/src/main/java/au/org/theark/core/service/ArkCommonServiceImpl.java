@@ -33,6 +33,7 @@ import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
+import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -229,5 +230,10 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public Long getSubjectCount(Study study)
 	{
 		return studyDao.getSubjectCount(study);
+	}
+
+	public List<SubjectUidToken> getListOfSubjectUidToken()
+	{
+		return studyDao.getListOfSubjectUidToken();
 	}
 }
