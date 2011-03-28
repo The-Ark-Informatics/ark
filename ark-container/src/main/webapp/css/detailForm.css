@@ -1,3 +1,7 @@
+span.requiredHint {
+	font-size: 12pt;
+}
+
 .fieldset {
 	border: 1px solid #6F6F6F;
 }
