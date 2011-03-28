@@ -61,7 +61,10 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.ArkRequiredLabel;
+import au.org.theark.core.web.component.ArkRequiredTextField;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
+import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
@@ -78,6 +81,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	private IArkCommonService		iArkCommonService;
 
 	private int									mode;
+	private Label								requiredLabel;
 	private TextField<String>				studyIdTxtFld;
 	private TextField<String>				studyNameTxtFld;
 	private TextArea<String>				studyDescriptionTxtArea;
@@ -121,7 +125,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 	private transient StudyHelper			studyHelper;
 	protected StudyCrudContainerVO		studyCrudVO;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -168,6 +172,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	{
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
+		studyNameTxtFld.setRequired(true);
+		
 		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
 		estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);
 		principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PERSON);
