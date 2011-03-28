@@ -52,7 +52,7 @@ public class Study implements java.io.Serializable {
 	private Boolean autoGenerateSubjectUid;
 	private Long subjectUidStart;
 	private String subjectUidPrefix;
-	private String subjectUidToken;
+	private SubjectUidToken subjectUidToken;
 	private SubjectUidPadChar subjectUidPadChar;
 	
 	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(0);
@@ -84,7 +84,7 @@ public class Study implements java.io.Serializable {
 			Long subjectUIdStart, String subjectIdPrefix, String contactPerson,
 			String contactPersonPhone, String ldapGroupName,
 			Boolean autoConsent, String subStudyBiospecimenPrefix,
-			String filename, String subjectIdToken, SubjectUidPadChar subjectUIdPadChar,
+			String filename, SubjectUidToken subjectIdToken, SubjectUidPadChar subjectUIdPadChar,
 			Set<LinkStudySubstudy> linkStudySubstudiesForid,
 			Set<LinkStudyStudysite> linkStudyStudysites,
 			Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds,
@@ -393,7 +393,7 @@ public class Study implements java.io.Serializable {
 	/**
 	 * @param subjectIdToken the subjectIdToken to set
 	 */
-	public void setSubjectUidToken(String subjectIdToken)
+	public void setSubjectUidToken(SubjectUidToken subjectIdToken)
 	{
 		this.subjectUidToken = subjectIdToken;
 	}
@@ -402,7 +402,7 @@ public class Study implements java.io.Serializable {
 	 * @return the subjectIdToken
 	 */
 	@Column(name = "SUBJECTUID_TOKEN")
-	public String getSubjectUidToken()
+	public SubjectUidToken getSubjectUidToken()
 	{
 		return subjectUidToken;
 	}
