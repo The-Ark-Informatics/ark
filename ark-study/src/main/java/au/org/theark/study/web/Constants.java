@@ -259,5 +259,6 @@ public class Constants {
 	public static final String SUBJECT_CONSENT_TO_USEDATA ="subjectStudy.consentToUseData";
 	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="subjectStudy.consentToPassiveDataGathering";
 	public static final String SUBJECT_AUTO_GENERATED = "Auto-generated";
+	public static final String	SUBJECTUID_EXAMPLE	= "AAA-000000001";
 	
 }
