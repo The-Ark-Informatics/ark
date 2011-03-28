@@ -42,44 +42,46 @@
 
     <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
-
     
-    <!--  Development: MySql Data Source Development -->
-     
+    
+     <!--  Development: MySql Data Source Development -->
+
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="veTum1n"/>
+        <property name="password" value="v@Tym4np[]"/>
     </bean>
-        
-    <!--  Test: MySql Data Source-->
-    <!--   
+
+    <!--  Test: MySql Data Source 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.253:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="veTum1n"/>
+        <property name="password" value="v@Tym4np[]"/>
     </bean>
-    -->
-    
-    <!--  A LDAP data source. Swtich between Test and Development as required-->
-    
+	-->
+
+ 	<!--  A Test-LDAP data source. Swtich between Test and Development as required
+
+     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+      <property name="url"  value="ldap://192.168.3.253:389"/>
+      <property name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/>
+      <property name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
+      <property name="password" value="v@Tym4np[]" />
+    </bean>
+	-->
+
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-      <!--  Test LDAP URL -->
-     <!--   <property name="url" value ="ldap://172.19.200.229:389"/> -->
-      
-      <!-- Development LDAP Url -->   
       <property name="url"  value="ldap://192.168.2.229:389"/>
       <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
-	  <property name="password" value="veTum1n" />
+      <property name="password" value="v@Tym4np[]" />
     </bean>
 
 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
 		<property name="contextSource" ref="ldapDataContextSource" />
 	</bean>
-
 	
     <!--  Hibernate Session Factory -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
@@ -108,7 +110,6 @@
         </property>
         
     </bean>
-
     
     <bean id="transactionManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
@@ -131,7 +132,6 @@
              Session implementation.
         <property name="sessionMode" value="shiro"/> -->
     </bean>
-
 
     <!-- Post processor that automatically invokes init() and destroy() methods -->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
