@@ -26,7 +26,8 @@ public class ArkFormVisitor implements IVisitor, Serializable
 		{
 			visited.add(c);
 			c.setComponentBorder(new ArkRequiredBorder());
-			c.add(new ArkValidationMsgBehaviour());
+			//TODO: Inplement msg validation neater
+			//c.add(new ArkValidationMsgBehaviour());
 			c.add(new ArkErrorHighlightBehaviour());
 		}
 		return IVisitor.CONTINUE_TRAVERSAL;
