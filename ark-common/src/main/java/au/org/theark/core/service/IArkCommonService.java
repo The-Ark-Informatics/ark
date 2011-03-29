@@ -75,6 +75,8 @@ public interface IArkCommonService {
 	
 	public List<Country> getCountries();
 	
+	public Country getCountry(String countryCode);
+	
 	public List<CountryState>  getStates(Country country);
 	
 	/**

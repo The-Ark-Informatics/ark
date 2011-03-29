@@ -335,16 +335,18 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return (Country) criteria.list().get(0);
 	}
 	
-	public Country getCountry(String countryName){
+	public Country getCountry(String countryCode){
 		Criteria criteria  = getSession().createCriteria(Country.class);
-		criteria.add(Restrictions.eq("name",countryName));
+		criteria.add(Restrictions.eq("countryCode",countryCode));
 		return (Country) criteria.list().get(0);
 	}
+	
+
 	
 	public List<CountryState>  getStates(Country country){
 		
 		if(country == null){
-			country = getCountry(Constants.DEFAULT_COUNTRY);
+			country = getCountry(Constants.DEFAULT_COUNTRY_CODE);
 		}
 		Criteria stateCriteria = getSession().createCriteria(CountryState.class);
 		stateCriteria.add(Restrictions.eq("country", country));

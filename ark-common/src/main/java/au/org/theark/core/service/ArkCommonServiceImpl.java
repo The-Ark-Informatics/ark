@@ -236,4 +236,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	{
 		return studyDao.getListOfSubjectUidToken();
 	}
+	
+	public Country getCountry(String countryCode){
+		return studyDao.getCountry(countryCode);
+	}
 }

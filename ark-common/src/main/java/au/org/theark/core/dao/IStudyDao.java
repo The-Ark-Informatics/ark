@@ -141,6 +141,9 @@ public interface IStudyDao {
 	 */
 	public List<Country> getCountries();
 	
+	
+	public Country getCountry(String countryCode);
+	
 	/**
 	 * Given a country retrieves a list of States linked to it
 	 * @param country
