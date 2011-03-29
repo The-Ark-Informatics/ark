@@ -177,11 +177,12 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 			subjectUIDTxtFld.setEnabled(false);
 			target.addComponent(subjectUIDTxtFld);
 		}
-
-		// Disable deathDetailsContainer onNew (presume new subject alive)
-		WebMarkupContainer deathDetailsContainer = (WebMarkupContainer) detailFormCompContainer.get("deathDetailsContainer");
-		deathDetailsContainer.setEnabled(false);
-		target.addComponent(deathDetailsContainer);
+		else
+		{
+			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
+			subjectUIDTxtFld.setEnabled(true);
+			target.addComponent(subjectUIDTxtFld);
+		}
 
 		preProcessDetailPanel(target);
 	}
@@ -249,6 +250,4 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		}
 		return flag;
 	}
-	
-
 }
