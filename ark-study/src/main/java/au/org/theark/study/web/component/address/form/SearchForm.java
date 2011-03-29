@@ -127,11 +127,21 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		countryStateSelector.add(stateChoice);
 	}
 
+	private void setDefaultCountry(){
+		
+		Address defaultedCountryAddress = new Address();
+		defaultedCountryAddress.setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
+		AddressVO newAddressVO = getModelObject();
+		newAddressVO.setAddress(defaultedCountryAddress);
+		setModelObject(newAddressVO);
+	}
 	private void initialiaseCountryDropDown(){
 		
 		List<Country> countryList = iArkCommonService.getCountries();
 		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
 		countryChoice = new DropDownChoice<Country>(Constants.ADDRESS_COUNTRY, countryList, defaultChoiceRenderer);
+		
+		setDefaultCountry();
 		
 		//Attach a behavior, so when it changes it does something
 		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
@@ -208,11 +218,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO>
 		// Set a default Country on new when the Country field is empty
 		if (getModelObject().getAddress() == null || getModelObject().getAddress().getCountry() == null) {
 			final List<Country> countryList = iArkCommonService.getCountries();
-			Address defaultedCountryAddress = new Address();
-			defaultedCountryAddress.setCountry(countryList.get(0));
-			AddressVO newAddressVO = getModelObject();
-			newAddressVO.setAddress(defaultedCountryAddress);
-			setModelObject(newAddressVO);			
+			setDefaultCountry();
 		}
 		updateDetailFormPrerender(getModelObject().getAddress());
 

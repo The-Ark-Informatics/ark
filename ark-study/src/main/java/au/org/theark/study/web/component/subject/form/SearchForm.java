@@ -158,7 +158,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		// Set a default Country on new when the Country field is empty
 		if (getModelObject().getSubjectStudy().getCountry() == null) {
 			final List<Country> countryList = iArkCommonService.getCountries();
-			getModelObject().getSubjectStudy().setCountry(countryList.get(0));
+			//getModelObject().getSubjectStudy().setCountry(countryList.get(0));
+			
+			getModelObject().getSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
 		}
 		updateDetailFormPrerender(getModelObject().getSubjectStudy());
 		
