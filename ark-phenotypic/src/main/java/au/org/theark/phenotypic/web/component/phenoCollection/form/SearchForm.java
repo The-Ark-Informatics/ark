@@ -148,10 +148,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		setModelObject(phenoCollectionVo);
 		preProcessDetailPanel(target);
 		
-		// Reset context item
-		ContextHelper contextHelper = new ContextHelper();
-		contextHelper.setPhenoContextLabel(target, "", arkContextMarkup);
-		
 		// Hide Delete button on New
 		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
