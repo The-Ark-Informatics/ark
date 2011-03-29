@@ -272,7 +272,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		studyComponentChoice.setRequired(true).setLabel(new StringResourceModel("study.component.choice.required", this, null));
 		consentStatusChoice.setRequired(true).setLabel(new StringResourceModel("consent.status.required", this, null));
 		consentTypeChoice.setRequired(true).setLabel(new StringResourceModel("consent.type.required", this, null));
-		studyComponentStatusChoice.setRequired(true).setLabel(new StringResourceModel("studyComponent.status", this, null));
+		studyComponentStatusChoice.setRequired(true).setLabel(new StringResourceModel("studyComponent.status.required", this, null));
 		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.consentdate", this,null ));
 		consentedDatePicker.setRequired(true);
 		
