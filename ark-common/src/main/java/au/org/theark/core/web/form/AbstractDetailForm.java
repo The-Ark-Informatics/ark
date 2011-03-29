@@ -1,6 +1,5 @@
 package au.org.theark.core.web.form;
 
-import org.apache.wicket.Component.IVisitor;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -45,7 +44,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	protected ModalWindow			selectModalWindow;
 	
 	// Add a visitor class for required field marking/validation/highlighting
-	IVisitor formVisitor = new ArkFormVisitor();
+	ArkFormVisitor formVisitor = new ArkFormVisitor();
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();

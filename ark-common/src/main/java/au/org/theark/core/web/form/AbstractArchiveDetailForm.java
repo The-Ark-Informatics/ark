@@ -1,6 +1,5 @@
 package au.org.theark.core.web.form;
 
-import org.apache.wicket.Component.IVisitor;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -26,7 +25,7 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 	protected ArkCrudContainerVO crudVO;
 	
 	// Add a visitor class for required field marking/validation/highlighting
-	IVisitor formVisitor = new ArkFormVisitor();
+	ArkFormVisitor formVisitor = new ArkFormVisitor();
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
