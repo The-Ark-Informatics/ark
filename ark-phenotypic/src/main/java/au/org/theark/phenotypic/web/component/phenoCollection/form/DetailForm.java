@@ -6,6 +6,7 @@ import java.util.List;
 
 import mx4j.log.Log;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -198,6 +199,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		
 		// Reset context item
 		ContextHelper contextHelper = new ContextHelper();
+		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, containerForm.getModelObject().getPhenoCollection().getId());
 		contextHelper.setPhenoContextLabel(target, containerForm.getModelObject().getPhenoCollection().getName(), arkContextMarkup);
 		
 		onSavePostProcess(target);
