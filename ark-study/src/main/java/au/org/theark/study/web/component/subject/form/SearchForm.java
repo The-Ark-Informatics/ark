@@ -39,6 +39,8 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
+import au.org.theark.study.web.component.managestudy.Details;
+import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
 /**
  * @author nivedann
@@ -153,6 +155,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE,genderTypePm, (List)genderTypeList,genderTypeRenderer);
 	}
 	
+	@SuppressWarnings("unchecked")
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
 		// Set a default Country on new when the Country field is empty
@@ -164,19 +167,25 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		}
 		updateDetailFormPrerender(getModelObject().getSubjectStudy());
 		
+		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
+		
 		// Disable SubjectUID if auto-generation set
 		if(getModelObject().getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
 		{
-			WebMarkupContainer wmcDetailFormContainer = (WebMarkupContainer) detailFormCompContainer;
-			TextField<String> subjectUID = (TextField<String>)wmcDetailFormContainer.get(Constants.SUBJECT_UID);
+			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
 			getModelObject().getSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
-			subjectUID.setEnabled(false);
+			subjectUIDTxtFld.setEnabled(false);
+			target.addComponent(subjectUIDTxtFld);
 		}
+
+		// Disable deathDetailsContainer onNew (presume new subject alive)
+		WebMarkupContainer deathDetailsContainer = (WebMarkupContainer) detailFormCompContainer.get("deathDetailsContainer");
+		deathDetailsContainer.setEnabled(false);
+		target.addComponent(deathDetailsContainer);
 
 		preProcessDetailPanel(target);
 	}
-	
-	
+
 	public void updateDetailFormPrerender(LinkSubjectStudy linkSubjectStudy){
 		List<CountryState> countryStateList = iArkCommonService.getStates(linkSubjectStudy.getCountry());
 		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get(Constants.COUNTRY_STATE_SELECTOR_WMC);
