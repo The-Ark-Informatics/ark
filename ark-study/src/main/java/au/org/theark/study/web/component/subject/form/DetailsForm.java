@@ -73,7 +73,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	protected TextField<String> previousLastNameTxtFld;
 	protected TextField<String> preferredNameTxtFld;
 	protected TextField<String> subjectUIDTxtFld;
-	
+
 	protected DateTextField dateOfBirthTxtFld;
 	protected DateTextField dateOfDeathTxtFld;
 	protected TextField<String> causeOfDeathTxtFld;
@@ -114,7 +114,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	// Webmarkup for Ajax refreshing of items based on particular criteria
 	protected WebMarkupContainer wmcPreferredEmailContainer;
 	protected WebMarkupContainer wmcDeathDetailsContainer;
-	
+
 	protected Study study;
 	
 	
@@ -136,17 +136,18 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		
 	public void initialiseDetailForm()
 	{
+		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
+		subjectUIDTxtFld.setOutputMarkupId(true);
+		
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
 		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME);
 		previousLastNameTxtFld.setEnabled(false);
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
-		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
 		
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
 		otherEmailTxtFld = new TextField<String>(Constants.PERSON_OTHER_EMAIL);
-		
 		
 		dateOfBirthTxtFld = new DateTextField(Constants.PERSON_DOB,au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker dobDatePicker = new ArkDatePicker();
@@ -166,7 +167,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		dateOfDeathTxtFld.add(dodDatePicker);
 		
 		wmcDeathDetailsContainer = new  WebMarkupContainer("deathDetailsContainer");
-		wmcDeathDetailsContainer.setOutputMarkupPlaceholderTag(true);
+		wmcDeathDetailsContainer.setOutputMarkupId(true);
+		
 		// Default death details to disabled (enable onChange of vitalStatus)
 		setDeathDetailsContainer();
 		
