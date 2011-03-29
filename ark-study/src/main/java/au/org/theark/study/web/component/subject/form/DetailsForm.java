@@ -259,13 +259,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			String vitalStatusName  = vitalStatus.getName();
 			
 			if(vitalStatusName.equalsIgnoreCase("DECEASED")){
-				dateOfDeathTxtFld.setEnabled(true);
-				causeOfDeathTxtFld.setEnabled(true);
+				wmcDeathDetailsContainer.setEnabled(true);
 			}
 			else{
-				dateOfDeathTxtFld.setEnabled(false);
-				causeOfDeathTxtFld.setEnabled(false);
+				wmcDeathDetailsContainer.setEnabled(false);;
 			}
+		}
+		else
+		{
+			wmcDeathDetailsContainer.setEnabled(false);
 		}
 	}
 	
