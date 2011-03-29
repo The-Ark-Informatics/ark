@@ -126,8 +126,22 @@ public class SearchResults extends Panel{
 				{
 					autoSubjectUidcontainer.setEnabled(false);
 					subjectUidcontainer.setEnabled(false);
-					target.addComponent(subjectUidcontainer);
 				}
+				else
+				{
+					autoSubjectUidcontainer.setEnabled(true);
+					if(studyContainerForm.getModelObject().getStudy().getAutoGenerateSubjectUid())
+					{
+						subjectUidcontainer.setEnabled(true);
+					}
+					else
+					{
+						subjectUidcontainer.setEnabled(false);
+					}
+				}
+				
+				target.addComponent(autoSubjectUidcontainer);
+				target.addComponent(subjectUidcontainer);
 				
 				// Example auto-generated SubjectUID
 				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
