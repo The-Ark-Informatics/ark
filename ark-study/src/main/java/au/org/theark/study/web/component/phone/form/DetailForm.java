@@ -132,10 +132,11 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		selectModalWindow.close(target);
 		try {
 			studyService.delete(containerForm.getModelObject().getPhone());
+			containerForm.info("The Phone record was deleted successfully.");
+			editCancelProcess(target);
 		} catch (ArkSystemException e) {
 			this.error("An error occured while processing your delete. Please contact Support");
 			//TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to admin
-			e.printStackTrace();
 		}
 		onCancel(target);
 	}
