@@ -39,7 +39,7 @@ public class Constants {
 	public static final String COUNTRY_STATE_NAME="countryState";
 	public static final String ADDRESS_TYPE="addressType";
 	
-	
+	public static final String SUBJECTUIDSEQ_STUDYNAMEID = "studyNameId";
 	
 	
 

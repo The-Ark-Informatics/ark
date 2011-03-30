@@ -3,6 +3,7 @@ package au.org.theark.study.model.dao;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -80,7 +81,7 @@ public interface IStudyDao {
 	
 	public Collection<SubjectStatus> getSubjectStatus();
 	
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException;
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException;
 	
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException;
 	

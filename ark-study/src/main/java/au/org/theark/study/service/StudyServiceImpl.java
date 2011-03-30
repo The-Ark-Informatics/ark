@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -271,7 +272,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
-	public void createSubject(SubjectVO subjectVO)  throws ArkUniqueException{
+	public void createSubject(SubjectVO subjectVO)  throws ArkUniqueException, ArkSubjectInsertException {
 		
 		studyDao.createSubject(subjectVO);
 		

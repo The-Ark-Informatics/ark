@@ -10,6 +10,8 @@ import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -17,9 +19,12 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.dao.ArkUidGenerator;
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -27,15 +32,14 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.LinkSubjectStudycomp;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -46,6 +50,7 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.model.study.entity.SubjectUidSequence;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
@@ -60,7 +65,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
 	private Subject	currentUser;
 	private Date		dateNow;
-
+	
+	ArkUidGenerator arkUidGenerator;
+	@Autowired
+	public void setArkUidGenerator(ArkUidGenerator arkUidGenerator) {
+		this.arkUidGenerator = arkUidGenerator;
+	}
+	
 	public void create(Study study) {
 		getSession().save(study);
 	}
@@ -180,17 +191,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void create(Phone phone) throws ArkSystemException{
 		try{
-			getSession().save(phone);	
-		}catch(HibernateException hibException){
+			getSession().save(phone);
+		}catch(HibernateException hibException) {
 			log.error("A hibernate exception occured. Cannot create the Phone record. Cause: " + hibException.getStackTrace());
 			throw new ArkSystemException("Unable to create a Phone record.");
 		}
 	}
 	
-	
 	public void update(Phone phone) throws ArkSystemException{
 		try{
 			getSession().update(phone);	
+			getSession().flush();
 		}catch(HibernateException hibException){
 			log.error("A hibernate exception occured. Cannot update the Phone record. Cause: " + hibException.getStackTrace());
 			throw new ArkSystemException("Unable to create a Phone record.");
@@ -223,33 +234,48 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return criteria.list();
 	}
 	
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException{
-			//Add Business Validations here as well apart from UI validation
-		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")){
-			Session session = getSession();
-			Person person  = subjectVO.getSubjectStudy().getPerson();
-			session.save(person);
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
+		//Add Business Validations here as well apart from UI validation
+		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")) {
 			
-			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-			if(person.getLastName() != null)
-			{
-				personLastNameHistory.setPerson(person);
-				personLastNameHistory.setLastName(person.getLastName());
-				session.save(personLastNameHistory);	
+			Study study = subjectVO.getSubjectStudy().getStudy();
+			// Check insertion lock
+			if (getSubjectUidSequenceLock(study) == true) {
+				//TODO Fix the exception to be custom
+				throw new ArkSubjectInsertException("Subject insertion locked by another process");
 			}
-			
-			// Update subjectPreviousLastname
-			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
-			
-			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-			session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-			
-			// Auto-generate SubjectUID
-			if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
-			{
-				String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
-				linkSubjectStudy.setSubjectUID(subjectUID);
-				session.update(linkSubjectStudy);
+			else {
+				// Enable insertion lock
+				setSubjectUidSequenceLock(study, true);
+				
+				Session session = getSession();
+				Person person  = subjectVO.getSubjectStudy().getPerson();
+				session.save(person);
+				
+				PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+				if(person.getLastName() != null)
+				{
+					personLastNameHistory.setPerson(person);
+					personLastNameHistory.setLastName(person.getLastName());
+					session.save(personLastNameHistory);	
+				}
+				
+				// Update subjectPreviousLastname
+				subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+				
+				LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+				session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+				
+				// Auto-generate SubjectUID
+				if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+				{
+					String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
+					linkSubjectStudy.setSubjectUID(subjectUID);
+					session.update(linkSubjectStudy);
+				}
+				
+				// Disable insertion lock
+				setSubjectUidSequenceLock(study, false);
 			}
 		}
 		else
@@ -289,7 +315,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}		
 	}
 	
-	public String getNextGeneratedSubjectUID(Study study)
+	protected String getNextGeneratedSubjectUID(Study study) throws ArkSubjectInsertException 
 	{
 		String subjectUidPrefix = new String("");
 		String subjectUidToken = new String("");
@@ -313,13 +339,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();	
 			}
 			
-			if(study.getSubjectUidStart() != null)
-			{
-				Long subjectUidStart = study.getSubjectUidStart();
-				//TODO: Work out a safer method of getting next incremented number
-				Long incrementedValue = subjectUidStart +  getSubjectCount(study)-1;
-				nextIncrementedsubjectUid = incrementedValue.toString();
+			Long subjectUidStart = study.getSubjectUidStart();
+			if(subjectUidStart == null) {
+				subjectUidStart = new Long(1);	//if null, then use: 1
+				study.setSubjectUidStart(subjectUidStart);
 			}
+			//TODO: Work out a safer method of getting next incremented number
+			Long incrementedValue = subjectUidStart +  getNextUidSequence(study) - 1;
+			nextIncrementedsubjectUid = incrementedValue.toString();
 			
 			int size = Integer.parseInt(subjectUidPadChar);
 			subjectUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedsubjectUid, size, "0");
@@ -330,6 +357,67 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			subjectUid = null;
 		}
 		return subjectUid;
+	}
+	
+	public Integer getNextUidSequence(Study study) throws ArkSubjectInsertException {
+
+		Integer result;
+		if (study == null) {
+			log.error("Error in Subject insertion - Study was null");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Study not in context"); 
+		}
+		if (study.getName() == null) {
+			log.error("Error in Subject insertion - Study name was null");
+			throw new ArkSubjectInsertException("Error in Subject insertion - EmptyØ study name");  
+		}
+
+		result = (Integer) arkUidGenerator.getId(study.getName());
+
+		return result;
+	}
+	
+	protected boolean getSubjectUidSequenceLock(Study study) {
+		boolean lock;
+		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
+		if (subjUidSeq == null) {
+			lock = false;	// not locked if record doesn't exist
+		}
+		else {
+			lock = subjUidSeq.getInsertLock();	
+		}
+		return lock;
+	}
+	
+	protected SubjectUidSequence getSubjectUidSequence(Study study) {
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(SubjectUidSequence.class);
+		criteria.add(Restrictions.eq(Constants.SUBJECTUIDSEQ_STUDYNAMEID, study.getName()));
+		criteria.setMaxResults(1);
+		SubjectUidSequence result = (SubjectUidSequence) criteria.uniqueResult();
+		session.close();
+		return result;
+	}
+	
+	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
+		//TODO: Work out why this causes a lock on the table when trying to do an update later :(
+		StatelessSession session = getStatelessSession();
+		Transaction tx = session.getTransaction();
+		tx.begin();
+		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
+		if (subjUidSeq == null) {
+			// create a new record if it doens't exist
+			subjUidSeq = new SubjectUidSequence();
+			subjUidSeq.setStudyNameId(study.getName());
+			subjUidSeq.setUidSequence(new Integer(0));
+			subjUidSeq.setInsertLock(lock);
+			session.insert(subjUidSeq);
+		}
+		else {
+			subjUidSeq.setInsertLock(lock);
+			session.update(subjUidSeq);
+		}
+		tx.commit();
+		session.close();
 	}
 	
 	public Long getSubjectCount(Study study)

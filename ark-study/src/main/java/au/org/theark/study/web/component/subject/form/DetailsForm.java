@@ -27,6 +27,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 
+import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
@@ -505,6 +506,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			catch (ArkUniqueException ex)
 			{
 				this.error("Subject UID must be unique.");
+			}
+			catch (ArkSubjectInsertException ex) {
+				this.error(ex.getMessage());
 			}
 
 		}else{

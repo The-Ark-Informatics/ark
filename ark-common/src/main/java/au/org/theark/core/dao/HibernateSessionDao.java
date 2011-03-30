@@ -2,6 +2,9 @@ package au.org.theark.core.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.impl.SessionFactoryImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.SessionFactoryUtils;
 /**
@@ -13,10 +16,12 @@ import org.springframework.orm.hibernate3.SessionFactoryUtils;
 public abstract class HibernateSessionDao {
 	
 	private SessionFactory sessionFactory;
+	private Dialect dialect;
 
 	@Autowired
 	public void setSessionFactory(SessionFactory sessionFactory){
 		this.sessionFactory = sessionFactory;
+		dialect = ((SessionFactoryImpl)sessionFactory).getDialect();
 	}
 	
 	/**
@@ -27,5 +32,14 @@ public abstract class HibernateSessionDao {
 		return SessionFactoryUtils.getSession(this.sessionFactory, true);
 	}
 	
+	public Dialect getDialect() {
+		if (dialect == null) {
+			dialect = ((SessionFactoryImpl)sessionFactory).getDialect();
+		}
+		return dialect;
+	}
 
+	public StatelessSession getStatelessSession() {
+		return sessionFactory.openStatelessSession();
+	}
 }

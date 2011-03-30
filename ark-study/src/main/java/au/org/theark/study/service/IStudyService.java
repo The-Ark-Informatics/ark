@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
@@ -84,8 +85,9 @@ public interface IStudyService {
 	/**
 	 * A method to create a Subject.
 	 * @param subjectVO
+	 * @throws ArkUniqueException, ArkSubjectInsertException 
 	 */
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException;
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkUniqueException, ArkSubjectInsertException;
 	
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException;
 	
