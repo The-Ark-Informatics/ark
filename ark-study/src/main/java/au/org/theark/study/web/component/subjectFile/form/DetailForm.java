@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
@@ -96,6 +97,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 
 		// fileSubjectFile for payload (attached to filename key)
 		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
+		fileSubjectFileField.setRequired(true);
 
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
@@ -109,6 +111,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 	protected void attachValidators()
 	{
 		// Field validation here
+		fileSubjectFileField.setRequired(true).setLabel(new StringResourceModel("subjectFile.filename.required", this, null));
 	}
 
 	private void addComponents()
@@ -180,14 +183,14 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 
 				// Save
 				studyService.create(containerForm.getModelObject().getSubjectFile());
-				this.info("Subject file " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
+				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 				processErrors(target);
 			}
 			else
 			{
 				// Update
 				studyService.update(containerForm.getModelObject().getSubjectFile());
-				this.info("Subject file " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
+				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
 				processErrors(target);
 			}
 
@@ -195,7 +198,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		}
 		catch (EntityNotFoundException e)
 		{
-			this.error("The Subject file record you tried to update is no longer available in the system");
+			this.error("The record you tried to update is no longer available in the system");
 			processErrors(target);
 		}
 		catch (ArkSystemException e)
