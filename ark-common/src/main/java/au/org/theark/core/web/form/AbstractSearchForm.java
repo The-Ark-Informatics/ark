@@ -23,10 +23,13 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
  * @param <T>
  * 
  */
-@SuppressWarnings("serial")
 public abstract class AbstractSearchForm<T> extends Form<T>
 {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -408051334961302312L;
 	protected AjaxButton				searchButton;
 	protected AjaxButton				newButton;
 	protected Button					resetButton;
