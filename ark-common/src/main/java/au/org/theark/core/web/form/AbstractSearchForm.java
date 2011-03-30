@@ -284,6 +284,19 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		
 	}
 
+	protected void disableSearchForm(Long sessionId, String errorMessage)
+	{	
+		if (sessionId == null)
+		{
+			searchMarkupContainer.setEnabled(false);			
+			this.error(errorMessage);
+		}
+		else
+		{
+			searchMarkupContainer.setEnabled(false);
+		}
+	}
+	
 	protected void disableSearchButtons(Long sessionId, String errorMessage)
 	{	
 		if (sessionId == null)
@@ -300,8 +313,4 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			resetButton.setEnabled(true);
 		}
 	}
-	
-	
-	
-	
 }
