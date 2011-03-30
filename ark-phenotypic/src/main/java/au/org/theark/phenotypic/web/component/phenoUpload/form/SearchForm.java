@@ -69,7 +69,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		initialiseFieldForm();
 
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		disableSearchButtons(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
+		disableSearchForm(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
 	}
 	
 	
@@ -90,7 +90,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		initialiseFieldForm();
 
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		disableSearchButtons(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
+		disableSearchForm(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
 	}
 
 	/**
