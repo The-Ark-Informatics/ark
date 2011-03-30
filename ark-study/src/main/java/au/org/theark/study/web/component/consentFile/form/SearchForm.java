@@ -69,7 +69,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
-		disableSearchButtons(sessionConsentId, "There is no consent in context. Please select a Consent.");
+		disableSearchForm(sessionConsentId, "There is no consent in context. Please select a Consent.");
 	}
 
 	protected void initialiseSearchForm(){
