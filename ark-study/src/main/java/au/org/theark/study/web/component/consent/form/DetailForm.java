@@ -297,7 +297,8 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		
 		try {
 			studyService.delete(containerForm.getModelObject().getConsent());
-		
+			containerForm.info("The Consent has been deleted successfully.");
+			editCancelProcess(target);
 		}catch(EntityNotFoundException entityNotFoundException){
 			this.error("The consent you tried to delete does not exist");
 		}
