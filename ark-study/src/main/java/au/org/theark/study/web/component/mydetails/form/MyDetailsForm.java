@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -15,6 +16,7 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.user.form.ContainerForm;
@@ -46,6 +48,14 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 
 	public TextField<String> getUserNameTxtField() {
 		return userNameTxtField;
+	}
+	
+	// Add a visitor class for required field marking/validation/highlighting
+	ArkFormVisitor formVisitor = new ArkFormVisitor();
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
 	}
 	
 	public void initialiseForm(){
@@ -97,6 +107,23 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 	
 	
 	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model) {
+		super(id, model);
+		// TODO Auto-generated constructor stub
+		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		{
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onSave(target);
+			}
+			
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				
+			}
+		};
+	}
+	
+	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model, FeedbackPanel feedbackPanel) {
 		super(id, model);
 		// TODO Auto-generated constructor stub
 		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
