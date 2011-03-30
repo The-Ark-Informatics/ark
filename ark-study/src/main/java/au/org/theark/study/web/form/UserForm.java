@@ -104,7 +104,7 @@ public class UserForm extends Form<ArkUserVO>{
 	 * @param detailsContainer
 	 * @param userContainerForm
 	 */
-	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, FeedbackPanel feedbackPanel, ContainerForm userContainerForm){
+	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm userContainerForm){
 		
 		super(id);
 		
