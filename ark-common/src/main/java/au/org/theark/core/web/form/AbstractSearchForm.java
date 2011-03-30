@@ -296,7 +296,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		}
 		else
 		{
-			searchMarkupContainer.setEnabled(false);
+			searchMarkupContainer.setEnabled(true);
 		}
 	}
 	
