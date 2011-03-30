@@ -7,12 +7,13 @@ import org.apache.wicket.markup.html.WebMarkupContainerWithAssociatedMarkup;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.user.form.ContainerForm;
 
@@ -35,6 +36,7 @@ public class UserForm extends Form<ArkUserVO>{
 	protected void  onDelete(ArkUserVO etaUserVO){}
 	private WebMarkupContainer  resultListContainer;
 	private WebMarkupContainer  detailsContainer;
+	private FeedbackPanel feedbackPanel;
 	private ContainerForm containerForm;
 	private AjaxButton cancelBtn;
 	private AjaxButton saveBtn;
@@ -102,7 +104,7 @@ public class UserForm extends Form<ArkUserVO>{
 	 * @param detailsContainer
 	 * @param userContainerForm
 	 */
-	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm userContainerForm){
+	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, FeedbackPanel feedbackPanel, ContainerForm userContainerForm){
 		
 		super(id);
 		
@@ -147,6 +149,14 @@ public class UserForm extends Form<ArkUserVO>{
 			}
 		};
 
+	}
+	
+	// Add a visitor class for required field marking/validation/highlighting
+	ArkFormVisitor formVisitor = new ArkFormVisitor();
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
 	}
 	
 	public void initialiseForm(){
