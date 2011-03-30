@@ -213,8 +213,8 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return studyDao.isSubjectConsentedToComponent(studyComponent,subject,study);
 	}
 	
-	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException{
-		return studyDao.getSubject(id);
+	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException{
+		return studyDao.getSubject(personId);
 	}
 
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar()

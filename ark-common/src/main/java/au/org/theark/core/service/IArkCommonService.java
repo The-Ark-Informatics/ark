@@ -116,7 +116,13 @@ public interface IArkCommonService {
 	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 	
-	public LinkSubjectStudy getSubject(Long id) throws EntityNotFoundException;
+	/**
+	 * Returns a LinkSubjectStudy via the personId represented by the Long
+	 * @param personId
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public LinkSubjectStudy getSubject(Long personId) throws EntityNotFoundException;
 
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
 	
