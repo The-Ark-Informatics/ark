@@ -84,25 +84,24 @@ public class SearchResults extends Panel{
 				item.add(buildLink(item.getModelObject()));
 				
 				StringBuffer sb = new StringBuffer();
-				sb.append(subject.getPerson().getFirstName());
-				sb.append(" ");
-				if(subject.getPerson().getMiddleName() != null){
-					sb.append(subject.getPerson().getMiddleName());
+				String firstName = subject.getPerson().getFirstName();
+				String midName = subject.getPerson().getMiddleName();
+				String lastName = subject.getPerson().getLastName();
+				
+				if (firstName != null) {
+					sb.append(subject.getPerson().getFirstName());
+					sb.append(" ");
 				}
-				sb.append(" ");
-				if(subject.getPerson().getLastName() != null){
+				if (midName != null){
+					sb.append(subject.getPerson().getMiddleName());
+					sb.append(" ");
+				}
+				if (lastName != null){
 					sb.append(subject.getPerson().getLastName());
 				}
 				
-				if(subject.getPerson().getFirstName() != null && subject.getPerson().getLastName() != null)
-				{
-					item.getModelObject().setSubjectFullName(sb.toString());
-					item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
-				}
-				else
-				{
-					item.add(new Label(Constants.SUBJECT_FULL_NAME, ""));
-				}
+				item.getModelObject().setSubjectFullName(sb.toString());
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 			
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
 					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
