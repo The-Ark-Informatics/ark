@@ -251,6 +251,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		try {
 			
 			studyService.delete(containerForm.getModelObject().getAddress());
+			containerForm.info("The Address has been deleted successfully.");
+			editCancelProcess(target);
 		} catch (ArkSystemException e) {
 			this.error("An error occured while processing your delete. Please contact Support");
 			//TODO Need to work out more on how user will contact support (Level 1..etc) a generic message with contact info plus logs to be emailed to admin
