@@ -9,7 +9,7 @@
 					<wicket:message	key="subjectFile.id">Subject File ID:</wicket:message>
 				</label>
 			</th>
-			<th width="75%">
+			<th width="40%">
 				<label for="col2">
 					<wicket:message	key="subjectFile.filename">Filename:</wicket:message>
 				</label>
@@ -19,18 +19,23 @@
 					<wicket:message	key="subjectFile.studyComp">Study Component:</wicket:message>
 				</label>
 			</th>
-			<th width="5%">
+			<th width="10%">
 				<label for="col4">
 					<wicket:message	key="subjectFile.userId">Uploaded By:</wicket:message>
 				</label>
 			</th>
-			<th width="5%">
+			<th width="10%">
 				<label for="col5">
-					&nbsp;
+					<wicket:message	key="subjectFile.comments">Comments:</wicket:message>
 				</label>
 			</th>
 			<th width="5%">
 				<label for="col6">
+					&nbsp;
+				</label>
+			</th>
+			<th width="5%">
+				<label for="col7">
 					&nbsp;
 				</label>
 			</th>
@@ -44,14 +49,17 @@
 			<td width="5%">
 				<span wicket:id="subjectFile.id">Consent File ID</span>&nbsp;
 			</td>
-			<td width="50%">
+			<td width="40%">
 			  	<span wicket:id="subjectFile.filename">Filename</span>
 			</td>
 			<td width="10%">
 				<span wicket:id="subjectFile.studyComp">Study Component</span>
 			</td>
-			<td width="5%">
+			<td width="10%">
 				<span wicket:id="subjectFile.userId">Uploaded By</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="subjectFile.comments">Comments</span>
 			</td>
 			<td width="5%">
 			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />

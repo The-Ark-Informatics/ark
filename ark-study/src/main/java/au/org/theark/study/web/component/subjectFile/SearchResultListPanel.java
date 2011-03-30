@@ -141,6 +141,20 @@ public class SearchResultListPanel extends Panel {
 							au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID,
 							""));// the ID here must match the ones in mark-up
 				}
+				
+				// Comments
+				if (subjectFile.getComments() != null) 
+				{
+					item.add(new Label(
+							au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS,
+							subjectFile.getComments()));
+				} 
+				else 
+				{
+					item.add(new Label(
+							au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS,
+							""));
+				}
 
 				// Download file link button
 				AjaxButton downloadButton = buildDownloadButton(subjectFile); 
@@ -246,7 +260,7 @@ public class SearchResultListPanel extends Panel {
 					}
 				}
 
-				containerForm.info("Subject file " + subjectFile.getFilename() + " was deleted successfully.");
+				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
 				
 				// Update the result panel
 				target.addComponent(searchResultContainer);
