@@ -10,7 +10,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -23,6 +22,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.service.IArkCommonService;
@@ -48,7 +48,6 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
-	private WebMarkupContainer wmcAreaCode;
 	
 	/**
 	 * @param id
@@ -89,26 +88,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		phoneNumberTxtFld = new TextField<String>("phone.phoneNumber");
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		// Code to update the areaCode if necessary...
-//		wmcAreaCode = new WebMarkupContainer("wmc-areaCode");
-//		wmcAreaCode.setOutputMarkupPlaceholderTag(true);	// req'd for Ajax updates
-
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phone.phoneType",phoneTypeList,defaultChoiceRenderer);
-		// Code to update the areaCode if necessary...
-//		phoneTypeChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-//			@Override
-//			protected void onUpdate(AjaxRequestTarget target) {
-//				String newPhoneType = phoneTypeChoice.getModel().getObject().getName().toLowerCase();
-//				if (newPhoneType.equals("mobile") || newPhoneType.equals("iphone")) {
-//					areaCodeTxtFld.setEnabled(false);
-//				}
-//				else {
-//					areaCodeTxtFld.setEnabled(true);
-//				}
-//				target.addComponent(wmcAreaCode);
-//			}
-//		});
-		
 		addDetailFormComponents();
 		attachValidators();
 	}
@@ -116,9 +96,6 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	
 	public void addDetailFormComponents(){
 		detailPanelFormContainer.add(phoneIdTxtFld.setEnabled(false));
-		// Code to update the areaCode if necessary...
-//		wmcAreaCode.add(areaCodeTxtFld);
-//		detailPanelFormContainer.add(wmcAreaCode);
 		detailPanelFormContainer.add(areaCodeTxtFld);
 		detailPanelFormContainer.add(phoneNumberTxtFld);
 		detailPanelFormContainer.add(phoneTypeChoice);
@@ -188,14 +165,15 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 			}
 			if (saveOk) {
 				// Ok to save...
+				LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);
 				if(containerForm.getModelObject().getPhone().getId() == null ){
 					studyService.create(containerForm.getModelObject().getPhone());
-					this.info("Phone number was added and linked to " + containerForm.getModelObject().getPhone().getPerson().getFirstName() + " " + containerForm.getModelObject().getPhone().getPerson().getLastName());
+					this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID() );
 					processErrors(target);
 					//Call the create
 				}else{
 					studyService.update(containerForm.getModelObject().getPhone());
-					this.info("Phone number was updated and linked to " + containerForm.getModelObject().getPhone().getPerson().getFirstName() + " " + containerForm.getModelObject().getPhone().getPerson().getLastName());
+					this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
 					processErrors(target);
 					//Update 
 				}
@@ -203,11 +181,9 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 			}
 			//Invoke backend to persist the phone
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			containerForm.error("The Subject/Participant is not available in the system anymore");
 		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			containerForm.error("A System Exception has occured please contact Support.");
 		}
 	}
 
