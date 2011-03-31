@@ -164,6 +164,12 @@
             <artifactId>jcommon</artifactId>
             <version>1.0.12</version>
         </dependency>
+        
+        <dependency>
+        	<groupId>org.wicketstuff</groupId>
+        	<artifactId>wicketstuff-dojo</artifactId>
+        	<version>1.3.0-beta</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<resources>
@@ -243,6 +249,11 @@
 			<id>wicketskunkworks</id>
 			<name>Wicket Skunkworks Repository</name>
 			<url>http://wicket-skunkworks.googlecode.com/svn/wicket-skunkworks-repo/</url>
+		</repository>
+		<repository>
+			<id>org.wicketstuff</id> 
+			<name>Wicket Stuff Repo</name> 
+			<url>http://wicketstuff.org/maven/repository</url>
 		</repository>
 	</repositories>
 </project>
