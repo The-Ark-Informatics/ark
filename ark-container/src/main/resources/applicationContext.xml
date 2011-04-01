@@ -62,7 +62,7 @@
     </bean>
 	-->
 
- 	<!--  A Test-LDAP data source. Swtich between Test and Development as required
+ 	<!--  A Test-LDAP data source. Switch between Test and Development as required
 
      <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
       <property name="url"  value="ldap://192.168.3.253:389"/>
