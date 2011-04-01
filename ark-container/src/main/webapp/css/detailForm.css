@@ -75,12 +75,10 @@ span.requiredHint {
     border: 1px solid #6F6F6F;
     float: left;
     height: 100%;
-    margin-left: 6.5em;
-    margin-right: 6.5em;
     padding-bottom: 1.5em;
-    padding-left: 1.2em;
+    padding-left: 1.5em;
     padding-top: 1.5em;
-    width: 80%;
+    width: 90%;
 }
 
 #customPanelContentLeft {
@@ -92,7 +90,7 @@ span.requiredHint {
 #customPanelMargin{
 	float: left;
     height: 5%;
-    width: 15%;
+    width: 5%;
 }
 
 #customPanelContentRight {
