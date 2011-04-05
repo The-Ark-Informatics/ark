@@ -37,7 +37,12 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 	protected WebMarkupContainer groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
 	//private AjaxButton cancelBtn;
 	private AjaxButton saveBtn;
+	private FeedbackPanel feedbackPanel;
 
+	protected void processFeedback(AjaxRequestTarget target,FeedbackPanel fb){
+		
+	}
+	
 	protected void onSave( AjaxRequestTarget target){
 		
 	}
@@ -60,36 +65,30 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 	
 	public void initialiseForm(){
 		
-		userNameTxtField.setRequired(true);
-		firstNameTxtField.setRequired(true);
-		emailTxtField.setRequired(true);
+		
 		emailTxtField.add(EmailAddressValidator.getInstance());
-		lastNameTxtField.setRequired(true);
-		userPasswordField.setRequired(false);
-		confirmPasswordField.setRequired(false);
 		attachValidators();
-		decorateComponents();
 		addComponents();
 	}
 	
 	
-	private void decorateComponents(){
-		
-		ThemeUiHelper.componentRounded(userNameTxtField);
-		ThemeUiHelper.componentRounded(firstNameTxtField);
-		ThemeUiHelper.componentRounded(emailTxtField);
-		ThemeUiHelper.componentRounded(lastNameTxtField);
-		ThemeUiHelper.componentRounded(userPasswordField);
-		ThemeUiHelper.componentRounded(confirmPasswordField);
-		ThemeUiHelper.componentRounded(saveBtn);
-		//ThemeUiHelper.componentRounded(cancelBtn);
-	}
-	
 	private void attachValidators(){
-		userNameTxtField.add(EmailAddressValidator.getInstance());
-		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
-		lastNameTxtField.add(StringValidator.lengthBetween(3, 50));
-		userNameTxtField.add(StringValidator.lengthBetween(3, 50));
+		
+		userNameTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("userName.incorrect.format", this, null));
+		userNameTxtField.setRequired(true).setLabel(new StringResourceModel("userName", this, null));
+		userNameTxtField.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("userName", this, null));
+		
+		firstNameTxtField.setRequired(true).setLabel(new StringResourceModel("firstName", this, null));
+		firstNameTxtField.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("firstName", this, null));
+		
+		emailTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("email.incorrect.format", this, null));
+		emailTxtField.setRequired(true).setLabel(new StringResourceModel("email", this, null));
+		
+		lastNameTxtField.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("lastNameLength", this, null));
+		lastNameTxtField.setRequired(true).setLabel(new StringResourceModel("lastName", this, null));
+		userPasswordField.setRequired(false).setLabel(new StringResourceModel("userPassword", this, null));
+		confirmPasswordField.setRequired(false).setLabel(new StringResourceModel("confirmPassword", this, null));
+		
 	}
 	
 	private void addComponents(){
@@ -106,8 +105,9 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 	}
 	
 	
-	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model) {
+	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model,final  FeedbackPanel feedbackPanel) {
 		super(id, model);
+		this.feedbackPanel = feedbackPanel;
 		// TODO Auto-generated constructor stub
 		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
@@ -118,26 +118,26 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 			}
 			
 			public void onError(AjaxRequestTarget target, Form<?> form){
-				
+				processFeedback(target,feedbackPanel);
 			}
 		};
 	}
 	
-	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model, FeedbackPanel feedbackPanel) {
-		super(id, model);
-		// TODO Auto-generated constructor stub
-		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(target);
-			}
-			
-			public void onError(AjaxRequestTarget target, Form<?> form){
-				
-			}
-		};
-	}
+//	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model, FeedbackPanel feedbackPanel) {
+//		super(id, model);
+//		// TODO Auto-generated constructor stub
+//		saveBtn = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+//		{
+//
+//			@Override
+//			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//				onSave(target);
+//			}
+//			
+//			public void onError(AjaxRequestTarget target, Form<?> form){
+//				
+//			}
+//		};
+//	}
 
 }
