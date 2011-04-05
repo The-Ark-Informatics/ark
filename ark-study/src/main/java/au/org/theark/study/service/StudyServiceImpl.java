@@ -1,6 +1,5 @@
 package au.org.theark.study.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -8,10 +7,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.exception.ArkSubjectInsertException;
@@ -25,12 +26,12 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -49,7 +50,7 @@ import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.web.Constants;
 
 
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 @Service(Constants.STUDY_SERVICE)
 public class StudyServiceImpl implements IStudyService{
 	
@@ -235,9 +236,19 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
-	public void create(Phone phone) throws ArkSystemException{
-		studyDao.create(phone);
+	public void create(Phone phone) throws ArkUniqueException, ArkSystemException{
 		
+		try {
+			studyDao.create(phone);
+		} catch (ConstraintViolationException cvex) {
+			log.error("Problem creating phone record: " + cvex);
+			// the following ArkUniqueException message will be shown to the user
+			throw new ArkUniqueException("Failed saving: New phone number is not unique for this person");
+		} catch (Exception ex) {
+			log.error("Problem creating phone record: " + ex);
+			throw new ArkSystemException("Problem creating phone record: " + ex.getMessage());
+		}
+	
 		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -248,8 +259,17 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
-	public void update(Phone phone) throws ArkSystemException{
-		studyDao.update(phone);
+	public void update(Phone phone) throws ArkSystemException, ArkUniqueException{
+		try {
+			studyDao.update(phone);
+		} catch (ConstraintViolationException cvex) {
+			log.error("Problem updating phone record: " + cvex);
+			// the following ArkUniqueException message will be shown to the user
+			throw new ArkUniqueException("Failed saving: Phone number already exists for this person");
+		} catch (Exception ex) {
+			log.error("Problem updating phone record: " + ex);
+			throw new ArkSystemException("Problem updating phone record: " + ex.getMessage());
+		}
 		
 		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
@@ -262,7 +282,12 @@ public class StudyServiceImpl implements IStudyService{
 	}
 	
 	public void delete(Phone phone) throws ArkSystemException {
-		studyDao.delete(phone);
+		try {
+			studyDao.delete(phone);
+		} catch (Exception ex) {
+			log.error("An Exception occured while trying to delete this Phone record. Cause: " + ex);
+			throw new ArkSystemException("Unable to delete a Phone record.");
+		}
 		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);

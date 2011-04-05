@@ -67,11 +67,11 @@ public interface IStudyDao {
 	 */
 	public List<PhoneType> getListOfPhoneType();
 	
-	public void create(Phone phone) throws ArkSystemException;
+	public void create(Phone phone);
 	
-	public void update(Phone phone) throws ArkSystemException;
+	public void update(Phone phone);
 	
-	public void delete(Phone phone) throws ArkSystemException;
+	public void delete(Phone phone);
 
 	public Collection<TitleType> getTitleType();
 	

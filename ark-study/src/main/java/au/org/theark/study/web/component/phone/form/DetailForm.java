@@ -21,6 +21,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -111,6 +112,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		phoneNumberTxtFld.add(StringValidator.maximumLength(10));
 //		areaCodeTxtFld.setRequired(true);	// Removed due to ARK-73:: May be option depending on phone type
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
+		phoneTypeChoice.setRequired(true);
 	}
 
 
@@ -181,10 +183,12 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 				onSavePostProcess(target);
 			}
 			//Invoke backend to persist the phone
+		} catch (ArkUniqueException aue) {
+			this.error(aue.getMessage());
 		} catch (EntityNotFoundException e) {
-			containerForm.error("The Subject/Participant is not available in the system anymore");
+			this.error("The Subject/Participant is not available in the system anymore");
 		} catch (ArkSystemException e) {
-			containerForm.error("A System Exception has occured please contact Support.");
+			this.error("A System Exception has occured please contact Support.");
 		}
 	}
 

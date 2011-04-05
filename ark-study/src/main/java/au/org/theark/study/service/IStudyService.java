@@ -76,9 +76,9 @@ public interface IStudyService {
 	
 	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
 	
-	public void create(Phone phone) throws ArkSystemException;
+	public void create(Phone phone) throws ArkSystemException, ArkUniqueException;
 	
-	public void update(Phone phone) throws ArkSystemException;
+	public void update(Phone phone) throws ArkSystemException, ArkUniqueException;
 
 	public void delete(Phone phone) throws ArkSystemException;
 	

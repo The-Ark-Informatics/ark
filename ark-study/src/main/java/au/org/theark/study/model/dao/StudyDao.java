@@ -189,32 +189,29 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return   criteria.list();
 	}
 	
-	public void create(Phone phone) throws ArkSystemException{
-		try{
+	public void create(Phone phone) {//throws ArkSystemException{
+		
+//		try{
 			getSession().save(phone);
-		}catch(HibernateException hibException) {
-			log.error("A hibernate exception occured. Cannot create the Phone record. Cause: " + hibException.getStackTrace());
-			throw new ArkSystemException("Unable to create a Phone record.");
-		}
+//		}catch(HibernateException hibException) {
+//			log.error("A hibernate exception occured. Cannot create the Phone record. Cause: " + hibException.getStackTrace());
+//			throw new ArkSystemException("Unable to create a Phone record.");
+//		} 
 	}
 	
-	public void update(Phone phone) throws ArkSystemException{
-		try{
-			getSession().update(phone);	
-			getSession().flush();
-		}catch(HibernateException hibException){
-			log.error("A hibernate exception occured. Cannot update the Phone record. Cause: " + hibException.getStackTrace());
-			throw new ArkSystemException("Unable to create a Phone record.");
-		}
+	public void update(Phone phone) {//throws ArkSystemException{
+//		try{
+			getSession().update(phone);
+//		}catch(HibernateException hibException){
+//			log.error("A hibernate exception occured. Cannot update the Phone record. Cause: " + hibException);
+//			throw new ArkSystemException("Unable to create a Phone record.");
+//		}
 	}
 	
-	public void delete(Phone phone) throws ArkSystemException {
-		try{
-			getSession().delete(phone);			
-		}catch(HibernateException someHibernateException){
-			log.error("An Exception occured while trying to delete this Phone record. Cause: " + someHibernateException.getStackTrace());
-			throw new ArkSystemException("Unable to delete a Phone record.");
-		}
+	public void delete(Phone phone) {
+		
+			getSession().delete(phone);
+			
 	}
 	
 	public Collection<TitleType> getTitleType(){
@@ -344,7 +341,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				subjectUidStart = new Long(1);	//if null, then use: 1
 				study.setSubjectUidStart(subjectUidStart);
 			}
-			//TODO: Work out a safer method of getting next incremented number
 			Long incrementedValue = subjectUidStart +  getNextUidSequence(study) - 1;
 			nextIncrementedsubjectUid = incrementedValue.toString();
 			
@@ -389,6 +385,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	protected SubjectUidSequence getSubjectUidSequence(Study study) {
+		// Stateless sessions should be used to avoid locking the record for future update 
+		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(SubjectUidSequence.class);
 		criteria.add(Restrictions.eq(Constants.SUBJECTUIDSEQ_STUDYNAMEID, study.getName()));
@@ -399,7 +397,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
-		//TODO: Work out why this causes a lock on the table when trying to do an update later :(
+		// Stateless sessions should be used to avoid locking the record for future update 
+		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
