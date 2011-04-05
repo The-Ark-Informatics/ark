@@ -1,5 +1,7 @@
 package au.org.theark.study.web.form;
 
+import java.util.Date;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -9,6 +11,7 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
@@ -104,13 +107,14 @@ public class UserForm extends Form<ArkUserVO>{
 	 * @param detailsContainer
 	 * @param userContainerForm
 	 */
-	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm userContainerForm){
+	public UserForm(String id, WebMarkupContainer listContainer, final WebMarkupContainer detailsContainer, ContainerForm userContainerForm,FeedbackPanel feedbackPanel){
 		
 		super(id);
 		
 		this.resultListContainer = listContainer;
 		this.detailsContainer = detailsContainer;
 		this.containerForm = userContainerForm;
+		this.feedbackPanel = feedbackPanel;
 		
 		cancelBtn = new AjaxButton(Constants.CANCEL,  new StringResourceModel("cancelKey", this, null))
 		{
@@ -147,6 +151,10 @@ public class UserForm extends Form<ArkUserVO>{
 				target.addComponent(detailsContainer);
 				onDelete(containerForm.getModelObject(), target);
 			}
+			
+			public void onError(AjaxRequestTarget target, Form<?> form){
+				processFeedback(target);
+			}
 		};
 
 	}
@@ -161,13 +169,6 @@ public class UserForm extends Form<ArkUserVO>{
 	
 	public void initialiseForm(){
 		
-		userNameTxtField.setRequired(true);
-		firstNameTxtField.setRequired(true);
-		emailTxtField.setRequired(true);
-		emailTxtField.add(EmailAddressValidator.getInstance());
-		lastNameTxtField.setRequired(true);
-		userPasswordField.setRequired(false);
-		confirmPasswordField.setRequired(false);
 		attachValidators();
 		addComponents();
 	}
@@ -175,10 +176,25 @@ public class UserForm extends Form<ArkUserVO>{
 
 	
 	private void attachValidators(){
-		userNameTxtField.add(EmailAddressValidator.getInstance());
-		firstNameTxtField.add(StringValidator.lengthBetween(3, 50));
-		lastNameTxtField.add(StringValidator.lengthBetween(3, 50));
-		userNameTxtField.add(StringValidator.lengthBetween(3, 50));
+		
+		
+		lastNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel("lastName",this,null));
+		lastNameTxtField.setRequired(true);
+
+		userNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel("userName",this,null));
+		userNameTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("userName.incorrectPattern",this,null));
+		userNameTxtField.setRequired(true).setLabel(new StringResourceModel("userName",this,null));
+		
+		firstNameTxtField.setRequired(true).setLabel(new StringResourceModel("firstName",this,null));
+		firstNameTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel("firstName",this,null));
+		
+		emailTxtField.add(StringValidator.lengthBetween(1, 50)).setLabel(new StringResourceModel("email",this,null));
+		emailTxtField.add(EmailAddressValidator.getInstance()).setLabel(new StringResourceModel("email.incorrectpattern",this,null));
+		emailTxtField.setRequired(true).setLabel(new StringResourceModel("email",this,null));
+		
+		userPasswordField.setRequired(false);
+		confirmPasswordField.setRequired(false);
+		
 	}
 	
 	private void addComponents(){
@@ -208,7 +224,7 @@ public class UserForm extends Form<ArkUserVO>{
 		
 	}
 	protected void processFeedback(AjaxRequestTarget target){
-		
+		target.addComponent(feedbackPanel);
 	}
 	
 
