@@ -74,14 +74,14 @@ public class Details extends Panel{
 	
 	public void initialisePanel(){
 		
-		userForm = new UserForm(Constants.USER_DETAILS_FORM, listContainer, detailsContainer, containerForm){
+		userForm = new UserForm(Constants.USER_DETAILS_FORM, listContainer, detailsContainer, containerForm,feedBackPanel){
 			
 			protected void onDelete(ArkUserVO arkUserVO, AjaxRequestTarget target)
 			{
 				log.info("Delete the user details from ldap");
 				try{
 					userService.deleteLdapUser(arkUserVO);
-					containerForm.info("The user has been deleted from the system");
+					containerForm.info("The user has been deleted from the system.");
 					processFeedback(target);
 					arkUserVO = new ArkUserVO();
 					containerForm.setModelObject(arkUserVO);
@@ -107,7 +107,7 @@ public class Details extends Panel{
 						
 						processNew(arkUserVO,this);
 						
-						this.info(arkUserVO.getUserName() + " was added successfully.");
+						containerForm.info(arkUserVO.getUserName() + " was added successfully.");
 						this.groupPasswordContainer.setVisible(true);
 						this.userNameTxtField.setEnabled(false);
 						this.userPasswordField.setRequired(false);
@@ -115,7 +115,7 @@ public class Details extends Panel{
 						processFeedback(target);
 						
 					}else if(arkUserVO.getMode() == Constants.MODE_EDIT){
-						
+						containerForm.info(arkUserVO.getUserName() + " was updated successfully.");
 						processUpdate(arkUserVO, this);
 						this.groupPasswordContainer.setVisible(true);
 						this.userNameTxtField.setEnabled(true);
