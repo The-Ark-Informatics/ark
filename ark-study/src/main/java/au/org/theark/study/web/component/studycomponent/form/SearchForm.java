@@ -135,20 +135,23 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo>{
 	 */
 	
 	protected boolean isSecure(String actionType) {
-		
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();		
 		boolean flag = false;
-		if(actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW)){
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();		
-			if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+		
+		if(actionType.equalsIgnoreCase(Constants.NEW)){
+			if(		
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
 					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
 				flag = true;
 			}
+			
+		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
+			flag = true;
 		}else{
 			flag = true;
-			
 		}
-		//if it is a Super or Study admin then make the new available
 		return flag;
 	
 	}
