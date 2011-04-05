@@ -25,19 +25,22 @@ public class MyDetails extends Panel{
 	private transient Logger log = LoggerFactory.getLogger(MyDetails.class);
 	private UserForm userForm;
 	private FeedbackPanel feedBackPanel;
+
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 
 	private CompoundPropertyModel<ArkUserVO> arkUserModelCpm;
-	public MyDetails(String id, ArkUserVO arkUserVO, final FeedbackPanel feedBackPanel)
+	
+	
+	public MyDetails(String id, ArkUserVO arkUserVO,  final FeedbackPanel feedBackPanel)
 	{
 		super(id);
 		/*Initialise the CPM */
 		arkUserModelCpm = new CompoundPropertyModel<ArkUserVO>(arkUserVO);
 		this.feedBackPanel = feedBackPanel;
 		
-		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm){
+		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm,feedBackPanel){
 			
 			protected void onSave(AjaxRequestTarget target){
 				ArkUserVO arkUser  = getModelObject();
@@ -47,17 +50,23 @@ public class MyDetails extends Panel{
 				try{
 					userService.updateLdapUser(arkUser);
 					this.info("Details for user: " + arkUser.getUserName() + " updated");
-					target.addComponent(feedBackPanel);
+					processFeedback(target,feedBackPanel);
 				}
 				catch (ArkSystemException arkSystemException) {
 					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
+					this.error("An error has occured,cannot update user details.Please contact support.");
+					processFeedback(target,feedBackPanel);
 					//add custom error message to feedback panel. 
 				}catch(Exception ex){
 					//Handle all other type of exceptions
+					this.error("An error has occured while saving user details. Please contact support.");
+					processFeedback(target,feedBackPanel);
 					log.error("Exception occured when saving user details " + ex.getMessage());
 				}
 			}
-			
+			protected void processFeedback(AjaxRequestTarget target, FeedbackPanel feedbackPanel){
+				target.addComponent(feedbackPanel);
+			}
 			protected void onCancel(AjaxRequestTarget target){
 				this.setVisible(false);
 			}
