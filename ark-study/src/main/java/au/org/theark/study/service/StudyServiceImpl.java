@@ -50,7 +50,7 @@ import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.web.Constants;
 
 
-@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+@Transactional
 @Service(Constants.STUDY_SERVICE)
 public class StudyServiceImpl implements IStudyService{
 	
@@ -236,6 +236,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void create(Phone phone) throws ArkUniqueException, ArkSystemException{
 		
 		try {
@@ -259,6 +260,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void update(Phone phone) throws ArkSystemException, ArkUniqueException{
 		try {
 			studyDao.update(phone);
@@ -281,6 +283,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void delete(Phone phone) throws ArkSystemException {
 		try {
 			studyDao.delete(phone);
