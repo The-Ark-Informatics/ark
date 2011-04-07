@@ -146,9 +146,13 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		log.info("Validating Pheno upload file!");
-
-		validateFileFormat();
-		saveInMemory();
+	}
+	
+	@Override
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
+	{
+		storeFile();
+		saveFileInMemory();
 	}
 	
 	public void setWizardForm(WizardForm wizardForm) {
@@ -159,7 +163,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		return wizardForm;
 	}
 
-	private void validateFileFormat() {
+	private void storeFile() {
 		// TODO: Load the temporary directory from the application configuration instead
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		String tempDir = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
@@ -172,9 +176,9 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 			fos = new FileOutputStream(file);
 			IOUtils.copy(fileUpload.getInputStream(), fos);
 			fos.close();
-			System.out.println("Successfully stored a temporary file: " + filePath);
+			//System.out.println("Successfully stored a temporary file: " + filePath);
 		} catch (IOException ioe) {
-			System.out.println("Failed to save the uploaded file:" + ioe);
+			//System.out.println("Failed to save the uploaded file:" + ioe);
 		} finally {
 			if (fos != null) {
 				fos = null;
@@ -182,11 +186,9 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		}
 
 		wizardForm.setFile(file);
-		validationMessages = phenotypicService.validateMatrixPhenoFileFormat(file);
-		containerForm.getModelObject().setValidationMessages(validationMessages);
 	}
 
-	private void saveInMemory() {
+	private void saveFileInMemory() {
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);

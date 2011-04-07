@@ -69,6 +69,14 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) 
 	{
+	
+	}
+	
+	@Override
+	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
+	{
+		validationMessages = phenotypicService.validateMatrixPhenoFileFormat(wizardForm.getFile());
+		containerForm.getModelObject().setValidationMessages(validationMessages);
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 		
@@ -77,15 +85,10 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
 		}
-		else
-		{
-			validateFileData();
-		}
 	}
 	
-	public void validateFileData()
+	@Override
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		validationMessages = phenotypicService.validateMatrixPhenoFileData(this.wizardForm.getFile());
-		this.containerForm.getModelObject().setValidationMessages(validationMessages);
 	}
 }

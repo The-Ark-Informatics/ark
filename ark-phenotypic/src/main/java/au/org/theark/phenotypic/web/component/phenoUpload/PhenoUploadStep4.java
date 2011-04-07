@@ -68,17 +68,21 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) 
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
+	{
+	}
+	
+	@Override
+	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
-		if(validationMessage != null && validationMessage.length() > 0)
-		{
-			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
-		}
-		else
+	}
+	
+	@Override
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
+	{
+		if(validationMessage == null || containerForm.getModel().getObject().getOverrideDataValidationChkBox())
 		{
 			// Filename seems to be lost from model when moving between steps in wizard
 			containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
