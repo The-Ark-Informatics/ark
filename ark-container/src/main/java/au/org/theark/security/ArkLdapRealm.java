@@ -94,9 +94,17 @@ public class ArkLdapRealm extends AuthorizingRealm{
         if( roles != null && roles.size() > 0) {
         	 info = new SimpleAuthorizationInfo();
         	 info.addRoles(roles);
+        	
+        	 //Add a List<String> Permissions for this subject/user TODO the only catch here is if Write was a permission allowed for a particular module/study and read for another. How do we differentiate it?
         }
          return info;
     }
+    
+    @Override
+    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+    	super.clearCachedAuthorizationInfo(principals);
+    }
+    
 	
 
 }
