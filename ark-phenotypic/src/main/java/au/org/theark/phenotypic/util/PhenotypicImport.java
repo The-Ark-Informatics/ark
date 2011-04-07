@@ -38,24 +38,24 @@ import com.csvreader.CsvReader;
 @SuppressWarnings("unused")
 public class PhenotypicImport
 {
-	private String					fieldName;
-	private long					subjectCount;
-	private long					fieldCount;
-	private double					speed;
-	private long					curPos;
-	private long					srcLength				= -1;															// -1 means nothing being processed
-	private StopWatch				timer						= null;
-	private char					phenotypicDelimChr	= Constants.IMPORT_DELIM_CHAR_COMMA;					// default phenotypic file delimiter: COMMA
-	private IPhenotypicDao			phenotypicDao			= null;
-	private Person					person;
+	private String						fieldName;
+	private long						subjectCount;
+	private long						fieldCount;
+	private double						speed;
+	private long						curPos;
+	private long						srcLength					= -1;															// -1 means nothing being processed
+	private StopWatch					timer							= null;
+	private char						phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;					// default phenotypic file delimiter: COMMA
+	private IPhenotypicDao			phenotypicDao				= null;
+	private Person						person;
 	private PhenoCollection			phenoCollection;
 	private List<Field>				fieldList;
-	private Study					study;
-	static Logger					log						= LoggerFactory.getLogger(PhenotypicImport.class);
+	private Study						study;
+	static Logger						log							= LoggerFactory.getLogger(PhenotypicImport.class);
 	java.util.Collection<String>	fileValidationMessages	= null;
 	java.util.Collection<String>	dataValidationMessages	= null;
-	private IArkCommonService		iArkCommonService		= null;
-	private StringBuffer			importReport			= null;
+	private IArkCommonService		iArkCommonService			= null;
+	private StringBuffer				importReport				= null;
 
 	/**
 	 * PhenotypicImport constructor
@@ -90,7 +90,7 @@ public class PhenotypicImport
 	 *            out of memory Exception
 	 */
 	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
-	{	
+	{
 		if (phenotypicDao == null)
 		{
 			throw new PhenotypicSystemException("Aborting: Must have a phenotypic dao object defined before calling.");
@@ -130,7 +130,7 @@ public class PhenotypicImport
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.info("Header length: " + csvReader.getHeaders().toString().length());
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -144,10 +144,7 @@ public class PhenotypicImport
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 
-				if (csvReader.getColumnCount() < 2 || 
-						fieldCount < 1 || 
-						!fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) ||
-						!fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
+				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
 				{
 					// Invalid file
 					StringBuffer stringBuffer = new StringBuffer();
@@ -158,6 +155,7 @@ public class PhenotypicImport
 					stringBuffer = stringBuffer.append("[..,],[...],[...],[...],[...],[...]\n");
 
 					fileValidationMessages.add(stringBuffer.toString());
+					break;
 				}
 				else
 				{
@@ -183,12 +181,12 @@ public class PhenotypicImport
 				for (Iterator<String> iterator = fileValidationMessages.iterator(); iterator.hasNext();)
 				{
 					String errorMessage = iterator.next();
-					log.info(errorMessage);
+					log.debug(errorMessage);
 				}
 			}
 			else
 			{
-				log.info("Validation is ok");
+				log.debug("Validation is ok");
 			}
 		}
 		catch (IOException ioe)
@@ -205,9 +203,9 @@ public class PhenotypicImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			//fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			//fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
-			
+			// fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			// fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+
 			if (timer != null)
 				timer = null;
 			if (csvReader != null)
@@ -235,13 +233,13 @@ public class PhenotypicImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		
-		//if(subjectCount * fieldCount > 0)
-		//	fileValidationMessages.add("Validated " + subjectCount + " rows of data");
-		
+
+		// if(subjectCount * fieldCount > 0)
+		// fileValidationMessages.add("Validated " + subjectCount + " rows of data");
+
 		return fileValidationMessages;
 	}
-	
+
 	/**
 	 * Validates the phenotypic data file in the default "matrix" file format assumed: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN...
 	 * 
@@ -295,7 +293,7 @@ public class PhenotypicImport
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.info("Header length: " + csvReader.getHeaders().toString().length());
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -351,20 +349,20 @@ public class PhenotypicImport
 					curPos += stringLineArray[i].length() + 1; // update progress
 
 					// Debug only - Show progress and speed
-					log.info("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+					log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
 				}
 
-				log.info("\n");
+				log.debug("\n");
 				subjectCount++;
 			}
 
 			if (dataValidationMessages.size() > 0)
 			{
-				log.info("Validation messages: " + dataValidationMessages.size());
+				log.debug("Validation messages: " + dataValidationMessages.size());
 				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();)
 				{
 					String errorMessage = iterator.next();
-					log.info(errorMessage);
+					log.debug(errorMessage);
 				}
 			}
 			else
@@ -415,11 +413,11 @@ public class PhenotypicImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		log.info("Validated " + subjectCount * fieldCount + " rows of data");
-		
-		//if(subjectCount * fieldCount > 0)
-		//	dataValidationMessages.add("Validated " + subjectCount * fieldCount + " rows of data");
-		
+		log.debug("Validated " + subjectCount * fieldCount + " rows of data");
+
+		// if(subjectCount * fieldCount > 0)
+		// dataValidationMessages.add("Validated " + subjectCount * fieldCount + " rows of data");
+
 		return dataValidationMessages;
 	}
 
@@ -586,12 +584,10 @@ public class PhenotypicImport
 		}
 		log.info("Inserted " + subjectCount * fieldCount + " rows of data");
 	}
-	
+
 	/**
-	 * Imports the phenotypic data file to the database tables, and creates report on the process
-	 * Assumes the file is in the default "matrix" file format:
-	 * SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN... 
-	 * 1,01/01/1900,99.99,99.99,, ...
+	 * Imports the phenotypic data file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file
+	 * format: SUBJECTID,DATE_COLLECTED,FIELD1,FIELD2,FIELDN... 1,01/01/1900,99.99,99.99,, ...
 	 * 
 	 * Where N is any number of columns
 	 * 
@@ -606,7 +602,7 @@ public class PhenotypicImport
 	public StringBuffer importAndReportMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
 		importReport = new StringBuffer();
-		
+
 		if (phenotypicDao == null)
 		{
 			importReport.append("Critical error during import. Please check the file and try again.\n");
@@ -683,7 +679,7 @@ public class PhenotypicImport
 							importReport.append("\tVALUE: ");
 							importReport.append(stringLineArray[i]);
 							importReport.append("\n");
-							
+
 							FieldData fieldData = new FieldData();
 
 							fieldData.setCollection(this.phenoCollection);
@@ -703,6 +699,9 @@ public class PhenotypicImport
 
 							// Other/ith columns should be the field data value
 							fieldData.setValue(stringLineArray[i]);
+							
+							// Flag data that failed validation, but was overrriden and imported
+							fieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, null));
 
 							// Try to create the field data
 							phenotypicDao.createFieldData(fieldData);
@@ -754,10 +753,10 @@ public class PhenotypicImport
 			importReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
 			importReport.append(" MB");
 			importReport.append("\n");
-			
+
 			if (timer != null)
 				timer = null;
-			
+
 			if (csvReader != null)
 			{
 				try
@@ -787,10 +786,10 @@ public class PhenotypicImport
 		importReport.append(subjectCount * fieldCount);
 		importReport.append(" rows of data");
 		importReport.append("\n");
-		
+
 		return importReport;
 	}
-
+	
 	/**
 	 * Return the progress of the current process in %
 	 * 
