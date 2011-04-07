@@ -91,6 +91,7 @@ public class Constants {
 	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD_ID	= "fieldData.field.id";
 	public static final String	FIELD_DATAVO_FIELD_DATA_FIELD_NAME	= "fieldData.field.name";
 	public static final String	FIELD_DATAVO_FIELD_DATA_VALUE = "fieldData.value";
+	public static final String	FIELD_DATAVO_FIELD_DATA_PASSED_QUALITY_CONTROL	= "fieldData.passedQualityControl";
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER = "fieldData.user";
 	public static final String FIELD_DATAVO_FIELD_DATA_UPDATE_USER_ID = "fieldData.user.id";
 	public static final String FIELD_DATAVO_FIELD_DATA_INSERT_TIME = "fieldData.insertTime";
