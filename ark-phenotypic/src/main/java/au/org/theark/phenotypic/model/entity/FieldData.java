@@ -41,6 +41,7 @@ public class FieldData implements java.io.Serializable {
 	private Date insertTime;
 	private String updateUserId;
 	private Date updateTime;
+	private Boolean passedQualityControl;
 	private Set<FieldDataLog> fieldDataLogs = new HashSet<FieldDataLog>(0);
 	
 	// Constructors
@@ -193,5 +194,22 @@ public class FieldData implements java.io.Serializable {
 	public void setFieldDataLogs(Set<FieldDataLog> fieldDataLogs)
 	{
 		this.fieldDataLogs = fieldDataLogs;
+	}
+
+	/**
+	 * @param passedQualityControl the passedQualityControl to set
+	 */
+	public void setPassedQualityControl(Boolean passedQualityControl)
+	{
+		this.passedQualityControl = passedQualityControl;
+	}
+
+	/**
+	 * @return the passedQualityControl
+	 */
+	@Column(name="PASSED_QUALITY_CONTROL")
+	public Boolean getPassedQualityControl()
+	{
+		return passedQualityControl;
 	}
 }
