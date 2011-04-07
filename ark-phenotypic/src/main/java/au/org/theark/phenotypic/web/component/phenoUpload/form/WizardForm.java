@@ -73,7 +73,7 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	{
 		PhenoUploadStep1 step1 = new PhenoUploadStep1("step", containerForm, this);
 		PhenoUploadStep2 step2 = new PhenoUploadStep2("step", containerForm, this);
-		PhenoUploadStep3 step3 = new PhenoUploadStep3("step", containerForm);
+		PhenoUploadStep3 step3 = new PhenoUploadStep3("step", containerForm, this);
 		PhenoUploadStep4 step4 = new PhenoUploadStep4("step", containerForm, this);
 		PhenoUploadStep5 step5 = new PhenoUploadStep5("step", containerForm);
 		
