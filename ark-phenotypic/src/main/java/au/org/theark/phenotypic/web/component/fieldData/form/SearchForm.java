@@ -17,6 +17,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
@@ -135,6 +136,19 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	{
 		target.addComponent(feedbackPanel);
 		FieldData searchFieldData = getModelObject().getFieldData();
+
+		// Searching by SubjectUID
+		if(getModelObject().getFieldData().getLinkSubjectStudy().getSubjectUID() != null)
+		{
+			String subjectUID = getModelObject().getFieldData().getLinkSubjectStudy().getSubjectUID();
+			try
+			{
+				searchFieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(subjectUID));
+			}
+			catch (EntityNotFoundException e)
+			{
+			}
+		}
 
 		java.util.Collection<FieldData> fieldDataCollection = phenotypicService.searchFieldData(searchFieldData);
 
