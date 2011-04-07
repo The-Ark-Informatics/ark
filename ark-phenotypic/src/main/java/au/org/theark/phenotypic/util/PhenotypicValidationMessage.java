@@ -22,6 +22,9 @@ public class PhenotypicValidationMessage
 	 */
 	public static String fieldDataNotDefinedType(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("SubjectUID: ");
+		stringBuffer.append(fieldData.getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
@@ -39,6 +42,9 @@ public class PhenotypicValidationMessage
 	 */
 	public static String fieldDataGreaterThanMaxValue(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("SubjectUID: ");
+		stringBuffer.append(fieldData.getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
@@ -56,6 +62,9 @@ public class PhenotypicValidationMessage
 	 */
 	public static String fieldDataLessThanMinValue(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("SubjectUID: ");
+		stringBuffer.append(fieldData.getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
@@ -73,6 +82,9 @@ public class PhenotypicValidationMessage
 	 */
 	public static String fieldDataNotInEncodedValues(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("SubjectUID: ");
+		stringBuffer.append(fieldData.getLinkSubjectStudy().getSubjectUID());
+		stringBuffer.append(": ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
