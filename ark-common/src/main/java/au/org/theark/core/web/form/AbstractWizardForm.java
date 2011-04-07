@@ -341,6 +341,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		
 		AbstractWizardStepPanel next = currentStep.getNextStep();
 		if (next != null) {
+			next.onStepInNext(AbstractWizardForm.this, target);
 			currentStep.replaceWith(next);
 			
 			// If no more steps, on final step
