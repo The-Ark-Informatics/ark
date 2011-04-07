@@ -347,20 +347,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public Field getFieldByNameAndStudy(String fieldName, Study study)
 	{
-		Field field = new Field();
-		field.setStudy(study);
-		field.setName(fieldName);
-		Example example = Example.create(field);
-		Criteria criteria = getSession().createCriteria(Field.class).add(example);
-		if (criteria != null && criteria.list() != null && criteria.list().size() > 0)
+		Criteria criteria = getSession().createCriteria(Field.class);
+		if (fieldName != null && study != null)
 		{
-			return (Field) criteria.list().get(0);
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_NAME, fieldName));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
 		}
-		else
-		{
-			log.error("No field returned...");
-			return null;
-		}
+
+		return (Field) criteria.list().get(0);
 	}
 
 	public void createField(Field field)
