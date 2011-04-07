@@ -7,11 +7,14 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -111,7 +114,6 @@ public class SearchResultListPanel extends Panel
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD, ""));
 				}
 				
-				
 				/* The FieldData Value */
 				if (fieldData.getValue() != null)
 				{
@@ -123,6 +125,15 @@ public class SearchResultListPanel extends Panel
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_VALUE, ""));
 				}
 
+				/* The FieldData Passed Quality Control flag */
+				if (fieldData.getPassedQualityControl())
+				{
+					item.add(new ContextImage(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_PASSED_QUALITY_CONTROL, new Model<String>("images/icons/tick.png")));
+				}
+				else
+				{
+					item.add(new ContextImage(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_PASSED_QUALITY_CONTROL, new Model<String>("images/icons/cross.png")));
+				}
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
