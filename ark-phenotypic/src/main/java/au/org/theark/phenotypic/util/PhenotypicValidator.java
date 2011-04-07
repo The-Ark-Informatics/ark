@@ -170,7 +170,7 @@ public class PhenotypicValidator
 	 */
 	public static boolean isInEncodedValues(FieldData fieldData, java.util.Collection<String> errorMessages)
 	{
-		boolean inEncodedValues = false;
+		boolean inEncodedValues = true;
 
 		Field field = (Field) fieldData.getField();
 
@@ -186,18 +186,16 @@ public class PhenotypicValidator
 				{
 					String encodedValueToken = stringTokenizer.nextToken();
 					StringTokenizer encodedValueSeparator = new StringTokenizer(encodedValueToken, Constants.ENCODED_VALUES_SEPARATOR);
-					while (encodedValueSeparator.hasMoreTokens())
+					String encodedValue = encodedValueSeparator.nextToken().trim();
+					
+					if (encodedValue.equalsIgnoreCase(fieldData.getValue().trim()))
 					{
-						String encodedValue = encodedValueSeparator.nextToken().trim();
-						if (encodedValue.equalsIgnoreCase(fieldData.getValue().trim()))
-						{
-							inEncodedValues = true;
-							break;
-						}
-						else
-						{
-							inEncodedValues = false;
-						}
+						inEncodedValues = true;
+						break;
+					}
+					else
+					{
+						inEncodedValues = false;
 					}
 				}
 
@@ -235,5 +233,20 @@ public class PhenotypicValidator
 		{
 			// log.info("Field data in valid range");
 		}
+	}
+	
+	public static boolean fieldDataPassesQualityControl(FieldData fieldData, java.util.Collection<String> errorMessages)
+	{
+		boolean passesQualityControl = true;
+		// Validate the field data
+		if (isValidFieldData(fieldData, errorMessages) && isInEncodedValues(fieldData, errorMessages) && isInValidRange(fieldData, errorMessages))
+		{
+			passesQualityControl = true;
+		}
+		else
+		{
+			passesQualityControl = false;
+		}
+		return passesQualityControl;
 	}
 }
