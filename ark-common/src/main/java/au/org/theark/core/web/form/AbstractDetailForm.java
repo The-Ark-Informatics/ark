@@ -1,10 +1,14 @@
 package au.org.theark.core.web.form;
 
+import java.util.Iterator;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 
@@ -157,6 +161,27 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
+				boolean setFocusError = false;
+				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailFormContainer");
+				for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
+				{
+					Component component = (Component) iterator.next();
+					if (component instanceof FormComponent)
+					{
+						FormComponent formComponent = (FormComponent) component;
+						
+						if(!formComponent.isValid())
+						{
+							if(!setFocusError)
+							{
+								// Place focus on field in error (for the first field in error)
+								target.focusComponent(formComponent);
+				            setFocusError = true;	
+							}
+						}
+					}
+				}
+				
 				processErrors(target);
 			}
 		};
