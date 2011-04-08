@@ -86,6 +86,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 	
 	protected void initialiseSearchForm(){
 		studyIdTxtFld =new TextField<String>(Constants.STUDY_SEARCH_KEY);
+		
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_SEARCH_NAME);
 		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
