@@ -2,6 +2,19 @@ span.requiredHint {
 	font-size: 12pt;
 }
 
+#error {
+	border: 1px solid red;
+}
+
+.formcomponent.invalid {
+    border: 2px solid red;
+    color: red;
+}
+
+.formcomponent.valid {
+    color: green;
+}
+
 .fieldset {
 	border: 1px solid #6F6F6F;
 }
