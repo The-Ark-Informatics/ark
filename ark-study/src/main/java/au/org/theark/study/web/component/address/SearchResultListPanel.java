@@ -13,11 +13,13 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.study.web.Constants;
@@ -113,7 +115,7 @@ public class SearchResultListPanel extends Panel{
 				}
 				
 				if(address.getPreferredMailingAddress() != null && address.getPreferredMailingAddress().getName().equalsIgnoreCase("YES")){
-					item.add(new Label("address.preferredMailingAddress",address.getPreferredMailingAddress().getName()));
+					item.add(new ContextImage("address.preferredMailingAddress", new Model<String>("images/icons/tick.png")));
 				}else{
 					item.add(new Label("address.preferredMailingAddress",""));
 				}
