@@ -58,6 +58,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractArchiveDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -169,6 +170,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
 		studyNameTxtFld.setRequired(true);
+		studyNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		
 		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
 		estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);

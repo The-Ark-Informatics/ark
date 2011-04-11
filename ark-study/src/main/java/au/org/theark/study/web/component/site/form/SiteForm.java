@@ -14,6 +14,7 @@ import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.StudyModelVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.Details;
@@ -77,6 +78,7 @@ public class SiteForm extends Form<SiteModelVO>{
 	public void initialiseForm(){
 		
 		siteNameTxtFld = new TextField<String>("siteVo.siteName");
+		siteNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		siteDescription = new TextArea<String>("siteVo.siteDescription");
 		attachValidators();
 		decorateComponents();

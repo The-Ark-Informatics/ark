@@ -38,6 +38,7 @@ import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -210,7 +211,7 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice  = new DropDownChoice(Constants.CONSENT_STUDY_COMP, studyCompList,defaultChoiceRenderer);
-		
+		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
 		studyComponentChoice.add(new AjaxFormComponentUpdatingBehavior("onchange"){
 
 			@Override

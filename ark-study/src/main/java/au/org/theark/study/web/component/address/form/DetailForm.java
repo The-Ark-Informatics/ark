@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -97,6 +98,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	
 	public void initialiseDetailForm(){
 		streetAddressTxtFld = new TextField<String>("address.streetAddress");
+		streetAddressTxtFld.add(new ArkDefaultFormFocusBehavior());
 		cityTxtFld = new TextField<String>("address.city");
 		postCodeTxtFld = new TextField<String>("address.postCode");
 		commentsTxtArea = new TextArea<String>("address.comments");

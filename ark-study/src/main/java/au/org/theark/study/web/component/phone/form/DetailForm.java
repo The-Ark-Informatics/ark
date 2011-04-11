@@ -28,6 +28,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhoneVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -90,6 +91,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phone.phoneType",phoneTypeList,defaultChoiceRenderer);
+		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
 		addDetailFormComponents();
 		attachValidators();
 	}

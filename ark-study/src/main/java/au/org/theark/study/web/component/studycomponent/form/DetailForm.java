@@ -24,6 +24,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
@@ -77,6 +78,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 		componentIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
 		componentIdTxtFld.setEnabled(false);
 		componentNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
+		componentNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		componentDescription = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
 		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
 		addDetailFormComponents();

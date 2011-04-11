@@ -21,6 +21,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.vo.CorrespondenceVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -60,6 +61,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		initialiseStatusTypeDropDown();
 		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
+		studyManagerTxtFld.add(new ArkDefaultFormFocusBehavior());
 //		dateFld = new TextField<String>("correspondence.date");	// TODO: fix this
 		timeTxtFld = new TextField<String>("correspondence.time");
 		reasonTxtFld = new TextField<String>("correspondence.reason");
