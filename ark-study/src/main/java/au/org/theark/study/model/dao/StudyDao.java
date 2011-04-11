@@ -277,17 +277,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			session.update(person);// Update Person and associated Phones
 			
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-			if(person.getLastName() != null)
+			String currentLastName = getCurrentLastname(person);
+			
+			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
 			{
 				personLastNameHistory.setPerson(person);
 				personLastNameHistory.setLastName(person.getLastName());
 				session.save(personLastNameHistory);	
 			}
-			
-			String currentLastName = getCurrentLastname(person);
-			
-			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
-				session.save(personLastNameHistory);
 			
 			// Update subjectPreviousLastname
 			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
