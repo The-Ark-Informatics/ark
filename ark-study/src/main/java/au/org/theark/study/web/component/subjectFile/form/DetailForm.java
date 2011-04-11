@@ -31,6 +31,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -98,6 +99,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		// fileSubjectFile for payload (attached to filename key)
 		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
 		fileSubjectFileField.setRequired(true);
+		fileSubjectFileField.add(new ArkDefaultFormFocusBehavior());
 
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();
