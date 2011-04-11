@@ -24,6 +24,7 @@ import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
@@ -104,6 +105,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 
 		// fileUpload for payload
 		fileUploadField = new FileUploadField(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
+		fileUploadField.add(new ArkDefaultFormFocusBehavior());
 
 		// Initialise Drop Down Choices
 		initialiseDropDownChoices();

@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -77,6 +78,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		fieldDataDateCollectedDteFld = new DateTextField(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_DATE_COLLECTED, au.org.theark.core.Constants.DD_MM_YYYY);
 		fieldDataFieldTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD_NAME);
 		fieldDataValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_VALUE);
+		fieldDataValueTxtFld.add(new ArkDefaultFormFocusBehavior());
 
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(fieldDataDateCollectedDteFld);
