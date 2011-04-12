@@ -25,7 +25,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
-import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -52,7 +51,6 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 
 	private ILdapPersonDao ldapInterface;
 	private IStudyDao studyDao;
-	
 	
 	public IStudyDao getStudyDao() {
 		return studyDao;
@@ -240,4 +238,22 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	public Country getCountry(String countryCode){
 		return studyDao.getCountry(countryCode);
 	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see au.org.theark.core.service.IArkCommonService#isAdministator(java.lang.String)
+	 */
+	public boolean isAdministator(String userName) throws EntityNotFoundException {
+		
+		return studyDao.isAdministator(userName);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.service.IArkCommonService#isSuperAdmin(java.lang.String)
+	 */
+	public boolean isSuperAdministrator(String userName) throws EntityNotFoundException {
+		return studyDao.isSuperAdministrator(userName);
+	}
+	
+	
 }

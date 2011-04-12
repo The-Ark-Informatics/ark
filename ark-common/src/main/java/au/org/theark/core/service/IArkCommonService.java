@@ -18,7 +18,6 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
-import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -131,4 +130,22 @@ public interface IArkCommonService {
 	public Long getSubjectCount(Study study);
 
 	public List<SubjectUidToken> getListOfSubjectUidToken();
+	
+	/*Access User Roles from Backend */
+	
+	/**
+	 * This interface checks if the user is a Super Administrator 
+	 */
+	public boolean isSuperAdministrator(String userName)  throws EntityNotFoundException ;
+	
+	/**
+	 * This interface checks if the user is a Administrator in the Ark System.
+	 * @param userName
+	 * @return
+	 */
+	public boolean isAdministator(String userName)  throws EntityNotFoundException ;
+	
+	
+	
+
 }
