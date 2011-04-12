@@ -611,12 +611,17 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	 * @param ldapUserName
 	 * @return ArkUser
 	 */
-	protected ArkUser getArkUser(String ldapUserName){
+	protected ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(ArkUser.class);
 		criteria.add(Restrictions.eq("ldapUserName", ldapUserName));
 		session.close();
-		return (ArkUser)criteria.uniqueResult();
+		ArkUser arkUser  = (ArkUser)criteria.uniqueResult();
+		if(arkUser != null){
+			return arkUser;
+		}else{
+			throw new EntityNotFoundException("The given Ldap User does not exist in the database system");
+		}
 	}
 	
 	/**
@@ -654,24 +659,22 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	 * is/has a role of the type in ArkUserRole table/instance. If yes a boolean true is returned and otherwise
 	 * false is returned.</p><br>
 	 * @return boolean 
+	 * @throws EntityNotFoundException 
 	 */
-	public boolean isAdministator(String ldapUserName) {
+	public boolean isAdministator(String ldapUserName) throws EntityNotFoundException {
 		
 		boolean isAdministrator = false;
 		
 		StatelessSession session = getStatelessSession();
 		//Check or get user ark_user object based on ldapUserName
 		ArkUser arkUser  = getArkUser(ldapUserName);
-		if(arkUser != null){
-			Criteria criteria = session.createCriteria(ArkUserRole.class);
-			ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
-			criteria.add(Restrictions.eq("arkRole", arkRole));
-			ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
-			if(arkUserRole != null){
-				isAdministrator = true;
-			}
+		Criteria criteria = session.createCriteria(ArkUserRole.class);
+		ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
+		criteria.add(Restrictions.eq("arkRole", arkRole));
+		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
+		if(arkUserRole != null){
+			isAdministrator = true;
 		}
-		
 		session.close();//Close the session here since it is stateless.  
 		return isAdministrator;
 	}
@@ -687,23 +690,20 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	 * @return boolean 
 	 * @see au.org.theark.core.dao.IStudyDao#isAdministator(java.lang.String)
 	 */
-	public boolean isSuperAdministrator(String ldapUserName) {
+	public boolean isSuperAdministrator(String ldapUserName) throws EntityNotFoundException{
 		
 		boolean isSuperAdministrator = false;
 		
 		StatelessSession session = getStatelessSession();
 		//Check or get user ark_user object based on ldapUserName
 		ArkUser arkUser  = getArkUser(ldapUserName);
-		if(arkUser != null){
-			Criteria criteria = session.createCriteria(ArkUserRole.class);
-			ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
-			criteria.add(Restrictions.eq("arkRole", arkRole));
-			ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
-			if(arkUserRole != null){
-				isSuperAdministrator = true;
-			}
+		Criteria criteria = session.createCriteria(ArkUserRole.class);
+		ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
+		criteria.add(Restrictions.eq("arkRole", arkRole));
+		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
+		if(arkUserRole != null){
+			isSuperAdministrator = true;
 		}
-		
 		session.close();//Close the session here since it is stateless.  
 		return isSuperAdministrator;
 	

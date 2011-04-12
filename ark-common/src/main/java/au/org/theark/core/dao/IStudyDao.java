@@ -244,14 +244,14 @@ public interface IStudyDao {
 	/**
 	 * This interface checks if the user is a Super Administrator 
 	 */
-	public boolean isSuperAdministrator(String userName);
+	public boolean isSuperAdministrator(String userName) throws EntityNotFoundException;
 	
 	/**
 	 * This interface checks if the user is a Administrator in the Ark System.
 	 * @param userName
 	 * @return
 	 */
-	public boolean isAdministator(String userName);
+	public boolean isAdministator(String userName) throws EntityNotFoundException;
 	
 	/**
 	 * The interface that returns a list of ArkRole objects from the Database
