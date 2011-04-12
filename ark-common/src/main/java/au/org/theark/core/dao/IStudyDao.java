@@ -7,6 +7,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -239,4 +240,27 @@ public interface IStudyDao {
 	public Long getSubjectCount(Study study);
 
 	public List<SubjectUidToken> getListOfSubjectUidToken();
+	
+	/**
+	 * This interface checks if the user is a Super Administrator 
+	 */
+	public boolean isSuperAdministrator(String userName);
+	
+	/**
+	 * This interface checks if the user is a Administrator in the Ark System.
+	 * @param userName
+	 * @return
+	 */
+	public boolean isAdministator(String userName);
+	
+	/**
+	 * The interface that returns a list of ArkRole objects from the Database
+	 * @return
+	 */
+	public List<ArkRole> getArkRoles();
+	
+	
+	
+	
+	
 }
