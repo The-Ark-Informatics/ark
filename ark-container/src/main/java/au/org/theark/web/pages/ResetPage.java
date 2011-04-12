@@ -7,28 +7,15 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.service.ContainerService;
 
 public class ResetPage<T> extends WebPage{
 	
 	private transient Logger log = LoggerFactory.getLogger(ResetPage.class);
 	
-	@SpringBean(name = "containerService")
-	private ContainerService containerService;
-	
-	@Autowired
-	public ContainerService getContainerService() {
-		return containerService;
-	}
-
-	public void setContainerService(ContainerService containerService) {
-		this.containerService = containerService;
-	}
 
 	private String userId;
 	private String emailAddress;
