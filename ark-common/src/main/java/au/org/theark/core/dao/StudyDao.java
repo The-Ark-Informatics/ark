@@ -615,8 +615,9 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(ArkUser.class);
 		criteria.add(Restrictions.eq("ldapUserName", ldapUserName));
-		session.close();
 		ArkUser arkUser  = (ArkUser)criteria.uniqueResult();
+		//Close the session
+		session.close();
 		if(arkUser != null){
 			return arkUser;
 		}else{
