@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.service.ContainerService;
 
 
 @Component
@@ -31,8 +30,6 @@ public class ArkLdapRealm extends AuthorizingRealm{
 
 	/*Interface to Core*/
 
-	
-	protected ContainerService containerService;
 
 	protected IArkCommonService iArkCommonService;
 	
@@ -42,10 +39,6 @@ public class ArkLdapRealm extends AuthorizingRealm{
 	}
 	
 	
-	@Autowired
-	public void setContainerService(ContainerService containerService) {
-		this.containerService = containerService;
-	}
 
 
 	public ArkLdapRealm() {
