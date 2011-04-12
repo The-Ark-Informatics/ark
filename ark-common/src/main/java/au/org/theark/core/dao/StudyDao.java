@@ -701,6 +701,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		Criteria criteria = session.createCriteria(ArkUserRole.class);
 		ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
 		criteria.add(Restrictions.eq("arkRole", arkRole));
+		criteria.setMaxResults(1);
 		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
 		if(arkUserRole != null){
 			isSuperAdministrator = true;
