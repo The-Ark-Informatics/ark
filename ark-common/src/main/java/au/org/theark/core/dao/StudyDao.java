@@ -710,4 +710,61 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return isSuperAdministrator;
 	
 	}
+	
+	public GenderType getGenderType(String name)
+	{
+		Criteria criteria =  getSession().createCriteria(GenderType.class);
+		criteria.add(Restrictions.eq("name",name));
+		GenderType genderType = new GenderType(); 
+		if(!criteria.list().isEmpty()){
+			genderType = (GenderType) criteria.list().get(0);
+		}
+		return genderType;
+	}
+
+
+	public VitalStatus getVitalStatus(String name)
+	{
+		Criteria criteria =  getSession().createCriteria(VitalStatus.class);
+		criteria.add(Restrictions.eq("name",name));
+		VitalStatus vitalStatus = new VitalStatus(); 
+		if(!criteria.list().isEmpty()){
+			vitalStatus = (VitalStatus) criteria.list().get(0);
+		}
+		return vitalStatus;
+	}
+
+
+	public TitleType getTitleType(String name)
+	{
+		Criteria criteria =  getSession().createCriteria(TitleType.class);
+		criteria.add(Restrictions.eq("name",name));
+		TitleType titleType = new TitleType(); 
+		if(!criteria.list().isEmpty()){
+			titleType = (TitleType) criteria.list().get(0);
+		}
+		return titleType;
+	}
+	
+	public MaritalStatus getMaritalStatus(String name)
+	{
+		Criteria criteria =  getSession().createCriteria(MaritalStatus.class);
+		criteria.add(Restrictions.eq("name",name));
+		MaritalStatus maritalStatus = new MaritalStatus(); 
+		if(!criteria.list().isEmpty()){
+			maritalStatus = (MaritalStatus) criteria.list().get(0);
+		}
+		return maritalStatus;
+	}
+	
+	public PersonContactMethod getPersonContactMethod(String name)
+	{
+		Criteria criteria =  getSession().createCriteria(PersonContactMethod.class);
+		criteria.add(Restrictions.eq("name",name));
+		PersonContactMethod personContactMethod = new PersonContactMethod(); 
+		if(!criteria.list().isEmpty()){
+			personContactMethod = (PersonContactMethod) criteria.list().get(0);
+		}
+		return personContactMethod;
+	}
 }

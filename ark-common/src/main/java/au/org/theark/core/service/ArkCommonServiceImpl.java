@@ -255,5 +255,29 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return studyDao.isSuperAdministrator(userName);
 	}
 	
+	public GenderType getGenderType(String name)
+	{
+		return studyDao.getGenderType(name);
+	}
+
+	public VitalStatus getVitalStatus(String name)
+	{
+		return studyDao.getVitalStatus(name);
+	}
+
+	public TitleType getTitleType(String name)
+	{
+		return studyDao.getTitleType(name);
+	}
+	
+	public MaritalStatus getMaritalStatus(String name)
+	{
+		return studyDao.getMaritalStatus(name);
+	}
+	
+	public PersonContactMethod getPersonContactMethod(String name)
+	{
+		return studyDao.getPersonContactMethod(name);
+	}
 	
 }

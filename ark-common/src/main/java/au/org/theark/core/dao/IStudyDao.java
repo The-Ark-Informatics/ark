@@ -260,7 +260,15 @@ public interface IStudyDao {
 	public List<ArkRole> getArkRoles();
 	
 	
+	public GenderType getGenderType(String name);
+
+	public VitalStatus getVitalStatus(String name);
+
+	public TitleType getTitleType(String name);
 	
+	public MaritalStatus getMaritalStatus(String name);
+	
+	public PersonContactMethod getPersonContactMethod(String name);
 	
 	
 }
