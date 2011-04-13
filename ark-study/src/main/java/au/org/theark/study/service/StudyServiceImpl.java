@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
+import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,12 +34,15 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.RoleConstants;
@@ -47,6 +52,7 @@ import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
+import au.org.theark.study.util.SubjectImport;
 import au.org.theark.study.web.Constants;
 
 
@@ -632,5 +638,56 @@ public class StudyServiceImpl implements IStudyService{
 		}
 		
 		studyDao.delete(studyComp);
+	}
+
+	public Collection<FileFormat> getFileFormats()
+	{
+		return studyDao.getFileFormats();
+	}
+	
+	public Collection<DelimiterType> getDelimiterTypes()
+	{
+		return studyDao.getDelimiterTypes();
+	}
+
+	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload)
+	{
+		return studyDao.searchUpload(searchUpload);
+	}
+
+	public void createUpload(StudyUpload studyUpload)
+	{
+		studyDao.createUpload(studyUpload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created studyUpload " + studyUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		ah.setEntityId(studyUpload.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public void deleteUpload(StudyUpload studyUpload)
+	{
+		studyDao.deleteUpload(studyUpload);	
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted studyUpload " + studyUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		ah.setEntityId(studyUpload.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public void updateUpload(StudyUpload studyUpload)
+	{
+		studyDao.updateUpload(studyUpload);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated studyUpload " + studyUpload.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
+		ah.setEntityId(studyUpload.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 }
