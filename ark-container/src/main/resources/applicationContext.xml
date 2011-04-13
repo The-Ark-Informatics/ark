@@ -151,7 +151,13 @@
     <!-- Shiro's main business-tier object for web-enabled applications
          (use org.apache.shiro.web.DefaultWebSecurityManager instead when there is no web environment)-->
 
-	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager" />
+	
+	<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
+        <property name="cacheManager" ref="ehCacheManager"/>
+    </bean>
+
+    <bean id="ehCacheManager" class="net.sf.ehcache.CacheManager"/>
+	
 
     <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
         <!-- Single realm app (realm configured next, below).  If you have multiple realms, use the 'realms'
