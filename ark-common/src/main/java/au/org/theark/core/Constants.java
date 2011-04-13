@@ -188,7 +188,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_PHENO_COLLECTION_UPLOAD = "Pheno Collection Upload";
 	public static final String ENTITY_TYPE_GENO_COLLECTION = "Geno Collection";
 	public static final String ENTITY_TYPE_GENO_COLLECTION_IMPORT = "Geno Collection Import";
-	public static final String ENTITY_TYPE_GENO_METADATA = "MetaDAta";
+	public static final String ENTITY_TYPE_GENO_METADATA = "MetaData";
 	public static final String ENTITY_TYPE_GENO_ENCODED_DATA = "Encoded data";
 	public static final String ENTITY_TYPE_GENO_UPLOAD_COLLECTION = "Upload Collection";
 	public static final String ENTITY_TYPE_GENO_METADATA_FIELD = "Meta Data Field";
@@ -196,6 +196,7 @@ public class Constants {
 	public static final String ENTITY_TYPE_FIELD_DATA = "Field Data";
 	public static final String ENTITY_TYPE_PHENO_UPLOAD = "Upload";
 	public static final String ENTITY_TYPE_SUBJECT_FILE = "Subject File";
+	public static final String	ENTITY_TYPE_STUDY_UPLOAD	= "Study Upload";
 
 	public static final String ACTION_INSERT = "Insert";
 	public static final String ACTION_UPDATE = "Update";
