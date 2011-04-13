@@ -1,8 +1,8 @@
 package au.org.theark.web.application;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.settings.IApplicationSettings;
-import org.odlabs.wiquery.utils.WiQueryWebApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +12,7 @@ import au.org.theark.web.pages.LoginPage;
 
 
 
-public abstract class BaseApplication extends WiQueryWebApplication {
+public abstract class BaseApplication extends WebApplication{
 	static final Logger log = LoggerFactory.getLogger(BaseApplication.class);
 	@Override
 	protected void init(){
