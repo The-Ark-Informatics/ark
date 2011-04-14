@@ -205,4 +205,10 @@ public interface IStudyService {
 	public void createUpload(StudyUpload studyUpload);
 	public void updateUpload(StudyUpload studyUpload);
 	public void deleteUpload(StudyUpload studyUpload);
+
+	public Collection<String> validateSubjectFileFormat(File file);
+
+	public Collection<String> validateSubjectFileData(File file);
+
+	public StringBuffer importAndReportSubjectDataFile(File file);
 }

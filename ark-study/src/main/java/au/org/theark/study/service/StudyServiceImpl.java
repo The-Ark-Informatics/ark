@@ -1,5 +1,8 @@
 package au.org.theark.study.service;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -17,12 +20,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
@@ -65,7 +70,10 @@ public class StudyServiceImpl implements IStudyService{
 	private IArkCommonService arkCommonService;
 	private IStudyDao studyDao;
 	private ILdapUserDao iLdapUserDao;
-
+	
+	private Long studyId;
+	private Study study;
+	
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
 	}
@@ -689,5 +697,96 @@ public class StudyServiceImpl implements IStudyService{
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_UPLOAD);
 		ah.setEntityId(studyUpload.getId());
 		arkCommonService.createAuditHistory(ah);
+	}
+
+	public StringBuffer importAndReportSubjectDataFile(File file)
+	{
+		StringBuffer importReport = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+	
+		try
+		{
+			InputStream is = new FileInputStream(file);
+			
+			log.debug("Importing and reporting Subject file");
+			importReport = subjectImport.importAndReportMatrixSubjectFile(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return importReport;
+	}
+	
+	public Collection<String> validateSubjectFileData(File file)
+	{
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+	
+		try
+		{	
+			log.debug("Validating Subject file data");
+			InputStream is = new FileInputStream(file);
+			validationMessages = subjectImport.validateMatrixSubjectFileData(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+	public Collection<String> validateSubjectFileFormat(File file)
+	{
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+	
+		try
+		{	
+			log.debug("Validating Subject file format");
+			InputStream is = new FileInputStream(file);
+			validationMessages = subjectImport.validateSubjectMatrixFileFormat(is, file.length());
+		}
+		catch (IOException ioe)
+		{
+			log.error(Constants.IO_EXCEPTION + ioe);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
 	}
 }
