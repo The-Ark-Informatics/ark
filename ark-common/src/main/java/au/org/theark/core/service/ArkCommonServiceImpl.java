@@ -2,6 +2,7 @@ package au.org.theark.core.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -49,7 +51,6 @@ import au.org.theark.core.vo.SubjectVO;
 @Transactional
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl implements IArkCommonService{
-
 
 	private IArkAuthorisation arkAuthorisationDao;
 	private IStudyDao studyDao;
@@ -298,5 +299,16 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	{
 		return studyDao.getSubjectStatus(name);
 	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.service.IArkCommonService#getUserAdminRoles(java.lang.String)
+	 */
+	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException {
+		
+		return arkAuthorisationDao.getUserAdminRoles(ldapUserName);
+		
+	}
+	
+
 	
 }
