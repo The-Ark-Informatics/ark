@@ -38,6 +38,8 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -47,6 +49,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -219,52 +222,58 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
+		Study study = subjectVO.getSubjectStudy().getStudy();
 		//Add Business Validations here as well apart from UI validation
-		if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")) {
-			
-			Study study = subjectVO.getSubjectStudy().getStudy();
-			// Check insertion lock
-			if (getSubjectUidSequenceLock(study) == true) {
-				//TODO Fix the exception to be custom
-				throw new ArkSubjectInsertException("Subject insertion locked by another process");
+		try
+		{
+			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")) 
+			{
+				// Check insertion lock
+				if (getSubjectUidSequenceLock(study) == true) {
+					//TODO Fix the exception to be custom
+					throw new ArkSubjectInsertException("Subject insertion locked by another process");
+				}
+				else 
+				{
+					// Enable insertion lock
+					setSubjectUidSequenceLock(study, true);
+					
+					Session session = getSession();
+					Person person  = subjectVO.getSubjectStudy().getPerson();
+					session.save(person);
+					
+					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+					if(person.getLastName() != null)
+					{
+						personLastNameHistory.setPerson(person);
+						personLastNameHistory.setLastName(person.getLastName());
+						session.save(personLastNameHistory);	
+					}
+					
+					// Update subjectPreviousLastname
+					subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+					
+					LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+					session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+					
+					// Auto-generate SubjectUID
+					if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+					{
+						String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
+						linkSubjectStudy.setSubjectUID(subjectUID);
+						session.update(linkSubjectStudy);
+					}
+				}
 			}
-			else {
-				// Enable insertion lock
-				setSubjectUidSequenceLock(study, true);
-				
-				Session session = getSession();
-				Person person  = subjectVO.getSubjectStudy().getPerson();
-				session.save(person);
-				
-				PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-				if(person.getLastName() != null)
-				{
-					personLastNameHistory.setPerson(person);
-					personLastNameHistory.setLastName(person.getLastName());
-					session.save(personLastNameHistory);	
-				}
-				
-				// Update subjectPreviousLastname
-				subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
-				
-				LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-				session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-				
-				// Auto-generate SubjectUID
-				if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
-				{
-					String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
-					linkSubjectStudy.setSubjectUID(subjectUID);
-					session.update(linkSubjectStudy);
-				}
-				
-				// Disable insertion lock
-				setSubjectUidSequenceLock(study, false);
+			else
+			{
+				throw new ArkUniqueException("Subject UID must be unique");
 			}
 		}
-		else
+		finally
 		{
-			throw new ArkUniqueException("Subject UID must be unique");
+			// Disable insertion lock
+			setSubjectUidSequenceLock(study, false);
 		}
 	}
 
@@ -1109,5 +1118,75 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		@SuppressWarnings("unchecked")
 		List<SubjectFile> list = criteria.list();
 		return list;
+	}
+
+	public Collection<FileFormat> getFileFormats()
+	{
+		Criteria criteria = getSession().createCriteria(FileFormat.class);
+		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
+		return fileFormatCollection;
+	}
+	
+	public Collection<DelimiterType> getDelimiterTypes()
+	{
+		Criteria criteria = getSession().createCriteria(DelimiterType.class);
+		java.util.Collection<DelimiterType> delimiterTypeCollection = criteria.list();
+		return delimiterTypeCollection;
+	}
+
+	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload)
+	{
+		Criteria criteria = getSession().createCriteria(StudyUpload.class);
+
+		if (searchUpload.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.study.web.Constants.UPLOAD_ID, searchUpload.getId()));
+		}
+
+		if (searchUpload.getStudy() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.study.web.Constants.UPLOAD_STUDY, searchUpload.getStudy()));
+		}
+
+		if (searchUpload.getFileFormat() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_FILE_FORMAT, searchUpload.getFileFormat()));
+		}
+
+		if (searchUpload.getDelimiterType() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_DELIMITER_TYPE, searchUpload.getDelimiterType()));
+		}
+
+		if (searchUpload.getFilename() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.study.web.Constants.UPLOAD_FILENAME, searchUpload.getFilename()));
+		}
+
+		criteria.addOrder(Order.desc(au.org.theark.study.web.Constants.UPLOAD_ID));
+		java.util.Collection<StudyUpload> uploadCollection = criteria.list();
+
+		return uploadCollection;
+	}
+
+	public void createUpload(StudyUpload studyUpload)
+	{
+		Subject currentUser = SecurityUtils.getSubject();
+		String userId = (String) currentUser.getPrincipal();
+		studyUpload.setUserId(userId);
+		getSession().save(studyUpload);
+	}
+
+	public void deleteUpload(StudyUpload studyUpload)
+	{
+		getSession().delete(studyUpload);		
+	}
+
+	public void updateUpload(StudyUpload studyUpload)
+	{
+		Subject currentUser = SecurityUtils.getSubject();
+		String userId = (String) currentUser.getPrincipal();
+		studyUpload.setUserId(userId);
+		getSession().update(studyUpload);	
 	}
 }

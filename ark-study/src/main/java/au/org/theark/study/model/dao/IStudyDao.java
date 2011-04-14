@@ -17,6 +17,8 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.DelimiterType;
+import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -25,6 +27,7 @@ import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
+import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -228,5 +231,16 @@ public interface IStudyDao {
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes();
 	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes();
+
+	public Collection<FileFormat> getFileFormats();
+	public Collection<DelimiterType> getDelimiterTypes();
+
+	public Collection<StudyUpload> searchUpload(StudyUpload searchUpload);
+
+	public void createUpload(StudyUpload studyUpload);
+
+	public void deleteUpload(StudyUpload studyUpload);
+
+	public void updateUpload(StudyUpload studyUpload);
 	
 }
