@@ -7,6 +7,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -144,6 +145,16 @@ public interface IArkCommonService {
 	 * @return
 	 */
 	public boolean isAdministator(String userName)  throws EntityNotFoundException ;
+	
+	/**
+	 * Returns a Collection User Admin Roles. Super Administrator or Administator
+	 * @param ldapUserName
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException;
+	
+
 
 	public GenderType getGenderType(String name);
 
