@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
@@ -49,8 +50,21 @@ import au.org.theark.core.vo.SubjectVO;
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl implements IArkCommonService{
 
-	private ILdapPersonDao ldapInterface;
+
+	private IArkAuthorisation arkAuthorisationDao;
 	private IStudyDao studyDao;
+	private ILdapPersonDao ldapInterface;
+
+	
+	public IArkAuthorisation getArkAuthorisationDao() {
+		return arkAuthorisationDao;
+	}
+	
+	@Autowired
+	public void setArkAuthorisationDao(IArkAuthorisation arkAuthorisationDao) {
+		this.arkAuthorisationDao = arkAuthorisationDao;
+	}
+	
 	
 	public IStudyDao getStudyDao() {
 		return studyDao;
@@ -245,14 +259,14 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	 */
 	public boolean isAdministator(String userName) throws EntityNotFoundException {
 		
-		return studyDao.isAdministator(userName);
+		return arkAuthorisationDao.isAdministator(userName);
 	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.service.IArkCommonService#isSuperAdmin(java.lang.String)
 	 */
 	public boolean isSuperAdministrator(String userName) throws EntityNotFoundException {
-		return studyDao.isSuperAdministrator(userName);
+		return arkAuthorisationDao.isSuperAdministrator(userName);
 	}
 	
 	public GenderType getGenderType(String name)
