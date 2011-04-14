@@ -154,5 +154,7 @@ public interface IArkCommonService {
 	public MaritalStatus getMaritalStatus(String name);
 	
 	public PersonContactMethod getPersonContactMethod(String name);
+
+	public SubjectStatus getSubjectStatus(String name);
 	
 }

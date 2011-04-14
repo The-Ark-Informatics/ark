@@ -279,5 +279,10 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	{
 		return studyDao.getPersonContactMethod(name);
 	}
+
+	public SubjectStatus getSubjectStatus(String name)
+	{
+		return studyDao.getSubjectStatus(name);
+	}
 	
 }
