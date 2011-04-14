@@ -27,6 +27,7 @@ public class ArkUserRole implements Serializable{
 	private Long id;
 	private ArkRole arkRole;
 	private ArkModule arkModule;
+	private ArkUser arkUser;
 	
 	public ArkUserRole(){
 		
@@ -62,6 +63,16 @@ public class ArkUserRole implements Serializable{
 
 	public void setArkModule(ArkModule arkModule) {
 		this.arkModule = arkModule;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_USER_ID")
+	public ArkUser getArkUser() {
+		return arkUser;
+	}
+
+	public void setArkUser(ArkUser arkUser) {
+		this.arkUser = arkUser;
 	}
 
 }
