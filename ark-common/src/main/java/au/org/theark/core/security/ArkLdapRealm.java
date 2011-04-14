@@ -1,7 +1,9 @@
 package au.org.theark.core.security;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -68,55 +70,44 @@ public class ArkLdapRealm extends AuthorizingRealm{
      * This method will check for roles.Wicket calls this method.
      */
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
+    	log.debug("Inside doGetAuthorizationInfo ");
     	
-    	List<String> roles = null;
-    	SimpleAuthorizationInfo info = null;
-    	log.info("\n --- doGetAuthorizationInfo invoked ----");
+    	SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
     	boolean isAdministator = false;
     	boolean isSuperAdministator = false;
-    	//Since the credentials stored was username we cast it to String, if an ID was stored in Long format then use the user.getId()
-    	String userName = (String) principals.fromRealm(getName()).iterator().next();
-    	try{
-    		
-    		isAdministator = iArkCommonService.isAdministator(userName);
-    		isSuperAdministator = iArkCommonService.isSuperAdministrator(userName);
-        	//TODO: Check if user is Super Administrator ark_user_role for the module in context
-        	if( isSuperAdministator || isAdministator ){
-        		
-        		log.info("The logged in user is of Administator role");
-        		//Load the roles for this user along 
-        	}else{
-        		log.info("The logged in user is an ordinary user");
-        		//Normal user
+    	
+    	String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
+    	
+    	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute("studyId");
+    	
+    	if(sessionStudyId != null){
+    		log.info("There is a study in context. Now we can look up the subject's roles for the study");
+    		//Get the roles for the study in context
+    	}else{
+    		log.info("There is no study in context. User has logged in first time.Load roles of type Administator if there is one.");
+    		//
+        	try{
+        		//Check if the logged in user has SuperAdmin Role or Admin role
+        		isAdministator = iArkCommonService.isAdministator(ldapUserName);
+        		isSuperAdministator = iArkCommonService.isSuperAdministrator(ldapUserName);
+            	//TODO: Check if user is Super Administrator ark_user_role for the module in context
+            	if( isSuperAdministator || isAdministator ){
+            		log.info("The logged in user is of Type of Administator");
+            		Collection<String> roleCollection  = iArkCommonService.getUserAdminRoles(ldapUserName);
+            		info.addRoles(roleCollection);
+            
+            	}else{
+            		log.info("The logged in user is an ordinary user. Don't yet add roles defer until a study is in context.");
+            		//Normal user
+            	}
+        	}catch(EntityNotFoundException userNotFound){
+        		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
         	}
-    	}catch(EntityNotFoundException userNotFound){
-    		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
     	}
-    	
-    	//If User is SA then load his roles/permissions into Shiro
-    	//If user is not SA and no study in context(.i.e user has just logged in, then do not load any roles defer it until a study is loaded)
-    	
-    	
-    	try{
-    		 roles = iArkCommonService.getUserRole(userName);
-    		
-    	}catch(ArkSystemException ine)
-    	{
-    		log.error("Exception occured while locating user in ldap from TestLdapRealm.doGetAuthorizationInfo()" + ine.getMessage());
-    	}    	
-    		 
-        if( roles != null && roles.size() > 0) {
-        	 info = new SimpleAuthorizationInfo();
-        	 info.addRoles(roles);
-        	
-        	 //Add a List<String> Permissions for this subject/user TODO the only catch here is if Write was a permission allowed for a particular module/study and read for another. How do we differentiate it?
-        }
-         return info;
+    	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
+        return info;
     }
     
-//    @Override
-//    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
-//    	super.clearCachedAuthorizationInfo(principals);
-//    }
+
 
 }
