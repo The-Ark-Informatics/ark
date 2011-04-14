@@ -1,6 +1,10 @@
 package au.org.theark.core.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import au.org.theark.core.exception.EntityNotFoundException;
+
 
 /**
  * @author nivedann
@@ -19,5 +23,13 @@ public interface IArkAuthorisation {
 	 * @return
 	 */
 	public boolean isAdministator(String userName) throws EntityNotFoundException;
+	
+	/**
+	 * Returns a Collection of Roles as String for the given Ldap User Name.
+	 * @param ldapUserName
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException;
 
 }
