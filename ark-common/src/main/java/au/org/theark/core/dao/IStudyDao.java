@@ -269,6 +269,8 @@ public interface IStudyDao {
 	public MaritalStatus getMaritalStatus(String name);
 	
 	public PersonContactMethod getPersonContactMethod(String name);
+
+	public SubjectStatus getSubjectStatus(String name);
 	
 	
 }

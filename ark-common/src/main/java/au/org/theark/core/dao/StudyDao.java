@@ -125,7 +125,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		SubjectStatus statusToReturn = null;
 		
 		SubjectStatus subjectStatus = new SubjectStatus();
-		subjectStatus.setName("Archive");
+		subjectStatus.setName(statusName);
 		Example example = Example.create(subjectStatus);
 		
 		
