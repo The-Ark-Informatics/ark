@@ -57,7 +57,7 @@ import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
-import au.org.theark.study.util.SubjectImport;
+import au.org.theark.study.util.SubjectUploader;
 import au.org.theark.study.web.Constants;
 
 
@@ -101,7 +101,7 @@ public class StudyServiceImpl implements IStudyService{
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
 	}
-	
+
 	public List<StudyStatus> getListOfStudyStatus(){
 		return studyDao.getListOfStudyStatus();
 	}
@@ -701,19 +701,19 @@ public class StudyServiceImpl implements IStudyService{
 
 	public StringBuffer importAndReportSubjectDataFile(File file)
 	{
-		StringBuffer importReport = null;
+		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = arkCommonService.getStudy(studyId);
 		
-		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this); 
 	
 		try
 		{
 			InputStream is = new FileInputStream(file);
 			
 			log.debug("Importing and reporting Subject file");
-			importReport = subjectImport.importAndReportMatrixSubjectFile(is, file.length());
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -727,7 +727,7 @@ public class StudyServiceImpl implements IStudyService{
 		{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
-		return importReport;
+		return uploadReport;
 	}
 	
 	public Collection<String> validateSubjectFileData(File file)
@@ -737,13 +737,13 @@ public class StudyServiceImpl implements IStudyService{
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = arkCommonService.getStudy(studyId);
 		
-		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
 	
 		try
 		{	
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectImport.validateMatrixSubjectFileData(is, file.length());
+			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -767,13 +767,13 @@ public class StudyServiceImpl implements IStudyService{
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = arkCommonService.getStudy(studyId);
 		
-		SubjectImport subjectImport = new SubjectImport(studyDao, study, arkCommonService); 
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
 	
 		try
 		{	
 			log.debug("Validating Subject file format");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectImport.validateSubjectMatrixFileFormat(is, file.length());
+			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(is, file.length());
 		}
 		catch (IOException ioe)
 		{
