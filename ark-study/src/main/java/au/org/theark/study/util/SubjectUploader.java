@@ -11,7 +11,6 @@ import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.lang.time.StopWatch;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,55 +31,53 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
 
 /**
- * PhenotypicImport provides support for importing subject matrix-formatted files. It features state-machine behaviour to allow an external class to
+ * SubjectUploader provides support for uploading subject matrix-formatted files. It features state-machine behaviour to allow an external class to
  * deal with how to store the data pulled out of the files.
  * 
  * @author cellis
  */
-public class SubjectImport
+public class SubjectUploader
 {
 	private long						subjectCount;
+	private long						insertCount;
+	private long						updateCount;
 	private long						fieldCount;
 	private long						curPos;
 	private long						srcLength					= -1;														// -1 means nothing being processed
 	private StopWatch					timer							= null;
 	private char						delimChr						= Constants.IMPORT_DELIM_CHAR_COMMA;				// default phenotypic file delimiter: COMMA
-	private IStudyDao					studyDao						= null;
 	private Person						person;
 	private Study						study;
-	static Logger						log							= LoggerFactory.getLogger(SubjectImport.class);
+	static Logger						log							= LoggerFactory.getLogger(SubjectUploader.class);
 	java.util.Collection<String>	fileValidationMessages	= null;
 	java.util.Collection<String>	dataValidationMessages	= null;
 	private IArkCommonService		iArkCommonService			= null;
-	private StringBuffer				importReport				= null;
+	private IStudyService			studyService				= null;
+	private StringBuffer				uploadReport				= null;
 	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
-
 	/**
-	 * SubjectImport constructor
+	 * SubjectUploader constructor
 	 * 
-	 * @param studyDao
-	 *           data access object perform select/insert/updates to the database
 	 * @param study
 	 *           study identifier in context
 	 * @param iArkCommonService
 	 *           common ARK service
+	 * @param studyService
+	 *           study service to perform select/insert/updates to the database
 	 */
-	public SubjectImport(IStudyDao studyDao, Study study, IArkCommonService iArkCommonService)
+	public SubjectUploader(Study study, IArkCommonService iArkCommonService, IStudyService studyService)
 	{
-		this.studyDao = studyDao;
 		this.study = study;
 		this.fileValidationMessages = new ArrayList<String>();
 		this.dataValidationMessages = new ArrayList<String>();
 		this.iArkCommonService = iArkCommonService;
+		this.studyService = studyService;
 	}
 
 	/**
@@ -100,11 +97,6 @@ public class SubjectImport
 	 */
 	public java.util.Collection<String> validateSubjectMatrixFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, ArkBaseException
 	{
-		if (studyDao == null)
-		{
-			throw new ArkBaseException("Aborting: Must have a study dao object defined before calling.");
-		}
-
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -257,11 +249,6 @@ public class SubjectImport
 	 */
 	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException
 	{
-		if (studyDao == null)
-		{
-			throw new ArkSystemException("Aborting: Must have a subject dao object defined before calling.");
-		}
-
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -283,13 +270,12 @@ public class SubjectImport
 			timer = new StopWatch();
 			timer.start();
 
-			// Set field list (note 2th column to Nth column)
-			// SUBJECTUID DATE_COLLECTED F1 F2 FN
-			// 0 1 2 3 N
+			// Set field list (note 1th column to Nth column)
+			// SUBJECTUID F1 F2 FN
+			// 0 1 2 N
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -302,82 +288,74 @@ public class SubjectImport
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
+				
+				// First/0th column should be the SubjectUID
 				String subjectUID = stringLineArray[0]; 
 
-				// First/0th column should be the SubjectUID
 				// If no SubjectUID found, caught by exception catch
-				if(!study.getAutoGenerateSubjectUid())
+				try
 				{
-					try{
-						LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID));
-						linksubjectStudy.setStudy(study);
-					}
-					catch(EntityNotFoundException enf)
-					{
-						dataValidationMessages.add("SubjectUID: " + stringLineArray[0] + " not found. Please check and try again.");
-					}
+					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID));
+					linksubjectStudy.setStudy(study);
+					
+					dataValidationMessages.add("Subject UID: " + stringLineArray[0] + " found. Please confirm if update of data required.");
+				}
+				catch(EntityNotFoundException enf)
+				{
+					// Subject not found, thus a new subject to be inserted
 				}
 
 				int index = 0;
 				String dateStr = new String();
-				// Loop through columns in current row in file, starting from the 2nd (i=1) position
-				//for (int i = 1; i < stringLineArray.length; i++)
-				//{
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0)
+				
+				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0)
+				{
+					
+					if (csvReader.getIndex("DATE_OF_BIRTH") > 0)
 					{
-						
-						if (csvReader.getIndex("DATE_OF_BIRTH") > 0)
-						{
-							index = csvReader.getIndex("DATE_OF_BIRTH");
-						}
-						else
-						{
-							index = csvReader.getIndex("DOB");
-						}
-						
-						try
-						{
-							dateStr = 	stringLineArray[index];
-							if(dateStr != null && dateStr.length() > 0)
-								simpleDateFormat.parse(dateStr);
-						}
-						catch (ParseException pex)
-						{
-							dataValidationMessages.add("SubjectUID:" + subjectUID + " has an invalid date format for Date Of Birth:" + stringLineArray[index]);
-							break;
-						}
+						index = csvReader.getIndex("DATE_OF_BIRTH");
 					}
-
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0)
+					else
 					{
-						
-						if (csvReader.getIndex("DATE_OF_DEATH") > 0)
-						{
-							index = csvReader.getIndex("DATE_OF_DEATH");
-						}
-						else
-						{
-							index = csvReader.getIndex("DODEATH");
-						}
-						try
-						{
-							dateStr = 	stringLineArray[index];
-							if(dateStr != null && dateStr.length() > 0)
-								simpleDateFormat.parse(dateStr);
-						}
-						catch (ParseException pex)
-						{
-							dataValidationMessages.add("SubjectUID:" + subjectUID + " has an invalid date format for Date Of Death:" + stringLineArray[index]);
-							break;
-						}
+						index = csvReader.getIndex("DOB");
 					}
 					
-					// Update progress
-					//curPos += stringLineArray[i].length() + 1; // update progress
+					try
+					{
+						dateStr = 	stringLineArray[index];
+						if(dateStr != null && dateStr.length() > 0)
+							simpleDateFormat.parse(dateStr);
+					}
+					catch (ParseException pex)
+					{
+						dataValidationMessages.add("Subject UID:" + subjectUID + " has an invalid date format for Date Of Birth:" + stringLineArray[index]);
+						break;
+					}
+				}
 
-					// Debug only - Show progress and speed
-					//log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
-				//}
+				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0)
+				{
+					
+					if (csvReader.getIndex("DATE_OF_DEATH") > 0)
+					{
+						index = csvReader.getIndex("DATE_OF_DEATH");
+					}
+					else
+					{
+						index = csvReader.getIndex("DODEATH");
+					}
+					try
+					{
+						dateStr = 	stringLineArray[index];
+						if(dateStr != null && dateStr.length() > 0)
+							simpleDateFormat.parse(dateStr);
+					}
+					catch (ParseException pex)
+					{
+						dataValidationMessages.add("Subject UID:" + subjectUID + " has an invalid date format for Date Of Death:" + stringLineArray[index]);
+						break;
+					}
+				}
 
 				log.debug("\n");
 				subjectCount++;
@@ -460,11 +438,11 @@ public class SubjectImport
 	 * @throws ArkBaseException
 	 *            general ARK Exception
 	 */
-	public void importMatrixSubjectFile(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException
+	public void uploadMatrixSubjectFile(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException
 	{
-		if (studyDao == null)
+		if (studyService == null)
 		{
-			throw new ArkSystemException("Aborting: Must have a subject storage object defined before calling.");
+			throw new ArkSystemException("Aborting: Must have a study service object defined before calling.");
 		}
 
 		curPos = 0;
@@ -589,18 +567,11 @@ public class SubjectImport
 	 *            file format Exception
 	 * @throws ArkBaseException
 	 *            general ARK Exception
-	 * @return the import report detailing the import process
+	 * @return the upload report detailing the upload process
 	 */
-	public StringBuffer importAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength) throws FileFormatException, ArkSystemException
 	{
-		importReport = new StringBuffer();
-
-		if (studyDao == null)
-		{
-			importReport.append("Critical error during import. Please check the file and try again.\n");
-			throw new ArkSystemException("Aborting: Must have a subject storage object defined before calling.");
-		}
-
+		uploadReport = new StringBuffer();
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -616,9 +587,9 @@ public class SubjectImport
 			srcLength = inLength;
 			if (srcLength <= 0)
 			{
-				importReport.append("The input size was not greater than 0. Actual length reported: ");
-				importReport.append(srcLength);
-				importReport.append("\n");
+				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0. Actual length reported: " + srcLength);
 			}
 
@@ -647,31 +618,21 @@ public class SubjectImport
 				stringLineArray = csvReader.getValues();
 				String subjectUID = stringLineArray[0];
 				
-				importReport.append("Creating new Subject: ");
-				importReport.append(Constants.SUBJECTUID);
-				importReport.append(": ");
-				importReport.append(subjectUID);
-				importReport.append("\t");
-				SubjectVO subjectVO = new SubjectVO();
+				SubjectVO subjectVo = new SubjectVO();
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 				linkSubjectStudy.setStudy(study);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
-				subjectVO.setSubjectStudy(linkSubjectStudy);
-
-				// Loop through columns in current row in file, starting from the 2nd (i=1) position
-				for (int i = 1; i < stringLineArray.length; i++)
+				
+				try
 				{
-					importReport.append(fieldNameArray[i]);
-					importReport.append("\t");
-					importReport.append(stringLineArray[i]);
-					
-					// Update progress
-					curPos += stringLineArray[i].length() + 1;
-
-					// Debug only - Show progress and speed
-					log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
 				}
-				importReport.append("\n");
+				catch(EntityNotFoundException enf)
+				{
+					// New subject
+					linkSubjectStudy.setSubjectUID(subjectUID);
+					linkSubjectStudy.setStudy(study);
+				}
+				subjectVo.setSubjectStudy(linkSubjectStudy);
 
 				if(linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null)
 				{
@@ -827,45 +788,50 @@ public class SubjectImport
 				}
 
 				linkSubjectStudy.setPerson(person);
-				subjectVO.setSubjectStudy(linkSubjectStudy);
+				subjectVo.setSubjectStudy(linkSubjectStudy);
 				
-				
-				if(subjectVO.getSubjectStudy().getId() == null || subjectVO.getSubjectStudy().getPerson().getId() == 0)
+				if(subjectVo.getSubjectStudy().getId() == null || subjectVo.getSubjectStudy().getPerson().getId() == 0)
 				{	
+					// Save new Subject
 					try
 					{
-						log.debug("Creating SubjectUID: " + subjectUID);
-						studyService.createSubject(subjectVO);
+						studyService.createSubject(subjectVo);
 						StringBuffer sb = new StringBuffer();
 						sb.append("Subject UID: ");
-						sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+						sb.append(subjectVo.getSubjectStudy().getSubjectUID());
 						sb.append(" has been created successfully and linked to the study: ");
 						sb.append(study.getName());
+						sb.append("\n");
+						uploadReport.append(sb);
+						insertCount++;
 					}
 					catch (ArkUniqueException ex)
 					{
-						importReport.append("Subject UID must be unique:" + subjectUID);
+						uploadReport.append("Subject UID must be unique:" + subjectUID);
 					}
 					catch (ArkSubjectInsertException ex) 
 					{
 						log.error(ex.getMessage());
 					}
-
-				}else{
-
+				}
+				else
+				{
+					// Update existing Subject
 					try
 					{
-						log.debug("Updating SubjectUID: " + subjectUID);
-						studyService.updateSubject(subjectVO);
+						studyService.updateSubject(subjectVo);
 						StringBuffer sb = new StringBuffer();
 						sb.append("Subject UID: ");
-						sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+						sb.append(subjectVo.getSubjectStudy().getSubjectUID());
 						sb.append(" has been updated successfully and linked to the study: ");
 						sb.append(study.getName());
+						sb.append("\n");
+						uploadReport.append(sb);
+						updateCount++;
 					} 
 					catch (ArkUniqueException e)
 					{
-						importReport.append("Subject UID must be unique:" + subjectUID);
+						uploadReport.append("Subject UID must be unique:" + subjectUID);
 					}
 				}
 				
@@ -875,13 +841,13 @@ public class SubjectImport
 		}
 		catch (IOException ioe)
 		{
-			importReport.append("Unexpected I/O exception whilst reading the subject data file\n");
+			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
 		}
 		catch (Exception ex)
 		{
-			importReport.append("Unexpected exception whilst reading the subject data file\n");
+			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
@@ -889,18 +855,19 @@ public class SubjectImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			importReport.append("Total elapsed time: ");
-			importReport.append(timer.getTime());
-			importReport.append(" ms or ");
-			importReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-			importReport.append(" s");
-			importReport.append("\n");
-			importReport.append("Total file size: ");
-			importReport.append(srcLength);
-			importReport.append(" B or ");
-			importReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
-			importReport.append(" MB");
-			importReport.append("\n");
+			uploadReport.append("\n");
+			uploadReport.append("Total elapsed time: ");
+			uploadReport.append(timer.getTime());
+			uploadReport.append(" ms or ");
+			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+			uploadReport.append(" s");
+			uploadReport.append("\n");
+			uploadReport.append("Total file size: ");
+			uploadReport.append(srcLength);
+			uploadReport.append(" B or ");
+			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
 
 			if (timer != null)
 				timer = null;
@@ -930,12 +897,20 @@ public class SubjectImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		importReport.append("Inserted ");
-		importReport.append(subjectCount);
-		importReport.append(" subjects");
-		importReport.append("\n");
+		uploadReport.append("Processed ");
+		uploadReport.append(subjectCount);
+		uploadReport.append(" subjects.");
+		uploadReport.append("\n");
+		uploadReport.append("Inserted ");
+		uploadReport.append(insertCount);
+		uploadReport.append(" subjects.");
+		uploadReport.append("\n");
+		uploadReport.append("Updated ");
+		uploadReport.append(updateCount);
+		uploadReport.append(" subjects.");
+		uploadReport.append("\n");
 
-		return importReport;
+		return uploadReport;
 	}
 
 	/**
