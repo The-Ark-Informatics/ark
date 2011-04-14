@@ -140,6 +140,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		ArkRole arkRoleSuperAdmin  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
 		ArkRole arkRoleAdmin  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
 		criteria.add(Restrictions.or(Restrictions.eq("arkRole", arkRoleSuperAdmin),Restrictions.eq("arkRole", arkRoleAdmin)));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
 		List<ArkUserRole> arkUserRoleList = (List<ArkUserRole>)criteria.list();
 		Set<String> roles  = new HashSet<String>(0);
 		for (ArkUserRole arkUserRole : arkUserRoleList) {
