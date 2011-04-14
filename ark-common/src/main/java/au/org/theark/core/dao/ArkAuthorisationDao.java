@@ -1,6 +1,10 @@
 package au.org.theark.core.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
@@ -55,7 +59,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	}
 	
 	/**<p>
-	 * Given a Ark Role name like Super Administrator or Administrator the method will return the actual instance of
+	 * Given a String Role name like Super Administrator or Administrator the method will return the actual instance of
 	 * ArkRole object.</p>
 	 * @param roleName
 	 * @return ArkRole
@@ -71,7 +75,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	
 	/**
 	 * <p>
-	 * The method takes in a LdapUserName and queries the Database using a Stateless session.
+	 * The method takes in a LdapUserName and calls the isUserAdminHelper to do th grunt of the work.
 	 * The query is again Ark_User_Role table/ArkUserRole entity. The getArkRoleByName is invoked
 	 * to get a object that represents Administrator. The method uses this to then check if the given user
 	 * is/has a role of the type in ArkUserRole table/instance. If yes a boolean true is returned and otherwise
@@ -81,25 +85,32 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 */
 	public boolean isAdministator(String ldapUserName) throws EntityNotFoundException {
 		
-		boolean isAdministrator = false;
-		
+		return isUserAdminHelper(ldapUserName,Constants.ARK_ROLE_ADMINISTATOR);
+
+	}
+
+	
+	private boolean  isUserAdminHelper(String ldapUserName, String roleName) throws EntityNotFoundException{
+		boolean isAdminType = false;
 		StatelessSession session = getStatelessSession();
 		//Check or get user ark_user object based on ldapUserName
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = session.createCriteria(ArkUserRole.class);
-		ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
+		ArkRole arkRole  = getArkRoleByName(roleName);
 		criteria.add(Restrictions.eq("arkRole", arkRole));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.setMaxResults(1);
 		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
 		if(arkUserRole != null){
-			isAdministrator = true;
+			isAdminType = true;
 		}
-		session.close();//Close the session here since it is stateless.  
-		return isAdministrator;
+		session.close();
+		return isAdminType;
+		
 	}
-
 	/**
 	 * <p>
-	 * The method takes in a LdapUserName and queries the Database using a Stateless session.
+	 * The method takes in a LdapUserName and calls the isUserAdminHelper whihc queries the Database using a Stateless session.
 	 * The query is again Ark_User_Role table/ArkUserRole entity. The getArkRoleByName is invoked
 	 * to get a object that represents Administrator. The method uses this to then check if the given user
 	 * is/has a role of the type in ArkUserRole table/instance. If yes a boolean true is returned and otherwise
@@ -109,22 +120,38 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 * @see au.org.theark.core.dao.IStudyDao#isAdministator(java.lang.String)
 	 */
 	public boolean isSuperAdministrator(String ldapUserName) throws EntityNotFoundException{
+		return isUserAdminHelper(ldapUserName,Constants.ARK_ROLE_SUPER_ADMINISTATOR);
+	}
+	
+	
+	/**
+	 * Use this method when we want to load the Collection of Administrator roles as a Collectio<String>.
+	 * The method looks up Ark Super Administrator and Administrator roles given a LdapUserName. It populates it into a Collection<String>
+	 * that represent a unique set of administration roles for this user. It does not take into account the Module or Study.
+	 * This is usually when the user has logged in first and we want to know if the user has a role of type  Administator so he can have access to Create function.
+	 * @param ldapUserName
+	 * @return Collection<String>
+	 * @throws EntityNotFoundException
+	 */
+	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException{
 		
-		boolean isSuperAdministrator = false;
-		
-		StatelessSession session = getStatelessSession();
-		//Check or get user ark_user object based on ldapUserName
 		ArkUser arkUser  = getArkUser(ldapUserName);
-		Criteria criteria = session.createCriteria(ArkUserRole.class);
-		ArkRole arkRole  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
-		criteria.add(Restrictions.eq("arkRole", arkRole));
-		criteria.setMaxResults(1);
-		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
-		if(arkUserRole != null){
-			isSuperAdministrator = true;
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		ArkRole arkRoleSuperAdmin  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
+		ArkRole arkRoleAdmin  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
+		criteria.add(Restrictions.or(Restrictions.eq("arkRole", arkRoleSuperAdmin),Restrictions.eq("arkRole", arkRoleAdmin)));
+		List<ArkUserRole> arkUserRoleList = (List<ArkUserRole>)criteria.list();
+		Set<String> roles  = new HashSet<String>(0);
+		for (ArkUserRole arkUserRole : arkUserRoleList) {
+			String roleName = arkUserRole.getArkRole().getName();
+			roles.add(roleName);
 		}
-		session.close();//Close the session here since it is stateless.  
-		return isSuperAdministrator;
+	
+		Collection<String> userRoles = new ArrayList<String>();
+		for (String roleName : roles) {
+			userRoles.add(roleName);
+		}
+		return userRoles;
 	}
 
 }
