@@ -13,5 +13,13 @@ public class RoleConstants {
 	public static final String GWAS_SUPER_ADMIN	="gwas_super_administrator";
 	public static final String STUDY_MANAGER_SUPER_ADMIN	="study_manager_super_administrator";
 	public static final String STUDY_MANAGER_ORDINARY_USER = "study_manager_ordinary_user";
+	
+	/**
+	 * These Role Constants and Permissions are for the new user management. 
+	 * The role names here should match the string one Role_Name table
+	 */
+	public static final String ARK_ROLE_SUPER_ADMINISTATOR = "Super Administrator";
+	public static final String ARK_ROLE_ADMINISTATOR="Administrator";
+	public static final String ARK_ROLE_ORDINARY_USER="Ordinary User";
 
 }
