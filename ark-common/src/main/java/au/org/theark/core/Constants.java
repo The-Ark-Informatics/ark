@@ -203,11 +203,4 @@ public class Constants {
 	public static final String PERSON_SURNAME_HISTORY_PERSON = "person";
 	public static final String PERSON_SURNAME_HISTORY_SURNAME = "surname";
 	
-	/**
-	 * These Role Constants and Permissions are for the new user management. The role names here should match the string one Role_Name table
-	 */
-	public static final String ARK_ROLE_SUPER_ADMINISTATOR = "Super Administrator";
-	public static final String ARK_ROLE_ADMINISTATOR="Administrator";
-	public static final String ARK_ROLE_ORDINARY_USER="Ordinary User";
-	
 }
