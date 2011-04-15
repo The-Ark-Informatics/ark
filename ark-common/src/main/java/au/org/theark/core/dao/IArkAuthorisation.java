@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Study;
 
 
 /**
@@ -31,5 +32,8 @@ public interface IArkAuthorisation {
 	 * @throws EntityNotFoundException
 	 */
 	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException;
+	
+	
+	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException;
 
 }

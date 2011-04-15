@@ -15,6 +15,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 
 /**
@@ -153,6 +154,21 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			userRoles.add(roleName);
 		}
 		return userRoles;
+	}
+	
+	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException{
+		String roleName ="";
+		ArkUser arkUser  = getArkUser(ldapUserName);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.createAlias("arkUser", "auserObject");
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.add(Restrictions.eq("auserObject.study", study));
+		criteria.setMaxResults(1);
+		ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
+		if(arkUserRole != null){
+			roleName = arkUserRole.getArkRole().getName();
+		}
+		return roleName;
 	}
 
 }
