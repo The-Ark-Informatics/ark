@@ -11,11 +11,11 @@ import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import au.org.theark.core.Constants;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.security.RoleConstants;
 
 /**
  * @author nivedann
@@ -85,7 +85,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 */
 	public boolean isAdministator(String ldapUserName) throws EntityNotFoundException {
 		
-		return isUserAdminHelper(ldapUserName,Constants.ARK_ROLE_ADMINISTATOR);
+		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_ADMINISTATOR);
 
 	}
 
@@ -120,7 +120,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 * @see au.org.theark.core.dao.IStudyDao#isAdministator(java.lang.String)
 	 */
 	public boolean isSuperAdministrator(String ldapUserName) throws EntityNotFoundException{
-		return isUserAdminHelper(ldapUserName,Constants.ARK_ROLE_SUPER_ADMINISTATOR);
+		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 	}
 	
 	
@@ -137,8 +137,8 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		ArkRole arkRoleSuperAdmin  = getArkRoleByName(Constants.ARK_ROLE_SUPER_ADMINISTATOR);
-		ArkRole arkRoleAdmin  = getArkRoleByName(Constants.ARK_ROLE_ADMINISTATOR);
+		ArkRole arkRoleSuperAdmin  = getArkRoleByName(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
+		ArkRole arkRoleAdmin  = getArkRoleByName(RoleConstants.ARK_ROLE_ADMINISTATOR);
 		criteria.add(Restrictions.or(Restrictions.eq("arkRole", arkRoleSuperAdmin),Restrictions.eq("arkRole", arkRoleAdmin)));
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		List<ArkUserRole> arkUserRoleList = (List<ArkUserRole>)criteria.list();
