@@ -154,6 +154,14 @@ public interface IArkCommonService {
 	 */
 	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException;
 	
+	/**
+	 * For a Given study and Ldap User name get the Role he has been assigned. 
+	 * @param ldapUserName
+	 * @param study
+	 * @return String that represents the Role for this study
+	 * @throws EntityNotFoundException
+	 */
+	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException;
 
 
 	public GenderType getGenderType(String name);

@@ -308,6 +308,13 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return arkAuthorisationDao.getUserAdminRoles(ldapUserName);
 		
 	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.service.IArkCommonService#getUserRoleForStudy(java.lang.String, au.org.theark.core.model.study.entity.Study)
+	 */
+	public String getUserRoleForStudy(String ldapUserName, Study study)	throws EntityNotFoundException {
+		return arkAuthorisationDao.getUserRoleForStudy(ldapUserName, study);
+	}
 	
 
 	
