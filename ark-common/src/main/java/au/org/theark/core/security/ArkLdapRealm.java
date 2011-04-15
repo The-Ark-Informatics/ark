@@ -1,7 +1,6 @@
 package au.org.theark.core.security;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 
@@ -79,33 +79,42 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
     	
     	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute("studyId");
-    	
-    	if(sessionStudyId != null){
-    		log.info("There is a study in context. Now we can look up the subject's roles for the study");
-    		//Get the roles for the study in context
-    	}else{
-    		log.info("There is no study in context. User has logged in first time.Load roles of type Administator if there is one.");
-    		//
-        	try{
-        		//Check if the logged in user has SuperAdmin Role or Admin role
-        		isAdministator = iArkCommonService.isAdministator(ldapUserName);
-        		isSuperAdministator = iArkCommonService.isSuperAdministrator(ldapUserName);
-            	//TODO: Check if user is Super Administrator ark_user_role for the module in context
-            	if( isSuperAdministator || isAdministator ){
-            		log.info("The logged in user is of Type of Administator");
-            		Collection<String> roleCollection  = iArkCommonService.getUserAdminRoles(ldapUserName);
-            		info.addRoles(roleCollection);
-            
-            	}else{
-            		log.info("The logged in user is an ordinary user. Don't yet add roles defer until a study is in context.");
-            		//Normal user
-            	}
-        	}catch(EntityNotFoundException userNotFound){
-        		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
+
+    	try{
+    		//Check if the logged in user has SuperAdmin Role or Admin role
+    		isAdministator = iArkCommonService.isAdministator(ldapUserName);
+    		isSuperAdministator = iArkCommonService.isSuperAdministrator(ldapUserName);
+        	//TODO: Check if user is Super Administrator ark_user_role for the module in context
+        	if( isSuperAdministator || isAdministator ){
+        		log.info("The logged in user is of Type of Administator");
+        		Collection<String> roleCollection  = iArkCommonService.getUserAdminRoles(ldapUserName);
+        		info.addRoles(roleCollection);
+        
+        	}else{
+        		log.info("The logged in user is an ordinary user. Don't yet add roles defer until a study is in context.");
+        		//Normal user
         	}
+        	
+        	//Load Study Specific roles
+        	if(sessionStudyId != null){
+        		log.info("There is a study in context. Now we can look up the subject's roles for the study");
+        		//Get the roles for the study in context
+        		Study study = iArkCommonService.getStudy(sessionStudyId);
+        		String studyRole  = iArkCommonService.getUserRoleForStudy(ldapUserName, study);
+        		info.addRole(studyRole);
+        	}
+    	}catch(EntityNotFoundException userNotFound){
+    		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
     	}
+
+    	
     	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
         return info;
+    }
+    
+    @Override
+    public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
+    	super.clearCachedAuthorizationInfo(principals);
     }
     
 
