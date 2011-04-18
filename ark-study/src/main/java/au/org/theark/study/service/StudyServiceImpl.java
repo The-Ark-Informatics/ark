@@ -699,7 +699,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public StringBuffer importAndReportSubjectDataFile(File file)
+	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar)
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -713,7 +713,7 @@ public class StudyServiceImpl implements IStudyService{
 			InputStream is = new FileInputStream(file);
 			
 			log.debug("Importing and reporting Subject file");
-			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length());
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe)
 		{
@@ -730,7 +730,7 @@ public class StudyServiceImpl implements IStudyService{
 		return uploadReport;
 	}
 	
-	public Collection<String> validateSubjectFileData(File file)
+	public Collection<String> validateSubjectFileData(File file, String fileFormat, char delimChar)
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -743,7 +743,7 @@ public class StudyServiceImpl implements IStudyService{
 		{	
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length());
+			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe)
 		{
@@ -760,7 +760,7 @@ public class StudyServiceImpl implements IStudyService{
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileFormat(File file)
+	public Collection<String> validateSubjectFileFormat(File file, String fileFormat, char delimChar)
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -772,8 +772,13 @@ public class StudyServiceImpl implements IStudyService{
 		try
 		{	
 			log.debug("Validating Subject file format");
+			
+			if(file.getExtension().equalsIgnoreCase("XLS"))
+			{
+				file = subjectUploader.convertXlsToCsv(file, delimChar);
+			}
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(is, file.length());
+			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe)
 		{

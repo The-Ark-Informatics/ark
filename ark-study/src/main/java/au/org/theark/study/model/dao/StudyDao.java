@@ -290,9 +290,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			
 			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
 			{
-				personLastNameHistory.setPerson(person);
-				personLastNameHistory.setLastName(person.getLastName());
-				session.save(personLastNameHistory);	
+				if(person.getLastName() != null)
+				{
+					personLastNameHistory.setPerson(person);
+					personLastNameHistory.setLastName(person.getLastName());
+					session.save(personLastNameHistory);
+				}
 			}
 			
 			// Update subjectPreviousLastname

@@ -206,9 +206,9 @@ public interface IStudyService {
 	public void updateUpload(StudyUpload studyUpload);
 	public void deleteUpload(StudyUpload studyUpload);
 
-	public Collection<String> validateSubjectFileFormat(File file);
+	public Collection<String> validateSubjectFileFormat(File file, String fileFormat, char delimChar);
 
-	public Collection<String> validateSubjectFileData(File file);
+	public Collection<String> validateSubjectFileData(File file, String fileFormat, char delimChar);
 
-	public StringBuffer importAndReportSubjectDataFile(File file);
+	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
 }
