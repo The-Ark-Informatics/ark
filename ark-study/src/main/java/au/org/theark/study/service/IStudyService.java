@@ -1,5 +1,6 @@
 package au.org.theark.study.service;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -207,8 +208,11 @@ public interface IStudyService {
 	public void deleteUpload(StudyUpload studyUpload);
 
 	public Collection<String> validateSubjectFileFormat(File file, String fileFormat, char delimChar);
+	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar);
 
 	public Collection<String> validateSubjectFileData(File file, String fileFormat, char delimChar);
+	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
 
 	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
+	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
 }

@@ -794,4 +794,78 @@ public class StudyServiceImpl implements IStudyService{
 		}
 		return validationMessages;
 	}
+
+	public Collection<String> validateSubjectFileFormat(
+			InputStream inputStream, String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+	
+		try
+		{	
+			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+	public Collection<String> validateSubjectFileData(InputStream inputStream,
+			String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+	
+		try
+		{	
+			log.debug("Validating Subject file data");
+			validationMessages = subjectUploader.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return validationMessages;
+	}
+
+	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream,
+			String fileFormat, char delimChar) {
+		StringBuffer uploadReport = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = arkCommonService.getStudy(studyId);
+		
+		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this); 
+	
+		try
+		{
+			log.debug("Importing and reporting Subject file");
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error(Constants.ARK_BASE_EXCEPTION + abe);
+		}
+		return uploadReport;
+	}
 }
