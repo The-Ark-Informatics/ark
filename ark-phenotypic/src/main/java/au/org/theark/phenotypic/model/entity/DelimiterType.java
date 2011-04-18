@@ -25,6 +25,7 @@ public class DelimiterType implements java.io.Serializable
 
 	private Long			id;
 	private String			name;
+	private String delimiterCharacter;
 	private Set<PhenoUpload>	collectionUploads	= new HashSet<PhenoUpload>(0);
 
 	// Constructors
@@ -70,6 +71,17 @@ public class DelimiterType implements java.io.Serializable
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	@Column(name = "DELIMITER_CHARACTER")
+	public String getDelimiterCharacter()
+	{
+		return delimiterCharacter;
+	}
+
+	public void setDelimiterCharacter(String delimiterCharacter)
+	{
+		this.delimiterCharacter = delimiterCharacter;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "delimiterType")
