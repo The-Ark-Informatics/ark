@@ -31,7 +31,7 @@ import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.model.vo.UploadVO;
-import au.org.theark.phenotypic.util.PhenotypicImport;
+import au.org.theark.phenotypic.util.PhenoDataUploader;
 
 @Transactional
 @Service("phenotypicService")
@@ -231,7 +231,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -265,7 +265,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -299,7 +299,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{	
@@ -331,7 +331,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{	
@@ -363,7 +363,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -395,7 +395,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -418,7 +418,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		}
 	}
 	
-	public StringBuffer importAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file)
+	public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file)
 	{
 		StringBuffer importReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -427,7 +427,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
-		PhenotypicImport pi = new PhenotypicImport(phenotypicDao, study, phenoCollection, iArkCommonService);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
 	
 		try
 		{
@@ -687,5 +687,50 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public int getCountOfFieldsWithDataInStudy(Study study) {
 		return phenotypicDao.getCountOfFieldsWithDataInStudy(study);
+	}
+
+	public Collection<String> validateMatrixPhenoFileFormat(
+			InputStream inputStream) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Collection<String> validateMatrixPhenoFileData(
+			InputStream inputStream) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void importPhenotypicDataFile(InputStream inputStream) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public StringBuffer uploadAndReportPhenotypicDataFile(
+			InputStream inputStream, String fileFormat, char delimiterChar) {
+		StringBuffer uploadReport = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService);
+	
+		try
+		{
+			log.info("Importing file");
+			//TODO add file format and delimiter
+			uploadReport = pi.importAndReportMatrixPhenoFile(inputStream, inputStream.toString().length());
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return uploadReport;
 	}
 }
