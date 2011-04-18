@@ -1,0 +1,43 @@
+<wicket:panel>
+	<div id="panelBreaker">
+		&nbsp;
+	</div>
+
+	<div id="panelContentLeft">
+		&nbsp;
+	</div>
+
+	<div id="panelContentRight">
+		&nbsp;
+	</div>
+
+	<div id="panelContentCentre">
+		<div class="wizardDataGrid">
+			<table class="wizardDataGridTable">
+				<!-- the Heading Part -->
+				<tr>
+					<th>
+						<label>ROW</label>
+					</th>
+					<th wicket:id="heading">
+						<label wicket:id="cellHead">[Column Heading]</label>
+					</th>
+				</tr>
+				<!-- the Excel Grid Body -->
+				<tr wicket:id="rows">
+					<td>
+						<!-- the Row Numbering Part -->
+						<label wicket:id="rowNo">[RowNo]</label>
+					</td>
+					<!-- the Cell Data Part -->
+					<td wicket:id="cols">
+						<label wicket:id="cellData">[CellData]</label>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+	<div id="panelBreaker">
+		&nbsp;
+	</div>
+</wicket:panel>
