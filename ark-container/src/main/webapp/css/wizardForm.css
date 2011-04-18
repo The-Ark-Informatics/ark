@@ -24,14 +24,14 @@
 	background-color:#EEEEEE;
 }
 
-#wizardsPanelBorder{
-	border-style: solid;
-	border-width: 1px;
-	border-color: #6F6F6F;
-	background-color:#EEEEEE;
-	float: left;
-	width: 100%;
-	height: 100%;
+#wizardPanelBorder{
+    background-color: #EEEEEE;
+    border-color: #6F6F6F;
+    border-style: solid;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
 }
 
 #wizardPanelContent {
@@ -79,4 +79,26 @@
 	margin: 10 5 5 5;
 	font-style: italic;
 	padding-left: 5%;
+}
+
+.wizardDataGrid {
+	 overflow:auto; 
+	 height:30%; 
+	 width:80%;
+}
+
+table.wizardDataGridTable {
+	 border-collapse:collapse;
+}
+
+table.wizardDataGridTable th {
+	background: none repeat scroll 0 0 #C3C3C3;
+    border: 1px solid black;
+    color: white;
+    font-weight: bold;
+    padding: 1px;
+}
+
+table.wizardDataGridTable td {
+    border: 1px solid black;
 }
