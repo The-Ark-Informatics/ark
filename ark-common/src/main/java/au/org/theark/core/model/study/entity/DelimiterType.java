@@ -20,9 +20,9 @@ public class DelimiterType implements java.io.Serializable
 	// Fields
 	private Long			id;
 	private String			name;
+	private String delimiterCharacter;
 
 	// Constructors
-
 	/** default constructor */
 	public DelimiterType()
 	{
@@ -63,5 +63,16 @@ public class DelimiterType implements java.io.Serializable
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	@Column(name = "DELIMITER_CHARACTER")
+	public String getDelimiterCharacter()
+	{
+		return delimiterCharacter;
+	}
+
+	public void setDelimiterCharacter(String delimiterCharacter)
+	{
+		this.delimiterCharacter = delimiterCharacter;
 	}
 }
