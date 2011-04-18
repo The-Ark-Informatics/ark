@@ -7,7 +7,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -164,16 +165,93 @@ public interface IArkCommonService {
 	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException;
 
 
+	/**
+	 * Returns an instance of GenderType for a given String that represents a gender type name. The name should match
+	 * the name in the database Gender Type.
+	 * @param name
+	 * @return
+	 */
 	public GenderType getGenderType(String name);
 
+	/**
+	 * Returns an instance of VitalStatus for a given String that represents a Vital Status. The name should match
+	 * the name in the database table vital_status.
+	 * @param name
+	 * @return
+	 */
 	public VitalStatus getVitalStatus(String name);
 
+	/**
+	 * Returns an instance of Title Type for a given String that represents a gender type name. The name should match
+	 * the name in the database title_type
+	 * @param name
+	 * @return
+	 */
 	public TitleType getTitleType(String name);
 	
+	/**
+	 * Returns an instance of Marital Status for a given String that represents a gender type name. The name should match
+	 * the name in the database marital_status
+	 * @param name
+	 * @return
+	 */
+
 	public MaritalStatus getMaritalStatus(String name);
 	
+	/**
+	 * Returns an instance of PersonContactMethod for a given String that represents a Contact method. The name should match
+	 * the name in the database person_contact_method
+	 * @param name
+	 * @return
+	 */
 	public PersonContactMethod getPersonContactMethod(String name);
+
+	/**
+	 * Returns an instance of Subject Status for a given String that represents a gender type name. The name should match
+	 * the name in the database subject_status.
+	 * @param name
+	 * @return
+	 */
 
 	public SubjectStatus getSubjectStatus(String name);
 	
+	/**
+	 *Returns a ArkUsecase instance for a given String that represents a usecase name.The name should match
+	 *the name in the database table ark_usecase.
+	 *@return ArkUsecase
+	 */
+	public ArkUsecase getArkUsecaseByName(String usecaseName);
+	
+	/**
+	 * Returns a ArkModule instance for a given String that represents a module name.The name should match
+	 * the name in the database table ark_module
+	 * @return
+	 */
+	public ArkModule getArkModuleByName(String moduleName);
+	
+	/**
+	 * Returns a String that represents a Role for a given Ldap User Name, ArkUsecase, ArkModule and Study.
+	 * The LdapUserName,ArkUsecase are mandatory for a successful retrieval of a role.
+	 * @param ldapUserName
+	 * @param arkUseCase
+	 * @param arkModule
+	 * @param study
+	 * @return String
+	 * @throws EntityNotFoundException
+	 */
+	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	
+	/**
+	 * Returns a ArkUsecase instance when provided a Long id that represents a valid use case id.
+	 * @param usecaseId
+	 * @return
+	 */
+	public ArkUsecase getArkUsecaseById(Long usecaseId);
+	
+	/**
+	 * Returns a ArkModule instance when provided a Long id that represents a valid module  id.
+	 * @param usecaseId
+	 * @return
+	 */
+	public ArkModule getArkModuleById(Long moduleId);
 }

@@ -2,7 +2,6 @@ package au.org.theark.core.service;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -316,6 +316,24 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return arkAuthorisationDao.getUserRoleForStudy(ldapUserName, study);
 	}
 	
+	public ArkUsecase getArkUsecaseByName(String usecaseName){
+		return  arkAuthorisationDao.getArkUsecaseByName(usecaseName);
+	}
+	
+	public ArkModule getArkModuleByName(String moduleName){
+		return arkAuthorisationDao.getArkModuleByName(moduleName);
+	}
+	
+	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException{
+		return  arkAuthorisationDao.getUserRole(ldapUserName, arkUseCase, arkModule, study);
+	}
 
+	public ArkUsecase getArkUsecaseById(Long usecaseId){
+		return arkAuthorisationDao.getArkUsecaseById(usecaseId);
+	}
+	
+	public ArkModule getArkModuleById(Long moduleId){
+		return arkAuthorisationDao.getArkModuleById(moduleId);
+	}
 	
 }
