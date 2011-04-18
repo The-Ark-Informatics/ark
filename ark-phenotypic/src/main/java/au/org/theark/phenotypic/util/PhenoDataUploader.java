@@ -24,8 +24,8 @@ import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
-import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
 
@@ -36,7 +36,7 @@ import com.csvreader.CsvReader;
  * @author cellis
  */
 @SuppressWarnings("unused")
-public class PhenotypicImport
+public class PhenoDataUploader
 {
 	private String						fieldName;
 	private long						subjectCount;
@@ -51,11 +51,12 @@ public class PhenotypicImport
 	private PhenoCollection			phenoCollection;
 	private List<Field>				fieldList;
 	private Study						study;
-	static Logger						log							= LoggerFactory.getLogger(PhenotypicImport.class);
+	static Logger						log							= LoggerFactory.getLogger(PhenoDataUploader.class);
 	java.util.Collection<String>	fileValidationMessages	= null;
 	java.util.Collection<String>	dataValidationMessages	= null;
+	private IPhenotypicService		iPhenoService			= null;
 	private IArkCommonService		iArkCommonService			= null;
-	private StringBuffer				importReport				= null;
+	private StringBuffer				uploadReport				= null;
 
 	/**
 	 * PhenotypicImport constructor
@@ -67,9 +68,9 @@ public class PhenotypicImport
 	 * @param collection
 	 *           phenotypic collection in context
 	 */
-	public PhenotypicImport(IPhenotypicDao phenotypicDao, Study study, PhenoCollection collection, IArkCommonService iArkCommonService)
+	public PhenoDataUploader(IPhenotypicService iPhenoService, Study study, PhenoCollection collection, IArkCommonService iArkCommonService)
 	{
-		this.phenotypicDao = phenotypicDao;
+		this.iPhenoService = iPhenoService;
 		this.study = study;
 		this.phenoCollection = collection;
 		this.fileValidationMessages = new ArrayList<String>();
@@ -91,11 +92,6 @@ public class PhenotypicImport
 	 */
 	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
-		if (phenotypicDao == null)
-		{
-			throw new PhenotypicSystemException("Aborting: Must have a phenotypic dao object defined before calling.");
-		}
-
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -254,11 +250,6 @@ public class PhenotypicImport
 	 */
 	public java.util.Collection<String> validateMatrixPhenoFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
-		if (phenotypicDao == null)
-		{
-			throw new PhenotypicSystemException("Aborting: Must have a phenotypic dao object defined before calling.");
-		}
-
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -319,8 +310,8 @@ public class PhenotypicImport
 
 							fieldData.setCollection(this.phenoCollection);
 
-							// First/0th column should be the SubjectUID
-							// If no SubjectUID found, caught by exception catch
+							// First/0th column should be the Subject UID
+							// If no Subject UID found, caught by exception catch
 							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 
 							// Second/1th column should be date collected
@@ -329,7 +320,7 @@ public class PhenotypicImport
 
 							// Set field
 							field = new Field();
-							field = phenotypicDao.getFieldByNameAndStudy(fieldNameArray[i], study);
+							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
 							fieldData.setField(field);
 
 							// Other/ith columns should be the field data value
@@ -341,7 +332,7 @@ public class PhenotypicImport
 						// TODO handle via ArkSystemExcpetion
 						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
 						{
-							log.error("Error with SubjectUID: " + enfe.getMessage());
+							log.error("Error with Subject UID: " + enfe.getMessage());
 						}
 					}
 
@@ -367,7 +358,7 @@ public class PhenotypicImport
 			}
 			else
 			{
-				log.info("Validation is ok");
+				log.debug("Validation is ok");
 			}
 		}
 		catch (IOException ioe)
@@ -384,8 +375,8 @@ public class PhenotypicImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.info("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
 			if (csvReader != null)
@@ -436,11 +427,6 @@ public class PhenotypicImport
 	 */
 	public void importMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
-		if (phenotypicDao == null)
-		{
-			throw new PhenotypicSystemException("Aborting: Must have a phenotypic storage object defined before calling.");
-		}
-
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -470,7 +456,7 @@ public class PhenotypicImport
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.info("Header length: " + csvReader.getHeaders().toString().length());
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -491,19 +477,19 @@ public class PhenotypicImport
 					if (i > 1)
 					{
 						// Print out column details
-						log.info(fieldNameArray[i] + "\t" + stringLineArray[i]);
+						log.debug(fieldNameArray[i] + "\t" + stringLineArray[i]);
 
 						try
 						{
-							log.info("Creating new field data for: " + Constants.SUBJECTUID + ": " + stringLineArray[0] + "\t" + Constants.DATE_COLLECTED + ": " + stringLineArray[1] + "\tFIELD: "
+							log.debug("Creating new field data for: " + Constants.SUBJECTUID + ": " + stringLineArray[0] + "\t" + Constants.DATE_COLLECTED + ": " + stringLineArray[1] + "\tFIELD: "
 									+ fieldNameArray[i] + "\tVALUE: " + stringLineArray[i]);
 
 							FieldData fieldData = new FieldData();
 
 							fieldData.setCollection(this.phenoCollection);
 
-							// First/0th column should be the SubjectUID
-							// If no SubjectUID found, caught by exception catch
+							// First/0th column should be the Subject UID
+							// If no Subject UID found, caught by exception catch
 							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 
 							// Second/1th column should be date collected
@@ -512,19 +498,19 @@ public class PhenotypicImport
 
 							// Set field
 							field = new Field();
-							field = phenotypicDao.getFieldByNameAndStudy(fieldNameArray[i], study);
+							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
 							fieldData.setField(field);
 
 							// Other/ith columns should be the field data value
 							fieldData.setValue(stringLineArray[i]);
 
 							// Try to create the field data
-							phenotypicDao.createFieldData(fieldData);
+							iPhenoService.createFieldData(fieldData);
 						}
 						// TODO handle via ArkSystemExcpetion
 						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
 						{
-							log.error("Error with SubjectUID: " + enfe.getMessage());
+							log.error("Error with Subject UID: " + enfe.getMessage());
 						}
 					}
 
@@ -532,10 +518,10 @@ public class PhenotypicImport
 					curPos += stringLineArray[i].length() + 1; // update progress
 
 					// Debug only - Show progress and speed
-					log.info("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+					log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
 				}
 
-				log.info("\n");
+				log.debug("\n");
 				subjectCount++;
 			}
 		}
@@ -553,8 +539,8 @@ public class PhenotypicImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.info("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
 			if (csvReader != null)
@@ -582,7 +568,7 @@ public class PhenotypicImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		log.info("Inserted " + subjectCount * fieldCount + " rows of data");
+		log.debug("Inserted " + subjectCount * fieldCount + " rows of data");
 	}
 
 	/**
@@ -601,14 +587,7 @@ public class PhenotypicImport
 	 */
 	public StringBuffer importAndReportMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
-		importReport = new StringBuffer();
-
-		if (phenotypicDao == null)
-		{
-			importReport.append("Critical error during import. Please check the file and try again.\n");
-			throw new PhenotypicSystemException("Aborting: Must have a phenotypic storage object defined before calling.");
-		}
-
+		uploadReport = new StringBuffer();
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
@@ -626,9 +605,9 @@ public class PhenotypicImport
 			srcLength = inLength;
 			if (srcLength <= 0)
 			{
-				importReport.append("The input size was not greater than 0.  Actual length reported: ");
-				importReport.append(srcLength);
-				importReport.append("\n");
+				uploadReport.append("The input size was not greater than 0.  Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
 				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
 			}
 
@@ -641,7 +620,7 @@ public class PhenotypicImport
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.info("Header length: " + csvReader.getHeaders().toString().length());
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -662,30 +641,30 @@ public class PhenotypicImport
 					if (i > 1)
 					{
 						// Print out column details
-						log.info(fieldNameArray[i] + "\t" + stringLineArray[i]);
+						log.debug(fieldNameArray[i] + "\t" + stringLineArray[i]);
 
 						try
 						{
-							importReport.append("Creating new field data for: ");
-							importReport.append(Constants.SUBJECTUID);
-							importReport.append(": ");
-							importReport.append(stringLineArray[0]);
-							importReport.append("\t");
-							importReport.append(Constants.DATE_COLLECTED);
-							importReport.append(": ");
-							importReport.append(stringLineArray[1]);
-							importReport.append("\tFIELD: ");
-							importReport.append(fieldNameArray[i]);
-							importReport.append("\tVALUE: ");
-							importReport.append(stringLineArray[i]);
-							importReport.append("\n");
+							uploadReport.append("Creating new field data for: ");
+							uploadReport.append(Constants.SUBJECTUID);
+							uploadReport.append(": ");
+							uploadReport.append(stringLineArray[0]);
+							uploadReport.append("\t");
+							uploadReport.append(Constants.DATE_COLLECTED);
+							uploadReport.append(": ");
+							uploadReport.append(stringLineArray[1]);
+							uploadReport.append("\tFIELD: ");
+							uploadReport.append(fieldNameArray[i]);
+							uploadReport.append("\tVALUE: ");
+							uploadReport.append(stringLineArray[i]);
+							uploadReport.append("\n");
 
 							FieldData fieldData = new FieldData();
 
 							fieldData.setCollection(this.phenoCollection);
 
-							// First/0th column should be the SubjectUID
-							// If no SubjectUID found, caught by exception catch
+							// First/0th column should be the Subject UID
+							// If no Subject UID found, caught by exception catch
 							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
 
 							// Second/1th column should be date collected
@@ -694,23 +673,23 @@ public class PhenotypicImport
 
 							// Set field
 							field = new Field();
-							field = phenotypicDao.getFieldByNameAndStudy(fieldNameArray[i], study);
+							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
 							fieldData.setField(field);
 
 							// Other/ith columns should be the field data value
 							fieldData.setValue(stringLineArray[i]);
 							
-							// Flag data that failed validation, but was overrriden and imported
+							// Flag data that failed validation, but was overridden and imported
 							fieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, null));
 
 							// Try to create the field data
-							phenotypicDao.createFieldData(fieldData);
+							iPhenoService.createFieldData(fieldData);
 						}
 						// TODO handle via ArkSystemExcpetion
 						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
 						{
-							importReport.append("Critical error during data import\n");
-							log.error("Error with SubjectUID: " + enfe.getMessage());
+							uploadReport.append("Critical error during data import\n");
+							log.error("Error with Subject UID: " + enfe.getMessage());
 						}
 					}
 
@@ -727,13 +706,13 @@ public class PhenotypicImport
 		}
 		catch (IOException ioe)
 		{
-			importReport.append("Unexpected I/O exception whilst reading the phenotypic data file\n");
+			uploadReport.append("Unexpected I/O exception whilst reading the phenotypic data file\n");
 			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
 			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
 		}
 		catch (Exception ex)
 		{
-			importReport.append("Unexpected exception whilst reading the phenotypic data file\n");
+			uploadReport.append("Unexpected exception whilst reading the phenotypic data file\n");
 			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
 			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
 		}
@@ -741,18 +720,18 @@ public class PhenotypicImport
 		{
 			// Clean up the IO objects
 			timer.stop();
-			importReport.append("Total elapsed time: ");
-			importReport.append(timer.getTime());
-			importReport.append(" ms or ");
-			importReport.append(decimalFormat.format(timer.getTime() / 1000.0));
-			importReport.append(" s");
-			importReport.append("\n");
-			importReport.append("Total file size: ");
-			importReport.append(srcLength);
-			importReport.append(" B or ");
-			importReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
-			importReport.append(" MB");
-			importReport.append("\n");
+			uploadReport.append("Total elapsed time: ");
+			uploadReport.append(timer.getTime());
+			uploadReport.append(" ms or ");
+			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+			uploadReport.append(" s");
+			uploadReport.append("\n");
+			uploadReport.append("Total file size: ");
+			uploadReport.append(srcLength);
+			uploadReport.append(" B or ");
+			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
 
 			if (timer != null)
 				timer = null;
@@ -782,12 +761,12 @@ public class PhenotypicImport
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		importReport.append("Inserted ");
-		importReport.append(subjectCount * fieldCount);
-		importReport.append(" rows of data");
-		importReport.append("\n");
+		uploadReport.append("Inserted ");
+		uploadReport.append(subjectCount * fieldCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
 
-		return importReport;
+		return uploadReport;
 	}
 	
 	/**
