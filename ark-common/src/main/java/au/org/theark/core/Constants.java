@@ -204,14 +204,33 @@ public class Constants {
 	public static final String PERSON_SURNAME_HISTORY_SURNAME = "surname";
 	
 	/* Ark Use Case Function Id*/
-	public static final String USECASE_KEY_STUDY ="USECASE_STUDY";
-	public static final String USECASE_KEY_STUDY_COMPONENT="USECASE_STUDY_COMPONENT";
-	public static final String USECASE_KEY_MY_DETAIL="USECASE_MY_DETAIL";
-	public static final String USECASE_KEY_USER="USECASE_USER";
-	public static final String USECASE_KEY_SUBJECT="USECASE_SUBJECT";
-	public static final String USECASE_KEY_PHONE="USECASE_PHONE";
-	public static final String USECASE_KEY_CONSENT="USECASE_CONSENT";
-	public static final String USECASE_KEY_ATTACHMENT="USECASE_ATTACHMENT";
+	public static final String ARK_USECASE_KEY ="USECASE_KEY";
+	
+	
+	/*Ark Use Case Key value that maps to the database table values in ark_usecase.If the values in the table change, this must be modified.  */
+	public static final String USECASE_KEY_VALUE_STUDY="STUDY";
+	public static final String USECASE_KEY_VALUE_STUDY_COMPONENT="STUDY_COMPONENT";
+	public static final String USECASE_KEY_VALUE_MY_DETAIL="MY_DETAIL";
+	public static final String USECASE_KEY_VALUE_USER="USER";
+	public static final String USECASE_KEY_VALUE_SUBJECT="SUBJECT";
+	public static final String USECASE_KEY_VALUE_PHONE="PHONE";
+	public static final String USECASE_KEY_VALUE_CONSENT="CONSENT";
+	public static final String USECASE_KEY_VALUE_ATTACHMENT="ATTACHMENT";
+	
+	
+	/*Ark Module Keys */
+	public static final String ARK_MODULE_KEY ="MODULE_KEY";
+
+	
+	/*Ark Module Key values */
+	public static final String ARK_MODULE_STUDY ="Study";
+	public static final String ARK_MODULE_SUBJECT ="Subject";
+	public static final String ARK_MODULE_USER="User";
+	public static final String ARK_MODULE_PHENOTYPIC ="Phenotypic";
+	public static final String ARK_MODULE_GENOTYPIC ="Genotypic";
+	public static final String ARK_MODULE_LIMS ="LIMS";
+	
+	
 	
 	
 	
