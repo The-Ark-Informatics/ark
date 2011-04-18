@@ -1,10 +1,14 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.UploadVO;
@@ -75,6 +79,8 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
+		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 		validationMessages = phenotypicService.validateMatrixPhenoFileFormat(wizardForm.getFile());
 		containerForm.getModelObject().setValidationMessages(validationMessages);
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
@@ -85,6 +91,21 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
 		}
+		
+		// Show file data
+		try
+		{
+			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, delimChar);
+			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+			target.addComponent(form.getWizardPanelFormContainer());
+		}
+		catch (IOException e)
+		{
+			System.out.println("Failed to display the uploaded file: " + e);
+		} 
 	}
 	
 	@Override
