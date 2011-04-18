@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.subjectUpload;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
@@ -99,11 +101,20 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 			
 			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			StringBuffer uploadReport = null;
+			try 
+			{
+				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+				uploadReport = studyService.importAndReportSubjectDataFile(inputStream, fileFormat, delimiterChar);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			
-			StringBuffer importReport = studyService.importAndReportSubjectDataFile(wizardForm.getFile(), fileFormat, delimiterChar);
 			
 			// Update the report
-			updateUploadReport(importReport.toString());
+			updateUploadReport(uploadReport.toString());
 			
 			// Save all objects to the database
 			save();
