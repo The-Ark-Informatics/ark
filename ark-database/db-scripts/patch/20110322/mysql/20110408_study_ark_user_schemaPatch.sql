@@ -1,4 +1,4 @@
-
+use study;
 CREATE  TABLE `study`.`ark_user` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
   `STUDY_ID` INT NULL ,
