@@ -23,6 +23,7 @@ import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
+import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
 
 /**
  * @author nivedann
@@ -72,6 +73,11 @@ public class SubjectSubMenuTab extends Panel{
 		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_FILE);
 		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_FILE);
 		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_UPLOAD);
+		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_UPLOAD);
+		moduleTabs.add(menuModule);
 
 		
 		for(final MenuModule moduleName : moduleTabs)
@@ -112,6 +118,10 @@ public class SubjectSubMenuTab extends Panel{
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_FILE)){
 						
 						panelToReturn = new SubjectFileContainerPanel(panelId);
+					}
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_UPLOAD)){
+						
+						panelToReturn = new SubjectUploadContainerPanel(panelId);
 					}
 					return panelToReturn;
 				};
