@@ -28,6 +28,7 @@ public class ArkUserRole implements Serializable{
 	private ArkRole arkRole;
 	private ArkModule arkModule;
 	private ArkUser arkUser;
+	private ArkUsecase arkUsecase;
 	
 	public ArkUserRole(){
 		
@@ -73,6 +74,16 @@ public class ArkUserRole implements Serializable{
 
 	public void setArkUser(ArkUser arkUser) {
 		this.arkUser = arkUser;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_USECASE_ID")
+	public ArkUsecase getArkUsecase() {
+		return arkUsecase;
+	}
+
+	public void setArkUsecase(ArkUsecase arkUsecase) {
+		this.arkUsecase = arkUsecase;
 	}
 
 }
