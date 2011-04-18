@@ -203,4 +203,16 @@ public class Constants {
 	public static final String PERSON_SURNAME_HISTORY_PERSON = "person";
 	public static final String PERSON_SURNAME_HISTORY_SURNAME = "surname";
 	
+	/* Ark Use Case Function Id*/
+	public static final String USECASE_KEY_STUDY ="USECASE_STUDY";
+	public static final String USECASE_KEY_STUDY_COMPONENT="USECASE_STUDY_COMPONENT";
+	public static final String USECASE_KEY_MY_DETAIL="USECASE_MY_DETAIL";
+	public static final String USECASE_KEY_USER="USECASE_USER";
+	public static final String USECASE_KEY_SUBJECT="USECASE_SUBJECT";
+	public static final String USECASE_KEY_PHONE="USECASE_PHONE";
+	public static final String USECASE_KEY_CONSENT="USECASE_CONSENT";
+	public static final String USECASE_KEY_ATTACHMENT="USECASE_ATTACHMENT";
+	
+	
+	
 }
