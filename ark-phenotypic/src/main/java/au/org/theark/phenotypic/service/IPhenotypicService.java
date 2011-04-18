@@ -1,8 +1,7 @@
 package au.org.theark.phenotypic.service;
 
+import java.io.InputStream;
 import java.util.Collection;
-
-import org.apache.wicket.util.file.File;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
@@ -59,12 +58,16 @@ public interface IPhenotypicService {
 	public java.util.Collection<String> validateMatrixPhenoFileFormat();
 	public java.util.Collection<String> validateMatrixPhenoFileData();
 	public java.util.Collection<String> validateMatrixPhenoFileFormat(org.apache.wicket.util.file.File file);
+	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream inputStream);
 	public java.util.Collection<String> validateMatrixPhenoFileData(org.apache.wicket.util.file.File file);
+	public java.util.Collection<String> validateMatrixPhenoFileData(InputStream inputStream);
 	
 	// Import phenotypic data file
 	public void importPhenotypicDataFile();
 	public void importPhenotypicDataFile(org.apache.wicket.util.file.File file);
-	public StringBuffer importAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file);
+	public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file);
+	public void importPhenotypicDataFile(InputStream inputStream);
+	public StringBuffer uploadAndReportPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
 	
 	// File Format
 	public java.util.Collection<FileFormat> getFileFormats();
@@ -92,4 +95,5 @@ public interface IPhenotypicService {
 	
 	public int getCountOfFieldsInStudy(Study study);
 	public int getCountOfFieldsWithDataInStudy(Study study);
+	
 }
