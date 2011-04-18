@@ -1,9 +1,10 @@
 package au.org.theark.core.dao;
 
 import java.util.Collection;
-import java.util.List;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.Study;
 
 
@@ -35,5 +36,24 @@ public interface IArkAuthorisation {
 	
 	
 	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException;
+	
+	
+	public ArkUsecase getArkUsecaseByName(String usecaseName);
+	
+	public ArkUsecase getArkUsecaseById(Long usecaseId);
+	
+	public ArkModule getArkModuleByName(String moduleName);
+	
+	public ArkModule getArkModuleById(Long moduleId);
+	/**
+	 * 
+	 * @param ldapUserName
+	 * @param arkUseCase
+	 * @param arkModule
+	 * @param study
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException;
 
 }

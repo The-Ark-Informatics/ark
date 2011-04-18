@@ -12,7 +12,9 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -169,6 +171,74 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			roleName = arkUserRole.getArkRole().getName();
 		}
 		return roleName;
+	}
+	
+	/**
+	 * Retrieve a Logged in user's role by providing the Ldap User Name, Usecase id, module id & or study id.
+	 * We need the Ldap User Name & ArkUseCase Id as a mandatory one.
+	 * @throws EntityNotFoundException 
+	 */
+	
+	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException{
+		String roleName = "";
+		
+		ArkUser arkUser  = getArkUser(ldapUserName);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.createAlias("arkUser", "auserObject");
+		//criteria.createAlias("arkUsecase", "arkUsecaseObject");
+		
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		if(study != null){
+			criteria.add(Restrictions.eq("auserObject.study", study));	
+		}
+		
+		if(arkUseCase != null){
+			criteria.add(Restrictions.eq("arkUsecase", arkUseCase));
+		}
+		
+		if(arkModule != null){
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		
+		criteria.setMaxResults(1);
+		ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
+		if(arkUserRole != null){
+			roleName = arkUserRole.getArkRole().getName();
+		}
+		return roleName;
+	}
+	
+	
+	public ArkUsecase getArkUsecaseByName(String usecaseName){
+		Criteria criteria = getSession().createCriteria(ArkUsecase.class);
+		criteria.add(Restrictions.eq("name", usecaseName));
+		criteria.setMaxResults(1);
+		ArkUsecase arkUsecase  = (ArkUsecase)criteria.uniqueResult();
+		return arkUsecase;
+	}
+	
+	public ArkUsecase getArkUsecaseById(Long usecaseId){
+		Criteria criteria = getSession().createCriteria(ArkUsecase.class);
+		criteria.add(Restrictions.eq("id", usecaseId));
+		criteria.setMaxResults(1);
+		ArkUsecase arkUsecase  = (ArkUsecase)criteria.uniqueResult();
+		return arkUsecase;
+	}
+	
+	public ArkModule getArkModuleByName(String moduleName){
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		criteria.add(Restrictions.eq("name", moduleName));
+		criteria.setMaxResults(1);
+		ArkModule arkModule = (ArkModule)criteria.uniqueResult();
+		return arkModule;
+	}
+	
+	public ArkModule getArkModuleById(Long moduleId){
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		criteria.add(Restrictions.eq("id", moduleId));
+		criteria.setMaxResults(1);
+		ArkModule arkModule = (ArkModule)criteria.uniqueResult();
+		return arkModule;
 	}
 
 }
