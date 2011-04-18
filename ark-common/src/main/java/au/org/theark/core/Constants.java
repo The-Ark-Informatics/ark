@@ -65,6 +65,8 @@ public class Constants {
 	public static final String TAB_PERSON_ADDRESS = "Address";
 	public static final String TAB_SUBJECT_CONSENT = "Consent";
 	public static final String TAB_SUBJECT_SUBJECT_FILE = "Attachments";
+	public static final String	TAB_SUBJECT_SUBJECT_UPLOAD	= "Subject Upload";
+	
 
 	/* Menu Tab keys */
 	public static final String TAB_MODULE_SUBJECT_DETAIL = "tab.module.subject.detail";
@@ -72,6 +74,7 @@ public class Constants {
 	public static final String TAB_MODULE_PERSON_ADDRESS = "tab.module.person.address";
 	public static final String TAB_MODULE_SUBJECT_CONSENT = "tab.module.subject.consent";
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_FILE = "tab.module.subject.subjectFile";
+	public static final String	TAB_MODULE_SUBJECT_SUBJECT_UPLOAD	= "tab.module.subject.subjectUpload";;
 
 	/* General date format, as used by ArkDatePicker */
 	public static final String DD_MM_YYYY = "dd/MM/yyyy"; // cap M is for month,
@@ -232,6 +235,9 @@ public class Constants {
 	
 	
 	
+	
+	public static final char	DEFAULT_DELIMITER_CHARACTER	= ',';
+	public static final String	DEFAULT_FILE_FORMAT	= "CSV";
 	
 	
 }
