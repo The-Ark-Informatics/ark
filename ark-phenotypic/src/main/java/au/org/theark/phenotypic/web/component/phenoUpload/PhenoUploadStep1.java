@@ -33,7 +33,6 @@ import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.util.PhenoUploadReport;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.WizardForm;
 
 /**
@@ -151,7 +150,6 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		storeFile();
 		saveFileInMemory();
 	}
 	
@@ -162,32 +160,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	public WizardForm getWizardForm() {
 		return wizardForm;
 	}
-
-	private void storeFile() {
-		// TODO: Load the temporary directory from the application configuration instead
-		FileUpload fileUpload = fileUploadField.getFileUpload();
-		String tempDir = System.getProperty("java.io.tmpdir") + File.separator + UUID.randomUUID().toString();
-		createDirectoryIfNeeded(tempDir);
-		String filePath = tempDir + File.separator + fileUpload.getClientFileName();
-		File file = new File(filePath);
-		FileOutputStream fos = null;
-		
-		try {
-			fos = new FileOutputStream(file);
-			IOUtils.copy(fileUpload.getInputStream(), fos);
-			fos.close();
-			//System.out.println("Successfully stored a temporary file: " + filePath);
-		} catch (IOException ioe) {
-			//System.out.println("Failed to save the uploaded file:" + ioe);
-		} finally {
-			if (fos != null) {
-				fos = null;
-			}
-		}
-
-		wizardForm.setFile(file);
-	}
-
+	
 	private void saveFileInMemory() {
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -202,6 +175,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		// Retrieve file and store as Blob in database
 		// TODO: AJAX-ified and asynchronous and hit database
 		FileUpload fileUpload = fileUploadField.getFileUpload();
+		containerForm.getModelObject().setFileUpload(fileUpload);
 
 		try {
 			// Copy file to BLOB object
