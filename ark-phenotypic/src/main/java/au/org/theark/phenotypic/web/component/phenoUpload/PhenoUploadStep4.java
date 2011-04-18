@@ -1,7 +1,8 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Blob;
-import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -89,10 +90,22 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 			
 			// Perform actual import of data
 			containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-			StringBuffer importReport = phenotypicService.importAndReportPhenotypicDataFile(wizardForm.getFile());
+			StringBuffer uploadReport = null;
+			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			
+			try 
+			{
+				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+				uploadReport = phenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
+			} 
+			catch (IOException e) 
+			{
+				e.printStackTrace();
+			}
 			
 			// Update the report
-			updateUploadReport(importReport.toString());
+			updateUploadReport(uploadReport.toString());
 			
 			// Save all objects to the database
 			save();
