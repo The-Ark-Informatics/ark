@@ -8,3 +8,4 @@ INSERT INTO `study`.`ark_usecase` (`ID`, `NAME`, `DESCRIPTION`) VALUES (6, 'PHON
 INSERT INTO `study`.`ark_usecase` (`ID`, `NAME`, `DESCRIPTION`) VALUES (7, 'CONSENT', 'Manage Subject Consents. This is represented via the Consent tab under the main Study  Tab.');
 INSERT INTO `study`.`ark_usecase` (`ID`, `NAME`, `DESCRIPTION`) VALUES (8, 'ATTACHMENT', 'Manage Consent and Component attachments. This is represented via the Attachment tab under Subject Main tab.');
 
+
