@@ -46,6 +46,7 @@ public class PhenoDataUploader
 	private long						srcLength					= -1;															// -1 means nothing being processed
 	private StopWatch					timer							= null;
 	private char						phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;					// default phenotypic file delimiter: COMMA
+	private String						fileFormat;
 	private IPhenotypicDao			phenotypicDao				= null;
 	private Person						person;
 	private PhenoCollection			phenoCollection;
@@ -68,7 +69,7 @@ public class PhenoDataUploader
 	 * @param collection
 	 *           phenotypic collection in context
 	 */
-	public PhenoDataUploader(IPhenotypicService iPhenoService, Study study, PhenoCollection collection, IArkCommonService iArkCommonService)
+	public PhenoDataUploader(IPhenotypicService iPhenoService, Study study, PhenoCollection collection, IArkCommonService iArkCommonService, String fileFormat, char delimiterChar)
 	{
 		this.iPhenoService = iPhenoService;
 		this.study = study;
@@ -76,6 +77,8 @@ public class PhenoDataUploader
 		this.fileValidationMessages = new ArrayList<String>();
 		this.dataValidationMessages = new ArrayList<String>();
 		this.iArkCommonService = iArkCommonService;
+		this.fileFormat = fileFormat;
+		this.phenotypicDelimChr = delimiterChar;
 	}
 
 	/**
@@ -142,13 +145,15 @@ public class PhenoDataUploader
 
 				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
 				{
-					// Invalid file
+					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
-					stringBuffer = stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
-					stringBuffer = stringBuffer.append("The default format is as follows:\n");
-					stringBuffer = stringBuffer.append(Constants.SUBJECTUID + "," + Constants.DATE_COLLECTED + ",FIELDNAME1,FIELDNAME2,FIELDNAME3,FIELDNAMEX\n");
-					stringBuffer = stringBuffer.append("[subjectUid],[dateCollected],[field1value],[field2value],[field3value],[fieldXvalue]\n");
-					stringBuffer = stringBuffer.append("[..,],[...],[...],[...],[...],[...]\n");
+					stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
+					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
+					stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+					stringBuffer.append("The default format is as follows:\n");
+					stringBuffer.append(Constants.SUBJECTUID + phenotypicDelimChr + Constants.DATE_COLLECTED + phenotypicDelimChr + "FIELDNAME1" + phenotypicDelimChr + "FIELDNAME2" + phenotypicDelimChr + "FIELDNAME3" + phenotypicDelimChr + "FIELDNAMEX\n");
+					stringBuffer.append("[subjectUid]" + phenotypicDelimChr + "[dateCollected]" + phenotypicDelimChr + "[field1value]" + phenotypicDelimChr + "[field2value]" + phenotypicDelimChr + "[field3value]" + phenotypicDelimChr + "[fieldXvalue]\n");
+					stringBuffer.append("[.." + phenotypicDelimChr + "]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]\n");
 
 					fileValidationMessages.add(stringBuffer.toString());
 					break;
