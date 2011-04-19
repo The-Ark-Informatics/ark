@@ -3,7 +3,7 @@
 	<form wicket:id="detailsForm">
 		 <div id="detailsPanelBorder">
 		  <div wicket:id="detailFormContainer">
-		    <div id="searchPanelBreaker">&nbsp;</div>
+		    <div id="detailPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
 			
 			<!--  Row 1 -->
@@ -26,7 +26,8 @@
 			<div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
-				<div class="label">
+				<div class="label">		    
+				<div id="panelMargin">&nbsp;</div>
 					<label for="studyManager">
 						<wicket:message key="studyManager">Study manager:</wicket:message>
 					</label>	
@@ -39,10 +40,26 @@
 				</div>
 			</div>
 			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
 			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="date">
+						<wicket:message key="date">Date:</wicket:message>
+					</label>
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="correspondence.date" type="text" maxlength="10" />
+				</div>
+			</div>			
+			
+			<div id="panelMargin">&nbsp;</div>
+					
 			<div id="fldLabel">
 				<div class="label">
 					<label for="time">
@@ -57,8 +74,10 @@
 				</div>
 			</div>
 			
-			<div id="panelMargin">&nbsp;</div>
-			
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+						
 			<div id="fldLabel">
 				<div class="label">
 					<label for="reason">
@@ -73,9 +92,7 @@
 				</div>
 			</div>
 			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+		    <div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
 		 		<div class="label">
@@ -93,7 +110,9 @@
 				</div>
 			</div>
 		       	   		       			
-		    <div id="panelMargin">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
 						
 			<div id="fldLabel">
 		 		<div class="label">
@@ -110,11 +129,9 @@
 		       		</select>
 				</div>
 			</div>
-			
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
 
+		    <div id="panelMargin">&nbsp;</div>
+		    			
 			<div id="fldLabel">
 	 			<div class="label">
 					<label for="correspondenceOutcome">
@@ -131,7 +148,9 @@
 				</div>
 			</div>
 		       	   		       			
-		    <div id="panelMargin">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
 						
 			<div id="fldLabel">
 		 		<div class="label">
@@ -147,9 +166,7 @@
 				</div>
 			</div>
 
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
+		    <div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
 		 			<div class="label">
@@ -164,25 +181,14 @@
 					 <input wicket:id="correspondence.comments"  type="text" />
 				</div>
 			</div>
-			
-			<div id="fldLabel">
-		 			<div class="label">
-						&nbsp;
-		 			</div> 
-		 	</div> 			       			
-				
-			<div id="fldControl">
-				<div class="label">
-					  &nbsp;
-				</div>
-			</div>			
 
-			<div id="searchPanelContentRight">&nbsp;</div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 			
 			<!-- ModalWindow for confirm Delete window -->
 			<div wicket:id="modalwindow"></div>
-			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
 				
 			</div>
 			

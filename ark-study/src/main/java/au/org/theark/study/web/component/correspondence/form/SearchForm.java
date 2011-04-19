@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -22,6 +23,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.vo.CorrespondenceVO;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -37,7 +39,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	
 	private DropDownChoice<CorrespondenceStatusType> statusTypeChoice;
 	private TextField<String> studyManagerTxtFld;
-//	private TextField<String> dateFld;	// TODO: use proper type
+	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
 	private TextField<String> reasonTxtFld;
 	private DropDownChoice<CorrespondenceModeType> modeTypeChoice;
@@ -71,7 +73,12 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		initialiseStatusTypeDropDown();
 		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
-//		dateFld = new TextField<String>("correspondence.date");	// TODO: fix this
+		
+		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateFld);
+		dateFld.add(datePicker);
+		// create new DateTextField and assign date format
 		timeTxtFld = new TextField<String>("correspondence.time");
 		reasonTxtFld = new TextField<String>("correspondence.reason");
 		initialiseModeTypeDropDown();
@@ -117,7 +124,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 		add(statusTypeChoice);
 		add(studyManagerTxtFld);
-//		add(dateFld);	// TODO: fix this
+		add(dateFld);
 		add(timeTxtFld);
 		add(reasonTxtFld);
 		add(modeTypeChoice);
@@ -153,7 +160,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 			correspondence.setPerson(studyService.getPerson(sessionPersonId));
 			Collection<Correspondences> correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, correspondence);
 			if(correspondenceList != null && correspondenceList.size() == 0) {
-				this.info("Fields with the specified criteria do no exist in the system.");
+				this.info("Fields with the specified criteria do not exist in the system.");
 				target.addComponent(feedbackPanel);
 			}
 			

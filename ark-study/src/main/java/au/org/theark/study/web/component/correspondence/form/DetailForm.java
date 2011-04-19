@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -22,6 +23,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -33,7 +35,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	
 	private DropDownChoice<CorrespondenceStatusType> statusTypeChoice;
 	private TextField<String> studyManagerTxtFld;
-//	private TextField<String> dateFld;	// TODO: use proper type
+	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
 	private TextField<String> reasonTxtFld;
 	private DropDownChoice<CorrespondenceModeType> modeTypeChoice;
@@ -62,7 +64,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		initialiseStatusTypeDropDown();
 		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
 		studyManagerTxtFld.add(new ArkDefaultFormFocusBehavior());
-//		dateFld = new TextField<String>("correspondence.date");	// TODO: fix this
+		// create new DateTextField and assign date format
+		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateFld);
+		dateFld.add(datePicker);
+				
 		timeTxtFld = new TextField<String>("correspondence.time");
 		reasonTxtFld = new TextField<String>("correspondence.reason");
 		initialiseModeTypeDropDown();
@@ -104,7 +111,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		detailPanelFormContainer.add(statusTypeChoice);
 		detailPanelFormContainer.add(studyManagerTxtFld);
-//		detailPanelFormContainer.add(dateFld);	// TODO: fix this
+		detailPanelFormContainer.add(dateFld);
 		detailPanelFormContainer.add(timeTxtFld);
 		detailPanelFormContainer.add(reasonTxtFld);
 		detailPanelFormContainer.add(modeTypeChoice);
@@ -181,8 +188,12 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	@Override
 	protected boolean isNew() {
-		// TODO Auto-generated method stub
-		return false;
+		
+		if(containerForm.getModelObject().getCorrespondence().getId() == null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 }
