@@ -1,5 +1,8 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
@@ -117,8 +120,19 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 		}
 		else
 		{
-			//validateFileData();
-			validationMessages = phenotypicService.validateMatrixPhenoFileData(this.wizardForm.getFile());
+			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			InputStream inputStream;
+			try
+			{
+				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+				validationMessages = phenotypicService.validateMatrixPhenoFileData(inputStream, fileFormat, delimChar);
+			}
+			catch(IOException e)
+			{
+				e.printStackTrace();
+			}
+			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			if(validationMessage != null && validationMessage.length() > 0)

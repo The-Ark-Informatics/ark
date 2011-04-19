@@ -81,7 +81,18 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	{
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-		validationMessages = phenotypicService.validateMatrixPhenoFileFormat(wizardForm.getFile());
+		InputStream inputStream;
+		try
+		{
+			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
+		}
+		catch (IOException e1)
+		{
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		containerForm.getModelObject().setValidationMessages(validationMessages);
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
@@ -95,7 +106,8 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		// Show file data
 		try
 		{
-			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			inputStream.reset();
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, delimChar);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);

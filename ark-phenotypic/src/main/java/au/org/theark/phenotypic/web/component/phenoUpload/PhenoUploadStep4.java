@@ -78,6 +78,9 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	{
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		
+		form.getArkExcelWorkSheetAsGrid().setVisible(false);
+		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
 	
 	@Override
