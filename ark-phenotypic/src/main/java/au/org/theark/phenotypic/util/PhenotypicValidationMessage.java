@@ -116,9 +116,9 @@ public class PhenotypicValidationMessage
 	}
 	
 	/**
-	 * Returns field not a valid date format error message
-	 * @param field
-	 * @param fieldData
+	 * Returns dateCollected not a valid date format error message
+	 * @param subkjecUid
+	 * @param dateCollectedStr
 	 * @return String
 	 */
 	public static String dateCollectedNotValidDate(String subjectUid, String dateCollectedStr){
