@@ -6,13 +6,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-import au.org.theark.core.Constants;
-import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.org.theark.core.Constants;
+import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.phenotypic.model.entity.FieldData;
 
 /**
  * PhenotypicValidator provides support for validating phenotypic data with the defined data dictionary
@@ -95,12 +94,13 @@ public class PhenotypicValidator
 			{
 				Date dateFieldValue = new Date();
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
 				dateFieldValue = dateFormat.parse(fieldData.getValue());
 				return true;
 			}
 			catch (ParseException pe)
 			{
-				errorMessages.add(PhenotypicValidationMessage.fieldDataNotDefinedType(field, fieldData));
+				errorMessages.add(PhenotypicValidationMessage.fieldDataNotValidDate(field, fieldData));
 				log.error("Field data date parse exception " + pe.getMessage());
 				return false;
 			}
