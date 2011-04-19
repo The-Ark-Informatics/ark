@@ -1,12 +1,10 @@
-delimiter $$
-
+use study;
 CREATE TABLE `file_format` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(50) NOT NULL,
   `DESCRIPTION` text,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1$$
-
+) ENGINE=InnoDB;
 
 CREATE TABLE `delimiter_type` (
   `ID` int(11) NOT NULL auto_increment,
@@ -14,7 +12,7 @@ CREATE TABLE `delimiter_type` (
   `DESCRIPTION` text,
   `DELIMITER_CHARACTER` varchar(1) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1$$
+) ENGINE=InnoDB;
 
 
 CREATE TABLE `upload` (
@@ -40,11 +38,12 @@ CREATE TABLE `upload` (
   CONSTRAINT `fk_upload_delimiter_type` FOREIGN KEY (`DELIMITER_TYPE_ID`) REFERENCES `study`.`delimiter_type` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_upload_file_format` FOREIGN KEY (`FILE_FORMAT_ID`) REFERENCES `study`.`file_format` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `fk_upload_study` FOREIGN KEY (`STUDY_ID`) REFERENCES `study`.`study` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `study/del'$$
+) ENGINE=InnoDB  COMMENT='InnoDB free: 9216 kB; (`DELIMITER_TYPE_ID`) REFER `study/del';
 
 INSERT INTO `study`.`file_format`
 SELECT * FROM `pheno`.`file_format`;
-$$
+
 
 INSERT INTO `study`.`delimiter_type`
 SELECT * FROM `pheno`.`delimiter_type`;
+
