@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -302,43 +303,51 @@ public class PhenoDataUploader
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
+				
+				// Fist columne should be SubjectUID
+				String subjectUid = stringLineArray[0];
+				// Second/1th column should be date collected
+				String dateCollectedStr = stringLineArray[1];
+				
+				try
+				{
+					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					dateFormat.setLenient(false);
+					dateCollected = dateFormat.parse(dateCollectedStr);
+				}
+				catch (ParseException pe)
+				{
+					dataValidationMessages.add(PhenotypicValidationMessage.dateCollectedNotValidDate(subjectUid, dateCollectedStr));	
+				}
 
 				// Loop through columns in current row in file, starting from the 2th position
-				for (int i = 0; i < stringLineArray.length; i++)
+				for (int i = 2; i < stringLineArray.length; i++)
 				{
-					// Field data actually the 2th/3rd column onward
-					if (i > 1)
+					try
 					{
-						try
-						{
-							FieldData fieldData = new FieldData();
+						FieldData fieldData = new FieldData();
 
-							fieldData.setCollection(this.phenoCollection);
+						fieldData.setCollection(this.phenoCollection);
 
-							// First/0th column should be the Subject UID
-							// If no Subject UID found, caught by exception catch
-							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
-
-							// Second/1th column should be date collected
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
-
-							// Set field
-							field = new Field();
-							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
-							fieldData.setField(field);
-
-							// Other/ith columns should be the field data value
-							fieldData.setValue(stringLineArray[i]);
-
-							// Validate the field data
-							PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages);
-						}
-						// TODO handle via ArkSystemExcpetion
-						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
-						{
-							log.error("Error with Subject UID: " + enfe.getMessage());
-						}
+						// First/0th column should be the Subject UID
+						// If no Subject UID found, caught by exception catch
+						fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(subjectUid));
+						
+						// Set field
+						field = new Field();
+						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						fieldData.setField(field);
+						
+						// Other/ith columns should be the field data value
+						fieldData.setValue(stringLineArray[i]);
+						
+						// Validate the field data
+						PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages);
+					}
+					// TODO handle via ArkSystemExcpetion
+					catch (au.org.theark.core.exception.EntityNotFoundException enfe)
+					{
+						log.error("Error with Subject UID: " + enfe.getMessage());
 					}
 
 					// Update progress
