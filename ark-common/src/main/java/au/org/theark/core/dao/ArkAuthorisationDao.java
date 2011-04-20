@@ -185,11 +185,12 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.createAlias("arkUser", "auserObject");
-		//criteria.createAlias("arkUsecase", "arkUsecaseObject");
-		
 		criteria.add(Restrictions.eq("arkUser", arkUser));
-		if(study != null){
-			criteria.add(Restrictions.eq("auserObject.study", study));	
+		//Even if there is a study in session the criteria must be applied only if the logged in user has a study registered for him. Ie if he is not a Super Admin
+		if(!isSuperAdministrator(ldapUserName)){
+			if(study != null){
+				criteria.add(Restrictions.eq("auserObject.study", study));	
+			}
 		}
 		
 		if(arkUseCase != null){
@@ -207,6 +208,8 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		}
 		return roleName;
 	}
+	
+	
 	
 	
 	public ArkUsecase getArkUsecaseByName(String usecaseName){
