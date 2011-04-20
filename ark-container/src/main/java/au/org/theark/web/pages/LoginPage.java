@@ -19,11 +19,15 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
@@ -31,6 +35,9 @@ public class LoginPage<T> extends WebPage {
 	
 	private transient Logger log = LoggerFactory.getLogger(LoginPage.class);
 
+	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
 	
 	// Add a visitor class for required field marking/validation/highlighting
@@ -123,6 +130,11 @@ public class LoginPage<T> extends WebPage {
 					ArkUserVO user = (ArkUserVO)getForm().getModelObject();
 					if(authenticate(user))
 					{
+						ArkUsecase  arkUseCase = iArkCommonService.getArkUsecaseByName(au.org.theark.core.Constants.USECASE_KEY_VALUE_STUDY); //Place a default use case into session
+						ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_STUDY); //Place a default module into session
+						SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_USECASE_KEY, arkUseCase.getId());
+						SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
+						
 						setResponsePage(HomePage.class);
 					}
 				}
