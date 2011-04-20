@@ -6,6 +6,10 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -22,6 +26,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.ArkLdapRealm;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
@@ -43,6 +49,10 @@ public class SearchResults extends Panel{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
+	
+//	@SpringBean( name="arkLdapRealm")
+//	private ArkLdapRealm realm;
+	
 	private Container studyContainerForm;
 	
 	private StudyCrudContainerVO studyCrudContainerVO;
@@ -103,11 +113,19 @@ public class SearchResults extends Panel{
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
+				
+				
+				SecurityManager securityManager =  ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();		
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				//We specify the type of person here as Subject
+				
+				//Force clearing of Cache to re-load roles for the user for the study
+				//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+				//securityManager.hasRole(currentUser.getPrincipals(), "Administrator");//Trigger authorization so it invokes the doGetAuthorizationInfo() where the roles for the study will be loaded
+				
 				
 				Study searchStudy = iArkCommonService.getStudy(study.getId()); 
 				studyContainerForm.getModelObject().setStudy(searchStudy);
