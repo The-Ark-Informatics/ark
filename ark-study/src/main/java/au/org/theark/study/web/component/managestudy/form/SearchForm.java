@@ -140,10 +140,15 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 			SecurityManager securityManager =  ThreadContext.getSecurityManager();
 			Subject currentUser = SecurityUtils.getSubject();		
 			
-			if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
+			if(		
+					securityManager.hasRole(currentUser.getPrincipals(),RoleConstants.ARK_ROLE_ADMINISTATOR)||
+					securityManager.hasRole(currentUser.getPrincipals(),RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)||
+					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
 					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
 					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
 				flag = true;
+			}else{
+				flag=false;
 			}	
 		}else if(actionType.equalsIgnoreCase(Constants.SEARCH)){
 			flag= true;
