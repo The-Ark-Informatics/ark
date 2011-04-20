@@ -99,8 +99,11 @@ public class ArkLdapRealm extends AuthorizingRealm{
         		log.info("There is a study in context. Now we can look up the subject's roles for the study");
         		//Get the roles for the study in context
         		Study study = iArkCommonService.getStudy(sessionStudyId);
-        		String studyRole  = iArkCommonService.getUserRoleForStudy(ldapUserName, study);
-        		info.addRole(studyRole);
+        		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
+        		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
+        		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, study);
+        		//String studyRole  = iArkCommonService.getUserRoleForStudy(ldapUserName, study);
+        		info.addRole(role);
         	}
         
         	
