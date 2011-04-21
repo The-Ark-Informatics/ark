@@ -2,6 +2,7 @@ package au.org.theark.study.service;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,6 +37,7 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkErrorCell;
 
 
 
@@ -215,4 +217,8 @@ public interface IStudyService {
 
 	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
 	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
+	public HashSet<Integer> getSubjectUploadUpdateRows();
+	public HashSet<Integer> getSubjectUploadErrorCols();
+	public HashSet<Integer> getSubjectUploadErrorRows();
+	public HashSet<ArkErrorCell> getSubjectUploadErrorCells();
 }

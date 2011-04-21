@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +56,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkErrorCell;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.util.SubjectUploader;
@@ -73,6 +75,10 @@ public class StudyServiceImpl implements IStudyService{
 	
 	private Long studyId;
 	private Study study;
+	private HashSet<Integer>	updateRows;
+	private HashSet<Integer>	errorCols;
+	private HashSet<Integer>	errorRows;
+	private HashSet<ArkErrorCell> errorCells;
 	
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
@@ -744,6 +750,10 @@ public class StudyServiceImpl implements IStudyService{
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
 			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
+			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
+			setSubjectUploadErrorCols(subjectUploader.getErrorCols());
+			setSubjectUploadErrorRows(subjectUploader.getErrorRows());
+			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
 		}
 		catch (IOException ioe)
 		{
@@ -795,8 +805,8 @@ public class StudyServiceImpl implements IStudyService{
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileFormat(
-			InputStream inputStream, String fileFormat, char delimChar) {
+	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) 
+	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -819,8 +829,8 @@ public class StudyServiceImpl implements IStudyService{
 		return validationMessages;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream,
-			String fileFormat, char delimChar) {
+	public Collection<String> validateSubjectFileData(InputStream inputStream,	String fileFormat, char delimChar) 
+	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -832,6 +842,10 @@ public class StudyServiceImpl implements IStudyService{
 		{	
 			log.debug("Validating Subject file data");
 			validationMessages = subjectUploader.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
+			setSubjectUploadErrorCols(subjectUploader.getErrorCols());
+			setSubjectUploadErrorRows(subjectUploader.getErrorRows());
+			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
 		}
 		catch (FileFormatException ffe)
 		{
@@ -844,8 +858,8 @@ public class StudyServiceImpl implements IStudyService{
 		return validationMessages;
 	}
 
-	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream,
-			String fileFormat, char delimChar) {
+	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar) 
+	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -867,5 +881,63 @@ public class StudyServiceImpl implements IStudyService{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
 		return uploadReport;
+	}
+
+	public HashSet<Integer> getSubjectUploadUpdateRows()
+	{
+		return this.updateRows;
+	}
+	
+	/**
+	 * @param errorCols the errorCols to set
+	 */
+	public void setSubjectUploadErrorCols(HashSet<Integer> errorCols)
+	{
+		this.errorCols = errorCols;
+	}
+
+	/**
+	 * @return the errorCols
+	 */
+	public HashSet<Integer> getSubjectUploadErrorCols()
+	{
+		return errorCols;
+	}
+
+	private void setSubjectUploadUpdateRows(HashSet<Integer> updateRows)
+	{
+		this.updateRows = updateRows;	
+	}
+
+	/**
+	 * @param errorRows the errorRows to set
+	 */
+	public void setSubjectUploadErrorRows(HashSet<Integer> errorRows)
+	{
+		this.errorRows = errorRows;
+	}
+
+	/**
+	 * @return the errorRows
+	 */
+	public HashSet<Integer> getSubjectUploadErrorRows()
+	{
+		return errorRows;
+	}
+
+	/**
+	 * @return the errorCells
+	 */
+	public HashSet<ArkErrorCell> getSubjectUploadErrorCells()
+	{
+		return errorCells;
+	}
+
+	/**
+	 * @param errorCells the errorCells to set
+	 */
+	public void setSubjectUploadErrorCells(HashSet<ArkErrorCell> errorCells)
+	{
+		this.errorCells = errorCells;
 	}
 }
