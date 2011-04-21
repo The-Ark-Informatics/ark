@@ -1,125 +1,121 @@
 package au.org.theark.core.web.component;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.util.HashSet;
 
 import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.format.Colour;
 import jxl.read.biff.BiffException;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
+import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 
-import au.org.theark.core.Constants;
 import au.org.theark.core.util.ArkSheetMetaData;
 
 import com.csvreader.CsvReader;
-import com.visural.common.datastruct.datagrid.DataException;
-import com.visural.common.datastruct.datagrid.DataGrid;
-import com.visural.common.datastruct.datagrid.io.CSVGridGenerator;
 
 public class ArkExcelWorkSheetAsGrid extends Panel
 {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 2950851261474110946L;
-	private transient Sheet		sheet;												// an instance of an Excel WorkSheet
-	private ArkSheetMetaData	meta;
-	private char					delimiterType;
+	private static final long		serialVersionUID				= 2950851261474110946L;
+	private transient Sheet			sheet;																										// an instance of an Excel WorkSheet
+	private transient ArkSheetMetaData		sheetMetaData;
+	private byte[]						workBookAsBytes;
+	private char						delimiterType;
+	private HashSet<Integer>		insertRows;
+	private HashSet<Integer>		updateRows;
+	private HashSet<ArkErrorCell>	errorCells;
+	private String						fileFormat;
+	private WebMarkupContainer		wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 
 	public ArkExcelWorkSheetAsGrid(String id)
 	{
 		super(id);
-		meta = new ArkSheetMetaData();
-		add(createMainGrid());
-		add(createHeadings());
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = new HashSet<Integer>();
+		this.insertRows = new HashSet<Integer>();
+		this.errorCells = new HashSet<ArkErrorCell>();
+		initialiseGrid();
 	}
 
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, char delimChar)
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload)
 	{
 		super(id);
-		meta = new ArkSheetMetaData();
-		initWorkbook(inputStream, delimChar);
-		add(createMainGrid());
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = new HashSet<Integer>();
+		this.insertRows = new HashSet<Integer>();
+		this.errorCells = new HashSet<ArkErrorCell>();
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkErrorCell> errorCells)
+	{
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.updateRows = updateRows;
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkErrorCell> errorCells)
+	{
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
+
+	private void initialiseGrid()
+	{
 		add(createHeadings());
+		add(createMainGrid());
 	}
 
-	@SuppressWarnings("unused")
-	public void initDataTable(InputStream inputStream)
+	private void initialiseGridKey(FileUpload fileUpload)
 	{
-		InputStream csvInputStream = convertXlsToCsv();
-		CSVGridGenerator csvGridGenerator;
-		try
-		{
-			csvGridGenerator = new CSVGridGenerator("csvGrid", csvInputStream);
-			DataGrid dataGrid = new DataGrid(csvGridGenerator, false);
-		}
-		catch (DataException e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	public InputStream convertXlsToCsv()
-	{
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try
-		{
-			OutputStreamWriter osw = new OutputStreamWriter(out);
-
-			// Gets first sheet from workbook
-			Sheet s = sheet;
-
-			Cell[] row = null;
-
-			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++)
-			{
-				row = s.getRow(i);
-
-				if (row.length > 0)
-				{
-					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++)
-					{
-						osw.write(",");
-						osw.write(row[j].getContents());
-					}
-				}
-				osw.write("\n");
-			}
-
-			osw.flush();
-			osw.close();
-		}
-		catch (UnsupportedEncodingException e)
-		{
-			System.err.println(e.toString());
-		}
-		catch (IOException e)
-		{
-			System.err.println(e.toString());
-		}
-		catch (Exception e)
-		{
-			System.err.println(e.toString());
-		}
-		return new ByteArrayInputStream(out.toByteArray());
+		wizardDataGridKeyContainer.setVisible(true);
+		wizardDataGridKeyContainer.setOutputMarkupId(true);
+		// Download file link button
+		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
+		add(wizardDataGridKeyContainer);
 	}
 
 	/*
@@ -130,24 +126,27 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	private Loop createMainGrid()
 	{
 		// We create a Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "rows" value
-		return new Loop("rows", new PropertyModel(meta, "rows"))
+		return new Loop("rows", new PropertyModel(sheetMetaData, "rows"))
 		{
 			public void populateItem(LoopItem item)
 			{
-
 				final int row = item.getIteration();
 
-				if(row > 0)
+				if (!updateRows.isEmpty())
+				{
+					setRowCssClass(row, item);
+				}
+
+				if (row > 0)
 				{
 					// creates the row numbers
 					item.add(new Label("rowNo", new Model(String.valueOf(row))));
-	
+
 					// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "cols" value
-					item.add(new Loop("cols", new PropertyModel(meta, "cols"))
+					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols"))
 					{
 						public void populateItem(LoopItem item)
 						{
-	
 							final int col = item.getIteration();
 							/*
 							 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance
@@ -159,7 +158,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 								 * 
 								 */
 								private static final long	serialVersionUID	= 1144128566137457199L;
-	
+
 								@Override
 								public Serializable getObject()
 								{
@@ -167,8 +166,25 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 									return cell.getContents();
 								}
 							};
-							Label cellData = new Label("cellData", model);	
-							item.add(cellData);	
+							Label cellData = new Label("cellData", model);
+							item.add(cellData);
+
+							if (!errorCells.isEmpty())
+							{
+								ArkErrorCell cell = new ArkErrorCell(col, row);
+								if (errorCells.contains(cell))
+								{
+									item.add(new AbstractBehavior()
+									{
+										@Override
+										public void onComponentTag(Component component, ComponentTag tag)
+										{
+											super.onComponentTag(component, tag);
+											tag.put("style", "background: red;");
+										};
+									});
+								}
+							}
 						}
 					});
 				}
@@ -176,7 +192,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				{
 					item.add(new Label("rowNo", new Model("")));
 					item.setVisible(false);
-					item.add(new Loop("cols", new PropertyModel(meta, "cols"))
+					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols"))
 					{
 						public void populateItem(LoopItem item)
 						{
@@ -187,29 +203,65 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 					item.setVisible(false);
 				}
 			}
+
+			/**
+			 * Determines whether row data is an insert or an update and amends the css of the
+			 * <tr>
+			 * accordingly
+			 * 
+			 * @param cell
+			 */
+			private void setRowCssClass(Integer row, LoopItem item)
+			{
+				if (updateRows.contains(row))
+				{
+					item.add(new AbstractBehavior()
+					{
+						@Override
+						public void onComponentTag(Component component, ComponentTag tag)
+						{
+							super.onComponentTag(component, tag);
+							tag.put("style", "background: lightyellow;");
+
+						};
+					});
+				}
+				else
+				{
+
+					item.add(new AbstractBehavior()
+					{
+						@Override
+						public void onComponentTag(Component component, ComponentTag tag)
+						{
+							super.onComponentTag(component, tag);
+							tag.put("style", "background: lightgreen;");
+						};
+					});
+				}
+
+			}
 		};
 	}
 
 	@SuppressWarnings( { "unchecked" })
 	private Loop createHeadings()
 	{
-
-		return new Loop("heading", new PropertyModel(meta, "cols"))
+		return new Loop("heading", new PropertyModel(sheetMetaData, "cols"))
 		{
 
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -7027878243061138904L;
-			
+
 			public void populateItem(LoopItem item)
 			{
-
 				final int col = item.getIteration();
 
 				/*
-				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance
-				 * which gets updated each time we upload a new Excel File, the value for each cell is automatically updated
+				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
+				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
 				 */
 				IModel<Object> model = new Model()
 				{
@@ -231,17 +283,29 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		};
 	}
 
-	public void initWorkbook(InputStream inputStream, char delimChar)
+	public void initialiseWorkbook(InputStream inputStream, char delimChar)
 	{
 		delimiterType = delimChar;
-		try
+		if (fileFormat.equalsIgnoreCase("XLS"))
 		{
-			// By default try to get the XLS workbook
-			// Streams directly from inputStream into Workbook.getWorkbook(Inputstream)
-			Workbook wkb = Workbook.getWorkbook(inputStream);
-			sheet = wkb.getSheet(0); // get First Work Sheet
+			try
+			{
+				inputStream.reset();
+				// Try to get the XLS workbook/sheet
+				// Streams directly from inputStream into Workbook.getWorkbook(Inputstream)
+				Workbook wkb = Workbook.getWorkbook(inputStream);
+				sheet = wkb.getSheet(0); // get First Work Sheet
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch (BiffException e)
+			{
+				e.printStackTrace();
+			}
 		}
-		catch (BiffException bex)
+		else
 		{
 			// Error when reading XLS file type, so must be CSV or TXT
 			// Thus attempt a convert from csv or text to xls format
@@ -251,27 +315,57 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 				CsvReader csvReader = new CsvReader(inputStreamReader, delimiterType);
-				WritableWorkbook wwkb = Workbook.createWorkbook(output);
-				jxl.write.WritableSheet wsheet = wwkb.createSheet("Sheet", 0);
+				WritableWorkbook writableWorkBook = Workbook.createWorkbook(output);
+				jxl.write.WritableSheet wsheet = writableWorkBook.createSheet("Sheet", 0);
 				int row = 0;
+
+				WritableFont normalFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+				WritableCellFormat insertCellFormat = new WritableCellFormat(normalFont);
+				insertCellFormat.setBackground(Colour.LIGHT_GREEN);
+
+				WritableCellFormat updateCellFormat = new WritableCellFormat(normalFont);
+				updateCellFormat.setBackground(Colour.YELLOW);
+
+				WritableFont errorFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+				WritableCellFormat errorCellFormat = new WritableCellFormat(errorFont);
+				errorCellFormat.setBackground(Colour.RED);
+
 				// Loop through all rows in file
 				while (csvReader.readRecord())
 				{
 					String[] stringArray = csvReader.getValues();
+
 					for (int col = 0; col < stringArray.length; col++)
 					{
 						jxl.write.Label label = new jxl.write.Label(col, row, stringArray[col]);
+
+						if (!errorCells.isEmpty())
+						{
+							ArkErrorCell cell = new ArkErrorCell(col, row);
+							if (errorCells.contains(cell))
+							{
+								label.setCellFormat(errorCellFormat);
+							}
+							else if (updateRows.contains(row))
+							{
+								label.setCellFormat(updateCellFormat);
+							}
+							else
+							{
+								label.setCellFormat(insertCellFormat);
+							}
+						}
 						wsheet.addCell(label);
 					}
 					row++;
 				}
 
 				// All sheets and cells added. Now write out the workbook
-				wwkb.write();
+				writableWorkBook.write();
 
-				sheet = wwkb.getSheet(0); // get First Work Sheet to display in webpage
+				sheet = writableWorkBook.getSheet(0); // get First Work Sheet to display in webpage
 
-				wwkb.close();
+				writableWorkBook.close();
 				output.flush();
 				inputStream.close();
 				output.close();
@@ -289,15 +383,220 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				e.printStackTrace();
 			}
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
+		
+		// Store validated/formated workbook as bytes[] for download
+		workBookAsBytes = writeOutValidationXlsFileToBytes();
 
 		/*
 		 * Sets Sheet meta data. The HTML table creation needs this object to know about the rows and columns
 		 */
-		meta.setRows(Constants.ROWS_PER_PAGE+1);
-		meta.setCols(sheet.getColumns());
+		sheetMetaData.setRows(sheet.getRows());
+		sheetMetaData.setCols(sheet.getColumns());
+	}
+
+	private AjaxButton buildDownloadButton(final FileUpload fileUpload)
+	{
+		AjaxButton ajaxButton = new AjaxButton("downloadGridData", new StringResourceModel("downloadGridData", this, null))
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 2409955824467683966L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				byte[] data = writeOutValidationXlsFileToBytes();
+				if(data != null)
+				{
+					getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, "DataValidationFile.xls"));
+				}
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+
+		if (errorCells.isEmpty())
+		{
+			ajaxButton.setVisible(false);
+		}
+
+		return ajaxButton;
+	}
+
+	public byte[] writeOutValidationXlsFileToBytes()
+	{
+		byte[] bytes = null;
+		try
+		{
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			WritableWorkbook w = Workbook.createWorkbook(output);
+			WritableSheet writableSheet = w.createSheet("Sheet", 0);
+			WritableFont normalFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD);
+			WritableCellFormat insertCellFormat = new WritableCellFormat(normalFont);
+			insertCellFormat.setBackground(Colour.LIGHT_GREEN);
+			WritableCellFormat updateCellFormat = new WritableCellFormat(normalFont);
+			// Override to light yellow
+			w.setColourRGB(Colour.YELLOW2, 255, 255, 224);
+			updateCellFormat.setBackground(Colour.YELLOW2);
+			WritableFont errorFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD);
+			WritableCellFormat errorCellFormat = new WritableCellFormat(errorFont);
+			errorCellFormat.setBackground(Colour.RED);
+
+			for (int row = 0; row < sheetMetaData.getRows(); row++)
+			{
+				for (int col = 0; col < sheetMetaData.getCols(); col++)
+				{
+					Cell cell = sheet.getCell(col, row);
+					String cellData = cell.getContents();
+					jxl.write.Label label = new jxl.write.Label(col, row, cellData);
+
+					if (!errorCells.isEmpty())
+					{
+						ArkErrorCell errorCell = new ArkErrorCell(col, row);
+						if (errorCells.contains(errorCell))
+						{
+							label.setCellFormat(errorCellFormat);
+						}
+						else if (updateRows.contains(row))
+						{
+							label.setCellFormat(updateCellFormat);
+						}
+						else
+						{
+							if(row>0)
+							{
+								label.setCellFormat(insertCellFormat);
+							}
+						}
+					}
+					writableSheet.addCell(label);
+				}
+			}
+
+			w.write();
+			w.close();
+			bytes = output.toByteArray();
+			output.close();
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return bytes;
+	}
+	
+	/**
+	 * @return the errorCols
+	 */
+	public HashSet<Integer> getErrorCols()
+	{
+		return insertRows;
+	}
+
+	/**
+	 * @param insertRows
+	 *           the insertRows to set
+	 */
+	public void setInsertRows(HashSet<Integer> insertRows)
+	{
+		this.insertRows = insertRows;
+	}
+
+	/**
+	 * @return the updateCols
+	 */
+	public HashSet<Integer> getUpdateRows()
+	{
+		return updateRows;
+	}
+
+	/**
+	 * @param updateRows
+	 *           the updateRows to set
+	 */
+	public void setUpdateRows(HashSet<Integer> updateRows)
+	{
+		this.updateRows = updateRows;
+	}
+
+	/**
+	 * @param errorCols
+	 *           the errorCols to set
+	 */
+	public void setErrorCols(HashSet<Integer> errorCols)
+	{
+		this.insertRows = errorCols;
+	}
+
+
+
+	/**
+	 * @return the insertRows
+	 */
+	public HashSet<Integer> getInsertRows()
+	{
+		return insertRows;
+	}
+
+	/**
+	 * @param wizardDataGridKeyContainer
+	 *           the wizardDataGridKeyContainer to set
+	 */
+	public void setWizardDataGridKeyContainer(WebMarkupContainer wizardDataGridKeyContainer)
+	{
+		this.wizardDataGridKeyContainer = wizardDataGridKeyContainer;
+	}
+
+	/**
+	 * @return the wizardDataGridKeyContainer
+	 */
+	public WebMarkupContainer getWizardDataGridKeyContainer()
+	{
+		return wizardDataGridKeyContainer;
+	}
+
+	/**
+	 * @param errorCells
+	 *           the errorCells to set
+	 */
+	public void setErrorCells(HashSet<ArkErrorCell> errorCells)
+	{
+		this.errorCells = errorCells;
+	}
+
+	/**
+	 * @return the errorCells
+	 */
+	public HashSet<ArkErrorCell> getErrorCells()
+	{
+		return errorCells;
+	}
+
+	public String getFileFormat()
+	{
+		return fileFormat;
+	}
+
+	public void setFileFormat(String fileFormat)
+	{
+		this.fileFormat = fileFormat;
+	}
+
+	/**
+	 * @param workBookAsBytes the workBookAsBytes to set
+	 */
+	public void setWorkBookAsBytes(byte[] workBookAsBytes)
+	{
+		this.workBookAsBytes = workBookAsBytes;
+	}
+
+	/**
+	 * @return the workBookAsBytes
+	 */
+	public byte[] getWorkBookAsBytes()
+	{
+		return workBookAsBytes;
 	}
 }
