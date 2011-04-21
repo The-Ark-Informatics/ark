@@ -1,35 +1,24 @@
 package au.org.theark.study.web.component.subjectUpload;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Serializable;
-
-import jxl.Cell;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.write.WritableWorkbook;
+import java.util.HashSet;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.list.Loop;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.ByteArrayOutputStream;
 
-import au.org.theark.core.util.ArkSheetMetaData;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.core.web.component.ArkErrorCell;
+import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
-
-import com.csvreader.CsvReader;
 
 /**
  * The first step of this wizard.
@@ -44,13 +33,11 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	private String								validationMessage;
 	public java.util.Collection<String>	validationMessages	= null;
 	private WizardForm						wizardForm;
+	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
-
-	transient Sheet							sheet;													// an instance of an Excel WorkSheet
-	private ArkSheetMetaData				meta;
 
 	/**
 	 * Construct.
@@ -65,10 +52,11 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 
 	private void initialiseDetailForm()
 	{
-		meta = new ArkSheetMetaData(); // init Sheet Meta Data
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
 
+		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
+		updateExistingDataContainer.setOutputMarkupId(true);
 		updateChkBox = new CheckBox("updateChkBox");
 		updateChkBox.setVisible(true);
 
@@ -94,7 +82,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			}
 		});
 
-		add(updateChkBox);
+		updateExistingDataContainer.add(updateChkBox);
+		add(updateExistingDataContainer);
 	}
 
 	/**
@@ -130,73 +119,50 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-		validationMessages = studyService.validateSubjectFileData(this.wizardForm.getFile(), fileFormat, delimiterChar);
-		this.containerForm.getModelObject().setValidationMessages(validationMessages);
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		try
+		{
+			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			validationMessages = studyService.validateSubjectFileData(inputStream, fileFormat, delimiterChar);
+			this.containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
+			HashSet<Integer> updateRows = new HashSet<Integer>();
+			HashSet<ArkErrorCell> errorCells = new HashSet<ArkErrorCell>();
+			updateRows = studyService.getSubjectUploadUpdateRows();
+			errorCells = studyService.getSubjectUploadErrorCells();
+			inputStream.reset();
+			
+			// Show file data (and key reference)
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, containerForm.getModelObject().getFileUpload(), updateRows, errorCells);
+			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
+			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+			
+			// Repaint
+			target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+			target.addComponent(form.getWizardPanelFormContainer());
+			
+			if(!errorCells.isEmpty())
+			{
+				updateExistingDataContainer.setVisible(false);
+				target.addComponent(updateExistingDataContainer);
+				form.getNextButton().setEnabled(false);
+				target.addComponent(form.getWizardButtonContainer());
+			}
+		}
+		catch (IOException e)
+		{
+			System.out.println("Failed to display the uploaded file: " + e);
+		}
+		
 		if (validationMessage != null && validationMessage.length() > 0)
 		{
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
-		}
-	}
-
-	public void showWorkbook()
-	{
-		try
-		{
-			if(wizardForm.getFile().getExtension().equalsIgnoreCase("XLS"))
-			{
-				// Streams directly from File upload inputStream into Workbook.getWorkbook(Inputstream)
-				Workbook wkb = Workbook.getWorkbook(containerForm.getModelObject().getUpload().getPayload().getBinaryStream());
-				sheet = wkb.getSheet(0); // get First Work Sheet
-			}
-			else
-			{
-				// Convert from csv or text
-				InputStream input = containerForm.getModelObject().getUpload().getPayload().getBinaryStream();
-				ByteArrayOutputStream output = new ByteArrayOutputStream();
-				InputStreamReader inputStreamReader = new InputStreamReader(input);
-				char delimiterType = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-				CsvReader csvReader = new CsvReader(inputStreamReader, delimiterType);
-				WritableWorkbook wwkb = Workbook.createWorkbook(output);
-				jxl.write.WritableSheet wsheet = wwkb.createSheet("First Sheet", 0);
-				int row = 0;
-				// Loop through all rows in file
-				while (csvReader.readRecord())
-				{
-					String[] stringArray = csvReader.getValues();
-					for (int col = 0; col < stringArray.length; col++)
-					{
-						jxl.write.Label label = new jxl.write.Label(col, row, stringArray[col]);
-						wsheet.addCell(label); 
-					}
-					row++;
-				}
-				
-				// All sheets and cells added. Now write out the workbook
-				wwkb.write();
-				
-				sheet = wwkb.getSheet(0); // get First Work Sheet to display in webpage	
-				
-				wwkb.close();
-				output.flush();
-	    		input.close();
-	    		output.close();
-			}
-			
-			/*
-			 * Sets Sheet meta data. The HTML table creation needs this object to know about the rows and columns
-			 */
-			meta.setRows(sheet.getRows());
-			meta.setCols(sheet.getColumns());
-		}
-		catch (Exception ex)
-		{
-			validationMessage = "Error with creating workbook for display";
+			target.addComponent(form.getWizardButtonContainer());	
 		}
 	}
 
@@ -215,5 +181,21 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	public CheckBox getUpdateChkBox()
 	{
 		return updateChkBox;
+	}
+
+	/**
+	 * @param updateExistingDataContainer the updateExistingDataContainer to set
+	 */
+	public void setUpdateExistingDataContainer(WebMarkupContainer updateExistingDataContainer)
+	{
+		this.updateExistingDataContainer = updateExistingDataContainer;
+	}
+
+	/**
+	 * @return the updateExistingDataContainer
+	 */
+	public WebMarkupContainer getUpdateExistingDataContainer()
+	{
+		return updateExistingDataContainer;
 	}
 }

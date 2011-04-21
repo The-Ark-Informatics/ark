@@ -2,11 +2,12 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.SQLException;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -79,21 +80,30 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-		validationMessages = studyService.validateSubjectFileFormat(wizardForm.getFile(), fileFormat, delimChar);
-		containerForm.getModelObject().setValidationMessages(validationMessages);
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
-		// Show file data
 		try
 		{
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, delimChar);
+			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
+			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			
+			if(!fileFormat.equalsIgnoreCase("XLS"))
+			{
+				validationMessages = studyService.validateSubjectFileFormat(inputStream, fileFormat, delimChar);
+				containerForm.getModelObject().setValidationMessages(validationMessages);
+				validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			}
+		
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+			WebMarkupContainer wizardDataGridKeyContainer = new WebMarkupContainer("wizardDataGridKeyContainer"); 
+			wizardDataGridKeyContainer.setVisible(false);
+			wizardDataGridKeyContainer.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+			form.getWizardPanelFormContainer().addOrReplace(wizardDataGridKeyContainer);
 			target.addComponent(form.getWizardPanelFormContainer());
 		}
 		catch (IOException e)

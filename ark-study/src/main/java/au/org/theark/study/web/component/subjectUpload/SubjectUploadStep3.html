@@ -1,47 +1,20 @@
 <wicket:panel>
 	<div id="wizardStepBorder">
-		<div id="panelContentLeft">
-			&nbsp;
-		</div>
-
-		<div id="panelContentRight">
-			&nbsp;
-		</div>
-
 		<div wicket:id="header" />
-
-		<div id="panelBreaker">
-			&nbsp;
-		</div>
-
-		<div id="panelContentLeft">
-			&nbsp;
-		</div>
-
-		<div id="panelContentRight">
-			&nbsp;
-		</div>
-
-		<div id="panelContentCentre">
-			<div id="fldLabel">
+		<div id="wizardStepContent">
+			<div wicket:id="updateExistingDataContainer">
 				<wicket:message	key="updateExistingData">
 					Update existing data:
 				</wicket:message>
 				<input type="checkbox" wicket:id="updateChkBox"/>
 			</div>
-			<div id="panelBreaker">
-				&nbsp;
+			<div id="wizardPanelBreaker">&nbsp;</div>
+			<div id="wizardErrorMessages">
+				<span wicket:id="multiLineLabel" class="mark">
+					this text will be replaced
+				</span>
 			</div>
-			<span wicket:id="multiLineLabel" class="mark">
-				this text will be replaced
-			</span>
-			<div id="panelBreaker">
-				&nbsp;
-			</div>
-		</div>
-
-		<div id="panelBreaker">
-			&nbsp;
+			<div id="wizardPanelBreaker">&nbsp;</div>
 		</div>
 	</div>
 </wicket:panel>

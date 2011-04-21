@@ -150,7 +150,6 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		storeFile();
 		saveFileInMemory();
 	}
 	
@@ -162,6 +161,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 		return wizardForm;
 	}
 
+	@SuppressWarnings("unused")
 	private void storeFile() {
 		// TODO: Load the temporary directory from the application configuration instead
 		FileUpload fileUpload = fileUploadField.getFileUpload();
