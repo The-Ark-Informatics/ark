@@ -1,26 +1,18 @@
 <wicket:panel>
 	<div id="wizardStepBorder">
-		<div id="panelContentLeft">&nbsp;</div>
-		
-		<div id="panelContentRight">&nbsp;</div>
-		
 		<div wicket:id="header" />
-		
-		<div id="panelBreaker">&nbsp;</div>
-		
-		<div id="panelContentLeft">&nbsp;</div>
-		
-		<div id="panelContentRight">&nbsp;</div>
-		
-		<div id="panelContentCentre">
+		<div id="wizardStepContent">
 			<div id="fldLabel">
-				<wicket:message	key="overrideDataValidationChkBox">Override Datavalidation:</wicket:message>
+				<wicket:message	key="overrideDataValidationChkBox">Override Data validation:</wicket:message>
 				<input type="checkbox" wicket:id="overrideDataValidationChkBox"/>
 			</div>
-			<div id="panelBreaker">&nbsp;</div>
-			<span wicket:id="multiLineLabel" class="mark">this text will be replaced</span>
+			<div id="wizardPanelBreaker">&nbsp;</div>
+			<div id="wizardErrorMessages">
+				<span wicket:id="multiLineLabel" class="mark">
+					this text will be replaced
+				</span>
+			</div>
+			<div id="wizardPanelBreaker">&nbsp;</div>
 		</div>
-		
-		<div id="panelBreaker">&nbsp;</div>
 	</div>
 </wicket:panel>
