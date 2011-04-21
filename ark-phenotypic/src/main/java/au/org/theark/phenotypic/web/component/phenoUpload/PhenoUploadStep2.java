@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
@@ -107,8 +108,9 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		try
 		{
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			FileUpload fileUpload = containerForm.getModelObject().getFileUpload(); 
 			inputStream.reset();
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, delimChar);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
