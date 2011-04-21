@@ -15,6 +15,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Locale;
 
@@ -22,6 +23,7 @@ import jxl.Cell;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
+import jxl.read.biff.BiffException;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
@@ -46,6 +48,7 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkErrorCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -76,6 +79,10 @@ public class SubjectUploader
 	private StringBuffer				uploadReport				= null;
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private int row													= 1;
+	private HashSet<Integer>		updateRows 					= new HashSet<Integer>();
+	private HashSet<Integer> 		errorCols					= new HashSet<Integer>();
+	private HashSet<Integer> 		errorRows					= new HashSet<Integer>();
+	private HashSet<ArkErrorCell>	errorCells					= new HashSet<ArkErrorCell>();
 
 	/**
 	 * SubjectUploader constructor
@@ -94,6 +101,7 @@ public class SubjectUploader
 		this.dataValidationMessages = new ArrayList<String>();
 		this.iArkCommonService = iArkCommonService;
 		this.studyService = studyService;
+		simpleDateFormat.setLenient(false);
 	}
 
 	/**
@@ -265,6 +273,7 @@ public class SubjectUploader
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		curPos = 0;
+		row = 1;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -272,6 +281,23 @@ public class SubjectUploader
 
 		try
 		{
+			if(fileFormat.equalsIgnoreCase("XLS"))
+			{
+				try
+				{
+					fileInputStream = convertXlsToCsv(Workbook.getWorkbook(fileInputStream));
+					delimiterCharacter = ',';
+				}
+				catch (BiffException e)
+				{
+					log.error("BiffException: " + e);
+				}
+				catch (IOException e)
+				{
+					log.error("IOException: " + e);
+				}
+			}
+			
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
@@ -312,15 +338,15 @@ public class SubjectUploader
 				{
 					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID));
 					linksubjectStudy.setStudy(study);
-
-					dataValidationMessages.add("Subject UID: " + stringLineArray[0] + " found. Please confirm if update of data required.");
+					updateRows.add(row);
+					
 				}
 				catch (EntityNotFoundException enf)
 				{
 					// Subject not found, thus a new subject to be inserted
 				}
 
-				int index = 0;
+				int col = 0;
 				String dateStr = new String();
 
 				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0)
@@ -328,23 +354,25 @@ public class SubjectUploader
 
 					if (csvReader.getIndex("DATE_OF_BIRTH") > 0)
 					{
-						index = csvReader.getIndex("DATE_OF_BIRTH");
+						col = csvReader.getIndex("DATE_OF_BIRTH");
 					}
 					else
 					{
-						index = csvReader.getIndex("DOB");
+						col = csvReader.getIndex("DOB");
 					}
 
 					try
 					{
-						dateStr = stringLineArray[index];
+						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
 					}
 					catch (ParseException pex)
 					{
-						dataValidationMessages.add("Subject UID:" + subjectUID + " has an invalid date format for Date Of Birth:" + stringLineArray[index]);
-						break;
+						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
+						errorCols.add(col);
+						errorRows.add(row);
+						errorCells.add(new ArkErrorCell(col, row));
 					}
 				}
 
@@ -353,27 +381,30 @@ public class SubjectUploader
 
 					if (csvReader.getIndex("DATE_OF_DEATH") > 0)
 					{
-						index = csvReader.getIndex("DATE_OF_DEATH");
+						col = csvReader.getIndex("DATE_OF_DEATH");
 					}
 					else
 					{
-						index = csvReader.getIndex("DODEATH");
+						col = csvReader.getIndex("DODEATH");
 					}
 					try
 					{
-						dateStr = stringLineArray[index];
+						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
 					}
 					catch (ParseException pex)
 					{
-						dataValidationMessages.add("Subject UID:" + subjectUID + " has an invalid date format for Date Of Death:" + stringLineArray[index]);
-						break;
+						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
+						errorCols.add(col);
+						errorRows.add(row);
+						errorCells.add(new ArkErrorCell(col, row));
 					}
 				}
 
 				log.debug("\n");
 				subjectCount++;
+				row++;
 			}
 
 			if (dataValidationMessages.size() > 0)
@@ -1062,5 +1093,57 @@ public class SubjectUploader
 			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
 
 		return speed;
+	}
+
+	public HashSet<Integer> getUpdateRows()
+	{
+		return updateRows;
+	}
+
+	public void setUpdateRows(HashSet<Integer> updateRows)
+	{
+		this.updateRows = updateRows;
+	}
+
+	/**
+	 * @param errorCols the errorCols to set
+	 */
+	public void setErrorCols(HashSet<Integer> errorCols)
+	{
+		this.errorCols = errorCols;
+	}
+
+	/**
+	 * @return the errorCols
+	 */
+	public HashSet<Integer> getErrorCols()
+	{
+		return errorCols;
+	}
+
+	/**
+	 * @return the errorRows
+	 */
+	public HashSet<Integer> getErrorRows()
+	{
+		return errorRows;
+	}
+
+	/**
+	 * @param errorRows the errorRows to set
+	 */
+	public void setErrorRows(HashSet<Integer> errorRows)
+	{
+		this.errorRows = errorRows;
+	}
+
+	public HashSet<ArkErrorCell> getErrorCells()
+	{
+		return errorCells;
+	}
+
+	public void setErrorCells(HashSet<ArkErrorCell> errorCells)
+	{
+		this.errorCells = errorCells;
 	}
 }
