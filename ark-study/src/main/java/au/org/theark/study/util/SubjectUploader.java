@@ -80,8 +80,7 @@ public class SubjectUploader
 	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 	private int row													= 1;
 	private HashSet<Integer>		updateRows 					= new HashSet<Integer>();
-	private HashSet<Integer> 		errorCols					= new HashSet<Integer>();
-	private HashSet<Integer> 		errorRows					= new HashSet<Integer>();
+	private HashSet<Integer> 		insertRows					= new HashSet<Integer>();
 	private HashSet<ArkErrorCell>	errorCells					= new HashSet<ArkErrorCell>();
 
 	/**
@@ -344,6 +343,7 @@ public class SubjectUploader
 				catch (EntityNotFoundException enf)
 				{
 					// Subject not found, thus a new subject to be inserted
+					insertRows.add(row);
 				}
 
 				int col = 0;
@@ -370,8 +370,6 @@ public class SubjectUploader
 					catch (ParseException pex)
 					{
 						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
-						errorCols.add(col);
-						errorRows.add(row);
 						errorCells.add(new ArkErrorCell(col, row));
 					}
 				}
@@ -396,8 +394,6 @@ public class SubjectUploader
 					catch (ParseException pex)
 					{
 						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
-						errorCols.add(col);
-						errorRows.add(row);
 						errorCells.add(new ArkErrorCell(col, row));
 					}
 				}
@@ -1106,19 +1102,19 @@ public class SubjectUploader
 	}
 
 	/**
-	 * @param errorCols the errorCols to set
+	 * @param insertRows the insertRows to set
 	 */
-	public void setErrorCols(HashSet<Integer> errorCols)
+	public void setInsertRows(HashSet<Integer> insertRows)
 	{
-		this.errorCols = errorCols;
+		this.insertRows = insertRows;
 	}
 
 	/**
-	 * @return the errorCols
+	 * @return the insertRows
 	 */
-	public HashSet<Integer> getErrorCols()
+	public HashSet<Integer> getInsertRows()
 	{
-		return errorCols;
+		return insertRows;
 	}
 
 	/**
@@ -1126,7 +1122,7 @@ public class SubjectUploader
 	 */
 	public HashSet<Integer> getErrorRows()
 	{
-		return errorRows;
+		return insertRows;
 	}
 
 	/**
@@ -1134,7 +1130,7 @@ public class SubjectUploader
 	 */
 	public void setErrorRows(HashSet<Integer> errorRows)
 	{
-		this.errorRows = errorRows;
+		this.insertRows = errorRows;
 	}
 
 	public HashSet<ArkErrorCell> getErrorCells()

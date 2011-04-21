@@ -129,14 +129,17 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 
+			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
 			HashSet<ArkErrorCell> errorCells = new HashSet<ArkErrorCell>();
+			
+			insertRows = studyService.getSubjectUploadInsertRows();
 			updateRows = studyService.getSubjectUploadUpdateRows();
 			errorCells = studyService.getSubjectUploadErrorCells();
 			inputStream.reset();
 			
 			// Show file data (and key reference)
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, containerForm.getModelObject().getFileUpload(), updateRows, errorCells);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);

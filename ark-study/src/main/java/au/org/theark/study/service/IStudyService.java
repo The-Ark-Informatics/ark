@@ -217,8 +217,7 @@ public interface IStudyService {
 
 	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
 	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
+	public HashSet<Integer> getSubjectUploadInsertRows();
 	public HashSet<Integer> getSubjectUploadUpdateRows();
-	public HashSet<Integer> getSubjectUploadErrorCols();
-	public HashSet<Integer> getSubjectUploadErrorRows();
 	public HashSet<ArkErrorCell> getSubjectUploadErrorCells();
 }

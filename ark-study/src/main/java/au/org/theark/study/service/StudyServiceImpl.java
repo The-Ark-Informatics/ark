@@ -75,9 +75,8 @@ public class StudyServiceImpl implements IStudyService{
 	
 	private Long studyId;
 	private Study study;
+	private HashSet<Integer>	insertRows;
 	private HashSet<Integer>	updateRows;
-	private HashSet<Integer>	errorCols;
-	private HashSet<Integer>	errorRows;
 	private HashSet<ArkErrorCell> errorCells;
 	
 	public ILdapUserDao getiLdapUserDao() {
@@ -750,9 +749,8 @@ public class StudyServiceImpl implements IStudyService{
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
 			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
+			setSubjectUploadInsertRows(subjectUploader.getInsertRows());
 			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
-			setSubjectUploadErrorCols(subjectUploader.getErrorCols());
-			setSubjectUploadErrorRows(subjectUploader.getErrorRows());
 			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
 		}
 		catch (IOException ioe)
@@ -842,9 +840,8 @@ public class StudyServiceImpl implements IStudyService{
 		{	
 			log.debug("Validating Subject file data");
 			validationMessages = subjectUploader.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			setSubjectUploadInsertRows(subjectUploader.getInsertRows());
 			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
-			setSubjectUploadErrorCols(subjectUploader.getErrorCols());
-			setSubjectUploadErrorRows(subjectUploader.getErrorRows());
 			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
 		}
 		catch (FileFormatException ffe)
@@ -893,15 +890,15 @@ public class StudyServiceImpl implements IStudyService{
 	 */
 	public void setSubjectUploadErrorCols(HashSet<Integer> errorCols)
 	{
-		this.errorCols = errorCols;
+		this.insertRows = errorCols;
 	}
 
 	/**
-	 * @return the errorCols
+	 * @return the insertRows
 	 */
-	public HashSet<Integer> getSubjectUploadErrorCols()
+	public HashSet<Integer> getSubjectUploadInsertRows()
 	{
-		return errorCols;
+		return insertRows;
 	}
 
 	private void setSubjectUploadUpdateRows(HashSet<Integer> updateRows)
@@ -910,19 +907,11 @@ public class StudyServiceImpl implements IStudyService{
 	}
 
 	/**
-	 * @param errorRows the errorRows to set
+	 * @param insertRows the errorRows to set
 	 */
-	public void setSubjectUploadErrorRows(HashSet<Integer> errorRows)
+	public void setSubjectUploadInsertRows(HashSet<Integer> insertRows)
 	{
-		this.errorRows = errorRows;
-	}
-
-	/**
-	 * @return the errorRows
-	 */
-	public HashSet<Integer> getSubjectUploadErrorRows()
-	{
-		return errorRows;
+		this.insertRows = insertRows;
 	}
 
 	/**
