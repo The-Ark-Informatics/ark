@@ -3,17 +3,21 @@ package au.org.theark.core.dao;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Restrictions;
+import org.jfree.util.Log;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePermission;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -184,8 +188,10 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+
 		criteria.createAlias("arkUser", "auserObject");
 		criteria.add(Restrictions.eq("arkUser", arkUser));
+		
 		//Even if there is a study in session the criteria must be applied only if the logged in user has a study registered for him. Ie if he is not a Super Admin
 		if(!isSuperAdministrator(ldapUserName)){
 			if(study != null){
@@ -242,6 +248,64 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		criteria.setMaxResults(1);
 		ArkModule arkModule = (ArkModule)criteria.uniqueResult();
 		return arkModule;
+	}
+	
+	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
+		Collection<String> stringPermissions = new ArrayList<String>();
+		ArkUser arkUser  = getArkUser(ldapUserName);
+		ArkRole arkRole  = getArkRoleByName(userRole);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.createAlias("arkUser", "auserObject");
+		//criteria.createAlias("arkUserRole","arkUserRoleObject");
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		
+		//Even if there is a study in session the criteria must be applied only if the logged in user has a study registered for him. Ie if he is not a Super Admin
+		if(study != null){
+			criteria.add(Restrictions.eq("auserObject.study", study));	
+		}
+		
+		if(arkUseCase != null){
+			criteria.add(Restrictions.eq("arkUsecase", arkUseCase));
+		}
+		
+		if(arkModule != null){
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		
+		if(arkRole != null){
+			criteria.add(Restrictions.eq("arkRole", arkRole));
+			criteria.setMaxResults(1);
+			ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
+			Set<ArkRolePermission> rolePermissions = arkUserRole.getArkRole().getArkRolePermission();
+			if(rolePermissions.size() > 0){
+				for (Iterator<ArkRolePermission> iterator = rolePermissions.iterator(); iterator.hasNext();) {
+					ArkRolePermission arkRolePermission =  iterator.next();
+					String permission  = arkRolePermission.getArkPermission().getName();
+					stringPermissions.add(permission);
+				}
+				Log.debug("\n  Permissions found");
+			}else{
+				Log.debug("\n No Permissions found");
+			}
+		}
+		
+		return stringPermissions;
+	}
+	
+	/**
+	 * Returns a list of All Permissions in Ark System
+	 * @return
+	 */
+	public Collection<String> getArkPermission(){
+		
+		Collection<String> arkStringPermissions = new ArrayList<String>(); 
+		Criteria criteria = getSession().createCriteria(ArkPermission.class);
+		List<ArkPermission> arkPermissionList = (List<ArkPermission>)criteria.list();
+		for (Iterator <ArkPermission>iterator = arkPermissionList.iterator(); iterator.hasNext();) {
+			ArkPermission arkPermission = iterator.next();
+			arkStringPermissions.add(arkPermission.getName());
+		}
+		return arkStringPermissions;
 	}
 
 }
