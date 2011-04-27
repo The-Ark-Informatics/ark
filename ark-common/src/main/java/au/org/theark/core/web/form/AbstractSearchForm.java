@@ -1,5 +1,9 @@
 package au.org.theark.core.web.form;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -10,6 +14,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
@@ -93,6 +98,31 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	/* This method should be implemented by sub-classes to secure a control(New button etc..) */
 	abstract protected boolean isSecure(String actionType);
 	
+	protected boolean isActionPermitted(String actionType){
+		boolean flag = false;
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if(actionType.equalsIgnoreCase(Constants.NEW)){
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
+				flag = true;
+			}else{
+				flag = false;
+			}
+		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
+			
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)){
+				flag = true;	
+			}else{
+				flag = false;
+			}
+			
+			flag = true;
+		}else{
+			flag = true;
+		}
+		return flag;
+	}
+	
 
 	protected void onReset()
 	{
@@ -114,7 +144,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isSecure(Constants.SEARCH);
+				// isActionPermitted(Constants.SEARCH);
+				return  isSecure(Constants.SEARCH);
 			}
 			
 			@Override
@@ -155,6 +186,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
+				//return  isActionPermitted(Constants.NEW);
 				return isSecure(Constants.NEW);
 			}
 			
@@ -181,7 +213,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{
+			{	// isActionPermitted(Constants.SEARCH);
 				return isSecure(Constants.SEARCH);
 			}
 			
@@ -200,7 +232,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{
+			{	
 				return isSecure(Constants.RESET);
 			}
 		};
@@ -223,7 +255,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{
+			{	// isActionPermitted(Constants.NEW);
 				return isSecure(Constants.NEW);
 			}
 			
