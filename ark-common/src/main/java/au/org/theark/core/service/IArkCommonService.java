@@ -254,4 +254,21 @@ public interface IArkCommonService {
 	 * @return
 	 */
 	public ArkModule getArkModuleById(Long moduleId);
+	
+	/**
+	 * 
+	 * @param ldapUserName
+	 * @param arkUseCase
+	 * @param userRole
+	 * @param arkModule
+	 * @param study
+	 * @throws EntityNotFoundException
+	 */
+	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	
+	/**
+	 * Returns All Permissions as collection of Strings
+	 * @return  Collection<String> that represents ArkPermission
+	 */
+	public Collection<String> getArkPermission();
 }

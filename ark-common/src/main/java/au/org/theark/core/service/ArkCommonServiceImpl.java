@@ -336,4 +336,20 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return arkAuthorisationDao.getArkModuleById(moduleId);
 	}
 	
+	/**
+	 * 
+	 */
+	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
+		
+		return arkAuthorisationDao.getArkUserRolePermission(ldapUserName, arkUseCase, userRole, arkModule, study);
+	}
+	
+	/**
+	 * Returns All Permissions as collection of Strings
+	 * @return  Collection<String> that represents ArkPermission
+	 */
+	public Collection<String> getArkPermission(){
+		return arkAuthorisationDao.getArkPermission();
+	}
+	
 }
