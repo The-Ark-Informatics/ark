@@ -83,17 +83,16 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	Long sessionModuleId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
     	
     	try{
-    		//Check if the logged in user has SuperAdmin Role or Admin role
-    		//isAdministator = iArkCommonService.isAdministator(ldapUserName);
-    		//isSuperAdministator = iArkCommonService.isSuperAdministrator(ldapUserName);
-
-    		//First Time only UsecaseId will be present
+    		
         	if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId == null){
-        		//Load the roles for the user and his permissions for this use case
+        		log.info("There is a study in context. Now we can look up the subject's roles for the study");
+        		//Load the role for the given module and use case 
         		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
         		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, null);
         		info.addRole(role);
+        		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, null);
+        		info.addStringPermissions(userRolePermission);
         	}
         	else if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId != null){
         		log.info("There is a study in context. Now we can look up the subject's roles for the study");
@@ -102,8 +101,9 @@ public class ArkLdapRealm extends AuthorizingRealm{
         		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
         		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, study);
-        		//String studyRole  = iArkCommonService.getUserRoleForStudy(ldapUserName, study);
         		info.addRole(role);
+        		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, study);
+        		info.addStringPermissions(userRolePermission);
         	}
         
         	
