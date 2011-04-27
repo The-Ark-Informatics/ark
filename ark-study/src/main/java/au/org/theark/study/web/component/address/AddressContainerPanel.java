@@ -1,9 +1,4 @@
-/**
- * 
- * This is a new file
- *
- *
- */
+
 package au.org.theark.study.web.component.address;
 
 import java.util.ArrayList;
@@ -20,7 +15,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
@@ -34,9 +28,6 @@ import au.org.theark.study.web.component.address.form.ContainerForm;
  *
  */
 public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
 
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
