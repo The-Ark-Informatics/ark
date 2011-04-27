@@ -2,6 +2,10 @@ package au.org.theark.core.web.form;
 
 import java.util.Iterator;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -13,6 +17,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.PermissionConstants;
 
 /**
  * <p>
@@ -79,6 +84,42 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	abstract protected void processErrors(AjaxRequestTarget target);
 	
 	abstract protected boolean isNew();
+	
+	protected boolean isActionPermitted(String actionType){
+		
+		boolean flag = false;
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		if(actionType.equalsIgnoreCase(Constants.SAVE)){
+			
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
+					
+				flag = true;
+			}else{
+				flag = false;
+			}
+			
+		}
+		else if(actionType.equalsIgnoreCase(Constants.EDIT)){
+			
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+				flag = true;
+			}else{
+				flag = false;
+			}
+		}
+		else if(actionType.equalsIgnoreCase(Constants.DELETE)){
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
+				flag = true;
+			}else{
+				flag = false;
+			}
+		}
+		
+		return flag;
+	}
 
 	protected void onCancelPostProcess(AjaxRequestTarget target)
 	{
@@ -153,6 +194,12 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
+//TODO NN Uncomment after User Management UI is completed			
+//			@Override
+//			public boolean isVisible()
+//			{
+//				return isActionPermitted(Constants.SAVE);
+//			}
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onSave(containerForm, target);
@@ -195,6 +242,13 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				onDelete(containerForm, target);
 
 			}
+			
+			//TODO NN Uncomment after User Management UI is completed	
+//			@Override
+//			public boolean isVisible()
+//			{
+//				return isActionPermitted(Constants.DELETE);
+//			}
 		};
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
@@ -219,6 +273,13 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			{
 				processErrors(target);
 			}
+			
+			//TODO NN Uncomment after User Management UI is completed	
+//			@Override
+//			public boolean isVisible()
+//			{
+//				return isActionPermitted(Constants.EDIT);
+//			}
 		};
 
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
