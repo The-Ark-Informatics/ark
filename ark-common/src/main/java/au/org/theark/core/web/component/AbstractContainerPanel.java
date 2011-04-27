@@ -1,12 +1,17 @@
 package au.org.theark.core.web.component;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
@@ -21,6 +26,11 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractContainerPanel<T> extends Panel{
+	
+//	Do not remove this (NN) it is as part of the new security enforcement
+//	@SpringBean( name="arkLdapRealm")
+//	private ArkLdapRealm realm;
+	
 	protected FeedbackPanel feedBackPanel;
 	
 	protected ArkCrudContainerVO arkCrudContainerVO;
@@ -46,12 +56,18 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	public AbstractContainerPanel(String id) {
 
 		super(id);
+		
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();		
+		//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());//TODO(NN) Uncomment after the User management usecase is complete
 		initialiseMarkupContainers();
 	}
 	
 	public AbstractContainerPanel(String id, boolean flag){
 		super(id);
-		//initCrudContainerVO();
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();		
+		//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());//TODO(NN) Uncomment after the User management usecase is complete
 	}
 	
 	public void initCrudContainerVO(){
