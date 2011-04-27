@@ -55,5 +55,22 @@ public interface IArkAuthorisation {
 	 * @throws EntityNotFoundException
 	 */
 	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	
+	/**
+	 * 
+	 * @param ldapUserName
+	 * @param arkUseCase
+	 * @param userRole
+	 * @param arkModule
+	 * @param study
+	 * @throws EntityNotFoundException
+	 */
+	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	
+	/**
+	 * Returns All Permissions as collection of Strings
+	 * @return  Collection<String> that represents ArkPermission
+	 */
+	public Collection<String> getArkPermission();
 
 }
