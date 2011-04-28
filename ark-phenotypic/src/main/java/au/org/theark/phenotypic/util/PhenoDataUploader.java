@@ -8,7 +8,9 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,9 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
@@ -42,6 +46,8 @@ public class PhenoDataUploader
 	private String						fieldName;
 	private long						subjectCount;
 	private long						fieldCount;
+	private long						insertCount;
+	private long						updateCount;
 	private double						speed;
 	private long						curPos;
 	private long						srcLength					= -1;															// -1 means nothing being processed
@@ -59,6 +65,12 @@ public class PhenoDataUploader
 	private IPhenotypicService		iPhenoService			= null;
 	private IArkCommonService		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
+	private HashSet<Integer>		insertRows 					= new HashSet<Integer>();
+	private HashSet<Integer>		updateRows 					= new HashSet<Integer>();
+	private HashSet<ArkGridCell> insertCells 				= new HashSet<ArkGridCell>();
+	private HashSet<ArkGridCell> updateCells 				= new HashSet<ArkGridCell>();
+	private HashSet<ArkGridCell> warningCells 				= new HashSet<ArkGridCell>();
+	private HashSet<ArkGridCell> errorCells					= new HashSet<ArkGridCell>();
 
 	/**
 	 * PhenotypicImport constructor
@@ -297,6 +309,7 @@ public class PhenoDataUploader
 			// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
 			fieldCount = fieldNameArray.length - 2;
 
+			int row = 1;
 			// Loop through all rows in file
 			while (csvReader.readRecord())
 			{
@@ -309,6 +322,21 @@ public class PhenoDataUploader
 				// Second/1th column should be date collected
 				String dateCollectedStr = stringLineArray[1];
 				
+				// Check subject exists
+				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+				try
+				{
+					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+				}
+				catch (au.org.theark.core.exception.EntityNotFoundException enfe)
+				{
+					// Subject not found...error
+					ArkGridCell cell = new ArkGridCell(0, row);
+					errorCells.add(cell);
+					dataValidationMessages.add(PhenotypicValidationMessage.fieldDataSubjectUidNotFound(subjectUid));
+				}
+				
+				// Check date collected is valid
 				try
 				{
 					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -317,41 +345,55 @@ public class PhenoDataUploader
 				}
 				catch (ParseException pe)
 				{
-					dataValidationMessages.add(PhenotypicValidationMessage.dateCollectedNotValidDate(subjectUid, dateCollectedStr));	
+					dataValidationMessages.add(PhenotypicValidationMessage.dateCollectedNotValidDate(subjectUid, dateCollectedStr));
+					errorCells.add(new ArkGridCell(1, row));
 				}
+				
+				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				// Assume inserts
+				insertRows.add(row);
+				int cols = stringLineArray.length;
 
 				// Loop through columns in current row in file, starting from the 2th position
-				for (int i = 2; i < stringLineArray.length; i++)
-				{
-					try
+				for (int col = 2; col < cols; col++)
+				{					
+					FieldData fieldData = new FieldData();
+					fieldData.setCollection(this.phenoCollection);
+					fieldData.setDateCollected(dateCollected);
+
+					// First/0th column should be the Subject UID
+					// If no Subject UID found, caught by exception catch
+					fieldData.setLinkSubjectStudy(linkSubjectStudy);
+					
+					// Set field
+					field = new Field();
+					field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[col], study);
+					fieldData.setField(field);
+					
+					// Other/ith columns should be the field data value
+					String value = stringLineArray[col];
+					fieldData.setValue(value);
+					
+					ArkGridCell gridCell = new ArkGridCell(col, row);
+					// Validate the field data
+					if(!PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages))
 					{
-						FieldData fieldData = new FieldData();
-
-						fieldData.setCollection(this.phenoCollection);
-
-						// First/0th column should be the Subject UID
-						// If no Subject UID found, caught by exception catch
-						fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(subjectUid));
-						
-						// Set field
-						field = new Field();
-						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
-						fieldData.setField(field);
-						
-						// Other/ith columns should be the field data value
-						fieldData.setValue(stringLineArray[i]);
-						
-						// Validate the field data
-						PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages);
+						warningCells.add(gridCell);
 					}
-					// TODO handle via ArkSystemExcpetion
-					catch (au.org.theark.core.exception.EntityNotFoundException enfe)
+					
+					// Determine updates
+					if(fieldDataToUpdate.contains(fieldData))
 					{
-						log.error("Error with Subject UID: " + enfe.getMessage());
+						updateCells.add(gridCell);
+						updateRows.add(row);
 					}
-
+					else
+					{
+						insertCells.add(gridCell);
+					}
+					
 					// Update progress
-					curPos += stringLineArray[i].length() + 1; // update progress
+					curPos += stringLineArray[col].length() + 1; // update progress
 
 					// Debug only - Show progress and speed
 					log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
@@ -359,6 +401,7 @@ public class PhenoDataUploader
 
 				log.debug("\n");
 				subjectCount++;
+				row++;
 			}
 
 			if (dataValidationMessages.size() > 0)
@@ -483,6 +526,9 @@ public class PhenoDataUploader
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
+				String subjectUid = stringLineArray[0];
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++)
@@ -490,41 +536,44 @@ public class PhenoDataUploader
 					// Field data actually the 2th colum onward
 					if (i > 1)
 					{
-						// Print out column details
-						log.debug(fieldNameArray[i] + "\t" + stringLineArray[i]);
+						log.debug("Creating new field data for: " + Constants.SUBJECTUID + ": " + subjectUid + "\t" + Constants.DATE_COLLECTED + ": " + stringLineArray[1] + "\tFIELD: "
+								+ fieldNameArray[i] + "\tVALUE: " + stringLineArray[i]);
 
+						FieldData fieldData = new FieldData();
+						fieldData.setCollection(this.phenoCollection);
+
+						// First/0th column should be the Subject UID
+						// If no Subject UID found, caught by exception catch
+						fieldData.setLinkSubjectStudy(linkSubjectStudy);
+
+						// Second/1th column should be date collected
 						try
 						{
-							log.debug("Creating new field data for: " + Constants.SUBJECTUID + ": " + stringLineArray[0] + "\t" + Constants.DATE_COLLECTED + ": " + stringLineArray[1] + "\tFIELD: "
-									+ fieldNameArray[i] + "\tVALUE: " + stringLineArray[i]);
-
-							FieldData fieldData = new FieldData();
-
-							fieldData.setCollection(this.phenoCollection);
-
-							// First/0th column should be the Subject UID
-							// If no Subject UID found, caught by exception catch
-							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
-
-							// Second/1th column should be date collected
 							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
+						}
+						catch(ParseException pex)
+						{
+							// Shouldn't really get here, as date validiated well before this point
+							log.error("DateCollected not parsed");
+						}
 
-							// Set field
-							field = new Field();
-							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
-							fieldData.setField(field);
+						// Set field
+						field = new Field();
+						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						fieldData.setField(field);
 
-							// Other/ith columns should be the field data value
-							fieldData.setValue(stringLineArray[i]);
+						// Other/ith columns should be the field data value
+						fieldData.setValue(stringLineArray[i]);
 
+						if(!fieldDataToUpdate.contains(fieldData))
+						{
 							// Try to create the field data
 							iPhenoService.createFieldData(fieldData);
 						}
-						// TODO handle via ArkSystemExcpetion
-						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
-						{
-							log.error("Error with Subject UID: " + enfe.getMessage());
+						else
+						{	// Try to update the field data
+							iPhenoService.updateFieldData(fieldData);
 						}
 					}
 
@@ -647,6 +696,14 @@ public class PhenoDataUploader
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
+				
+				String subjectUid = stringLineArray[0];
+				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
+				
+				// Second/1th column should be date collected
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateCollected = dateFormat.parse(stringLineArray[1]);
+				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
 				for (int i = 0; i < stringLineArray.length; i++)
@@ -657,12 +714,35 @@ public class PhenoDataUploader
 						// Print out column details
 						log.debug(fieldNameArray[i] + "\t" + stringLineArray[i]);
 
-						try
+						
+
+						FieldData fieldData = new FieldData();
+
+						fieldData.setCollection(this.phenoCollection);
+
+						// First/0th column should be the Subject UID
+						// If no Subject UID found, caught by exception catch
+						fieldData.setLinkSubjectStudy(linkSubjectStudy);
+
+						fieldData.setDateCollected(dateCollected);
+
+						// Set field
+						field = new Field();
+						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						fieldData.setField(field);
+
+						// Other/ith columns should be the field data value
+						fieldData.setValue(stringLineArray[i]);
+						
+						// Flag data that failed validation, but was overridden and imported
+						fieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, dataValidationMessages));
+
+						if(!fieldDataToUpdate.contains(fieldData))
 						{
 							uploadReport.append("Creating new field data for: ");
 							uploadReport.append(Constants.SUBJECTUID);
 							uploadReport.append(": ");
-							uploadReport.append(stringLineArray[0]);
+							uploadReport.append(subjectUid);
 							uploadReport.append("\t");
 							uploadReport.append(Constants.DATE_COLLECTED);
 							uploadReport.append(": ");
@@ -672,38 +752,35 @@ public class PhenoDataUploader
 							uploadReport.append("\tVALUE: ");
 							uploadReport.append(stringLineArray[i]);
 							uploadReport.append("\n");
-
-							FieldData fieldData = new FieldData();
-
-							fieldData.setCollection(this.phenoCollection);
-
-							// First/0th column should be the Subject UID
-							// If no Subject UID found, caught by exception catch
-							fieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(stringLineArray[0]));
-
-							// Second/1th column should be date collected
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
-
-							// Set field
-							field = new Field();
-							field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
-							fieldData.setField(field);
-
-							// Other/ith columns should be the field data value
-							fieldData.setValue(stringLineArray[i]);
 							
-							// Flag data that failed validation, but was overridden and imported
-							fieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, null));
-
 							// Try to create the field data
 							iPhenoService.createFieldData(fieldData);
 						}
-						// TODO handle via ArkSystemExcpetion
-						catch (au.org.theark.core.exception.EntityNotFoundException enfe)
-						{
-							uploadReport.append("Critical error during data import\n");
-							log.error("Error with Subject UID: " + enfe.getMessage());
+						else
+						{	
+							FieldData oldFieldData = iPhenoService.getFieldData(fieldData);
+							oldFieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, dataValidationMessages));
+							
+							uploadReport.append("Updating field data for: ");
+							uploadReport.append(Constants.SUBJECTUID);
+							uploadReport.append(": ");
+							uploadReport.append(subjectUid);
+							uploadReport.append("\t");
+							uploadReport.append(Constants.DATE_COLLECTED);
+							uploadReport.append(": ");
+							uploadReport.append(stringLineArray[1]);
+							uploadReport.append("\tFIELD: ");
+							uploadReport.append(fieldNameArray[i]);
+							uploadReport.append("\tOld VALUE: ");
+							uploadReport.append(oldFieldData.getValue());
+							uploadReport.append("\tNew VALUE: ");
+							uploadReport.append(stringLineArray[i]);
+							uploadReport.append("\n");
+							
+							oldFieldData.setValue(stringLineArray[i]);
+							
+							// Try to update the field data
+							iPhenoService.updateFieldData(oldFieldData);
 						}
 					}
 
@@ -811,5 +888,65 @@ public class PhenoDataUploader
 			speed = curPos / 1024 / (timer.getTime() / 1000.0); // KB/s
 
 		return speed;
+	}
+
+	public HashSet<Integer> getInsertRows()
+	{
+		return insertRows;
+	}
+
+	public void setInsertRows(HashSet<Integer> insertRows)
+	{
+		this.insertRows = insertRows;
+	}
+
+	public HashSet<Integer> getUpdateRows()
+	{
+		return updateRows;
+	}
+
+	public void setUpdateRows(HashSet<Integer> updateRows)
+	{
+		this.updateRows = updateRows;
+	}
+	
+	public HashSet<ArkGridCell> getInsertCells()
+	{
+		return insertCells;
+	}
+
+	public void setInsertCells(HashSet<ArkGridCell> insertCells)
+	{
+		this.insertCells = insertCells;
+	}
+
+	public HashSet<ArkGridCell> getUpdateCells()
+	{
+		return updateCells;
+	}
+
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells)
+	{
+		this.updateCells = updateCells;
+	}
+
+	public HashSet<ArkGridCell> getErrorCells()
+	{
+		return errorCells;
+	}
+
+	public void setErrorCells(HashSet<ArkGridCell> errorCells)
+	{
+		this.errorCells = errorCells;
+	}
+
+	public HashSet<ArkGridCell> getWarningCells()
+	{
+		return warningCells;
+	}
+
+	public void setWarningCells(HashSet<ArkGridCell> warningCells)
+	{
+		this.warningCells = warningCells;
 	}
 }
