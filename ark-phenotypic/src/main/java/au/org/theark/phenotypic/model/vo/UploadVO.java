@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.phenotypic.model.entity.FileFormat;
@@ -30,7 +29,8 @@ public class UploadVO implements Serializable
 	private java.util.Collection<PhenoUpload>	uploadCollection;
 	private int											mode;
 	private java.util.Collection<String>		validationMessages;
-	private Boolean overrideDataValidationChkBox;
+	private Boolean 									overrideDataValidationChkBox;
+	private Boolean									updateChkBox;
 
 	public UploadVO()
 	{
@@ -196,5 +196,21 @@ public class UploadVO implements Serializable
 
 	public FileUpload getFileUpload() {
 		return fileUpload;
+	}
+
+	/**
+	 * @param updateChkBox the updateChkBox to set
+	 */
+	public void setUpdateChkBox(Boolean updateChkBox)
+	{
+		this.updateChkBox = updateChkBox;
+	}
+
+	/**
+	 * @return the updateChkBox
+	 */
+	public Boolean getUpdateChkBox()
+	{
+		return updateChkBox;
 	}
 }
