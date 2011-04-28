@@ -100,6 +100,7 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 			try 
 			{
 				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+				inputStream.reset();
 				uploadReport = phenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
 			} 
 			catch (IOException e) 

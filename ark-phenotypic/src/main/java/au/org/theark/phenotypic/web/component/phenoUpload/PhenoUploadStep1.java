@@ -1,10 +1,8 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Blob;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -18,7 +16,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
-import org.apache.wicket.util.io.IOUtils;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +76,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ "unchecked"})
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
@@ -102,8 +99,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 
 	public void initialiseDetailForm() {
 		// Set up field on form here
-		uploadIdTxtFld = new TextField<String>(
-				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID);
+		uploadIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID);
 		// uploadFilenameTxtFld = new
 		// TextField<String>(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME);
 
@@ -214,16 +210,5 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 					HEXES.charAt((b & 0x0F)));
 		}
 		return hex.toString();
-	}
-
-	private void createDirectoryIfNeeded(String directoryName) 
-	{
-		File newDir = new File(directoryName);
-
-		// if the directory does not exist, create it
-		if (!newDir.exists()) {
-			log.debug("Creating directory: " + directoryName);
-			newDir.mkdir();
-		}
 	}
 }

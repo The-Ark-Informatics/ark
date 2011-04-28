@@ -2,14 +2,18 @@ package au.org.theark.phenotypic.web.component.phenoUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.UploadVO;
@@ -30,7 +34,10 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
 	private WizardForm wizardForm;
-	private CheckBox						overrideDataValidationChkBox;
+	private WebMarkupContainer 			overrideDataValidationContainer;
+	private CheckBox							overrideDataValidationChkBox;
+	private WebMarkupContainer 			updateExistingDataContainer;
+	private CheckBox							updateChkBox;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
@@ -55,15 +62,31 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
 		
+		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
+		updateExistingDataContainer.setOutputMarkupId(true);
+		updateChkBox = new CheckBox("updateChkBox");
+		updateChkBox.setVisible(true);
+		
+		overrideDataValidationContainer = new WebMarkupContainer("overrideDataValidationContainer");
+		overrideDataValidationContainer.setOutputMarkupId(true);
 		overrideDataValidationChkBox = new CheckBox("overrideDataValidationChkBox");
+		overrideDataValidationChkBox.setOutputMarkupId(false);
 		overrideDataValidationChkBox.setVisible(true);
+		
+		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
+		containerForm.getModelObject().setUpdateChkBox(false);
 
-		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
+		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -4514605801401294450L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
-				if (containerForm.getModelObject().getOverrideDataValidationChkBox())
+				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox())
 				{
 					wizardForm.getNextButton().setEnabled(true);
 				}
@@ -75,7 +98,28 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 			}
 		});
 		
-		add(overrideDataValidationChkBox);
+		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
+		{
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox())
+				{
+					wizardForm.getNextButton().setEnabled(true);
+				}
+				else
+				{
+					wizardForm.getNextButton().setEnabled(false);
+				}
+				target.addComponent(wizardForm.getWizardButtonContainer());
+			}
+		});
+		
+		overrideDataValidationContainer.add(overrideDataValidationChkBox);
+		add(overrideDataValidationContainer);
+
+		updateExistingDataContainer.add(updateChkBox);
+		add(updateExistingDataContainer);
 	}
 
 	/**
@@ -127,10 +171,53 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 			{
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 				validationMessages = phenotypicService.validateMatrixPhenoFileData(inputStream, fileFormat, delimChar);
+				
+				HashSet<Integer> insertRows = new HashSet<Integer>();
+				HashSet<Integer> updateRows = new HashSet<Integer>();
+				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
+				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
+				
+				insertRows = phenotypicService.getInsertRows();
+				updateRows = phenotypicService.getUpdateRows();
+				insertCells = phenotypicService.getInsertCells();
+				updateCells = phenotypicService.getUpdateCells();
+				warningCells = phenotypicService.getWarningCells();
+				errorCells = phenotypicService.getErrorCells();
+				inputStream.reset();
+				
+				// Show file data (and key reference)
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, insertCells, updateCells, warningCells, errorCells);
+				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+				arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
+				form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+				
+				// Repaint
+				target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+				target.addComponent(form.getWizardPanelFormContainer());
+				
+				if(updateCells.isEmpty())
+				{
+					containerForm.getModelObject().setUpdateChkBox(true);
+					updateExistingDataContainer.setVisible(false);
+					target.addComponent(updateExistingDataContainer);
+				}
+				
+				if(!errorCells.isEmpty())
+				{
+					overrideDataValidationContainer.setVisible(false);
+					target.addComponent(overrideDataValidationContainer);
+					updateExistingDataContainer.setVisible(false);
+					target.addComponent(updateExistingDataContainer);
+					form.getNextButton().setEnabled(false);
+					target.addComponent(form.getWizardButtonContainer());
+				}
 			}
-			catch(IOException e)
+			catch (IOException e)
 			{
-				e.printStackTrace();
+				System.out.println("Failed to display the uploaded file: " + e);
 			}
 			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
@@ -142,5 +229,47 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 				target.addComponent(form.getWizardButtonContainer());
 			}
 		}
+	}
+
+	/**
+	 * @param updateChkBox the updateChkBox to set
+	 */
+	public void setUpdateChkBox(CheckBox updateChkBox)
+	{
+		this.updateChkBox = updateChkBox;
+	}
+
+	/**
+	 * @return the updateChkBox
+	 */
+	public CheckBox getUpdateChkBox()
+	{
+		return updateChkBox;
+	}
+
+	public WebMarkupContainer getUpdateExistingDataContainer()
+	{
+		return updateExistingDataContainer;
+	}
+
+	public void setUpdateExistingDataContainer(WebMarkupContainer updateExistingDataContainer)
+	{
+		this.updateExistingDataContainer = updateExistingDataContainer;
+	}
+
+	/**
+	 * @param overrideDataValidationContainer the overrideDataValidationContainer to set
+	 */
+	public void setOverrideDataValidationContainer(WebMarkupContainer overrideDataValidationContainer)
+	{
+		this.overrideDataValidationContainer = overrideDataValidationContainer;
+	}
+
+	/**
+	 * @return the overrideDataValidationContainer
+	 */
+	public WebMarkupContainer getOverrideDataValidationContainer()
+	{
+		return overrideDataValidationContainer;
 	}
 }
