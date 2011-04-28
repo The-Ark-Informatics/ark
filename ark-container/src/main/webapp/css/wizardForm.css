@@ -17,6 +17,12 @@
 	height: 90%;
 }
 
+#wizardPanelMargin {
+	float: left;
+	height: 5%;
+	width: 5%;
+}
+
 #wizardFormContainer{
 	border-style: solid;
 	border-width: 1px;
@@ -50,10 +56,31 @@
 	width: 5%;
 }
 
+#wizardPanelContentLeft {
+	float: left;
+	width: 5%;
+	height: 5%;
+}
+
 #wizardPanelBreaker {
 	float: left;
 	width: 100%;
 	height: 20%;
+}
+
+#wizardStepContent {
+    margin-right: auto;
+    padding-left: 5%;
+    padding-top: 1%;
+    width: 80%;
+}
+
+#wizardGridContent {
+	float: left;
+    margin-right: auto;
+    padding-left: 5%;
+    padding-top: 1%;
+    width: 80%;
 }
 
 .wicketExtensionsWizardButtonBar {
@@ -81,9 +108,18 @@
 	padding-left: 5%;
 }
 
+#wizardErrorMessages {
+    border: 1px solid;
+    float: left;
+    height: 100px;
+    overflow: auto;
+    padding-bottom: 5px;
+    width: 80%;
+}
+
 .wizardDataGrid {
 	 overflow:auto; 
-	 height:30%; 
+	 height:200px; 
 	 width:80%;
 }
 
