@@ -56,7 +56,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.ArkErrorCell;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.util.SubjectUploader;
@@ -77,7 +77,7 @@ public class StudyServiceImpl implements IStudyService{
 	private Study study;
 	private HashSet<Integer>	insertRows;
 	private HashSet<Integer>	updateRows;
-	private HashSet<ArkErrorCell> errorCells;
+	private HashSet<ArkGridCell> errorCells;
 	
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
@@ -917,7 +917,7 @@ public class StudyServiceImpl implements IStudyService{
 	/**
 	 * @return the errorCells
 	 */
-	public HashSet<ArkErrorCell> getSubjectUploadErrorCells()
+	public HashSet<ArkGridCell> getSubjectUploadErrorCells()
 	{
 		return errorCells;
 	}
@@ -925,7 +925,7 @@ public class StudyServiceImpl implements IStudyService{
 	/**
 	 * @param errorCells the errorCells to set
 	 */
-	public void setSubjectUploadErrorCells(HashSet<ArkErrorCell> errorCells)
+	public void setSubjectUploadErrorCells(HashSet<ArkGridCell> errorCells)
 	{
 		this.errorCells = errorCells;
 	}

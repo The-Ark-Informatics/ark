@@ -37,7 +37,7 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.ArkErrorCell;
+import au.org.theark.core.web.component.ArkGridCell;
 
 
 
@@ -219,5 +219,5 @@ public interface IStudyService {
 	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
 	public HashSet<Integer> getSubjectUploadInsertRows();
 	public HashSet<Integer> getSubjectUploadUpdateRows();
-	public HashSet<ArkErrorCell> getSubjectUploadErrorCells();
+	public HashSet<ArkGridCell> getSubjectUploadErrorCells();
 }
