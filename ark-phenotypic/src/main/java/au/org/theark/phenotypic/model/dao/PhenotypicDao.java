@@ -10,7 +10,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -439,6 +439,43 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		FieldData fieldData = (FieldData) getSession().get(FieldData.class, id);
 		return fieldData;
 	}
+	
+	public FieldData getFieldData(FieldData fieldData)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+
+		if (fieldData.getCollection() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_PHENO_COLLECTION, fieldData.getCollection()));
+		}
+
+		if (fieldData.getLinkSubjectStudy() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, fieldData.getLinkSubjectStudy()));
+		}
+
+		if (fieldData.getField() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, fieldData.getField()));
+		}
+
+		if (fieldData.getDateCollected()!= null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_DATE_COLLECTED, fieldData.getDateCollected()));
+		}
+
+		FieldData returnFieldData = new FieldData();
+		if (criteria != null && criteria.list() != null && criteria.list().size() > 0)
+		{
+			int i = criteria.list().size();
+			returnFieldData = (FieldData) criteria.list().get(0);
+		}
+		else
+		{
+			log.error("Field Data table maybe out of synch. Please check if it has an entry for a fieldData with id:" + fieldData.getId());
+		}
+		return returnFieldData;
+	}
 
 	public FieldData getFieldDataByName(String fieldName)
 	{
@@ -465,7 +502,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value)
 	{
-		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
+		Criteria criteria = getSession().createCriteria(FieldData.class);
 
 		if (phenoCollection != null)
 		{
@@ -474,17 +511,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (linkSubjectStudy != null)
 		{
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
 		}
 
 		if (field != null)
 		{
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_FIELD, field));
 		}
 
 		if (dateCollected != null)
 		{
-			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_DATA_COLLECTED, dateCollected));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_DATE_COLLECTED, dateCollected));
 		}
 
 		FieldData fieldData = new FieldData();
@@ -1018,5 +1055,23 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		   
 		return count;
+	}
+
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+
+		if (linkSubjectStudy.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_LINK_SUBJECT_STUDY, linkSubjectStudy));
+		}
+		
+		if(dateCollected != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_DATA_DATE_COLLECTED, dateCollected));
+		}
+
+		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
 	}
 }

@@ -75,6 +75,7 @@ public interface IPhenotypicDao {
 
 	// Field Data
 	public FieldData getFieldData(Long id);
+	public FieldData getFieldData(FieldData fieldData);
 	public java.util.Collection<FieldData> getFieldDataByCollectionAndField(PhenoCollection phenoCollection, Field field);
 	public FieldData getFieldData(PhenoCollection phenoCollection, LinkSubjectStudy linkSubjectStudy, Field field, Date dateCollected, String value);
 	public Collection<FieldData> searchFieldDataByField(Field field);
@@ -113,4 +114,5 @@ public interface IPhenotypicDao {
 	
 	public int getCountOfFieldsInStudy(Study study);
 	public int getCountOfFieldsWithDataInStudy(Study study);
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected);
 }
