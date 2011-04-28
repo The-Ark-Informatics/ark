@@ -2,7 +2,6 @@ package au.org.theark.study.web.component.consentFile;
 
 import java.sql.SQLException;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -12,7 +11,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -24,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;

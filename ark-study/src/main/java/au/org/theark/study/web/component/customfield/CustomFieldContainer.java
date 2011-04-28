@@ -8,7 +8,6 @@ package au.org.theark.study.web.component.customfield;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -18,13 +17,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
