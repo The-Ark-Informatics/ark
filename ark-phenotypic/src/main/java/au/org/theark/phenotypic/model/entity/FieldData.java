@@ -28,8 +28,8 @@ import au.org.theark.phenotypic.service.Constants;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "FIELD_DATA", schema = Constants.TABLE_SCHEMA)
-public class FieldData implements java.io.Serializable {
-
+public class FieldData implements java.io.Serializable 
+{
 	// Fields
 	private Long id;
 	private PhenoCollection collection;
@@ -211,5 +211,59 @@ public class FieldData implements java.io.Serializable {
 	public Boolean getPassedQualityControl()
 	{
 		return passedQualityControl;
+	}
+	
+	@Override
+	public int hashCode()
+	{
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((collection == null) ? 0 : collection.hashCode());
+		result = prime * result + ((dateCollected == null) ? 0 : dateCollected.hashCode());
+		result = prime * result + ((field == null) ? 0 : field.hashCode());
+		result = prime * result + ((linkSubjectStudy == null) ? 0 : linkSubjectStudy.hashCode());
+		result = prime * result + ((value == null) ? 0 : value.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FieldData other = (FieldData) obj;
+		if (collection == null)
+		{
+			if (other.collection != null)
+				return false;
+		}
+		else if (!collection.equals(other.collection))
+			return false;
+		if (dateCollected == null)
+		{
+			if (other.dateCollected != null)
+				return false;
+		}
+		else if (!dateCollected.equals(other.dateCollected))
+			return false;
+		if (field == null)
+		{
+			if (other.field != null)
+				return false;
+		}
+		else if (!field.equals(other.field))
+			return false;
+		if (linkSubjectStudy == null)
+		{
+			if (other.linkSubjectStudy != null)
+				return false;
+		}
+		else if (!linkSubjectStudy.equals(other.linkSubjectStudy))
+			return false;
+		return true;
 	}
 }
