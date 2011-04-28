@@ -48,7 +48,7 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.ArkErrorCell;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.study.service.IStudyService;
 
 import com.csvreader.CsvReader;
@@ -81,7 +81,7 @@ public class SubjectUploader
 	private int row													= 1;
 	private HashSet<Integer>		updateRows 					= new HashSet<Integer>();
 	private HashSet<Integer> 		insertRows					= new HashSet<Integer>();
-	private HashSet<ArkErrorCell>	errorCells					= new HashSet<ArkErrorCell>();
+	private HashSet<ArkGridCell>	errorCells					= new HashSet<ArkGridCell>();
 
 	/**
 	 * SubjectUploader constructor
@@ -370,7 +370,7 @@ public class SubjectUploader
 					catch (ParseException pex)
 					{
 						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkErrorCell(col, row));
+						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
 
@@ -394,7 +394,7 @@ public class SubjectUploader
 					catch (ParseException pex)
 					{
 						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
-						errorCells.add(new ArkErrorCell(col, row));
+						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
 
@@ -1133,12 +1133,12 @@ public class SubjectUploader
 		this.insertRows = errorRows;
 	}
 
-	public HashSet<ArkErrorCell> getErrorCells()
+	public HashSet<ArkGridCell> getErrorCells()
 	{
 		return errorCells;
 	}
 
-	public void setErrorCells(HashSet<ArkErrorCell> errorCells)
+	public void setErrorCells(HashSet<ArkGridCell> errorCells)
 	{
 		this.errorCells = errorCells;
 	}
