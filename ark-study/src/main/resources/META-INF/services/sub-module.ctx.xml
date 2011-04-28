@@ -13,6 +13,7 @@
     <context:component-scan base-package="au.org.theark.study.model.dao"/> 
     <context:component-scan base-package="au.org.theark.study.service"/>
     <context:component-scan base-package="au.org.theark.study.web.component.site"/>
+    <context:component-scan base-package="au.org.theark.study.util"/>
     
     <!--  Study Module bean that deals with User management on LDAP -->
 	<bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
