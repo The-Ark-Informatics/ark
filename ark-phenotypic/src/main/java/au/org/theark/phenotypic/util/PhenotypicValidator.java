@@ -125,39 +125,76 @@ public class PhenotypicValidator
 	{
 		Field field = (Field) fieldData.getField();
 
-		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
-		{
-			try
+		if(errorMessages != null)
+		{	
+			if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 			{
-				Float floatMinValue = Float.parseFloat(field.getMinValue());
-				Float floatMaxValue = Float.parseFloat(field.getMaxValue());
-				Float floatFieldValue = Float.parseFloat(fieldData.getValue());
-
-				if ((floatFieldValue > floatMaxValue) || (floatFieldValue < floatMinValue))
+				try
 				{
-					if ((floatFieldValue > floatMaxValue))
+					Float floatMinValue = Float.parseFloat(field.getMinValue());
+					Float floatMaxValue = Float.parseFloat(field.getMaxValue());
+					Float floatFieldValue = Float.parseFloat(fieldData.getValue());
+	
+					if ((floatFieldValue > floatMaxValue) || (floatFieldValue < floatMinValue))
 					{
-						errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
+						if ((floatFieldValue > floatMaxValue))
+						{
+							errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
+						}
+						if ((floatFieldValue < floatMinValue))
+						{
+							errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
+						}
+						return false;
 					}
-					if ((floatFieldValue < floatMinValue))
-					{
-						errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
-					}
+					return true;
+				}
+				catch (NumberFormatException nfe)
+				{
+					log.error("Field data number format exception " + nfe.getMessage());
 					return false;
 				}
-				return true;
+				catch (NullPointerException npe)
+				{
+					log.error("Field data null pointer exception " + npe.getMessage());
+					return false;
+				}
 			}
-			catch (NumberFormatException nfe)
+			else if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
 			{
-				log.error("Field data number format exception " + nfe.getMessage());
-				return false;
+				if(field.getMinValue() != null && field.getMaxValue() != null)
+				{
+					try
+					{
+						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+						dateFormat.setLenient(false);
+						
+						Date dateMinValue = dateFormat.parse(field.getMinValue());
+						Date dateMaxValue = dateFormat.parse(field.getMaxValue());
+						Date dateFieldValue = dateFormat.parse(fieldData.getValue());
+						
+						if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue))
+						{
+							if (dateFieldValue.after(dateMaxValue))
+							{
+								errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
+							}
+							if (dateFieldValue.before(dateMinValue))
+							{
+								errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
+							}
+							return false;
+						}
+						return true;
+					}
+					catch (ParseException pe)
+					{
+						return false;
+					}
+				}
+				else
+					return true;
 			}
-			catch (NullPointerException npe)
-			{
-				log.error("Field data null pointer exception " + npe.getMessage());
-				return false;
-			}
-
 		}
 		return false;
 	}
@@ -215,24 +252,16 @@ public class PhenotypicValidator
 		return inEncodedValues;
 	}
 
-	public static void validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages)
-	{
-		// Validate the field data
-		if (isValidFieldData(fieldData, errorMessages))
-		{
-			// log.info("Field data valid");
-		}
-
-		if (isInEncodedValues(fieldData, errorMessages))
-		{
-			// log.info("Field data in discrete values");
-		}
-
-		// Validate the field data within discrete values
-		if (isInValidRange(fieldData, errorMessages))
-		{
-			// log.info("Field data in valid range");
-		}
+	/**
+	 * Returns true of the field data value is a valididated
+	 * 
+	 * @param fieldData
+	 * @param errorMessages
+	 * @return boolean
+	 */
+	public static boolean validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages)
+	 {
+		return(isValidFieldData(fieldData, errorMessages) && isInEncodedValues(fieldData, errorMessages) && isInValidRange(fieldData, errorMessages));
 	}
 	
 	public static boolean fieldDataPassesQualityControl(FieldData fieldData, java.util.Collection<String> errorMessages)
