@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
@@ -18,16 +16,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
-import au.org.theark.study.web.component.customfield.CustomFieldContainer;
 import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
-import au.org.theark.study.web.component.site.SiteContainerPanel;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
 import au.org.theark.study.web.component.user.UserContainer;
 

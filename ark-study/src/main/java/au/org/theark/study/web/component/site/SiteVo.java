@@ -1,7 +1,7 @@
 package au.org.theark.study.web.component.site;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
 
 public class SiteVo implements Serializable{
 

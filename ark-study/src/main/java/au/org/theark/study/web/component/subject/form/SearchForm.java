@@ -39,8 +39,6 @@ import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.Details;
-import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
 /**
  * @author nivedann

@@ -12,14 +12,11 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.user.form.ContainerForm;
 
 public class MyDetailsForm extends Form<ArkUserVO>{
 

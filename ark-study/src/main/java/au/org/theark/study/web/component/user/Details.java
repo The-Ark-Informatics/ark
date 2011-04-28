@@ -5,10 +5,8 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.util.StringUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;

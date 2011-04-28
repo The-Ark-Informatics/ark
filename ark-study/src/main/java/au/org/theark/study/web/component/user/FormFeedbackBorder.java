@@ -4,12 +4,13 @@ package au.org.theark.study.web.component.user;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.feedback.ContainerFeedbackMessageFilter;
+import org.apache.wicket.feedback.IFeedback;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.border.Border;
-import org.apache.wicket.model.*;
-import org.apache.wicket.feedback.*;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 
 
 public class FormFeedbackBorder extends Border implements IFeedback {

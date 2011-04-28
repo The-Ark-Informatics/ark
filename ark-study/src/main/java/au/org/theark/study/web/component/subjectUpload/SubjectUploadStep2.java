@@ -8,14 +8,12 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.Constants;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 /**
@@ -30,10 +28,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
-	private WizardForm wizardForm;
-	
-	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
 	
 	public SubjectUploadStep2(String id) {
 		super(id);
@@ -44,8 +38,6 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 		super(id, "Step 2/5: File Validation", "The file has been validated. If there are no errors, click Next to continue.");
 
 		this.containerForm = containerForm;
-		this.wizardForm = wizardForm;
-		
 		initialiseDetailForm();
 	}
 	
@@ -87,13 +79,11 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			
-			if(!fileFormat.equalsIgnoreCase("XLS"))
-			{
-				validationMessages = studyService.validateSubjectFileFormat(inputStream, fileFormat, delimChar);
-				containerForm.getModelObject().setValidationMessages(validationMessages);
-				validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-			}
+			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator();
+			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+			containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 		
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);

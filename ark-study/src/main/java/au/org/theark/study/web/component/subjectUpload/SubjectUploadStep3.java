@@ -10,14 +10,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.vo.UploadVO;
-import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.study.service.IStudyService;
+import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
 /**
@@ -35,9 +34,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	private WizardForm						wizardForm;
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
-
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
 
 	/**
 	 * Construct.
@@ -124,7 +120,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			validationMessages = studyService.validateSubjectFileData(inputStream, fileFormat, delimiterChar);
+			
+			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator();
+			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
@@ -133,9 +131,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			HashSet<Integer> updateRows = new HashSet<Integer>();
 			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 			
-			insertRows = studyService.getSubjectUploadInsertRows();
-			updateRows = studyService.getSubjectUploadUpdateRows();
-			errorCells = studyService.getSubjectUploadErrorCells();
+			insertRows = subjectUploadValidator.getInsertRows();
+			updateRows = subjectUploadValidator.getUpdateRows();
+			errorCells = subjectUploadValidator.getErrorCells();
 			inputStream.reset();
 			
 			// Show file data (and key reference)
