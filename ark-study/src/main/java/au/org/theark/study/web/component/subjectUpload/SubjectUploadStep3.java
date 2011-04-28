@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.vo.UploadVO;
-import au.org.theark.core.web.component.ArkErrorCell;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
@@ -131,7 +131,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 
 			HashSet<Integer> insertRows = new HashSet<Integer>();
 			HashSet<Integer> updateRows = new HashSet<Integer>();
-			HashSet<ArkErrorCell> errorCells = new HashSet<ArkErrorCell>();
+			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 			
 			insertRows = studyService.getSubjectUploadInsertRows();
 			updateRows = studyService.getSubjectUploadUpdateRows();
