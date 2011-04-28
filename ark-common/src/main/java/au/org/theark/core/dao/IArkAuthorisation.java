@@ -5,6 +5,7 @@ import java.util.Collection;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 
 
@@ -18,6 +19,8 @@ public interface IArkAuthorisation {
 	 * This interface checks if the user is a Super Administrator 
 	 */
 	public boolean isSuperAdministrator(String userName) throws EntityNotFoundException;
+	
+	public boolean isSuperAdministator(String ldapUserName, ArkUsecase arkUsecase, ArkModule arkModule) throws EntityNotFoundException;
 	
 	/**
 	 * This interface checks if the user is a Administrator in the Ark System.
@@ -72,5 +75,9 @@ public interface IArkAuthorisation {
 	 * @return  Collection<String> that represents ArkPermission
 	 */
 	public Collection<String> getArkPermission();
+	
+	public Collection<ArkModule> getArkModules();
+	
+	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
 
 }

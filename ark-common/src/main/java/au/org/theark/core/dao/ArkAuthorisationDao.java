@@ -39,7 +39,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 * @param ldapUserName
 	 * @return ArkUser
 	 */
-	protected ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
+	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(ArkUser.class);
 		criteria.add(Restrictions.eq("ldapUserName", ldapUserName));
@@ -113,7 +113,27 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		}
 		session.close();
 		return isAdminType;
+	}
+	
+	private boolean isUserAdminHelper(String ldapUserName, String roleName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
+		boolean isAdminType = false;
+		StatelessSession session = getStatelessSession();
+		//Check or get user ark_user object based on ldapUserName
+		ArkUser arkUser  = getArkUser(ldapUserName);
+		Criteria criteria = session.createCriteria(ArkUserRole.class);
+		ArkRole arkRole  = getArkRoleByName(roleName);
+		criteria.add(Restrictions.eq("arkRole", arkRole));
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.add(Restrictions.eq("arkUsecase",arkUseCase));
+		criteria.add(Restrictions.eq("arkModule",arkModule));
 		
+		criteria.setMaxResults(1);
+		ArkUserRole arkUserRole = (ArkUserRole) criteria.uniqueResult();
+		if(arkUserRole != null){
+			isAdminType = true;
+		}
+		session.close();
+		return isAdminType;
 	}
 	/**
 	 * <p>
@@ -130,6 +150,9 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 	}
 	
+	public boolean isSuperAdministator(String ldapUserName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
+		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR,arkUseCase,arkModule);
+	}
 	
 	/**
 	 * Use this method when we want to load the Collection of Administrator roles as a Collectio<String>.
@@ -306,6 +329,14 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			arkStringPermissions.add(arkPermission.getName());
 		}
 		return arkStringPermissions;
+	}
+
+	
+	public Collection<ArkModule> getArkModules(){
+		Collection<ArkModule> arkModuleList = new ArrayList<ArkModule>();
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		arkModuleList = (Collection<ArkModule>)criteria.list();
+		return arkModuleList;
 	}
 
 }
