@@ -116,7 +116,7 @@ public class SubjectUploader
 	 *            file format Exception
 	 * @throws ArkBaseException
 	 *            general ARK Exception
-	 * @return a collection of validation messages
+	 * @return a collection of file format validation messages
 	 */
 	public java.util.Collection<String> validateSubjectMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException
 	{
@@ -265,7 +265,7 @@ public class SubjectUploader
 	 *            file format Exception
 	 * @throws ArkBaseException
 	 *            general ARK Exception
-	 * @return a collection of validation messages
+	 * @return a collection of data validation messages
 	 */
 	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException
 	{
