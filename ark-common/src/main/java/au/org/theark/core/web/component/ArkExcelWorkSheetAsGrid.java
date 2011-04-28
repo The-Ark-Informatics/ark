@@ -51,7 +51,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	private char						delimiterType;
 	private HashSet<Integer>		insertRows;
 	private HashSet<Integer>		updateRows;
-	private HashSet<ArkErrorCell>	errorCells;
+	private HashSet<ArkGridCell> insertCells;
+	private HashSet<ArkGridCell> updateCells;
+	private HashSet<ArkGridCell> warningCells;
+	private HashSet<ArkGridCell>	errorCells;
 	private String						fileFormat;
 	private WebMarkupContainer		wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 
@@ -61,7 +64,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
-		this.errorCells = new HashSet<ArkErrorCell>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = new HashSet<ArkGridCell>();
 		initialiseGrid();
 	}
 
@@ -71,18 +77,24 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
 		this.insertRows = new HashSet<Integer>();
-		this.errorCells = new HashSet<ArkErrorCell>();
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = new HashSet<ArkGridCell>();
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
 
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkErrorCell> errorCells)
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells)
 	{
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = updateRows;
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
 		this.errorCells = errorCells;
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
@@ -90,12 +102,47 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGridKey(fileUpload);
 	}
 	
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkErrorCell> errorCells)
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells)
 	{
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
 		this.updateRows = updateRows;
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> errorCells)
+	{
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.insertCells = new HashSet<ArkGridCell>();
+		this.updateCells = new HashSet<ArkGridCell>();
+		this.warningCells = new HashSet<ArkGridCell>();
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> warningCells, HashSet<ArkGridCell> errorCells)
+	{
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.insertCells = insertCells;
+		this.updateCells = updateCells;
+		this.warningCells = warningCells;
 		this.errorCells = errorCells;
 		this.fileFormat = fileFormat;
 		initialiseWorkbook(inputStream, delimChar);
@@ -111,7 +158,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 
 	private void initialiseGridKey(FileUpload fileUpload)
 	{
-		wizardDataGridKeyContainer.setVisible(true);
+		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
 		wizardDataGridKeyContainer.setOutputMarkupId(true);
 		// Download file link button
 		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
@@ -132,9 +179,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			{
 				final int row = item.getIteration();
 
-				if (!updateRows.isEmpty())
+				if(!insertRows.isEmpty() || !updateRows.isEmpty())
 				{
-					setRowCssClass(row, item);
+					setRowCssStyle(row, item);
 				}
 
 				if (row > 0)
@@ -169,21 +216,54 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 							Label cellData = new Label("cellData", model);
 							item.add(cellData);
 
-							if (!errorCells.isEmpty())
+							ArkGridCell cell = new ArkGridCell(col, row);
+							if (errorCells.contains(cell))
 							{
-								ArkErrorCell cell = new ArkErrorCell(col, row);
-								if (errorCells.contains(cell))
+								item.add(new AbstractBehavior()
 								{
-									item.add(new AbstractBehavior()
+									@Override
+									public void onComponentTag(Component component, ComponentTag tag)
 									{
-										@Override
-										public void onComponentTag(Component component, ComponentTag tag)
-										{
-											super.onComponentTag(component, tag);
-											tag.put("style", "background: red;");
-										};
-									});
-								}
+										super.onComponentTag(component, tag);
+										tag.put("style", "background: red;");
+									};
+								});
+							} 
+							else if (warningCells.contains(cell))
+							{
+								item.add(new AbstractBehavior()
+								{
+									@Override
+									public void onComponentTag(Component component, ComponentTag tag)
+									{
+										super.onComponentTag(component, tag);
+										tag.put("style", "background: orange;");
+									};
+								});
+							} 
+							else if (updateCells.contains(cell))
+							{
+								item.add(new AbstractBehavior()
+								{
+									@Override
+									public void onComponentTag(Component component, ComponentTag tag)
+									{
+										super.onComponentTag(component, tag);
+										tag.put("style", "background: lightyellow;");
+									};
+								});
+							}
+							else if (insertCells.contains(cell))
+							{
+								item.add(new AbstractBehavior()
+								{
+									@Override
+									public void onComponentTag(Component component, ComponentTag tag)
+									{
+										super.onComponentTag(component, tag);
+										tag.put("style", "background: lightgreen;");
+									};
+								});
 							}
 						}
 					});
@@ -211,7 +291,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			 * 
 			 * @param cell
 			 */
-			private void setRowCssClass(Integer row, LoopItem item)
+			private void setRowCssStyle(Integer row, LoopItem item)
 			{
 				if (updateRows.contains(row))
 				{
@@ -221,6 +301,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 						public void onComponentTag(Component component, ComponentTag tag)
 						{
 							super.onComponentTag(component, tag);
+							// Light yellow for updates
 							tag.put("style", "background: lightyellow;");
 
 						};
@@ -228,13 +309,13 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				}
 				else
 				{
-
 					item.add(new AbstractBehavior()
 					{
 						@Override
 						public void onComponentTag(Component component, ComponentTag tag)
 						{
 							super.onComponentTag(component, tag);
+							// Light green for inserts
 							tag.put("style", "background: lightgreen;");
 						};
 					});
@@ -341,7 +422,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 
 						if (!errorCells.isEmpty())
 						{
-							ArkErrorCell cell = new ArkErrorCell(col, row);
+							ArkGridCell cell = new ArkGridCell(col, row);
 							if (errorCells.contains(cell))
 							{
 								label.setCellFormat(errorCellFormat);
@@ -440,9 +521,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			// Override to light yellow
 			w.setColourRGB(Colour.YELLOW2, 255, 255, 224);
 			updateCellFormat.setBackground(Colour.YELLOW2);
-			WritableFont errorFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD);
-			WritableCellFormat errorCellFormat = new WritableCellFormat(errorFont);
+			WritableCellFormat errorCellFormat = new WritableCellFormat(normalFont);
 			errorCellFormat.setBackground(Colour.RED);
+			WritableCellFormat warningCellFormat = new WritableCellFormat(normalFont);
+			warningCellFormat.setBackground(Colour.LIGHT_ORANGE);
 
 			for (int row = 0; row < sheetMetaData.getRows(); row++)
 			{
@@ -452,23 +534,24 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 					String cellData = cell.getContents();
 					jxl.write.Label label = new jxl.write.Label(col, row, cellData);
 
-					if (!errorCells.isEmpty())
+					ArkGridCell gridCell = new ArkGridCell(col, row);
+					if(row>0)
 					{
-						ArkErrorCell errorCell = new ArkErrorCell(col, row);
-						if (errorCells.contains(errorCell))
+						if (errorCells.contains(gridCell))
 						{
 							label.setCellFormat(errorCellFormat);
 						}
-						else if (updateRows.contains(row))
+						else if(warningCells.contains(gridCell))
+						{
+							label.setCellFormat(warningCellFormat);
+						}
+						else if (updateCells.contains(gridCell))
 						{
 							label.setCellFormat(updateCellFormat);
 						}
 						else
 						{
-							if(row>0)
-							{
-								label.setCellFormat(insertCellFormat);
-							}
+							label.setCellFormat(insertCellFormat);
 						}
 					}
 					writableSheet.addCell(label);
@@ -561,7 +644,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param errorCells
 	 *           the errorCells to set
 	 */
-	public void setErrorCells(HashSet<ArkErrorCell> errorCells)
+	public void setErrorCells(HashSet<ArkGridCell> errorCells)
 	{
 		this.errorCells = errorCells;
 	}
@@ -569,7 +652,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	/**
 	 * @return the errorCells
 	 */
-	public HashSet<ArkErrorCell> getErrorCells()
+	public HashSet<ArkGridCell> getErrorCells()
 	{
 		return errorCells;
 	}
@@ -598,5 +681,53 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	public byte[] getWorkBookAsBytes()
 	{
 		return workBookAsBytes;
+	}
+
+	/**
+	 * @param insertCells the insertCells to set
+	 */
+	public void setInsertCells(HashSet<ArkGridCell> insertCells)
+	{
+		this.insertCells = insertCells;
+	}
+
+	/**
+	 * @return the insertCells
+	 */
+	public HashSet<ArkGridCell> getInsertCells()
+	{
+		return insertCells;
+	}
+
+	/**
+	 * @param updateCells the updateCells to set
+	 */
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells)
+	{
+		this.updateCells = updateCells;
+	}
+
+	/**
+	 * @return the updateCells
+	 */
+	public HashSet<ArkGridCell> getUpdateCells()
+	{
+		return updateCells;
+	}
+
+	/**
+	 * @param warningCells the warningCells to set
+	 */
+	public void setWarningCells(HashSet<ArkGridCell> warningCells)
+	{
+		this.warningCells = warningCells;
+	}
+
+	/**
+	 * @return the warningCells
+	 */
+	public HashSet<ArkGridCell> getWarningCells()
+	{
+		return warningCells;
 	}
 }

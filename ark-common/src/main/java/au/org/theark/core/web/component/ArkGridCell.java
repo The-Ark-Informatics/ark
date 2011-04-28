@@ -1,11 +1,17 @@
 package au.org.theark.core.web.component;
 
-public class ArkErrorCell
+import java.io.Serializable;
+
+public class ArkGridCell implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -2945343327357120514L;
 	int col;
 	int row;
 	
-	public ArkErrorCell(int col, int row)
+	public ArkGridCell(int col, int row)
 	{
 		this.col = col;
 		this.row = row;
@@ -47,7 +53,7 @@ public class ArkErrorCell
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ArkErrorCell other = (ArkErrorCell) obj;
+		ArkGridCell other = (ArkGridCell) obj;
 		if (col != other.col)
 			return false;
 		if (row != other.row)
