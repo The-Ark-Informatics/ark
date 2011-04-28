@@ -21,6 +21,21 @@ public class PhenotypicValidationMessage
 	 * @param fieldData
 	 * @return String
 	 */
+	public static String fieldDataSubjectUidNotFound(String subjectUid){
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Subject UID: ");
+		stringBuffer.append(subjectUid);
+		stringBuffer.append(" ");
+		stringBuffer.append("was not found in the database. Please check and try again.");
+		return(stringBuffer.toString());
+	}
+	
+	/**
+	 * Returns field not of the defined type error message
+	 * @param field
+	 * @param fieldData
+	 * @return String
+	 */
 	public static String fieldDataNotDefinedType(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
 		stringBuffer.append("Subject UID: ");
