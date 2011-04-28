@@ -1,10 +1,10 @@
 package au.org.theark.phenotypic.service;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -15,8 +15,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.model.study.entity.AuditHistory;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
@@ -43,6 +45,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	private IPhenotypicDao	phenotypicDao;
 	private Long studyId;
 	private Study study;
+	private HashSet<Integer>	insertRows;
+	private HashSet<Integer>	updateRows;
+	private HashSet<ArkGridCell> insertCells;
+	private HashSet<ArkGridCell> updateCells;
+	private HashSet<ArkGridCell> warningCells;
+	private HashSet<ArkGridCell> errorCells;
 	
 	public IArkCommonService getiArkCommonService()
 	{
@@ -322,6 +330,11 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.searchFieldData(fieldData);
 	}
+	
+	public FieldData getFieldData(FieldData fieldData)
+	{
+		return phenotypicDao.getFieldData(fieldData);
+	}
 
 	public void createUpload(PhenoUpload upload)
 	{
@@ -508,6 +521,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			log.debug("Importing file");
 			InputStream is = new FileInputStream(file);
 			validationMessages = pi.validateMatrixPhenoFileData(is, file.length());
+			setInsertRows(pi.getInsertRows());
+			setUpdateRows(pi.getUpdateRows());
+			setUpdateCells(pi.getUpdateCells());
+			setErrorCells(pi.getErrorCells());
 		}
 		catch (IOException ioe)
 		{
@@ -628,6 +645,12 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{	
 			log.debug("Validating pheno file data");
 			validationMessages = pi.validateMatrixPhenoFileData(inputStream, inputStream.toString().length());
+			setInsertRows(pi.getInsertRows());
+			setUpdateRows(pi.getUpdateRows());
+			setWarningCells(pi.getWarningCells());
+			setInsertCells(pi.getInsertCells());
+			setUpdateCells(pi.getUpdateCells());
+			setErrorCells(pi.getErrorCells());
 		}
 		catch (FileFormatException ffe)
 		{
@@ -673,7 +696,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
 		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);;
-	
+		
 		try
 		{
 			log.info("Importing pheno file");
@@ -688,5 +711,106 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
 		return uploadReport;
+	}
+
+	/**
+	 * @param insertRows the insertRows to set
+	 */
+	public void setInsertRows(HashSet<Integer> insertRows)
+	{
+		this.insertRows = insertRows;
+	}
+
+	/**
+	 * @return the insertRows
+	 */
+	public HashSet<Integer> getInsertRows()
+	{
+		return insertRows;
+	}
+
+	/**
+	 * @param updateRows the updateRows to set
+	 */
+	public void setUpdateRows(HashSet<Integer> updateRows)
+	{
+		this.updateRows = updateRows;
+	}
+
+	/**
+	 * @return the updateRows
+	 */
+	public HashSet<Integer> getUpdateRows()
+	{
+		return updateRows;
+	}
+
+	/**
+	 * @param insertCells the insertCells to set
+	 */
+	public void setInsertCells(HashSet<ArkGridCell> insertCells)
+	{
+		this.insertCells = insertCells;
+	}
+
+	/**
+	 * @return the insertCells
+	 */
+	public HashSet<ArkGridCell> getInsertCells()
+	{
+		return insertCells;
+	}
+
+	/**
+	 * @param errorCells the errorCells to set
+	 */
+	public void setErrorCells(HashSet<ArkGridCell> errorCells)
+	{
+		this.errorCells = errorCells;
+	}
+
+	/**
+	 * @return the errorCells
+	 */
+	public HashSet<ArkGridCell> getErrorCells()
+	{
+		return errorCells;
+	}
+
+	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected)
+	{
+		return phenotypicDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+	}
+
+	/**
+	 * @param updateCells the updateCells to set
+	 */
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells)
+	{
+		this.updateCells = updateCells;
+	}
+
+	/**
+	 * @return the updateCells
+	 */
+	public HashSet<ArkGridCell> getUpdateCells()
+	{
+		return updateCells;
+	}
+
+	/**
+	 * @param warningCells the warningCells to set
+	 */
+	public void setWarningCells(HashSet<ArkGridCell> warningCells)
+	{
+		this.warningCells = warningCells;
+	}
+
+	/**
+	 * @return the warningCells
+	 */
+	public HashSet<ArkGridCell> getWarningCells()
+	{
+		return warningCells;
 	}
 }
