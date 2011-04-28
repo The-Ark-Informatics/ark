@@ -17,6 +17,7 @@ import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -350,6 +351,18 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 	 */
 	public Collection<String> getArkPermission(){
 		return arkAuthorisationDao.getArkPermission();
+	}
+	
+	public boolean isSuperAdministator(String ldapUserName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
+		return arkAuthorisationDao.isSuperAdministator(ldapUserName,arkUseCase,arkModule);
+	}
+	
+	public Collection<ArkModule> getArkModules(){
+		return arkAuthorisationDao.getArkModules();
+	}
+	
+	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
+		return arkAuthorisationDao.getArkUser(ldapUserName);
 	}
 	
 }

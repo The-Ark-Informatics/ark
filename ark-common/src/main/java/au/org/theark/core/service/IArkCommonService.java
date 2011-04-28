@@ -9,6 +9,7 @@ import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -271,4 +272,22 @@ public interface IArkCommonService {
 	 * @return  Collection<String> that represents ArkPermission
 	 */
 	public Collection<String> getArkPermission();
+	
+	/**
+	 * 
+	 * @param ldapUserName
+	 * @param useCaseId
+	 * @param moduleId
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public boolean isSuperAdministator(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException;
+	
+	/**
+	 * Return a Collection<ArkModule>. This can be used as a Source of reference of all Ark Modules in the System
+	 * @return
+	 */
+	public Collection<ArkModule> getArkModules();
+	
+	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
 }
