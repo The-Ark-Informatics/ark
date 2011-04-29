@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -56,9 +55,10 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
-import au.org.theark.core.web.component.ArkGridCell;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
+import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.util.SubjectUploader;
 import au.org.theark.study.web.Constants;
 
@@ -72,12 +72,6 @@ public class StudyServiceImpl implements IStudyService{
 	private IArkCommonService arkCommonService;
 	private IStudyDao studyDao;
 	private ILdapUserDao iLdapUserDao;
-	
-	private Long studyId;
-	private Study study;
-	private HashSet<Integer>	insertRows;
-	private HashSet<Integer>	updateRows;
-	private HashSet<ArkGridCell> errorCells;
 	
 	public ILdapUserDao getiLdapUserDao() {
 		return iLdapUserDao;
@@ -185,7 +179,6 @@ public class StudyServiceImpl implements IStudyService{
 		studyEntity.setStudyStatus(status);
 		studyDao.updateStudy(studyEntity);
 		
-		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Archived Study " + studyEntity.getName());
@@ -197,7 +190,6 @@ public class StudyServiceImpl implements IStudyService{
 	public void updateSite(SiteVO siteVo)throws ArkSystemException{
 		iLdapUserDao.updateSite(siteVo);
 		
-		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Updated Site " + siteVo.getSiteName());
@@ -269,10 +261,8 @@ public class StudyServiceImpl implements IStudyService{
 			throw new ArkSystemException("Problem creating phone record: " + ex.getMessage());
 		}
 	
-		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		
 		ah.setComment("Created Phone " + phone.getPhoneNumber());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHONE);
 		ah.setEntityId(phone.getId());
@@ -292,7 +282,6 @@ public class StudyServiceImpl implements IStudyService{
 			throw new ArkSystemException("Problem updating phone record: " + ex.getMessage());
 		}
 		
-		Subject currentUser = SecurityUtils.getSubject();
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		
@@ -708,8 +697,8 @@ public class StudyServiceImpl implements IStudyService{
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
+		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = arkCommonService.getStudy(studyId);
 		
 		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this); 
 	
@@ -735,23 +724,16 @@ public class StudyServiceImpl implements IStudyService{
 		return uploadReport;
 	}
 	
-	public Collection<String> validateSubjectFileData(File file, String fileFormat, char delimChar)
+	public SubjectUploadValidator validateSubjectFileData(File file, String fileFormat, char delimChar)
 	{
 		java.util.Collection<String> validationMessages = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
-		
-		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
 	
 		try
 		{	
 			log.debug("Validating Subject file data");
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploader.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
-			setSubjectUploadInsertRows(subjectUploader.getInsertRows());
-			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
-			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
+			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe)
 		{
@@ -765,28 +747,19 @@ public class StudyServiceImpl implements IStudyService{
 		{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
-		return validationMessages;
+		return subjectUploadValidator;
 	}
 
-	public Collection<String> validateSubjectFileFormat(File file, String fileFormat, char delimChar)
+	public SubjectUploadValidator validateSubjectFileFormat(File file, String fileFormat, char delimChar)
 	{
 		java.util.Collection<String> validationMessages = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
-		
-		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
 	
 		try
 		{	
 			log.debug("Validating Subject file format");
-			
-			if(file.getExtension().equalsIgnoreCase("XLS"))
-			{
-				file = subjectUploader.convertXlsToCsv(file, delimChar);
-			}
 			InputStream is = new FileInputStream(file);
-			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
+			validationMessages = subjectUploadValidator.validateSubjectMatrixFileFormat(is, file.length(), fileFormat, delimChar);
 		}
 		catch (IOException ioe)
 		{
@@ -800,21 +773,17 @@ public class StudyServiceImpl implements IStudyService{
 		{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
-		return validationMessages;
+		return subjectUploadValidator;
 	}
 
-	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) 
+	public SubjectUploadValidator validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) 
 	{
 		java.util.Collection<String> validationMessages = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
-		
-		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
 	
 		try
 		{	
-			validationMessages = subjectUploader.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			validationMessages = subjectUploadValidator.validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe)
 		{
@@ -824,25 +793,21 @@ public class StudyServiceImpl implements IStudyService{
 		{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
-		return validationMessages;
+		return subjectUploadValidator;
 	}
 
-	public Collection<String> validateSubjectFileData(InputStream inputStream,	String fileFormat, char delimChar) 
+	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream,	String fileFormat, char delimChar) 
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
-		
-		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this);
+		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = arkCommonService.getStudy(studyId);
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
 	
 		try
 		{	
 			log.debug("Validating Subject file data");
-			validationMessages = subjectUploader.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
-			setSubjectUploadInsertRows(subjectUploader.getInsertRows());
-			setSubjectUploadUpdateRows(subjectUploader.getUpdateRows());
-			setSubjectUploadErrorCells(subjectUploader.getErrorCells());
+			validationMessages = subjectUploadValidator.validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe)
 		{
@@ -852,15 +817,15 @@ public class StudyServiceImpl implements IStudyService{
 		{
 			log.error(Constants.ARK_BASE_EXCEPTION + abe);
 		}
-		return validationMessages;
+		return subjectUploadValidator;
 	}
 
 	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar) 
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = arkCommonService.getStudy(studyId);
+		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = arkCommonService.getStudy(studyId);
 		
 		SubjectUploader subjectUploader = new SubjectUploader(study, arkCommonService, this); 
 	
@@ -880,53 +845,15 @@ public class StudyServiceImpl implements IStudyService{
 		return uploadReport;
 	}
 
-	public HashSet<Integer> getSubjectUploadUpdateRows()
-	{
-		return this.updateRows;
-	}
-	
-	/**
-	 * @param errorCols the errorCols to set
-	 */
-	public void setSubjectUploadErrorCols(HashSet<Integer> errorCols)
-	{
-		this.insertRows = errorCols;
+	public SubjectUploadValidator validateSubjectFileFormat(UploadVO uploadVo) {
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
+		subjectUploadValidator.validateSubjectFileFormat(uploadVo);
+		return subjectUploadValidator;
 	}
 
-	/**
-	 * @return the insertRows
-	 */
-	public HashSet<Integer> getSubjectUploadInsertRows()
-	{
-		return insertRows;
-	}
-
-	private void setSubjectUploadUpdateRows(HashSet<Integer> updateRows)
-	{
-		this.updateRows = updateRows;	
-	}
-
-	/**
-	 * @param insertRows the errorRows to set
-	 */
-	public void setSubjectUploadInsertRows(HashSet<Integer> insertRows)
-	{
-		this.insertRows = insertRows;
-	}
-
-	/**
-	 * @return the errorCells
-	 */
-	public HashSet<ArkGridCell> getSubjectUploadErrorCells()
-	{
-		return errorCells;
-	}
-
-	/**
-	 * @param errorCells the errorCells to set
-	 */
-	public void setSubjectUploadErrorCells(HashSet<ArkGridCell> errorCells)
-	{
-		this.errorCells = errorCells;
+	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo) {
+		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
+		subjectUploadValidator.validateSubjectFileData(uploadVo);
+		return subjectUploadValidator;
 	}
 }

@@ -37,7 +37,9 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.ArkGridCell;
+import au.org.theark.study.util.SubjectUploadValidator;
 
 
 
@@ -209,15 +211,14 @@ public interface IStudyService {
 	public void updateUpload(StudyUpload studyUpload);
 	public void deleteUpload(StudyUpload studyUpload);
 
-	public Collection<String> validateSubjectFileFormat(File file, String fileFormat, char delimChar);
-	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileFormat(File file, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileFormat(UploadVO uploadVo);
 
-	public Collection<String> validateSubjectFileData(File file, String fileFormat, char delimChar);
-	public Collection<String> validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileData(File file, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
+	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo);
 
 	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
 	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
-	public HashSet<Integer> getSubjectUploadInsertRows();
-	public HashSet<Integer> getSubjectUploadUpdateRows();
-	public HashSet<ArkGridCell> getSubjectUploadErrorCells();
 }
