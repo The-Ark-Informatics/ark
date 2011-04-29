@@ -89,6 +89,14 @@
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<!-- JasperReport (seems to be latest non-RC release available on Maven repo -->
+		<dependency>
+		    <groupId>org.wicketstuff</groupId>
+		    <artifactId>jasperreports</artifactId>
+		    <version>1.4.17.1</version>
+		</dependency>
+		
 	</dependencies>
 	<build>
 		<resources>

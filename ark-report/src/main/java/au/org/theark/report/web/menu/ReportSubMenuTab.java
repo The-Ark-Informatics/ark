@@ -12,19 +12,16 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.report.web.Constants;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.report.web.Constants;
+import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 
-@SuppressWarnings("serial")
 public class ReportSubMenuTab extends Panel
 {
-
+	
 	List<ITab> tabList;
-	private WebMarkupContainer	studyNameMarkup;
-	private WebMarkupContainer	studyLogoMarkup;
 	private WebMarkupContainer	arkContextMarkup;
 
 	public ReportSubMenuTab(String id)
@@ -34,20 +31,11 @@ public class ReportSubMenuTab extends Panel
 		buildTabs();
 	}
 
-	public ReportSubMenuTab(String id, WebMarkupContainer studyLogoMarkup)
-	{
-		super(id);
-		tabList = new ArrayList<ITab>();
-		this.studyLogoMarkup = studyLogoMarkup;
-		buildTabs();
-	}
 
-	public ReportSubMenuTab(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup)
+	public ReportSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
 		tabList = new ArrayList<ITab>();
-		this.studyNameMarkup = studyNameMarkup;
-		this.studyLogoMarkup = studyLogoMarkup;
 		this.arkContextMarkup = arkContextMarkup;
 		buildTabs();
 	}
@@ -101,9 +89,9 @@ public class ReportSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_DETAIL))
 					{
-
-//						panelToReturn = new ReportContainer(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup);
-
+						ReportContainerPanel reportContainerPanel = new ReportContainerPanel(panelId, arkContextMarkup);
+						reportContainerPanel.initialisePanel();
+						panelToReturn = reportContainerPanel;
 					}
 					
 					return panelToReturn;
@@ -111,7 +99,7 @@ public class ReportSubMenuTab extends Panel
 			});
 		}
 
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.REPORT_DETAIL, moduleSubTabsList);
+		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.REPORT_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 }

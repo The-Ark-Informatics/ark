@@ -19,8 +19,8 @@ import au.org.theark.report.service.Constants;
  * Collection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.reporting.model.entity.ReportSecurity")
-@Table(name = "REPORT_SECURITY", schema = Constants.TABLE_SCHEMA)
+@Entity
+@Table(name = "REPORT_SECURITY", schema = Constants.REPORT_TABLE_SCHEMA)
 public class ReportSecurity implements java.io.Serializable
 {
 
@@ -76,7 +76,7 @@ public class ReportSecurity implements java.io.Serializable
 		return arkUser;
 	}
 
-	public void setState(ArkUser arkUser) {
+	public void setArkUser(ArkUser arkUser) {
 		this.arkUser = arkUser;
 	}
 

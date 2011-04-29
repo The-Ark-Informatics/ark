@@ -14,8 +14,8 @@ import au.org.theark.report.service.Constants;
  * Collection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.reporting.model.entity.ReportTemplate")
-@Table(name = "REPORT_TEMPLATE", schema = Constants.TABLE_SCHEMA)
+@Entity
+@Table(name = "REPORT_TEMPLATE", schema = Constants.REPORT_TABLE_SCHEMA)
 public class ReportTemplate implements java.io.Serializable
 {
 

@@ -1,11 +1,19 @@
 package au.org.theark.report.web.component.viewReport;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
 import au.org.theark.report.web.component.viewReport.studySummary.reportviewform.StudySummaryReportViewForm;
 
-public class ReportContainerVO {
+public class ReportContainerVO implements Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private FeedbackPanel feedBackPanel;
 	private StudySummaryReportViewForm reportViewForm;
 	private WebMarkupContainer arkContextMarkup;

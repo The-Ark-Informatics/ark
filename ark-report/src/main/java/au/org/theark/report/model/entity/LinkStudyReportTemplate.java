@@ -20,8 +20,8 @@ import au.org.theark.report.service.Constants;
  * Collection entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name = "au.org.theark.reporting.model.entity.LinkStudyReportTemplate")
-@Table(name = "LINK_STUDY_REPORT_TEMPLATE", schema = Constants.TABLE_SCHEMA)
+@Entity
+@Table(name = "LINK_STUDY_REPORT_TEMPLATE", schema = Constants.REPORT_TABLE_SCHEMA)
 public class LinkStudyReportTemplate implements java.io.Serializable
 {
 
@@ -59,7 +59,7 @@ public class LinkStudyReportTemplate implements java.io.Serializable
 	// Property accessors
 	@Id
 	@SequenceGenerator(name = "LinkStudyReportTemplate_PK_Seq", sequenceName = "REPORTING.LINK_STUDY_REPORT_TEMPLATE_PK_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "LinkStudyReportTemplate")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "LinkStudyReportTemplate_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId()
 	{
@@ -82,7 +82,7 @@ public class LinkStudyReportTemplate implements java.io.Serializable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REPORT_TEMPLATE", nullable = false)
+	@JoinColumn(name = "REPORT_TEMPLATE_ID", nullable = false)
 	public ReportTemplate getReportTemplate() {
 		return reportTemplate;
 	}

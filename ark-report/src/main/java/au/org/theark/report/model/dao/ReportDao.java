@@ -32,7 +32,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	
 	public Collection<ReportSecurity> getReportSecurity(Study study, ArkUser arkUser) {
 		Criteria criteria = getSession().createCriteria(ReportSecurity.class);
-		criteria.createAlias("linkReportTemplate", "linkReportTemplateAlias");
+		criteria.createAlias("linkStudyReportTemplate", "linkReportTemplateAlias");
 		criteria.add(Restrictions.or(Restrictions.eq("linkReportTemplateAlias.study", study), Restrictions.isNull("linkReportTemplateAlias.study")));
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		java.util.Collection<ReportSecurity> reportsAvailListing = criteria.list();

@@ -28,7 +28,6 @@ import au.org.theark.report.web.component.viewReport.studySummary.ReportViewPane
  */
 public class ReportContainerPanel extends Panel {
 	
-	private ReportSelectPanel reportSelectPanel;
 	private ReportParamsPanel reportParamsPanel;
 	private ReportViewPanel reportViewPanel;
 	private ReportSelectForm reportSelectForm;
@@ -41,7 +40,7 @@ public class ReportContainerPanel extends Panel {
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
-	@SpringBean( name = au.org.theark.report.service.REPORT_SERVICE)
+	@SpringBean( name = au.org.theark.report.service.Constants.REPORT_SERVICE)
 	private IReportService reportService;
 	
 	/**
@@ -57,7 +56,7 @@ public class ReportContainerPanel extends Panel {
 				
 		reportSelectForm = new ReportSelectForm("reportSelectForm", reportSelectCPM, reportContainerVO);
 		prerenderContextCheck();
-//		add(reportContainerVO.getReportViewForm());
+		add(reportSelectForm);
 		
 	}
 	
@@ -71,7 +70,7 @@ public class ReportContainerPanel extends Panel {
 	protected void prerenderContextCheck() {		
 		//Get the Person in Context and determine the Person Type
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+//		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 //		if ((sessionStudyId != null) && (sessionPersonId != null)) {
 //
@@ -109,73 +108,14 @@ public class ReportContainerPanel extends Panel {
 //		}
 	}
 	
-	protected WebMarkupContainer initialiseSelectPanel(){
-		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		Collection<SubjectVO> subjectVOCollection = new ArrayList<SubjectVO>();
-		if(sessionStudyId != null && sessionStudyId > 0){
-			
-			containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-			subjectVOCollection = iArkCommonService.getSubject(containerForm.getModelObject());
-		}
 
-		cpModel.getObject().setSubjectList(subjectVOCollection);
-		reportSelectPannel = new ReportSelectPanel("searchComponentPanel",
-									reportContainerVO.getFeedBackPanel(),
-									searchPanelContainer,
-									pageableListView,
-									searchResultPanelContainer,
-									detailPanelContainer,
-									detailPanelFormContainer,
-									viewButtonContainer,
-									editButtonContainer,
-									detailsPanel,
-									containerForm);
-
-		reportSelectPannel.initialisePanel(cpModel);
-		reportContainerVO.getReportSelectWMC().add(reportSelectPannel);
-		return reportContainerVO.getReportSelectWMC();
-	}
-	
-	
-	protected WebMarkupContainer initialiseReportViewPanel(){
-		
-		reportViewPanel = new ReportViewPanel("reportViewPanel",reportContainerVO.getFeedBackPanel(),searchResultPanelContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,reportContainerVO.getArkContextMarkup(),containerForm);
-		detailsPanel.initialisePanel();
-		detailPanelContainer.add(detailsPanel);
-		return detailPanelContainer;
-	}
-	
-	protected WebMarkupContainer initialiseSearchResults(){
-		
-		searchResultsPanel = new SearchResults("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,reportContainerVO.getArkContextMarkup(),containerForm);
-		
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
-			Collection<SubjectVO> participants = new ArrayList<SubjectVO>();
-			
-			@Override
-			protected Object load() {
-				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				
-				if(sessionStudyId != null){
-					containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-					participants = iArkCommonService.getSubject(containerForm.getModelObject());
-					containerForm.getModelObject().setSubjectList(participants);
-				}
-				pageableListView.removeAll();
-				return participants;
-			}
-		};
-
-		pageableListView  = searchResultsPanel.buildListView(iModel); 
-		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
-		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultsPanel);
-		return searchResultPanelContainer;
-	}
-
+//	
+//	protected WebMarkupContainer initialiseReportViewPanel(){
+//		
+//		reportViewPanel = new ReportViewPanel("reportViewPanel",reportContainerVO.getFeedBackPanel(),searchResultPanelContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,reportContainerVO.getArkContextMarkup(),containerForm);
+//		detailsPanel.initialisePanel();
+//		detailPanelContainer.add(detailsPanel);
+//		return detailPanelContainer;
+//	}
+//	
 }
