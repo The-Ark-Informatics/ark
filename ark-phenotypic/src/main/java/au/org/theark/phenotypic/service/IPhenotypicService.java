@@ -2,11 +2,9 @@ package au.org.theark.phenotypic.service;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashSet;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -70,12 +68,6 @@ public interface IPhenotypicService {
 	public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
 	public void importPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
 	public StringBuffer uploadAndReportPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
-	public HashSet<Integer> getInsertRows();
-	public HashSet<Integer> getUpdateRows();
-	public HashSet<ArkGridCell> getInsertCells();
-	public HashSet<ArkGridCell> getUpdateCells();
-	public HashSet<ArkGridCell> getWarningCells();
-	public HashSet<ArkGridCell> getErrorCells();
 	
 	// File Format
 	public java.util.Collection<FileFormat> getFileFormats();
@@ -103,5 +95,4 @@ public interface IPhenotypicService {
 	
 	public int getCountOfFieldsInStudy(Study study);
 	public int getCountOfFieldsWithDataInStudy(Study study);
-	
 }
