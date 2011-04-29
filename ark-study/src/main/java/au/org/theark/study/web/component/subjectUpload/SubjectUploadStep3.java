@@ -18,7 +18,6 @@ import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
@@ -38,8 +37,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService iStudyService;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
 	/**
 	 * Construct.
@@ -127,8 +126,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			
-			SubjectUploadValidator subjectUploadValidator = iStudyService.validateSubjectFileData(containerForm.getModelObject());
-			validationMessages = subjectUploadValidator.getDataValidationMessages();
+			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
+			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
