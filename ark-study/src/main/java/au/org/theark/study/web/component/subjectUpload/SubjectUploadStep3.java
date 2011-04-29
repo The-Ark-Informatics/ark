@@ -10,12 +10,15 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
@@ -34,6 +37,9 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	private WizardForm						wizardForm;
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
+
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService iStudyService;
 
 	/**
 	 * Construct.
@@ -121,8 +127,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			
-			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator();
-			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+			SubjectUploadValidator subjectUploadValidator = iStudyService.validateSubjectFileData(containerForm.getModelObject());
+			validationMessages = subjectUploadValidator.getDataValidationMessages();
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));

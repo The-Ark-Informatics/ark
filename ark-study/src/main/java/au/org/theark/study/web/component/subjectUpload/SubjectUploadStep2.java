@@ -8,11 +8,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
@@ -28,6 +30,10 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
+	
+	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
+	private IStudyService iStudyService;
+	
 	
 	public SubjectUploadStep2(String id) {
 		super(id);
@@ -79,8 +85,8 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			
-			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator();
-			validationMessages = subjectUploadValidator.validateSubjectFileData(containerForm.getModelObject());
+			SubjectUploadValidator subjectUploadValidator = iStudyService.validateSubjectFileFormat(containerForm.getModelObject());
+			validationMessages = subjectUploadValidator.getFileValidationMessages();
 			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
