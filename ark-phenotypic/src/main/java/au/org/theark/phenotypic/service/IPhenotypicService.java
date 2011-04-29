@@ -57,16 +57,10 @@ public interface IPhenotypicService {
 	public Status getStatusByName(String statusName);
 	public java.util.Collection<Status> getStatus();
 	
-	// Validate phenotypic data file
-	public java.util.Collection<String> validateMatrixPhenoFileFormat(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
-	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream inputStream, String fileFormat, char delimiterChar);
-	public java.util.Collection<String> validateMatrixPhenoFileData(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
-	public java.util.Collection<String> validateMatrixPhenoFileData(InputStream inputStream, String fileFormat, char delimiterChar);
-	
-	// Import phenotypic data file
-	public void importPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
+	// Upload phenotypic data file
+	public void uploadPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
 	public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
-	public void importPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
+	public void uploadPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
 	public StringBuffer uploadAndReportPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
 	
 	// File Format
