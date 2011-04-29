@@ -21,7 +21,6 @@ import jxl.read.biff.BiffException;
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,51 +39,54 @@ import au.org.theark.core.web.component.ArkGridCell;
 import com.csvreader.CsvReader;
 
 /**
- * SubjectUploadValidator provides support for validating subject matrix-formatted files.
+ * SubjectUploadValidator provides support for validating subject
+ * matrix-formatted files.
  * 
  * @author cellis
  */
-public class SubjectUploadValidator
-{
+public class SubjectUploadValidator {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -1933045886948087734L;
+	private static final long serialVersionUID = -1933045886948087734L;
 	private static Logger log = LoggerFactory.getLogger(SubjectUploadValidator.class);
-	//TODO: Implement @SpringBean for service calling
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	private Long studyId;
 	private Study study;
-	java.util.Collection<String>	fileValidationMessages	= null;
-	java.util.Collection<String>	dataValidationMessages	= null;
-	private HashSet<Integer>	insertRows;
-	private HashSet<Integer>	updateRows;
+	java.util.Collection<String> fileValidationMessages = new java.util.ArrayList<String>();
+	java.util.Collection<String> dataValidationMessages = new java.util.ArrayList<String>();
+	private HashSet<Integer> insertRows;
+	private HashSet<Integer> updateRows;
 	private HashSet<ArkGridCell> errorCells;
-	private long						subjectCount;
-	private long						fieldCount;
-	private long						curPos;
-	private long						srcLength					= -1;																	// -1 means nothing being processed 
-	private StopWatch					timer							= null;
-	private char						delimiterCharacter		= au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER;						// default delimiter: COMMA
-	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;						// default file fomat: CSV
-	private SimpleDateFormat		simpleDateFormat			= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	private long subjectCount;
+	private long fieldCount;
+	private long curPos;
+	private long srcLength = -1; // -1 means nothing being processed
+	private StopWatch timer = null;
+	private char delimiterCharacter = au.org.theark.core.Constants.DEFAULT_DELIMITER_CHARACTER; // default
+																								// delimiter:
+																								// COMMA
+	private String fileFormat = au.org.theark.core.Constants.DEFAULT_FILE_FORMAT; // default
+																					// file
+																					// fomat:
+																					// CSV
+	private SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+			au.org.theark.core.Constants.DD_MM_YYYY);
 	private int row = 1;
-	
-	public SubjectUploadValidator()
-	{
+
+	public SubjectUploadValidator() {
 		super();
 		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		studyId = (Long) currentUser.getSession().getAttribute(
+				au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		this.study = iArkCommonService.getStudy(studyId);
 		this.insertRows = new HashSet<Integer>();
 		this.updateRows = new HashSet<Integer>();
 		this.errorCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
-	
-	public SubjectUploadValidator(Study study)
-	{
+
+	public SubjectUploadValidator(Study study) {
 		super();
 		this.study = study;
 		this.insertRows = new HashSet<Integer>();
@@ -92,219 +94,232 @@ public class SubjectUploadValidator
 		this.errorCells = new HashSet<ArkGridCell>();
 		simpleDateFormat.setLenient(false);
 	}
-	
-	public Long getStudyId()
-	{
+
+	public SubjectUploadValidator(IArkCommonService iArkCommonService) {
+		super();
+		this.iArkCommonService = iArkCommonService;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(
+				au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		this.study = iArkCommonService.getStudy(studyId);
+		this.insertRows = new HashSet<Integer>();
+		this.updateRows = new HashSet<Integer>();
+		this.errorCells = new HashSet<ArkGridCell>();
+		simpleDateFormat.setLenient(false);
+	}
+
+	public java.util.Collection<String> getFileValidationMessages() {
+		return fileValidationMessages;
+	}
+
+	public void setFileValidationMessages(
+			java.util.Collection<String> fileValidationMessages) {
+		this.fileValidationMessages = fileValidationMessages;
+	}
+
+	public java.util.Collection<String> getDataValidationMessages() {
+		return dataValidationMessages;
+	}
+
+	public void setDataValidationMessages(
+			java.util.Collection<String> dataValidationMessages) {
+		this.dataValidationMessages = dataValidationMessages;
+	}
+
+	public Long getStudyId() {
 		return studyId;
 	}
-	public void setStudyId(Long studyId)
-	{
+
+	public void setStudyId(Long studyId) {
 		this.studyId = studyId;
 	}
-	public Study getStudy()
-	{
+
+	public Study getStudy() {
 		return study;
 	}
-	public void setStudy(Study study)
-	{
+
+	public void setStudy(Study study) {
 		this.study = study;
 	}
-	public HashSet<Integer> getInsertRows()
-	{
+
+	public HashSet<Integer> getInsertRows() {
 		return insertRows;
 	}
-	public void setInsertRows(HashSet<Integer> insertRows)
-	{
+
+	public void setInsertRows(HashSet<Integer> insertRows) {
 		this.insertRows = insertRows;
 	}
-	public HashSet<Integer> getUpdateRows()
-	{
+
+	public HashSet<Integer> getUpdateRows() {
 		return updateRows;
 	}
-	public void setUpdateRows(HashSet<Integer> updateRows)
-	{
+
+	public void setUpdateRows(HashSet<Integer> updateRows) {
 		this.updateRows = updateRows;
 	}
-	public HashSet<ArkGridCell> getErrorCells()
-	{
+
+	public HashSet<ArkGridCell> getErrorCells() {
 		return errorCells;
 	}
-	public void setErrorCells(HashSet<ArkGridCell> errorCells)
-	{
+
+	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
 		this.errorCells = errorCells;
 	}
-	
-	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
-	 * Where N is any number of columns
-	 * 
-	 * @param uploadVo
-	 *           is the UploadVO of the file
-	 * @return a collection of validation messages
-	 */
-	public Collection<String> validateSubjectFileFormat(UploadVO uploadVo) 
-	{
-		java.util.Collection<String> validationMessages = null;
-		try
-		{
-			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
-			fileFormat = uploadVo.getFileFormat().getName();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter); 
-		}
-		catch (IOException e)
-		{
-			log.error(e.getMessage());
-		}
-		return validationMessages;
-	}
-	
-	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
-	 * Where N is any number of columns
-	 * 
-	 * @param inputStream
-	 *           is the input stream of the file
-	 * @param fileFormat
-	 *           is the file format (eg txt)
-	 * @param delimChar
-	 * 			 is the delimiter character of the file (eg comma)
-	 * @return a collection of validation messages
-	 */
-	public Collection<String> validateSubjectFileFormat(InputStream inputStream, String fileFormat, char delimChar) 
-	{
-		java.util.Collection<String> validationMessages = null;
 
-		try
-		{	
-			// If Excel, convert to CSV for validation 
-			if(fileFormat.equalsIgnoreCase("XLS"))
-			{
-				Workbook w;
-				try
-				{
-					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
-					delimiterCharacter = ',';
-				}
-				catch (BiffException e)
-				{
-					log.error(e.getMessage());
-				}
-				catch (IOException e)
-				{
-					log.error(e.getMessage());
-				}
-			}
-			validationMessages = validateSubjectMatrixFileFormat(inputStream, inputStream.toString().length(), fileFormat, delimChar);
-		}
-		catch (FileFormatException ffe)
-		{
-			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe)
-		{
-			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe);
-		}
-		return validationMessages;
-	}
-	
 	/**
-	 * Validates the file in the default "matrix" file data assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
-	 * Where N is any number of columns
+	 * Validates the file in the default "matrix" file format assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
 	 * 
 	 * @param uploadVo
-	 *           is the UploadVO of the file
+	 *            is the UploadVO of the file
 	 * @return a collection of validation messages
 	 */
-	public Collection<String> validateSubjectFileData(UploadVO uploadVo) 
-	{
+	public Collection<String> validateSubjectFileFormat(UploadVO uploadVo) {
 		java.util.Collection<String> validationMessages = null;
-		try
-		{
+		try {
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			fileFormat = uploadVo.getUpload().getFileFormat().getName();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			
-			// If Excel, convert to CSV for validation 
-			if(fileFormat.equalsIgnoreCase("XLS"))
-			{
-				Workbook w;
-				try
-				{
-					w = Workbook.getWorkbook(inputStream);
-					inputStream = convertXlsToCsv(w);
-					inputStream.reset();
-					delimiterCharacter = ',';
-				}
-				catch (BiffException e)
-				{
-					log.error(e.getMessage());
-				}
-			}
-			
-			validateSubjectFileData(inputStream, fileFormat, delimiterCharacter); 
-		}
-		catch (IOException e)
-		{
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType()
+					.getDelimiterCharacter().charAt(0);
+			validateSubjectFileFormat(inputStream, fileFormat,
+					delimiterCharacter);
+		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
 		return validationMessages;
 	}
-	
-	public Collection<String> validateSubjectFileData(InputStream inputStream,	String fileFormat, char delimChar) 
-	{
+
+	/**
+	 * Validates the file in the default "matrix" file format assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param inputStream
+	 *            is the input stream of the file
+	 * @param fileFormat
+	 *            is the file format (eg txt)
+	 * @param delimChar
+	 *            is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateSubjectFileFormat(
+			InputStream inputStream, String fileFormat, char delimChar) {
 		java.util.Collection<String> validationMessages = null;
-	
-		try
-		{	
-			validationMessages = validateMatrixSubjectFileData(inputStream, inputStream.toString().length(), fileFormat, delimChar);
-		}
-		catch (FileFormatException ffe)
-		{
-			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (ArkBaseException abe)
-		{
-			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION + abe);
+
+		try {
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				} catch (BiffException e) {
+					log.error(e.getMessage());
+				} catch (IOException e) {
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateSubjectMatrixFileFormat(inputStream,
+					inputStream.toString().length(), fileFormat, delimChar);
+		} catch (FileFormatException ffe) {
+			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION
+					+ ffe);
+		} catch (ArkBaseException abe) {
+			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION
+					+ abe);
 		}
 		return validationMessages;
 	}
-	
+
 	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
+	 * Validates the file in the default "matrix" file data assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param uploadVo
+	 *            is the UploadVO of the file
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateSubjectFileData(UploadVO uploadVo) {
+		java.util.Collection<String> validationMessages = null;
+		try {
+			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			fileFormat = uploadVo.getUpload().getFileFormat().getName();
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType()
+					.getDelimiterCharacter().charAt(0);
+
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				Workbook w;
+				try {
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					delimiterCharacter = ',';
+				} catch (BiffException e) {
+					log.error(e.getMessage());
+				}
+			}
+
+			validateSubjectFileData(inputStream, fileFormat, delimiterCharacter);
+		} catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		return validationMessages;
+	}
+
+	public Collection<String> validateSubjectFileData(InputStream inputStream,
+			String fileFormat, char delimChar) {
+		java.util.Collection<String> validationMessages = null;
+
+		try {
+			validationMessages = validateMatrixSubjectFileData(inputStream,
+					inputStream.toString().length(), fileFormat, delimChar);
+		} catch (FileFormatException ffe) {
+			log.error(au.org.theark.study.web.Constants.FILE_FORMAT_EXCEPTION
+					+ ffe);
+		} catch (ArkBaseException abe) {
+			log.error(au.org.theark.study.web.Constants.ARK_BASE_EXCEPTION
+					+ abe);
+		}
+		return validationMessages;
+	}
+
+	/**
+	 * Validates the file in the default "matrix" file format assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
 	 * Where N is any number of columns
 	 * 
 	 * @param fileInputStream
-	 *           is the input stream of a file
+	 *            is the input stream of a file
 	 * @param inLength
-	 *           is the length of a file
+	 *            is the length of a file
 	 * @throws FileFormatException
-	 *            file format Exception
+	 *             file format Exception
 	 * @throws ArkBaseException
-	 *            general ARK Exception
+	 *             general ARK Exception
 	 * @return a collection of file format validation messages
 	 */
-	public java.util.Collection<String> validateSubjectMatrixFileFormat(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkBaseException
-	{
+	public java.util.Collection<String> validateSubjectMatrixFileFormat(
+			InputStream fileInputStream, long inLength, String inFileFormat,
+			char inDelimChr) throws FileFormatException, ArkBaseException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		curPos = 0;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
-		try
-		{
+		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
 			srcLength = inLength;
-			if (srcLength <= 0)
-			{
-				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			if (srcLength <= 0) {
+				throw new FileFormatException(
+						"The input size was not greater than 0.  Actual length reported: "
+								+ srcLength);
 			}
 
 			timer = new StopWatch();
@@ -316,7 +331,8 @@ public class SubjectUploadValidator
 			csvReader.readHeaders();
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
-			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+			log.debug("Header length: "
+					+ csvReader.getHeaders().toString().length());
 
 			String[] fieldNameArray = csvReader.getHeaders();
 
@@ -324,35 +340,52 @@ public class SubjectUploadValidator
 			fieldCount = fieldNameArray.length - 1;
 
 			// Loop through all rows in file
-			while (csvReader.readRecord())
-			{
+			while (csvReader.readRecord()) {
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 
-				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID))
-				{
+				if (csvReader.getColumnCount() < 2
+						|| fieldCount < 1
+						|| !fieldNameArray[0]
+								.equalsIgnoreCase(Constants.SUBJECTUID)) {
 					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
-					stringBuffer.append("The specified file does not appear to conform to the expected file format.\n");
-					stringBuffer.append("The specified fileformat was: " + fileFormat +".\n");
-					stringBuffer.append("The specified delimiter type was: " + delimiterCharacter +".\n");
+					stringBuffer
+							.append("The specified file does not appear to conform to the expected file format.\n");
+					stringBuffer.append("The specified fileformat was: "
+							+ fileFormat + ".\n");
+					stringBuffer.append("The specified delimiter type was: "
+							+ delimiterCharacter + ".\n");
 					stringBuffer.append(".\n");
-					stringBuffer.append("The default format should be as follows:\n");
-					stringBuffer.append(Constants.SUBJECTUID + delimiterCharacter + "FIELDNAME1"+ delimiterCharacter + "FIELDNAME2"+ delimiterCharacter + "FIELDNAME3"+ delimiterCharacter + "FIELDNAMEX\n");
-					stringBuffer.append("[subjectUid]" + delimiterCharacter + "[field1value]" + delimiterCharacter + "[field2value]" + delimiterCharacter + "[field3value]" + delimiterCharacter + "[fieldXvalue]\n");
-					stringBuffer.append("[...]" + delimiterCharacter + "[...]" + delimiterCharacter + "[...]" + delimiterCharacter + "[...]" + delimiterCharacter + "[...]" + delimiterCharacter + "[...]\n");
-					stringBuffer.append("\nNOTE: Enclosing quotes are optional");
+					stringBuffer
+							.append("The default format should be as follows:\n");
+					stringBuffer.append(Constants.SUBJECTUID
+							+ delimiterCharacter + "FIELDNAME1"
+							+ delimiterCharacter + "FIELDNAME2"
+							+ delimiterCharacter + "FIELDNAME3"
+							+ delimiterCharacter + "FIELDNAMEX\n");
+					stringBuffer.append("[subjectUid]" + delimiterCharacter
+							+ "[field1value]" + delimiterCharacter
+							+ "[field2value]" + delimiterCharacter
+							+ "[field3value]" + delimiterCharacter
+							+ "[fieldXvalue]\n");
+					stringBuffer.append("[...]" + delimiterCharacter + "[...]"
+							+ delimiterCharacter + "[...]" + delimiterCharacter
+							+ "[...]" + delimiterCharacter + "[...]"
+							+ delimiterCharacter + "[...]\n");
+					stringBuffer
+							.append("\nNOTE: Enclosing quotes are optional");
 
 					fileValidationMessages.add(stringBuffer.toString());
 					break;
-				}
-				else
-				{
+				} else {
 					// Check each line has same number of columns as header
-					if (stringLineArray.length < fieldNameArray.length)
-					{
-						fileValidationMessages.add("Error at row " + row + ", the row has missing cells, or missing the required number of delimiters.");
+					if (stringLineArray.length < fieldNameArray.length) {
+						fileValidationMessages
+								.add("Error at row "
+										+ row
+										+ ", the row has missing cells, or missing the required number of delimiters.");
 					}
 				}
 
@@ -360,57 +393,46 @@ public class SubjectUploadValidator
 				subjectCount++;
 			}
 
-			if (fileValidationMessages.size() > 0)
-			{
-				for (Iterator<String> iterator = fileValidationMessages.iterator(); iterator.hasNext();)
-				{
+			if (fileValidationMessages.size() > 0) {
+				for (Iterator<String> iterator = fileValidationMessages
+						.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
 					log.debug(errorMessage);
 				}
-			}
-			else
-			{
+			} else {
 				log.debug("Validation is ok");
 			}
-		}
-		catch (IOException ioe)
-		{
+		} catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
-		}
-		catch (Exception ex)
-		{
+			throw new ArkSystemException(
+					"Unexpected I/O exception whilst reading the subject data file");
+		} catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
-		}
-		finally
-		{
+			throw new ArkSystemException(
+					"Unexpected exception occurred when trying to process subject data file");
+		} finally {
 			// Clean up the IO objects
 			timer.stop();
-			// fileValidationMessages.add("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			// fileValidationMessages.add("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			// fileValidationMessages.add("Total elapsed time: " +
+			// timer.getTime() + " ms or " +
+			// decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			// fileValidationMessages.add("Total file size: " + srcLength +
+			// " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) +
+			// " MB");
 
 			if (timer != null)
 				timer = null;
-			if (csvReader != null)
-			{
-				try
-				{
+			if (csvReader != null) {
+				try {
 					csvReader.close();
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (inputStreamReader != null)
-			{
-				try
-				{
+			if (inputStreamReader != null) {
+				try {
 					inputStreamReader.close();
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
 			}
@@ -422,22 +444,24 @@ public class SubjectUploadValidator
 	}
 
 	/**
-	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN...
+	 * Validates the file in the default "matrix" file format assumed:
+	 * SUBJECTUID,FIELD1,FIELD2,FIELDN...
 	 * 
 	 * Where N is any number of columns
 	 * 
 	 * @param fileInputStream
-	 *           is the input stream of a file
+	 *            is the input stream of a file
 	 * @param inLength
-	 *           is the length of a file
+	 *            is the length of a file
 	 * @throws FileFormatException
-	 *            file format Exception
+	 *             file format Exception
 	 * @throws ArkBaseException
-	 *            general ARK Exception
+	 *             general ARK Exception
 	 * @return a collection of data validation messages
 	 */
-	public java.util.Collection<String> validateMatrixSubjectFileData(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException
-	{
+	public java.util.Collection<String> validateMatrixSubjectFileData(
+			InputStream fileInputStream, long inLength, String inFileFormat,
+			char inDelimChr) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		fileFormat = inFileFormat;
 		curPos = 0;
@@ -447,33 +471,28 @@ public class SubjectUploadValidator
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-		try
-		{
-			if(fileFormat.equalsIgnoreCase("XLS"))
-			{
-				try
-				{
-					fileInputStream = convertXlsToCsv(Workbook.getWorkbook(fileInputStream));
+		try {
+			if (fileFormat.equalsIgnoreCase("XLS")) {
+				try {
+					fileInputStream = convertXlsToCsv(Workbook
+							.getWorkbook(fileInputStream));
 					delimiterCharacter = ',';
-				}
-				catch (BiffException e)
-				{
+				} catch (BiffException e) {
 					log.error("BiffException: " + e);
-				}
-				catch (IOException e)
-				{
+				} catch (IOException e) {
 					log.error("IOException: " + e);
 				}
 			}
-			
+
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
 			srcLength = inLength;
-			if (srcLength <= 0)
-			{
-				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			if (srcLength <= 0) {
+				throw new FileFormatException(
+						"The input size was not greater than 0.  Actual length reported: "
+								+ srcLength);
 			}
 
 			timer = new StopWatch();
@@ -492,8 +511,7 @@ public class SubjectUploadValidator
 			fieldCount = fieldNameArray.length - 1;
 
 			// Loop through all rows in file
-			while (csvReader.readRecord())
-			{
+			while (csvReader.readRecord()) {
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
@@ -502,15 +520,13 @@ public class SubjectUploadValidator
 				String subjectUID = stringLineArray[0];
 
 				// If no SubjectUID found, caught by exception catch
-				try
-				{
-					LinkSubjectStudy linksubjectStudy = (iArkCommonService.getSubjectByUID(subjectUID));
+				try {
+					LinkSubjectStudy linksubjectStudy = (iArkCommonService
+							.getSubjectByUID(subjectUID));
 					linksubjectStudy.setStudy(study);
 					updateRows.add(row);
-					
-				}
-				catch (EntityNotFoundException enf)
-				{
+
+				} catch (EntityNotFoundException enf) {
 					// Subject not found, thus a new subject to be inserted
 					insertRows.add(row);
 				}
@@ -518,51 +534,49 @@ public class SubjectUploadValidator
 				int col = 0;
 				String dateStr = new String();
 
-				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0)
-				{
+				if (csvReader.getIndex("DATE_OF_BIRTH") > 0
+						|| csvReader.getIndex("DOB") > 0) {
 
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0)
-					{
+					if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
 						col = csvReader.getIndex("DATE_OF_BIRTH");
-					}
-					else
-					{
+					} else {
 						col = csvReader.getIndex("DOB");
 					}
 
-					try
-					{
+					try {
 						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex)
-					{
-						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
+					} catch (ParseException pex) {
+						dataValidationMessages.add("Row: " + row
+								+ ": Subject UID: " + subjectUID + " "
+								+ fieldNameArray[col] + ": "
+								+ stringLineArray[col]
+								+ " is not in the valid date format of: "
+								+ Constants.DD_MM_YYYY.toLowerCase());
 						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
 
-				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0)
-				{
+				if (csvReader.getIndex("DATE_OF_DEATH") > 0
+						|| csvReader.getIndex("DODEATH") > 0) {
 
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0)
-					{
+					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
 						col = csvReader.getIndex("DATE_OF_DEATH");
-					}
-					else
-					{
+					} else {
 						col = csvReader.getIndex("DODEATH");
 					}
-					try
-					{
+					try {
 						dateStr = stringLineArray[col];
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
-					}
-					catch (ParseException pex)
-					{
-						dataValidationMessages.add("Row: " + row + ": Subject UID: " + subjectUID + " " + fieldNameArray[col] + ": " + stringLineArray[col] + " is not in the valid date format of: " + Constants.DD_MM_YYYY.toLowerCase());
+					} catch (ParseException pex) {
+						dataValidationMessages.add("Row: " + row
+								+ ": Subject UID: " + subjectUID + " "
+								+ fieldNameArray[col] + ": "
+								+ stringLineArray[col]
+								+ " is not in the valid date format of: "
+								+ Constants.DD_MM_YYYY.toLowerCase());
 						errorCells.add(new ArkGridCell(col, row));
 					}
 				}
@@ -572,57 +586,45 @@ public class SubjectUploadValidator
 				row++;
 			}
 
-			if (dataValidationMessages.size() > 0)
-			{
-				log.debug("Validation messages: " + dataValidationMessages.size());
-				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();)
-				{
+			if (dataValidationMessages.size() > 0) {
+				log.debug("Validation messages: "
+						+ dataValidationMessages.size());
+				for (Iterator<String> iterator = dataValidationMessages
+						.iterator(); iterator.hasNext();) {
 					String errorMessage = iterator.next();
 					log.debug(errorMessage);
 				}
-			}
-			else
-			{
+			} else {
 				log.debug("Validation is ok");
 			}
-		}
-		catch (IOException ioe)
-		{
+		} catch (IOException ioe) {
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
-			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
-		}
-		catch (Exception ex)
-		{
+			throw new ArkSystemException(
+					"Unexpected I/O exception whilst reading the subject data file");
+		} catch (Exception ex) {
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
-			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
-		}
-		finally
-		{
+			throw new ArkSystemException(
+					"Unexpected exception occurred when trying to process subject data file");
+		} finally {
 			// Clean up the IO objects
 			timer.stop();
-			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
-			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			log.debug("Total elapsed time: " + timer.getTime() + " ms or "
+					+ decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.debug("Total file size: " + srcLength + " B or "
+					+ decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
 			if (timer != null)
 				timer = null;
-			if (csvReader != null)
-			{
-				try
-				{
+			if (csvReader != null) {
+				try {
 					csvReader.close();
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (inputStreamReader != null)
-			{
-				try
-				{
+			if (inputStreamReader != null) {
+				try {
 					inputStreamReader.close();
-				}
-				catch (Exception ex)
-				{
+				} catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
 			}
@@ -633,17 +635,15 @@ public class SubjectUploadValidator
 
 		return dataValidationMessages;
 	}
-	
+
 	/**
 	 * Return the inputstream of the converted workbook as csv
 	 * 
 	 * @return inputstream of the converted workbook as csv
 	 */
-	public InputStream convertXlsToCsv(Workbook w)
-	{
+	public InputStream convertXlsToCsv(Workbook w) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try
-		{
+		try {
 			OutputStreamWriter osw = new OutputStreamWriter(out);
 
 			// Gets first sheet from workbook
@@ -652,47 +652,38 @@ public class SubjectUploadValidator
 			Cell[] row = null;
 
 			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++)
-			{
+			for (int i = 0; i < s.getRows(); i++) {
 				row = s.getRow(i);
 
-				if (row.length > 0)
-				{
+				if (row.length > 0) {
 					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++)
-					{
+					for (int j = 1; j < row.length; j++) {
 						osw.write(delimiterCharacter);
 						osw.write(row[j].getContents());
 					}
 				}
 				osw.write("\n");
 			}
-			
+
 			osw.flush();
 			osw.close();
-		}
-		catch (UnsupportedEncodingException e)
-		{
+		} catch (UnsupportedEncodingException e) {
 			System.err.println(e.toString());
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println(e.toString());
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			System.err.println(e.toString());
 		}
 		return new ByteArrayInputStream(out.toByteArray());
 	}
-	
+
 	/**
 	 * Return the progress of the current process in %
 	 * 
-	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
+	 * @return if a process is actively running, then progress in %; or if no
+	 *         process running, then returns -1
 	 */
-	public double getProgress()
-	{
+	public double getProgress() {
 		double progress = -1;
 
 		if (srcLength > 0)
@@ -704,10 +695,10 @@ public class SubjectUploadValidator
 	/**
 	 * Return the speed of the current process in KB/s
 	 * 
-	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
+	 * @return if a process is actively running, then speed in KB/s; or if no
+	 *         process running, then returns -1
 	 */
-	public double getSpeed()
-	{
+	public double getSpeed() {
 		double speed = -1;
 
 		if (srcLength > 0)
