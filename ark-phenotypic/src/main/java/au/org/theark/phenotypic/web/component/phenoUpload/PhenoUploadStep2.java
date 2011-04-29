@@ -8,13 +8,19 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.exception.FileFormatException;
+import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenotypicValidator;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.WizardForm;
 
 /**
@@ -27,13 +33,16 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	 * 
 	 */
 	private static final long	serialVersionUID	= -6923277221441497110L;
+	static Logger	log	= LoggerFactory.getLogger(PhenoUploadStep2.class);
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
-	private WizardForm wizardForm;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 	
 	public PhenoUploadStep2(String id) {
 		super(id);
@@ -44,8 +53,6 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		super(id, "Step 2/5: File Validation", "The file has been validated. If there are no errors, click Next to continue.");
 
 		this.containerForm = containerForm;
-		this.wizardForm = wizardForm;
-		
 		initialiseDetailForm();
 	}
 	
@@ -85,13 +92,16 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		InputStream inputStream;
 		try
 		{
+			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
-		}
-		catch (IOException e1)
-		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			//validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
+			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
+		} catch (FileFormatException e1) {
+			log.error(e1.getMessage());
+		} catch (PhenotypicSystemException e1) {
+			log.error(e1.getMessage());
+		} catch (IOException e1){
+			log.error(e1.getMessage());
 		}
 		
 		containerForm.getModelObject().setValidationMessages(validationMessages);

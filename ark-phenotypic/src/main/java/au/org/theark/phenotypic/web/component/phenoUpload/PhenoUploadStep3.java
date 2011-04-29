@@ -11,14 +11,20 @@ import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.exception.FileFormatException;
+import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenotypicValidator;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.WizardForm;
 
 /**
@@ -30,18 +36,19 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	 * 
 	 */
 	private static final long serialVersionUID = 5099768179441679542L;
+	static Logger	log	= LoggerFactory.getLogger(PhenoUploadStep3.class);
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
 	private WizardForm wizardForm;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService iPhenotypicService;
 	private WebMarkupContainer 			overrideDataValidationContainer;
 	private CheckBox							overrideDataValidationChkBox;
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
-	
-	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
-	
 	
 	/**
 	 * Construct.
@@ -169,9 +176,11 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 			InputStream inputStream;
 			try
 			{
+				PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				validationMessages = phenotypicService.validateMatrixPhenoFileData(inputStream, fileFormat, delimChar);
-				
+				//validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
+				validationMessages = phenotypicValidator.validateMatrixPhenoFileData(inputStream, inputStream.toString().length());
+			
 				HashSet<Integer> insertRows = new HashSet<Integer>();
 				HashSet<Integer> updateRows = new HashSet<Integer>();
 				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
@@ -179,12 +188,12 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
 				
-				insertRows = phenotypicService.getInsertRows();
-				updateRows = phenotypicService.getUpdateRows();
-				insertCells = phenotypicService.getInsertCells();
-				updateCells = phenotypicService.getUpdateCells();
-				warningCells = phenotypicService.getWarningCells();
-				errorCells = phenotypicService.getErrorCells();
+				insertRows = phenotypicValidator.getInsertRows();
+				updateRows = phenotypicValidator.getUpdateRows();
+				insertCells = phenotypicValidator.getInsertCells();
+				updateCells = phenotypicValidator.getUpdateCells();
+				warningCells = phenotypicValidator.getWarningCells();
+				errorCells = phenotypicValidator.getErrorCells();
 				inputStream.reset();
 				
 				// Show file data (and key reference)
@@ -214,10 +223,12 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 					form.getNextButton().setEnabled(false);
 					target.addComponent(form.getWizardButtonContainer());
 				}
-			}
-			catch (IOException e)
-			{
-				System.out.println("Failed to display the uploaded file: " + e);
+			} catch (FileFormatException e1) {
+				log.error(e1.getMessage());
+			} catch (PhenotypicSystemException e1) {
+				log.error(e1.getMessage());
+			} catch (IOException e1){
+				log.error(e1.getMessage());
 			}
 			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
