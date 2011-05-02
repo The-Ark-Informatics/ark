@@ -73,9 +73,6 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	log.debug("Inside doGetAuthorizationInfo ");
     	
     	SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-    	boolean isAdministator = false;
-    	boolean isSuperAdministator = false;
-    	
     	String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
     	
     	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute("studyId");
@@ -85,14 +82,21 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	try{
     		
         	if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId == null){
-        		log.info("There is a study in context. Now we can look up the subject's roles for the study");
+        		log.info("There is no study in context. Now we can look up the subject's roles for the study");
         		//Load the role for the given module and use case 
         		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
         		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, null);
         		info.addRole(role);
-        		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, null);
-        		info.addStringPermissions(userRolePermission);
+        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkUsecase,arkModule)){
+        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkPermission();
+        			info.addStringPermissions(userRolePermission);
+        		}else{
+            		if(role != null){
+                		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, null);
+                		info.addStringPermissions(userRolePermission);
+            		}
+        		}
         	}
         	else if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId != null){
         		log.info("There is a study in context. Now we can look up the subject's roles for the study");
@@ -102,10 +106,17 @@ public class ArkLdapRealm extends AuthorizingRealm{
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
         		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, study);
         		info.addRole(role);
-        		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, study);
-        		info.addStringPermissions(userRolePermission);
+        		
+        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkUsecase,arkModule)){
+        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkPermission();
+        			info.addStringPermissions(userRolePermission);
+        		}else{
+            		if(role != null){
+            			java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, study);
+                		info.addStringPermissions(userRolePermission);
+            		}
+        		}
         	}
-        
         	
     	}catch(EntityNotFoundException userNotFound){
     		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
@@ -115,64 +126,10 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
         return info;
     }
-    
-    
-    /*
-     * 
-     * 
-     *     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-    	log.debug("Inside doGetAuthorizationInfo ");
-    	
-    	SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-    	boolean isAdministator = false;
-    	boolean isSuperAdministator = false;
-    	
-    	String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
-    	
-    	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute("studyId");
 
-    	try{
-    		//Check if the logged in user has SuperAdmin Role or Admin role
-    		isAdministator = iArkCommonService.isAdministator(ldapUserName);
-    		isSuperAdministator = iArkCommonService.isSuperAdministrator(ldapUserName);
-        	//TODO: Check if user is Super Administrator ark_user_role for the module in context
-        	if( isSuperAdministator || isAdministator ){
-        		log.info("The logged in user is of Type of Administator");
-        		Collection<String> roleCollection  = iArkCommonService.getUserAdminRoles(ldapUserName);
-        		info.addRoles(roleCollection);
-        
-        	}else{
-        		log.info("The logged in user is an ordinary user. Don't yet add roles defer until a study is in context.");
-        		//Normal user
-        	}
-        	
-        	//Load Study Specific roles
-        	if(sessionStudyId != null){
-        		log.info("There is a study in context. Now we can look up the subject's roles for the study");
-        		//Get the roles for the study in context
-        		Study study = iArkCommonService.getStudy(sessionStudyId);
-        		String studyRole  = iArkCommonService.getUserRoleForStudy(ldapUserName, study);
-        		info.addRole(studyRole);
-        	}
-    	}catch(EntityNotFoundException userNotFound){
-    		log.error("The logged in user was not located in the ArkUser Table.The user was not set up correctly.");
-    	}
-
-    	
-    	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
-        return info;
-    }
-     * 
-     * 
-     * (non-Javadoc)
-     * @see org.apache.shiro.realm.AuthorizingRealm#clearCachedAuthorizationInfo(org.apache.shiro.subject.PrincipalCollection)
-     */
-    
     @Override
     public void clearCachedAuthorizationInfo(PrincipalCollection principals) {
     	super.clearCachedAuthorizationInfo(principals);
     }
-    
-
 
 }
