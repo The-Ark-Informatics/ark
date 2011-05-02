@@ -50,10 +50,12 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.model.dao.ILdapUserDao;
@@ -137,6 +139,16 @@ public class StudyServiceImpl implements IStudyService{
 			}
 		}catch(ArkSystemException arkSystemException){
 			throw arkSystemException;
+		}
+		
+	}
+	
+	public void createStudy(StudyModelVO studyModelVo){
+		//Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if(securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
+			studyDao.create(studyModelVo.getStudy(),studyModelVo.getSelectedArkModules());
 		}
 		
 	}

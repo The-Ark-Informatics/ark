@@ -2,7 +2,6 @@ package au.org.theark.study.service;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -36,9 +35,9 @@ import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
-import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.study.util.SubjectUploadValidator;
 
 
@@ -52,6 +51,8 @@ public interface IStudyService {
 	 * @throws ArkSystemException
 	 */
 	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
+	
+	public void createStudy(StudyModelVO studyModelVo);
 	
 	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved,EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
