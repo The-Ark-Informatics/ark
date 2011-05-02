@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("serial")
@@ -18,6 +19,10 @@ public class StudyModelVO implements Serializable{
 	private List<Study> studyList;
 	private Collection<ModuleVO> modulesAvailable;
 	private Collection<ModuleVO> modulesSelected;
+	
+	private Collection<ArkModule> availableArkModules;
+	private Collection<ArkModule> selectedArkModules;
+	
 	private String studySummaryLabel;
 	private String subjectUidExample;
 	
@@ -28,6 +33,8 @@ public class StudyModelVO implements Serializable{
 		studyList = new ArrayList<Study>();
 		modulesAvailable = new ArrayList<ModuleVO>();
 		modulesSelected = new ArrayList<ModuleVO>();
+		availableArkModules = new ArrayList<ArkModule>();
+		selectedArkModules = new ArrayList<ArkModule>();
 		setSubjectUidExample(new String());
 	}
 	
@@ -106,5 +113,21 @@ public class StudyModelVO implements Serializable{
 	public void setSubjectUidExample(String subjectUidExample)
 	{
 		this.subjectUidExample = subjectUidExample;
+	}
+
+	public Collection<ArkModule> getAvailableArkModules() {
+		return availableArkModules;
+	}
+
+	public void setAvailableArkModules(Collection<ArkModule> availableArkModules) {
+		this.availableArkModules = availableArkModules;
+	}
+
+	public Collection<ArkModule> getSelectedArkModules() {
+		return selectedArkModules;
+	}
+
+	public void setSelectedArkModules(Collection<ArkModule> selectedArkModules) {
+		this.selectedArkModules = selectedArkModules;
 	}
 }
