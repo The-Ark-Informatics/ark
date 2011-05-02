@@ -50,6 +50,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
@@ -103,6 +104,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 	// Application Select Palette
 	private Palette							appPalette;
+	//NN Working on this. Commented until we turn the new security mechanism
+	//private Palette arkModulePalette;
 
 	// Study logo uploader
 	private FileUploadField					fileUploadField;
@@ -252,7 +255,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		dateOfApplicationDp.add(datePicker);
 
 		initPalette();
-
+		//TODO: Do not remove
+		//initialiseArkModulePalette();
+		
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
@@ -375,6 +380,25 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		};
 	}
 
+	//TODO Do not remove: This has been implemented but will be turned on after we have the user management
+//	private void initialiseArkModulePalette(){
+//		
+//		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
+//		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
+//		PropertyModel<Collection<ArkModule>> selectedModPm =  new PropertyModel<Collection<ArkModule>>(sm,"selectedArkModules");
+//		PropertyModel<Collection<ArkModule>> availableModulesPm =  new PropertyModel<Collection<ArkModule>>(sm,"availableArkModules");
+//		
+//		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false)
+//		{
+//			@Override
+//			public ResourceReference getCSS()
+//			{
+//				return null;
+//			}
+//		};
+//		
+//	}
+
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel)
 	{
 		List<StudyStatus> studyStatusList = iArkCommonService.getListOfStudyStatus();
@@ -448,6 +472,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
 		studyCrudVO.getDetailPanelFormContainer().add(appPalette);
+		/* New Model NN Do not remove*/
+		//studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoImageContainer());
@@ -559,6 +585,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		{
 			// Create
 			studyService.createStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
+			//TODO: Do not remove:This will be the new create service called
+			//studyService.createStudy(studyModel);
 			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
