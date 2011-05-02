@@ -10,6 +10,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
@@ -40,6 +41,8 @@ import au.org.theark.core.vo.SubjectVO;
 public interface IStudyDao {
 
 	public void create(Study study);
+	
+	public void create(Study study,Collection<ArkModule> selectedApplications);
 	
 	public void create(StudyComp studyComponent) throws ArkSystemException;
 	

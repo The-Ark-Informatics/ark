@@ -31,6 +31,7 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
@@ -41,6 +42,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
@@ -77,6 +79,27 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 	public void create(Study study) {
 		getSession().save(study);
+	}
+	
+	public void create(Study study, Collection<ArkModule> selectedApplications){
+		Session session = getSession();
+		session.save(study);
+		linkStudyToArkModule(study,selectedApplications,session, au.org.theark.core.Constants.MODE_NEW);
+	}
+	
+	private void linkStudyToArkModule(Study study,  Collection<ArkModule> selectedApplications,Session session, int mode ){
+		
+		
+		for (ArkModule arkModule : selectedApplications) {
+			LinkStudyArkModule linkStudyArkModule = new LinkStudyArkModule();
+			linkStudyArkModule.setStudy(study);
+			linkStudyArkModule.setArkModule(arkModule);
+			if(mode == au.org.theark.core.Constants.MODE_NEW){
+				session.save(linkStudyArkModule);	
+			}else{
+				session.update(linkStudyArkModule);
+			}
+		}
 	}
 
 	public List<StudyStatus> getListOfStudyStatus() {
