@@ -11,9 +11,10 @@ import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author nivedann
+ * @param <T>
  *
  */
-public interface IArkAuthorisation {
+public interface IArkAuthorisation<T> {
 	
 	/**
 	 * This interface checks if the user is a Super Administrator 
@@ -76,8 +77,9 @@ public interface IArkAuthorisation {
 	 */
 	public Collection<String> getArkPermission();
 	
-	public Collection<ArkModule> getArkModules();
+	public   Collection<Class<T>>  getEntityList(Class<T> aClass);
 	
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
+	
 
 }
