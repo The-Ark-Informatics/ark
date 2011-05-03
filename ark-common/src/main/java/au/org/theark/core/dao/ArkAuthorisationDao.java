@@ -331,12 +331,12 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return arkStringPermissions;
 	}
 
-	
-	public Collection<ArkModule> getArkModules(){
-		Collection<ArkModule> arkModuleList = new ArrayList<ArkModule>();
-		Criteria criteria = getSession().createCriteria(ArkModule.class);
-		arkModuleList = (Collection<ArkModule>)criteria.list();
-		return arkModuleList;
+
+	public Collection<Class<T>> getEntityList(Class aClass){
+		Collection<Class<T>> arkModuleList = new ArrayList<Class<T>>();
+		Criteria criteria = getSession().createCriteria(aClass);
+		arkModuleList = criteria.list();
+		return (Collection<Class<T>>) arkModuleList;
 	}
 
 }
