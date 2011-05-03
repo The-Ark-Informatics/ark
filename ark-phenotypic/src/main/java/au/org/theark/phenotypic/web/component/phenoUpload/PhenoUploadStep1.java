@@ -15,7 +15,6 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +48,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
-	private transient Logger log = LoggerFactory.getLogger(PhenoUploadContainer.class);
+	private transient Logger log = LoggerFactory.getLogger(PhenoUploadContainerPanel.class);
 
 	private Form<UploadVO> containerForm;
 
