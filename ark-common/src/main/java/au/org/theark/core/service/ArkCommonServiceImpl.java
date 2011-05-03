@@ -50,14 +50,17 @@ import au.org.theark.core.vo.SubjectVO;
  *
  */
 
+@SuppressWarnings("rawtypes")
 @Transactional
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl<T> implements IArkCommonService{
 
+	
 	private IArkAuthorisation arkAuthorisationDao;
 	private IStudyDao studyDao;
 	private ILdapPersonDao ldapInterface;
 
+	
 	
 	public IArkAuthorisation getArkAuthorisationDao() {
 		return arkAuthorisationDao;
@@ -305,6 +308,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.service.IArkCommonService#getUserAdminRoles(java.lang.String)
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException {
 		
 		return arkAuthorisationDao.getUserAdminRoles(ldapUserName);
@@ -341,6 +345,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	/**
 	 * 
 	 */
+
+	@SuppressWarnings("unchecked")
 	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
 		
 		return arkAuthorisationDao.getArkUserRolePermission(ldapUserName, arkUseCase, userRole, arkModule, study);
@@ -350,6 +356,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	 * Returns All Permissions as collection of Strings
 	 * @return  Collection<String> that represents ArkPermission
 	 */
+	@SuppressWarnings("unchecked")
 	public Collection<String> getArkPermission(){
 		return arkAuthorisationDao.getArkPermission();
 	}
@@ -362,6 +369,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return arkAuthorisationDao.getArkUser(ldapUserName);
 	}
 
+	@SuppressWarnings("unchecked")
 	public   Collection<Class<T>>  getEntityList(Class aClass){
 		return arkAuthorisationDao.getEntityList(aClass);
 	}
