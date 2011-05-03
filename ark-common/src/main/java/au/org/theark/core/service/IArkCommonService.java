@@ -35,7 +35,7 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 
-public interface IArkCommonService {
+public interface IArkCommonService<T> {
 	
 	//Place here any common services that must be visible to sub-applications
 	//Get reference data etc.get study maybe required but sub-applications access a study via ETA Study module
@@ -283,11 +283,13 @@ public interface IArkCommonService {
 	 */
 	public boolean isSuperAdministator(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException;
 	
-	/**
-	 * Return a Collection<ArkModule>. This can be used as a Source of reference of all Ark Modules in the System
-	 * @return
-	 */
-	public Collection<ArkModule> getArkModules();
 	
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
+	
+	/**
+	 * A generic interface that will return a list Entities specified by the Type of class
+	 * @return Collection of Class of type T .eg if the class passed in was ArkModule.class the return Collection will be
+	 * Collection<ArkModule>
+	 */
+	public Collection<Class<T>> getEntityList(Class<T> aClass);
 }

@@ -46,12 +46,13 @@ import au.org.theark.core.vo.SubjectVO;
  * The implementation of IArkCommonService. We want to auto-wire and hence use the @Service annotation.
  * 
  * @author nivedann
+ * @param <T>
  *
  */
 
 @Transactional
 @Service(Constants.ARK_COMMON_SERVICE)
-public class ArkCommonServiceImpl implements IArkCommonService{
+public class ArkCommonServiceImpl<T> implements IArkCommonService{
 
 	private IArkAuthorisation arkAuthorisationDao;
 	private IStudyDao studyDao;
@@ -357,12 +358,12 @@ public class ArkCommonServiceImpl implements IArkCommonService{
 		return arkAuthorisationDao.isSuperAdministator(ldapUserName,arkUseCase,arkModule);
 	}
 	
-	public Collection<ArkModule> getArkModules(){
-		return arkAuthorisationDao.getArkModules();
-	}
-	
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
 		return arkAuthorisationDao.getArkUser(ldapUserName);
+	}
+
+	public   Collection<Class<T>>  getEntityList(Class aClass){
+		return arkAuthorisationDao.getEntityList(aClass);
 	}
 	
 }
