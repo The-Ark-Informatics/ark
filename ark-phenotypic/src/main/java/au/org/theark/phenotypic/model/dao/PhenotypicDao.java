@@ -27,6 +27,7 @@ import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldSummary;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
@@ -346,6 +347,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public Field getFieldByNameAndStudy(String fieldName, Study study)
 	{
+		Field field = new Field();
 		Criteria criteria = getSession().createCriteria(Field.class);
 		if (fieldName != null && study != null)
 		{
@@ -353,7 +355,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_STUDY, study));
 		}
 
-		return (Field) criteria.list().get(0);
+		if(criteria.list().size() > 0)
+			field = (Field) criteria.list().get(0);
+		
+		return field;
 	}
 
 	public void createField(Field field)
@@ -668,12 +673,25 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if(phenoUploadVo.getUpload().getStartTime() == null)
 			phenoUploadVo.getUpload().setStartTime(dateNow);
 
-		phenoUploadVo.getPhenoCollectionUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
-		phenoUploadVo.getPhenoCollectionUpload().setInsertTime(dateNow);
-
 		Session session = getSession();
 		session.save(phenoUploadVo.getUpload());
-		session.save(phenoUploadVo.getPhenoCollectionUpload());
+		
+		// Save PhenoCollectionUpload entity
+		if(phenoUploadVo.getPhenoCollectionUpload() != null)
+		{
+			phenoUploadVo.getPhenoCollectionUpload().setUserId(currentUser.getPrincipal().toString()); // use Shiro to get username
+			phenoUploadVo.getPhenoCollectionUpload().setInsertTime(dateNow);
+			session.save(phenoUploadVo.getPhenoCollectionUpload());
+		}
+		
+		// Loop and save any FieldUpload entities
+		for (FieldUpload fieldUpload : phenoUploadVo.getFieldUploadCollection())
+		{
+			fieldUpload.setUserId(currentUser.getPrincipal().toString());
+			fieldUpload.setUpload(phenoUploadVo.getUpload());
+			fieldUpload.setInsertTime(dateNow);
+			session.save(fieldUpload);
+		}
 	}
 
 	public void updateUpload(PhenoUpload upload)
