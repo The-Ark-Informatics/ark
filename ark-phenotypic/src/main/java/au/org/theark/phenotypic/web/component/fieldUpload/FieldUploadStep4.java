@@ -46,6 +46,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private IPhenotypicService phenotypicService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+	private MultiLineLabel validationMessageLabel = null;
 	
 	/**
 	 * Construct.
@@ -61,7 +62,9 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private void initialiseDetailForm() 
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
+		addOrReplace(validationMessageLabel);
+		validationMessageLabel.setVisible(false);
 	}
 
 	/**

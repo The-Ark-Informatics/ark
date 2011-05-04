@@ -31,6 +31,7 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
+	private MultiLineLabel validationMessageLabel = null;
 	private WizardForm wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
@@ -49,7 +50,9 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	private void initialiseDetailForm() 
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
+		addOrReplace(validationMessageLabel);
+		validationMessageLabel.setVisible(false);
 	}
 
 	/**

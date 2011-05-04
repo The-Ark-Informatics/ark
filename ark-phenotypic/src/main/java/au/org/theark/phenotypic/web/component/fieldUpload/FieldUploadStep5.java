@@ -19,6 +19,7 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel
 	private static final long serialVersionUID = -6803600838428204753L;
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
+	private MultiLineLabel validationMessageLabel = null;
 	
 	/**
 	 * Construct.
@@ -33,7 +34,9 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel
 	private void initialiseDetailForm() 
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
+		addOrReplace(validationMessageLabel);
+		validationMessageLabel.setVisible(false);
 	}
 
 	/**

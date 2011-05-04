@@ -221,6 +221,12 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 					form.getNextButton().setEnabled(false);
 					target.addComponent(form.getWizardButtonContainer());
 				}
+				
+				if(warningCells.isEmpty())
+				{
+					overrideDataValidationContainer.setVisible(false);
+					target.addComponent(overrideDataValidationContainer);
+				}
 			} catch (FileFormatException e1) {
 				log.error(e1.getMessage());
 			} catch (PhenotypicSystemException e1) {
