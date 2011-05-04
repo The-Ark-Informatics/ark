@@ -5,17 +5,26 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.exception.FileFormatException;
+import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenoDataUploader;
 import au.org.theark.phenotypic.util.PhenoUploadReport;
 import au.org.theark.phenotypic.web.component.fieldUpload.form.WizardForm;
 
@@ -28,12 +37,15 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	 * 
 	 */
 	private static final long serialVersionUID = -2788948560672351760L;
+	static Logger	log	= LoggerFactory.getLogger(FieldUploadStep4.class);
 	private Form<UploadVO>						containerForm;
 	private String	validationMessage;
 	public java.util.Collection<String> validationMessages = null;
 	private WizardForm wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService phenotypicService;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 	
 	/**
 	 * Construct.
@@ -97,15 +109,31 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			
-			try 
+			Subject currentUser = SecurityUtils.getSubject();
+			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(studyId);
+			PhenoDataUploader phenoUploader = new PhenoDataUploader(phenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);;
+			
+			try
 			{
+				log.info("Uploading data dictionary file");
 				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				inputStream.reset();
-				uploadReport = phenotypicService.uploadAndReportMatrixDataDictionaryFile(inputStream, fileFormat, delimiterChar);
-			} 
-			catch (IOException e) 
+				uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, inputStream.toString().length());
+				
+				// Determined FieldUpload entities
+				containerForm.getModelObject().setFieldUploadCollection(phenoUploader.getFieldUploadCollection());
+			}
+			catch (FileFormatException ffe)
 			{
-				e.printStackTrace();
+				log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+			}
+			catch (PhenotypicSystemException pse)
+			{
+				log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+			}
+			catch (IOException e1)
+			{
+				log.error(e1.getMessage());
 			}
 			
 			// Update the report
