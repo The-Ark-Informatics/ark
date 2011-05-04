@@ -29,8 +29,6 @@ public class FieldUpload implements java.io.Serializable {
 	private Long id;
 	private PhenoUpload upload;
 	private Field field;
-	private Date startTime;
-	private Date finishTime;
 	private String userId;
 	private Date insertTime;
 	private String updateUserId;
@@ -59,8 +57,6 @@ public class FieldUpload implements java.io.Serializable {
 		this.id = id;
 		this.upload = upload;
 		this.field = field;
-		this.startTime = startTime;
-		this.finishTime = finishTime;
 		this.userId = userId;
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
@@ -109,26 +105,6 @@ public class FieldUpload implements java.io.Serializable {
 		this.field = field;
 	}
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "START_TIME")
-	public Date getStartTime() {
-		return this.startTime;
-	}
-
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "FINISH_TIME")
-	public Date getFinishTime() {
-		return this.finishTime;
-	}
-
-	public void setFinishTime(Date finishTime) {
-		this.finishTime = finishTime;
-	}
-
 	@Column(name = "USER_ID", nullable = false, length = 50)
 	public String getUserId() {
 		return this.userId;
@@ -137,8 +113,6 @@ public class FieldUpload implements java.io.Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-
-
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
