@@ -181,7 +181,7 @@ public class SubjectUploadValidator {
 			fileFormat = uploadVo.getUpload().getFileFormat().getName();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType()
 					.getDelimiterCharacter().charAt(0);
-			validateSubjectFileFormat(inputStream, fileFormat,
+			validationMessages = validateSubjectFileFormat(inputStream, fileFormat,
 					delimiterCharacter);
 		} catch (IOException e) {
 			log.error(e.getMessage());
@@ -261,7 +261,7 @@ public class SubjectUploadValidator {
 				}
 			}
 
-			validateSubjectFileData(inputStream, fileFormat, delimiterCharacter);
+			validationMessages = validateSubjectFileData(inputStream, fileFormat, delimiterCharacter);
 		} catch (IOException e) {
 			log.error(e.getMessage());
 		}
@@ -351,21 +351,19 @@ public class SubjectUploadValidator {
 								.equalsIgnoreCase(Constants.SUBJECTUID)) {
 					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
-					stringBuffer
-							.append("The specified file does not appear to conform to the expected file format.\n");
-					stringBuffer.append("The specified fileformat was: "
-							+ fileFormat + ".\n");
-					stringBuffer.append("The specified delimiter type was: "
-							+ delimiterCharacter + ".\n");
+					stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
+					stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
+					stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
 					stringBuffer.append(".\n");
-					stringBuffer
-							.append("The default format should be as follows:\n");
+					stringBuffer.append("The default format should be as follows:\n");
 					stringBuffer.append(Constants.SUBJECTUID
+							+ delimiterCharacter + Constants.DATE_COLLECTED 
 							+ delimiterCharacter + "FIELDNAME1"
 							+ delimiterCharacter + "FIELDNAME2"
 							+ delimiterCharacter + "FIELDNAME3"
 							+ delimiterCharacter + "FIELDNAMEX\n");
 					stringBuffer.append("[subjectUid]" + delimiterCharacter
+							+ "[dateCollected]" + delimiterCharacter
 							+ "[field1value]" + delimiterCharacter
 							+ "[field2value]" + delimiterCharacter
 							+ "[field3value]" + delimiterCharacter
@@ -374,18 +372,16 @@ public class SubjectUploadValidator {
 							+ delimiterCharacter + "[...]" + delimiterCharacter
 							+ "[...]" + delimiterCharacter + "[...]"
 							+ delimiterCharacter + "[...]\n");
-					stringBuffer
-							.append("\nNOTE: Enclosing quotes are optional");
+					stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
 
 					fileValidationMessages.add(stringBuffer.toString());
 					break;
-				} else {
+				} 
+				else 
+				{
 					// Check each line has same number of columns as header
 					if (stringLineArray.length < fieldNameArray.length) {
-						fileValidationMessages
-								.add("Error at row "
-										+ row
-										+ ", the row has missing cells, or missing the required number of delimiters.");
+						fileValidationMessages.add("Error: the row " + row + " has missing cells, or missing the required number of delimiters.");
 					}
 				}
 
@@ -548,7 +544,7 @@ public class SubjectUploadValidator {
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
 					} catch (ParseException pex) {
-						dataValidationMessages.add("Row: " + row
+						dataValidationMessages.add("Error: Row " + row
 								+ ": Subject UID: " + subjectUID + " "
 								+ fieldNameArray[col] + ": "
 								+ stringLineArray[col]
@@ -571,7 +567,7 @@ public class SubjectUploadValidator {
 						if (dateStr != null && dateStr.length() > 0)
 							simpleDateFormat.parse(dateStr);
 					} catch (ParseException pex) {
-						dataValidationMessages.add("Row: " + row
+						dataValidationMessages.add("Error: Row " + row
 								+ ": Subject UID: " + subjectUID + " "
 								+ fieldNameArray[col] + ": "
 								+ stringLineArray[col]
