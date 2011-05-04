@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
+import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -62,6 +64,7 @@ public class PhenoDataUploader
 	private IPhenotypicService		iPhenoService			= null;
 	private IArkCommonService		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
+	private Collection<FieldUpload> fieldUploadCollection	= new ArrayList<FieldUpload>();
 
 	/**
 	 * PhenotypicImport constructor
@@ -581,6 +584,10 @@ public class PhenoDataUploader
 					// Try to create the field
 					iPhenoService.createField(field);
 					insertCount++;
+					
+					FieldUpload fieldUpload = new FieldUpload();
+					fieldUpload.setField(field);
+					fieldUploadCollection.add(fieldUpload);
 				}
 				else
 				{
@@ -631,6 +638,10 @@ public class PhenoDataUploader
 					// Try to update the oldField
 					iPhenoService.updateField(oldField);
 					updateCount++;
+					
+					FieldUpload fieldUpload = new FieldUpload();
+					fieldUpload.setField(oldField);
+					fieldUploadCollection.add(fieldUpload);
 				}
 				
 				// Debug only - Show progress and speed
@@ -710,6 +721,15 @@ public class PhenoDataUploader
 		return uploadReport;
 	}
 	
+	public Collection<FieldUpload> getFieldUploadCollection() {
+		return fieldUploadCollection;
+	}
+
+	public void setFieldUploadCollection(
+			Collection<FieldUpload> fieldUploadCollection) {
+		this.fieldUploadCollection = fieldUploadCollection;
+	}
+
 	/**
 	 * Return the progress of the current process in %
 	 * 
