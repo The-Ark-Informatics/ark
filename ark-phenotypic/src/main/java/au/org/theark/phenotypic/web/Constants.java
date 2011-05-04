@@ -11,6 +11,7 @@ public class Constants {
 	public static final String PHENOTYPIC_SUBMENU = "phenotypicSubMenus";
 	public static final String	PHENOTYPIC_SUMMARY_SUBMENU	= "Summary";
 	public static final String FIELD_SUBMENU = "Data Dictionary";
+	public static final String FIELD_UPLOAD_SUBMENU = "Data Dictionary Upload";
 	public static final String PHENO_COLLECTION_SUBMENU = "Collection";
 	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
 	public static final String PHENOTYPIC_DATA_UPLOAD_SUBMENU = "Data Upload";
@@ -20,6 +21,7 @@ public class Constants {
 	public static final String	PHENOTYPIC_SUMMARY_RESOURCEKEY	= "tab.module.phenotypic.summaryModule";
 	public static final String COLLECTION_RESOURCEKEY = "tab.module.phenotypic.collection";
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
+	public static final String FIELD_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.fieldUpload";
 	public static final String FIELD_DATA_RESOURCEKEY = "tab.module.phenotypic.fieldData";
 	public static final String PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.phenoUpload";
 	public static final String REPORT_RESOURCEKEY = "tab.module.phenotypic.report";
@@ -207,5 +209,8 @@ public class Constants {
 
 	public static final String	DOWNLOAD_FILE	= "downloadFile";
 	public static final String	DELETE_FILE	= "deleteFile";
-	public static final String	DELETE	= "Delete";	
+	public static final String	DELETE	= "Delete";
+
+	public static final String	FIELD_UPLOAD_ID	= "id";
+	public static String	FIELD_UPLOAD_UPLOAD = "upload";
 }

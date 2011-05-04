@@ -16,7 +16,6 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +28,7 @@ import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -69,6 +69,7 @@ public class PhenotypicValidator
 	private HashSet<ArkGridCell> updateCells 				= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell> warningCells 				= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell> errorCells					= new HashSet<ArkGridCell>();
+	private String uploadType = new String("");
 
 	/**
 	 * PhenotypicValidator constructor
@@ -83,12 +84,22 @@ public class PhenotypicValidator
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenoService = iPhenoService;
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		this.phenoCollection = iPhenoService.getPhenoCollection(sessionCollectionId);
-		this.study = uploadVo.getPhenoCollection().getStudy();		
+		if(sessionCollectionId != null)
+			this.phenoCollection = iPhenoService.getPhenoCollection(sessionCollectionId);
+		
+		// Set study in context
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if(studyId != null)
+		{
+			Study study = iArkCommonService.getStudy(studyId);
+			this.study = study;
+		}
 		this.fileValidationMessages = new ArrayList<String>();
 		this.dataValidationMessages = new ArrayList<String>();
 		this.fileFormat = uploadVo.getUpload().getFileFormat().getName();
 		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		if(uploadVo.getUpload().getUploadType() != null)
+			this.uploadType = uploadVo.getUpload().getUploadType();
 	}
 
 	public boolean isQualityControl() {
@@ -400,37 +411,72 @@ public class PhenotypicValidator
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 
-				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
+				// Uploading a data dictionary file
+				if(uploadType.equalsIgnoreCase("FIELD"))
 				{
-					// Invalid file format
-					StringBuffer stringBuffer = new StringBuffer();
-					stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
-					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
-					stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
-					stringBuffer.append("The default format is as follows:\n");
-					stringBuffer.append(Constants.SUBJECTUID + phenotypicDelimChr + Constants.DATE_COLLECTED + phenotypicDelimChr + "FIELDNAME1" + phenotypicDelimChr + "FIELDNAME2" + phenotypicDelimChr + "FIELDNAME3" + phenotypicDelimChr + "FIELDNAMEX\n");
-					stringBuffer.append("[subjectUid]" + phenotypicDelimChr + "[dateCollected]" + phenotypicDelimChr + "[field1value]" + phenotypicDelimChr + "[field2value]" + phenotypicDelimChr + "[field3value]" + phenotypicDelimChr + "[fieldXvalue]\n");
-					stringBuffer.append("[.." + phenotypicDelimChr + "]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]\n");
-
-					fileValidationMessages.add(stringBuffer.toString());
-					break;
-				}
-				else
-				{
-					// Loop through columns in current row in file, starting from the 2th position
-					for (int i = 0; i < stringLineArray.length; i++)
+					if (csvReader.getColumnCount() < 8)
 					{
-						// Check each line has same number of columns as header
-						if (stringLineArray.length < fieldNameArray.length)
+						// Invalid file format
+						StringBuffer stringBuffer = new StringBuffer();
+						stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
+						stringBuffer.append("The specified file format was: " + fileFormat + "\n");
+						stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+						stringBuffer.append("The default data dictionary format is as follows:\n");
+						stringBuffer.append("FIELD_NAME" + phenotypicDelimChr + "FIELD_TYPE" + phenotypicDelimChr + "DESCRIPTION" + phenotypicDelimChr + "UNITS" + phenotypicDelimChr + "ENCODED_VALUES" + phenotypicDelimChr + "MINIMUM_VALUE" + phenotypicDelimChr + "MAXIMUM_VALUE" + phenotypicDelimChr + "MISSING_VALUE" + "\n");
+						stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + "\n");
+	
+						fileValidationMessages.add(stringBuffer.toString());
+						break;
+					}
+					else
+					{
+						// Loop through columns in current row in file, starting from the 2th position
+						for (int i = 0; i < stringLineArray.length; i++)
 						{
-							fileValidationMessages.add("Error at line " + i + ", the line has missing cells");
+							// Check each line has same number of columns as header
+							if (stringLineArray.length < fieldNameArray.length)
+							{
+								fileValidationMessages.add("Error at line " + i + ", the line has missing cells");
+							}
+	
+							// Update progress
+							curPos += stringLineArray[i].length() + 1; // update progress
 						}
-
-						// Update progress
-						curPos += stringLineArray[i].length() + 1; // update progress
 					}
 				}
-
+				else 
+				{
+					if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
+					{
+						// Invalid file format
+						StringBuffer stringBuffer = new StringBuffer();
+						stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
+						stringBuffer.append("The specified file format was: " + fileFormat + "\n");
+						stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+						stringBuffer.append("The default format is as follows:\n");
+						stringBuffer.append(Constants.SUBJECTUID + phenotypicDelimChr + Constants.DATE_COLLECTED + phenotypicDelimChr + "FIELDNAME1" + phenotypicDelimChr + "FIELDNAME2" + phenotypicDelimChr + "FIELDNAME3" + phenotypicDelimChr + "FIELDNAMEX\n");
+						stringBuffer.append("[subjectUid]" + phenotypicDelimChr + "[dateCollected]" + phenotypicDelimChr + "[field1value]" + phenotypicDelimChr + "[field2value]" + phenotypicDelimChr + "[field3value]" + phenotypicDelimChr + "[fieldXvalue]\n");
+						stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]\n");
+	
+						fileValidationMessages.add(stringBuffer.toString());
+						break;
+					}
+					else
+					{
+						// Loop through columns in current row in file, starting from the 2th position
+						for (int i = 0; i < stringLineArray.length; i++)
+						{
+							// Check each line has same number of columns as header
+							if (stringLineArray.length < fieldNameArray.length)
+							{
+								fileValidationMessages.add("Error at line " + i + ", the line has missing cells");
+							}
+	
+							// Update progress
+							curPos += stringLineArray[i].length() + 1; // update progress
+						}
+					}
+				}
 				subjectCount++;
 			}
 
@@ -714,6 +760,482 @@ public class PhenotypicValidator
 		return dataValidationMessages;
 	}
 	
+	/**
+	 * Validates the phenotypic data dictionary file in the default "matrix" file format assumed: "FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 * 
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @throws IOException
+	 *            input/output Exception
+	 * @throws OutOfMemoryError
+	 *            out of memory Exception
+	 */
+	public java.util.Collection<String> validateDataDictionaryFileData(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	{
+		curPos = 0;
+		int row = 1;
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+
+		/*
+		 * Field table requires: ID, STUDY_ID, FIELD_TYPE_ID, NAME, DESCRIPTION, UNITS, MIN_VALUE, MAX_VALUE, ENCODED_VALUES, MISSING_VALUE 
+		 */
+
+		Field field = new Field();
+		field.setStudy(study);
+		
+		try
+		{
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, phenotypicDelimChr);
+			String[] stringLineArray;
+
+			srcLength = inLength;
+			if (srcLength <= 0)
+			{
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			}
+
+			timer = new StopWatch();
+			timer.start();
+
+			csvReader.readHeaders();
+
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+
+			// Loop through all rows in file
+			while (csvReader.readRecord())
+			{
+				// do something with the newline to put the data into
+				// the variables defined above
+				stringLineArray = csvReader.getValues();
+				
+				// Fist column should be Field Name
+				String fieldName = stringLineArray[0];
+				int cols = stringLineArray.length;
+				field = new Field();
+				field.setStudy(study);
+				field.setName(fieldName);
+				
+				if (csvReader.getIndex("FIELD_TYPE") > 0)
+				{
+					FieldType fieldType = new FieldType();
+					fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
+					field.setFieldType(fieldType);
+				}
+				if (csvReader.getIndex("DESCRIPTION") > 0)
+				{
+					if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
+						field.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
+				}
+				if (csvReader.getIndex("UNITS") > 0)
+				{
+					if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
+						field.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
+				}
+				if (csvReader.getIndex("ENCODED_VALUES") > 0)
+				{
+					if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
+						field.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
+				}
+				if (csvReader.getIndex("MINIMUM_VALUE") > 0)
+				{
+					if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
+						field.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
+				}
+				if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
+				{	
+					if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
+						field.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
+				}
+				if (csvReader.getIndex("MISSING_VALUE") > 0)
+				{
+					if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
+						field.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
+				}
+				
+				Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+				// Determine updates
+				if(oldField.getId() != null)
+				{
+					updateRows.add(row);
+					for(int col = 0; col < cols; col++)
+						updateCells.add(new ArkGridCell(col, row));
+				}
+				else
+				{
+					insertRows.add(row);
+				}
+				
+				ArkGridCell gridCell = null;
+
+				if(field.getMinValue() != null)
+				{
+					gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), row);
+					// Validate the field definition
+					if(!PhenotypicValidator.validateFieldMinDefinition(field, dataValidationMessages))
+					{
+						errorCells.add(gridCell);
+					}
+				}
+				
+				if(field.getMaxValue() != null)
+				{
+					gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), row);
+					// Validate the field definition
+					if(!PhenotypicValidator.validateFieldMaxDefinition(field, dataValidationMessages))
+					{
+						errorCells.add(gridCell);
+					}
+				}
+				
+				if(field.getMissingValue() != null)
+				{
+					gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), row);
+					// Validate the field definition
+					if(!PhenotypicValidator.validateFieldMissingDefinition(field, dataValidationMessages))
+					{
+						errorCells.add(gridCell);
+					}
+				}
+				
+				fieldCount++;
+				row++;
+			}
+
+			if (dataValidationMessages.size() > 0)
+			{
+				log.debug("Validation messages: " + dataValidationMessages.size());
+				for (Iterator<String> iterator = dataValidationMessages.iterator(); iterator.hasNext();)
+				{
+					String errorMessage = iterator.next();
+					log.debug(errorMessage);
+				}
+			}
+			else
+			{
+				log.debug("Validation is ok");
+			}
+		}
+		catch (IOException ioe)
+		{
+			log.error("processMatrixPhenoFile IOException stacktrace:", ioe);
+			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+		}
+		catch (Exception ex)
+		{
+			log.error("processMatrixPhenoFile Exception stacktrace:", ex);
+			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+		}
+		finally
+		{
+			// Clean up the IO objects
+			timer.stop();
+			log.debug("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			log.debug("Total file size: " + srcLength + " B or " + decimalFormat.format(srcLength / 1024.0 / 1024.0) + " MB");
+			if (timer != null)
+				timer = null;
+			if (csvReader != null)
+			{
+				try
+				{
+					csvReader.close();
+				}
+				catch (Exception ex)
+				{
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null)
+			{
+				try
+				{
+					inputStreamReader.close();
+				}
+				catch (Exception ex)
+				{
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+		log.debug("Validated " + row + " rows of data");
+
+		return dataValidationMessages;
+	}
+	
+	private static boolean validateFieldMissingDefinition(Field field, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+		{
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMissingValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMissingValueNotDefinedType(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				isValid = false;
+			}
+		}
+		
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMissingValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMissingValueNotValidDate(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
+
+	private static boolean validateFieldMaxDefinition(Field field, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+		{
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMaxValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMaxValueNotDefinedType(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				isValid = false;
+			}
+		}	
+		
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMaxValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMaxValueNotValidDate(field));
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
+
+	private static boolean validateFieldMinDefinition(Field field, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+		{
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMinValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMinValueNotDefinedType(field));
+				log.error("Field data number format exception " + nfe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+		}
+		
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMinValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMinValueNotValidDate(field));
+				log.error("Field data date parse exception " + pe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+		}
+		return isValid;
+	}
+
+	private static boolean validateFieldDefinition(Field field, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		// Number field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+		{
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMinValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMinValueNotDefinedType(field));
+				log.error("Field data number format exception " + nfe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+			
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMaxValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMaxValueNotDefinedType(field));
+				log.error("Field data number format exception " + nfe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+			
+			try
+			{
+				Float floatFieldValue = Float.parseFloat(field.getMissingValue());
+				isValid = true;
+			}
+			catch (NumberFormatException nfe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldMissingValueNotDefinedType(field));
+				log.error("Field data number format exception " + nfe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+		}
+
+		// Date field type
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMinValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMinValueNotValidDate(field));
+				log.error("Field data date parse exception " + pe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+			
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMaxValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMaxValueNotValidDate(field));
+				log.error("Field data date parse exception " + pe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+			
+			try
+			{
+				Date dateFieldValue = new Date();
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				dateFormat.setLenient(false);
+				dateFieldValue = dateFormat.parse(field.getMissingValue());
+				isValid = true;
+			}
+			catch (ParseException pe)
+			{
+				errorMessages.add(PhenotypicValidationMessage.fieldDefinitionMissingValueNotValidDate(field));
+				log.error("Field data date parse exception " + pe.getMessage());
+				isValid = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isValid = false;
+			}
+
+		}
+
+		return isValid;
+	}
+
 	/**
 	 * Return the progress of the current process in %
 	 * 

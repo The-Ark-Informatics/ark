@@ -147,4 +147,76 @@ public class PhenotypicValidationMessage
 		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
 		return(stringBuffer.toString());
 	}
+
+	public static String fieldMinValueNotDefinedType(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" minimum value ");
+		stringBuffer.append(field.getMinValue().toString());
+		stringBuffer.append(" is not the defined format of: ");
+		stringBuffer.append(field.getFieldType().getName());
+		return(stringBuffer.toString());
+	}
+	
+	public static String fieldMaxValueNotDefinedType(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" maximum value ");
+		stringBuffer.append(field.getMinValue().toString());
+		stringBuffer.append(" is not the defined format of: ");
+		stringBuffer.append(field.getFieldType().getName());
+		return(stringBuffer.toString());
+	}
+	
+	public static String fieldMissingValueNotDefinedType(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" missing value ");
+		stringBuffer.append(field.getMissingValue().toString());
+		stringBuffer.append(" is not the defined format of: ");
+		stringBuffer.append(field.getFieldType().getName());
+		return(stringBuffer.toString());
+	}
+
+	public static String fieldDefinitionMinValueNotValidDate(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" minimum value ");
+		stringBuffer.append(field.getMinValue().toString());
+		stringBuffer.append(" is not in the valid date format of: ");
+		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
+		return(stringBuffer.toString());
+	}
+	
+	public static String fieldDefinitionMaxValueNotValidDate(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" minimum value ");
+		stringBuffer.append(field.getMinValue().toString());
+		stringBuffer.append(" is not in the valid date format of: ");
+		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
+		return(stringBuffer.toString());
+	}
+	
+	public static String fieldDefinitionMissingValueNotValidDate(Field field)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("The field ");
+		stringBuffer.append(field.getName().toString());
+		stringBuffer.append(" missing value ");
+		stringBuffer.append(field.getMinValue().toString());
+		stringBuffer.append(" is not in the valid date format of: ");
+		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
+		return(stringBuffer.toString());
+	}
 }

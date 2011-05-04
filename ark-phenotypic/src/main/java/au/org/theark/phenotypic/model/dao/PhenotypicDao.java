@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -1073,5 +1072,21 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
+	}
+
+	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload)
+	{
+		String sqlQry = "SELECT DISTINCT `upload`.`ID`, `upload`.`STUDY_ID`, `upload`.`FILE_FORMAT_ID`, `upload`.`DELIMITER_TYPE_ID`, `upload`.`FILENAME`, `upload`.`PAYLOAD`, `upload`.`CHECKSUM`,"
+			+ "`upload`.`USER_ID`, `upload`.`INSERT_TIME`, `upload`.`UPDATE_USER_ID`, `upload`.`UPDATE_TIME`, `upload`.`START_TIME`, `upload`.`FINISH_TIME`, `upload`.`UPLOAD_REPORT`"
+			+ " FROM `pheno`.`upload`, `pheno`.`field_upload`"
+			+ " WHERE `pheno`.`upload`.id = `pheno`.`field_upload`.upload_id"
+			+ " AND `pheno`.`upload`.`study_id` = "
+			+ phenoUpload.getStudy().getId();
+		
+		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
+		criteria.add(Restrictions.eq("uploadType", "field"));
+		
+		java.util.Collection<PhenoUpload> phenoUploadCollection = criteria.list();
+		return phenoUploadCollection;
 	}
 }

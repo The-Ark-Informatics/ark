@@ -25,6 +25,7 @@ import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
@@ -95,7 +96,7 @@ public class PhenoDataUploader
 	 * @throws OutOfMemoryError
 	 *            out of memory Exception
 	 */
-	public void uploadMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	public void uploadMatrixFieldDataFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
 		curPos = 0;
 
@@ -261,7 +262,7 @@ public class PhenoDataUploader
 	 *            out of memory Exception
 	 * @return the import report detailing the import process
 	 */
-	public StringBuffer uploadAndReportMatrixPhenoFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	public StringBuffer uploadAndReportMatrixFieldDataFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
 		uploadReport = new StringBuffer();
 		curPos = 0;
@@ -464,6 +465,245 @@ public class PhenoDataUploader
 		}
 		uploadReport.append("Inserted ");
 		uploadReport.append(subjectCount * fieldCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+
+		return uploadReport;
+	}
+	
+	/**
+	 * Imports the data dictionary file to the database tables, and creates report on the process Assumes the file is in the default "matrix" file
+	 * format: "FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 *
+	 * @param fileInputStream
+	 *           is the input stream of a file
+	 * @throws IOException
+	 *            input/output Exception
+	 * @throws OutOfMemoryError
+	 *            out of memory Exception
+	 * @return the import report detailing the import process
+	 */
+	public StringBuffer uploadAndReportMatrixDataDictionaryFile(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
+	{
+		uploadReport = new StringBuffer();
+		curPos = 0;
+
+		InputStreamReader inputStreamReader = null;
+		CsvReader csvReader = null;
+		DecimalFormat decimalFormat = new DecimalFormat("0.00");
+		Date dateCollected = new Date();
+		Field field = null;
+
+		try
+		{
+			inputStreamReader = new InputStreamReader(fileInputStream);
+			csvReader = new CsvReader(inputStreamReader, phenotypicDelimChr);
+			String[] stringLineArray;
+
+			srcLength = inLength;
+			if (srcLength <= 0)
+			{
+				uploadReport.append("The input size was not greater than 0.  Actual length reported: ");
+				uploadReport.append(srcLength);
+				uploadReport.append("\n");
+				throw new FileFormatException("The input size was not greater than 0.  Actual length reported: " + srcLength);
+			}
+
+			timer = new StopWatch();
+			timer.start();
+
+			csvReader.readHeaders();
+
+			srcLength = inLength - csvReader.getHeaders().toString().length();
+			log.debug("Header length: " + csvReader.getHeaders().toString().length());
+
+			// Loop through all rows in file
+			while (csvReader.readRecord())
+			{
+				// do something with the newline to put the data into
+				// the variables defined above
+				stringLineArray = csvReader.getValues();
+				String fieldName = stringLineArray[0];
+
+				// Set field
+				field = new Field();
+				field.setStudy(study);
+				
+				Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+				if(oldField == null || oldField.getId() == null)
+				{
+					field = new Field();
+					field.setStudy(study);
+					field.setName(fieldName);
+					
+					if (csvReader.getIndex("FIELD_TYPE") > 0)
+					{
+						FieldType fieldType = new FieldType();
+						fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
+						field.setFieldType(fieldType);
+					}
+					if (csvReader.getIndex("DESCRIPTION") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
+							field.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
+					}
+					if (csvReader.getIndex("UNITS") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
+							field.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
+					}
+					if (csvReader.getIndex("ENCODED_VALUES") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
+							field.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
+					}
+					if (csvReader.getIndex("MINIMUM_VALUE") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
+							field.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
+					}
+					if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
+					{	
+						if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
+							field.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
+					}
+					if (csvReader.getIndex("MISSING_VALUE") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
+							field.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
+					}
+					
+					uploadReport.append("Creating new field: ");
+					uploadReport.append("\tFIELD: ");
+					uploadReport.append((stringLineArray[csvReader.getIndex("FIELD_NAME")]));
+					uploadReport.append("\n");
+					
+					// Try to create the field
+					iPhenoService.createField(field);
+					insertCount++;
+				}
+				else
+				{
+					uploadReport.append("Updating field for: ");
+					uploadReport.append("\tFIELD: ");
+					uploadReport.append(stringLineArray[csvReader.getIndex("FIELD_NAME")]);
+					uploadReport.append("\n");
+					
+					oldField.setName(fieldName);
+					
+					if (csvReader.getIndex("FIELD_TYPE") > 0)
+					{
+						FieldType fieldType = new FieldType();
+						fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
+						oldField.setFieldType(fieldType);
+					}
+					if (csvReader.getIndex("DESCRIPTION") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
+							oldField.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
+					}
+					if (csvReader.getIndex("UNITS") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
+							oldField.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
+					}
+					if (csvReader.getIndex("ENCODED_VALUES") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
+							oldField.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
+					}
+					if (csvReader.getIndex("MINIMUM_VALUE") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
+							oldField.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
+					}
+					if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
+					{	
+						if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
+							oldField.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
+					}
+					if (csvReader.getIndex("MISSING_VALUE") > 0)
+					{
+						if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
+							oldField.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
+					}
+					
+					// Try to update the oldField
+					iPhenoService.updateField(oldField);
+					updateCount++;
+				}
+				
+				// Debug only - Show progress and speed
+				log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+				log.debug("\n");
+				fieldCount++;
+			}
+		}
+		catch (IOException ioe)
+		{
+			uploadReport.append("Unexpected I/O exception whilst reading the phenotypic data file\n");
+			log.error("uploadAndReportMatrixDataDictionaryFile IOException stacktrace:", ioe);
+			throw new PhenotypicSystemException("Unexpected I/O exception whilst reading the phenotypic data file");
+		}
+		catch (Exception ex)
+		{
+			uploadReport.append("Unexpected exception whilst reading the phenotypic data file\n");
+			log.error("uploadAndReportMatrixDataDictionaryFile Exception stacktrace:", ex);
+			throw new PhenotypicSystemException("Unexpected exception occurred when trying to process phenotypic data file");
+		}
+		finally
+		{
+			// Clean up the IO objects
+			timer.stop();
+			uploadReport.append("Total elapsed time: ");
+			uploadReport.append(timer.getTime());
+			uploadReport.append(" ms or ");
+			uploadReport.append(decimalFormat.format(timer.getTime() / 1000.0));
+			uploadReport.append(" s");
+			uploadReport.append("\n");
+			uploadReport.append("Total file size: ");
+			uploadReport.append(srcLength);
+			uploadReport.append(" B or ");
+			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(" MB");
+			uploadReport.append("\n");
+
+			if (timer != null)
+				timer = null;
+
+			if (csvReader != null)
+			{
+				try
+				{
+					csvReader.close();
+				}
+				catch (Exception ex)
+				{
+					log.error("Cleanup operation failed: csvRdr.close()", ex);
+				}
+			}
+			if (inputStreamReader != null)
+			{
+				try
+				{
+					inputStreamReader.close();
+				}
+				catch (Exception ex)
+				{
+					log.error("Cleanup operation failed: isr.close()", ex);
+				}
+			}
+			// Restore the state of variables
+			srcLength = -1;
+		}
+		
+		uploadReport.append("Inserted ");
+		uploadReport.append(insertCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+		
+		uploadReport.append("Updated ");
+		uploadReport.append(updateCount);
 		uploadReport.append(" rows of data");
 		uploadReport.append("\n");
 

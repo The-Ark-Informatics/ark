@@ -470,7 +470,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			InputStream is = new FileInputStream(file);
 			
 			log.debug("Importing file");
-			pi.uploadMatrixPhenoFile(is, file.length());
+			pi.uploadMatrixFieldDataFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -502,7 +502,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			InputStream is = new FileInputStream(file);
 			
 			log.debug("Importing file");
-			importReport = pi.uploadAndReportMatrixPhenoFile(is, file.length());
+			importReport = pi.uploadAndReportMatrixFieldDataFile(is, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -531,7 +531,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		try
 		{
 			log.debug("Importing pheno data file");
-			pi.uploadMatrixPhenoFile(inputStream, inputStream.toString().length());
+			pi.uploadMatrixFieldDataFile(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
 		{
@@ -556,7 +556,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		try
 		{
 			log.info("Importing pheno file");
-			uploadReport = pi.uploadAndReportMatrixPhenoFile(inputStream, inputStream.toString().length());
+			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
 		{
@@ -572,5 +572,35 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected)
 	{
 		return phenotypicDao.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+	}
+
+	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload)
+	{
+		return phenotypicDao.searchFieldUpload(phenoUpload);
+	}
+
+	public StringBuffer uploadAndReportMatrixDataDictionaryFile(InputStream inputStream, String fileFormat, char delimiterChar)
+	{
+		StringBuffer uploadReport = null;
+		Subject currentUser = SecurityUtils.getSubject();
+		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		study = iArkCommonService.getStudy(studyId);
+		
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, null, iArkCommonService, fileFormat, delimiterChar);;
+		
+		try
+		{
+			log.info("Importing data dictionary file");
+			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		return uploadReport;
 	}
 }

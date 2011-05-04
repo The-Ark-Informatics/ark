@@ -47,6 +47,7 @@ public class PhenoUpload implements java.io.Serializable
 	private Date				insertTime;
 	private String				updateUserId;
 	private Date				updateTime;
+	private String				uploadType;
 	
 	private Set<PhenoCollectionUpload> phenoCollectionUploads = new HashSet<PhenoCollectionUpload>(0);
 
@@ -329,5 +330,22 @@ public class PhenoUpload implements java.io.Serializable
 	public Set<PhenoCollectionUpload> getPhenoCollectionUploads()
 	{
 		return phenoCollectionUploads;
+	}
+
+	/**
+	 * @param uploadType the uploadType to set
+	 */
+	public void setUploadType(String uploadType)
+	{
+		this.uploadType = uploadType;
+	}
+
+	/**
+	 * @return the uploadType
+	 */
+	@Column(name = "UPLOAD_TYPE")
+	public String getUploadType()
+	{
+		return uploadType;
 	}
 }
