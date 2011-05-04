@@ -118,6 +118,7 @@ public class PhenotypicValidationMessage
 	 */
 	public static String fieldDataNotValidDate(Field field, FieldData fieldData){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(fieldData.getLinkSubjectStudy().getSubjectUID());
 		stringBuffer.append(": ");
@@ -138,6 +139,7 @@ public class PhenotypicValidationMessage
 	 */
 	public static String dateCollectedNotValidDate(String subjectUid, String dateCollectedStr){
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("Subject UID: ");
 		stringBuffer.append(subjectUid);
 		stringBuffer.append(": ");
@@ -151,6 +153,7 @@ public class PhenotypicValidationMessage
 	public static String fieldMinValueNotDefinedType(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" minimum value ");
@@ -163,6 +166,7 @@ public class PhenotypicValidationMessage
 	public static String fieldMaxValueNotDefinedType(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" maximum value ");
@@ -175,6 +179,7 @@ public class PhenotypicValidationMessage
 	public static String fieldMissingValueNotDefinedType(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" missing value ");
@@ -187,6 +192,7 @@ public class PhenotypicValidationMessage
 	public static String fieldDefinitionMinValueNotValidDate(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" minimum value ");
@@ -199,6 +205,7 @@ public class PhenotypicValidationMessage
 	public static String fieldDefinitionMaxValueNotValidDate(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" minimum value ");
@@ -211,6 +218,7 @@ public class PhenotypicValidationMessage
 	public static String fieldDefinitionMissingValueNotValidDate(Field field)
 	{
 		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
 		stringBuffer.append("The field ");
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" missing value ");
