@@ -631,7 +631,11 @@ public class SubjectUploadValidator {
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		log.debug("Validated " + subjectCount + " subjects");
+		
+		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+			Integer i = (Integer) iterator.next();
+			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		}
 
 		return dataValidationMessages;
 	}
