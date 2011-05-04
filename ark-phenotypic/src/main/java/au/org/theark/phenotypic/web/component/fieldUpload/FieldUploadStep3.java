@@ -56,8 +56,7 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	public FieldUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
 	{
 		super(id, "Step 3/5: Data Validation", 
-				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.\n" +
-				"If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control");
+				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
 		initialiseDetailForm();
@@ -78,9 +77,9 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 		overrideDataValidationContainer.setOutputMarkupId(true);
 		overrideDataValidationChkBox = new CheckBox("overrideDataValidationChkBox");
 		overrideDataValidationChkBox.setOutputMarkupId(false);
-		overrideDataValidationChkBox.setVisible(true);
+		overrideDataValidationContainer.setVisible(false);
 		
-		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
+		containerForm.getModelObject().setOverrideDataValidationChkBox(true);
 		containerForm.getModelObject().setUpdateChkBox(false);
 
 		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
