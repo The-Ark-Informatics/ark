@@ -56,7 +56,7 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	public PhenoUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
 	{
 		super(id, "Step 3/5: Data Validation", 
-				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.\n" +
+				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.<br>" +
 				"If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
