@@ -9,7 +9,6 @@ import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
-import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
@@ -93,7 +92,4 @@ public interface IPhenotypicService {
 	
 	public int getCountOfFieldsInStudy(Study study);
 	public int getCountOfFieldsWithDataInStudy(Study study);
-	
-	// Data Dictionary Upload
-	public StringBuffer uploadAndReportMatrixDataDictionaryFile(InputStream inputStream, String fileFormat, char delimiterChar);
 }

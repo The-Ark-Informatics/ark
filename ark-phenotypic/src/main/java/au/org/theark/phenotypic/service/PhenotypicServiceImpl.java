@@ -578,29 +578,4 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.searchFieldUpload(phenoUpload);
 	}
-
-	public StringBuffer uploadAndReportMatrixDataDictionaryFile(InputStream inputStream, String fileFormat, char delimiterChar)
-	{
-		StringBuffer uploadReport = null;
-		Subject currentUser = SecurityUtils.getSubject();
-		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		study = iArkCommonService.getStudy(studyId);
-		
-		PhenoDataUploader pi = new PhenoDataUploader(this, study, null, iArkCommonService, fileFormat, delimiterChar);;
-		
-		try
-		{
-			log.info("Importing data dictionary file");
-			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
-		}
-		catch (FileFormatException ffe)
-		{
-			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
-		}
-		catch (PhenotypicSystemException pse)
-		{
-			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
-		}
-		return uploadReport;
-	}
 }
