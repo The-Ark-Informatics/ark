@@ -681,6 +681,7 @@ public class PhenotypicValidator
 					else
 					{
 						insertCells.add(gridCell);
+						insertRows.add(row);
 					}
 					
 					// Update progress
@@ -693,6 +694,11 @@ public class PhenotypicValidator
 				log.debug("\n");
 				subjectCount++;
 				row++;
+			}
+			
+			for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+				Integer i = (Integer) iterator.next();
+				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
 			}
 
 			if (dataValidationMessages.size() > 0)
@@ -963,7 +969,11 @@ public class PhenotypicValidator
 			// Restore the state of variables
 			srcLength = -1;
 		}
-		log.debug("Validated " + row + " rows of data");
+		
+		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+			Integer i = (Integer) iterator.next();
+			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		}
 
 		return dataValidationMessages;
 	}
