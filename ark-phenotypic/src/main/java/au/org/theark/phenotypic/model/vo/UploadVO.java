@@ -9,6 +9,7 @@ import java.util.Iterator;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
+import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
@@ -31,11 +32,13 @@ public class UploadVO implements Serializable
 	private java.util.Collection<String>		validationMessages;
 	private Boolean 									overrideDataValidationChkBox;
 	private Boolean									updateChkBox;
+	private java.util.Collection<FieldUpload>	fieldUploadCollection;
 
 	public UploadVO()
 	{
 		upload = new PhenoUpload();
 		setUploadCollection(new ArrayList<PhenoUpload>());
+		setFieldUploadCollection(new ArrayList<FieldUpload>());
 	}
 
 	/**
@@ -212,5 +215,13 @@ public class UploadVO implements Serializable
 	public Boolean getUpdateChkBox()
 	{
 		return updateChkBox;
+	}
+
+	public void setFieldUploadCollection(java.util.Collection<FieldUpload> fieldUploadCollection) {
+		this.fieldUploadCollection = fieldUploadCollection;
+	}
+
+	public java.util.Collection<FieldUpload> getFieldUploadCollection() {
+		return fieldUploadCollection;
 	}
 }
