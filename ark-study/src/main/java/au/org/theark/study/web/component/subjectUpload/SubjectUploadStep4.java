@@ -33,6 +33,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 	private WizardForm wizardForm;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
+	private MultiLineLabel validationMessageLabel = null;
 	
 	/**
 	 * Construct.
@@ -48,7 +49,9 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 	private void initialiseDetailForm() 
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
+		addOrReplace(validationMessageLabel);
+		validationMessageLabel.setVisible(false);
 	}
 
 	/**
