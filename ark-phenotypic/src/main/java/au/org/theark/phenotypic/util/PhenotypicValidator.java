@@ -538,9 +538,6 @@ public class PhenotypicValidator
 			srcLength = -1;
 		}
 
-		// if(subjectCount * fieldCount > 0)
-		// fileValidationMessages.add("Validated " + subjectCount + " rows of data");
-
 		return fileValidationMessages;
 	}
 
