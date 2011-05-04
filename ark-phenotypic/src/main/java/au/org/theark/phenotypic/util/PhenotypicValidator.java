@@ -760,9 +760,11 @@ public class PhenotypicValidator
 		}
 		log.debug("Validated " + subjectCount * fieldCount + " rows of data");
 
-		// if(subjectCount * fieldCount > 0)
-		// dataValidationMessages.add("Validated " + subjectCount * fieldCount + " rows of data");
-
+		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+			Integer i = (Integer) iterator.next();
+			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		}
+		
 		return dataValidationMessages;
 	}
 	
