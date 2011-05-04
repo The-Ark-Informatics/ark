@@ -114,13 +114,13 @@
     height: 100px;
     overflow: auto;
     padding-bottom: 5px;
-    width: 80%;
+    width: 100%;
 }
 
 .wizardDataGrid {
-	 overflow:auto; 
-	 height:200px; 
-	 width:80%;
+	 overflow: auto; 
+	 height: 200px; 
+	 width: 100%;
 }
 
 table.wizardDataGridTable {
