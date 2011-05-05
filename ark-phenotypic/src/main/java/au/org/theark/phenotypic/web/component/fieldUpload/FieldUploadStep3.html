@@ -2,6 +2,13 @@
 	<div id="wizardStepBorder">
 		<div wicket:id="header" />
 		<div id="wizardStepContent">
+			<div id="wizardPanelBreaker">Validation Messages:</div>
+			<div id="wizardErrorMessages">
+				<span wicket:id="multiLineLabel" class="mark">
+					this text will be replaced
+				</span>
+			</div>
+			<div id="wizardPanelBreaker">&nbsp;</div>
 			<div wicket:id="overrideDataValidationContainer">
 				<wicket:message	key="overrideDataValidationChkBox">Override Data validation:</wicket:message>
 				<input type="checkbox" wicket:id="overrideDataValidationChkBox"/>
@@ -11,13 +18,6 @@
 				<wicket:message	key="updateExistingData">Update existing data:</wicket:message>
 				<input type="checkbox" wicket:id="updateChkBox"/>
 			</div>
-			<div id="wizardPanelBreaker">Validation Messages:</div>
-			<div id="wizardErrorMessages">
-				<span wicket:id="multiLineLabel" class="mark">
-					this text will be replaced
-				</span>
-			</div>
-			<div id="wizardPanelBreaker">&nbsp;</div>
 		</div>
 	</div>
 </wicket:panel>
