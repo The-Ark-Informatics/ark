@@ -39,11 +39,9 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private static final long serialVersionUID = -2788948560672351760L;
 	static Logger	log	= LoggerFactory.getLogger(FieldUploadStep4.class);
 	private Form<UploadVO>						containerForm;
-	private String	validationMessage;
-	public java.util.Collection<String> validationMessages = null;
 	private WizardForm wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	private MultiLineLabel validationMessageLabel = null;
@@ -61,26 +59,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	
 	private void initialiseDetailForm() 
 	{
-		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
-		addOrReplace(validationMessageLabel);
-		validationMessageLabel.setVisible(false);
-	}
-
-	/**
-	 * @param validationMessage the validationMessages to set
-	 */
-	public void setValidationMessage(String validationMessage)
-	{
-		this.validationMessage = validationMessage;
-	}
-
-	/**
-	 * @return the validationMessage
-	 */
-	public String getValidationMessage()
-	{
-		return validationMessage;
 	}
 
 	@Override
@@ -91,9 +69,8 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
+		initialiseDetailForm();
+		target.addComponent(validationMessageLabel);
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
@@ -101,50 +78,47 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		if(validationMessage == null || containerForm.getModel().getObject().getOverrideDataValidationChkBox())
+		// Filename seems to be lost from model when moving between steps in wizard
+		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
+		
+		// Perform actual import of data
+		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		StringBuffer uploadReport = null;
+		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		
+		Subject currentUser = SecurityUtils.getSubject();
+		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(studyId);
+		PhenoDataUploader phenoUploader = new PhenoDataUploader(iPhenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);;
+		
+		try
 		{
-			// Filename seems to be lost from model when moving between steps in wizard
-			containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
+			log.info("Uploading data dictionary file");
+			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, inputStream.toString().length());
 			
-			// Perform actual import of data
-			containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-			StringBuffer uploadReport = null;
-			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			
-			Subject currentUser = SecurityUtils.getSubject();
-			Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			Study study = iArkCommonService.getStudy(studyId);
-			PhenoDataUploader phenoUploader = new PhenoDataUploader(phenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);;
-			
-			try
-			{
-				log.info("Uploading data dictionary file");
-				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, inputStream.toString().length());
-				
-				// Determined FieldUpload entities
-				containerForm.getModelObject().setFieldUploadCollection(phenoUploader.getFieldUploadCollection());
-			}
-			catch (FileFormatException ffe)
-			{
-				log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
-			}
-			catch (PhenotypicSystemException pse)
-			{
-				log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
-			}
-			catch (IOException e1)
-			{
-				log.error(e1.getMessage());
-			}
-			
-			// Update the report
-			updateUploadReport(uploadReport.toString());
-			
-			// Save all objects to the database
-			save();
+			// Determined FieldUpload entities
+			containerForm.getModelObject().setFieldUploadCollection(phenoUploader.getFieldUploadCollection());
 		}
+		catch (FileFormatException ffe)
+		{
+			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
+		}
+		catch (PhenotypicSystemException pse)
+		{
+			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
+		}
+		catch (IOException e1)
+		{
+			log.error(e1.getMessage());
+		}
+		
+		// Update the report
+		updateUploadReport(uploadReport.toString());
+		
+		// Save all objects to the database
+		save();
 	}
 	
 	public void updateUploadReport(String importReport)
@@ -161,6 +135,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private void save()
 	{
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-		phenotypicService.createUpload(containerForm.getModelObject());
+		iPhenotypicService.createUpload(containerForm.getModelObject());
 	}
 }

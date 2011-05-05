@@ -1,7 +1,6 @@
 package au.org.theark.phenotypic.web.component.fieldUpload;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -18,8 +17,6 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel
 	 */
 	private static final long serialVersionUID = -6803600838428204753L;
 	private Form<UploadVO>						containerForm;
-	private String	validationMessage;
-	private MultiLineLabel validationMessageLabel = null;
 	
 	/**
 	 * Construct.
@@ -33,32 +30,12 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel
 	
 	private void initialiseDetailForm() 
 	{
-		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
-		addOrReplace(validationMessageLabel);
-		validationMessageLabel.setVisible(false);
-	}
-
-	/**
-	 * @param validationMessages the validationMessages to set
-	 */
-	public void setValidationMessage(String validationMessage)
-	{
-		this.validationMessage = validationMessage;
-	}
-
-	/**
-	 * @return the validationMessages
-	 */
-	public String getValidationMessage()
-	{
-		return validationMessage;
 	}
 
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) 
 	{
-		addOrReplace(new MultiLineLabel("multiLineLabel", containerForm.getModelObject().getValidationMessagesAsString()));
+		initialiseDetailForm();
 		
 		if(this.containerForm.getModelObject().getValidationMessages() != null)
 		{

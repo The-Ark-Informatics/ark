@@ -6,7 +6,6 @@ import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
@@ -28,12 +27,9 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 	 */
 	private static final long	serialVersionUID	= 2971945948091031160L;
 	private Form<UploadVO>						containerForm;
-	private String	validationMessage;
-	public java.util.Collection<String> validationMessages = null;
 	private WizardForm wizardForm;
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
-	private MultiLineLabel validationMessageLabel = null;
+	private IStudyService					iStudyService;
 	
 	/**
 	 * Construct.
@@ -48,26 +44,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 	
 	private void initialiseDetailForm() 
 	{
-		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
-		addOrReplace(validationMessageLabel);
-		validationMessageLabel.setVisible(false);
-	}
-
-	/**
-	 * @param validationMessage the validationMessages to set
-	 */
-	public void setValidationMessage(String validationMessage)
-	{
-		this.validationMessage = validationMessage;
-	}
-
-	/**
-	 * @return the validationMessage
-	 */
-	public String getValidationMessage()
-	{
-		return validationMessage;
 	}
 
 	@Override
@@ -81,9 +57,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 		form.getNextButton().setEnabled(true);
 		target.addComponent(form.getNextButton());
 		
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
@@ -94,34 +67,31 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 		form.getNextButton().setEnabled(false);
 		target.addComponent(form.getNextButton());
 		
-		if(validationMessage == null || validationMessage.length() == 0)
+		// Filename seems to be lost from model when moving between steps in wizard
+		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
+		
+		// Perform actual import of data
+		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		
+		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		StringBuffer uploadReport = null;
+		try 
 		{
-			// Filename seems to be lost from model when moving between steps in wizard
-			containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-			
-			// Perform actual import of data
-			containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-			
-			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			StringBuffer uploadReport = null;
-			try 
-			{
-				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				uploadReport = studyService.importAndReportSubjectDataFile(inputStream, fileFormat, delimiterChar);
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			
-			
-			// Update the report
-			updateUploadReport(uploadReport.toString());
-			
-			// Save all objects to the database
-			save();
+			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			uploadReport = iStudyService.importAndReportSubjectDataFile(inputStream, fileFormat, delimiterChar);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
+		
+		
+		// Update the report
+		updateUploadReport(uploadReport.toString());
+		
+		// Save all objects to the database
+		save();
 	}
 	
 	public void updateUploadReport(String importReport)
@@ -138,6 +108,6 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 	private void save()
 	{
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-		studyService.createUpload(containerForm.getModelObject().getUpload());
+		iStudyService.createUpload(containerForm.getModelObject().getUpload());
 	}
 }

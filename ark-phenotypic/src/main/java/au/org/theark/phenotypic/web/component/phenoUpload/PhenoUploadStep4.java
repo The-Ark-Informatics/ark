@@ -6,7 +6,6 @@ import java.sql.Blob;
 import java.util.Date;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
@@ -29,12 +28,9 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	 */
 	private static final long serialVersionUID = -2788948560672351760L;
 	private Form<UploadVO>						containerForm;
-	private String	validationMessage;
-	public java.util.Collection<String> validationMessages = null;
-	private MultiLineLabel validationMessageLabel = null;
 	private WizardForm wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 	
 	/**
 	 * Construct.
@@ -49,26 +45,6 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	
 	private void initialiseDetailForm() 
 	{
-		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
-		validationMessageLabel = new MultiLineLabel("multiLineLabel", getValidationMessage());
-		addOrReplace(validationMessageLabel);
-		validationMessageLabel.setVisible(false);
-	}
-
-	/**
-	 * @param validationMessage the validationMessages to set
-	 */
-	public void setValidationMessage(String validationMessage)
-	{
-		this.validationMessage = validationMessage;
-	}
-
-	/**
-	 * @return the validationMessage
-	 */
-	public String getValidationMessage()
-	{
-		return validationMessage;
 	}
 
 	@Override
@@ -79,9 +55,6 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
@@ -89,34 +62,31 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		if(validationMessage == null || containerForm.getModel().getObject().getOverrideDataValidationChkBox())
+		// Filename seems to be lost from model when moving between steps in wizard
+		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
+		
+		// Perform actual import of data
+		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
+		StringBuffer uploadReport = null;
+		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		
+		try 
 		{
-			// Filename seems to be lost from model when moving between steps in wizard
-			containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-			
-			// Perform actual import of data
-			containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-			StringBuffer uploadReport = null;
-			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			
-			try 
-			{
-				InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				inputStream.reset();
-				uploadReport = phenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
-			} 
-			catch (IOException e) 
-			{
-				e.printStackTrace();
-			}
-			
-			// Update the report
-			updateUploadReport(uploadReport.toString());
-			
-			// Save all objects to the database
-			save();
+			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			inputStream.reset();
+			uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
+		} 
+		catch (IOException e) 
+		{
+			e.printStackTrace();
 		}
+		
+		// Update the report
+		updateUploadReport(uploadReport.toString());
+		
+		// Save all objects to the database
+		save();
 	}
 	
 	public void updateUploadReport(String importReport)
@@ -133,6 +103,6 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	private void save()
 	{
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
-		phenotypicService.createUpload(containerForm.getModelObject());
+		iPhenotypicService.createUpload(containerForm.getModelObject());
 	}
 }
