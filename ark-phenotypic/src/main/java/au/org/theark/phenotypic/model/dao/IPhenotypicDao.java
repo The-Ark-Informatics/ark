@@ -119,4 +119,6 @@ public interface IPhenotypicDao {
 	
 	// Field Upload
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload);
+	public int getCountOfCollectionsInStudy(Study study);
+	public int getCountOfCollectionsWithDataInStudy(Study study);
 }

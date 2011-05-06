@@ -95,4 +95,6 @@ public interface IPhenotypicService {
 	public int getCountOfFieldsWithDataInStudy(Study study);
 	
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
+	public int getCountOfCollectionsInStudy(Study study);
+	public int getCountOfCollectionsWithDataInStudy(Study study);
 }

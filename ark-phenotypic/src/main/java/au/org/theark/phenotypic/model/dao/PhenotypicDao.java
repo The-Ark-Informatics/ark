@@ -12,6 +12,8 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1093,18 +1095,49 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	}
 
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload)
-	{
-		String sqlQry = "SELECT DISTINCT `upload`.`ID`, `upload`.`STUDY_ID`, `upload`.`FILE_FORMAT_ID`, `upload`.`DELIMITER_TYPE_ID`, `upload`.`FILENAME`, `upload`.`PAYLOAD`, `upload`.`CHECKSUM`,"
-			+ "`upload`.`USER_ID`, `upload`.`INSERT_TIME`, `upload`.`UPDATE_USER_ID`, `upload`.`UPDATE_TIME`, `upload`.`START_TIME`, `upload`.`FINISH_TIME`, `upload`.`UPLOAD_REPORT`"
-			+ " FROM `pheno`.`upload`, `pheno`.`field_upload`"
-			+ " WHERE `pheno`.`upload`.id = `pheno`.`field_upload`.upload_id"
-			+ " AND `pheno`.`upload`.`study_id` = "
-			+ phenoUpload.getStudy().getId();
-		
+	{	
 		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
 		criteria.add(Restrictions.eq("uploadType", "field"));
 		
 		java.util.Collection<PhenoUpload> phenoUploadCollection = criteria.list();
 		return phenoUploadCollection;
+	}
+
+	public int getCountOfCollectionsInStudy(Study study) {
+		int count = 0;
+		
+		if(study.getId() != null)
+		{
+			Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+			criteria.add(Restrictions.eq("study", study));
+			
+			java.util.Collection<PhenoCollection> phenoCollection = criteria.list();
+			count = phenoCollection.size();
+		}
+		
+		return count;
+	}
+
+	public int getCountOfCollectionsWithDataInStudy(Study study) {
+		int count = 0;
+		
+		if(study.getId() != null)
+		{
+			Collection<PhenoCollection> phenoCollectionColn = getPhenotypicCollectionByStudy(study);
+		
+			for (Iterator iterator = phenoCollectionColn.iterator(); iterator.hasNext();) {
+				PhenoCollection phenoCollection = (PhenoCollection) iterator.next();
+			
+				Criteria criteria = getSession().createCriteria(FieldData.class);
+				criteria.add(Restrictions.eq("collection", phenoCollection));
+				ProjectionList projList = Projections.projectionList();
+				projList.add(Projections.countDistinct("collection"));
+				criteria.setProjection(projList);
+				List list=criteria.list();
+				count = count + (Integer) list.get(0);
+			}
+		}
+		
+		return count;
 	}
 }

@@ -584,4 +584,14 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			PhenoCollection phenoCollection) {
 		return phenotypicDao.getFieldPhenoCollection(phenoCollection);
 	}
+
+	public int getCountOfCollectionsInStudy(Study study) {
+		return phenotypicDao.getCountOfCollectionsInStudy(study);
+	}
+	
+	public int getCountOfCollectionsWithDataInStudy(Study study) {
+		return phenotypicDao.getCountOfCollectionsWithDataInStudy(study);
+	}
+
+	
 }
