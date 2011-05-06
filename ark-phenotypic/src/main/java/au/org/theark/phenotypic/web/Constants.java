@@ -213,4 +213,6 @@ public class Constants {
 
 	public static final String	FIELD_UPLOAD_ID	= "id";
 	public static String	FIELD_UPLOAD_UPLOAD = "upload";
+	
+	public static final String[] DATA_DICTIONARY_HEADER ={"FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"};
 }
