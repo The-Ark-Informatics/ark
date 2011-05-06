@@ -23,6 +23,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
@@ -65,6 +66,9 @@ public class SearchResultListPanel extends Panel {
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
+		
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER);
+		add(downloadTemplateButton);
 	}
 
 	/**
@@ -72,13 +76,11 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
-	public PageableListView<StudyUpload> buildPageableListView(
-			IModel iModel) {
+	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
 		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(
 				Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
-			protected void populateItem(
-					final ListItem<StudyUpload> item) {
+			protected void populateItem(final ListItem<StudyUpload> item) {
 				StudyUpload upload = item.getModelObject();
 
 				// The ID
