@@ -327,15 +327,15 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection)
 	{
-		Criteria criteria = getSession().createCriteria(FieldData.class);
+		Criteria criteria = getSession().createCriteria(FieldPhenoCollection.class);
 
 		if (phenoCollection.getId() != null)
 		{
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION, phenoCollection.getId()));
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION, phenoCollection));
 		}
 
-		java.util.Collection<FieldPhenoCollection> fieldDataCollection = criteria.list();
-		return fieldDataCollection;
+		java.util.Collection<FieldPhenoCollection> fieldPhenoCollection = criteria.list();
+		return fieldPhenoCollection;
 
 	}
 
