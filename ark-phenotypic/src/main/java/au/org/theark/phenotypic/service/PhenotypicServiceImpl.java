@@ -23,6 +23,7 @@ import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -577,5 +578,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload)
 	{
 		return phenotypicDao.searchFieldUpload(phenoUpload);
+	}
+
+	public Collection<FieldPhenoCollection> getFieldPhenoCollection(
+			PhenoCollection phenoCollection) {
+		return phenotypicDao.getFieldPhenoCollection(phenoCollection);
 	}
 }

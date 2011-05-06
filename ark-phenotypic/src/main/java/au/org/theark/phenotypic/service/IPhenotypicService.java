@@ -8,6 +8,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -92,4 +93,6 @@ public interface IPhenotypicService {
 	
 	public int getCountOfFieldsInStudy(Study study);
 	public int getCountOfFieldsWithDataInStudy(Study study);
+	
+	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
 }
