@@ -305,4 +305,6 @@ public class Constants {
 	public static final String FILE_FORMAT_EXCEPTION = "File Format Exception: Input error. ";
 	public static final String	ARK_SYSTEM_EXCEPTION	= "General ARK System Exception: ";
 	public static final String	ARK_BASE_EXCEPTION	= "Base ARK System Exception: ";
+	
+	public static final String[]	SUBJECT_TEMPLATE_HEADER = {"SUBJECTUID","TITLE","FIRST_NAME","MIDDLE_NAME","LAST_NAME","PREFERRED_NAME","DATE_OF_BIRTH","VITAL_STATUS","GENDER","STATUS","DATE_OF_DEATH","CAUSE_OF_DEATH","MARITAL_STATUS","PREFERRED_CONTACT","EMAIL"};
 }
