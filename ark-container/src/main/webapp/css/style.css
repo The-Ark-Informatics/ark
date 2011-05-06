@@ -196,6 +196,18 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	width: 5%;
 }
 
+#imgLeft {
+	float: left;
+}
+
+#imgRight {
+	float: left;
+}
+
+#imgCenter {
+	clear: all;
+}
+
 #fldLabel {
 	float: left;
 	height: 5%;
