@@ -42,6 +42,9 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				phenotypicService;
+	
+	private JFreeChart chart;
+	private DefaultPieDataset d;
 
 	/**
 	 * @param id
@@ -67,11 +70,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		super(id, compoundPropertyModel);
 		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
-	}
-
-	private void initDropDownChoice()
-	{
-		// Initialise any drop-downs
+		addFieldComponents();
 	}
 
 	public void initialiseFieldForm()
@@ -80,11 +79,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		
-		DefaultPieDataset d = new DefaultPieDataset();
+		d = new DefaultPieDataset();
 		d.setValue("Fields with Data", new Integer(phenotypicService.getCountOfFieldsWithDataInStudy(study)));
 		d.setValue("Fields without Data", new Integer(phenotypicService.getCountOfFieldsInStudy(study) - phenotypicService.getCountOfFieldsWithDataInStudy(study)));
 		
-		JFreeChart chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
+		chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
                  true,		// Show legend  
                  true,		// Show tooltips
                  true);		// Show urls
@@ -92,46 +91,17 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
         chart.setBorderVisible(false);
 		add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
 		
-		// For summary module, override the default search form buttons isVisible method to false
-		newButton = new AjaxButton(Constants.NEW){
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//Make the details panel visible
-				onNew(target);
-			}
-			
-			@Override
-			public boolean isVisible(){
-				return false;
-			}
-		};
+		d = new DefaultPieDataset();
+		d.setValue("Collections with Data", new Integer(phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+		d.setValue("Collections without Data", new Integer(phenotypicService.getCountOfCollectionsInStudy(study) - phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
 		
-		
-		searchButton = new AjaxButton(Constants.SEARCH){
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//Make the details panel visible
-				onSearch(target);
-			}
-			
-			public boolean isVisible(){
-				return false;
-			}
-		};
-		
-		resetButton = new Button(Constants.RESET){
-			public void onSubmit(){
-				onReset();
-			}
-			
-			public boolean isVisible(){
-				return false;
-			}
-		};
-		
-		// Set up fields on the form
-		initDropDownChoice();
-		addFieldComponents();
+		chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
+                 true,		// Show legend  
+                 true,		// Show tooltips
+                 true);		// Show urls
+        chart.setBackgroundPaint(Color.white);
+        chart.setBorderVisible(false);
+		add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
 	}
 
 	private void addFieldComponents()
@@ -140,18 +110,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		// For summary module, disable buttons
 		this.viewButtonContainer.setVisible(false);
 		this.editButtonContainer.setVisible(false);
-	}
-
-	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
-		// What to do on New button click
-	}
-
-	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
-		// What to do on Search button click
 	}
 	
 	protected boolean isSecure(String actionType)
@@ -162,5 +120,17 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			flag = false;
 		}
 		return flag;
+	}
+
+	@Override
+	protected void onSearch(AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	protected void onNew(AjaxRequestTarget target) {
+		// TODO Auto-generated method stub
+		
 	}
 }
