@@ -137,19 +137,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		target.addComponent(feedbackPanel);
 		FieldData searchFieldData = getModelObject().getFieldData();
 
-		// Searching by SubjectUID
-		if(getModelObject().getFieldData().getLinkSubjectStudy().getSubjectUID() != null)
-		{
-			String subjectUID = getModelObject().getFieldData().getLinkSubjectStudy().getSubjectUID();
-			try
-			{
-				searchFieldData.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(subjectUID));
-			}
-			catch (EntityNotFoundException e)
-			{
-			}
-		}
-
 		java.util.Collection<FieldData> fieldDataCollection = phenotypicService.searchFieldData(searchFieldData);
 
 		if (fieldDataCollection != null && fieldDataCollection.size() == 0)
