@@ -1,7 +1,11 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -11,7 +15,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -22,6 +25,10 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.ArkDownloadTemplateButton;
+import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -30,7 +37,7 @@ import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 @SuppressWarnings({ "serial", "unchecked", "unused", "rawtypes" })
 public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 	
 	private transient Logger log = LoggerFactory.getLogger(SearchResultListPanel.class);
 
@@ -48,7 +55,7 @@ public class SearchResultListPanel extends Panel {
 			WebMarkupContainer detailPanelContainer,
 			WebMarkupContainer feedBackPanel,
 			WebMarkupContainer searchPanelContainer,
-			ContainerForm studyCompContainerForm,
+			ContainerForm containerForm,
 			WebMarkupContainer searchResultContainer, DetailPanel detail,
 			WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer,
@@ -56,13 +63,43 @@ public class SearchResultListPanel extends Panel {
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
 		this.feedBackPanel = feedBackPanel;
-		this.containerForm = studyCompContainerForm;
+		this.containerForm = containerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
+		
+		
+		
+		Collection<String> fieldCollection = new ArrayList<String>(); 
+		
+		
+		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		if(sessionPhenoCollectionId != null)
+		{
+			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
+			Collection<FieldPhenoCollection> fieldsInCollection = iPhenotypicService.getFieldPhenoCollection(phenoCollection);
+			
+			String[] fieldDataTemplate = new String[fieldsInCollection.size()+2];
+			fieldDataTemplate[0] ="SUBJECTUID";
+			fieldDataTemplate[1] ="DATE_COLLECTED";
+			int i = 2;
+			for (Iterator iterator = fieldsInCollection.iterator(); iterator.hasNext();) {
+				FieldPhenoCollection fpc = (FieldPhenoCollection) iterator.next();
+				fieldDataTemplate[i++] = fpc.getField().getName();
+			}
+			
+			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "FieldDataUpload", fieldDataTemplate);
+			add(downloadTemplateButton);
+		}
+		else
+		{
+			String[] fieldDataTemplate = new String[0];
+			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", null, fieldDataTemplate);
+			add(downloadTemplateButton);
+		}
 	}
 
 	/**
@@ -326,7 +363,7 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (upload.getId() != null)
-					phenotypicService.deleteUpload(upload);
+					iPhenotypicService.deleteUpload(upload);
  
 				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
 				

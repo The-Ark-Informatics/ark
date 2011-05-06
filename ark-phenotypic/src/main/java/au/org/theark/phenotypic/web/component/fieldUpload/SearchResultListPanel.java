@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -62,6 +63,9 @@ public class SearchResultListPanel extends Panel {
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
+		
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER);
+		add(downloadTemplateButton);
 	}
 
 	/**
