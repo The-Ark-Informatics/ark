@@ -57,7 +57,8 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	{
 		super(id, "Step 3/5: Data Validation", 
 				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.<br>" +
-				"If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control");
+				"If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control<br>" +
+				"If new fields in the file are not in the current collection, they will be added accordingly");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
 		initialiseDetailForm();
@@ -212,6 +213,13 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 					containerForm.getModelObject().setUpdateChkBox(true);
 					updateExistingDataContainer.setVisible(false);
 					target.addComponent(updateExistingDataContainer);
+				}
+				
+				if(warningCells.isEmpty())
+				{
+					overrideDataValidationContainer.setVisible(false);
+					target.addComponent(overrideDataValidationContainer);
+					updateExistingDataContainer.setVisible(false);
 				}
 				
 				if(!errorCells.isEmpty())
