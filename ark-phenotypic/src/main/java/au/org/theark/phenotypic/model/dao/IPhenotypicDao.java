@@ -73,6 +73,11 @@ public interface IPhenotypicDao {
 	public java.util.Collection<FieldType> getFieldTypes();
 	public void createFieldType(FieldType fieldType);
 	public void updateFieldType(FieldType fieldType);
+	
+	// Field_collections
+	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
+	public void createFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
+	public void updateFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
 
 	// Field Data
 	public FieldData getFieldData(Long id);

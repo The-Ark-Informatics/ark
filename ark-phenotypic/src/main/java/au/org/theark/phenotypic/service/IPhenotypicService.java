@@ -40,6 +40,11 @@ public interface IPhenotypicService {
 	public void updateField(Field field);
 	public void deleteField(Field field);
 	
+	// Field_collections
+	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
+	public void createFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
+	public void updateFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
+	
 	// FieldType
 	public FieldType getFieldType(Long id);
 	public FieldType getFieldTypeByName(String fieldTypeName);

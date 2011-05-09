@@ -61,6 +61,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		{
 			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_STUDY, study));
 		}
+		criteria.addOrder(Order.asc("name"));
 
 		java.util.List<PhenoCollection> collectionList = criteria.list();
 		return collectionList;
@@ -1139,5 +1140,39 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		
 		return count;
+	}
+
+	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection)
+	{
+		Criteria criteria = getSession().createCriteria(FieldPhenoCollection.class);
+
+		if (fieldPhenoCollection.getField() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_PHENO_COLLECTION_FIELD, fieldPhenoCollection.getField()));
+		}
+		if (fieldPhenoCollection.getStudy() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_PHENO_COLLECTION_STUDY, fieldPhenoCollection.getStudy()));
+		}
+		if (fieldPhenoCollection.getPhenoCollection() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_PHENO_COLLECTION_PHENO_COLLECTION, fieldPhenoCollection.getPhenoCollection()));
+		}
+
+		FieldPhenoCollection aFieldPhenoCollection = null;
+		if(criteria.list().size() > 0)
+			aFieldPhenoCollection = (FieldPhenoCollection) criteria.list().get(0);
+
+		return aFieldPhenoCollection;
+	}
+	
+	public void createFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection)
+	{
+		getSession().save(fieldPhenoCollection);
+	}
+
+	public void updateFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection)
+	{
+		getSession().update(fieldPhenoCollection);
 	}
 }
