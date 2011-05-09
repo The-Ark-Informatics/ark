@@ -1,6 +1,7 @@
 package au.org.theark.study;
 
 import junit.framework.TestCase;
+
 import org.apache.wicket.util.tester.WicketTester;
 
 /**
