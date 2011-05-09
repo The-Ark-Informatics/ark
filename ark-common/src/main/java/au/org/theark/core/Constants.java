@@ -94,6 +94,7 @@ public class Constants {
 	public static final String TAB_MODULE_STUDY_COMPONENT = "tab.module.study.components";
 	public static final String USER = "User";
 	public static final String TAB_MODULE_USER = "tab.module.users";
+	public static final String TAB_MODULE_USER_MANAGEMENT="tab.module.user.management";
 	public static final String MY_DETAIL = "My Detail";
 	public static final String TAB_MODULE_MY_DETAIL = "tab.module.mydetails";
 	public static final String SUBJECT = "Subject";
@@ -235,11 +236,10 @@ public class Constants {
 	public static final String ARK_MODULE_GENOTYPIC ="Genotypic";
 	public static final String ARK_MODULE_LIMS ="LIMS";
 	
-	
-	
-	
 	public static final char	DEFAULT_DELIMITER_CHARACTER	= ',';
 	public static final String	DEFAULT_FILE_FORMAT	= "CSV";
+	
+	public static final String STUDY="study";
 	
 	
 }
