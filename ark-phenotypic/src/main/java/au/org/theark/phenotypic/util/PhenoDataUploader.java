@@ -26,6 +26,7 @@ import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -341,15 +342,33 @@ public class PhenoDataUploader
 						fieldData.setDateCollected(dateCollected);
 
 						// Set field
-						field = new Field();
-						field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[i], study);
+						String fieldName = fieldNameArray[i];
+						field = iPhenoService.getFieldByNameAndStudy(fieldName, study);
 						fieldData.setField(field);
+						
+						// Check if field in collection
+						FieldPhenoCollection fieldPhenoCollection = new FieldPhenoCollection();
+						fieldPhenoCollection.setStudy(study);
+						fieldPhenoCollection.setField(field);
+						fieldPhenoCollection.setPhenoCollection(phenoCollection);
+						
+						fieldPhenoCollection = iPhenoService.getFieldPhenoCollection(fieldPhenoCollection);
+						if(fieldPhenoCollection == null)
+						{
+							// New field to be added to the collection
+							fieldPhenoCollection = new FieldPhenoCollection();
+							fieldPhenoCollection.setStudy(study);
+							fieldPhenoCollection.setField(field);
+							fieldPhenoCollection.setPhenoCollection(phenoCollection);
+							iPhenoService.createFieldPhenoCollection(fieldPhenoCollection);
+						}
 
 						// Other/ith columns should be the field data value
 						fieldData.setValue(stringLineArray[i]);
 						
-						// Flag data that failed validation, but was overridden and imported
-						fieldData.setPassedQualityControl(PhenotypicValidator.fieldDataPassesQualityControl(fieldData, dataValidationMessages));
+						// Flag data that failed validation, but was overridden and uploaded
+						boolean passedQc = PhenotypicValidator.fieldDataPassesQualityControl(fieldData, dataValidationMessages);
+						fieldData.setPassedQualityControl(passedQc);
 
 						if(!fieldDataToUpdate.contains(fieldData))
 						{
@@ -362,7 +381,7 @@ public class PhenoDataUploader
 							uploadReport.append(": ");
 							uploadReport.append(stringLineArray[1]);
 							uploadReport.append("\tFIELD: ");
-							uploadReport.append(fieldNameArray[i]);
+							uploadReport.append(fieldName);
 							uploadReport.append("\tVALUE: ");
 							uploadReport.append(stringLineArray[i]);
 							uploadReport.append("\n");
