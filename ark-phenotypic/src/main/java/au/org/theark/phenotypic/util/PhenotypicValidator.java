@@ -118,8 +118,8 @@ public class PhenotypicValidator
 	 */
 	public static boolean isValidFieldData(FieldData fieldData, java.util.Collection<String> errorMessages)
 	{
-		Field field = (Field) fieldData.getField();
-		// errorMessages.add("Validating field data: " + field.getName().toString() + "\t" + fieldData.getValue().toString());
+		boolean isValidFieldData = true;
+		Field field = fieldData.getField();
 
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
@@ -127,18 +127,17 @@ public class PhenotypicValidator
 			try
 			{
 				Float floatFieldValue = Float.parseFloat(fieldData.getValue());
-				return true;
 			}
 			catch (NumberFormatException nfe)
 			{
 				errorMessages.add(PhenotypicValidationMessage.fieldDataNotDefinedType(field, fieldData));
 				log.error("Field data number format exception " + nfe.getMessage());
-				return false;
+				isValidFieldData = false;
 			}
 			catch (NullPointerException npe)
 			{
 				log.error("Field data null pointer exception " + npe.getMessage());
-				return false;
+				isValidFieldData = false;
 			}
 		}
 
@@ -148,12 +147,11 @@ public class PhenotypicValidator
 			try
 			{
 				String stringFieldValue = fieldData.getValue();
-				return true;
 			}
 			catch (NullPointerException npe)
 			{
 				log.error("Field data null pointer exception " + npe.getMessage());
-				return false;
+				isValidFieldData = false;
 			}
 		}
 
@@ -166,23 +164,22 @@ public class PhenotypicValidator
 				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				dateFormat.setLenient(false);
 				dateFieldValue = dateFormat.parse(fieldData.getValue());
-				return true;
 			}
 			catch (ParseException pe)
 			{
 				errorMessages.add(PhenotypicValidationMessage.fieldDataNotValidDate(field, fieldData));
 				log.error("Field data date parse exception " + pe.getMessage());
-				return false;
+				isValidFieldData = false;
 			}
 			catch (NullPointerException npe)
 			{
 				log.error("Field data null pointer exception " + npe.getMessage());
-				return false;
+				isValidFieldData = false;
 			}
 
 		}
 
-		return false;
+		return isValidFieldData;
 	}
 
 	/**
@@ -193,80 +190,74 @@ public class PhenotypicValidator
 	 */
 	public static boolean isInValidRange(FieldData fieldData, java.util.Collection<String> errorMessages)
 	{
-		Field field = (Field) fieldData.getField();
+		boolean isInValidRange = true;
+		Field field = fieldData.getField();
+		
+		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+		{
+			try
+			{
+				Float floatMinValue = Float.parseFloat(field.getMinValue());
+				Float floatMaxValue = Float.parseFloat(field.getMaxValue());
+				Float floatFieldValue = Float.parseFloat(fieldData.getValue());
 
-		if(errorMessages != null)
-		{	
-			if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
+				if ((floatFieldValue > floatMaxValue) || (floatFieldValue < floatMinValue))
+				{
+					if ((floatFieldValue > floatMaxValue))
+					{
+						errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
+					}
+					if ((floatFieldValue < floatMinValue))
+					{
+						errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
+					}
+					isInValidRange = false;
+				}
+			}
+			catch (NumberFormatException nfe)
+			{
+				log.error("Field data number format exception " + nfe.getMessage());
+				isInValidRange = false;
+			}
+			catch (NullPointerException npe)
+			{
+				log.error("Field data null pointer exception " + npe.getMessage());
+				isInValidRange = false;
+			}
+		}
+		else if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{
+			if(field.getMinValue() != null && field.getMaxValue() != null)
 			{
 				try
 				{
-					Float floatMinValue = Float.parseFloat(field.getMinValue());
-					Float floatMaxValue = Float.parseFloat(field.getMaxValue());
-					Float floatFieldValue = Float.parseFloat(fieldData.getValue());
-	
-					if ((floatFieldValue > floatMaxValue) || (floatFieldValue < floatMinValue))
+					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					dateFormat.setLenient(false);
+					
+					Date dateMinValue = dateFormat.parse(field.getMinValue());
+					Date dateMaxValue = dateFormat.parse(field.getMaxValue());
+					Date dateFieldValue = dateFormat.parse(fieldData.getValue());
+					
+					if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue))
 					{
-						if ((floatFieldValue > floatMaxValue))
+						if (dateFieldValue.after(dateMaxValue))
 						{
 							errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
 						}
-						if ((floatFieldValue < floatMinValue))
+						if (dateFieldValue.before(dateMinValue))
 						{
 							errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
 						}
-						return false;
-					}
-					return true;
-				}
-				catch (NumberFormatException nfe)
-				{
-					log.error("Field data number format exception " + nfe.getMessage());
-					return false;
-				}
-				catch (NullPointerException npe)
-				{
-					log.error("Field data null pointer exception " + npe.getMessage());
-					return false;
-				}
-			}
-			else if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
-			{
-				if(field.getMinValue() != null && field.getMaxValue() != null)
-				{
-					try
-					{
-						DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-						dateFormat.setLenient(false);
-						
-						Date dateMinValue = dateFormat.parse(field.getMinValue());
-						Date dateMaxValue = dateFormat.parse(field.getMaxValue());
-						Date dateFieldValue = dateFormat.parse(fieldData.getValue());
-						
-						if (dateFieldValue.after(dateMaxValue) || dateFieldValue.before(dateMinValue))
-						{
-							if (dateFieldValue.after(dateMaxValue))
-							{
-								errorMessages.add(PhenotypicValidationMessage.fieldDataGreaterThanMaxValue(field, fieldData));
-							}
-							if (dateFieldValue.before(dateMinValue))
-							{
-								errorMessages.add(PhenotypicValidationMessage.fieldDataLessThanMinValue(field, fieldData));
-							}
-							return false;
-						}
-						return true;
-					}
-					catch (ParseException pe)
-					{
-						return false;
+						isInValidRange = false;
 					}
 				}
-				else
-					return true;
+				catch (ParseException pe)
+				{
+					isInValidRange = false;
+				}
 			}
 		}
-		return false;
+		return isInValidRange;
 	}
 
 	/**
@@ -279,7 +270,7 @@ public class PhenotypicValidator
 	{
 		boolean inEncodedValues = true;
 
-		Field field = (Field) fieldData.getField();
+		Field field = fieldData.getField();
 
 		// Validate if encoded values is defined
 		if (field.getEncodedValues() != null)
