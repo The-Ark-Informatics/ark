@@ -98,7 +98,14 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-                
+				<prop key="show_sql">false</prop>
+				<prop key="cache.use_query_cache">false</prop>
+				<prop key="cache.use_second_level_cache">false</prop>
+				<prop key="hibernate.order_updates">true</prop>
+				<prop key="hibernate.order_inserts">true</prop>
+				<prop key="hibernate.jdbc.batch_size">50</prop>
+				<prop key="hibernate.jdbc.batch_versioned_data">true</prop> 
+				<prop key="hibernate.current_session_context_class">org.hibernate.context.ThreadLocalSessionContext</prop>
             </props>
         </property>
         <property name="eventListeners">
