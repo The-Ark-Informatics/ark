@@ -8,7 +8,6 @@ import java.util.Date;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
@@ -44,7 +43,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private IPhenotypicService iPhenotypicService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
-	private MultiLineLabel validationMessageLabel = null;
 	
 	/**
 	 * Construct.
@@ -70,7 +68,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
 		initialiseDetailForm();
-		target.addComponent(validationMessageLabel);
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
@@ -81,7 +78,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		// Filename seems to be lost from model when moving between steps in wizard
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
 		
-		// Perform actual import of data
+		// Perform actual upload of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
