@@ -13,6 +13,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -654,5 +655,93 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			personContactMethod = (PersonContactMethod) criteria.list().get(0);
 		}
 		return personContactMethod;
+	}
+	
+	
+	public int getStudySubjectCount(SubjectVO subjectVoCriteria)
+	{
+		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+	
+	private Criteria buildGeneralSubjectCriteria(SubjectVO subjectVO) {
+		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
+		criteria.createAlias("person", "p");
+		criteria.add(Restrictions.eq("study.id",subjectVO.getSubjectStudy().getStudy().getId()));	
+		
+		if(subjectVO.getSubjectStudy().getPerson() != null){
+		
+			if(subjectVO.getSubjectStudy().getPerson().getId() != null){
+				criteria.add(Restrictions.eq("p.id",subjectVO.getSubjectStudy().getPerson().getId() ));	
+			}
+
+			if(subjectVO.getSubjectStudy().getPerson().getFirstName() != null){
+				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getMiddleName() != null){
+				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
+			}
+		
+			if(subjectVO.getSubjectStudy().getPerson().getLastName() != null){
+				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getDateOfBirth() != null){
+				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getSubjectStudy().getPerson().getDateOfBirth()));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getGenderType() != null){
+				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getSubjectStudy().getPerson().getGenderType().getId()));
+			}
+			
+			if(subjectVO.getSubjectStudy().getPerson().getVitalStatus() != null){
+				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getSubjectStudy().getPerson().getVitalStatus().getId()));
+			}
+			
+		}
+		
+		if( subjectVO.getSubjectStudy().getSubjectUID()!= null && subjectVO.getSubjectStudy().getSubjectUID().length() > 0){
+			criteria.add(Restrictions.eq("subjectUID",subjectVO.getSubjectStudy().getSubjectUID()));
+		}
+		
+		if(subjectVO.getSubjectStudy().getSubjectStatus() != null){
+			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getSubjectStudy().getSubjectStatus()));
+			SubjectStatus subjectStatus = getSubjectStatus("Archive");
+			if(subjectStatus != null){
+				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
+			}
+		}else{
+			SubjectStatus subjectStatus = getSubjectStatus("Archive");
+			if(subjectStatus != null){
+				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
+			}
+		}
+		
+		criteria.addOrder(Order.asc("subjectUID"));
+		return criteria;
+	}
+
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count)
+	{
+		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<LinkSubjectStudy> list = criteria.list();
+		List<SubjectVO> subjectVOList = new ArrayList<SubjectVO>();
+		
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			
+			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+			//Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
+			SubjectVO subject = new SubjectVO();
+			subject.setSubjectStudy(linkSubjectStudy);
+			Person person = subject.getSubjectStudy().getPerson();
+			subject.setSubjectPreviousLastname(getPreviousLastname(person));
+			subjectVOList.add(subject);
+		}
+		return subjectVOList;
 	}
 }
