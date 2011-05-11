@@ -50,7 +50,7 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	}
 	
 	public PhenoUploadStep2(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
-		super(id, "Step 2/5: File Validation", "The file has been validated. If there are no errors, click Next to continue.");
+		super(id, "Step 2/5: File Format Validation", "The file format has been validated. If there are no errors, click Next to continue.");
 
 		this.containerForm = containerForm;
 		initialiseDetailForm();
