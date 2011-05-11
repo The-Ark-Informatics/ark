@@ -292,4 +292,16 @@ public interface IArkCommonService<T> {
 	 * Collection<ArkModule>
 	 */
 	public Collection<Class<T>> getEntityList(Class<T> aClass);
+	
+	/**
+	 * A generic interface that will return a list SubjectVO specified by a particular criteria, and a pagingated reference point
+	 * @return Collection of SubjectVO
+	 */
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count);
+	
+	/**
+	 * A generic interface that will return count of the subjects in the study
+	 * @return int
+	 */
+	public int getStudySubjectCount(SubjectVO subjectVoCriteria);
 }

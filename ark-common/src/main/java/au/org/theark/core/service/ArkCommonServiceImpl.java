@@ -374,4 +374,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return arkAuthorisationDao.getEntityList(aClass);
 	}
 	
+	public int getStudySubjectCount(SubjectVO subjectVoCriteria)
+	{
+		return studyDao.getStudySubjectCount(subjectVoCriteria);
+	}
+
+	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count)
+	{
+		return studyDao.searchPageableSubjects(subjectVoCriteria, first, count);
+	}
+	
 }
