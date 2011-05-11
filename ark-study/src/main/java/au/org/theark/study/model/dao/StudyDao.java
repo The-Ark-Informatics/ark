@@ -2,12 +2,14 @@ package au.org.theark.study.model.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
@@ -64,75 +66,90 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
 
 @Repository("studyDao")
-public class StudyDao extends HibernateSessionDao implements IStudyDao {
+public class StudyDao extends HibernateSessionDao implements IStudyDao
+{
 
+	private static Logger	log	= LoggerFactory.getLogger(StudyDao.class);
+	private Subject			currentUser;
+	private Date				dateNow;
 
-	private static Logger log = LoggerFactory.getLogger(StudyDao.class);
-	private Subject	currentUser;
-	private Date		dateNow;
-	
-	ArkUidGenerator arkUidGenerator;
+	ArkUidGenerator			arkUidGenerator;
+
 	@Autowired
-	public void setArkUidGenerator(ArkUidGenerator arkUidGenerator) {
+	public void setArkUidGenerator(ArkUidGenerator arkUidGenerator)
+	{
 		this.arkUidGenerator = arkUidGenerator;
 	}
-	
-	public void create(Study study) {
+
+	public void create(Study study)
+	{
 		getSession().save(study);
 	}
-	
-	public void create(Study study, Collection<ArkModule> selectedApplications){
+
+	public void create(Study study, Collection<ArkModule> selectedApplications)
+	{
 		Session session = getSession();
 		session.save(study);
-		linkStudyToArkModule(study,selectedApplications,session, au.org.theark.core.Constants.MODE_NEW);
+		linkStudyToArkModule(study, selectedApplications, session, au.org.theark.core.Constants.MODE_NEW);
 	}
-	
-	private void linkStudyToArkModule(Study study,  Collection<ArkModule> selectedApplications,Session session, int mode ){
-		
-		
-		for (ArkModule arkModule : selectedApplications) {
+
+	private void linkStudyToArkModule(Study study, Collection<ArkModule> selectedApplications, Session session, int mode)
+	{
+
+		for (ArkModule arkModule : selectedApplications)
+		{
 			LinkStudyArkModule linkStudyArkModule = new LinkStudyArkModule();
 			linkStudyArkModule.setStudy(study);
 			linkStudyArkModule.setArkModule(arkModule);
-			if(mode == au.org.theark.core.Constants.MODE_NEW){
-				session.save(linkStudyArkModule);	
-			}else{
+			if (mode == au.org.theark.core.Constants.MODE_NEW)
+			{
+				session.save(linkStudyArkModule);
+			}
+			else
+			{
 				session.update(linkStudyArkModule);
 			}
 		}
 	}
 
-	public List<StudyStatus> getListOfStudyStatus() {
+	public List<StudyStatus> getListOfStudyStatus()
+	{
 
 		Example studyStatus = Example.create(new StudyStatus());
 		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatus);
-		return   studyStatusCriteria.list();
+		return studyStatusCriteria.list();
 	}
-	
+
 	/**
 	 * Given a status name will return the StudyStatus object.
 	 */
-	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException{
+	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException
+	{
 		StudyStatus studyStatus = new StudyStatus();
 		studyStatus.setName("Archive");
 		Example studyStatusExample = Example.create(studyStatus);
-		
+
 		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
-		if(studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0){
-			return (StudyStatus)studyStatusCriteria.list().get(0);	
-		}else{
+		if (studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0)
+		{
+			return (StudyStatus) studyStatusCriteria.list().get(0);
+		}
+		else
+		{
 			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
 			System.out.println("Cannot locate a study status with " + statusName + " in the database");
 			throw new StatusNotAvailableException();
 		}
 	}
-	
-	public Study getStudy(Long id){
-		Study study =  (Study)getSession().get(Study.class, id);
+
+	public Study getStudy(Long id)
+	{
+		Study study = (Study) getSession().get(Study.class, id);
 		return study;
 	}
-	
-	public void updateStudy(Study studyEntity){
+
+	public void updateStudy(Study studyEntity)
+	{
 		// session.update and session.flush required as Blob read/writes are used, and InputStream may cause NullPointers when closed incorrectly
 		Session session = getSession();
 		session.update(studyEntity);
@@ -140,147 +157,180 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.refresh(studyEntity);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.study.model.dao.IStudyDao#create(au.org.theark.study.model.entity.StudyComp)
 	 */
-	public void create(StudyComp studyComponent) throws ArkSystemException {
-		try{
-			getSession().save(studyComponent);	
-		}catch(HibernateException hibException){
+	public void create(StudyComp studyComponent) throws ArkSystemException
+	{
+		try
+		{
+			getSession().save(studyComponent);
+		}
+		catch (HibernateException hibException)
+		{
 			log.error("A hibernate exception occured. Cannot create the study component ID: " + studyComponent.getName() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot create Study component");
 		}
-		
-		
+
 	}
-	
-	public void update(StudyComp studyComponent) throws ArkSystemException{
-		try{
-			getSession().update(studyComponent);	
-		}catch(HibernateException hibException){
+
+	public void update(StudyComp studyComponent) throws ArkSystemException
+	{
+		try
+		{
+			getSession().update(studyComponent);
+		}
+		catch (HibernateException hibException)
+		{
 			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getId() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot update Study component due to system error");
 		}
 	}
-	
-	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved{
-		try{
-			if(!isStudyComponentUsed(studyComp)){
-				getSession().delete(studyComp);	
-			}else{
+
+	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved
+	{
+		try
+		{
+			if (!isStudyComponentUsed(studyComp))
+			{
+				getSession().delete(studyComp);
+			}
+			else
+			{
 				throw new EntityCannotBeRemoved("The Study component is used and cannot be removed.");
 			}
-		}catch(HibernateException hibException){
+		}
+		catch (HibernateException hibException)
+		{
 			log.error("A hibernate exception occured. Cannot detele the study component ID: " + studyComp.getId() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot update Study component due to system error");
 		}
-		
+
 	}
-	
-	public boolean isStudyComponentUsed(StudyComp studyComp){
+
+	public boolean isStudyComponentUsed(StudyComp studyComp)
+	{
 		boolean flag = false;
 		Criteria criteria = getSession().createCriteria(Consent.class);
 		criteria.add(Restrictions.eq("studyComp", studyComp));
 		criteria.setProjection(Projections.rowCount());
-		Integer i  = (Integer)criteria.list().get(0);
-		if(i > 0){
+		Integer i = (Integer) criteria.list().get(0);
+		if (i > 0)
+		{
 			flag = true;
 		}
 		return flag;
 	}
-	
-	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria){
-		
+
+	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria)
+	{
+
 		Criteria criteria = getSession().createCriteria(StudyComp.class);
-		
-		if(studyCompCriteria.getId() != null){
-			criteria.add(Restrictions.eq(Constants.ID,studyCompCriteria.getId()));	
+
+		if (studyCompCriteria.getId() != null)
+		{
+			criteria.add(Restrictions.eq(Constants.ID, studyCompCriteria.getId()));
 		}
-		
-		if(studyCompCriteria.getName() != null){
-			criteria.add(Restrictions.eq(Constants.STUDY_COMP_NAME,studyCompCriteria.getName()));
+
+		if (studyCompCriteria.getName() != null)
+		{
+			criteria.add(Restrictions.eq(Constants.STUDY_COMP_NAME, studyCompCriteria.getName()));
 		}
-		
-		if(studyCompCriteria.getKeyword() != null){
-		
-			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD,studyCompCriteria.getKeyword(),MatchMode.ANYWHERE));
+
+		if (studyCompCriteria.getKeyword() != null)
+		{
+
+			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD, studyCompCriteria.getKeyword(), MatchMode.ANYWHERE));
 		}
-		List<StudyComp> list =  criteria.list();
+		List<StudyComp> list = criteria.list();
 		return list;
 	}
-	
-	public List<PhoneType> getListOfPhoneType() {
+
+	public List<PhoneType> getListOfPhoneType()
+	{
 		Example phoneTypeExample = Example.create(new PhoneType());
 		Criteria criteria = getSession().createCriteria(PhoneType.class).add(phoneTypeExample);
-		return   criteria.list();
+		return criteria.list();
 	}
-	
-	public void create(Phone phone) {
-			getSession().save(phone);
+
+	public void create(Phone phone)
+	{
+		getSession().save(phone);
 	}
-	
-	public void update(Phone phone) {
-			getSession().update(phone);
+
+	public void update(Phone phone)
+	{
+		getSession().update(phone);
 	}
-	
-	public void delete(Phone phone) {
-			getSession().delete(phone);
+
+	public void delete(Phone phone)
+	{
+		getSession().delete(phone);
 	}
-	
-	public Collection<TitleType> getTitleType(){
+
+	public Collection<TitleType> getTitleType()
+	{
 		Example example = Example.create(new TitleType());
 		Criteria criteria = getSession().createCriteria(TitleType.class).add(example);
 		return criteria.list();
 	}
-	public Collection<VitalStatus> getVitalStatus(){
+
+	public Collection<VitalStatus> getVitalStatus()
+	{
 		Example example = Example.create(new VitalStatus());
 		Criteria criteria = getSession().createCriteria(VitalStatus.class).add(example);
 		return criteria.list();
 	}
-	
-	public Collection<GenderType> getGenderType(){
+
+	public Collection<GenderType> getGenderType()
+	{
 		Example example = Example.create(new GenderType());
 		Criteria criteria = getSession().createCriteria(GenderType.class).add(example);
 		return criteria.list();
 	}
-	
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException {
+
+	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException
+	{
 		Study study = subjectVO.getSubjectStudy().getStudy();
-		//Add Business Validations here as well apart from UI validation
+		// Add Business Validations here as well apart from UI validation
 		try
 		{
-			if(isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(),subjectVO.getSubjectStudy().getStudy().getId(), "Insert")) 
+			if (isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(), subjectVO.getSubjectStudy().getStudy().getId(), "Insert"))
 			{
 				// Check insertion lock
-				if (getSubjectUidSequenceLock(study) == true) {
-					//TODO Fix the exception to be custom
+				if (getSubjectUidSequenceLock(study) == true)
+				{
+					// TODO Fix the exception to be custom
 					throw new ArkSubjectInsertException("Subject insertion locked by another process");
 				}
-				else 
+				else
 				{
 					// Enable insertion lock
 					setSubjectUidSequenceLock(study, true);
-					
+
 					Session session = getSession();
-					Person person  = subjectVO.getSubjectStudy().getPerson();
+					Person person = subjectVO.getSubjectStudy().getPerson();
 					session.save(person);
-					
+
 					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-					if(person.getLastName() != null)
+					if (person.getLastName() != null)
 					{
 						personLastNameHistory.setPerson(person);
 						personLastNameHistory.setLastName(person.getLastName());
-						session.save(personLastNameHistory);	
+						session.save(personLastNameHistory);
 					}
-					
+
 					// Update subjectPreviousLastname
 					subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
-					
+
 					LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
-					session.save(linkSubjectStudy);//The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
-					
+					session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
+																// OpenSessionInViewFilter
+
 					// Auto-generate SubjectUID
-					if(subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+					if (subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
 					{
 						String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
 						linkSubjectStudy.setSubjectUID(subjectUID);
@@ -300,38 +350,42 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 	}
 
-	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException{
-	
+	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException
+	{
+
 		// TODO: Needed?
-		if(true){			
+		if (true)
+		{
 			Session session = getSession();
-			Person person  = subjectVO.getSubjectStudy().getPerson();
+			Person person = subjectVO.getSubjectStudy().getPerson();
 			session.update(person);// Update Person and associated Phones
-			
+
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 			String currentLastName = getCurrentLastname(person);
-			
-			if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+
+			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
 			{
-				if(person.getLastName() != null)
+				if (person.getLastName() != null)
 				{
 					personLastNameHistory.setPerson(person);
 					personLastNameHistory.setLastName(person.getLastName());
 					session.save(personLastNameHistory);
 				}
 			}
-			
+
 			// Update subjectPreviousLastname
 			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
-			
+
 			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
 			session.update(linkSubjectStudy);
-		}else{
+		}
+		else
+		{
 			throw new ArkUniqueException("Subject UID must be unique");
-		}		
+		}
 	}
-	
-	protected String getNextGeneratedSubjectUID(Study study) throws ArkSubjectInsertException 
+
+	protected String getNextGeneratedSubjectUID(Study study) throws ArkSubjectInsertException
 	{
 		String subjectUidPrefix = new String("");
 		String subjectUidToken = new String("");
@@ -339,30 +393,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		String subjectUidPadChar = new String("0");
 		String nextIncrementedsubjectUid = new String("");
 		String subjectUid = new String("");
-		
-		if(study.getId() != null && study.getAutoGenerateSubjectUid() != null)
+
+		if (study.getId() != null && study.getAutoGenerateSubjectUid() != null)
 		{
-			if(study.getSubjectUidPrefix() != null)
+			if (study.getSubjectUidPrefix() != null)
 				subjectUidPrefix = study.getSubjectUidPrefix();
-			
-			if(study.getSubjectUidToken() != null && study.getSubjectUidToken().getName() != null)
+
+			if (study.getSubjectUidToken() != null && study.getSubjectUidToken().getName() != null)
 			{
 				subjectUidToken = study.getSubjectUidToken().getName();
 			}
-			
-			if(study.getSubjectUidPadChar() != null && study.getSubjectUidPadChar().getName() != null)
+
+			if (study.getSubjectUidPadChar() != null && study.getSubjectUidPadChar().getName() != null)
 			{
-				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();	
+				subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
 			}
-			
+
 			Long subjectUidStart = study.getSubjectUidStart();
-			if(subjectUidStart == null) {
-				subjectUidStart = new Long(1);	//if null, then use: 1
+			if (subjectUidStart == null)
+			{
+				subjectUidStart = new Long(1); // if null, then use: 1
 				study.setSubjectUidStart(subjectUidStart);
 			}
-			Long incrementedValue = subjectUidStart +  getNextUidSequence(study) - 1;
+			Long incrementedValue = subjectUidStart + getNextUidSequence(study) - 1;
 			nextIncrementedsubjectUid = incrementedValue.toString();
-			
+
 			int size = Integer.parseInt(subjectUidPadChar);
 			subjectUidPaddedIncrementor = StringUtils.leftPad(nextIncrementedsubjectUid, size, "0");
 			subjectUid = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
@@ -373,38 +428,45 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		}
 		return subjectUid;
 	}
-	
-	public Integer getNextUidSequence(Study study) throws ArkSubjectInsertException {
+
+	public Integer getNextUidSequence(Study study) throws ArkSubjectInsertException
+	{
 
 		Integer result;
-		if (study == null) {
+		if (study == null)
+		{
 			log.error("Error in Subject insertion - Study was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - Study not in context"); 
+			throw new ArkSubjectInsertException("Error in Subject insertion - Study not in context");
 		}
-		if (study.getName() == null) {
+		if (study.getName() == null)
+		{
 			log.error("Error in Subject insertion - Study name was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - EmptyØ study name");  
+			throw new ArkSubjectInsertException("Error in Subject insertion - EmptyØ study name");
 		}
 
 		result = (Integer) arkUidGenerator.getId(study.getName());
 
 		return result;
 	}
-	
-	protected boolean getSubjectUidSequenceLock(Study study) {
+
+	protected boolean getSubjectUidSequenceLock(Study study)
+	{
 		boolean lock;
 		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
-		if (subjUidSeq == null) {
-			lock = false;	// not locked if record doesn't exist
+		if (subjUidSeq == null)
+		{
+			lock = false; // not locked if record doesn't exist
 		}
-		else {
-			lock = subjUidSeq.getInsertLock();	
+		else
+		{
+			lock = subjUidSeq.getInsertLock();
 		}
 		return lock;
 	}
-	
-	protected SubjectUidSequence getSubjectUidSequence(Study study) {
-		// Stateless sessions should be used to avoid locking the record for future update 
+
+	protected SubjectUidSequence getSubjectUidSequence(Study study)
+	{
+		// Stateless sessions should be used to avoid locking the record for future update
 		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
 		Criteria criteria = session.createCriteria(SubjectUidSequence.class);
@@ -414,15 +476,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		session.close();
 		return result;
 	}
-	
-	protected void setSubjectUidSequenceLock(Study study, boolean lock) {
-		// Stateless sessions should be used to avoid locking the record for future update 
+
+	protected void setSubjectUidSequenceLock(Study study, boolean lock)
+	{
+		// Stateless sessions should be used to avoid locking the record for future update
 		// by getSession(), which relies on the "open session filter" mechanism
 		StatelessSession session = getStatelessSession();
 		Transaction tx = session.getTransaction();
 		tx.begin();
 		SubjectUidSequence subjUidSeq = getSubjectUidSequence(study);
-		if (subjUidSeq == null) {
+		if (subjUidSeq == null)
+		{
 			// create a new record if it doens't exist
 			subjUidSeq = new SubjectUidSequence();
 			subjUidSeq.setStudyNameId(study.getName());
@@ -430,689 +494,826 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			subjUidSeq.setInsertLock(lock);
 			session.insert(subjUidSeq);
 		}
-		else {
+		else
+		{
 			subjUidSeq.setInsertLock(lock);
 			session.update(subjUidSeq);
 		}
 		tx.commit();
 		session.close();
 	}
-	
+
 	public Long getSubjectCount(Study study)
 	{
 		Long subjectCount = new Long(0);
-	   if(study.getId() != null)
-	   {
-		   Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		if (study.getId() != null)
+		{
+			Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 			criteria.add(Restrictions.eq("study", study));
-			
-			List<LinkSubjectStudy> listOfSubjects =  (List<LinkSubjectStudy>) criteria.list();
+
+			List<LinkSubjectStudy> listOfSubjects = (List<LinkSubjectStudy>) criteria.list();
 			subjectCount = new Long(listOfSubjects.size());
-	   }
-	   
+		}
+
 		return subjectCount;
 	}
-	
-	public Collection<SubjectStatus> getSubjectStatus(){
-		
+
+	public Collection<SubjectStatus> getSubjectStatus()
+	{
+
 		Example example = Example.create(new SubjectStatus());
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);
 		return criteria.list();
-	
+
 	}
 
-	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException{
-		
-		Criteria linkSubjectStudyCriteria =  getSession().createCriteria(LinkSubjectStudy.class);
-		linkSubjectStudyCriteria.add(Restrictions.eq(Constants.ID,id));
+	public LinkSubjectStudy getLinkSubjectStudy(Long id) throws EntityNotFoundException
+	{
+
+		Criteria linkSubjectStudyCriteria = getSession().createCriteria(LinkSubjectStudy.class);
+		linkSubjectStudyCriteria.add(Restrictions.eq(Constants.ID, id));
 		List<LinkSubjectStudy> listOfSubjects = linkSubjectStudyCriteria.list();
-		if(listOfSubjects != null && listOfSubjects.size() > 0){
+		if (listOfSubjects != null && listOfSubjects.size() > 0)
+		{
 			return listOfSubjects.get(0);
-		}else{
-			throw new EntityNotFoundException("The entity with id" + id.toString() +" cannot be found.");
+		}
+		else
+		{
+			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
 	}
 
 	/**
-	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
-	 * a subject or contact.
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can
+	 * represent a subject or contact.
+	 * 
 	 * @param personId
 	 * @return
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException{
-		
-		Criteria personCriteria =  getSession().createCriteria(Person.class);
-		personCriteria.add(Restrictions.eq(Constants.ID,personId));
+	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria personCriteria = getSession().createCriteria(Person.class);
+		personCriteria.add(Restrictions.eq(Constants.ID, personId));
 		List<Person> listOfPerson = personCriteria.list();
-		if(listOfPerson != null && listOfPerson.size() > 0){
+		if (listOfPerson != null && listOfPerson.size() > 0)
+		{
 			return listOfPerson.get(0);
-		}else{
-			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		}
+		else
+		{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 	}
-	
-	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException{
-		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
+
+	public List<Phone> getPersonPhoneList(Long personId) throws EntityNotFoundException, ArkSystemException
+	{
+		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
 		phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
-		if(personPhoneList == null && personPhoneList.size() == 0){
-			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		if (personPhoneList == null && personPhoneList.size() == 0)
+		{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 		log.info("Number of phone items retrieved for person Id " + personId + " " + personPhoneList.size());
 		return personPhoneList;
 	}
-	
-	public List<Phone> getPersonPhoneList(Long personId,Phone phone) throws EntityNotFoundException,ArkSystemException{
-		
-		Criteria phoneCriteria =  getSession().createCriteria(Phone.class);
-	
-		
-		if(personId != null){
+
+	public List<Phone> getPersonPhoneList(Long personId, Phone phone) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria phoneCriteria = getSession().createCriteria(Phone.class);
+
+		if (personId != null)
+		{
 			phoneCriteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		}
-		
-		if(phone != null){
-			
-			if( phone.getId() != null){
+
+		if (phone != null)
+		{
+
+			if (phone.getId() != null)
+			{
 				phoneCriteria.add(Restrictions.eq(Constants.PHONE_ID, phone.getId()));
 			}
 
-			if( phone.getPhoneNumber() != null){
+			if (phone.getPhoneNumber() != null)
+			{
 				phoneCriteria.add(Restrictions.ilike(Constants.PHONE_NUMBER, phone.getPhoneNumber()));
 			}
 
-			if( phone.getPhoneType() != null){
+			if (phone.getPhoneType() != null)
+			{
 				phoneCriteria.add(Restrictions.eq(Constants.PHONE_TYPE, phone.getPhoneType()));
 			}
-			
-			if( phone.getAreaCode() != null){
+
+			if (phone.getAreaCode() != null)
+			{
 				phoneCriteria.add(Restrictions.eq(Constants.AREA_CODE, phone.getAreaCode()));
 			}
-			
+
 		}
-		
+
 		List<Phone> personPhoneList = phoneCriteria.list();
 		log.info("Number of phones fetched " + personPhoneList.size() + "  Person Id" + personId.intValue());
-		if(personPhoneList == null && personPhoneList.size() == 0){
-			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");
+		if (personPhoneList == null && personPhoneList.size() == 0)
+		{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 		return personPhoneList;
 	}
-	
+
 	/**
 	 * Looks up all the addresses for a person.
+	 * 
 	 * @param personId
 	 * @param address
 	 * @return List<Address>
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException,ArkSystemException{
-		
-		Criteria criteria =  getSession().createCriteria(Address.class);
-		
-		if(personId != null){
+	public List<Address> getPersonAddressList(Long personId, Address address) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria criteria = getSession().createCriteria(Address.class);
+
+		if (personId != null)
+		{
 			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		}
-		
-		if(address != null){
-			//Add criteria for address
-			if(address.getStreetAddress() != null){
-				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(),MatchMode.ANYWHERE));
+
+		if (address != null)
+		{
+			// Add criteria for address
+			if (address.getStreetAddress() != null)
+			{
+				criteria.add(Restrictions.ilike(Constants.STREET_ADDRESS, address.getStreetAddress(), MatchMode.ANYWHERE));
 			}
-			
-			if(address.getCountry() != null){
+
+			if (address.getCountry() != null)
+			{
 				criteria.add(Restrictions.eq(Constants.COUNTRY_NAME, address.getCountry()));
 			}
-			
-			if(address.getPostCode() != null){
+
+			if (address.getPostCode() != null)
+			{
 				criteria.add(Restrictions.eq(Constants.POST_CODE, address.getPostCode()));
 			}
-			
-			if(address.getCity() != null){
+
+			if (address.getCity() != null)
+			{
 				criteria.add(Restrictions.ilike(Constants.CITY, address.getCity()));
 			}
-			
-			if(address.getCountryState() != null ){
+
+			if (address.getCountryState() != null)
+			{
 				criteria.add(Restrictions.eq(Constants.COUNTRY_STATE_NAME, address.getCountryState()));
 			}
-			
-			if(address.getAddressType() != null){
+
+			if (address.getAddressType() != null)
+			{
 				criteria.add(Restrictions.eq(Constants.ADDRESS_TYPE, address.getAddressType()));
 			}
 		}
-		
+
 		List<Address> personAddressList = criteria.list();
-		if(personAddressList == null && personAddressList.size() == 0){
-			throw new EntityNotFoundException("The entity with id" + personId.toString() +" cannot be found.");		
+		if (personAddressList == null && personAddressList.size() == 0)
+		{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
 		return personAddressList;
 	}
-	
-	
-	public void create(Address address) throws ArkSystemException{
+
+	public void create(Address address) throws ArkSystemException
+	{
 		Session session = getSession();
 		session.save(address);
 	}
-	
-	public void update(Address address) throws ArkSystemException{
+
+	public void update(Address address) throws ArkSystemException
+	{
 		Session session = getSession();
 		session.update(address);
 	}
-	
-	public void delete(Address address) throws ArkSystemException{
-		
+
+	public void delete(Address address) throws ArkSystemException
+	{
+
 		getSession().delete(address);
 	}
-	
-	
-	public void create(Consent consent) throws ArkSystemException{
-		try{
-			Session session = getSession();
-			session.save(consent);	
 
-		}catch(HibernateException hibException){
+	public void create(Consent consent) throws ArkSystemException
+	{
+		try
+		{
+			Session session = getSession();
+			session.save(consent);
+
+		}
+		catch (HibernateException hibException)
+		{
 			log.error("An exception occured while creating a consent " + hibException.getStackTrace());
 			throw new ArkSystemException("Could not create the consent.");
 		}
 	}
-	
-	public void update(Consent consent) throws ArkSystemException,EntityNotFoundException{
-		try{
+
+	public void update(Consent consent) throws ArkSystemException, EntityNotFoundException
+	{
+		try
+		{
 			Session session = getSession();
-			session.update(consent);	
-		}catch(HibernateException someHibernateException){
+			session.update(consent);
+		}
+		catch (HibernateException someHibernateException)
+		{
 			log.error("An Exception occured while trying to update this consent " + someHibernateException.getStackTrace());
-		}catch(Exception e){
+		}
+		catch (Exception e)
+		{
 			log.error("An Exception occured while trying to update this consent " + e.getStackTrace());
 			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
 		}
-		
+
 	}
-	
+
 	/**
 	 * If a consent is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * 
 	 * @param consent
 	 * @throws ArkSystemException
 	 */
-	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException{
-		try{
+	public void delete(Consent consent) throws ArkSystemException, EntityNotFoundException
+	{
+		try
+		{
 			Session session = getSession();
-			consent = (Consent)session.get(Consent.class,consent.getId());	
-			if(consent != null){
-				getSession().delete(consent);	
-			}else{
+			consent = (Consent) session.get(Consent.class, consent.getId());
+			if (consent != null)
+			{
+				getSession().delete(consent);
+			}
+			else
+			{
 				throw new EntityNotFoundException("The Consent record you tried to remove does not exist in the Ark System");
 			}
-			
-		}catch(HibernateException someHibernateException){
+
+		}
+		catch (HibernateException someHibernateException)
+		{
 			log.error("An Exception occured while trying to delete this consent " + someHibernateException.getStackTrace());
-		}catch(Exception e){
+		}
+		catch (Exception e)
+		{
 			log.error("An Exception occured while trying to delete this consent " + e.getStackTrace());
 			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
 		}
 	}
-	
-	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException,ArkSystemException{
-		
-		Criteria criteria =  getSession().createCriteria(Consent.class);
-		if(consent != null){
-			
+
+	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		if (consent != null)
+		{
+
 			criteria.add(Restrictions.eq("subject.id", consent.getSubject().getId()));
 			criteria.add(Restrictions.eq("study.id", consent.getStudy().getId()));
-			
-			if(consent.getStudyComp() != null){
-				criteria.add(Restrictions.eq("studyComp", consent.getStudyComp()));	
+
+			if (consent.getStudyComp() != null)
+			{
+				criteria.add(Restrictions.eq("studyComp", consent.getStudyComp()));
 			}
-			
-			if(consent.getStudyComponentStatus() != null){
+
+			if (consent.getStudyComponentStatus() != null)
+			{
 				criteria.add(Restrictions.eq("studyComponentStatus", consent.getStudyComponentStatus()));
 			}
-			
-			if(consent.getConsentedBy() != null){
-				criteria.add(Restrictions.ilike("consentedBy", consent.getConsentedBy(),MatchMode.ANYWHERE));
+
+			if (consent.getConsentedBy() != null)
+			{
+				criteria.add(Restrictions.ilike("consentedBy", consent.getConsentedBy(), MatchMode.ANYWHERE));
 			}
-			
-			if(consent.getConsentStatus() != null){
+
+			if (consent.getConsentStatus() != null)
+			{
 				criteria.add(Restrictions.eq("consentStatus", consent.getConsentStatus()));
 			}
-		
-			if(consent.getConsentDate() != null){
+
+			if (consent.getConsentDate() != null)
+			{
 				criteria.add(Restrictions.eq("consentDate", consent.getConsentDate()));
 			}
-			
-			if(consent.getConsentType() != null){
+
+			if (consent.getConsentType() != null)
+			{
 				criteria.add(Restrictions.eq("consentType", consent.getConsentType()));
 			}
-			
+
 		}
-		
+
 		return criteria.list();
 	}
-	
-	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException,ArkSystemException{
-		
-		Criteria criteria =  getSession().createCriteria(Consent.class);
-		if(consentVO != null){
-			
+
+	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria criteria = getSession().createCriteria(Consent.class);
+		if (consentVO != null)
+		{
+
 			criteria.add(Restrictions.eq("subject.id", consentVO.getConsent().getSubject().getId()));
-			criteria.add(Restrictions.eq("study.id",  consentVO.getConsent().getStudy().getId()));
-			
-			if( consentVO.getConsent().getStudyComp() != null){
-				criteria.add(Restrictions.eq("studyComp",  consentVO.getConsent().getStudyComp()));	
+			criteria.add(Restrictions.eq("study.id", consentVO.getConsent().getStudy().getId()));
+
+			if (consentVO.getConsent().getStudyComp() != null)
+			{
+				criteria.add(Restrictions.eq("studyComp", consentVO.getConsent().getStudyComp()));
 			}
-			
-			if( consentVO.getConsent().getStudyComponentStatus() != null){
-				criteria.add(Restrictions.eq("studyComponentStatus",  consentVO.getConsent().getStudyComponentStatus()));
+
+			if (consentVO.getConsent().getStudyComponentStatus() != null)
+			{
+				criteria.add(Restrictions.eq("studyComponentStatus", consentVO.getConsent().getStudyComponentStatus()));
 			}
-			
-			if( consentVO.getConsent().getConsentedBy() != null){
-				criteria.add(Restrictions.ilike("consentedBy",  consentVO.getConsent().getConsentedBy(),MatchMode.ANYWHERE));
+
+			if (consentVO.getConsent().getConsentedBy() != null)
+			{
+				criteria.add(Restrictions.ilike("consentedBy", consentVO.getConsent().getConsentedBy(), MatchMode.ANYWHERE));
 			}
-			
-			if( consentVO.getConsent().getConsentStatus() != null){
-				criteria.add(Restrictions.eq("consentStatus",  consentVO.getConsent().getConsentStatus()));
+
+			if (consentVO.getConsent().getConsentStatus() != null)
+			{
+				criteria.add(Restrictions.eq("consentStatus", consentVO.getConsent().getConsentStatus()));
 			}
-		
-			if( consentVO.getConsent().getConsentDate() != null){
-				criteria.add(Restrictions.between("consentDate",  consentVO.getConsent().getConsentDate(), consentVO.getConsentDateEnd()));
+
+			if (consentVO.getConsent().getConsentDate() != null)
+			{
+				criteria.add(Restrictions.between("consentDate", consentVO.getConsent().getConsentDate(), consentVO.getConsentDateEnd()));
 			}
-			
-			if( consentVO.getConsent().getConsentType() != null){
-				criteria.add(Restrictions.eq("consentType",  consentVO.getConsent().getConsentType()));
+
+			if (consentVO.getConsent().getConsentType() != null)
+			{
+				criteria.add(Restrictions.eq("consentType", consentVO.getConsent().getConsentType()));
 			}
-			
+
 		}
 		List<Consent> list = criteria.list();
 		return list;
 	}
-	
-	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld){
-		
+
+	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld)
+	{
+
 		Criteria criteria = getSession().createCriteria(SubjectCustmFld.class);
-		if(subjectCustmFld != null){
-			
+		if (subjectCustmFld != null)
+		{
+
 		}
 		List<SubjectCustmFld> list = criteria.list();
 		return list;
 	}
 
+	public void create(Correspondences correspondence) throws ArkSystemException
+	{
 
-	public void create(Correspondences correspondence)
-			throws ArkSystemException {
-		
-		try{
+		try
+		{
 			getSession().save(correspondence);
-		}catch(HibernateException ex) {
+		}
+		catch (HibernateException ex)
+		{
 			log.error("A Hibernate exception occurred when creating a correspondence record. Cause: " + ex.getStackTrace());
 			throw new ArkSystemException("Unable to create a correspondence record.");
 		}
-		
+
 	}
 
-	
-	public void update(Correspondences correspondence)
-			throws ArkSystemException, EntityNotFoundException {
+	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException
+	{
 
-		try{
+		try
+		{
 			getSession().update(correspondence);
-		}catch(HibernateException ex) {
+		}
+		catch (HibernateException ex)
+		{
 			log.error("A Hibernate exception occurred when updating a correspondence record. Cause: " + ex.getStackTrace());
 			throw new ArkSystemException("Unable to update a correspondence record.");
 		}
-		
+
 	}
-	
-	
-	public void delete(Correspondences correspondence)
-			throws ArkSystemException, EntityNotFoundException {
-		
-		try{
+
+	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException
+	{
+
+		try
+		{
 			getSession().update(correspondence);
-		}catch(HibernateException ex) {
+		}
+		catch (HibernateException ex)
+		{
 			log.error("A Hibernate exception occurred when deleting a correspondence record. Cause: " + ex.getStackTrace());
 			throw new ArkSystemException("Unable to delete a correspondence record.");
 		}
-		
+
 	}
 
+	public List<Correspondences> getPersonCorrespondenceList(Long personId, Correspondences correspondence) throws ArkSystemException, EntityNotFoundException
+	{
 
-	public List<Correspondences> getPersonCorrespondenceList(Long personId,
-			Correspondences correspondence) throws ArkSystemException,
-			EntityNotFoundException {
-		
 		Criteria criteria = getSession().createCriteria(Correspondences.class);
-		
-		if(personId != null) {
+
+		if (personId != null)
+		{
 			criteria.add(Restrictions.eq(Constants.PERSON_PERSON_ID, personId));
 		}
-		
-		if(correspondence != null) {
-			
-			if(correspondence.getCorrespondenceDirectionType() != null) {
+
+		if (correspondence != null)
+		{
+
+			if (correspondence.getCorrespondenceDirectionType() != null)
+			{
 				criteria.add(Restrictions.eq("correspondenceDirectionType", correspondence.getCorrespondenceDirectionType()));
 			}
-			if(correspondence.getCorrespondenceModeType() != null) {
+			if (correspondence.getCorrespondenceModeType() != null)
+			{
 				criteria.add(Restrictions.eq("correspondenceModeType", correspondence.getCorrespondenceModeType()));
 			}
-			if(correspondence.getCorrespondenceOutcomeType() != null) {
+			if (correspondence.getCorrespondenceOutcomeType() != null)
+			{
 				criteria.add(Restrictions.eq("correspondenceOutcomeType", correspondence.getCorrespondenceOutcomeType()));
 			}
-			if(correspondence.getCorrespondenceStatusType() != null) {
+			if (correspondence.getCorrespondenceStatusType() != null)
+			{
 				criteria.add(Restrictions.eq("correspondenceStatusType", correspondence.getCorrespondenceStatusType()));
 			}
-			if(correspondence.getDate() != null) {
+			if (correspondence.getDate() != null)
+			{
 				criteria.add(Restrictions.eq("date", correspondence.getDate()));
 			}
-			if(correspondence.getTime() != null) {
+			if (correspondence.getTime() != null)
+			{
 				criteria.add(Restrictions.eq("time", correspondence.getTime()));
 			}
-			if(correspondence.getDetails() != null) {
+			if (correspondence.getDetails() != null)
+			{
 				criteria.add(Restrictions.ilike("details", correspondence.getDetails(), MatchMode.ANYWHERE));
 			}
-			if(correspondence.getReason() != null) {
+			if (correspondence.getReason() != null)
+			{
 				criteria.add(Restrictions.ilike("reason", correspondence.getDetails(), MatchMode.ANYWHERE));
 			}
-			if(correspondence.getComments() != null) {
+			if (correspondence.getComments() != null)
+			{
 				criteria.add(Restrictions.ilike("comments", correspondence.getComments(), MatchMode.ANYWHERE));
 			}
-			if(correspondence.getStudyManager() != null) {
+			if (correspondence.getStudyManager() != null)
+			{
 				criteria.add(Restrictions.ilike("studyManager", correspondence.getStudyManager()));
 			}
 		}
-		
+
 		List<Correspondences> personCorrespondenceList = criteria.list();
-		if(personCorrespondenceList != null && personCorrespondenceList.size() == 0) {
+		if (personCorrespondenceList != null && personCorrespondenceList.size() == 0)
+		{
 			throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
 		}
-		
+
 		return personCorrespondenceList;
 	}
 
+	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes()
+	{
 
-	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes() {
-		
 		Example directionTypeExample = Example.create(new CorrespondenceDirectionType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceDirectionType.class).add(directionTypeExample);
 		return criteria.list();
 	}
 
-	
-	public List<CorrespondenceModeType> getCorrespondenceModeTypes() {
+	public List<CorrespondenceModeType> getCorrespondenceModeTypes()
+	{
 
 		Example modeTypeExample = Example.create(new CorrespondenceModeType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceModeType.class).add(modeTypeExample);
 		return criteria.list();
 	}
 
-
-	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes() {
+	public List<CorrespondenceOutcomeType> getCorrespondenceOutcomeTypes()
+	{
 
 		Example outcomeTypeExample = Example.create(new CorrespondenceOutcomeType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceOutcomeType.class).add(outcomeTypeExample);
 		return criteria.list();
 	}
 
-
-	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
+	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes()
+	{
 
 		Example statusTypeExample = Example.create(new CorrespondenceStatusType());
 		Criteria criteria = getSession().createCriteria(CorrespondenceStatusType.class).add(statusTypeExample);
 		return criteria.list();
 	}
 
-	public Consent getConsent(Long id) throws ArkSystemException {
-		Consent consent = (Consent)getSession().get(Consent.class, id);
+	public Consent getConsent(Long id) throws ArkSystemException
+	{
+		Consent consent = (Consent) getSession().get(Consent.class, id);
 		return consent;
 	}
-	
+
 	public void create(ConsentFile consentFile) throws ArkSystemException
 	{
 		Session session = getSession();
-		
+
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 
 		consentFile.setInsertTime(dateNow);
 		consentFile.setUserId(currentUser.getPrincipal().toString());
-		
+
 		session.save(consentFile);
 	}
-	
-	public void update(ConsentFile consentFile) throws ArkSystemException,EntityNotFoundException{
+
+	public void update(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException
+	{
 		Session session = getSession();
-		
+
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 
 		consentFile.setUserId(currentUser.getPrincipal().toString());
 		consentFile.setUpdateTime(dateNow);
-		
-		if((ConsentFile)session.get(ConsentFile.class,consentFile.getId()) != null){
-			session.update(consentFile);	
-		}else{
+
+		if ((ConsentFile) session.get(ConsentFile.class, consentFile.getId()) != null)
+		{
+			session.update(consentFile);
+		}
+		else
+		{
 			throw new EntityNotFoundException("The Consent file record you tried to update does not exist in the Ark System");
 		}
-		
+
 	}
-	
+
 	/**
 	 * If a consentFile is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * 
 	 * @param consentFile
 	 * @throws ArkSystemException
 	 */
-	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException{
-		try{
+	public void delete(ConsentFile consentFile) throws ArkSystemException, EntityNotFoundException
+	{
+		try
+		{
 			Session session = getSession();
-			consentFile = (ConsentFile)session.get(ConsentFile.class,consentFile.getId());	
-			if(consentFile != null){
-				getSession().delete(consentFile);	
-			}else{
+			consentFile = (ConsentFile) session.get(ConsentFile.class, consentFile.getId());
+			if (consentFile != null)
+			{
+				getSession().delete(consentFile);
+			}
+			else
+			{
 				throw new EntityNotFoundException("The Consent file record you tried to remove does not exist in the Ark System");
 			}
-			
-		}catch(HibernateException someHibernateException){
+
+		}
+		catch (HibernateException someHibernateException)
+		{
 			log.error("An Exception occured while trying to delete this consent file " + someHibernateException.getStackTrace());
-		}catch(Exception e){
+		}
+		catch (Exception e)
+		{
 			log.error("An Exception occured while trying to delete this consent file " + e.getStackTrace());
 			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
 		}
 	}
-	
-	public List<ConsentFile> searchConsentFile(ConsentFile consentFile)
-			throws EntityNotFoundException, ArkSystemException {
-		Criteria criteria =  getSession().createCriteria(ConsentFile.class);
-		if(consentFile != null){
-			
-			if(consentFile.getId() != null){
+
+	public List<ConsentFile> searchConsentFile(ConsentFile consentFile) throws EntityNotFoundException, ArkSystemException
+	{
+		Criteria criteria = getSession().createCriteria(ConsentFile.class);
+		if (consentFile != null)
+		{
+
+			if (consentFile.getId() != null)
+			{
 				criteria.add(Restrictions.eq("id", consentFile.getId()));
 			}
-			
-			if(consentFile.getConsent() != null){
+
+			if (consentFile.getConsent() != null)
+			{
 				criteria.add(Restrictions.eq("consent", consentFile.getConsent()));
 			}
-			
-			if(consentFile.getFilename() != null){
-				criteria.add(Restrictions.ilike("filename", consentFile.getFilename(),MatchMode.ANYWHERE));
+
+			if (consentFile.getFilename() != null)
+			{
+				criteria.add(Restrictions.ilike("filename", consentFile.getFilename(), MatchMode.ANYWHERE));
 			}
 		}
 		criteria.addOrder(Order.desc("id"));
-		
+
 		@SuppressWarnings("unchecked")
 		List<ConsentFile> list = criteria.list();
 		return list;
 	}
-	
-	
-	private boolean isSubjectUIDUnique(String subjectUID, Long studyId,String action){
+
+	private boolean isSubjectUIDUnique(String subjectUID, Long studyId, String action)
+	{
 		boolean isUnique = true;
 		Session session = getSession();
-		Criteria criteria =  session.createCriteria(LinkSubjectStudy.class);
+		Criteria criteria = session.createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("subjectUID", subjectUID));
 		criteria.add(Restrictions.eq("study.id", studyId));
-		if(action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_INSERT)){
-			if (criteria.list().size() > 0){
+		if (action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_INSERT))
+		{
+			if (criteria.list().size() > 0)
+			{
 				isUnique = false;
 			}
-		}else if(action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_UPDATE)){
-			if (criteria.list().size() > 1 ){
+		}
+		else if (action.equalsIgnoreCase(au.org.theark.core.Constants.ACTION_UPDATE))
+		{
+			if (criteria.list().size() > 1)
+			{
 				isUnique = false;
 			}
 		}
 		return isUnique;
 	}
-	
 
-	private YesNo getYesNo(String value){
+	private YesNo getYesNo(String value)
+	{
 
 		Criteria criteria = getSession().createCriteria(YesNo.class);
 		criteria.add(Restrictions.ilike("name", value));
-		return (YesNo)criteria.list().get(0);
+		return (YesNo) criteria.list().get(0);
 	}
-	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId){
-		
+
+	public boolean personHasPreferredMailingAddress(Person person, Long currentAddressId)
+	{
+
 		boolean hasPreferredMailing = false;
 
-			Criteria criteria = getSession().createCriteria(Address.class);
-			
-			YesNo yes = getYesNo("Yes");
-			criteria.add(Restrictions.eq("person.id",person.getId()));
-			criteria.add(Restrictions.eq("preferredMailingAddress",yes));
-			if(currentAddressId != null){
-				criteria.add(Restrictions.ne("id", currentAddressId));
-			}
-			
-			List list  = criteria.list();
-			if(list.size() > 0){
-				hasPreferredMailing = true;
-			}
+		Criteria criteria = getSession().createCriteria(Address.class);
+
+		YesNo yes = getYesNo("Yes");
+		criteria.add(Restrictions.eq("person.id", person.getId()));
+		criteria.add(Restrictions.eq("preferredMailingAddress", yes));
+		if (currentAddressId != null)
+		{
+			criteria.add(Restrictions.ne("id", currentAddressId));
+		}
+
+		List list = criteria.list();
+		if (list.size() > 0)
+		{
+			hasPreferredMailing = true;
+		}
 		return hasPreferredMailing;
 	}
 
-	
-	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory){
+	public PersonLastnameHistory getPreviousSurnameHistory(PersonLastnameHistory personSurnameHistory)
+	{
 		PersonLastnameHistory personLastnameHistoryToReturn = null;
-		
+
 		Example example = Example.create(personSurnameHistory);
-		
+
 		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class).add(example);
-		if(criteria != null && criteria.list() != null && criteria.list().size() > 0){
-			personLastnameHistoryToReturn =  (PersonLastnameHistory)criteria.list().get(0);	
+		if (criteria != null && criteria.list() != null && criteria.list().size() > 0)
+		{
+			personLastnameHistoryToReturn = (PersonLastnameHistory) criteria.list().get(0);
 		}
-		
+
 		return personLastnameHistoryToReturn;
 	}
-	
-	public void createPersonLastnameHistory(Person person){
+
+	public void createPersonLastnameHistory(Person person)
+	{
 		PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
 		personLastNameHistory.setPerson(person);
 		personLastNameHistory.setLastName(person.getLastName());
-		
+
 		getSession().save(personLastNameHistory);
 	}
-	
-	public void updatePersonLastnameHistory(Person person){
+
+	public void updatePersonLastnameHistory(Person person)
+	{
 		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
 		personLastnameHistory.setPerson(person);
 		personLastnameHistory.setLastName(person.getLastName());
-		
+
 		String currentLastName = getCurrentLastname(person);
-		
-		if(currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+
+		if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
 			getSession().save(personLastnameHistory);
 	}
 
 	public String getPreviousLastname(Person person)
 	{
 		PersonLastnameHistory personLastameHistory = new PersonLastnameHistory();
-		
+
 		// Only get previous lastname if person in context
-		if(person.getId() != null && person.getLastName() != null){
-			Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
-			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));
+		if (person.getId() != null && person.getLastName() != null)
+		{
+			Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 			criteria.addOrder(Order.desc("id"));
-			if(!criteria.list().isEmpty()){
+			if (!criteria.list().isEmpty())
+			{
 				if (criteria.list().size() > 1)
 					personLastameHistory = (PersonLastnameHistory) criteria.list().get(1);
 			}
 		}
-		
+
 		return personLastameHistory.getLastName();
 	}
-	
+
 	public String getCurrentLastname(Person person)
 	{
-		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
-		
-		if(person.getId() != null){
-			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
+
+		if (person.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 		}
 		criteria.addOrder(Order.desc("id"));
-		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory(); 
-		if(!criteria.list().isEmpty()){
+		PersonLastnameHistory personLastnameHistory = new PersonLastnameHistory();
+		if (!criteria.list().isEmpty())
+		{
 			personLastnameHistory = (PersonLastnameHistory) criteria.list().get(0);
 		}
-		
+
 		return personLastnameHistory.getLastName();
 	}
 
 	public List<PersonLastnameHistory> getLastnameHistory(Person person)
 	{
-		Criteria criteria =  getSession().createCriteria(PersonLastnameHistory.class);
-		
-		if(person.getId() != null){
-			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON,person));	
+		Criteria criteria = getSession().createCriteria(PersonLastnameHistory.class);
+
+		if (person.getId() != null)
+		{
+			criteria.add(Restrictions.eq(au.org.theark.core.Constants.PERSON_SURNAME_HISTORY_PERSON, person));
 		}
-		
+
 		return criteria.list();
 	}
-	
+
 	public void create(SubjectFile subjectFile) throws ArkSystemException
 	{
 		Session session = getSession();
 		currentUser = SecurityUtils.getSubject();
 		subjectFile.setUserId(currentUser.getPrincipal().toString());
-		
+
 		session.save(subjectFile);
 	}
 
-	public void update(SubjectFile subjectFile) throws ArkSystemException,EntityNotFoundException{
+	public void update(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException
+	{
 		Session session = getSession();
-		
+
 		currentUser = SecurityUtils.getSubject();
 		dateNow = new Date(System.currentTimeMillis());
 
 		subjectFile.setUserId(currentUser.getPrincipal().toString());
-		
-		if((ConsentFile)session.get(ConsentFile.class,subjectFile.getId()) != null){
-			session.update(subjectFile);	
-		}else{
+
+		if ((ConsentFile) session.get(ConsentFile.class, subjectFile.getId()) != null)
+		{
+			session.update(subjectFile);
+		}
+		else
+		{
 			throw new EntityNotFoundException("The Subject file record you tried to update does not exist in the Ark System");
 		}
-		
+
 	}
-	
+
 	/**
 	 * If a subjectFile is not in a state where it can be deleted then remove it. It can be in a different status before it can be removed.
+	 * 
 	 * @param subjectFile
 	 * @throws ArkSystemException
 	 */
-	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException{
-		try{
+	public void delete(SubjectFile subjectFile) throws ArkSystemException, EntityNotFoundException
+	{
+		try
+		{
 			Session session = getSession();
-			subjectFile = (SubjectFile)session.get(SubjectFile.class,subjectFile.getId());	
-			if(subjectFile != null){
-				getSession().delete(subjectFile);	
-			}else{
+			subjectFile = (SubjectFile) session.get(SubjectFile.class, subjectFile.getId());
+			if (subjectFile != null)
+			{
+				getSession().delete(subjectFile);
+			}
+			else
+			{
 				throw new EntityNotFoundException("The Consent file record you tried to remove does not exist in the Ark System");
 			}
-			
-		}catch(HibernateException someHibernateException){
+
+		}
+		catch (HibernateException someHibernateException)
+		{
 			log.error("An Exception occured while trying to delete this consent file " + someHibernateException.getStackTrace());
-		}catch(Exception e){
+		}
+		catch (Exception e)
+		{
 			log.error("An Exception occured while trying to delete this consent file " + e.getStackTrace());
 			throw new ArkSystemException("A System Error has occured. We wil have someone contact you regarding this issue");
 		}
@@ -1120,27 +1321,32 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public List<SubjectFile> searchSubjectFile(SubjectFile subjectFile) throws EntityNotFoundException, ArkSystemException
 	{
-		Criteria criteria =  getSession().createCriteria(SubjectFile.class);
-		if(subjectFile != null){
-			
-			if(subjectFile.getId() != null){
+		Criteria criteria = getSession().createCriteria(SubjectFile.class);
+		if (subjectFile != null)
+		{
+
+			if (subjectFile.getId() != null)
+			{
 				criteria.add(Restrictions.eq("id", subjectFile.getId()));
 			}
-			
-			if(subjectFile.getLinkSubjectStudy() != null){
+
+			if (subjectFile.getLinkSubjectStudy() != null)
+			{
 				criteria.add(Restrictions.eq("linkSubjectStudy", subjectFile.getLinkSubjectStudy()));
 			}
-			
-			if(subjectFile.getStudyComp() != null){
+
+			if (subjectFile.getStudyComp() != null)
+			{
 				criteria.add(Restrictions.eq("studyComp", subjectFile.getStudyComp()));
 			}
-			
-			if(subjectFile.getFilename() != null){
-				criteria.add(Restrictions.ilike("filename", subjectFile.getFilename(),MatchMode.ANYWHERE));
+
+			if (subjectFile.getFilename() != null)
+			{
+				criteria.add(Restrictions.ilike("filename", subjectFile.getFilename(), MatchMode.ANYWHERE));
 			}
 		}
 		criteria.addOrder(Order.desc("id"));
-		
+
 		@SuppressWarnings("unchecked")
 		List<SubjectFile> list = criteria.list();
 		return list;
@@ -1152,7 +1358,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		java.util.Collection<FileFormat> fileFormatCollection = criteria.list();
 		return fileFormatCollection;
 	}
-	
+
 	public Collection<DelimiterType> getDelimiterTypes()
 	{
 		Criteria criteria = getSession().createCriteria(DelimiterType.class);
@@ -1205,7 +1411,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 	public void deleteUpload(StudyUpload studyUpload)
 	{
-		getSession().delete(studyUpload);		
+		getSession().delete(studyUpload);
 	}
 
 	public void updateUpload(StudyUpload studyUpload)
@@ -1213,6 +1419,117 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Subject currentUser = SecurityUtils.getSubject();
 		String userId = (String) currentUser.getPrincipal();
 		studyUpload.setUserId(userId);
-		getSession().update(studyUpload);	
+		getSession().update(studyUpload);
+	}
+
+	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException
+	{
+		Session session = getSession();
+		Study study = null;
+		int i = 1;
+
+		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();)
+		{
+			SubjectVO subjectVo = (SubjectVO) iterator.next();
+			study = subjectVo.getSubjectStudy().getStudy();
+
+			try
+			{
+				// Auto-generate SubjectUID
+				if (subjectVo.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+				{
+					String subjectUID = getNextGeneratedSubjectUID(subjectVo.getSubjectStudy().getStudy());
+					subjectVo.getSubjectStudy().setSubjectUID(subjectUID);
+				}
+
+				if (isSubjectUIDUnique(subjectVo.getSubjectStudy().getSubjectUID(), subjectVo.getSubjectStudy().getStudy().getId(), "Insert"))
+				{
+					// Check insertion lock
+					if (getSubjectUidSequenceLock(study) == true)
+					{
+						// TODO Fix the exception to be custom
+						throw new ArkSubjectInsertException("Subject insertion locked by another process");
+					}
+					else
+					{
+						// Enable insertion lock
+						setSubjectUidSequenceLock(study, true);
+
+						Person person = subjectVo.getSubjectStudy().getPerson();
+						session.save(person);
+
+						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+						if (person.getLastName() != null)
+						{
+							personLastNameHistory.setPerson(person);
+							personLastNameHistory.setLastName(person.getLastName());
+							session.save(personLastNameHistory);
+						}
+
+						// Update subjectPreviousLastname
+						subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
+
+						LinkSubjectStudy linkSubjectStudy = subjectVo.getSubjectStudy();
+						session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
+					}
+				}
+				else
+				{
+					throw new ArkUniqueException("Subject UID must be unique");
+				}
+			}
+			finally
+			{
+				// Disable insertion lock
+				setSubjectUidSequenceLock(study, false);
+			}
+			if ((i++ % 50) == 0)
+			{ // 50, same as the JDBC batch size
+				// flush a batch of inserts and release memory:
+				session.flush();
+				session.clear();
+			}
+		}
+	}
+
+	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection)
+	{
+		Session session = getSession();
+		Study study = null;
+		int i = 1;
+
+		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();)
+		{
+			SubjectVO subjectVo = (SubjectVO) iterator.next();
+			study = subjectVo.getSubjectStudy().getStudy();
+
+			Person person = subjectVo.getSubjectStudy().getPerson();
+			session.update(person);// Update Person and associated Phones
+
+			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+			String currentLastName = getCurrentLastname(person);
+
+			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName())))
+			{
+				if (person.getLastName() != null)
+				{
+					personLastNameHistory.setPerson(person);
+					personLastNameHistory.setLastName(person.getLastName());
+					session.update(personLastNameHistory);
+				}
+			}
+
+			// Update subjectPreviousLastname
+			subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
+
+			LinkSubjectStudy linkSubjectStudy = subjectVo.getSubjectStudy();
+			session.update(linkSubjectStudy);
+			if (i++ % 50 == 0)
+			{ // 50, same as the JDBC batch size
+				// flush a batch of inserts and release memory:
+				session.flush();
+				session.clear();
+			}
+		}
 	}
 }

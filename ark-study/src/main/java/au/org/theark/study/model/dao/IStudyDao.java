@@ -246,4 +246,7 @@ public interface IStudyDao {
 
 	public void updateUpload(StudyUpload studyUpload);
 	
+	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	
 }

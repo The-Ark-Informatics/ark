@@ -705,7 +705,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 
-	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar)
+	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar)
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -832,7 +832,7 @@ public class StudyServiceImpl implements IStudyService{
 		return subjectUploadValidator;
 	}
 
-	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar) 
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, String fileFormat, char delimChar) 
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -867,5 +867,15 @@ public class StudyServiceImpl implements IStudyService{
 		SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(arkCommonService);
 		subjectUploadValidator.validateSubjectFileData(uploadVo);
 		return subjectUploadValidator;
+	}
+
+	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException
+	{
+		studyDao.batchInsertSubjects(subjectVoCollection);
+	}
+
+	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException
+	{
+		studyDao.batchUpdateSubjects(subjectVoCollection);
 	}
 }

@@ -220,6 +220,9 @@ public interface IStudyService {
 	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar);
 	public SubjectUploadValidator validateSubjectFileData(UploadVO uploadVo);
 
-	public StringBuffer importAndReportSubjectDataFile(File file, String fileFormat, char delimChar);
-	public StringBuffer importAndReportSubjectDataFile(InputStream inputStream, String fileFormat, char delimChar);
+	public StringBuffer uploadAndReportMatrixSubjectFile(File file, String fileFormat, char delimChar);
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, String fileFormat, char delimChar);
+	
+	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 }
