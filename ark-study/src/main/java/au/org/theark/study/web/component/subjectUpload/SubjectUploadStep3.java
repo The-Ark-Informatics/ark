@@ -113,8 +113,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		if (containerForm.getModelObject().getUpdateChkBox())
-			containerForm.getModelObject().setValidationMessages(null);
 	}
 
 	@Override
@@ -139,7 +137,6 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			insertRows = subjectUploadValidator.getInsertRows();
 			updateRows = subjectUploadValidator.getUpdateRows();
 			errorCells = subjectUploadValidator.getErrorCells();
-			inputStream.reset();
 			
 			// Show file data (and key reference)
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimiterChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, errorCells);
@@ -151,6 +148,12 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 			// Repaint
 			target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 			target.addComponent(form.getWizardPanelFormContainer());
+			
+			if(updateRows.isEmpty())
+			{
+				updateExistingDataContainer.setVisible(false);
+				target.addComponent(updateExistingDataContainer);
+			}
 			
 			if(!errorCells.isEmpty())
 			{
