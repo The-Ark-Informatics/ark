@@ -60,6 +60,9 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.listView = listView;
 		this.detailPanel = detailPanel;
 		initialiseFieldForm();
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	/**
@@ -77,31 +80,57 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	{
 		// Study in context
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
 		
-		d = new DefaultPieDataset();
-		d.setValue("Fields with Data", new Integer(phenotypicService.getCountOfFieldsWithDataInStudy(study)));
-		d.setValue("Fields without Data", new Integer(phenotypicService.getCountOfFieldsInStudy(study) - phenotypicService.getCountOfFieldsWithDataInStudy(study)));
-		
-		chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
-                 true,		// Show legend  
-                 true,		// Show tooltips
-                 true);		// Show urls
-        chart.setBackgroundPaint(Color.white);
-        chart.setBorderVisible(false);
-		add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
-		
-		d = new DefaultPieDataset();
-		d.setValue("Collections with Data", new Integer(phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
-		d.setValue("Collections without Data", new Integer(phenotypicService.getCountOfCollectionsInStudy(study) - phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
-		
-		chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
-                 true,		// Show legend  
-                 true,		// Show tooltips
-                 true);		// Show urls
-        chart.setBackgroundPaint(Color.white);
-        chart.setBorderVisible(false);
-		add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
+		if(sessionStudyId != null)
+		{
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			
+			d = new DefaultPieDataset();
+			d.setValue("Fields with Data", new Integer(phenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			d.setValue("Fields without Data", new Integer(phenotypicService.getCountOfFieldsInStudy(study) - phenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			
+			chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
+	                 true,		// Show legend  
+	                 true,		// Show tooltips
+	                 true);		// Show urls
+	        chart.setBackgroundPaint(Color.white);
+	        chart.setBorderVisible(false);
+			add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
+			
+			d = new DefaultPieDataset();
+			d.setValue("Collections with Data", new Integer(phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+			d.setValue("Collections without Data", new Integer(phenotypicService.getCountOfCollectionsInStudy(study) - phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+			
+			chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
+	                 true,		// Show legend  
+	                 true,		// Show tooltips
+	                 true);		// Show urls
+	        chart.setBackgroundPaint(Color.white);
+	        chart.setBorderVisible(false);
+			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
+		}
+		else
+		{
+			d = new DefaultPieDataset();
+			d.setValue("Fields with Data", new Integer(0));
+			d.setValue("Fields without Data", new Integer(0));
+			
+			chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
+	                 true,		// Show legend  
+	                 true,		// Show tooltips
+	                 true);		// Show urls
+	        chart.setBackgroundPaint(Color.white);
+	        chart.setBorderVisible(false);
+			add(new JFreeChartImage("phenoFieldSummaryImage", chart, 0, 0).setVisible(false));
+			
+			chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
+	                 true,		// Show legend  
+	                 true,		// Show tooltips
+	                 true);		// Show urls
+	        chart.setBackgroundPaint(Color.white);
+	        chart.setBorderVisible(false);
+			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 0, 0).setVisible(false));
+		}
 	}
 
 	private void addFieldComponents()
