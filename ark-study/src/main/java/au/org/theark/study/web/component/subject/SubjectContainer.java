@@ -3,12 +3,14 @@ package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -16,9 +18,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
@@ -41,6 +45,9 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
+	
+	private DataView<SubjectVO> dataView;
+	private ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider;
 	
 	/**
 	 * @param id
@@ -69,7 +76,6 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 		if ((sessionStudyId != null) && (sessionPersonId != null)) {
-
 			String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT))
 			{
@@ -105,17 +111,11 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 	}
 	
 	protected WebMarkupContainer initialiseSearchPanel(){
-		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		Collection<SubjectVO> subjectVOCollection = new ArrayList<SubjectVO>();
 		if(sessionStudyId != null && sessionStudyId > 0){
-			
 			containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-			subjectVOCollection = iArkCommonService.getSubject(containerForm.getModelObject());
 		}
 
-		cpModel.getObject().setSubjectList(subjectVOCollection);
 		searchPanel = new Search("searchComponentPanel",
 									feedBackPanel,
 									searchPanelContainer,
@@ -146,29 +146,37 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		
 		searchResultsPanel = new SearchResults("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
 		
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
-			Collection<SubjectVO> participants = new ArrayList<SubjectVO>();
-			
-			@Override
-			protected Object load() {
-				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				
-				if(sessionStudyId != null){
-					containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-					participants = iArkCommonService.getSubject(containerForm.getModelObject());
-					containerForm.getModelObject().setSubjectList(participants);
-				}
-				pageableListView.removeAll();
-				return participants;
-			}
-		};
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		
+		if(sessionStudyId != null){
 
-		pageableListView  = searchResultsPanel.buildListView(iModel); 
-		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+			/**** ****/
+			subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
+				
+				@Override
+				public int size() {
+					return service.getStudySubjectCount(criteria);
+				}
+				
+				@Override
+				public Iterator<SubjectVO> iterator(int first, int count) {
+					List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
+					listSubjects = iArkCommonService.searchPageableSubjects(criteria, first, count);
+					return listSubjects.iterator();
+				}
+			};
+			subjectProvider.setCriteria(containerForm.getModelObject());
+		}
+
+		dataView = searchResultsPanel.buildDataView(subjectProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		
+		
+		//PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(pageableListView);
+		//searchResultsPanel.add(pageableListView);
+		searchResultsPanel.add(dataView);
 		searchResultPanelContainer.add(searchResultsPanel);
 		return searchResultPanelContainer;
 	}

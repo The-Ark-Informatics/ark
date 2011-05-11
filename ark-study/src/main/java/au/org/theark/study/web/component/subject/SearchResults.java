@@ -13,6 +13,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -22,6 +24,8 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.SearchForm;
@@ -51,6 +55,9 @@ public class SearchResults extends Panel{
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
+	@SpringBean( name =  au.org.theark.study.web.Constants.STUDY_SERVICE)
+	private IStudyService iStudyService;
+	
 
 	public SearchResults(String id, 
 							WebMarkupContainer  detailPanelContainer,
@@ -72,6 +79,69 @@ public class SearchResults extends Panel{
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.arkContextMarkup = arkContextMarkup;
+	}
+	
+	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider) {
+		
+		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
+
+			@Override
+			protected void populateItem(final Item<SubjectVO> item)
+			{
+				LinkSubjectStudy subject = item.getModelObject().getSubjectStudy();
+				item.add(buildLink(item.getModelObject()));
+				
+				StringBuffer sb = new StringBuffer();
+				String firstName = subject.getPerson().getFirstName();
+				String midName = subject.getPerson().getMiddleName();
+				String lastName = subject.getPerson().getLastName();
+				
+				if (firstName != null) {
+					sb.append(subject.getPerson().getFirstName());
+					sb.append(" ");
+				}
+				if (midName != null){
+					sb.append(subject.getPerson().getMiddleName());
+					sb.append(" ");
+				}
+				if (lastName != null){
+					sb.append(subject.getPerson().getLastName());
+				}
+				
+				item.getModelObject().setSubjectFullName(sb.toString());
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
+			
+				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
+					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
+				}else{
+					item.add(new Label("subjectStudy.person.preferredName",""));
+				}
+				
+				item.add(new Label("subjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				String dateOfBirth ="";
+				if(subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null){
+					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
+					item.add(new Label("subjectStudy.person.dateOfBirth", dateOfBirth));
+				}else{
+					item.add(new Label("subjectStudy.person.dateOfBirth",""));
+				}
+				
+				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
+				
+				item.add(new Label("subjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
+				
+				
+				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+					}
+				}));
+			}
+		};
+		return studyCompDataView;
 	}
 
 	public PageableListView<SubjectVO> buildListView(IModel iModel){

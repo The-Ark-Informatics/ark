@@ -6,6 +6,7 @@
  */
 package au.org.theark.study.web.component.subject.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -209,18 +210,15 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
-
-		Collection<SubjectVO> subjects = iArkCommonService.getSubject(getModelObject());
 		
-		if(subjects != null && subjects.size() == 0){
+		int count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
+		if(count == 0){
 			this.info("There are no subjects with the specified criteria.");
 			target.addComponent(feedbackPanel);
 		}
-		getModelObject().setSubjectList(subjects);
-		listView.removeAll();
-		listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);//For ajax this is required so 
 		
+		listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
+		target.addComponent(listContainer);//For ajax this is required so
 	}
 
 	/* (non-Javadoc)
@@ -228,7 +226,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	 */
 	@Override
 	protected boolean isSecure(String actionType) {
-		// TODO Auto-generated method stub
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();		
 		boolean flag = false;
