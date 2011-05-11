@@ -371,7 +371,6 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		{
 			try
 			{
-				inputStream.reset();
 				// Try to get the XLS workbook/sheet
 				// Streams directly from inputStream into Workbook.getWorkbook(Inputstream)
 				Workbook wkb = Workbook.getWorkbook(inputStream);
@@ -392,7 +391,6 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			// Thus attempt a convert from csv or text to xls format
 			try
 			{
-				inputStream.reset();
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 				CsvReader csvReader = new CsvReader(inputStreamReader, delimiterType);
