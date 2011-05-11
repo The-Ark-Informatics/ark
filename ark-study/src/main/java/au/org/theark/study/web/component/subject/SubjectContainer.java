@@ -2,7 +2,6 @@
 package au.org.theark.study.web.component.subject;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -12,13 +11,13 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -146,36 +145,37 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		
 		searchResultsPanel = new SearchResults("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
 		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
+		// Restrict to subjects in current study in session
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
 		if(sessionStudyId != null){
-
-			/**** ****/
-			subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
-				
-				@Override
-				public int size() {
-					return service.getStudySubjectCount(criteria);
-				}
-				
-				@Override
-				public Iterator<SubjectVO> iterator(int first, int count) {
-					List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-					listSubjects = iArkCommonService.searchPageableSubjects(criteria, first, count);
-					return listSubjects.iterator();
-				}
-			};
-			subjectProvider.setCriteria(containerForm.getModelObject());
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+			linkSubjectStudy.setStudy(study);
+			containerForm.getModelObject().setSubjectStudy(linkSubjectStudy);
 		}
+		
+		// Data providor to paginate resultList
+		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
+			
+			@Override
+			public int size() {
+				return service.getStudySubjectCount(criteria);
+			}
+			
+			@Override
+			public Iterator<SubjectVO> iterator(int first, int count) {
+				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
+				listSubjects = iArkCommonService.searchPageableSubjects(criteria, first, count);
+				return listSubjects.iterator();
+			}
+		};
+		subjectProvider.setCriteria(containerForm.getModelObject());
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
-		
-		
-		//PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+				
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
-		//searchResultsPanel.add(pageableListView);
 		searchResultsPanel.add(dataView);
 		searchResultPanelContainer.add(searchResultsPanel);
 		return searchResultPanelContainer;
