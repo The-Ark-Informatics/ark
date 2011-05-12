@@ -35,7 +35,7 @@ public class Correspondences implements Serializable {
 	private CorrespondenceOutcomeType correspondenceOutcomeType;
 	private String details;
 	private String comments;
-	
+
     @Id
     @SequenceGenerator(name="correspondences_generator", sequenceName="CORRESPONDENCES_SEQUENCE")
     @GeneratedValue(strategy=GenerationType.AUTO, generator = "correspondences_generator")
