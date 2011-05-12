@@ -13,6 +13,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -229,6 +230,11 @@ public interface IStudyDao {
 	public void update(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 	public void delete(Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
 	public List<Correspondences> getPersonCorrespondenceList(Long id, Correspondences correspondence) throws ArkSystemException, EntityNotFoundException;
+	
+	public void create(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException;
+	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException;
+	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException;
+	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException;	
 	
 	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes();
 	public List<CorrespondenceModeType> getCorrespondenceModeTypes();
