@@ -23,8 +23,11 @@ public class CorrespondenceAuditAttachment implements Serializable {
 	private Long id;
 	private CorrespondenceAudit correspondenceAudit;
 	private String filename;
-	private Long size;
-	private Blob contents;
+	private Blob payload;
+	private String checksum;
+	private String userId;
+	private String comments;
+	
 	
 	@Id
     @SequenceGenerator(name="correspondence_audit_attachment_generator", sequenceName="CORRESPONDENCE_AUDIT_ATTACHMENT_SEQUENCE")
@@ -57,22 +60,40 @@ public class CorrespondenceAuditAttachment implements Serializable {
 		this.filename = filename;
 	}
 	
-	@Column(name = "SIZE", precision = 22, scale = 0)
-	public Long getSize() {
-		return size;
-	}
-	public void setSize(Long size) {
-		this.size = size;
+	@Column(name = "PAYLOAD")
+	public Blob getPayload() {
+		return payload;
 	}
 	
-	@Column(name = "CONTENTS")
-	public Blob getContents() {
-		return contents;
+	public void setPayload(Blob payload) {
+		this.payload = payload;
 	}
-	
-	public void setContents(Blob contents) {
-		this.contents = contents;
+
+	@Column(name = "CHECKSUM", length = 50)
+	public String getChecksum() {
+		return checksum;
 	}
-	
+
+	public void setChecksum(String checksum) {
+		this.checksum = checksum;
+	}
+
+	@Column(name = "USER_ID", length = 100)	
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
+	@Column(name = "COMMENTS", length = 500)
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
+	}	
 	
 }
