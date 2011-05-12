@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -441,7 +442,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		if (study.getName() == null)
 		{
 			log.error("Error in Subject insertion - Study name was null");
-			throw new ArkSubjectInsertException("Error in Subject insertion - EmptyØ study name");
+			throw new ArkSubjectInsertException("Error in Subject insertion - Empty�� study name");
 		}
 
 		result = (Integer) arkUidGenerator.getId(study.getName());
@@ -981,6 +982,82 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		}
 
 		return personCorrespondenceList;
+	}
+
+	public void create(CorrespondenceAttachment correspondenceAttachment)
+							throws ArkSystemException {
+
+		Session session = getSession();
+		currentUser = SecurityUtils.getSubject();
+		correspondenceAttachment.setUserId(currentUser.getPrincipal().toString());
+		
+		session.save(correspondenceAttachment);
+
+	}
+
+	public void delete(CorrespondenceAttachment correspondenceAttachment)
+							throws ArkSystemException, EntityNotFoundException {
+
+		try {
+			Session session = getSession();
+			correspondenceAttachment = (CorrespondenceAttachment)session.get(CorrespondenceAttachment.class, correspondenceAttachment.getId());
+			if(correspondenceAttachment != null) {
+				getSession().delete(correspondenceAttachment);
+			} else {
+				throw new EntityNotFoundException("The correspondence attachment file you tried to remove does not exist in the Ark system");
+			}
+		} catch(HibernateException ex) {
+			log.error("An error occurred while trying to delete a correspondence attachment file " + ex.getStackTrace());
+		} catch(Exception ex) {
+			log.error("An exception occurred while trying to delete a correspondence attachment file " + ex.getStackTrace());
+			throw new ArkSystemException("A system error has occurred.  You will be contacted about this issue.");
+		}
+	}
+
+	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(
+							CorrespondenceAttachment correspondenceAttachment)
+							throws ArkSystemException, EntityNotFoundException {
+
+		Criteria criteria = getSession().createCriteria(CorrespondenceAttachment.class);
+		if(correspondenceAttachment != null) {
+			
+			if(correspondenceAttachment.getId() != null) {
+				criteria.add(Restrictions.eq("id", correspondenceAttachment.getId()));
+			}
+			if(correspondenceAttachment.getCorrespondence() != null) {
+				criteria.add(Restrictions.eq("correspondence", correspondenceAttachment.getCorrespondence()));
+			}
+			if(correspondenceAttachment.getFilename() != null) {
+				criteria.add(Restrictions.ilike("filename", correspondenceAttachment.getFilename(), MatchMode.ANYWHERE));
+			}
+			
+			
+		}
+		
+		criteria.addOrder(Order.desc("id"));
+		@SuppressWarnings("unchecked")
+		List<CorrespondenceAttachment> list = criteria.list();
+		return list;
+		
+	}
+
+	public void update(CorrespondenceAttachment correspondenceAttachment)
+							throws ArkSystemException, EntityNotFoundException {
+
+		Session session = getSession();
+		
+		currentUser = SecurityUtils.getSubject();
+		dateNow = new Date(System.currentTimeMillis());
+		
+		correspondenceAttachment.setUserId(currentUser.getPrincipal().toString());
+		
+		if((CorrespondenceAttachment)session.get(CorrespondenceAttachment.class, correspondenceAttachment.getId()) != null) {
+			session.update(correspondenceAttachment);
+		} else {
+			throw new EntityNotFoundException("The correspondence attachment file you tried to update does not exist in the Ark system.");
+			
+		}
+		
 	}
 
 	public List<CorrespondenceDirectionType> getCorrespondenceDirectionTypes()
@@ -1532,4 +1609,5 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			}
 		}
 	}
+	
 }
