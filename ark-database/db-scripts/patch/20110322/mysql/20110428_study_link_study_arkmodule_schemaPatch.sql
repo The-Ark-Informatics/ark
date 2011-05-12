@@ -1,4 +1,5 @@
 use study;
+DROP TABLE IF EXISTS `link_study_arkmodule`;
 CREATE  TABLE `study`.`link_study_arkmodule` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
   `STUDY_ID` INT NOT NULL ,
@@ -17,3 +18,5 @@ CREATE  TABLE `study`.`link_study_arkmodule` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
