@@ -34,6 +34,7 @@ import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -499,6 +500,47 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getPersonCorrespondenceList(personId, correspondence);
 	}
 
+	public void create(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException {
+		studyDao.create(correspondenceAttachment);
+	
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created CorrespondenceAttachment " + correspondenceAttachment.getId());
+		ah.setEntityType("Correspondence Attachment");
+		ah.setEntityId(correspondenceAttachment.getId());
+		arkCommonService.createAuditHistory(ah);
+
+	}
+
+	public void update(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
+		studyDao.update(correspondenceAttachment);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated CorrespondenceAttachment " + correspondenceAttachment.getId());
+		ah.setEntityType("Correspondence Attachment");
+		ah.setEntityId(correspondenceAttachment.getId());
+		arkCommonService.createAuditHistory(ah);
+
+	}
+
+	public void delete(CorrespondenceAttachment correspondenceAttachment) throws ArkSystemException, EntityNotFoundException {
+		studyDao.delete(correspondenceAttachment);
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Deleted CorrespondenceAttachment " + correspondenceAttachment.getId());
+		ah.setEntityType("Correspondence Attachment");
+		ah.setEntityId(correspondenceAttachment.getId());
+		arkCommonService.createAuditHistory(ah);
+	}
+
+	public List<CorrespondenceAttachment> searchCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment)
+		throws ArkSystemException, EntityNotFoundException {
+		
+		return studyDao.searchCorrespondenceAttachment(correspondenceAttachment);
+	}
+
 	public List<CorrespondenceStatusType> getCorrespondenceStatusTypes() {
 		return studyDao.getCorrespondenceStatusTypes();
 	}
@@ -878,4 +920,5 @@ public class StudyServiceImpl implements IStudyService{
 	{
 		studyDao.batchUpdateSubjects(subjectVoCollection);
 	}
+
 }
