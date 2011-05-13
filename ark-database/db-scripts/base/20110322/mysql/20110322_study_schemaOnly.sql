@@ -587,6 +587,19 @@ CREATE TABLE `domain_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `email_account_type`
+--
+
+DROP TABLE IF EXISTS `email_account_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `email_account_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(50) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+--
 -- Table structure for table `email_account`
 --
 
@@ -607,19 +620,7 @@ CREATE TABLE `email_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`EMAIL_ACCOUNT_TYPE_ID`) REFER `study';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `email_account_type`
---
 
-DROP TABLE IF EXISTS `email_account_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `email_account_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(50) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -691,9 +692,29 @@ CREATE TABLE `link_correspondence_person` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `link_site_contact`
+-- Table structure for table `study_site`
 --
 
+DROP TABLE IF EXISTS `study_site`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `study_site` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  `ADDRESS_ID` int(11) NOT NULL,
+  `DOMAIN_TYPE_ID` int(11) NOT NULL,
+  PRIMARY KEY  (`ID`,`ADDRESS_ID`,`DOMAIN_TYPE_ID`),
+  KEY `STUDY_SITE_ADDRES_FK1` USING BTREE (`ADDRESS_ID`),
+  KEY `STUDY_SITE_DOMAIN_TYPE_FK` USING BTREE (`DOMAIN_TYPE_ID`),
+  CONSTRAINT `study_site_ibfk_1` FOREIGN KEY (`ADDRESS_ID`) REFERENCES `address` (`ID`),
+  CONSTRAINT `study_site_ibfk_2` FOREIGN KEY (`DOMAIN_TYPE_ID`) REFERENCES `domain_type` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_ID`) REFER `study/address`(`';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `link_site_contact`
+--
 DROP TABLE IF EXISTS `link_site_contact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -767,6 +788,22 @@ CREATE TABLE `link_study_substudy` (
   CONSTRAINT `link_study_substudy_ibfk_1` FOREIGN KEY (`STUDY_ID`) REFERENCES `study` (`ID`),
   CONSTRAINT `link_study_substudy_ibfk_2` FOREIGN KEY (`SUB_STUDY_ID`) REFERENCES `study` (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`STUDY_ID`) REFER `study/study`(`ID`)';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+--
+-- Table structure for table `relationship`
+--
+
+DROP TABLE IF EXISTS `relationship`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `relationship` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -961,6 +998,22 @@ CREATE TABLE `person_lastname_history` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+
+
+--
+-- Table structure for table `phone_type`
+--
+
+DROP TABLE IF EXISTS `phone_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `phone_type` (
+  `ID` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL,
+  `DESCRIPTION` varchar(255) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
 --
 -- Table structure for table `phone`
 --
@@ -982,20 +1035,7 @@ CREATE TABLE `phone` (
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`PERSON_ID`) REFER `study/person`(`ID';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `phone_type`
---
 
-DROP TABLE IF EXISTS `phone_type`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `phone_type` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `question_answer`
@@ -1026,20 +1066,7 @@ CREATE TABLE `registration_status` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `relationship`
---
 
-DROP TABLE IF EXISTS `relationship`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `relationship` (
-  `ID` int(11) NOT NULL,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `study`
@@ -1128,26 +1155,7 @@ CREATE TABLE `study_consent_question` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `study_site`
---
 
-DROP TABLE IF EXISTS `study_site`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `study_site` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(20) NOT NULL,
-  `DESCRIPTION` varchar(255) default NULL,
-  `ADDRESS_ID` int(11) NOT NULL,
-  `DOMAIN_TYPE_ID` int(11) NOT NULL,
-  PRIMARY KEY  (`ID`,`ADDRESS_ID`,`DOMAIN_TYPE_ID`),
-  KEY `STUDY_SITE_ADDRES_FK1` USING BTREE (`ADDRESS_ID`),
-  KEY `STUDY_SITE_DOMAIN_TYPE_FK` USING BTREE (`DOMAIN_TYPE_ID`),
-  CONSTRAINT `study_site_ibfk_1` FOREIGN KEY (`ADDRESS_ID`) REFERENCES `address` (`ID`),
-  CONSTRAINT `study_site_ibfk_2` FOREIGN KEY (`DOMAIN_TYPE_ID`) REFERENCES `domain_type` (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='InnoDB free: 9216 kB; (`ADDRESS_ID`) REFER `study/address`(`';
-/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `study_status`
