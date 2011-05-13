@@ -6,7 +6,6 @@
  */
 package au.org.theark.study.web.component.subject.form;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,6 +30,7 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.security.RoleConstants;
@@ -169,7 +169,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
 		
 		// Disable SubjectUID if auto-generation set
-		if(getModelObject().getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study studyInContext = iArkCommonService.getStudy(sessionStudyId);
+		if ((studyInContext != null) && (studyInContext.getAutoGenerateSubjectUid()))
 		{
 			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
 			getModelObject().getSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
