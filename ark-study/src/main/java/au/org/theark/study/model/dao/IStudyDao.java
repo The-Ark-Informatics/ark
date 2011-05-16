@@ -260,7 +260,7 @@ public interface IStudyDao {
 	/**
 	 * Returns a Collection of ArkUser entities who are linke to a particular study.
 	 * @param study
-	 * @return
+	 * @return Collection<ArkUser>
 	 */
 	public Collection<ArkUser> lookupArkUser(Study study);
 }
