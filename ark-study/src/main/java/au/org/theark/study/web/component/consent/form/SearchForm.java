@@ -168,9 +168,10 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 			
 			
 			Study study =	iArkCommonService.getStudy(sessionStudyId);
-			Person subject  = studyService.getPerson(sessionPersonId);
+			//Person subject  = studyService.getPerson(sessionPersonId);
 			
-			consent.setSubject(subject);
+			//consent.setSubject(subject);
+			//TODO Replace the above line with a call to LinkSubjectStudy
 			consent.setStudy(study);
 			
 			//Look up based on criteria via back end.
