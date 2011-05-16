@@ -23,6 +23,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
@@ -263,4 +264,7 @@ public interface IStudyDao {
 	 * @return Collection<ArkUser>
 	 */
 	public Collection<ArkUser> lookupArkUser(Study study);
+	
+	
+	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId,Study study) throws EntityNotFoundException, ArkSystemException;
 }

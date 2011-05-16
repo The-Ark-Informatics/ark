@@ -1615,4 +1615,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		return arkUsersLinkedToStudy;
 	}
 	
+	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId,Study study) throws EntityNotFoundException, ArkSystemException{
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		Person person  = getPerson(personId);
+		criteria.add(Restrictions.eq("person", person));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.setMaxResults(1);
+		return (LinkSubjectStudy) criteria.uniqueResult();
+	}
+	
 }
