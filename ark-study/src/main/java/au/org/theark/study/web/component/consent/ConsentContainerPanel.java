@@ -87,12 +87,12 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
 		
-		try{
+		//try{
 			//Initialise the phoneList;
 			Collection<Consent> consentList = new ArrayList<Consent>();
-			
+			//The LinkSubjectStudy item should be fetched and stored in the model
 			if(sessionPersonId != null){
-				containerForm.getModelObject().getConsent().setSubject(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
+				//containerForm.getModelObject().getConsent().setSubject(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
 			}
 				
 			//All the phone items related to the person if one found in session or an empty list
@@ -111,12 +111,12 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			searchPanel.initialisePanel(cpModel);
 			searchPanelContainer.add(searchPanel);
 			
-		}catch(EntityNotFoundException entityNotFoundException){
-			//Report this to the user
-			
-		}catch(ArkSystemException arkSystemException){
-			//Logged by the back end. Report this to the user
-		}
+//		}catch(EntityNotFoundException entityNotFoundException){
+//			//Report this to the user
+//			
+//		}catch(ArkSystemException arkSystemException){
+//			//Logged by the back end. Report this to the user
+//		}
 		
 		return searchPanelContainer;
 	}
@@ -152,7 +152,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 				try {
 					if(sessionPersonId != null){
 						subject = studyService.getPerson(sessionPersonId);
-						containerForm.getModelObject().getConsent().setSubject(subject);
+						//TODO Get LinkSubjectStudy and store in the model
+						//containerForm.getModelObject().getConsent().setSubject(subject);
 						containerForm.getModelObject().getConsent().setStudy(study);
 						consentList = studyService.searchConsent(containerForm.getModelObject());
 					}
