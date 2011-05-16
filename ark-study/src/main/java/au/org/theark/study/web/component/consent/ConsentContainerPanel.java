@@ -14,6 +14,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -87,12 +88,17 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
 		
-		//try{
+	try{
 			//Initialise the phoneList;
 			Collection<Consent> consentList = new ArrayList<Consent>();
+
 			//The LinkSubjectStudy item should be fetched and stored in the model
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study =	iArkCommonService.getStudy(sessionStudyId);
+			
 			if(sessionPersonId != null){
-				//containerForm.getModelObject().getConsent().setSubject(studyService.getPerson(sessionPersonId));//Can be a Subject or Contact
+				LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
+				containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
 			}
 				
 			//All the phone items related to the person if one found in session or an empty list
@@ -111,12 +117,12 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			searchPanel.initialisePanel(cpModel);
 			searchPanelContainer.add(searchPanel);
 			
-//		}catch(EntityNotFoundException entityNotFoundException){
-//			//Report this to the user
-//			
-//		}catch(ArkSystemException arkSystemException){
-//			//Logged by the back end. Report this to the user
-//		}
+		}catch(EntityNotFoundException entityNotFoundException){
+			containerForm.error("The Person/Subject cannot be found in the system. Please contact Support.");
+			
+		}catch(ArkSystemException arkSystemException){
+			containerForm.error("A System error/exception has occured. Please contact Support.");
+		}
 		
 		return searchPanelContainer;
 	}
@@ -152,8 +158,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 				try {
 					if(sessionPersonId != null){
 						subject = studyService.getPerson(sessionPersonId);
-						//TODO Get LinkSubjectStudy and store in the model
-						//containerForm.getModelObject().getConsent().setSubject(subject);
+						LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId,study);
+						containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
 						containerForm.getModelObject().getConsent().setStudy(study);
 						consentList = studyService.searchConsent(containerForm.getModelObject());
 					}
