@@ -31,6 +31,7 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
@@ -919,6 +920,10 @@ public class StudyServiceImpl implements IStudyService{
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException
 	{
 		studyDao.batchUpdateSubjects(subjectVoCollection);
+	}
+	
+	public Collection<ArkUser> lookupArkUser(Study study) {
+		return studyDao.lookupArkUser(study);
 	}
 
 }

@@ -16,6 +16,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
@@ -231,4 +232,11 @@ public interface IStudyService {
 	
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
+	
+	/**
+	 * Returns a Collection of ArkUser entities from the backend for users who are linked to the passed in study.
+	 * @param study
+	 * @return Collection<ArkUser>
+	 */
+	public Collection<ArkUser> lookupArkUser(Study study);
 }
