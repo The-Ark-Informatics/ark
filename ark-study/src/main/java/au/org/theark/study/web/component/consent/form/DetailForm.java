@@ -324,7 +324,8 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 			
 			//Subject in Context
 			Person subject = studyService.getPerson(personSessionId);
-			containerForm.getModelObject().getConsent().setSubject(subject);
+			//containerForm.getModelObject().getConsent().setSubject(subject);
+			//TODO Get the LinkSubjectStudy here and place it int he model
 			//Study in Context
 			Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study =	iArkCommonService.getStudy(studyId);
