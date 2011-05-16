@@ -11,6 +11,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
@@ -252,7 +253,14 @@ public interface IStudyDao {
 
 	public void updateUpload(StudyUpload studyUpload);
 	
+	
 	public void batchInsertSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 	
+	/**
+	 * Returns a Collection of ArkUser entities who are linke to a particular study.
+	 * @param study
+	 * @return
+	 */
+	public Collection<ArkUser> lookupArkUser(Study study);
 }
