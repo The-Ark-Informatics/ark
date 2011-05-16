@@ -102,7 +102,8 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			if(sessionPersonId != null && sessionConsentId != null){
 				Consent consent = new Consent();
 				consent = studyService.getConsent(sessionConsentId);
-				consent.setSubject(studyService.getPerson(sessionPersonId));
+				//TODO Replace this with a call to LinkSubjectStudy
+				//consent.setSubject(studyService.getPerson(sessionPersonId));
 				containerForm.getModelObject().setConsent(consent);
 			}
 				
@@ -122,9 +123,9 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			searchPanel.initialisePanel(cpModel);
 			searchPanelContainer.add(searchPanel);
 			
-		}catch(EntityNotFoundException entityNotFoundException){
-			//Report this to the user
-			
+//		}catch(EntityNotFoundException entityNotFoundException){
+//			//Report this to the user
+//			
 		}catch(ArkSystemException arkSystemException){
 			//Logged by the back end. Report this to the user
 		}
