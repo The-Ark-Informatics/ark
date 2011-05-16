@@ -15,6 +15,9 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
@@ -26,6 +29,10 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 
 	private static final long serialVersionUID = 1L;
 
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	@SpringBean( name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
@@ -102,8 +109,10 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			if(sessionPersonId != null && sessionConsentId != null){
 				Consent consent = new Consent();
 				consent = studyService.getConsent(sessionConsentId);
-				//TODO Replace this with a call to LinkSubjectStudy
-				//consent.setSubject(studyService.getPerson(sessionPersonId));
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study =	iArkCommonService.getStudy(sessionStudyId);
+				LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId,study);
+				consent.setLinkSubjectStudy(linkSubjectStudy);
 				containerForm.getModelObject().setConsent(consent);
 			}
 				
@@ -123,11 +132,11 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			searchPanel.initialisePanel(cpModel);
 			searchPanelContainer.add(searchPanel);
 			
-//		}catch(EntityNotFoundException entityNotFoundException){
-//			//Report this to the user
-//			
+		}catch(EntityNotFoundException entityNotFoundException){
+			containerForm.error("The Person/Subject cannot be found in the system.Please contact Support");
+			
 		}catch(ArkSystemException arkSystemException){
-			//Logged by the back end. Report this to the user
+			containerForm.error("A System Error has occured.Please contact Support");
 		}
 		
 		return searchPanelContainer;
