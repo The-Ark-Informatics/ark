@@ -238,7 +238,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		try {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
 		} catch (EntityNotFoundException e) {
-			e.printStackTrace();
+			this.error("The Person/Subject in context does not exist in the system. Please contact support.");
+			processErrors(target);
 		}
 		subjectVo.setSubjectStudy(linkSubjectStudy);
 		containerForm.setModelObject(subjectVo);
