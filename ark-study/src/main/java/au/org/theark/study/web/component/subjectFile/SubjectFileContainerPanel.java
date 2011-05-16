@@ -144,11 +144,11 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 				}
 				catch (EntityNotFoundException e)
 				{
-					e.printStackTrace();
+					containerForm.error("The person ID/Subject in context does not exist in the system.");
 				}
 				catch (ArkSystemException e)
 				{
-					e.printStackTrace();
+					containerForm.error("A System error has occured. Please contact Support");
 				}
 
 				pageableListView.removeAll();
