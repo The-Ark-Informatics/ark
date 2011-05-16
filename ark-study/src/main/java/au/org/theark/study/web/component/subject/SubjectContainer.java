@@ -157,12 +157,12 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		// Data providor to paginate resultList
 		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
 			
-			@Override
+			
 			public int size() {
 				return service.getStudySubjectCount(criteria);
 			}
 			
-			@Override
+			
 			public Iterator<SubjectVO> iterator(int first, int count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
 				listSubjects = iArkCommonService.searchPageableSubjects(criteria, first, count);
