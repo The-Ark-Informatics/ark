@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
@@ -34,6 +33,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
@@ -780,7 +780,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		if (consent != null)
 		{
 
-			criteria.add(Restrictions.eq("subject.id", consent.getSubject().getId()));
 			criteria.add(Restrictions.eq("study.id", consent.getStudy().getId()));
 
 			if (consent.getStudyComp() != null)
@@ -824,8 +823,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		Criteria criteria = getSession().createCriteria(Consent.class);
 		if (consentVO != null)
 		{
-
-			criteria.add(Restrictions.eq("subject.id", consentVO.getConsent().getSubject().getId()));
 			criteria.add(Restrictions.eq("study.id", consentVO.getConsent().getStudy().getId()));
 
 			if (consentVO.getConsent().getStudyComp() != null)
@@ -1608,6 +1605,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 				session.clear();
 			}
 		}
+	}
+
+	public Collection<ArkUser> lookupArkUser(Study study) {
+
+		Criteria criteria = getSession().createCriteria(ArkUser.class);
+		criteria.add(Restrictions.eq("study", study));
+		Collection<ArkUser> arkUsersLinkedToStudy = criteria.list();
+		return arkUsersLinkedToStudy;
 	}
 	
 }
