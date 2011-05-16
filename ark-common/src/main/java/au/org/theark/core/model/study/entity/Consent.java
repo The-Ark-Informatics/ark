@@ -35,7 +35,7 @@ public class Consent implements Serializable {
 	
 	private Long id;
 	private Study study;
-	private Person subject;
+	private LinkSubjectStudy linkSubjectStudy;
 	private StudyComp studyComp;
 	private StudyCompStatus studyComponentStatus;
 	private ConsentStatus consentStatus;
@@ -76,14 +76,6 @@ public class Consent implements Serializable {
 		this.study = study;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_ID")
-	public Person getSubject() {
-		return subject;
-	}
-	public void setSubject(Person subject) {
-		this.subject = subject;
-	}
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_COMP_ID")
@@ -181,6 +173,15 @@ public class Consent implements Serializable {
 	}
 	public void setConsentDownloaded(YesNo consentDownloaded) {
 		this.consentDownloaded = consentDownloaded;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SUBJECT_ID")
+	public LinkSubjectStudy getLinkSubjectStudy() {
+		return linkSubjectStudy;
+	}
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 	
 }
