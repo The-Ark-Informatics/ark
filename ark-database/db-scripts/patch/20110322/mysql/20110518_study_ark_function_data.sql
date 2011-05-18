@@ -1,0 +1,18 @@
+use study;
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='1';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='2';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='3';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='4';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='5';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='6';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='7';
+UPDATE `study`.`ark_function` SET `ARK_FUNCTION_TYPE_ID`=1 WHERE `ID`='8';
+
+ALTER TABLE `study`.`ark_function` DROP FOREIGN KEY `FK_ARK_FUNCTION_ARK_FUNCTION_TYPE_ID` ;
+ALTER TABLE `study`.`ark_function` CHANGE COLUMN `ARK_FUNCTION_TYPE_ID` `ARK_FUNCTION_TYPE_ID` INT(11) NOT NULL  , 
+  ADD CONSTRAINT `FK_ARK_FUNCTION_ARK_FUNCTION_TYPE_ID`
+  FOREIGN KEY (`ARK_FUNCTION_TYPE_ID` )
+  REFERENCES `study`.`ark_function_type` (`ID` )
+  ON DELETE NO ACTION
+  ON UPDATE NO ACTION;
+
