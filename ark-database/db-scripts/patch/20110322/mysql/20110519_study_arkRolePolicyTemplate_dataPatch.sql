@@ -20,7 +20,7 @@ INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE
 
 /* Enteries for Study User. */
 /*Access to Study Module and has Read Permission Only. */
-INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (15, 3, 1, 1, 3);
+INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (15, 3, 1, 1, 2);
 
 /*Access to Study Module and Study Component as read,update Permission Only. */
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (16, 3, 1, 2, 2);
@@ -81,3 +81,33 @@ INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (46, 5, 2, 9, 2);
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (47, 5, 2, 9, 3);
 
+/*Subject Administator access to Subject Upload has CREATE AND UPDATE permission*/
+INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (48, 4, 2, 10, 1);
+INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (49, 4, 2, 10, 2);
+INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (50, 4, 2, 10, 3);
+
+
+
+
+/* Execute this  query to view  the result of the above inserts in a readable form */
+SELECT
+       ar.name AS Role, 
+       am.name AS Module, 
+       af.name AS FunctionGroup, 
+       af.description AS Function, 
+       ap.name AS Permission
+  FROM `study`.`ark_role_policy_template` AS arpt
+ INNER JOIN
+       `study`.`ark_role` AS ar
+    ON arpt.ark_role_id = ar.id
+ INNER JOIN
+       `study`.`ark_permission` AS ap
+    ON arpt.ark_permission_id = ap.id
+ LEFT JOIN
+       `study`.`ark_module` AS am
+    ON arpt.ark_module_id = am.id
+ LEFT JOIN
+       `study`.`ark_function` AS af
+    ON arpt.ark_function_id = af.id
+ ORDER BY ar.id, af.id,ap.id;
+ 
