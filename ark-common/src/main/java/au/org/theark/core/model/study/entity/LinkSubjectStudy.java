@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -53,7 +54,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private ConsentType consentType;
 	private Date consentDate;
 	
-	
+	private Set<Consent> consents = new HashSet<Consent>();	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
@@ -305,6 +306,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setOtherState(String otherState) {
 		this.otherState = otherState;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="linkSubjectStudy")
+    public Set<Consent> getConsents() {
+		return consents;
+	}
+
+	public void setConsents(Set<Consent> consents) {
+		this.consents = consents;
 	}
 
 }
