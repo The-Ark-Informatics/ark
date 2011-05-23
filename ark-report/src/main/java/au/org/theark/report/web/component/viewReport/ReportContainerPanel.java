@@ -1,26 +1,17 @@
 
 package au.org.theark.report.web.component.viewReport;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.IReportService;
-import au.org.theark.report.web.component.viewReport.form.ReportSelectForm;
-import au.org.theark.report.web.component.viewReport.studySummary.ReportParamsPanel;
-import au.org.theark.report.web.component.viewReport.studySummary.ReportSelectPanel;
-import au.org.theark.report.web.component.viewReport.studySummary.ReportViewPanel;
 
 /**
  * @author elam
@@ -28,13 +19,10 @@ import au.org.theark.report.web.component.viewReport.studySummary.ReportViewPane
  */
 public class ReportContainerPanel extends Panel {
 	
-	private ReportParamsPanel reportParamsPanel;
-	private ReportViewPanel reportViewPanel;
-	private ReportSelectForm reportSelectForm;
+	private ReportSelectPanel reportSelectPanel;
 	
 	protected ReportContainerVO reportContainerVO = new ReportContainerVO();
 
-	//	protected IModel<Object> iModel;
 	protected CompoundPropertyModel<ReportSelectVO> reportSelectCPM;
 	
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -46,25 +34,34 @@ public class ReportContainerPanel extends Panel {
 	/**
 	 * @param id
 	 */
-	public ReportContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
+	public ReportContainerPanel(String id) {
 		super(id);
 		reportSelectCPM = new CompoundPropertyModel<ReportSelectVO>(new ReportSelectVO());
-		this.reportContainerVO.setArkContextMarkup(arkContextMarkup);
 	}
 	
 	public void initialisePanel() {
-				
-		reportSelectForm = new ReportSelectForm("reportSelectForm", reportSelectCPM, reportContainerVO);
+		add(initialiseFeedBackPanel());
+
+		reportSelectPanel = new ReportSelectPanel("reportSelectPanel", reportSelectCPM, reportContainerVO);
+		reportSelectPanel.initialisePanel();
 		prerenderContextCheck();
-		add(reportSelectForm);
+		WebMarkupContainer selectedReportContainerWMC = new WebMarkupContainer("selectedReportContainerWMC");
+		selectedReportContainerWMC.setOutputMarkupPlaceholderTag(true);
+		EmptySelectedReportContainer selectedReportPanel = new EmptySelectedReportContainer("selectedReportContainerPanel");
+		selectedReportPanel.setOutputMarkupId(true);
+		reportContainerVO.setSelectedReportContainerWMC(selectedReportContainerWMC);
+		reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+		selectedReportContainerWMC.add(selectedReportPanel);
 		
+		add(reportSelectPanel);
+		add(selectedReportContainerWMC);
 	}
 	
 	protected WebMarkupContainer initialiseFeedBackPanel(){
 		/* Feedback Panel */
-		reportContainerVO.setFeedBackPanel(new FeedbackPanel("feedbackMessage"));
-		reportContainerVO.getFeedBackPanel().setOutputMarkupId(true);
-		return reportContainerVO.getFeedBackPanel();
+		reportContainerVO.setFeedbackPanel(new FeedbackPanel("feedbackMessage"));
+		reportContainerVO.getFeedbackPanel().setOutputMarkupId(true);	//required for Ajax updates
+		return reportContainerVO.getFeedbackPanel();
 	}
 
 	protected void prerenderContextCheck() {		

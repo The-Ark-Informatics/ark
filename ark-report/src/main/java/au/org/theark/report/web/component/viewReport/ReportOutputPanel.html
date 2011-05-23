@@ -1,0 +1,25 @@
+<wicket:panel>
+	<wicket:enclosure child="linkToReport">
+		<!-- Attempts to embed the report into the webpage are unreliable at the moment -->
+		<!-- <object wicket:id="report" height="60%" width="80%" /> -->
+		<!-- <iframe wicket:id="report" height="60%" width="80%" /> -->
+		<!-- <embed wicket:id="report" height="80%" width="80%" /> --  can work but depends on browser/plugin, on Safari it causes a download -->
+		<!-- <span wicket:id="label"></span> -- HTML can work but images don't load -->
+		<!-- <iframe wicket:id="mydoc" width="90%" height="300px"></iframe> --  can work but depends on browser/plugin -->
+		<div id="detailsPanelBorder">
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">&nbsp;</div>
+			
+			<div id="fldControl">&nbsp;</div>
+		
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="actionButtons">&nbsp;
+				<a href="#" wicket:id="linkToReport">Download Report</a>
+			</div>
+			<div id="detailPanelBreaker">&nbsp;</div>		
+		</div>
+	</wicket:enclosure>
+</wicket:panel>

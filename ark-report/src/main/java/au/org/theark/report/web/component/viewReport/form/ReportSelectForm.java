@@ -27,7 +27,9 @@ import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportContainerVO;
-import au.org.theark.report.web.component.viewReport.studySummary.ReportSelectPanel;
+import au.org.theark.report.web.component.viewReport.ReportSelectPanel;
+import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
+import au.org.theark.report.web.component.viewReport.studySummary.filterForm.StudySummaryFilterForm;
 
 /**
  * @author elam
@@ -36,7 +38,6 @@ import au.org.theark.report.web.component.viewReport.studySummary.ReportSelectPa
 @SuppressWarnings("serial")
 public class ReportSelectForm extends AbstractContainerForm<ReportSelectVO>{
 	
-	private ReportSelectPanel reportSelectPanel;
 	private DropDownChoice<LinkStudyReportTemplate>	reportTemplateChoices;
 	private ReportContainerVO reportContainerVO;
 	private CompoundPropertyModel<ReportSelectVO> cpmModel;
@@ -53,37 +54,19 @@ public class ReportSelectForm extends AbstractContainerForm<ReportSelectVO>{
 		super(id, cpmModel);
 		this.reportContainerVO = reportContainerVO;
 		this.cpmModel = cpmModel;
-		
-		initialiseSearchForm();
 	}
 	
-	protected void initialiseSearchForm() {
+	public void initialiseSearchForm() {
 				
-		this.add(initialiseSelectPanelWMC());
-
-	}
-	
-	protected WebMarkupContainer initialiseSelectPanelWMC() {
-		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
-		Collection<SubjectVO> subjectVOCollection = new ArrayList<SubjectVO>();
 		if(sessionStudyId != null && sessionStudyId > 0) {			
 			this.getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		reportSelectPanel = new ReportSelectPanel("reportSelectPanel",
-									reportContainerVO,
-									this);
-
 		initialiseComponents();
-		
-		reportContainerVO.getReportSelectWMC().add(reportSelectPanel);
-
-		return reportContainerVO.getReportSelectWMC();
 	}
-//	
-
+	
 	/**
 	 * 
 	 */
@@ -101,8 +84,8 @@ public class ReportSelectForm extends AbstractContainerForm<ReportSelectVO>{
 		};
 		
 		initiliaseReportChoice();
-		reportSelectPanel.add(reportTemplateChoices);
-		reportSelectPanel.add(loadButton);
+		this.add(reportTemplateChoices);
+		this.add(loadButton);
 	}
 	
 	private void initiliaseReportChoice() {
@@ -114,12 +97,12 @@ public class ReportSelectForm extends AbstractContainerForm<ReportSelectVO>{
 			arkUser = iArkCommonService.getArkUser("arkuser1@ark.org.au");
 			
 			// Retrieve the list of report templates allowed for this user
-			reportSelectVO.setReportsAvailableList(reportService.getReportsAvailableList(reportSelectVO.getStudy(), arkUser));
+			reportSelectVO.setLinkedStudyReportList(reportService.getReportsAvailableList(reportSelectVO.getStudy(), arkUser));
 			
 			PropertyModel<LinkStudyReportTemplate> reportChoicePM = new PropertyModel<LinkStudyReportTemplate>(cpmModel, "selectedReport");
 			ChoiceRenderer<LinkStudyReportTemplate> defaultChoiceRenderer = new ChoiceRenderer<LinkStudyReportTemplate>(Constants.REPORT_NAME, Constants.LINK_STUDY_REPORT_TEMPLATE_KEY);
 			reportTemplateChoices = new DropDownChoice<LinkStudyReportTemplate>(Constants.REPORT_DROP_DOWN_CHOICE, reportChoicePM, 
-																					reportSelectVO.getReportsAvailableList(), defaultChoiceRenderer);
+																					reportSelectVO.getLinkedStudyReportList(), defaultChoiceRenderer);
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			
@@ -128,7 +111,28 @@ public class ReportSelectForm extends AbstractContainerForm<ReportSelectVO>{
 	}
 	
 	protected void onLoadProcess(AjaxRequestTarget target) {
-		
+		LinkStudyReportTemplate linkStudyReport = this.getModelObject().getSelectedLinkStudyReport();
+		if (this.getModelObject().getSelectedReport() == null) {
+			this.info("Please select a report to load.");
+			target.addComponent(reportContainerVO.getFeedbackPanel());
+			return;	//not allowed to proceed if selection not made
+		}
+		if (linkStudyReport.getReportTemplate().getName().equals("Study Summary Report")) {
+			if (this.getModelObject().getStudy() == null) {
+				this.error("This report requires a study in context. Please put a study in context first.");
+			}
+			else {
+				StudySummaryReportContainer selectedReportPanel = new StudySummaryReportContainer("selectedReportContainerPanel");
+				selectedReportPanel.setOutputMarkupId(true);
+				// Replace the old selectedReportPanel with this new one
+				reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+				reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+				selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), linkStudyReport.getReportTemplate());
+				target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+				this.info("Report template loaded");
+			}
+			target.addComponent(reportContainerVO.getFeedbackPanel());
+		}
 	}
 	
 	protected void onErrorProcess(AjaxRequestTarget target) {

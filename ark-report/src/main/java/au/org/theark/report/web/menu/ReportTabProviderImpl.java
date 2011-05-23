@@ -17,7 +17,6 @@ public class ReportTabProviderImpl extends Panel implements
 		IMainTabProvider {
 
 	private static final long serialVersionUID = 1L;
-	private WebMarkupContainer arkContextPanelMarkup;
 	private List<ITab> moduleTabsList;
 
 	public ReportTabProviderImpl(String panelId) {
@@ -33,22 +32,12 @@ public class ReportTabProviderImpl extends Panel implements
 		return moduleTabsList;
 	}
 
-	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup) {
-		this.arkContextPanelMarkup = arkContextPanelMarkup;
-
-		// Main tab
-		ITab iTab = createTab(Constants.REPORT_MAIN_TAB);
-		moduleTabsList.add(iTab);
-
-		return moduleTabsList;
-	}
-
 	public ITab createTab(String tabName) {
 		return new AbstractTab(new Model<String>(tabName)) {
 			@Override
 			public Panel getPanel(String pid) {
 				// The sub menu(s) for Reporting
-				return new ReportSubMenuTab(pid, arkContextPanelMarkup);
+				return new ReportSubMenuTab(pid);
 			}
 		};
 	}

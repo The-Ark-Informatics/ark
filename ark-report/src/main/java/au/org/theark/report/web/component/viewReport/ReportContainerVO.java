@@ -5,7 +5,7 @@ import java.io.Serializable;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
-import au.org.theark.report.web.component.viewReport.studySummary.reportviewform.StudySummaryReportViewForm;
+import au.org.theark.report.web.component.viewReport.studySummary.filterForm.StudySummaryFilterForm;
 
 public class ReportContainerVO implements Serializable {
 	
@@ -14,74 +14,51 @@ public class ReportContainerVO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private FeedbackPanel feedBackPanel;
-	private StudySummaryReportViewForm reportViewForm;
-	private WebMarkupContainer arkContextMarkup;
-	private WebMarkupContainer reportSelectWMC;
-	private WebMarkupContainer reportParamsWMC;
-	private WebMarkupContainer reportViewWMC;
+	private FeedbackPanel feedbackPanel;
+	private ReportSelectPanel reportSelectPanel;
+	private WebMarkupContainer selectedReportContainerWMC;
+	private AbstractSelectedReportContainer selectedReportPanel;
 
 	public ReportContainerVO() {
-		
-		reportSelectWMC = new WebMarkupContainer("reportSelectContainer");
-		reportSelectWMC.setOutputMarkupPlaceholderTag(true);
-		reportSelectWMC.setVisible(true);
-		
-		reportParamsWMC = new WebMarkupContainer("reportParamsContainer");
-		reportParamsWMC.setOutputMarkupPlaceholderTag(true);
-		reportParamsWMC.setVisible(false);
 
-		reportViewWMC = new WebMarkupContainer("reportViewContainer");
-		reportViewWMC.setOutputMarkupPlaceholderTag(true);
-		reportViewWMC.setVisible(false);
+		selectedReportContainerWMC = new WebMarkupContainer("selectedReportContainerWMC");
+		selectedReportContainerWMC.setOutputMarkupPlaceholderTag(true);
+		selectedReportContainerWMC.setVisible(false);
 
 	}
 
-	public FeedbackPanel getFeedBackPanel() {
-		return feedBackPanel;
+	public FeedbackPanel getFeedbackPanel() {
+		return feedbackPanel;
 	}
 
-	public void setFeedBackPanel(FeedbackPanel feedBackPanel) {
-		this.feedBackPanel = feedBackPanel;
+	public void setFeedbackPanel(FeedbackPanel feedBackPanel) {
+		this.feedbackPanel = feedBackPanel;
 	}
 
-	public StudySummaryReportViewForm getReportViewForm() {
-		return reportViewForm;
+	public ReportSelectPanel getReportSelectPanel() {
+		return reportSelectPanel;
 	}
 
-	public void setReportViewForm(StudySummaryReportViewForm reportViewForm) {
-		this.reportViewForm = reportViewForm;
+	public void setReportSelectPanel(ReportSelectPanel reportSelectPanel) {
+		this.reportSelectPanel = reportSelectPanel;
 	}
 
-	public WebMarkupContainer getArkContextMarkup() {
-		return arkContextMarkup;
+	public WebMarkupContainer getSelectedReportContainerWMC() {
+		return selectedReportContainerWMC;
 	}
 
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
-		this.arkContextMarkup = arkContextMarkup;
+	public void setSelectedReportContainerWMC(
+			WebMarkupContainer selectedReportContainerWMC) {
+		this.selectedReportContainerWMC = selectedReportContainerWMC;
 	}
 
-	public WebMarkupContainer getReportSelectWMC() {
-		return reportSelectWMC;
+	public AbstractSelectedReportContainer getSelectedReportPanel() {
+		return selectedReportPanel;
 	}
 
-	public void setReportSelectWMC(WebMarkupContainer reportSelectWMC) {
-		this.reportSelectWMC = reportSelectWMC;
+	public void setSelectedReportPanel(
+			AbstractSelectedReportContainer selectedReportPanel) {
+		this.selectedReportPanel = selectedReportPanel;
 	}
 
-	public WebMarkupContainer getReportParamsWMC() {
-		return reportParamsWMC;
-	}
-
-	public void setReportParamsWMC(WebMarkupContainer reportParamsWMC) {
-		this.reportParamsWMC = reportParamsWMC;
-	}
-
-	public WebMarkupContainer getReportViewWMC() {
-		return reportViewWMC;
-	}
-
-	public void setReportViewWMC(WebMarkupContainer reportViewWMC) {
-		this.reportViewWMC = reportViewWMC;
-	}
 }

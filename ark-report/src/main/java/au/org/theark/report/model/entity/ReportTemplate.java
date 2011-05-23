@@ -24,6 +24,9 @@ public class ReportTemplate implements java.io.Serializable
 	private String						name;
 	private String						description;
 	private String						templatePath;
+	// TODO : Fix these to proper foreign key mappings!!!
+	private Long						module_id;
+	private Long						function_id;
 
 	// Constructors
 
@@ -99,5 +102,24 @@ public class ReportTemplate implements java.io.Serializable
 	public void setTemplatePath(String templatePath)
 	{
 		this.templatePath = templatePath;
+	}
+
+	// TODO : Fix these to proper foreign key mappings!!!
+	@Column(name = "MODULE_ID", precision = 22)
+	public Long getModule_id() {
+		return module_id;
+	}
+
+	public void setModule_id(Long moduleId) {
+		module_id = moduleId;
+	}
+
+	@Column(name = "FUNCTION_ID", precision = 22)
+	public Long getFunction_id() {
+		return function_id;
+	}
+
+	public void setFunction_id(Long functionId) {
+		function_id = functionId;
 	}
 }

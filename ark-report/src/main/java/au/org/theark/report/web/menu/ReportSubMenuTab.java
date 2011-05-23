@@ -22,21 +22,11 @@ public class ReportSubMenuTab extends Panel
 {
 	
 	List<ITab> tabList;
-	private WebMarkupContainer	arkContextMarkup;
 
 	public ReportSubMenuTab(String id)
 	{
 		super(id);
 		tabList = new ArrayList<ITab>();
-		buildTabs();
-	}
-
-
-	public ReportSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
-	{
-		super(id);
-		tabList = new ArrayList<ITab>();
-		this.arkContextMarkup = arkContextMarkup;
 		buildTabs();
 	}
 
@@ -89,7 +79,7 @@ public class ReportSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_DETAIL))
 					{
-						ReportContainerPanel reportContainerPanel = new ReportContainerPanel(panelId, arkContextMarkup);
+						ReportContainerPanel reportContainerPanel = new ReportContainerPanel(panelId);
 						reportContainerPanel.initialisePanel();
 						panelToReturn = reportContainerPanel;
 					}
