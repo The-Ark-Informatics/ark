@@ -1,10 +1,8 @@
 package au.org.theark.core.web.component;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 
 public abstract class ArkAjaxButton extends IndicatingAjaxButton{
