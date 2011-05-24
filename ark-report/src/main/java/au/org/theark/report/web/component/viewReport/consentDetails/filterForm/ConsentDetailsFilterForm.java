@@ -34,14 +34,13 @@ import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportDataSource;
+import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportDataSource;
 
 /**
@@ -49,83 +48,11 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
  *
  */
 @SuppressWarnings("serial")
-public class ConsentDetailsFilterForm extends AbstractContainerForm<GenericReportViewVO>{
-	
-	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
-	private IReportService reportService;
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	private DropDownChoice<ReportOutputFormat>	outputFormatChoices;
-	private AjaxButton generateButton;
-	
-	private CompoundPropertyModel<GenericReportViewVO> cpModel;
-	private ReportOutputPanel reportOutputPanel;
-	private FeedbackPanel feedbackPanel;
+public class ConsentDetailsFilterForm extends AbstractReportFilterForm<GenericReportViewVO>{
 	
 	public ConsentDetailsFilterForm(String id, CompoundPropertyModel<GenericReportViewVO> model) {
 		super(id, model);
 		this.cpModel = model;
-	}
-
-	public void initialiseFilterForm(FeedbackPanel feedbackPanel, ReportOutputPanel reportOutputPanel) {
-		this.reportOutputPanel = reportOutputPanel;
-		this.feedbackPanel = feedbackPanel;
-		initialiseComponents();
-	}
-	
-	protected void initialiseComponents() {
-		generateButton = new IndicatingAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onGenerateProcess(target);
-			}
-			
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				onErrorProcess(target);
-			}
-			
-		    @Override
-		    protected IAjaxCallDecorator getAjaxCallDecorator() {
-		        return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
-		            private static final long serialVersionUID = 1L;
-		 
-		            @Override
-		            public CharSequence postDecorateScript(CharSequence script) {
-		                return script + "document.getElementById('" + getMarkupId() + "').disabled = true;"
-		                		+ "wicketHide('"+ reportOutputPanel.getMarkupId() + "');";
-		            }
-		            @Override
-		            public CharSequence postDecorateOnFailureScript(CharSequence script) {
-		                return script + "document.getElementById('" + getMarkupId() + "').disabled = false;";
-		            }
-		            
-		            @Override
-		            public CharSequence postDecorateOnSuccessScript(CharSequence script) {
-		                return script + "document.getElementById('" + getMarkupId() + "').disabled = false;";
-		            }
-		        };
-		    }
-		};
-		
-		initiliaseOutputFormatChoice();
-		this.add(outputFormatChoices);
-		this.add(generateButton);
-	}
-	
-	private void initiliaseOutputFormatChoice() {
-		
-		GenericReportViewVO grvVO = cpModel.getObject();
-		grvVO.setListReportOutputFormats(reportService.getOutputFormats());
-
-		PropertyModel<ReportOutputFormat> outputChoicePM = new PropertyModel<ReportOutputFormat>(cpModel, "selectedOutputFormat");
-		ChoiceRenderer<ReportOutputFormat> defaultChoiceRenderer = new ChoiceRenderer<ReportOutputFormat>(Constants.REPORT_OUTPUT_NAME);
-		outputFormatChoices = new DropDownChoice<ReportOutputFormat>(Constants.REPORT_OUTPUT_DROP_DOWN_CHOICE, outputChoicePM, 
-				grvVO.getListReportOutputFormats(), defaultChoiceRenderer);
-		outputFormatChoices.setRequired(true);
-
 	}
 
 	protected void onGenerateProcess(AjaxRequestTarget target) {
@@ -157,7 +84,7 @@ public class ConsentDetailsFilterForm extends AbstractContainerForm<GenericRepor
 //		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
-		parameters.put("ReportTitle", study.getName() + " - Study Summary Report");
+		parameters.put("ReportTitle", study.getName() + " - Consent Details Report");
 		StudySummaryReportDataSource reportDS = new StudySummaryReportDataSource(reportService, study);
 		
 		JRResource reportResource = null;
@@ -201,8 +128,10 @@ public class ConsentDetailsFilterForm extends AbstractContainerForm<GenericRepor
 			target.addComponent(reportOutputPanel);
 		}
 	}
-	
-	protected void onErrorProcess(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+
+	@Override
+	protected void initialiseConsentFilterComponents() {
+		// TODO Auto-generated method stub
+		
 	}
 }

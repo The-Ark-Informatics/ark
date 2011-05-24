@@ -26,6 +26,7 @@ import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.Constants;
 import au.org.theark.report.service.IReportService;
+import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 
 @SuppressWarnings("serial")
@@ -41,7 +42,6 @@ public class ReportSelectPanel extends Panel
 	CompoundPropertyModel<ReportSelectVO> reportSelectCPM;
 
 	private ReportContainerVO		reportContainerVO;
-//	private ReportSelectForm		reportSelectForm;
 
 	private PageableListView<ReportTemplate> pageableListView;
 
@@ -153,6 +153,21 @@ public class ReportSelectPanel extends Panel
 					}
 					else {
 						StudySummaryReportContainer selectedReportPanel = new StudySummaryReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					}
+					target.addComponent(reportContainerVO.getFeedbackPanel());
+				} else if (reportTemplate.getName().equals(Constants.CONSENT_DETAILS_REPORT_NAME)) {
+					if (reportSelectCPM.getObject().getStudy() == null) {
+						this.error("This report requires a study in context. Please put a study in context first.");
+					}
+					else {
+						ConsentDetailsReportContainer selectedReportPanel = new ConsentDetailsReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
 						// Replace the old selectedReportPanel with this new one
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
