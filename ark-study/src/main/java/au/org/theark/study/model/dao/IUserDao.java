@@ -21,5 +21,6 @@ public interface IUserDao {
 	
 	public List<Person> searchPerson(Person person) throws PersonNotFoundException;
 	
+	public boolean isArkUserPresent(String userName);
 
 }
