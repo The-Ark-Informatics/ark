@@ -129,6 +129,12 @@ public interface ILdapUserDao {
 	
 	public List<SiteVO> getSite(SiteVO siteVo);
 	
+	/**
+	 * Checks if the given username is already present in the system.
+	 * @param username
+	 * @return
+	 */
+	public boolean isArkUserPresent(String username);
 	
 	
 	

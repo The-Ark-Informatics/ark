@@ -40,6 +40,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.security.RoleConstants;
@@ -420,6 +421,20 @@ public class LdapUserDao implements ILdapUserDao{
 			return etaUserVO;
 		}
 	}
+
+	/**
+	 * Maps only the CN of the person and returns the vo
+	 * @author nivedan
+	 *
+	 */
+	public static class LitePersonContextMapper implements ContextMapper{
+		public Object mapFromContext(Object ctx) {
+			DirContextAdapter context = (DirContextAdapter) ctx;
+			ArkUserVO arkUserVO = new ArkUserVO();
+			arkUserVO.setUserName(context.getStringAttribute("cn"));
+			return arkUserVO;
+		}
+	}
 	
 	private static class LiteSiteContextMapper implements ContextMapper {
 		
@@ -682,7 +697,7 @@ public class LdapUserDao implements ILdapUserDao{
 		Subject currentUser = SecurityUtils.getSubject();
 		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
 		
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_ADMINISTATOR)){
 			
 			
 			log.info("getBaseDn() " + getBasePeopleDn());//ou=people
@@ -717,7 +732,6 @@ public class LdapUserDao implements ILdapUserDao{
 					andFilter.and(new EqualsFilter(Constants.EMAIL,userCriteriaVO.getEmail()));
 				}
 				/* Status is not defined as yet in the schema */
-				
 				userList  = ldapTemplate.search(getBasePeopleDn(),andFilter.encode(),new PersonContextMapper());
 				log.info("Size of list " + userList.size());
 			}catch(InvalidNameException ine){
@@ -872,7 +886,18 @@ public class LdapUserDao implements ILdapUserDao{
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 	
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+//		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+//			log.info("User can access all users");
+//			userList = searchAllUsers(userVO);
+//		}else{
+//			log.info("User can access only a sub-set of users.");
+//			//Get logged in user's Groups and roles(and permissions)
+//			userName = (String) currentUser.getPrincipal();
+//			//delegate call to another method and get back a list of users into userList
+//			userList = searchGroupMembers(userVO, userName);
+//		}
+		
+		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_ADMINISTATOR)){
 			log.info("User can access all users");
 			userList = searchAllUsers(userVO);
 		}else{
@@ -1782,4 +1807,36 @@ public class LdapUserDao implements ILdapUserDao{
 			throw new ArkSystemException("A System error has occured while trying to update the Site details.");
 		}
 	}
+
+	/**
+	 * Checks if the given user exists in the LDAP System. If present it will return a boolean true. 
+	 * @param username
+	 * @return boolean
+	 * @throws ArkSystemException
+	 */
+	public boolean isArkUserPresent(String username)  {
+		boolean isPresent = false;
+		
+		ArkUserVO arkUserVO = null;
+		
+		log.debug("\n getUser ");
+		try{
+			LdapName ldapName = new LdapName(basePeopleDn);
+			ldapName.add(new Rdn("cn",username));
+			Name nameObj = (Name)ldapName;
+			
+			arkUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new LitePersonContextMapper());	
+			log.info("\n etauserVO " + arkUserVO);
+			if(arkUserVO.getUserName().equalsIgnoreCase(username)){
+				isPresent = true;
+			}
+			
+		}catch(InvalidNameException ne){
+			log.debug("\n Given username or user does not exist." + username);
+			//Do not throw any exception back it is not necessary here since we want the boolean isPresent to return false
+		}
+		return isPresent;
+	}
+	
+	
 }
