@@ -92,6 +92,7 @@
         	    <value>au.org.theark.core.model.study.entity</value>
 				<value>au.org.theark.phenotypic.model.entity</value>        		
 				<value>au.org.theark.geno.model.entity</value>
+				<value>au.org.theark.report.model.entity</value>
 			<!-- <value>au.org.theark.registry.model.entity</value>-->
         	</list>
         </property>
