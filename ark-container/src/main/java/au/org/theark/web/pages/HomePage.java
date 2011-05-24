@@ -10,8 +10,10 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 
 import au.org.theark.geno.web.menu.GenoTabProviderImpl;
+import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
+import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
@@ -83,6 +85,13 @@ public class HomePage extends BasePage
 		RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
 		List<ITab> registryTabList =	registryTabProvider.buildTabs();
 		for(ITab tab : registryTabList){
+			moduleTabsList.add(tab);
+		}
+		
+		// Report
+		ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl("report");
+		List<ITab> reportTabList =	reportTabProvider.buildTabs();
+		for(ITab tab : reportTabList){
 			moduleTabsList.add(tab);
 		}
 		
