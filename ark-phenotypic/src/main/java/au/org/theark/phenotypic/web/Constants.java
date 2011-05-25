@@ -122,7 +122,8 @@ public class Constants {
 	public static final String	UPLOADVO_UPLOAD_START_TIME	= "upload.startTime";
 	public static final String	UPLOADVO_UPLOAD_FINISH_TIME	= "upload.finishTime";
 	public static final String	UPLOADVO_UPLOAD_UPLOAD_REPORT	= "upload.uploadReport";
-	
+	public static final String	UPLOADVO_PHENO_COLLECTION	= "phenoCollection";
+
 	// Entity fields
 	public static final String PHENO_COLLECTION = "phenoCollection";
 	public static final String PHENO_COLLECTION_ID = "id";
@@ -203,6 +204,7 @@ public class Constants {
 	public static final String	UPLOAD_PAYLOAD	= "payload";
 	public static final String	UPLOAD_USER	= "user";
 	public static final String	UPLOAD_CHECKSUM	= "checksum";
+	public static final String	UPLOAD_UPLOAD_TYPE	= "uploadType";
 
 	public static final String	DELIMITER_TYPE_ID	= "id";
 	public static final String	DELIMITER_TYPE_NAME	= "name";
