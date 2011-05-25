@@ -40,7 +40,7 @@ import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService									phenotypicService;
+	private IPhenotypicService									iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService									iArkCommonService;
@@ -71,6 +71,10 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		initialiseFieldForm();
 
 		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null && sessionStudyId > 0)
+		{
+			getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
+		}
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
@@ -85,11 +89,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		if (sessionStudyId != null && sessionStudyId > 0)
 		{
 			study = iArkCommonService.getStudy(sessionStudyId);
-			fieldDataCollection = phenotypicService.getPhenoCollectionByStudy(study);
+			fieldDataCollection = iPhenotypicService.getPhenoCollectionByStudy(study);
 		}
 		else
 		{
-			fieldDataCollection = phenotypicService.searchPhenotypicCollection(phenotypicCollection);
+			fieldDataCollection = iPhenotypicService.searchPhenotypicCollection(phenotypicCollection);
 		}
 		
 		ChoiceRenderer fieldDataCollRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_NAME, au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID);
@@ -109,7 +113,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			field.setStudy(study);
 		}
 		
-		java.util.Collection<Field> fieldDataField = phenotypicService.searchField(field);
+		java.util.Collection<Field> fieldDataField = iPhenotypicService.searchField(field);
 		ChoiceRenderer fieldDataFieldRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_NAME, au.org.theark.phenotypic.web.Constants.FIELD_ID);
 		fieldDataFieldDdc = new DropDownChoice<PhenoCollection>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD, (List) fieldDataField, fieldDataFieldRenderer);
 	}
@@ -134,6 +138,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
+		FieldData searchFieldData = getModelObject().getFieldData();
+		/*
 		target.addComponent(feedbackPanel);
 		FieldData searchFieldData = getModelObject().getFieldData();
 
@@ -148,6 +154,19 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);
+		*/
+		
+		target.addComponent(feedbackPanel);
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId)); 
+		
+		int count = iPhenotypicService.getStudyFieldDataCount(getModelObject());
+		if(count == 0){
+			this.info("There are no field data records with the specified criteria.");
+			target.addComponent(feedbackPanel);
+		}
+		listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
+		target.addComponent(listContainer);//For ajax this is required so
 	}
 
 	// Reset button implemented in AbstractSearcForm

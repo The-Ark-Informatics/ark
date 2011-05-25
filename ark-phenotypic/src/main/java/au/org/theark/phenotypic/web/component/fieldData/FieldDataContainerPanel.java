@@ -2,20 +2,24 @@ package au.org.theark.phenotypic.web.component.fieldData;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -34,10 +38,13 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 	private ContainerForm					containerForm;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService				iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
+	
+	private DataView<PhenoCollectionVO> dataView;
+	private ArkDataProvider<PhenoCollectionVO, IPhenotypicService> fieldDataProvider;
 
 	public FieldDataContainerPanel(String id)
 	{
@@ -63,7 +70,32 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 
 		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
 				editButtonContainer, detailPanelFormContainer);
+		
+		// Data providor to paginate resultList
+		fieldDataProvider = new ArkDataProvider<PhenoCollectionVO, IPhenotypicService>(iPhenotypicService) {
+			
+			
+			public int size() {
+				return iPhenotypicService.getStudyFieldDataCount(criteria);
+			}
+			
+			
+			public Iterator<PhenoCollectionVO> iterator(int first, int count) {
+				List<PhenoCollectionVO> listFieldData = new ArrayList<PhenoCollectionVO>();
+				listFieldData = iPhenotypicService.searchPageableFieldData(criteria, first, count);
+				return listFieldData.iterator();
+			}
+		};
+		
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		containerForm.getModelObject().setStudy(study);
+		fieldDataProvider.setCriteria(containerForm.getModelObject());
+		
+		dataView = searchResultPanel.buildDataView(fieldDataProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
+		/*
 		iModel = new LoadableDetachableModel<Object>()
 		{
 			private static final long	serialVersionUID	= 1L;
@@ -78,8 +110,9 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 				if (sessionStudyId != null && sessionStudyId > 0)
 				{
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					containerForm.getModelObject().getPhenoCollection().setStudy(study);
-					fieldDataCol = phenotypicService.searchFieldData(containerForm.getModelObject().getFieldData());
+					Field searchField = new Field();
+					searchField.setStudy(study);
+					fieldDataCol = iPhenotypicService.searchFieldDataByField(searchField);
 				}
 				
 				listView.removeAll();
@@ -90,9 +123,17 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 
 		listView = searchResultPanel.buildPageableListView(iModel);
 		listView.setReuseItems(true);
+		
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(listView);
+		searchResultPanelContainer.add(searchResultPanel);
+		return searchResultPanelContainer;
+		*/
+		
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
+		searchResultPanel.add(pageNavigator);
+		searchResultPanel.add(dataView);
 		searchResultPanelContainer.add(searchResultPanel);
 		return searchResultPanelContainer;
 	}
