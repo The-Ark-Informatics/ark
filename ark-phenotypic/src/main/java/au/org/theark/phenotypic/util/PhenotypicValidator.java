@@ -85,7 +85,16 @@ public class PhenotypicValidator
 		this.iPhenoService = iPhenoService;
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		if(sessionCollectionId != null)
+		{
 			this.phenoCollection = iPhenoService.getPhenoCollection(sessionCollectionId);
+		}
+		else
+		{
+			if(uploadVo.getPhenoCollection() != null)
+			{
+				this.phenoCollection = iPhenoService.getPhenoCollection(uploadVo.getPhenoCollection().getId());
+			}
+		}
 		
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -636,8 +645,7 @@ public class PhenotypicValidator
 				for (int col = 2; col < cols; col++)
 				{					
 					FieldData fieldData = new FieldData();
-					PhenoCollection phenoCollection = this.phenoCollection; 
-					fieldData.setCollection(phenoCollection);
+					fieldData.setCollection(this.phenoCollection);
 					fieldData.setDateCollected(dateCollected);
 
 					// First/0th column should be the Subject UID
