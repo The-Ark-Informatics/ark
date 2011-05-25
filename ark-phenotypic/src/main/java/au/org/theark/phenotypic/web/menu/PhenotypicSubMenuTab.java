@@ -20,7 +20,6 @@ import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoUpload.PhenoUploadContainerPanel;
-import au.org.theark.phenotypic.web.component.reportContainer.ReportContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
 @SuppressWarnings( { "serial", "unused" })
@@ -81,11 +80,6 @@ public class PhenotypicSubMenuTab extends Panel
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU);
 		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY);
-		moduleTabs.add(menuModule);
-
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.REPORT_SUBMENU);
-		menuModule.setResourceKey(Constants.REPORT_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 	}
 
@@ -157,10 +151,6 @@ public class PhenotypicSubMenuTab extends Panel
 		else if (moduleName.getModuleName().equalsIgnoreCase(Constants.PHENOTYPIC_DATA_UPLOAD_SUBMENU))
 		{
 			panelToReturn = new PhenoUploadContainerPanel(panelId); // Note the constructor
-		}
-		else if (moduleName.getModuleName().equalsIgnoreCase(Constants.REPORT_SUBMENU))
-		{
-			panelToReturn = new ReportContainerPanel(panelId); // Note the constructor
 		}
 		return panelToReturn;
 	}
