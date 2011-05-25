@@ -1,5 +1,6 @@
 package au.org.theark.phenotypic.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -21,7 +22,10 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -869,6 +873,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
 		return fieldDataCollection;
 	}
+	
+	public java.util.Collection<FieldData> searchFieldDataByStudy(Study study)
+	{
+		Criteria criteria = getSession().createCriteria(FieldData.class);
+		//TODO: Implement
+		java.util.Collection<FieldData> fieldDataCollection = criteria.list();
+		return fieldDataCollection;
+	}
 
 	public void createFieldDataLog(FieldDataLog fieldDataLog)
 	{
@@ -966,6 +978,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		if (upload.getFilename() != null)
 		{
 			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_FILENAME, upload.getFilename()));
+		}
+		
+		if(upload.getUploadType() != null)
+		{
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.UPLOAD_UPLOAD_TYPE, upload.getUploadType()));
 		}
 
 		criteria.addOrder(Order.desc(au.org.theark.phenotypic.web.Constants.UPLOAD_ID));
@@ -1100,6 +1117,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		Criteria criteria = getSession().createCriteria(PhenoUpload.class);
 		criteria.add(Restrictions.eq("uploadType", "field"));
 		
+		if(phenoUpload.getStudy() != null)
+		{
+			criteria.add(Restrictions.eq("study", phenoUpload.getStudy()));
+		}
+		
 		java.util.Collection<PhenoUpload> phenoUploadCollection = criteria.list();
 		return phenoUploadCollection;
 	}
@@ -1174,5 +1196,65 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public void updateFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection)
 	{
 		getSession().update(fieldPhenoCollection);
+	}
+
+	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria)
+	{
+		// Handle for study not in context
+		if(phenoCollectionVoCriteria.getStudy() == null)
+		{
+			return 0;
+		}
+		
+		Criteria criteria = buildGeneralCriteria(phenoCollectionVoCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO phenoCollectionVoCriteria, int first, int count)
+	{
+		Criteria criteria = buildGeneralCriteria(phenoCollectionVoCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<FieldData> list = criteria.list();
+		List<PhenoCollectionVO> phenoCollectionVOList = new ArrayList<PhenoCollectionVO>();
+		
+		for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+			PhenoCollectionVO phenoCollectionVO = new PhenoCollectionVO();
+			FieldData fieldData = (FieldData) iterator.next();
+			phenoCollectionVO.setFieldData(fieldData);
+			phenoCollectionVOList.add(phenoCollectionVO);
+		}
+		return phenoCollectionVOList;
+	}
+	
+	private Criteria buildGeneralCriteria(PhenoCollectionVO phenoCollectionVo) {
+		Criteria criteria =  getSession().createCriteria(FieldData.class);
+		
+		if(phenoCollectionVo.getStudy() != null){
+			criteria.createAlias("field", "f");
+			criteria.add(Restrictions.eq("f.study", phenoCollectionVo.getStudy()));
+		}
+		
+		if(phenoCollectionVo.getFieldData().getId() != null){
+			criteria.add(Restrictions.eq("id",phenoCollectionVo.getFieldData().getId()));	
+		}
+		
+		if(phenoCollectionVo.getPhenoCollection().getId() != null){
+			criteria.add(Restrictions.eq("collection",phenoCollectionVo.getPhenoCollection()));	
+		}
+		
+		if(phenoCollectionVo.getFieldData().getLinkSubjectStudy() != null && phenoCollectionVo.getFieldData().getLinkSubjectStudy().getSubjectUID() != null){
+			criteria.createAlias("linkSubjectStudy", "lss");
+			criteria.add(Restrictions.eq("lss.subjectUID", phenoCollectionVo.getFieldData().getLinkSubjectStudy().getSubjectUID()));
+		}
+		
+		if(phenoCollectionVo.getFieldData().getField() != null){
+			criteria.add(Restrictions.eq("field",phenoCollectionVo.getFieldData().getField()));
+		}
+		
+		criteria.addOrder(Order.asc("id"));
+		return criteria;
 	}
 }

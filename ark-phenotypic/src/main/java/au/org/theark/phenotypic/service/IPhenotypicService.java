@@ -2,9 +2,11 @@ package au.org.theark.phenotypic.service;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -68,6 +70,7 @@ public interface IPhenotypicService {
 	public StringBuffer uploadAndReportPhenotypicDataFile(org.apache.wicket.util.file.File file, String fileFormat, char delimiterChar);
 	public void uploadPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
 	public StringBuffer uploadAndReportPhenotypicDataFile(InputStream inputStream, String fileFormat, char delimiterChar);
+	public StringBuffer uploadAndReportPhenotypicDataFile(UploadVO uploadVo);
 	
 	// File Format
 	public java.util.Collection<FileFormat> getFileFormats();
@@ -102,4 +105,16 @@ public interface IPhenotypicService {
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
 	public int getCountOfCollectionsInStudy(Study study);
 	public int getCountOfCollectionsWithDataInStudy(Study study);
+	
+	/**
+	 * A generic interface that will return a list PhenoCollectionVO specified by a particular criteria, and a paginated reference point
+	 * @return Collection of PhenoCollectionVO
+	 */
+	public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO phenoCollectionVoCriteria, int first, int count);
+	
+	/**
+	 * A generic interface that will return count of the fieldData's in the study
+	 * @return int
+	 */
+	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
 }

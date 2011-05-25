@@ -2,6 +2,7 @@ package au.org.theark.phenotypic.model.dao;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -126,4 +127,16 @@ public interface IPhenotypicDao {
 	public Collection<PhenoUpload> searchFieldUpload(PhenoUpload phenoUpload);
 	public int getCountOfCollectionsInStudy(Study study);
 	public int getCountOfCollectionsWithDataInStudy(Study study);
+	
+	/**
+	 * A generic interface that will return a list PhenoCollectionVO specified by a particular criteria, and a paginated reference point
+	 * @return Collection of PhenoCollectionVO
+	 */
+	public List<PhenoCollectionVO> searchPageableFieldData(PhenoCollectionVO phenoCollectionVoCriteria, int first, int count);
+	
+	/**
+	 * A generic interface that will return count of the fieldData's in the study
+	 * @return int
+	 */
+	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
 }
