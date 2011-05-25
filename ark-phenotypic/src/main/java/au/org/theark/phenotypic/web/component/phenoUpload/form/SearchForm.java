@@ -42,7 +42,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<PhenoCollectionUpload>				listView;
+	private PageableListView<PhenoUpload>				listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
 	private DetailPanel								detailPanel;
 	private WizardPanel								wizardPanel;
@@ -55,7 +55,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoCollectionUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer wizardContainer, WebMarkupContainer wizardPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer)
 	{
@@ -77,7 +77,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoCollectionUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer)
 	{

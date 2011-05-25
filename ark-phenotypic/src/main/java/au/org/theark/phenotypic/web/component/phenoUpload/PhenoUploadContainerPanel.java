@@ -10,12 +10,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unused" })
@@ -28,11 +28,14 @@ public class PhenoUploadContainerPanel extends AbstractContainerPanel<UploadVO>
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
-	private PageableListView<PhenoCollectionUpload>	listView;
+	private PageableListView<PhenoUpload>	listView;
 	private ContainerForm						containerForm;
 
 	@SpringBean(name = "phenotypicService")
-	private IPhenotypicService					serviceInterface;
+	private IPhenotypicService					iPhenotypicService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
 
 	private transient Logger					log								= LoggerFactory.getLogger(PhenoUploadContainerPanel.class);
 	private boolean								phenoCollectionInContext	= false;
@@ -53,9 +56,6 @@ public class PhenoUploadContainerPanel extends AbstractContainerPanel<UploadVO>
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());
 		//containerForm.add(initialiseSearchPanel());
-
-		// initialiseTestButtons();
-
 		add(containerForm);
 	}
 
@@ -94,19 +94,23 @@ public class PhenoUploadContainerPanel extends AbstractContainerPanel<UploadVO>
 			@Override
 			protected Object load()
 			{
-				// Return all Uploads for the PhenoCollection in context
-				Long sessionCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(Constants.SESSION_PHENO_COLLECTION_ID);
-				PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
+				// Set study in context
+				Study study = new Study();
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				
 				listView.removeAll();
 				
-				if (sessionCollectionId != null)
+				if(studyId != null)
 				{
-					PhenoCollection phenoCollection = serviceInterface.getPhenoCollection(sessionCollectionId);
-					phenoCollectionUpload.setCollection(phenoCollection);
+					study = iArkCommonService.getStudy(studyId);
+					PhenoUpload phenoUpload = new PhenoUpload();
+					phenoUpload.setStudy(study);
+
+					// Only show data uploads, not data dictionary uploads "FIELD"
+					phenoUpload.setUploadType("FIELD_DATA");
 				
-					java.util.Collection<PhenoCollectionUpload> phenoCollectionUploads = serviceInterface.searchPhenoCollectionUpload(phenoCollectionUpload); 
-					return  phenoCollectionUploads;
+					java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload); 
+					return  phenoUploads;
 				}
 				else
 				{

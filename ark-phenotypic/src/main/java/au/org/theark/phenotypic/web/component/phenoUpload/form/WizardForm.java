@@ -8,8 +8,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractWizardForm;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -34,6 +36,9 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService iPhenotypicService;
+	
 	private ContainerForm						fieldContainerForm;
 
 	private static final String	HEXES	= "0123456789ABCDEF";
@@ -59,8 +64,23 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	{
 		super(id, feedBackPanel, listContainer, wizardContainer, wizardFormContainer, searchPanelContainer, containerForm);
 		
-		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		disableWizardForm(sessionPhenoCollectionId, "There is no Phenotypic Collection in context. Please select a Phenotypic Collection");
+		// Set study in context
+		Study study = new Study();
+		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		
+		if(studyId != null)
+		{
+			study = iArkCommonService.getStudy(studyId);
+			PhenoUpload phenoUpload = new PhenoUpload();
+			phenoUpload.setStudy(study);
+		
+			java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
+			
+			if(phenoUploads.size() == 0)
+			{
+				disableWizardForm(null, "There is no Phenotypic Collections defined for this study. Please create a Phenotypic Collection");
+			}
+		}
 	}
 
 	public void initialiseDetailForm()

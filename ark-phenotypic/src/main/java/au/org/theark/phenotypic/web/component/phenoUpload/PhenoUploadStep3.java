@@ -179,7 +179,6 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 			{
 				PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				//validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
 				validationMessages = phenotypicValidator.validateMatrixPhenoFileData(inputStream, inputStream.toString().length());
 			
 				HashSet<Integer> insertRows = new HashSet<Integer>();
@@ -217,9 +216,9 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 				
 				if(warningCells.isEmpty())
 				{
+					containerForm.getModelObject().setOverrideDataValidationChkBox(true);
 					overrideDataValidationContainer.setVisible(false);
 					target.addComponent(overrideDataValidationContainer);
-					updateExistingDataContainer.setVisible(false);
 				}
 				
 				if(!errorCells.isEmpty())

@@ -25,6 +25,7 @@ import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.FileFormat;
+import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -43,7 +44,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	public java.util.Collection<String> validationMessages = null;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -53,6 +54,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	private Form<UploadVO> containerForm;
 
 	private TextField<String> uploadIdTxtFld;
+	private DropDownChoice<PhenoCollection>				phenoCollectionDdc;
 	private DropDownChoice<FileFormat> fileFormatDdc;
 	private FileUploadField fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
@@ -78,7 +80,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 	@SuppressWarnings({ "unchecked"})
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
+		java.util.Collection<FileFormat> fieldFormatCollection = iPhenotypicService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(
 				au.org.theark.phenotypic.web.Constants.FILE_FORMAT_NAME,
 				au.org.theark.phenotypic.web.Constants.FILE_FORMAT_ID);
@@ -86,7 +88,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT,
 				(List) fieldFormatCollection, fieldFormatRenderer);
 
-		java.util.Collection<DelimiterType> delimiterTypeCollection = phenotypicService
+		java.util.Collection<DelimiterType> delimiterTypeCollection = iPhenotypicService
 				.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(
 				au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME,
@@ -94,6 +96,37 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE,
 				(List) delimiterTypeCollection, delimiterTypeRenderer);
+		
+		initPhenoCollectionDdc();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initPhenoCollectionDdc()
+	{
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+		
+		Study study = new Study();
+		java.util.Collection<PhenoCollection> phenoCollection = null;
+		PhenoCollection phenotypicCollection = new PhenoCollection();
+		
+		if(sessionPhenoCollectionId != null)
+		{
+			phenotypicCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
+		}
+		
+		if (sessionStudyId != null && sessionStudyId > 0)
+		{
+			study = iArkCommonService.getStudy(sessionStudyId);
+			phenoCollection = iPhenotypicService.getPhenoCollectionByStudy(study);
+		}
+		else
+		{
+			phenoCollection = iPhenotypicService.searchPhenotypicCollection(phenotypicCollection);
+		}
+		
+		ChoiceRenderer fieldDataCollRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_NAME, au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_ID);
+		phenoCollectionDdc = new DropDownChoice<PhenoCollection>(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, (List) phenoCollection, fieldDataCollRenderer);
 	}
 
 	public void initialiseDetailForm() {
@@ -118,6 +151,9 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 
 	protected void attachValidators() {
 		// Field validation here
+		phenoCollectionDdc.setRequired(true).setLabel(
+				new StringResourceModel("error.collection.required", this,
+						new Model<String>("Collection")));
 		fileUploadField.setRequired(true).setLabel(
 				new StringResourceModel("error.filename.required", this,
 						new Model<String>("Filename")));
@@ -131,7 +167,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 
 	private void addComponents() {
 		// Add components here
-		add(uploadIdTxtFld.setEnabled(false));
+		add(phenoCollectionDdc);
 		add(fileUploadField);
 		add(fileFormatDdc);
 		add(delimiterTypeDdc);
@@ -161,11 +197,12 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 
-		// Get Collection in context
+// Get Collection in context
 		Long sessionPhenoCollectionId = (Long) SecurityUtils
 				.getSubject()
 				.getSession()
 				.getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
+
 
 		// Retrieve file and store as Blob in database
 		// TODO: AJAX-ified and asynchronous and hit database
@@ -189,11 +226,11 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
 		wizardForm.setFileName(fileUpload.getClientFileName());
 
-		containerForm.getModelObject().setPhenoCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
-
 		// Set details of link table object
 		PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
-		phenoCollectionUpload.setCollection(phenotypicService.getPhenoCollection(sessionPhenoCollectionId));
+		PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(containerForm.getModelObject().getPhenoCollection().getId());
+		phenoCollectionUpload.setCollection(phenoCollection);
+		
 		phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
 		containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
 	}

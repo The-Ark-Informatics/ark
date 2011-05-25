@@ -68,19 +68,23 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 		// Perform actual import of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 		
-		try 
-		{
-			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			inputStream.reset();
-			uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
-		} 
-		catch (IOException e) 
-		{
-			e.printStackTrace();
-		}
+		uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(containerForm.getModelObject());
+		
+//		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+//		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+//		
+//		try 
+//		{
+//			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+//			inputStream.reset();
+//			uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
+//			
+//		} 
+//		catch (IOException e) 
+//		{
+//			e.printStackTrace();
+//		}
 		
 		// Update the report
 		updateUploadReport(uploadReport.toString());
@@ -103,6 +107,7 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 	private void save()
 	{
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().getUpload().setUploadType("FIELD_DATA");
 		iPhenotypicService.createUpload(containerForm.getModelObject());
 	}
 }

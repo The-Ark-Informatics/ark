@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.SearchForm;
@@ -25,7 +25,7 @@ public class SearchPanel extends Panel
 	private WebMarkupContainer			searchMarkupContainer;
 	private WebMarkupContainer			listContainer;
 	private WebMarkupContainer			wizardContainer;
-	private PageableListView<PhenoCollectionUpload>	listView;
+	private PageableListView<PhenoUpload>	listView;
 	private ContainerForm				containerForm;
 	private WizardPanel							wizardPanel;
 	private WebMarkupContainer viewButtonContainer;
@@ -36,7 +36,7 @@ public class SearchPanel extends Panel
 	public SearchPanel(	String id, 
 					FeedbackPanel feedBackPanel, 
 					WebMarkupContainer searchMarkupContainer, 
-					PageableListView<PhenoCollectionUpload> listView, 
+					PageableListView<PhenoUpload> listView, 
 					WebMarkupContainer resultListContainer,
 					WebMarkupContainer wizardPanelContainer, 
 					WizardPanel wizard, 
