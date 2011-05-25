@@ -58,7 +58,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	private TextField<String>				fieldMinValueTxtFld;
 	private TextField<String>				fieldMaxValueTxtFld;
 	private TextArea<String>				fieldEncodedValuesTxtFld;
-	private RadioChoice<Boolean>			fieldQualityControlStatusRdChoice;
 	private TextField<String>				fieldMissingValueTxtFld;
 
 	/**
@@ -100,7 +99,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		fieldMaxValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE);
 		fieldEncodedValuesTxtFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ENCODED_VALUES);
 		PropertyModel<Field> pm = new PropertyModel<Field>((CompoundPropertyModel<FieldVO>) containerForm.getModel(), "field");
-		fieldQualityControlStatusRdChoice = initRadioButtonChoice(pm, "qualityControlStatus", "qualityControlStatus");
 		fieldMissingValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MISSING_VALUE);
 		
 		// Initialise Drop Down Choices
@@ -169,8 +167,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		detailPanelFormContainer.add(fieldMinValueTxtFld);
 		detailPanelFormContainer.add(fieldMaxValueTxtFld);
 		detailPanelFormContainer.add(fieldEncodedValuesTxtFld);
-		// Disable Quality Control Status field editing
-		detailPanelFormContainer.add(fieldQualityControlStatusRdChoice.setEnabled(false));
 		detailPanelFormContainer.add(fieldMissingValueTxtFld);
 
 		add(detailPanelFormContainer);
