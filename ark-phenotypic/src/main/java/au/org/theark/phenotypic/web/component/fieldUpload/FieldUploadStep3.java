@@ -209,8 +209,13 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 				{
 					containerForm.getModelObject().setUpdateChkBox(true);
 					updateExistingDataContainer.setVisible(false);
-					target.addComponent(updateExistingDataContainer);
 				}
+				else
+				{
+					containerForm.getModelObject().setUpdateChkBox(false);
+					updateExistingDataContainer.setVisible(true);
+				}
+				target.addComponent(updateExistingDataContainer);
 				
 				if(!errorCells.isEmpty())
 				{
@@ -227,12 +232,12 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 					overrideDataValidationContainer.setVisible(false);
 					target.addComponent(overrideDataValidationContainer);
 				}
-			} catch (FileFormatException e1) {
-				log.error(e1.getMessage());
-			} catch (PhenotypicSystemException e1) {
-				log.error(e1.getMessage());
-			} catch (IOException e1){
-				log.error(e1.getMessage());
+			} catch (FileFormatException ffe) {
+				log.error(ffe.getMessage());
+			} catch (PhenotypicSystemException pse) {
+				log.error(pse.getMessage());
+			} catch (IOException ioe){
+				log.error(ioe.getMessage());
 			}
 			
 			this.containerForm.getModelObject().setValidationMessages(validationMessages);
@@ -240,8 +245,8 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 			if(validationMessage != null && validationMessage.length() > 0)
 			{
 				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-				form.getNextButton().setEnabled(false);
-				target.addComponent(form.getWizardButtonContainer());
+				wizardForm.getNextButton().setEnabled(false);
+				target.addComponent(wizardForm.getWizardButtonContainer());
 			}
 		}
 	}

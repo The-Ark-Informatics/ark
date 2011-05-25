@@ -132,6 +132,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	private void save()
 	{
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
+		containerForm.getModelObject().getUpload().setUploadType("FIELD");
 		iPhenotypicService.createUpload(containerForm.getModelObject());
 	}
 }
