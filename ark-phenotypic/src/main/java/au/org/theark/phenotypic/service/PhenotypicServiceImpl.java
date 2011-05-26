@@ -660,5 +660,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.searchPageableFieldData(phenoCollectionVoCriteria, first, count);
 	}
 
-	
+	public DelimiterType getDelimiterType(Long id)
+	{
+		return phenotypicDao.getDelimiterType(id);	
+	}
 }

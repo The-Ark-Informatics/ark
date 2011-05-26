@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -87,7 +88,7 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		fileFormatDdc = new DropDownChoice<FileFormat>(
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT,
 				(List) fieldFormatCollection, fieldFormatRenderer);
-
+		
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iPhenotypicService
 				.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(
@@ -96,6 +97,8 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE,
 				(List) delimiterTypeCollection, delimiterTypeRenderer);
+		// Set to default delimiterType
+		containerForm.getModelObject().getUpload().setDelimiterType(iPhenotypicService.getDelimiterType(new Long(1)));
 		
 		initPhenoCollectionDdc();
 	}

@@ -139,4 +139,5 @@ public interface IPhenotypicDao {
 	 * @return int
 	 */
 	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
+	public DelimiterType getDelimiterType(Long id);
 }

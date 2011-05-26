@@ -15,8 +15,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.phenotypic.exception.FileFormatException;
-import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -98,11 +96,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel
 		{
 			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
-		} catch (FileFormatException e1) {
-			log.error(e1.getMessage());
-		} catch (PhenotypicSystemException e1) {
-			log.error(e1.getMessage());
+			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
 		} catch (IOException e1){
 			log.error(e1.getMessage());
 		}
@@ -131,8 +125,14 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel
 		}
 		catch (IOException e)
 		{
-			System.out.println("Failed to display the uploaded file: " + e);
-		} 
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		}
+		catch (NullPointerException npe)
+		{
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		}
 	}
 	
 	@Override

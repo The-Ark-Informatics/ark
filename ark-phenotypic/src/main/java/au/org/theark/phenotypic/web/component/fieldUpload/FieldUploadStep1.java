@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -42,7 +43,7 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel {
 	public java.util.Collection<String> validationMessages = null;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -77,15 +78,15 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel {
 	@SuppressWarnings({ "unchecked"})
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
+		java.util.Collection<FileFormat> fieldFormatCollection = iPhenotypicService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(
 				au.org.theark.phenotypic.web.Constants.FILE_FORMAT_NAME,
 				au.org.theark.phenotypic.web.Constants.FILE_FORMAT_ID);
 		fileFormatDdc = new DropDownChoice<FileFormat>(
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT,
 				(List) fieldFormatCollection, fieldFormatRenderer);
-
-		java.util.Collection<DelimiterType> delimiterTypeCollection = phenotypicService
+		
+		java.util.Collection<DelimiterType> delimiterTypeCollection = iPhenotypicService
 				.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(
 				au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME,
@@ -93,6 +94,8 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel {
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(
 				au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE,
 				(List) delimiterTypeCollection, delimiterTypeRenderer);
+		// Set to default delimiterType
+		containerForm.getModelObject().getUpload().setDelimiterType(iPhenotypicService.getDelimiterType(new Long(1)));
 	}
 
 	public void initialiseDetailForm() {

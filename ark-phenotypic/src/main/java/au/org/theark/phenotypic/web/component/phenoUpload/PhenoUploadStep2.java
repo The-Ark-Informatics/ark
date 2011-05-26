@@ -94,12 +94,7 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		{
 			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			//validationMessages = phenotypicService.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
-			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
-		} catch (FileFormatException e1) {
-			log.error(e1.getMessage());
-		} catch (PhenotypicSystemException e1) {
-			log.error(e1.getMessage());
+			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
 		} catch (IOException e1){
 			log.error(e1.getMessage());
 		}
@@ -128,8 +123,14 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		}
 		catch (IOException e)
 		{
-			System.out.println("Failed to display the uploaded file: " + e);
-		} 
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		}
+		catch (NullPointerException npe)
+		{
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		}
 	}
 	
 	@Override

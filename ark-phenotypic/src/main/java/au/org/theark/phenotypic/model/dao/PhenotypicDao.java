@@ -1257,4 +1257,10 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		criteria.addOrder(Order.asc("id"));
 		return criteria;
 	}
+
+	public DelimiterType getDelimiterType(Long id)
+	{
+		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
+		return delimiterType;
+	}
 }

@@ -1,5 +1,7 @@
 package au.org.theark.phenotypic.web;
 
+import au.org.theark.phenotypic.exception.FileFormatException;
+
 public class Constants {
 	// DAO
 	public static final String PHENOTYPIC_DAO = "phenotypicDao";

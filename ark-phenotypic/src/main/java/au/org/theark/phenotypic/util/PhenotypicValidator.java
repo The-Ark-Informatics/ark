@@ -1,8 +1,11 @@
 package au.org.theark.phenotypic.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -14,12 +17,19 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
 import org.apache.commons.lang.time.StopWatch;
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -57,7 +67,6 @@ public class PhenotypicValidator
 	private long						srcLength					= -1;															// -1 means nothing being processed
 	private StopWatch					timer							= null;
 	private char						phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;					// default phenotypic file delimiter: COMMA
-	private String						fileFormat;
 	java.util.Collection<String>	fileValidationMessages	= new ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new ArrayList<String>();
 	private IPhenotypicService		iPhenoService			= null;
@@ -70,6 +79,8 @@ public class PhenotypicValidator
 	private HashSet<ArkGridCell> warningCells 				= new HashSet<ArkGridCell>();
 	private HashSet<ArkGridCell> errorCells					= new HashSet<ArkGridCell>();
 	private String uploadType = new String("");
+	private String						fileFormat					= au.org.theark.core.Constants.DEFAULT_FILE_FORMAT;					// default
+	private int row = 1;
 
 	/**
 	 * PhenotypicValidator constructor
@@ -364,6 +375,7 @@ public class PhenotypicValidator
 	public java.util.Collection<String> validateMatrixPhenoFileFormat(InputStream fileInputStream, long inLength) throws FileFormatException, PhenotypicSystemException
 	{
 		curPos = 0;
+		row = 0;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -414,7 +426,25 @@ public class PhenotypicValidator
 				// Uploading a data dictionary file
 				if(uploadType.equalsIgnoreCase("FIELD"))
 				{
-					if (csvReader.getColumnCount() < 8)
+					if(row == 0)
+					{
+						Collection<String> dataDictionaryColumns = new ArrayList<String>();
+						String[] dataDicitionaryColumnArray = au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER;
+						for (int i = 0; i < fieldNameArray.length; i++)
+						{
+							dataDictionaryColumns.add(dataDicitionaryColumnArray[i]);
+						}
+						
+						for (int i = 0; i < dataDicitionaryColumnArray.length; i++)
+						{
+							if(!dataDictionaryColumns.contains(fieldNameArray[i]))
+							{
+								fileValidationMessages.add("Error: the column name " + fieldNameArray[i] + " is not a valid column name.");
+							}
+						}
+					}
+					
+					if (csvReader.getHeaders().length < 8)
 					{
 						// Invalid file format
 						StringBuffer stringBuffer = new StringBuffer();
@@ -429,7 +459,7 @@ public class PhenotypicValidator
 						break;
 					}
 					else
-					{
+					{	
 						// Loop through columns in current row in file, starting from the 2th position
 						for (int i = 0; i < stringLineArray.length; i++)
 						{
@@ -466,6 +496,9 @@ public class PhenotypicValidator
 						// Loop through columns in current row in file, starting from the 2th position
 						for (int i = 0; i < stringLineArray.length; i++)
 						{
+							
+							
+							
 							// Check each line has same number of columns as header
 							if (stringLineArray.length < fieldNameArray.length)
 							{
@@ -478,6 +511,7 @@ public class PhenotypicValidator
 					}
 				}
 				subjectCount++;
+				row++;
 			}
 
 			if (fileValidationMessages.size() > 0)
@@ -974,6 +1008,108 @@ public class PhenotypicValidator
 		}
 
 		return dataValidationMessages;
+	}
+	
+	/**
+	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg txt)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateMatrixPhenoFileFormat(InputStream inputStream, String fileFormat, char delimChar)
+	{
+		java.util.Collection<String> validationMessages = null;
+
+		try
+		{
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					phenotypicDelimChr = ',';
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error("ARK_BASE_EXCEPTION: " + abe);
+		}
+		return validationMessages;
+	}
+	
+	/**
+	 * Return the inputstream of the converted workbook as csv
+	 * 
+	 * @return inputstream of the converted workbook as csv
+	 */
+	public InputStream convertXlsToCsv(Workbook w)
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try
+		{
+			OutputStreamWriter osw = new OutputStreamWriter(out);
+
+			// Gets first sheet from workbook
+			Sheet s = w.getSheet(0);
+
+			Cell[] row = null;
+
+			// Gets the cells from sheet
+			for (int i = 0; i < s.getRows(); i++)
+			{
+				row = s.getRow(i);
+
+				if (row.length > 0)
+				{
+					osw.write(row[0].getContents());
+					for (int j = 1; j < row.length; j++)
+					{
+						osw.write(phenotypicDelimChr);
+						osw.write(row[j].getContents());
+					}
+				}
+				osw.write("\n");
+			}
+
+			osw.flush();
+			osw.close();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.toString());
+		}
+		return new ByteArrayInputStream(out.toByteArray());
 	}
 	
 	private static boolean validateFieldMissingDefinition(Field field, Collection<String> errorMessages)
