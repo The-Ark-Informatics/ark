@@ -47,7 +47,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	public java.util.Collection<String> validationMessages = null;
 
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
+	private IStudyService					iStudyService;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -82,7 +82,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 	@SuppressWarnings({ "unchecked" })
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		java.util.Collection<FileFormat> fieldFormatCollection = studyService.getFileFormats();
+		java.util.Collection<FileFormat> fieldFormatCollection = iStudyService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(
 				au.org.theark.study.web.Constants.FILE_FORMAT_NAME,
 				au.org.theark.study.web.Constants.FILE_FORMAT_ID);
@@ -90,13 +90,15 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 				au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT,
 				(List) fieldFormatCollection, fieldFormatRenderer);
 
-		java.util.Collection<DelimiterType> delimiterTypeCollection = studyService.getDelimiterTypes();
+		java.util.Collection<DelimiterType> delimiterTypeCollection = iStudyService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(
 				au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME,
 				au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(
 				au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE,
 				(List) delimiterTypeCollection, delimiterTypeRenderer);
+		// Set to default delimiterType
+		containerForm.getModelObject().getUpload().setDelimiterType(iStudyService.getDelimiterType(new Long(1)));
 	}
 
 	public void initialiseDetailForm() {
