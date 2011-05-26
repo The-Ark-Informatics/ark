@@ -267,4 +267,6 @@ public interface IStudyDao {
 	
 	
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId,Study study) throws EntityNotFoundException, ArkSystemException;
+
+	public DelimiterType getDelimiterType(Long id);
 }

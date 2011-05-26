@@ -1623,5 +1623,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		criteria.setMaxResults(1);
 		return (LinkSubjectStudy) criteria.uniqueResult();
 	}
+
+	public DelimiterType getDelimiterType(Long id)
+	{
+		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
+		return delimiterType;
+	}
 	
 }

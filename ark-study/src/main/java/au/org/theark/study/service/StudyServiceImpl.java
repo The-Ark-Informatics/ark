@@ -931,4 +931,9 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getSubjectLinkedToStudy(personId, study);
 	}
 
+	public DelimiterType getDelimiterType(Long id)
+	{
+		return studyDao.getDelimiterType(id);
+	}
+
 }
