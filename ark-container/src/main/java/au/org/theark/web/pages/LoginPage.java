@@ -6,9 +6,10 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.StatelessForm;
 import org.apache.wicket.markup.html.form.TextField;
@@ -27,147 +28,161 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.ArkAjaxButton;
+import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
-public class LoginPage<T> extends WebPage {
-	
-	private transient Logger log = LoggerFactory.getLogger(LoginPage.class);
+public class LoginPage<T> extends WebPage
+{
 
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	FeedbackPanel feedBackPanel = new FeedbackPanel("feedbackMessage");
-	
+	private transient Logger	log				= LoggerFactory.getLogger(LoginPage.class);
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService	iArkCommonService;
+
+	FeedbackPanel					feedBackPanel	= new FeedbackPanel("feedbackMessage");
+
 	// Add a visitor class for required field marking/validation/highlighting
-	IVisitor formVisitor = new ArkFormVisitor();
+	IVisitor							formVisitor		= new ArkFormVisitor();
+
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
-	
+
 	/**
 	 * Page Constructor
 	 */
-	@SuppressWarnings({ "serial" })
-	public LoginPage(){
+	@SuppressWarnings( { "serial" })
+	public LoginPage()
+	{
 
 		log.info("LoginPage() constructor");
-		
+
 		feedBackPanel.setOutputMarkupId(true);
-		
+
 		LoginForm form = new LoginForm("loginForm");
-		
+
 		this.add(form);
 		this.add(feedBackPanel);
-		
+
 		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
-		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
-		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		
+		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
+		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
+
 		@SuppressWarnings("rawtypes")
-		Link resetPasswordLink = new Link("resetPasswordLink"){
+		Link resetPasswordLink = new Link("resetPasswordLink")
+		{
 			@Override
-			public void onClick() {
+			public void onClick()
+			{
 				setResponsePage(ResetPage.class);
 			}
-		 };
-		
-		//TODO: Implement ResetPage.resetForm.onReset
+		};
+
+		// TODO: Implement ResetPage.resetForm.onReset
 		resetPasswordLink.setVisible(false);
 		this.add(resetPasswordLink);
-		 
-		 // Add images
-		 add(hostedByImage);
-		 add(productImage);
+
+		// Add images
+		add(hostedByImage);
+		add(productImage);
 	}
-	
+
 	@Override
-	protected void configureResponse() {
-	    super.configureResponse();
-	    WebResponse response = getWebRequestCycle().getWebResponse();
-	    response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
-	    response.setHeader("Expires", "-1");
-	    response.setHeader("Pragma", "no-cache");
+	protected void configureResponse()
+	{
+		super.configureResponse();
+		WebResponse response = getWebRequestCycle().getWebResponse();
+		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
+		response.setHeader("Expires", "-1");
+		response.setHeader("Pragma", "no-cache");
 	}
-	
+
 	/**
 	 * The form class that the LoginPage will use to capture input.
 	 */
 	@SuppressWarnings("serial")
-	class LoginForm extends StatelessForm<ArkUserVO>{
+	class LoginForm extends StatelessForm<ArkUserVO>
+	{
 
-		TextField<String> userNameTxtFld = new TextField<String>("userName");
-		PasswordTextField passwordTxtFld = new PasswordTextField("password");	
-		Button subButton;
-		
-		private void decorateComponents(){
-			ThemeUiHelper.buttonRoundedFocused(subButton);
+		TextField<String>	userNameTxtFld	= new TextField<String>("userName");
+		PasswordTextField	passwordTxtFld	= new PasswordTextField("password");
+		ArkIndicatingAjaxButton				submitButton;
+
+		private void decorateComponents()
+		{
+			ThemeUiHelper.buttonRoundedFocused(submitButton);
 			ThemeUiHelper.componentRounded(userNameTxtFld);
 			ThemeUiHelper.componentRounded(passwordTxtFld);
 		}
-		
-		private void addComponentsToForm(){
+
+		private void addComponentsToForm()
+		{
 			add(userNameTxtFld.setRequired(true));
 			add(passwordTxtFld.setRequired(true));
-			add(subButton);
+			add(submitButton);
 		}
-		
+
 		/* Constructor */
-		public LoginForm(String id) {
-			
-			//Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
- 			
+		public LoginForm(String id)
+		{
+
+			// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
+
 			super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
-			
-			subButton =  new Button("submitBtn", new StringResourceModel("submit",null)){
-			
+
+			submitButton = new ArkIndicatingAjaxButton ("submitBtn", new StringResourceModel("submit", null))
+			{
 				@Override
-				public void onSubmit()
+				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 				{
-					ArkUserVO user = (ArkUserVO)getForm().getModelObject();
-					if(authenticate(user))
+					ArkUserVO user = (ArkUserVO) getForm().getModelObject();
+					if (authenticate(user))
 					{
 						setResponsePage(HomePage.class);
 					}
 				}
 			};
-			
+
 			decorateComponents();
 			addComponentsToForm();
 		}
-		
-		public final boolean authenticate(ArkUserVO user){
-			
+
+		public final boolean authenticate(ArkUserVO user)
+		{
+
 			Subject subject = SecurityUtils.getSubject();
-			UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(),user.getPassword(),false);//Disable Remember me
+			UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), false);// Disable Remember me
 
 			try
-		    {
-		    	subject.login(usernamePasswordToken);//this will propagate to the Realm
-		    	return true;
-		    }
-		    catch (IncorrectCredentialsException ice)
-		    {
-		    	String errMessage = getLocalizer().getString("page.incorrect.password", LoginPage.this,"Password is incorrect");
-		    	error(errMessage);
-		    }
-		    catch (UnknownAccountException uae)
-		    {
-		    	
-		      String errMessage = getLocalizer().getString("page.account.notfound", LoginPage.this,"User account not found.");
-		      error(errMessage);
-		    }
-		    catch (AuthenticationException ae)
-		    {
-		    	
-		    	String errMessage = getLocalizer().getString("page.invalid.username.password", LoginPage.this,"Invalid username and/or password."); 	
-		    	error(errMessage);
-		    }
-		    catch( Exception ex ) {
-		    	String errMessage = getLocalizer().getString("page.login.failed", LoginPage.this,"Login Failed.");
-		    	error(errMessage);
-		    }
+			{
+				subject.login(usernamePasswordToken);// this will propagate to the Realm
+				return true;
+			}
+			catch (IncorrectCredentialsException ice)
+			{
+				String errMessage = getLocalizer().getString("page.incorrect.password", LoginPage.this, "Password is incorrect");
+				error(errMessage);
+			}
+			catch (UnknownAccountException uae)
+			{
+
+				String errMessage = getLocalizer().getString("page.account.notfound", LoginPage.this, "User account not found.");
+				error(errMessage);
+			}
+			catch (AuthenticationException ae)
+			{
+
+				String errMessage = getLocalizer().getString("page.invalid.username.password", LoginPage.this, "Invalid username and/or password.");
+				error(errMessage);
+			}
+			catch (Exception ex)
+			{
+				String errMessage = getLocalizer().getString("page.login.failed", LoginPage.this, "Login Failed.");
+				error(errMessage);
+			}
 
 			return false;
 		}

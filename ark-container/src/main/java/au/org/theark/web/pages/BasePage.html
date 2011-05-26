@@ -16,6 +16,45 @@
 		<link rel="stylesheet" type="text/css" href="css/panel.css"/>
 		<link rel="stylesheet" type="text/css" href="css/palette.css"/>
 		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
+		<script type="text/javascript">
+			 window.onload = setupFunc;
+			
+			 function setupFunc() {
+			   document.getElementsByTagName('body')[0].onclick = clickFunc;
+			   hideBusySign();
+			         Wicket.Ajax.registerPreCallHandler(showBusySign);
+			         Wicket.Ajax.registerPostCallHandler(hideBusySign);
+			         Wicket.Ajax.registerFailureHandler(hideBusySign);
+			 }
+			
+			 function hideBusySign() {
+			   document.getElementById('busyIndicator').style.display ='none';
+			   overlay = document.getElementById("overlay");
+			   overlay.style.visibility = "hidden";
+			 }
+			
+			 function showBusySign() {
+			   document.getElementById('busyIndicator').style.display ='inline';
+			   overlay = document.getElementById("overlay");
+			   overlay.style.visibility = "visible";
+			 }
+			
+			 function clickFunc(eventData) {
+			   var clickedElement = (window.event) ? event.srcElement : eventData.target;
+			   if(clickedElement.valuetoUpperCase() != 'DELETE')
+			   {
+				   if (clickedElement.tagName.toUpperCase() == 'BUTTON' || 
+				   		clickedElement.tagName.toUpperCase() == 'A' || 
+				   		clickedElement.parentNode.tagName.toUpperCase() == 'A' ||
+				      	(clickedElement.tagName.toUpperCase() == 'INPUT' && 
+				      		(clickedElement.type.toUpperCase() == 'BUTTON' || clickedElement.type.toUpperCase() == 'SUBMIT')
+				      	)
+				      ) {
+				     showBusySign();
+				   }
+			   }
+			 }
+		</script>
 	</head>
 	<body>
 		<!-- Start div wrap -->
