@@ -7,7 +7,6 @@ import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.behavior.IBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -19,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
+import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 
 /**
  * <p>
@@ -48,7 +48,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	protected WebMarkupContainer	wizardButtonContainer;
 
 	private ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid;
-	private IndicatingAjaxButton	nextButton;
+	private AjaxButton	nextButton;
 	private AjaxLink					previousLink;
 	private AjaxLink					cancelLink;
 	private AjaxButton				finishButton;
@@ -186,12 +186,12 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		this.wizardPanelFormContainer = wizardPanelFormContainer;
 	}
 
-	public IndicatingAjaxButton getNextButton()
+	public AjaxButton getNextButton()
 	{
 		return nextButton;
 	}
 
-	public void setNextButton(IndicatingAjaxButton nextButton)
+	public void setNextButton(AjaxButton nextButton)
 	{
 		this.nextButton = nextButton;
 	}
@@ -223,9 +223,9 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		target.addComponent(resultListContainer);
 	}
 
-	private IndicatingAjaxButton createNext()
+	private AjaxButton createNext()
 	{
-		nextButton = new IndicatingAjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
+		nextButton = new AjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
 		{
 			private static final long	serialVersionUID	= 0L;
 			
