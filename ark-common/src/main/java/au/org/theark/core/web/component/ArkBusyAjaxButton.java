@@ -7,7 +7,7 @@ import org.apache.wicket.model.IModel;
 
 /**
  * AjaxButton that disables whole web page, and re-enables once processing completed, 
- * also has an pop-up loading/busy indicator. Can set whether or not to actually turn on busy indicator (eg buttons that don't submit page)
+ * also has an pop-up loading/busy indicator.
  */
 public abstract class ArkBusyAjaxButton extends AjaxButton{
 	
@@ -15,7 +15,6 @@ public abstract class ArkBusyAjaxButton extends AjaxButton{
 	 * 
 	 */
 	private static final long serialVersionUID = 6243098370244180405L;
-	private boolean displayBusyIndicator = true;
 	private String setBusyIndicatorOn = "document.getElementById('busyIndicator').style.display ='inline'; " +
 										"overlay = document.getElementById('overlay'); " +
 										"overlay.style.visibility = 'visible';";
@@ -42,35 +41,18 @@ public abstract class ArkBusyAjaxButton extends AjaxButton{
  
             @Override
             public CharSequence postDecorateScript(CharSequence script) {
-            	if(displayBusyIndicator){
-            		return script + setBusyIndicatorOn; 
-            	}
-            	return script;
+            		return script + setBusyIndicatorOn;
             }
             
             @Override
             public CharSequence postDecorateOnFailureScript(CharSequence script) {
-            	if(displayBusyIndicator){
-            		return script + setBusyIndicatorOff; 
-            	}
-            	return script;
+            		return script + setBusyIndicatorOff;
             }
             
             @Override
             public CharSequence postDecorateOnSuccessScript(CharSequence script) {
-            	if(displayBusyIndicator){
-            		return script + setBusyIndicatorOff;
-            	}
-            	return script;
+            	return script + setBusyIndicatorOff;
             }
         };
     }
-    
-    public boolean isDisplayBusyIndicator() {
-		return displayBusyIndicator;
-	}
-
-	public void setDisplayBusyIndicator(boolean displayBusyIndicator) {
-		this.displayBusyIndicator = displayBusyIndicator;
-	}
 }
