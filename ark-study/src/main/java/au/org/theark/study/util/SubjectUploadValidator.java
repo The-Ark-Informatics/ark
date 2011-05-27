@@ -361,12 +361,54 @@ public class SubjectUploadValidator
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
-			String[] fieldNameArray = csvReader.getHeaders();
-
+			String[] headerColumnArray = csvReader.getHeaders();
+			
 			// Field count = column count - 1 (SUBJECTUID column not counted)
-			fieldCount = fieldNameArray.length - 1;
+			fieldCount = headerColumnArray.length - 1;
+			
+			Collection<String> subjectColumns = new ArrayList<String>();
+			String[] subjectHeaderColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
+			boolean headerError = false;
+			for (int i = 0; i < subjectHeaderColumnArray.length; i++)
+			{
+				subjectColumns.add(subjectHeaderColumnArray[i]);
+				if(!subjectColumns.contains(headerColumnArray[i]))
+				{
+					headerError = true;
+					break;
+				}
+			}
+			
+			if (headerError)
+			{
+				// Invalid file format
+				StringBuffer stringBuffer = new StringBuffer();
+				stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
+				stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
+				stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
+				stringBuffer.append(".\n");
+				stringBuffer.append("The default format should be as follows:\n");
+				// SUBJECTUID	TITLE	FIRST_NAME	MIDDLE_NAME	LAST_NAME	PREFERRED_NAME	DATE_OF_BIRTH	VITAL_STATUS	GENDER	STATUS	DATE_OF_DEATH	CAUSE_OF_DEATH	MARITAL_STATUS	PREFERRED_CONTACT	EMAIL
+				stringBuffer.append(Constants.SUBJECTUID + delimiterCharacter + "TITLE" + delimiterCharacter + "FIRST_NAME" + delimiterCharacter + "MIDDLE_NAME" + delimiterCharacter
+						+ "LAST_NAME" + delimiterCharacter + "DATE_OF_BIRTH" + delimiterCharacter + "VITAL_STATUS" + delimiterCharacter + "GENDER" + delimiterCharacter + "STATUS" + delimiterCharacter + "DATE_OF_DEATH" + delimiterCharacter + 
+						"CAUSE_OF_DEATH" + delimiterCharacter + "MARITAL_STATUS" + delimiterCharacter + "PREFERRED_CONTACT" + delimiterCharacter + "EMAIL" + delimiterCharacter + "\n");
+				stringBuffer.append("[ABC000001]" + delimiterCharacter + "[MR]" + delimiterCharacter + "[JOSEPH]" + delimiterCharacter + "[]" + delimiterCharacter
+						+ "[BLOGGS]" + delimiterCharacter + "[19/02/1976]" + delimiterCharacter + "[Alive]" + "[Male]" + "[Active]" + "[]" + "[]" + "[Single]" + "[Phone]" + "[joebloggs@somewhere.com]" + "\n");
+				stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
 
+				fileValidationMessages.add(stringBuffer.toString());
+				
+				for (int i = 0; i < headerColumnArray.length; i++)
+				{
+					if(!subjectColumns.contains(headerColumnArray[i]))
+					{
+						fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+					}
+				}
+			}
+
+			row = 1;
+			
 			// Loop through all rows in file
 			while (csvReader.readRecord())
 			{
@@ -374,51 +416,10 @@ public class SubjectUploadValidator
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 				
-				if(row == 0)
+				// Check each line has same number of columns as header
+				if (stringLineArray.length < headerColumnArray.length)
 				{
-					Collection<String> subjectColumns = new ArrayList<String>();
-					String[] subjectColumnArray = au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER;
-					for (int i = 0; i < subjectColumnArray.length; i++)
-					{
-						subjectColumns.add(subjectColumnArray[i]);
-					}
-					
-					for (int i = 0; i < fieldNameArray.length; i++)
-					{
-						if(!subjectColumns.contains(fieldNameArray[i]))
-						{
-							fileValidationMessages.add("Error: the column name " + fieldNameArray[i] + " is not a valid column name.");
-						}
-					}
-				}
-
-				if (csvReader.getColumnCount() < 2 || fieldCount < 14 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID))
-				{
-					// Invalid file format
-					StringBuffer stringBuffer = new StringBuffer();
-					stringBuffer.append("Error: The specified file does not appear to conform to the expected file format.\n");
-					stringBuffer.append("The specified fileformat was: " + fileFormat + ".\n");
-					stringBuffer.append("The specified delimiter type was: " + delimiterCharacter + ".\n");
-					stringBuffer.append(".\n");
-					stringBuffer.append("The default format should be as follows:\n");
-					// SUBJECTUID	TITLE	FIRST_NAME	MIDDLE_NAME	LAST_NAME	PREFERRED_NAME	DATE_OF_BIRTH	VITAL_STATUS	GENDER	STATUS	DATE_OF_DEATH	CAUSE_OF_DEATH	MARITAL_STATUS	PREFERRED_CONTACT	EMAIL
-					stringBuffer.append(Constants.SUBJECTUID + delimiterCharacter + "TITLE" + delimiterCharacter + "FIRST_NAME" + delimiterCharacter + "MIDDLE_NAME" + delimiterCharacter
-							+ "LAST_NAME" + delimiterCharacter + "DATE_OF_BIRTH" + delimiterCharacter + "VITAL_STATUS" + delimiterCharacter + "GENDER" + delimiterCharacter + "STATUS" + delimiterCharacter + "DATE_OF_DEATH" + delimiterCharacter + 
-							"CAUSE_OF_DEATH" + delimiterCharacter + "MARITAL_STATUS" + delimiterCharacter + "PREFERRED_CONTACT" + delimiterCharacter + "EMAIL" + delimiterCharacter + "\n");
-					stringBuffer.append("[ABC000001]" + delimiterCharacter + "[MR]" + delimiterCharacter + "[JOSEPH]" + delimiterCharacter + "[]" + delimiterCharacter
-							+ "[BLOGGS]" + delimiterCharacter + "[19/02/1976]" + delimiterCharacter + "[Alive]" + "[Male]" + "[Active]" + "[]" + "[]" + "[Single]" + "[Phone]" + "[joebloggs@somewhere.com]" + "\n");
-					stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
-
-					fileValidationMessages.add(stringBuffer.toString());
-					break;
-				}
-				else
-				{
-					// Check each line has same number of columns as header
-					if (stringLineArray.length < fieldNameArray.length)
-					{
-						fileValidationMessages.add("Error: the row " + row + " has missing cells, or missing the required number of delimiters.");
-					}
+					fileValidationMessages.add("Error: the row " + row + " has missing cells, or missing the required number of delimiters.");
 				}
 
 				row++;

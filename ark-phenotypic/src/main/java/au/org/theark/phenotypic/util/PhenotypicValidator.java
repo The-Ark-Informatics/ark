@@ -402,19 +402,81 @@ public class PhenotypicValidator
 
 			timer = new StopWatch();
 			timer.start();
+			
+			csvReader.readHeaders();
 
 			// Set field list (note 2th column to Nth column)
 			// SUBJECTID DATE_COLLECTED F1 F2 FN
 			// 0 1 2 3 N
-			csvReader.readHeaders();
+			String[] headerColumnArray = csvReader.getHeaders();
+			boolean headerError = false;
+			
+			// Uploading a data dictionary file
+			if(uploadType.equalsIgnoreCase("FIELD"))
+			{
+				// Uploading a Field (Data Dictionary) file
+				
+				Collection<String> dataDictionaryColumns = new ArrayList<String>();
+				String[] dataDictionaryColumnArray = au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER;
+				
+				for (int i = 0; i < headerColumnArray.length; i++)
+				{
+					dataDictionaryColumns.add(dataDictionaryColumnArray[i]);
+					if(!dataDictionaryColumns.contains(headerColumnArray[i]))
+					{
+						headerError = true;
+						break;
+					}
+				}
+				
+				if (headerError)
+				{
+					// Invalid file format
+					StringBuffer stringBuffer = new StringBuffer();
+					stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
+					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
+					stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+					stringBuffer.append("The default data dictionary format is as follows:\n");
+					stringBuffer.append("FIELD_NAME" + phenotypicDelimChr + "FIELD_TYPE" + phenotypicDelimChr + "DESCRIPTION" + phenotypicDelimChr + "UNITS" + phenotypicDelimChr + "ENCODED_VALUES" + phenotypicDelimChr + "MINIMUM_VALUE" + phenotypicDelimChr + "MAXIMUM_VALUE" + phenotypicDelimChr + "MISSING_VALUE" + "\n");
+					stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + "\n");
+
+					fileValidationMessages.add(stringBuffer.toString());
+				}
+				
+				for (int i = 0; i < headerColumnArray.length; i++)
+				{
+					if(!dataDictionaryColumns.contains(headerColumnArray[i]))
+					{
+						fileValidationMessages.add("Error: the column name " + headerColumnArray[i] + " is not a valid column name.");
+					}
+				}
+			}
+			else
+			{
+				// Uploading a fieldData file
+				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !headerColumnArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !headerColumnArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
+				{
+					// Invalid file format
+					StringBuffer stringBuffer = new StringBuffer();
+					stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
+					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
+					stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+					stringBuffer.append("The default format is as follows:\n");
+					stringBuffer.append(Constants.SUBJECTUID + phenotypicDelimChr + Constants.DATE_COLLECTED + phenotypicDelimChr + "FIELDNAME1" + phenotypicDelimChr + "FIELDNAME2" + phenotypicDelimChr + "FIELDNAME3" + phenotypicDelimChr + "FIELDNAMEX\n");
+					stringBuffer.append("[subjectUid]" + phenotypicDelimChr + "[dateCollected]" + phenotypicDelimChr + "[field1value]" + phenotypicDelimChr + "[field2value]" + phenotypicDelimChr + "[field3value]" + phenotypicDelimChr + "[fieldXvalue]\n");
+					stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]\n");
+
+					fileValidationMessages.add(stringBuffer.toString());
+				}
+				
+				// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
+				fieldCount = headerColumnArray.length - 2;
+			}
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
 			log.debug("Header length: " + csvReader.getHeaders().toString().length());
-
-			String[] fieldNameArray = csvReader.getHeaders();
-
-			// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
-			fieldCount = fieldNameArray.length - 2;
+			
+			row = 1;
 
 			// Loop through all rows in file
 			while (csvReader.readRecord())
@@ -423,93 +485,22 @@ public class PhenotypicValidator
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 
-				// Uploading a data dictionary file
-				if(uploadType.equalsIgnoreCase("FIELD"))
-				{
-					if(row == 0)
-					{
-						Collection<String> dataDictionaryColumns = new ArrayList<String>();
-						String[] dataDicitionaryColumnArray = au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER;
-						for (int i = 0; i < fieldNameArray.length; i++)
-						{
-							dataDictionaryColumns.add(dataDicitionaryColumnArray[i]);
-						}
-						
-						for (int i = 0; i < dataDicitionaryColumnArray.length; i++)
-						{
-							if(!dataDictionaryColumns.contains(fieldNameArray[i]))
-							{
-								fileValidationMessages.add("Error: the column name " + fieldNameArray[i] + " is not a valid column name.");
-							}
-						}
-					}
-					
-					if (csvReader.getHeaders().length < 8)
-					{
-						// Invalid file format
-						StringBuffer stringBuffer = new StringBuffer();
-						stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
-						stringBuffer.append("The specified file format was: " + fileFormat + "\n");
-						stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
-						stringBuffer.append("The default data dictionary format is as follows:\n");
-						stringBuffer.append("FIELD_NAME" + phenotypicDelimChr + "FIELD_TYPE" + phenotypicDelimChr + "DESCRIPTION" + phenotypicDelimChr + "UNITS" + phenotypicDelimChr + "ENCODED_VALUES" + phenotypicDelimChr + "MINIMUM_VALUE" + phenotypicDelimChr + "MAXIMUM_VALUE" + phenotypicDelimChr + "MISSING_VALUE" + "\n");
-						stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + "\n");
-	
-						fileValidationMessages.add(stringBuffer.toString());
-						break;
-					}
-					else
-					{	
-						// Loop through columns in current row in file, starting from the 2th position
-						for (int i = 0; i < stringLineArray.length; i++)
-						{
-							// Check each line has same number of columns as header
-							if (stringLineArray.length < fieldNameArray.length)
-							{
-								fileValidationMessages.add("Error at line " + i + ", the line has missing cells");
-							}
-	
-							// Update progress
-							curPos += stringLineArray[i].length() + 1; // update progress
-						}
-					}
+				// Loop through columns in current row in file, starting from the 2th position
+				for (int i = 0; i < stringLineArray.length; i++)
+				{	
+					// Update progress
+					curPos += stringLineArray[i].length() + 1; // update progress
 				}
-				else 
+				
+				int numberOfColumnsInLine = stringLineArray.length;
+				int numberOfColumnsInHeader = headerColumnArray.length;
+				
+				// Check each line has same number of columns as header
+				if (stringLineArray.length < headerColumnArray.length)
 				{
-					if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !fieldNameArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !fieldNameArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
-					{
-						// Invalid file format
-						StringBuffer stringBuffer = new StringBuffer();
-						stringBuffer.append("The specified file does not appear to conform to the expected phenotypic file format.\n");
-						stringBuffer.append("The specified file format was: " + fileFormat + "\n");
-						stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
-						stringBuffer.append("The default format is as follows:\n");
-						stringBuffer.append(Constants.SUBJECTUID + phenotypicDelimChr + Constants.DATE_COLLECTED + phenotypicDelimChr + "FIELDNAME1" + phenotypicDelimChr + "FIELDNAME2" + phenotypicDelimChr + "FIELDNAME3" + phenotypicDelimChr + "FIELDNAMEX\n");
-						stringBuffer.append("[subjectUid]" + phenotypicDelimChr + "[dateCollected]" + phenotypicDelimChr + "[field1value]" + phenotypicDelimChr + "[field2value]" + phenotypicDelimChr + "[field3value]" + phenotypicDelimChr + "[fieldXvalue]\n");
-						stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]\n");
-	
-						fileValidationMessages.add(stringBuffer.toString());
-						break;
-					}
-					else
-					{
-						// Loop through columns in current row in file, starting from the 2th position
-						for (int i = 0; i < stringLineArray.length; i++)
-						{
-							
-							
-							
-							// Check each line has same number of columns as header
-							if (stringLineArray.length < fieldNameArray.length)
-							{
-								fileValidationMessages.add("Error at line " + i + ", the line has missing cells");
-							}
-	
-							// Update progress
-							curPos += stringLineArray[i].length() + 1; // update progress
-						}
-					}
+					fileValidationMessages.add("Error at line " + row + ", the line has missing cells");
 				}
+				
 				subjectCount++;
 				row++;
 			}
