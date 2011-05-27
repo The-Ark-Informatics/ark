@@ -1,15 +1,20 @@
 package au.org.theark.report.web.component.viewReport;
 
+import org.apache.wicket.Resource;
+import org.apache.wicket.ResourceReference;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 import org.wicketstuff.jasperreports.JRResource;
 
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.report.service.Constants;
-import au.org.theark.report.service.IReportService;
+import au.org.theark.report.model.vo.ReportSelectVO;
 
 public class ReportOutputPanel extends Panel {
 	
@@ -18,17 +23,33 @@ public class ReportOutputPanel extends Panel {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public AbstractLink reportLink;
+	public AbstractLink downloadReportLink;
+	public AjaxButton downloadReportButton;
+	public Form<ReportSelectVO> downloadReportForm;
 
 	public ReportOutputPanel(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	public void initialisePanel() {
-		reportLink = new ExternalLink("linkToReport", "", "");
-		reportLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
-		add(reportLink);
+		downloadReportLink = new ExternalLink("linkToReport", "", "");
+		downloadReportLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
+		add(downloadReportLink);
+		CompoundPropertyModel<ReportSelectVO> cpModel = new CompoundPropertyModel<ReportSelectVO>(new ReportSelectVO());
+		downloadReportForm = new Form<ReportSelectVO>("downloadReportForm", cpModel);
+		downloadReportButton = new AjaxButton("downloadReportButton"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -559527968475678014L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{}
+		};
+		
+		downloadReportForm.add(downloadReportButton);
+		add(downloadReportForm);
 		this.setVisible(false);	//start off invisible
 	}
 	
@@ -37,16 +58,51 @@ public class ReportOutputPanel extends Panel {
 			ResourceLink<Void> newLink = new ResourceLink<Void>("linkToReport", reportResource);
 			newLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
 			addOrReplace(newLink);
-			reportLink = newLink;
+			downloadReportForm.addOrReplace(buildDownloadButton(reportResource));
+			downloadReportLink = newLink;
 		}
 		else {
-			if (!reportLink.getClass().equals(ExternalLink.class)) {
+			if (!downloadReportLink.getClass().equals(ExternalLink.class)) {
 				ExternalLink newLink = new ExternalLink("linkToReport", "", "");
 				newLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
-				reportLink.replaceWith(newLink);
-				reportLink = newLink;
+				downloadReportLink.replaceWith(newLink);
+				downloadReportLink = newLink;
 			}
 		}
+		// Hide link, as using button instead (link forces busyIndicator on, and doesn't turn off..)
+		downloadReportLink.setVisible(false);
+	}
+	
+	private AjaxButton buildDownloadButton(final JRResource reportResource) {
+		AjaxButton ajaxButton = new AjaxButton("downloadReportButton", new StringResourceModel("downloadKey", this, null)) 
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -4454605760895668351L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// This code would emulate a file download as if clicked by the user
+				ResourceReference ref = new ResourceReference(reportResource.getFileName()) {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 3758643436893809637L;
+
+					protected Resource newResource() {
+						return reportResource;
+					}
+				};
+				String url = getRequestCycle().urlFor(ref).toString();
+				getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+		ajaxButton.setOutputMarkupPlaceholderTag(true);
+		return ajaxButton;
 	}
 	
 	@Override
