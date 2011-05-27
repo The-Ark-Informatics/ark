@@ -149,7 +149,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	/* (non-Javadoc)
 	 * @see au.org.theark.core.service.IArkCommonService#getSubjectStatus()
 	 */
-	public Collection<SubjectStatus> getSubjectStatus() {
+	public List<SubjectStatus> getSubjectStatus() {
 		
 		return studyDao.getSubjectStatus();
 	}

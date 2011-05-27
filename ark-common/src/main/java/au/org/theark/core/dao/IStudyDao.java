@@ -99,7 +99,7 @@ public interface IStudyDao {
 	 * An interface to return a list of Subject Status types
 	 * @return
 	 */
-	public Collection<SubjectStatus> getSubjectStatus();
+	public List<SubjectStatus> getSubjectStatus();
 	
 	/**
 	 * A look-up method that searches based on the Filter provided in the incoming 

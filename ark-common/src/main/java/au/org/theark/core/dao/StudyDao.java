@@ -191,7 +191,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	}
 
 
-	public Collection<SubjectStatus> getSubjectStatus(){
+	public List<SubjectStatus> getSubjectStatus(){
 		
 		Example example = Example.create(new SubjectStatus());
 		Criteria criteria = getSession().createCriteria(SubjectStatus.class).add(example);

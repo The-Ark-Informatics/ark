@@ -52,7 +52,7 @@ public interface IArkCommonService<T> {
 	
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO);
 
-	public Collection<SubjectStatus> getSubjectStatus();
+	public List<SubjectStatus> getSubjectStatus();
 	
 	public Collection<TitleType> getTitleType();
 	
