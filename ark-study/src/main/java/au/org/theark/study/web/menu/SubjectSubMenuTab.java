@@ -22,6 +22,7 @@ import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
+import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
@@ -80,6 +81,11 @@ public class SubjectSubMenuTab extends Panel{
 		moduleTabs.add(menuModule);
 		
 		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_SUBJECT_CORRESPONDENCE);
+		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CORRESPONDENCE);
+		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_FILE);
 		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_FILE);
 		moduleTabs.add(menuModule);
@@ -102,7 +108,7 @@ public class SubjectSubMenuTab extends Panel{
 				@Override
 				public Panel getPanel(String panelId) 
 				{
-					
+
 					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
 					
 					if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_DETAIL)){
@@ -112,22 +118,26 @@ public class SubjectSubMenuTab extends Panel{
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_PHONE)){
 
 						panelToReturn = new PhoneContainerPanel(panelId);
-					
 					}
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_ADDRESS)){
+						
 						panelToReturn = new AddressContainerPanel(panelId);
 					}
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CONSENT)){
 
 						panelToReturn = new ConsentContainerPanel(panelId);
-					
 					}
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_FILE)){
+						
 						panelToReturn = new SubjectFileContainerPanel(panelId);
 					}
 					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_UPLOAD)){
 
 						panelToReturn = new SubjectUploadContainerPanel(panelId);
+					}
+					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CORRESPONDENCE)) {
+						
+						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
 					
 					return panelToReturn;
