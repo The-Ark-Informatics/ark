@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd" xml:lang="en" lang="en">
 	<head>
 		<title>
-			<wicket:message key="page.title">Page Title will be inserted here</wicket:message>
+			<wicket:message key="page.title">
+				Page Title will be inserted here
+			</wicket:message>
 		</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css"/>
 		<link rel="stylesheet" type="text/css" href="css/header.css"/>
@@ -16,116 +18,84 @@
 		<link rel="stylesheet" type="text/css" href="css/panel.css"/>
 		<link rel="stylesheet" type="text/css" href="css/palette.css"/>
 		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
-		<!-- 
-		// TODO: Move this JavaScript into an ArkAjaxLoadingButton for custom buttons to implement
-		<script type="text/javascript">
-			 window.onload = setupFunc;
-			
-			 function setupFunc() {
-			   document.getElementsByTagName('body')[0].onclick = clickFunc;
-			   hideBusySign();
-			         Wicket.Ajax.registerPreCallHandler(showBusySign);
-			         Wicket.Ajax.registerPostCallHandler(hideBusySign);
-			         Wicket.Ajax.registerFailureHandler(hideBusySign);
-			 }
-			
-			 function hideBusySign() {
-			   document.getElementById('busyIndicator').style.display ='none';
-			   overlay = document.getElementById("overlay");
-			   overlay.style.visibility = "hidden";
-			 }
-			
-			 function showBusySign() {
-			   document.getElementById('busyIndicator').style.display ='inline';
-			   overlay = document.getElementById("overlay");
-			   overlay.style.visibility = "visible";
-			 }
-			
-			 function clickFunc(eventData) {
-			   var clickedElement = (window.event) ? event.srcElement : eventData.target;
-			   if(clickedElement.valuetoUpperCase() != 'DELETE')
-			   {
-				   if (clickedElement.tagName.toUpperCase() == 'BUTTON' || 
-				   		clickedElement.tagName.toUpperCase() == 'A' || 
-				   		clickedElement.parentNode.tagName.toUpperCase() == 'A' ||
-				      	(clickedElement.tagName.toUpperCase() == 'INPUT' && 
-				      		(clickedElement.type.toUpperCase() == 'BUTTON' || clickedElement.type.toUpperCase() == 'SUBMIT')
-				      	)
-				      ) {
-				     showBusySign();
-				   }
-			   }
-			 }
-		</script>
-		 -->
+		<script src="js/busyIndicator.js"></script>
 	</head>
 	<body>
 		<!-- Start div wrap -->
 		<div id="wrap">
 			<div class="mainheaderouter">
 				<div class="mainheader">
-		        	<div class="logo">
-			        	<!-- Start div header -->
+					<div class="logo">
+						<!-- Start div header -->
 						<div id="header" class="header">
-							<!--  Header images -->
-							<!--  Hosted by image -->
+							<!--	Header images -->
+							<!--	Hosted by image -->
 							<div id="hostedby">
 								<img wicket:id="hostedByImage"/>
 							</div>
-							
-							<!--  Product image -->
+
+							<!--	Product image -->
 							<div id="product">
 								<img wicket:id="productImage"/>
 							</div>
-							
+
 							<div id="studyLogo">
-								<!--  Study Name panel must be made a re-usable panel-->
+								<!--	Study Name panel must be made a re-usable panel-->
 								<div wicket:id="studyNameMarkupContainer">
-									<!--  Study name -->
+									<!--	Study name -->
 									<div id="studyName">
-										<span wicket:id="studyNameLabel" id="studyNameLabel"></span>
+										<span wicket:id="studyNameLabel" id="studyNameLabel">
+										</span>
 									</div>
 								</div>
-								
-								<!--  Study Logo panel must be made a re-usable panel-->
+
+								<!--	Study Logo panel must be made a re-usable panel-->
 								<div wicket:id="studyLogoMarkupContainer">
-									<!--  Study Logo image -->
+									<!--	Study Logo image -->
 									<img wicket:id="studyLogoImage" class="center"/>
 								</div>
 							</div>
-							<!--  Login/Logout Welcome panel must be made a re-usable panel-->
+							<!--	Login/Logout Welcome panel must be made a re-usable panel-->
 							<div id="welcomePanel">
 								<div id="welcomeMessage">
-									Welcome&nbsp;<span wicket:id="loggedInUser" id="loggedInUser"></span>&nbsp;|&nbsp;<a wicket:id="logoutLink" href="#">Logout</a>
+									Welcome&nbsp;
+									<span wicket:id="loggedInUser" id="loggedInUser">
+									</span>
+									&nbsp;|&nbsp;
+									<a wicket:id="logoutLink" href="#">
+										Logout
+									</a>
 								</div>
 							</div>
-				  		</div>
-				  		<!-- End div header -->
-		        	</div>
-		        	
-		        	<!--  Header banner (image accessed in css) -->
+						</div>
+						<!-- End div header -->
+					</div>
+
+					<!--	Header banner (image accessed in css) -->
 					<div id="banner" />
-		        	
-	        	</div>
-	        	<!-- End div mainheader -->
-	    	</div>
-			<!--  End div mainheaderouter -->
-		  		
-	  		<!-- Start div main -->
-	  		<div id="main">
+
+				</div>
+				<!-- End div mainheader -->
+			</div>
+			<!--	End div mainheaderouter -->
+
+			<!-- Start div main -->
+			<div id="main">
 				<!-- Start of Application -->
 				<div id="application">
 					<wicket:child />
 				</div>
 				<!-- Endof Application -->
-	        </div>
+			</div>
 			<!-- End div main -->
 			<div class="push" />
-		<!-- End div wrap -->	
+			<!-- End div wrap -->
 		</div>
-		<!--  Page footer -->
+		<!--	Page footer -->
 		<div id="footer" class="footer">
-			<wicket:message key="page.copyright">Copyright message</wicket:message>
+			<wicket:message key="page.copyright">
+				Copyright message
+			</wicket:message>
 		</div>
-     </body>
+	</body>
 </html>
