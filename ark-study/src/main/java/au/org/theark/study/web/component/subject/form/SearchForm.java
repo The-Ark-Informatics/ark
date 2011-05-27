@@ -139,9 +139,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm,"subjectStatus");
-		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
+		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_ID);
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,(List)subjectStatusList,subjectStatusRenderer);
+		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusPm,subjectStatusList,subjectStatusRenderer);
 	}
 	
 	private void initGenderTypeDdc(){

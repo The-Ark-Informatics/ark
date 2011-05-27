@@ -202,9 +202,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.PERSON_GENDER_TYPE,(List<GenderType>)genderTypeList,genderTypeRenderer);
 		
 		// Subject Status
-		Collection<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
+		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME,Constants.SUBJECT_STATUS_ID);
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,(List)subjectStatusList,subjectStatusRenderer);
+		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS,subjectStatusList,subjectStatusRenderer);
 		
 		// Marital Status
 		Collection<MaritalStatus> maritalStatusList = iArkCommonService.getMaritalStatus(); 
