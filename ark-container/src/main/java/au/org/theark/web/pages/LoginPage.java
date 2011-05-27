@@ -8,6 +8,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormValidatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
@@ -28,7 +29,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.ArkAjaxButton;
 import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
@@ -71,7 +71,6 @@ public class LoginPage<T> extends WebPage
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 
-		@SuppressWarnings("rawtypes")
 		Link resetPasswordLink = new Link("resetPasswordLink")
 		{
 			@Override
@@ -109,7 +108,7 @@ public class LoginPage<T> extends WebPage
 
 		TextField<String>	userNameTxtFld	= new TextField<String>("userName");
 		PasswordTextField	passwordTxtFld	= new PasswordTextField("password");
-		ArkIndicatingAjaxButton				submitButton;
+		AjaxButton				submitButton;
 
 		private void decorateComponents()
 		{
