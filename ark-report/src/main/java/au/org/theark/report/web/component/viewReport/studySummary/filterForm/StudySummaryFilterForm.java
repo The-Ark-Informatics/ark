@@ -136,7 +136,7 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 	}
 
 	@Override
-	protected void initialiseConsentFilterComponents() {
+	protected void initialiseCustomFilterComponents() {
 		// Nothing special to do for Study Summary Report
 	}
 }

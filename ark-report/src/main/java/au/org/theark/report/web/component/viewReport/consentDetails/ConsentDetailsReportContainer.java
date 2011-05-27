@@ -4,11 +4,12 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
-public class ConsentDetailsReportContainer extends AbstractSelectedReportContainer<GenericReportViewVO> {
+public class ConsentDetailsReportContainer extends AbstractSelectedReportContainer<ConsentDetailsReportVO> {
 
 	/**
 	 * 
@@ -22,8 +23,8 @@ public class ConsentDetailsReportContainer extends AbstractSelectedReportContain
 	
 	@Override
 	protected void initialiseCPModel() {
-		GenericReportViewVO grvVO = new GenericReportViewVO();
-		cpModel = new CompoundPropertyModel<GenericReportViewVO>(grvVO);
+		ConsentDetailsReportVO reportViewVO = new ConsentDetailsReportVO();
+		cpModel = new CompoundPropertyModel<ConsentDetailsReportVO>(reportViewVO);
 	}
 
 	public void initialisePanel(FeedbackPanel feedbackPanel, ReportTemplate reportTemplate) {

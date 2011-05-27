@@ -1,7 +1,9 @@
 package au.org.theark.report.web.component.viewReport.consentDetails.filterForm;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -14,43 +16,43 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.wicketstuff.jasperreports.JRConcreteResource;
 import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.study.entity.SubjectStatus;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportTemplate;
-import au.org.theark.report.model.vo.GenericReportViewVO;
-import au.org.theark.report.service.IReportService;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.web.Constants;
-import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
+import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportDataSource;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
-import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportDataSource;
 
 /**
  * @author elam
  *
  */
 @SuppressWarnings("serial")
-public class ConsentDetailsFilterForm extends AbstractReportFilterForm<GenericReportViewVO>{
+public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO>{
 	
-	public ConsentDetailsFilterForm(String id, CompoundPropertyModel<GenericReportViewVO> model) {
+	protected TextField<String> tfSubjectUID;
+	protected DropDownChoice<SubjectStatus> ddcSubjectStatus;
+	protected DropDownChoice<ConsentStatus> ddcConsentStatus;
+	protected DateTextField dtfConsentDate;
+	protected DropDownChoice<StudyComp>	ddcStudyComp;
+	
+	public ConsentDetailsFilterForm(String id, CompoundPropertyModel<ConsentDetailsReportVO> model) {
 		super(id, model);
 		this.cpModel = model;
 	}
@@ -84,8 +86,9 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<GenericRe
 //		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
-		parameters.put("ReportTitle", study.getName() + " - Consent Details Report");
-		StudySummaryReportDataSource reportDS = new StudySummaryReportDataSource(reportService, study);
+		String consentType = "Study-level Consent (DUMMY Data)";
+		parameters.put("ReportTitle", study.getName() + " - Consent Details Report - " + consentType);
+		ConsentDetailsReportDataSource reportDS = new ConsentDetailsReportDataSource(reportService, cpModel.getObject());
 		
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
@@ -130,8 +133,45 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<GenericRe
 	}
 
 	@Override
-	protected void initialiseConsentFilterComponents() {
-		// TODO Auto-generated method stub
-		
+	protected void initialiseCustomFilterComponents() {
+		tfSubjectUID = new TextField<String>(Constants.LINKSUBJECTSTUDY_SUBJECTUID);
+		add(tfSubjectUID);
+		initialiseConsentDatePicker();	
+		initialiseSubjectStatusDropDown();
+		initialiseConsentStatusDropDown();
+		initialiseConsentCompDropDown();
 	}
+
+	protected void initialiseConsentDatePicker() {
+		dtfConsentDate = new DateTextField(Constants.CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dtfConsentDate);
+		dtfConsentDate.add(datePicker);
+		add(dtfConsentDate);
+	}
+	
+	protected void initialiseSubjectStatusDropDown() {
+		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
+		ChoiceRenderer<SubjectStatus> defaultChoiceRenderer = new ChoiceRenderer<SubjectStatus>("name", "id");
+		ddcSubjectStatus  = new DropDownChoice<SubjectStatus>(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, subjectStatusList, defaultChoiceRenderer);
+		add(ddcSubjectStatus);
+	}
+	
+	protected void initialiseConsentStatusDropDown() {
+		List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
+		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>("name", "id");
+		ddcConsentStatus  = new DropDownChoice<ConsentStatus>(Constants.CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		add(ddcConsentStatus);
+	}
+	
+	protected void initialiseConsentCompDropDown() {
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+
+		List<StudyComp> consentStatusList = new ArrayList<StudyComp>(study.getStudyComps());
+		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>("name", "id");
+		ddcStudyComp = new DropDownChoice<StudyComp>(Constants.STUDY_COMP, consentStatusList, defaultChoiceRenderer);
+		add(ddcStudyComp);
+	}
+
 }

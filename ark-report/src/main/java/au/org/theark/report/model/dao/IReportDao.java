@@ -4,11 +4,14 @@ import java.util.List;
 import java.util.Map;
 
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportSecurity;
 import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
 
 
 public interface IReportDao {
@@ -22,5 +25,7 @@ public interface IReportDao {
 	public Long getWithoutStudyCompCount(Study study);
 	public List<ReportTemplate> getReportsForUser(ArkUser arkUser);
 	public List<ReportOutputFormat> getOutputFormats();
+	public List<ConsentDetailsDataRow> getConsentDetailsList(
+			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent);
 
 }

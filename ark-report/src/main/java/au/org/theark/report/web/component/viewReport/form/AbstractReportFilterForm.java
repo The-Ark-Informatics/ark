@@ -102,7 +102,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 		};
 		
 		initialiseOutputFormatChoice();
-		initialiseConsentFilterComponents();
+		initialiseCustomFilterComponents();
 		this.add(outputFormatChoices);
 		this.add(generateButton);
 	}
@@ -120,8 +120,15 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 
 	}
 
-	protected abstract void initialiseConsentFilterComponents();
+	/**
+	 * *DO NOT* call manually!
+	 * This method will automatically be called as part of initialiseFiterForm(..)
+	 */
+	protected abstract void initialiseCustomFilterComponents();
 	
+	/**
+	 * Called when the Generate button is clicked
+	 */
 	protected abstract void onGenerateProcess(AjaxRequestTarget target);
 	
 	protected void onErrorProcess(AjaxRequestTarget target) {

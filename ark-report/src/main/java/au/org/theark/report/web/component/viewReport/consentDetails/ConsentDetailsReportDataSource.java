@@ -2,14 +2,19 @@ package au.org.theark.report.web.component.viewReport.consentDetails;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.service.IReportService;
 
 /**
@@ -25,60 +30,34 @@ public class ConsentDetailsReportDataSource implements Serializable, JRDataSourc
 	 */
 	private static final long serialVersionUID = 1L;
 
-	class CustomDataRow implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		protected String section;
-		protected String status;
-		protected Number subjectCount;
-		
-		CustomDataRow(String section, String status, Number subjectCount) {
-			this.section = section;
-			this.status = status;
-			this.subjectCount = subjectCount;
-		}
-		
-		public String getSection() {
-			return section;
-		}
-
-		public String getStatus() {
-			return status;
-		}
-
-		public Number getSubjectCount() {
-			return subjectCount;
-		}
-	}
-
-	private List<CustomDataRow> data = null;
+	private List<ConsentDetailsDataRow> data = null;
 
 	private int index = -1;
 
 	/**
 	 *
 	 */
-	public ConsentDetailsReportDataSource(IReportService reportService, Study study) {
-		data = new ArrayList<CustomDataRow>();
-		data.add(new CustomDataRow("Total Subjects", "", reportService.getTotalSubjectCount(study)));
-		Map<String, Integer> tmpStatusCounts = reportService.getSubjectStatusCounts(study);
-		for(String statusKey: tmpStatusCounts.keySet()) {
-			data.add(new CustomDataRow("Subject Status", statusKey, tmpStatusCounts.get(statusKey)));
-		}
-		tmpStatusCounts = reportService.getStudyConsentCounts(study);
-		for(String statusKey: tmpStatusCounts.keySet()) {
-			data.add(new CustomDataRow("Study Consent Status", statusKey, tmpStatusCounts.get(statusKey)));
-		}
-		for (StudyComp studyComp: study.getStudyComps()) {
-			tmpStatusCounts = reportService.getStudyCompConsentCounts(study, studyComp);
-			for(String statusKey: tmpStatusCounts.keySet()) {
-				data.add(new CustomDataRow("Study Component - " + studyComp.getName(), statusKey, tmpStatusCounts.get(statusKey)));
-			}
-		}
-		data.add(new CustomDataRow("Subjects Without Study Components", "", reportService.getWithoutStudyCompCount(study)));
+	public ConsentDetailsReportDataSource(IReportService reportService, ConsentDetailsReportVO cdrVO) {
+		data = new ArrayList<ConsentDetailsDataRow>();
+		
+//		List<ConsentDetailsDataRow> results = reportService.getConsentDetailsList(cdrVO, false);
+
+		//TODO query the database 
+		data.add(new ConsentDetailsDataRow("Test-000000001", "Consented",  "Active", 
+									"Mrs.", "Anna", "Kama", 
+									"35 Stirling Hwy", "Crawley", "WA", "6009", "AU", 
+									"123494sf23", "908124213", "noone@home.com.au", 
+									"F", new Date()));
+		data.add(new ConsentDetailsDataRow("Test-000000002", "Consented",  "Active", 
+				"Mr.", "Pope", "John", 
+				"801 Swanston St", "Melbourne", "Vic", "3000", "AU", 
+				"13412321321", "41424321312", "semi@religious.org", 
+				"M", new Date()));
+		data.add(new ConsentDetailsDataRow("Test-000000003", "Unconsented",  "Active", 
+				"Capt.", "Planet", "Anhero", 
+				"1399 Johnston Street", "Vancouver", "", "BC V6H 3R9", "CA", 
+				"+1 604-844-3800 ", "00000000000", "downto@zero.greenhouse.com", 
+				"M", new Date()));
 	}
 
 	/**
@@ -104,14 +83,40 @@ public class ConsentDetailsReportDataSource implements Serializable, JRDataSourc
 
 		String fieldName = field.getName();
 
-		if ("Section".equals(fieldName)) {
-			value = data.get(index).getSection();
-		} else if ("Status".equals(fieldName)) {
-			value = data.get(index).getStatus();
-		} else if ("Subjects".equals(fieldName)) {
-			value = data.get(index).getSubjectCount();
+		if ("SubjectUID".equals(fieldName)) {
+			value = data.get(index).getSubjectUID();
+		} else if ("ConsentStatus".equals(fieldName)) {
+			value = data.get(index).getConsentStatus();
+		} else if ("SubjectStatus".equals(fieldName)) {
+			value = data.get(index).getSubjectStatus();
+		} else if ("Title".equals(fieldName)) {
+			value = data.get(index).getTitle();
+		} else if ("FirstName".equals(fieldName)) {
+			value = data.get(index).getFirstName();
+		} else if ("LastName".equals(fieldName)) {
+			value = data.get(index).getLastName();
+		} else if ("StreetAddress".equals(fieldName)) {
+			value = data.get(index).getStreetAddress();
+		} else if ("Suburb".equals(fieldName)) {
+			value = data.get(index).getSuburb();
+		} else if ("State".equals(fieldName)) {
+			value = data.get(index).getState();
+		} else if ("Postcode".equals(fieldName)) {
+			value = data.get(index).getPostcode();
+		} else if ("Country".equals(fieldName)) {
+			value = data.get(index).getCountry();
+		} else if ("WorkPhone".equals(fieldName)) {
+			value = data.get(index).getWorkPhone();
+		} else if ("HomePhone".equals(fieldName)) {
+			value = data.get(index).getHomePhone();
+		} else if ("Email".equals(fieldName)) {
+			value = data.get(index).getEmail();
+		} else if ("Sex".equals(fieldName)) {
+			value = data.get(index).getSex();
+		} else if ("ConsentDate".equals(fieldName)) {
+			value = data.get(index).getConsentDate();
 		}
-
+		
 		return value;
 	}
 

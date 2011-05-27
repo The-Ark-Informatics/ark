@@ -5,6 +5,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.web.component.viewReport.consentDetails.filterForm.ConsentDetailsFilterForm;
 
@@ -22,7 +23,7 @@ public class ReportFilterPanel extends Panel {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialisePanel(CompoundPropertyModel<GenericReportViewVO> cpModel, 
+	public void initialisePanel(CompoundPropertyModel<ConsentDetailsReportVO> cpModel, 
 								FeedbackPanel feedbackPanel, 
 								au.org.theark.report.web.component.viewReport.ReportOutputPanel reportOutputPanel) {
 		ConsentDetailsFilterForm consentDetailsFilterForm = new ConsentDetailsFilterForm("filterForm", cpModel);

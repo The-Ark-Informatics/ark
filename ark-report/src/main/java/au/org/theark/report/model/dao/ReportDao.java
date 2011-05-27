@@ -1,6 +1,5 @@
 package au.org.theark.report.model.dao;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -9,10 +8,12 @@ import java.util.Map;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -27,6 +28,9 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportSecurity;
 import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.service.Constants;
+import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
 
 @Repository("reportDao")
 public class ReportDao extends HibernateSessionDao implements IReportDao {
@@ -175,5 +179,64 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		List<ReportOutputFormat> outputFormats = criteria.list();
 
 		return outputFormats;
+	}
+
+	public List<ConsentDetailsDataRow> getConsentDetailsList(
+			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
+		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
+		if (cdrVO.getLinkSubjectStudy() != null) {
+			if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+				criteria.add(Restrictions.ilike(Constants.LINKSUBJECTSTUDY_SUBJECTUID, cdrVO.getLinkSubjectStudy().getSubjectUID()));
+			}
+			if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
+			}
+		}
+		if (!onlyStudyLevelConsent && cdrVO.getStudyComp() != null) {
+			criteria.createAlias(Constants.LINKSUBJECTSTUDY_CONSENT, "c");
+			criteria.add(Restrictions.eq("c." + Constants.CONSENT_STUDYCOMP, cdrVO.getStudyComp()));
+			if (cdrVO.getConsentStatus() != null) {
+				criteria.add(Restrictions.eq("c." + Constants.CONSENT_CONSENTSTATUS, cdrVO.getConsentStatus()));
+			}
+			if (cdrVO.getConsentDate() != null) {
+				criteria.add(Restrictions.eq("c." + Constants.CONSENT_CONSENTDATE, cdrVO.getConsentDate()));
+			}
+		}
+		else {
+			// we are dealing with study-level consent
+			if (cdrVO.getConsentStatus() != null) {
+				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
+			}
+			if (cdrVO.getConsentDate() != null) {
+				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
+			}
+		}
+//		if (onlyStudyLevelConsent) {
+//			criteria.setProjection(Projections.projectionList()
+//					.add(Property.forName("subjectUID").as("SubjectUID"))
+//					.add(Property.forName("consentStatus").as("ConsentStatus"))	//study-level
+//					.add(Property.forName("subjectStatus").as("SubjectStatus"))
+//					.add(Property.forName("person.titleType.name").as("Title"))
+//					.add(Property.forName("person.firstName").as("FirstName"))
+//					.add(Property.forName("person.lastName").as("LastName"))
+//					.add(Property.forName("consents.name").as("Consent"))
+//					.add(Property.forName("add"))
+//					);	
+//			criteria.addOrder(Order.asc("subjectUID"));
+//		}
+//		else {
+//			criteria.setProjection(Projections.projectionList()
+//					.add(Property.forName("subjectUID").as("SubjectUID"))
+//					.add(Property.forName("consents.name").as("ConsentStatus"))
+//					.add(Property.forName("subjectStatus").as("SubjectStatus"))
+//					.add(Property.forName("person.titleType.name").as("Title"))
+//					.add(Property.forName("person.firstName").as("FirstName"))
+//					.add(Property.forName("person.lastName").as("LastName"))
+//					);
+//			criteria.addOrder(Order.asc("subjectUID"));
+//		}
+		List<ConsentDetailsDataRow> consentDetailsList = criteria.list();
+
+		return consentDetailsList;
 	}
 }

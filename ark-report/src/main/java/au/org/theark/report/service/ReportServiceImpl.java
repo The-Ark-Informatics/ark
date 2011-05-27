@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
@@ -21,6 +22,8 @@ import au.org.theark.report.model.entity.LinkStudyReportTemplate;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportSecurity;
 import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
 
 
 @Transactional
@@ -103,5 +106,10 @@ public class ReportServiceImpl implements IReportService {
 
 	public List<ReportOutputFormat> getOutputFormats() {
 		return reportDao.getOutputFormats();
+	}
+
+	public List<ConsentDetailsDataRow> getConsentDetailsList(
+			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
+		return reportDao.getConsentDetailsList(cdrVO, onlyStudyLevelConsent);
 	}
 }
