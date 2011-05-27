@@ -907,7 +907,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 
 		try
 		{
-			getSession().update(correspondence);
+			getSession().delete(correspondence);
 		}
 		catch (HibernateException ex)
 		{
@@ -973,7 +973,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		}
 
 		List<Correspondences> personCorrespondenceList = criteria.list();
-		if (personCorrespondenceList != null && personCorrespondenceList.size() == 0)
+		log.info("Number of correspondences fetched " + personCorrespondenceList.size() + "  Person Id" + personId.intValue());	
+		if (personCorrespondenceList == null && personCorrespondenceList.size() == 0)
 		{
 			throw new EntityNotFoundException("The entity with id " + personId.toString() + " cannot be found.");
 		}
