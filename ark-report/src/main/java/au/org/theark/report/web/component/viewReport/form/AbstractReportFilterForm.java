@@ -1,23 +1,9 @@
 package au.org.theark.report.web.component.viewReport.form;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-
-import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.JasperCompileManager;
-import net.sf.jasperreports.engine.JasperReport;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,25 +11,16 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.wicketstuff.jasperreports.JRConcreteResource;
-import org.wicketstuff.jasperreports.JRResource;
-import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
-import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkAjaxButton;
+import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportDataSource;
-import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportDataSource;
 
 /**
  * @author elam
@@ -77,7 +54,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	}
 	
 	private void initialiseComponents() {
-		generateButton = new ArkAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
+		generateButton = new ArkIndicatingAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onGenerateProcess(target);
