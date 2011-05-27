@@ -71,7 +71,7 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 		return detailPanelContainer;
 	}
 
-	
+
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		
@@ -105,9 +105,11 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 			searchPanelContainer.add(searchPanel);
 		
 		}catch(EntityNotFoundException ex) {
-			
+			ex.printStackTrace();
 		}catch(ArkSystemException ex) {
-			
+			ex.printStackTrace();
+		}catch(Exception ex) {
+			ex.printStackTrace();
 		}
 		
 		return searchPanelContainer;

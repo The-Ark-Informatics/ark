@@ -23,7 +23,14 @@
 					<wicket:message	key="studyManager">Study manager:</wicket:message>
 				</label>
 			</th>
-			
+
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="correspondenceMode">
+					<wicket:message	key="correspondenceMode">Mode:</wicket:message>
+				</label>
+			</th>
+						
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
 				<label for="correspondenceDirection">
@@ -35,13 +42,6 @@
 			<th width="10%">
 				<label for="correspondenceOutcome">
 					 <wicket:message key="correspondenceOutcome">Outcome:</wicket:message>
-				</label>
-			</th>
-			
-			<th width="5%">&nbsp;</th>
-			<th width="10%">
-				<label for="something">
-					&nbsp;
 				</label>
 			</th>
 			
@@ -68,17 +68,17 @@
 
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
+				<span wicket:id="correspondenceModeType.name">Mail</span>		
+			</td>
+			
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
 				<span wicket:id="correspondenceDirectionType.name">Outgoing</span>		
 			</td>
 
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-				<span wicket:id="correspondenceModeType.name">Mail</span>		
-			</td>
-
-			<td width="5%">&nbsp;</td>
-			<td width="5%">
-			  	&nbsp;
+				<span wicket:id="correspondenceOutcomeType.name">Sent</span>		
 			</td>
 			
 		</tr>

@@ -9,6 +9,7 @@ import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -41,11 +42,11 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private TextField<String> studyManagerTxtFld;
 	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
-	private TextField<String> reasonTxtFld;
+	private TextArea<String> reasonTxtArea;
 	private DropDownChoice<CorrespondenceModeType> modeTypeChoice;
 	private DropDownChoice<CorrespondenceDirectionType> directionTypeChoice;
 	private DropDownChoice<CorrespondenceOutcomeType> outcomeTypeChoice;
-	private TextField<String> detailsTxtFld;
+	private TextArea<String> detailsTxtArea;
 	
 	
 	public SearchForm(String id,
@@ -62,7 +63,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedbackPanel);
 		this.pageableListView = listView;
 		initialiseSearchForm();
-		addSearchComponentsToForm();
 		Long sessionPersonId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
 		
@@ -80,11 +80,13 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		dateFld.add(datePicker);
 		// create new DateTextField and assign date format
 		timeTxtFld = new TextField<String>("correspondence.time");
-		reasonTxtFld = new TextField<String>("correspondence.reason");
+		reasonTxtArea = new TextArea<String>("correspondence.reason");
 		initialiseModeTypeDropDown();
 		initialiseDirectionTypeDropDown();
 		initialiseOutcomeTypeDropDown();
-		detailsTxtFld = new TextField<String>("correspondence.details");	
+		detailsTxtArea = new TextArea<String>("correspondence.details");
+		
+		addSearchComponentsToForm();
 	}
 	
 
@@ -126,11 +128,11 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		add(studyManagerTxtFld);
 		add(dateFld);
 		add(timeTxtFld);
-		add(reasonTxtFld);
+		add(reasonTxtArea);
 		add(modeTypeChoice);
 		add(directionTypeChoice);
 		add(outcomeTypeChoice);
-		add(detailsTxtFld);	
+		add(detailsTxtArea);	
 	}
 	
 	

@@ -26,8 +26,7 @@
 			<div id="panelMargin">&nbsp;</div>
 			
 			<div id="fldLabel">
-				<div class="label">		    
-				<div id="panelMargin">&nbsp;</div>
+				<div class="label">
 					<label for="studyManager">
 						<wicket:message key="studyManager">Study manager:</wicket:message>
 					</label>	
@@ -77,23 +76,7 @@
 			<div id="detailPanelContentRight">&nbsp;</div>
 			<div id="detailPanelBreaker">&nbsp;</div>
 			<div id="panelContentLeft">&nbsp;</div>
-						
-			<div id="fldLabel">
-				<div class="label">
-					<label for="reason">
-						<wicket:message key="reason">Reason:</wicket:message>
-					</label>	
-				</div>
-			</div>
-			
-			<div id="fldControl">
-				<div class="label">
-					<input wicket:id="correspondence.reason"  type="text" />
-				</div>
-			</div>
-			
-		    <div id="panelMargin">&nbsp;</div>
-			
+
 			<div id="fldLabel">
 		 		<div class="label">
 					<label for="correspondenceMode">
@@ -109,11 +92,9 @@
 		       		</select>
 				</div>
 			</div>
-		       	   		       			
-			<div id="detailPanelContentRight">&nbsp;</div>
-			<div id="detailPanelBreaker">&nbsp;</div>
-			<div id="panelContentLeft">&nbsp;</div>
-						
+		       	
+	    	<div id="panelMargin">&nbsp;</div>
+
 			<div id="fldLabel">
 		 		<div class="label">
 					<label for="correspondenceDirection">
@@ -130,7 +111,9 @@
 				</div>
 			</div>
 
-		    <div id="panelMargin">&nbsp;</div>
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
 		    			
 			<div id="fldLabel">
 	 			<div class="label">
@@ -145,6 +128,22 @@
 					<select wicket:id="correspondence.correspondenceOutcomeType">
 		       			<option>Sent</option>
 		       		</select>						
+				</div>
+			</div>
+
+	    	<div id="panelMargin">&nbsp;</div>
+						
+			<div id="fldLabel">
+				<div class="label">
+					<label for="reason">
+						<wicket:message key="reason">Reason:</wicket:message>
+					</label>	
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<textarea wicket:id="correspondence.reason" id="correspondence.reason" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 		       	   		       			
@@ -162,7 +161,7 @@
 				
 			<div id="fldControl">
 				<div class="label">
-					 <input wicket:id="correspondence.details"  type="text" />
+					 <textarea wicket:id="correspondence.details" id="correspondence.details" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 
@@ -178,7 +177,7 @@
 				
 			<div id="fldControl">
 				<div class="label">
-					 <input wicket:id="correspondence.comments"  type="text" />
+					 <textarea wicket:id="correspondence.comments" id="correspondence.comments" cols="25" maxLength="4096"></textarea>
 				</div>
 			</div>
 
@@ -217,7 +216,7 @@
 					<div class="label">
 						<input wicket:id="edit" type="submit" wicket:message="value:page.edit" />&nbsp;
 						<div id="panelMargin">&nbsp;</div>
-						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.cancel" />
+						<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
 				  	</div>
 				</div>
 			</div>

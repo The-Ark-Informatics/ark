@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -21,6 +22,8 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -29,7 +32,10 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
-
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService iArkCommonService;
+	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
@@ -37,12 +43,13 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private TextField<String> studyManagerTxtFld;
 	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
-	private TextField<String> reasonTxtFld;
 	private DropDownChoice<CorrespondenceModeType> modeTypeChoice;
 	private DropDownChoice<CorrespondenceDirectionType> directionTypeChoice;
 	private DropDownChoice<CorrespondenceOutcomeType> outcomeTypeChoice;
-	private TextField<String> detailsTxtFld;
-	private TextField<String> commentsTxtFld;
+	private TextArea<String> reasonTxtArea;
+	private TextArea<String> detailsTxtArea;
+	private TextArea<String> commentsTxtArea;
+//	private FileUploadField fileCorrespondenceFileField;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel,
 			WebMarkupContainer resultListContainer,
@@ -71,12 +78,17 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		dateFld.add(datePicker);
 				
 		timeTxtFld = new TextField<String>("correspondence.time");
-		reasonTxtFld = new TextField<String>("correspondence.reason");
 		initialiseModeTypeDropDown();
 		initialiseDirectionTypeDropDown();
 		initialiseOutcomeTypeDropDown();
-		detailsTxtFld = new TextField<String>("correspondence.details");
-		commentsTxtFld = new TextField<String>("correspondence.comments");
+		reasonTxtArea = new TextArea<String>("correspondence.reason");
+		detailsTxtArea = new TextArea<String>("correspondence.details");
+		commentsTxtArea = new TextArea<String>("correspondence.comments");
+		
+//		fileCorrespondenceFileField = new FileUploadField("correspondenceAttachment.filename");
+//		fileCorrespondenceFileField.add(new ArkDefaultFormFocusBehavior());
+		
+		addDetailFormComponents();
 	}
 	
 	private void initialiseStatusTypeDropDown() {
@@ -113,17 +125,17 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		detailPanelFormContainer.add(studyManagerTxtFld);
 		detailPanelFormContainer.add(dateFld);
 		detailPanelFormContainer.add(timeTxtFld);
-		detailPanelFormContainer.add(reasonTxtFld);
 		detailPanelFormContainer.add(modeTypeChoice);
 		detailPanelFormContainer.add(directionTypeChoice);
 		detailPanelFormContainer.add(outcomeTypeChoice);
-		detailPanelFormContainer.add(detailsTxtFld);
-		detailPanelFormContainer.add(commentsTxtFld);
+		detailPanelFormContainer.add(reasonTxtArea);		
+		detailPanelFormContainer.add(detailsTxtArea);
+		detailPanelFormContainer.add(commentsTxtArea);
+//		detailPanelFormContainer.add(fileCorrespondenceFileField);
 	}
 	
-	@Override
 	protected void attachValidators() {
-		
+
 	}
 
 	@Override
@@ -131,7 +143,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		CorrespondenceVO correspondenceVO = new CorrespondenceVO();
 		containerForm.setModelObject(correspondenceVO);
-		onCancelPostProcess(target);
 	}
 	
 	@Override
@@ -140,28 +151,56 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		try {
 			studyService.delete(containerForm.getModelObject().getCorrespondence());
+			containerForm.info("The correspondence has been deleted successfully.");
+			editCancelProcess(target);
 		}catch(Exception ex) {
 			this.error("An error occurred while processing the correspondence delete operation.");
 			ex.printStackTrace();
 		}
 		
 		selectModalWindow.close(target);
-		CorrespondenceVO correspondenceVO = new CorrespondenceVO();
-		containerForm.setModelObject(correspondenceVO);
 		onCancel(target);
 	}
-	
 	
 	@Override
 	protected void onSave(Form<CorrespondenceVO> containerForm,
 			AjaxRequestTarget target) {
 
 		Long personSessionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		
 		// get the person and set it on the correspondence object
 		try {
+			// set the Person in context
 			Person person = studyService.getPerson(personSessionId);
 			containerForm.getModelObject().getCorrespondence().setPerson(person);
+			// set the Study in context
+			Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study =	iArkCommonService.getStudy(studyId);
+			containerForm.getModelObject().getCorrespondence().setStudy(study);			
+
 			if(containerForm.getModelObject().getCorrespondence().getId() == null) {
+/*				
+				// required for file uploads
+				setMultiPart(true);
+				// retrieve the file and store as Blob in database
+				FileUpload fileCorrespondenceAttachment = fileCorrespondenceFileField.getFileUpload();
+				
+				try {
+					// copy file to Blob object
+					Blob payload = Hibernate.createBlob(fileCorrespondenceAttachment.getInputStream());
+					containerForm.getModelObject().getCorrespondenceAttachment().setPayload(payload);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
+				
+				byte[] byteArray = fileCorrespondenceAttachment.getMD5();
+				String checksum = getHex(byteArray);
+				
+				// set the details of the CorrespondenceAttachment
+				containerForm.getModelObject().getCorrespondenceAttachment().setChecksum(checksum);
+				containerForm.getModelObject().getCorrespondenceAttachment().setFilename(fileCorrespondenceAttachment.getClientFileName());
+*/
+				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
 				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
 				processErrors(target);
@@ -179,6 +218,22 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		}
 	}
 
+	static final String	HEXES	= "0123456789ABCDEF";
+
+	public static String getHex(byte[] raw)
+	{
+		if (raw == null) {
+			return null;
+		}
+		
+		final StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (final byte b : raw) {
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
+		}
+		
+		return hex.toString();
+	}
+	
 	
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {

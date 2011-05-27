@@ -74,22 +74,6 @@
 				<div id="searchPanelContentRight">&nbsp;</div>
 				<div id="searchPanelBreaker">&nbsp;</div>
 				<div id="panelContentLeft">&nbsp;</div>
-						
-				<div id="fldLabel">
-		 			<div class="label">
-		 				<label for="reason">
-							<wicket:message key="reason">Reason:</wicket:message>
-						</label>
-		 			</div> 
-		 		</div> 			       			
-				
-				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="correspondence.reason"  type="text" />
-					</div>
-				</div>
-				
-		       	<div id="panelMargin">&nbsp;</div>
 				
 				<div id="fldLabel">
 		 			<div class="label">
@@ -106,11 +90,9 @@
 			       		</select>
 		       	  </div>
 				</div>
-		       	   		       			
-				<div id="searchPanelContentRight">&nbsp;</div>
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
-						
+
+		       	<div id="panelMargin">&nbsp;</div>
+		       	
 				<div id="fldLabel">
 		 			<div class="label">
 		 				<label for="correspondenceDirection">
@@ -125,9 +107,11 @@
 		       			 <option>Outgoing</option>
 		       		   </select>						
 					</div>
-				</div>
-
-		       	<div id="panelMargin">&nbsp;</div>
+				</div>		       	
+		       	   		       			
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="searchPanelBreaker">&nbsp;</div>
+				<div id="panelContentLeft">&nbsp;</div>
 
 				<div id="fldLabel">
 		 			<div class="label">
@@ -145,6 +129,22 @@
 					</div>
 				</div>
 
+		       	<div id="panelMargin">&nbsp;</div>
+		       	
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="reason">
+							<wicket:message key="reason">Reason:</wicket:message>
+						</label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<textarea wicket:id="correspondence.reason" id="correspondence.reason" cols="25" maxLength="4096"></textarea>			
+					</div>
+				</div>		       	
+		       	
 				<div id="searchPanelContentRight">&nbsp;</div>
 				<div id="searchPanelBreaker">&nbsp;</div>
 				<div id="panelContentLeft">&nbsp;</div>
@@ -159,12 +159,12 @@
 				
 				<div id="fldControl">
 					<div class="label">
-					    <input wicket:id="correspondence.details"  type="text" />
+					    <textarea wicket:id="correspondence.details" id="correspondence.details" cols="25" maxLength="4096"></textarea>
 					</div>
 				</div>
+				
+				<div id="panelMargin">&nbsp;</div>				
 
-		       	<div id="panelMargin">&nbsp;</div>
-		       	
 				<div id="fldLabel">
 		 			<div class="label">
 						&nbsp;

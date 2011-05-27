@@ -54,14 +54,9 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(ListItem<Correspondences> item) {
 				Correspondences correspondence = item.getModelObject();
 				
+				// set the date to be the link to details
 				item.add(buildLink(correspondence));
-				
-				if(correspondence.getDate() != null) {
-					item.add(new Label("date", correspondence.getDate().toString()));
-				}else {
-					item.add(new Label("date", ""));
-				}
-				
+			
 				if(correspondence.getCorrespondenceStatusType() != null) {
 					item.add(new Label("correspondenceStatusType.name", correspondence.getCorrespondenceStatusType().getName()));
 				} else {
@@ -73,6 +68,12 @@ public class SearchResultListPanel extends Panel {
 				}else {
 					item.add(new Label("studyManager", ""));
 				}
+
+				if(correspondence.getCorrespondenceModeType() != null) {
+					item.add(new Label("correspondenceModeType.name", correspondence.getCorrespondenceModeType().getName()));
+				}else {
+					item.add(new Label("correspondenceModeType.name", ""));
+				}
 				
 				if(correspondence.getCorrespondenceDirectionType() != null) {
 					item.add(new Label("correspondenceDirectionType.name", correspondence.getCorrespondenceDirectionType().getName()));
@@ -81,10 +82,10 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("correspondenceDirectionType.name", ""));
 				}
 				
-				if(correspondence.getCorrespondenceModeType() != null) {
-					item.add(new Label("correspondenceModeType.name", correspondence.getCorrespondenceModeType().getName()));
+				if(correspondence.getCorrespondenceOutcomeType() != null) {
+					item.add(new Label("correspondenceOutcomeType.name", correspondence.getCorrespondenceOutcomeType().getName()));
 				}else {
-					item.add(new Label("correspondenceModeType.name", ""));
+					item.add(new Label("correspondenceOutcomeType.name", ""));
 				}
 			}
 		};
