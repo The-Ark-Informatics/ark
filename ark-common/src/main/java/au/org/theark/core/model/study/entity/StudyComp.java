@@ -37,7 +37,6 @@ public class StudyComp implements java.io.Serializable {
 			0);
 	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
 			0);
-	private Set<Document> documents = new HashSet<Document>(0);
 
 	// Constructors
 
@@ -54,7 +53,7 @@ public class StudyComp implements java.io.Serializable {
 	public StudyComp(Long id, Study study, String name,
 			String description,String keyword,
 			Set<LinkSubjectStudycomp> linkSubjectStudycomps,
-			Set<LinkStudyStudycomp> linkStudyStudycomps, Set<Document> documents) {
+			Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.id = id;
 		this.study = study;
 		this.name = name;
@@ -62,7 +61,6 @@ public class StudyComp implements java.io.Serializable {
 		this.keyword = keyword;
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 		this.linkStudyStudycomps = linkStudyStudycomps;
-		this.documents = documents;
 	}
 
 	@Id
@@ -132,15 +130,6 @@ public class StudyComp implements java.io.Serializable {
 	public void setLinkStudyStudycomps(
 			Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.linkStudyStudycomps = linkStudyStudycomps;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "studyComp")
-	public Set<Document> getDocuments() {
-		return this.documents;
-	}
-
-	public void setDocuments(Set<Document> documents) {
-		this.documents = documents;
 	}
 
 }
