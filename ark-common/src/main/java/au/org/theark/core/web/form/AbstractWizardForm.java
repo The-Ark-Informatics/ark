@@ -17,8 +17,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.web.component.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
-import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 
 /**
  * <p>
@@ -48,7 +48,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	protected WebMarkupContainer	wizardButtonContainer;
 
 	private ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid;
-	private AjaxButton	nextButton;
+	private AjaxButton				nextButton;
 	private AjaxLink					previousLink;
 	private AjaxLink					cancelLink;
 	private AjaxButton				finishButton;
@@ -225,7 +225,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 
 	private AjaxButton createNext()
 	{
-		nextButton = new AjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
+		nextButton = new ArkBusyAjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
 		{
 			private static final long	serialVersionUID	= 0L;
 			

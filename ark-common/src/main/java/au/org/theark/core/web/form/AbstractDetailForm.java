@@ -18,7 +18,7 @@ import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
+import au.org.theark.core.web.component.ArkBusyAjaxButton;
 
 /**
  * <p>
@@ -193,7 +193,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			}
 		};
 
-		saveButton = new ArkIndicatingAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		saveButton = new ArkBusyAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 //TODO NN Uncomment after User Management UI is completed			
 //			@Override

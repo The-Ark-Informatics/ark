@@ -16,7 +16,7 @@ import org.apache.wicket.model.IModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkAjaxButton;
+import au.org.theark.core.web.component.ArkBusyAjaxButton;
 
 /**
  * <p>
@@ -169,7 +169,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 		};
 
-		newButton = new ArkAjaxButton(Constants.NEW)
+		newButton = new ArkBusyAjaxButton(Constants.NEW)
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
