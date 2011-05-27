@@ -29,23 +29,6 @@
 				</textField>
 			</band>
 		</groupHeader>
-		<groupFooter>
-			<band height="21">
-				<line>
-					<reportElement x="0" y="-1" width="515" height="1"/>
-				</line>
-				<staticText>
-					<reportElement style="Sans_Bold" x="365" y="0" width="95" height="15"/>
-					<textElement textAlignment="Right"/>
-					<text><![CDATA[Groupings :]]></text>
-				</staticText>
-				<textField>
-					<reportElement style="Sans_Bold" x="460" y="0" width="50" height="15"/>
-					<textElement textAlignment="Right"/>
-					<textFieldExpression class="java.lang.Integer"><![CDATA[$V{SectionGroup_COUNT}]]></textFieldExpression>
-				</textField>
-			</band>
-		</groupFooter>
 	</group>
 	<title>
 		<band height="60">
@@ -88,7 +71,7 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="20">
+		<band height="24">
 			<textField isStretchWithOverflow="true">
 				<reportElement positionType="Float" x="256" y="5" width="130" height="15"/>
 				<textElement/>
