@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 
@@ -96,7 +97,7 @@ public class SearchResultListPanel extends Panel {
 	
 	private AjaxLink buildLink(final Correspondences correspondence) {
 		
-		AjaxLink link = new AjaxLink("correspondence") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence") {
 			
 			@Override
 			public void onClick(AjaxRequestTarget target) {

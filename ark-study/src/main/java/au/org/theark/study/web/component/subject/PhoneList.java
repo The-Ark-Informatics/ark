@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 
 /**
@@ -71,7 +72,7 @@ public class PhoneList extends Panel{
 	
 	private AjaxLink buildLink(final Phone phone){
 		
-		AjaxLink link = new AjaxLink("phoneNumber") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phoneNumber") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				//SubjectVO subjectVO = phoneContainerForm.getModelObject();//In order to get to the ModelObject we have created a new PhoneContainerForm and gain access to it

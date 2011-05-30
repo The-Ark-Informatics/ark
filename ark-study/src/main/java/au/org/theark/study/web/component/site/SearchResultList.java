@@ -12,6 +12,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.vo.SiteVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.site.form.ContainerForm;
 
@@ -83,7 +84,7 @@ public class SearchResultList extends Panel{
 	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final SiteVO site) {
 		
-		AjaxLink link = new AjaxLink("siteVo.siteName") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("siteVo.siteName") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

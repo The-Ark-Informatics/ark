@@ -17,6 +17,7 @@ import org.apache.wicket.model.IModel;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.customfield.form.ContainerForm;
 
@@ -65,7 +66,7 @@ public class SearchResultListPanel extends Panel{
 		
 		Label nameLinkLabel = new Label(Constants.CUSTOM_FIELD_LABEL, customField.getFieldTitle());
 		
-		AjaxLink link = new AjaxLink("fieldTitle"){
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("fieldTitle"){
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				CustomFieldVO customFieldVO = containerForm.getModelObject();

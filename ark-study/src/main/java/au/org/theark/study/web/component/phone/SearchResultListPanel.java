@@ -18,6 +18,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.phone.form.ContainerForm;
 
@@ -101,7 +102,7 @@ public class SearchResultListPanel extends Panel{
 	
 	private AjaxLink buildLink(final Phone phone){
 		
-		AjaxLink link = new AjaxLink("phoneNumberLink") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phoneNumberLink") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

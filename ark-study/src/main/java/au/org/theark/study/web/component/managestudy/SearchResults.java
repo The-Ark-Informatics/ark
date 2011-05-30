@@ -28,6 +28,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
@@ -106,7 +107,7 @@ public class SearchResults extends Panel{
 	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
 		
-		AjaxLink link = new AjaxLink("studyName") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyName") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

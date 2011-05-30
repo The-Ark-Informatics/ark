@@ -26,6 +26,7 @@ import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.user.form.ContainerForm;
@@ -168,7 +169,7 @@ public class SearchResultList extends Panel{
 	
 	private AjaxLink buildLink(final ArkUserVO arkUserVo, final WebMarkupContainer searchResultsContainer){
 		
-		AjaxLink link = new AjaxLink("userName") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("userName") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

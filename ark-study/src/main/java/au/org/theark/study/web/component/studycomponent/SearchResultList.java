@@ -12,6 +12,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
@@ -115,7 +116,7 @@ public class SearchResultList extends Panel{
 	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final StudyComp studyComponent) {
 		
-		AjaxLink link = new AjaxLink("studyComponent.name") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComponent.name") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

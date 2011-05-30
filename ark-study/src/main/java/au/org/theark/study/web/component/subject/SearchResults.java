@@ -24,6 +24,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -208,7 +209,7 @@ public class SearchResults extends Panel{
 	
 	
 	private AjaxLink buildLink(final  SubjectVO subject){
-		AjaxLink link = new AjaxLink(Constants.SUBJECT_UID) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);

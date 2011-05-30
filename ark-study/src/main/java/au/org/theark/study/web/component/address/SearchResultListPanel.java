@@ -22,6 +22,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
 import au.org.theark.study.web.component.address.form.SearchForm;
@@ -135,7 +136,7 @@ public class SearchResultListPanel extends Panel{
 	
 	private AjaxLink buildLink(final Address address){
 		
-		AjaxLink link = new AjaxLink("address") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("address") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {

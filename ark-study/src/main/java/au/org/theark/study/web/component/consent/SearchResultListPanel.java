@@ -23,6 +23,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.consent.form.ContainerForm;
@@ -123,7 +124,7 @@ public class SearchResultListPanel extends Panel{
 	
 	private AjaxLink buildLink(final Consent consent){
 		
-		AjaxLink link = new AjaxLink("studyComp.name") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyComp.name") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
