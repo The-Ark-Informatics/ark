@@ -519,23 +519,6 @@ public class SubjectUploadValidator
 
 		try
 		{
-			if (fileFormat.equalsIgnoreCase("XLS"))
-			{
-				try
-				{
-					fileInputStream = convertXlsToCsv(Workbook.getWorkbook(fileInputStream));
-					delimiterCharacter = ',';
-				}
-				catch (BiffException e)
-				{
-					log.error("BiffException: " + e);
-				}
-				catch (IOException e)
-				{
-					log.error("IOException: " + e);
-				}
-			}
-
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
