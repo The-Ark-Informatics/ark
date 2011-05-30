@@ -1,8 +1,11 @@
 package au.org.theark.phenotypic.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -12,7 +15,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import jxl.Cell;
+import jxl.Sheet;
+import jxl.Workbook;
+
 import org.apache.commons.lang.time.StopWatch;
+import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +38,8 @@ import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.Status;
+import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
 import com.csvreader.CsvReader;
@@ -109,6 +119,9 @@ public class PhenoDataUploader
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
 		Date dateCollected = new Date();
 		Field field = null;
+		
+		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		phenoCollectionVo.setPhenoCollection(this.phenoCollection);
 
 		try
 		{
@@ -193,6 +206,9 @@ public class PhenoDataUploader
 						{	// Try to update the field data
 							iPhenoService.updateFieldData(fieldData);
 						}
+						
+						// For update of fields in collection
+						phenoCollectionVo.getFieldsSelected().add(field);
 					}
 
 					// Update progress
@@ -250,6 +266,9 @@ public class PhenoDataUploader
 			srcLength = -1;
 		}
 		log.debug("Inserted " + subjectCount * fieldCount + " rows of data");
+		
+		// Update collection/fields in collection
+		iPhenoService.updateCollection(phenoCollectionVo);
 	}
 
 	/**
@@ -388,6 +407,8 @@ public class PhenoDataUploader
 							
 							// Try to create the field data
 							iPhenoService.createFieldData(fieldData);
+							
+							insertCount = insertCount++; 
 						}
 						else
 						{	
@@ -414,6 +435,8 @@ public class PhenoDataUploader
 							
 							// Try to update the field data
 							iPhenoService.updateFieldData(oldFieldData);
+							
+							updateCount = updateCount++;
 						}
 					}
 
@@ -486,9 +509,20 @@ public class PhenoDataUploader
 			srcLength = -1;
 		}
 		uploadReport.append("Inserted ");
-		uploadReport.append(subjectCount * fieldCount);
+		uploadReport.append(insertCount);
 		uploadReport.append(" rows of data");
 		uploadReport.append("\n");
+		
+		uploadReport.append("Updated ");
+		uploadReport.append(updateCount);
+		uploadReport.append(" rows of data");
+		uploadReport.append("\n");
+		
+		// Set status of collection
+		Status status = new Status();
+		status = iPhenoService.getStatusByName("ACTIVE");
+		this.phenoCollection.setStatus(status);
+		iPhenoService.updateCollection(this.phenoCollection);
 
 		return uploadReport;
 	}
@@ -747,6 +781,58 @@ public class PhenoDataUploader
 	public void setFieldUploadCollection(
 			Collection<FieldUpload> fieldUploadCollection) {
 		this.fieldUploadCollection = fieldUploadCollection;
+	}
+	
+	/**
+	 * Return the inputstream of the converted workbook as csv
+	 * 
+	 * @return inputstream of the converted workbook as csv
+	 */
+	public InputStream convertXlsToCsv(Workbook w)
+	{
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		try
+		{
+			OutputStreamWriter osw = new OutputStreamWriter(out);
+
+			// Gets first sheet from workbook
+			Sheet s = w.getSheet(0);
+
+			Cell[] row = null;
+
+			// Gets the cells from sheet
+			for (int i = 0; i < s.getRows(); i++)
+			{
+				row = s.getRow(i);
+
+				if (row.length > 0)
+				{
+					osw.write(row[0].getContents());
+					for (int j = 1; j < row.length; j++)
+					{
+						osw.write(phenotypicDelimChr);
+						osw.write(row[j].getContents());
+					}
+				}
+				osw.write("\n");
+			}
+
+			osw.flush();
+			osw.close();
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (IOException e)
+		{
+			System.err.println(e.toString());
+		}
+		catch (Exception e)
+		{
+			System.err.println(e.toString());
+		}
+		return new ByteArrayInputStream(out.toByteArray());
 	}
 
 	/**
