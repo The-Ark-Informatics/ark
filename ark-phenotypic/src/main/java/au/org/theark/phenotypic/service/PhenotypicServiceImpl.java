@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
@@ -501,10 +504,28 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	
 		try
 		{
-			InputStream is = new FileInputStream(file);
+			InputStream inputStream = new FileInputStream(file);
 			
 			log.debug("Importing file");
-			importReport = pi.uploadAndReportMatrixFieldDataFile(is, file.length());
+			if(fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = pi.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			importReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, file.length());
 		}
 		catch (IOException ioe)
 		{
@@ -528,11 +549,29 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);	
-		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);;
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, delimiterChar);
 	
 		try
 		{
 			log.debug("Importing pheno data file");
+			if(fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = pi.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
 			pi.uploadMatrixFieldDataFile(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
@@ -558,6 +597,24 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		try
 		{
 			log.info("Importing pheno file");
+			if(fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = pi.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
 			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
@@ -595,6 +652,25 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		{
 			log.info("Importing pheno file");
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
+			if(uploadVo.getUpload().getFileFormat().getName().equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = pi.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			
 			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
