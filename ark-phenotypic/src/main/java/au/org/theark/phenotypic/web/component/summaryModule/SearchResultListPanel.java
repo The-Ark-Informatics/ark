@@ -12,6 +12,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
@@ -81,7 +82,7 @@ public class SearchResultListPanel extends Panel
 	@SuppressWarnings("unused")
 	private AjaxLink buildLink(final PhenoCollection phenoCollection)
 	{
-		AjaxLink link = new AjaxLink("ajaxLinkId")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("ajaxLinkId")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)

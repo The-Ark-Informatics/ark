@@ -109,7 +109,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	protected void onSave(Form<PhenoCollectionVO> containerForm, AjaxRequestTarget target)
 	{
 
-		if (containerForm.getModelObject().getField().getId() == null)
+		if (containerForm.getModelObject().getFieldData().getId() == null)
 		{
 			// Save the Field data
 			phenotypicService.createFieldData(containerForm.getModelObject().getFieldData());

@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -155,7 +156,7 @@ public class SearchResultListPanel extends Panel
 
 	private AjaxLink buildLink(final FieldData fieldData)
 	{
-		AjaxLink link = new AjaxLink("fieldData.id")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("fieldData.id")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)

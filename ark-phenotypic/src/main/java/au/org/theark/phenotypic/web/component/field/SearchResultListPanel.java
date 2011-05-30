@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
@@ -152,7 +153,7 @@ public class SearchResultListPanel extends Panel
 
 	private AjaxLink buildLink(final Field field)
 	{
-		AjaxLink link = new AjaxLink("field.name")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("field.name")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)
