@@ -740,4 +740,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.getDelimiterType(id);	
 	}
+
+	public int clearPhenoCollection(PhenoCollection phenoCollection)
+	{
+		return phenotypicDao.clearPhenoCollection(phenoCollection);
+	}
 }

@@ -6,7 +6,6 @@ import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -33,6 +32,7 @@ public interface IPhenotypicService {
 	public void updateCollection(PhenoCollectionVO colVo);
 	public void deleteCollection(PhenoCollection col);
 	public void deleteCollection(PhenoCollectionVO colVo);
+	public int clearPhenoCollection(PhenoCollection phenoCollection);
 
 	// Field
 	public Field getField(Long fieldId);

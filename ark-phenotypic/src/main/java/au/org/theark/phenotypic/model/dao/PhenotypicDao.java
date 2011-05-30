@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
@@ -22,10 +23,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -100,9 +98,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_START_DATE, collectionToMatch.getStartDate()));
 		}
 
-		if (collectionToMatch.getExpiryDate() != null)
+		if (collectionToMatch.getEndDate() != null)
 		{
-			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_EXPIRY_DATE, collectionToMatch.getExpiryDate()));
+			collectionCriteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION_END_DATE, collectionToMatch.getEndDate()));
 		}
 
 		if (collectionToMatch.getInsertTime() != null)
@@ -1262,5 +1260,34 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
 		return delimiterType;
+	}
+	
+	public int clearPhenoCollection(PhenoCollection phenoCollection)
+	{
+		int rowsDeleted = 0;
+		if(phenoCollection != null)
+		{
+			try
+			{
+				String hql="DELETE FROM FieldData WHERE collection.id=" + phenoCollection.getId().intValue();
+				System.out.println("HQL IS:"+hql);
+				Query query= getSession().createQuery(hql);
+				rowsDeleted=query.executeUpdate();
+
+				if(rowsDeleted==0)
+				{
+					System.out.println("fail to perform operation");
+				}	
+				else
+				{
+					System.out.println(rowsDeleted + "rows deleted sucessfully");
+				}
+			}
+			catch(Exception e)
+			{
+				System.out.println(e.getMessage());
+			}			
+		}
+		return rowsDeleted;
 	}
 }

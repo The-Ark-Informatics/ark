@@ -12,7 +12,6 @@ import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldDataLog;
 import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
 import au.org.theark.phenotypic.model.entity.FieldType;
-import au.org.theark.phenotypic.model.entity.FieldUpload;
 import au.org.theark.phenotypic.model.entity.FileFormat;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
@@ -39,6 +38,7 @@ public interface IPhenotypicDao {
 	public void updatePhenoCollection(PhenoCollectionVO collectionVo);
 	public void deletePhenoCollection(PhenoCollection collection);
 	public void deletePhenoCollection(PhenoCollectionVO collectionVo);
+	public int clearPhenoCollection(PhenoCollection phenoCollection);
 	
 	// FieldCollection
 	public java.util.Collection<FieldPhenoCollection> getFieldPhenoCollection(PhenoCollection phenoCollection);
