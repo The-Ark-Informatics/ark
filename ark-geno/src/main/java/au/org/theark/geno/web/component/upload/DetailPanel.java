@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import javax.naming.spi.DirectoryManager;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;

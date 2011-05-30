@@ -22,8 +22,6 @@ import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.IGenoService;
-import au.org.theark.geno.web.component.upload.DetailPanel;
-import au.org.theark.geno.web.component.upload.SearchResultListPanel;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;
 
 /**
