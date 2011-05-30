@@ -454,7 +454,11 @@ public class PhenotypicValidator
 			else
 			{
 				// Uploading a fieldData file
-				if (csvReader.getColumnCount() < 2 || fieldCount < 1 || !headerColumnArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !headerColumnArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
+				
+				// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
+				fieldCount = csvReader.getHeaderCount() - 2;
+				
+				if (csvReader.getHeaderCount() < 2 || fieldCount < 1 || !headerColumnArray[0].equalsIgnoreCase(Constants.SUBJECTUID) || !headerColumnArray[1].equalsIgnoreCase(Constants.DATE_COLLECTED))
 				{
 					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
@@ -468,9 +472,6 @@ public class PhenotypicValidator
 
 					fileValidationMessages.add(stringBuffer.toString());
 				}
-				
-				// Field count = column count - 2 (SUBJECTID and DATE_COLLECTED)
-				fieldCount = headerColumnArray.length - 2;
 			}
 
 			srcLength = inLength - csvReader.getHeaders().toString().length();
@@ -715,11 +716,6 @@ public class PhenotypicValidator
 				log.debug("\n");
 				subjectCount++;
 				row++;
-			}
-			
-			for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
-				Integer i = (Integer) iterator.next();
-				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
 			}
 
 			if (dataValidationMessages.size() > 0)
@@ -1039,6 +1035,56 @@ public class PhenotypicValidator
 				}
 			}
 			validationMessages = validateMatrixPhenoFileFormat(inputStream, inputStream.toString().length());
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error("ARK_BASE_EXCEPTION: " + abe);
+		}
+		return validationMessages;
+	}
+	
+	/**
+	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg txt)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg comma)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateMatrixPhenoFileData(InputStream inputStream, String fileFormat, char delimChar)
+	{
+		java.util.Collection<String> validationMessages = null;
+
+		try
+		{
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					phenotypicDelimChr = ',';
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateMatrixPhenoFileData(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
 		{
