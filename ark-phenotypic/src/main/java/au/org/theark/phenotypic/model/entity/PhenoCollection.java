@@ -36,7 +36,7 @@ public class PhenoCollection implements java.io.Serializable
 	private String						name;
 	private String						description;
 	private Date						startDate;
-	private Date						expiryDate;
+	private Date						endDate;
 	private String						userId;
 	private Date						insertTime;
 	private String						updateUserId;
@@ -75,7 +75,7 @@ public class PhenoCollection implements java.io.Serializable
 		this.name = name;
 		this.description = description;
 		this.startDate = startDate;
-		this.expiryDate = expiryDate;
+		this.endDate = expiryDate;
 		this.userId = userId;
 		this.insertTime = insertTime;
 		this.updateUserId = updateUserId;
@@ -160,15 +160,15 @@ public class PhenoCollection implements java.io.Serializable
 	}
 
 	@Temporal(TemporalType.DATE)
-	@Column(name = "EXPIRY_DATE", length = 7)
-	public Date getExpiryDate()
+	@Column(name = "END_DATE", length = 7)
+	public Date getEndDate()
 	{
-		return this.expiryDate;
+		return this.endDate;
 	}
 
-	public void setExpiryDate(Date expiryDate)
+	public void setEndDate(Date endDate)
 	{
-		this.expiryDate = expiryDate;
+		this.endDate = endDate;
 	}
 
 	@Column(name = "USER_ID", nullable = false, length = 50)
