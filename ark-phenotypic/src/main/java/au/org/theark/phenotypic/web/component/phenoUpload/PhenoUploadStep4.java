@@ -1,7 +1,5 @@
 package au.org.theark.phenotypic.web.component.phenoUpload;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
@@ -65,26 +63,11 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 		// Filename seems to be lost from model when moving between steps in wizard
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
 		
-		// Perform actual import of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
 		
+		// Perform actual upload of data
 		uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(containerForm.getModelObject());
-		
-//		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-//		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-//		
-//		try 
-//		{
-//			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-//			inputStream.reset();
-//			uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(inputStream, fileFormat, delimiterChar);
-//			
-//		} 
-//		catch (IOException e) 
-//		{
-//			e.printStackTrace();
-//		}
 		
 		// Update the report
 		updateUploadReport(uploadReport.toString());
@@ -93,12 +76,12 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 		save();
 	}
 	
-	public void updateUploadReport(String importReport)
+	public void updateUploadReport(String uploadReport)
 	{
 		// Set Upload report
 		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
-		phenoUploadReport.append(importReport);
+		phenoUploadReport.append(uploadReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
 		Blob uploadReportBlob = Hibernate.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
