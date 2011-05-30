@@ -6,7 +6,6 @@
  */
 package au.org.theark.study.web.component.address.form;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -15,6 +14,7 @@ import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -64,7 +64,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private DropDownChoice<AddressType> addressTypeChoice;
 	private WebMarkupContainer countryStateSelector;
 	private DropDownChoice<AddressStatus> addressStatusChoice;
-	private DropDownChoice<YesNo> preferredMailingAddressChoice;
+	private CheckBox preferredMailingAddressChkBox;
 	private DateTextField		dateReceivedDp;
 	private TextArea<String> commentsTxtArea;
 	
@@ -123,7 +123,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(addressStatusChoice);
 		detailPanelFormContainer.add(dateReceivedDp);
 		detailPanelFormContainer.add(commentsTxtArea);
-		detailPanelFormContainer.add(preferredMailingAddressChoice);
+		detailPanelFormContainer.add(preferredMailingAddressChkBox);
 	}
 	
 	private void initialiseAddressTypeDropDown(){
@@ -132,10 +132,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		addressTypeChoice = new DropDownChoice<AddressType>(Constants.ADDRESS_ADDRESSTYPE,addressTypeList,defaultChoiceRenderer);
 	}
 	
-	private void initialisePreferredMailingAddressDropDown(){
-		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
-		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
-		preferredMailingAddressChoice = new DropDownChoice<YesNo>(Constants.ADDRESS_PREFERRED_MAILING,(List) yesNoList, yesnoRenderer);
+	private void initialisePreferredMailingAddressDropDown(){		
+		preferredMailingAddressChkBox = new CheckBox(Constants.ADDRESS_PREFERRED_MAILING);
 	}
 	
 	/**
@@ -203,7 +201,6 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	}
 	
 	private void initialiseAddressStatusDropDown(){
-		
 		List<AddressStatus> statusList = iArkCommonService.getAddressStatuses();
 		ChoiceRenderer<AddressStatus> defaultChoiceRenderer = new ChoiceRenderer<AddressStatus>(Constants.NAME, Constants.ID);
 		addressStatusChoice = new DropDownChoice<AddressStatus>(Constants.ADDRESS_ADDRESSSTATUS, statusList, defaultChoiceRenderer);
@@ -281,7 +278,7 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 			boolean preferredMailingAdressIsYes = false;
 			
 			if(containerForm.getModelObject().getAddress().getPreferredMailingAddress() != null){ 
-				preferredMailingAdressIsYes =  containerForm.getModelObject().getAddress().getPreferredMailingAddress().getName().equalsIgnoreCase("YES");
+				preferredMailingAdressIsYes = (containerForm.getModelObject().getAddress().getPreferredMailingAddress() == true);
 			}
 			
 			// Check if other address already set to preferredMailingAddress

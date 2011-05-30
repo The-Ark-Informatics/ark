@@ -41,7 +41,7 @@ public class Address implements java.io.Serializable {
 	private AddressType addressType;
 	private Date dateReceived;
 	private String comments;
-	private YesNo preferredMailingAddress;
+	private Boolean preferredMailingAddress;
 	
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
@@ -187,13 +187,12 @@ public class Address implements java.io.Serializable {
 		this.person = person;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "PREFERRED_MAILING_ADDRESS_ID")
-	public YesNo getPreferredMailingAddress() {
+	@Column(name = "PREFERRED_MAILING_ADDRESS", nullable = false)
+	public Boolean getPreferredMailingAddress() {
 		return preferredMailingAddress;
 	}
 
-	public void setPreferredMailingAddress(YesNo preferredMailingAddress) {
+	public void setPreferredMailingAddress(Boolean preferredMailingAddress) {
 		this.preferredMailingAddress = preferredMailingAddress;
 	}
 }

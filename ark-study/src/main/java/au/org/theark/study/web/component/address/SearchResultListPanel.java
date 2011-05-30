@@ -114,7 +114,7 @@ public class SearchResultListPanel extends Panel{
 					item.add(new Label("address.dateReceived",""));
 				}
 				
-				if(address.getPreferredMailingAddress() != null && address.getPreferredMailingAddress().getName().equalsIgnoreCase("YES")){
+				if(address.getPreferredMailingAddress() != null && address.getPreferredMailingAddress() == true){
 					item.add(new ContextImage("address.preferredMailingAddress", new Model<String>("images/icons/tick.png")));
 				}else{
 					item.add(new Label("address.preferredMailingAddress",""));

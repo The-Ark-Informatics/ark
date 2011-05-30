@@ -1230,9 +1230,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 
 		Criteria criteria = getSession().createCriteria(Address.class);
 
-		YesNo yes = getYesNo("Yes");
+//		YesNo yes = getYesNo("Yes");
 		criteria.add(Restrictions.eq("person.id", person.getId()));
-		criteria.add(Restrictions.eq("preferredMailingAddress", yes));
+		criteria.add(Restrictions.eq("preferredMailingAddress", true));
 		if (currentAddressId != null)
 		{
 			criteria.add(Restrictions.ne("id", currentAddressId));
