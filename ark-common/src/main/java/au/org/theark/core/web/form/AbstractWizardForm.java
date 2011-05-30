@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 
 /**
@@ -247,7 +248,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 
 	private AjaxLink createPrevious()
 	{
-		AjaxLink link = new AjaxLink("previous")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("previous")
 		{
 			private static final long	serialVersionUID	= 0L;
 
@@ -287,7 +288,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 
 	private AjaxLink createCancel()
 	{
-		AjaxLink link = new AjaxLink("cancel")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("cancel")
 		{
 			private static final long	serialVersionUID	= 0L;
 
