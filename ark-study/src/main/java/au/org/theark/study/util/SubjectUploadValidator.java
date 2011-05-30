@@ -390,10 +390,10 @@ public class SubjectUploadValidator
 				stringBuffer.append("The default format should be as follows:\n");
 				// SUBJECTUID	TITLE	FIRST_NAME	MIDDLE_NAME	LAST_NAME	PREFERRED_NAME	DATE_OF_BIRTH	VITAL_STATUS	GENDER	STATUS	DATE_OF_DEATH	CAUSE_OF_DEATH	MARITAL_STATUS	PREFERRED_CONTACT	EMAIL
 				stringBuffer.append(Constants.SUBJECTUID + delimiterCharacter + "TITLE" + delimiterCharacter + "FIRST_NAME" + delimiterCharacter + "MIDDLE_NAME" + delimiterCharacter
-						+ "LAST_NAME" + delimiterCharacter + "DATE_OF_BIRTH" + delimiterCharacter + "VITAL_STATUS" + delimiterCharacter + "GENDER" + delimiterCharacter + "STATUS" + delimiterCharacter + "DATE_OF_DEATH" + delimiterCharacter + 
+						+ "LAST_NAME" + delimiterCharacter + "PREFERRED_NAME" + delimiterCharacter + "DATE_OF_BIRTH" + delimiterCharacter + "VITAL_STATUS" + delimiterCharacter + "GENDER" + delimiterCharacter + "STATUS" + delimiterCharacter + "DATE_OF_DEATH" + delimiterCharacter + 
 						"CAUSE_OF_DEATH" + delimiterCharacter + "MARITAL_STATUS" + delimiterCharacter + "PREFERRED_CONTACT" + delimiterCharacter + "EMAIL" + delimiterCharacter + "\n");
-				stringBuffer.append("[ABC000001]" + delimiterCharacter + "[MR]" + delimiterCharacter + "[JOSEPH]" + delimiterCharacter + "[]" + delimiterCharacter
-						+ "[BLOGGS]" + delimiterCharacter + "[19/02/1976]" + delimiterCharacter + "[Alive]" + "[Male]" + "[Active]" + "[]" + "[]" + "[Single]" + "[Phone]" + "[joebloggs@somewhere.com]" + "\n");
+				stringBuffer.append("[ABC000001]" + delimiterCharacter + "[MR]" + delimiterCharacter + "[JOSEPH]" + delimiterCharacter + "[]" + delimiterCharacter 
+						+ "[BLOGGS]" + delimiterCharacter + "[JOEY]" + delimiterCharacter + "[19/02/1976]" + delimiterCharacter + "[Alive]" + "[Male]" + "[Active]" + "[]" + "[]" + "[Single]" + "[Phone]" + "[joebloggs@somewhere.com]" + "\n");
 				stringBuffer.append("\n\nNOTE: Enclosing quotes are optional");
 
 				fileValidationMessages.add(stringBuffer.toString());
