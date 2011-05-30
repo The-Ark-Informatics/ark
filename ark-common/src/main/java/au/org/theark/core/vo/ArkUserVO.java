@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ArkUserVO extends BaseVO implements Comparable {
+public class ArkUserVO extends BaseVO {
 
 	private static final long serialVersionUID = 1L;
 	
