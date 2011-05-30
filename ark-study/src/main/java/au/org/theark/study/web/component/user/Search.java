@@ -2,6 +2,7 @@ package au.org.theark.study.web.component.user;
 
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -11,6 +12,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -30,6 +33,9 @@ public class Search extends Panel{
 	 **/
 	@SpringBean( name = "userService")
 	private IUserService userService;
+	
+	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService iArkCommonService;
 	
 	private PageableListView<ArkUserVO> listView;
 
@@ -68,9 +74,8 @@ public class Search extends Panel{
 	
 	
 	public void initialisePanel(CompoundPropertyModel<ArkUserVO> arkUserVoModel){
-		
-		//Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
+
+				
 		/* Implement a solution to hide the panels if there is no study in context */
 		
 		SearchUserForm searchUserForm = new SearchUserForm(Constants.SEARCH_USER_FORM, arkUserVoModel){
@@ -79,8 +84,13 @@ public class Search extends Panel{
 				//Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(fbPanel);
 				
+				// Put the study name into context
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if (sessionStudyId != null && sessionStudyId > 0) {
+					containerForm.getModelObject().getStudyVO().setStudyName(iArkCommonService.getStudy(sessionStudyId).getName());
+				}
+				
 				try {
-					
 					List<ArkUserVO> userResultList = userService.searchUser(containerForm.getModelObject());
 					
 					if(userResultList != null && userResultList.size() == 0){

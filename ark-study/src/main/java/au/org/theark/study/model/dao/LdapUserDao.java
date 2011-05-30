@@ -3,6 +3,7 @@ package au.org.theark.study.model.dao;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -762,45 +763,51 @@ public class LdapUserDao implements ILdapUserDao{
 	}
 	
 	private List<ArkUserVO> searchGroupMembers(ArkUserVO userCriteriaVO, String currentUser) throws ArkSystemException{
-		log.info("In searchGroupMembers()");
-		List<ArkUserVO> userResultsList = new ArrayList<ArkUserVO>();	
-		try{
-			//The Modules and Roles the current user is linked to as part of the currentUserDetails
-			ArkUserVO currentUserDetails = getUserRole(currentUser);
-			//Get a List of Modules
-			List<ModuleVO> moduleList = currentUserDetails.getModules();
-			ArrayList<String> memberList = new ArrayList<String>();
-			//Iterate each module
-			for (ModuleVO moduleVO : moduleList) {
-			
-				//User's module
-				List<RoleVO> moduleRoleList = moduleVO.getRole();
-				log.info("Module Name:" + moduleVO.getModule());
-				//Iterate the List of roles for the module in context
-				for (RoleVO roleVO : moduleRoleList) {
 
-					log.info("Role Name:" + roleVO.getRole());
-					log.info("Base DN: " + getBaseGroupDn());
-					//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
-					LdapName dn;
-					dn = new LdapName(getBaseGroupDn());
-					dn.add(new Rdn("cn",moduleVO.getModule().trim()));
-					dn.add(new Rdn("cn",roleVO.getRole().trim()));
-					//1. Lookup all the users in this group and role
-					memberList = (ArrayList<String>) ldapTemplate.lookup(dn, new GroupMembersContextMapper());
-					
-					//2. Get each member from the list above and get their full details.
-					userResultsList = getPersonsByCn(memberList, userCriteriaVO);
-					//3. Apply the userCriteriaVO on the filter and pull only those users of the group/role who match.
-					//4. populate the userResultList and return this list
-										
+		log.info("In searchGroupMembers()");
+		List<ArkUserVO> userResultsList = new ArrayList<ArkUserVO>();
+		LinkedHashSet<ArkUserVO> userResultsHash = new LinkedHashSet<ArkUserVO>();
+		if (userCriteriaVO.getStudyVO() != null && userCriteriaVO.getStudyVO().getStudyName() != null) {
+			//Not worth proceeding if the study is not set
+			try{
+				//The Modules and Roles the current user is linked to as part of the currentUserDetails
+				ArkUserVO currentUserDetails = getUserRole(currentUser);
+				//Get a List of Modules
+				List<ModuleVO> moduleList = currentUserDetails.getModules();
+				ArrayList<String> memberList = new ArrayList<String>();
+				//Iterate each module
+				for (ModuleVO moduleVO : moduleList) {
+				
+					//User's module
+					List<RoleVO> moduleRoleList = moduleVO.getRole();
+					log.info("Module Name:" + moduleVO.getModule());
+					//Iterate the List of roles for the module in context
+					for (RoleVO roleVO : moduleRoleList) {
+	
+						log.info("Role Name:" + roleVO.getRole());
+						log.info("Base DN: " + getBaseGroupDn());
+						//Fetches a list of roles that have been assigned to the user indicating that the user is a member of the GROUP/Application and the various roles.
+						LdapName dn;
+						dn = new LdapName(getBaseGroupDn());
+						dn.add(new Rdn("cn",moduleVO.getModule().trim()));
+						dn.add(new Rdn("cn",userCriteriaVO.getStudyVO().getStudyName()));
+						dn.add(new Rdn("cn",roleVO.getRole().trim()));
+						//1. Lookup all the users in this group and role
+						memberList = (ArrayList<String>) ldapTemplate.lookup(dn, new GroupMembersContextMapper());
+						
+						//2. Get each member from the list above and get their full details.
+						List<ArkUserVO> tmpList = getPersonsByCn(memberList, userCriteriaVO);
+						//3. Apply the userCriteriaVO on the filter and pull only those users of the group/role who match.
+						//4. populate the userResultList and return this list
+						userResultsHash.addAll(tmpList);	//try to ensure unique entries only
+					}
 				}
+				userResultsList.addAll(userResultsHash);
+			}catch(InvalidNameException ine){
+				log.error("A system error has occured " + ine.getStackTrace());
+				throw new ArkSystemException("A system error has occured");
 			}
-		}catch(InvalidNameException ine){
-			log.error("A system error has occured " + ine.getStackTrace());
-			throw new ArkSystemException("A system error has occured");
 		}
-		
 		return userResultsList;
 	}
 	
