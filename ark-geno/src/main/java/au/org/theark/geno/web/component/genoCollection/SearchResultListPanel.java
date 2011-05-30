@@ -18,6 +18,7 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;
@@ -132,7 +133,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxLink buildLink(final GenoCollection genoCollection)
 	{
-		AjaxLink link = new AjaxLink(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_NAME)
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(au.org.theark.geno.service.Constants.GENO_COLLECTION_VO_NAME)
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)

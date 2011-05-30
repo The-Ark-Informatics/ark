@@ -5,7 +5,6 @@ package au.org.theark.geno.web.component.upload;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -17,6 +16,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.geno.model.entity.Upload;
 import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
@@ -114,7 +114,7 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxLink buildLink(final UploadCollection uploadCollection)
 	{
-		AjaxLink link = new AjaxLink(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILENAME)
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink(au.org.theark.geno.service.Constants.UPLOADCOLLECTION_VO_UPLOAD_FILENAME)
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)
