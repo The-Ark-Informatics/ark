@@ -62,7 +62,7 @@ public class Constants {
 	public static final String PHENO_COLLECTIONVO_FIELD_DATA_ID = "phenoCollection.fieldData.id";
 	public static final String PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS = "phenoCollection.status";
 	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE	= "phenoCollection.startDate";
-	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE	= "phenoCollection.expiryDate";
+	public static final String	PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE	= "phenoCollection.endDate";
 	public static final String PHENO_COLLECTIONVO_FIELD_PALETTE = "phenoCollection.fieldPalette";
 	public static final String PHENO_COLLECTIONVO_UPLOAD = "phenoCollection.upload";
 	public static final String PHENO_COLLECTIONVO_UPLOAD_ID = "phenoCollection.upload.id";
@@ -134,7 +134,7 @@ public class Constants {
 	public static final String PHENO_COLLECTION_DESCRIPTION = "description";
 	public static final String PHENO_COLLECTION_STATUS = "status";
 	public static final String PHENO_COLLECTION_START_DATE = "startDate";
-	public static final String PHENO_COLLECTION_EXPIRY_DATE= "expiryDate";
+	public static final String PHENO_COLLECTION_END_DATE= "endDate";
 	public static final String PHENO_COLLECTION_USER = "user";
 	public static final String	PHENO_COLLECTION_USER_ID	= "userId";
 	public static final String PHENO_COLLECTION_INSERT_TIME = "insertTime";
