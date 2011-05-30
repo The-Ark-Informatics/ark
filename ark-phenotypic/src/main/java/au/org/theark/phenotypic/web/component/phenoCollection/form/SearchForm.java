@@ -23,7 +23,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -52,7 +51,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private TextArea<String>									phenoCollectionDescriptionTxtAreaFld;
 	private DropDownChoice<Status>							statusDdc;
 	private DateTextField									phenoCollectionStartDateFld;
-	private DateTextField									phenoCollectionExpiryDateFld;
+	private DateTextField									phenoCollectionEndDateFld;
 	private DetailPanel											detailPanel;
 	private Long 													sessionStudyId;
 	private WebMarkupContainer arkContextMarkup;
@@ -71,7 +70,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.cpmModel = model;
 		this.listView = listView;
 		this.detailPanel = detailPanel;
-		this.arkContextMarkup = arkContextMarkup;
+		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
 		
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
@@ -104,15 +103,15 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		phenoCollectionNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME);
 		phenoCollectionDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
 		phenoCollectionStartDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, Constants.DD_MM_YYYY);
-		phenoCollectionExpiryDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, Constants.DD_MM_YYYY);
+		phenoCollectionEndDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE, Constants.DD_MM_YYYY);
 		 
 		ArkDatePicker startDatePicker = new ArkDatePicker(); 
 		startDatePicker.bind(phenoCollectionStartDateFld);
 		phenoCollectionStartDateFld.add(startDatePicker);
 		
 		ArkDatePicker endDatePicker = new ArkDatePicker(); 
-		endDatePicker.bind(phenoCollectionExpiryDateFld);
-		phenoCollectionExpiryDateFld.add(endDatePicker);
+		endDatePicker.bind(phenoCollectionEndDateFld);
+		phenoCollectionEndDateFld.add(endDatePicker);
 		
 		initStatusDdc();
 		addFieldComponents();
@@ -125,7 +124,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		add(statusDdc);
 		add(phenoCollectionDescriptionTxtAreaFld);
 		add(phenoCollectionStartDateFld);
-		add(phenoCollectionExpiryDateFld);
+		add(phenoCollectionEndDateFld);
 	}
 
 	@Override
@@ -195,5 +194,21 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			flag = true;
 		}
 		return flag;
+	}
+
+	/**
+	 * @param arkContextMarkup the arkContextMarkup to set
+	 */
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
+	{
+		this.arkContextMarkup = arkContextMarkup;
+	}
+
+	/**
+	 * @return the arkContextMarkup
+	 */
+	public WebMarkupContainer getArkContextMarkup()
+	{
+		return arkContextMarkup;
 	}
 }

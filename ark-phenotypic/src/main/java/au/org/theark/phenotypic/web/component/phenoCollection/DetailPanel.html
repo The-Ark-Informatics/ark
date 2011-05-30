@@ -91,13 +91,13 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="expiryDate"><wicket:message key="phenoCollection.expiryDate">Expiry Date:</wicket:message></label>
+						<label for="endDate"><wicket:message key="phenoCollection.endDate">End Date:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.expiryDate"  type="text" maxLength="10"/>
+						<input wicket:id="phenoCollection.endDate"  type="text" maxLength="10"/>
 					</div>
 				</div>
 				
@@ -148,6 +148,8 @@
 						<input wicket:id="save" type="submit" wicket:message="value:button.save" />&nbsp;
 						<div id="panelMargin">&nbsp;</div>
 						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />&nbsp;
+						<div id="panelMargin">&nbsp;</div>
+						<input wicket:id="clearCollection" type="submit" wicket:message="value:button.clearCollection" />&nbsp;
 						<div id="panelMargin">&nbsp;</div>
 						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
 				  	</div>

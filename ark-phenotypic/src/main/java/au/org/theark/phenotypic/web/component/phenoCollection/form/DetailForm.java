@@ -1,15 +1,18 @@
 package au.org.theark.phenotypic.web.component.phenoCollection.form;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
+import org.apache.wicket.extensions.markup.html.form.palette.component.Selection;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -26,17 +29,21 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
+import au.org.theark.phenotypic.web.component.phenoUpload.DeleteButton;
+import au.org.theark.phenotypic.web.component.phenoUpload.SearchResultListPanel;
 
 /**
  * @author nivedann
@@ -57,10 +64,12 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	private DropDownChoice<Status>	statusDdc;
 	private TextArea<String>			descriptionTxtAreaFld;
 	private DateTextField			startDateTxtFld;
-	private DateTextField			expiryDateTxtFld;
+	private DateTextField			endDateTxtFld;
 	
 	// Field selection Palette
 	private Palette	fieldPalette;
+	
+	private AjaxButton clearCollectionButton;
 	
 	private WebMarkupContainer arkContextMarkup;
 
@@ -117,15 +126,37 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		descriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
 		startDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-		expiryDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		endDateTxtFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		 
 		ArkDatePicker startDatePicker = new ArkDatePicker(); 
 		startDatePicker.bind(startDateTxtFld);
 		startDateTxtFld.add(startDatePicker);
 		
 		ArkDatePicker endDatePicker = new ArkDatePicker(); 
-		endDatePicker.bind(expiryDateTxtFld);
-		expiryDateTxtFld.add(endDatePicker);
+		endDatePicker.bind(endDateTxtFld);
+		endDateTxtFld.add(endDatePicker);
+		
+		clearCollectionButton =  new AjaxButton("clearCollection", new StringResourceModel("clearCollectionKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				//TODO: Implement confirm
+				//phenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
+				//this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully");
+				//processErrors(target);
+			}
+			
+			//TODO NN Uncomment after User Management UI is completed	
+//			@Override
+//			public boolean isVisible()
+//			{
+//				return isActionPermitted(Constants.DELETE);
+//			}
+		};
+		
+		//TODO: Enable once confirm implemented
+		clearCollectionButton.setVisible(false);
 
 		// Initialise Drop Down Choices
 		initStatusDdc();
@@ -144,11 +175,15 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		PropertyModel<Collection<Field>> selectedModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsSelected");
 		PropertyModel<Collection<Field>> availableModPm = new PropertyModel<Collection<Field>>(cpm,"fieldsAvailable");
 		
-		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, 10, true){
+		
+		
+		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, au.org.theark.core.Constants.ROWS_PER_PAGE, false){
 			@Override
 			public ResourceReference getCSS(){ 
 				return null;
 			}
+			
+			//TODO: ARK-177 implement disabling of selected fields if fieldData exist 
 		};
 	}
 
@@ -165,8 +200,11 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		detailPanelFormContainer.add(descriptionTxtAreaFld);
 		detailPanelFormContainer.add(statusDdc);
 		detailPanelFormContainer.add(startDateTxtFld);
-		detailPanelFormContainer.add(expiryDateTxtFld);
+		detailPanelFormContainer.add(endDateTxtFld);
 		detailPanelFormContainer.add(fieldPalette);
+		
+		// Custom clear collection button
+		editButtonContainer.add(clearCollectionButton);
 
 		add(detailPanelFormContainer);
 	}
@@ -233,16 +271,16 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		phenotypicService.deleteCollection(containerForm.getModelObject());
 		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
    		
-	   	// Display delete confirmation message
-	   	target.addComponent(feedBackPanel);
-	   	//TODO Implement Exceptions in PhentoypicService
+   	// Display delete confirmation message
+   	target.addComponent(feedBackPanel);
+	   //TODO Implement Exceptions in PhentoypicService
 		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
      
 		// Close the confirm modal window
-	   	selectModalWindow.close(target);
-	   	// Move focus back to Search form
+	   selectModalWindow.close(target);
+	   // Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
 		onCancel(target);
@@ -258,6 +296,5 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		}else{
 			return false;
 		}
-		
 	}
 }

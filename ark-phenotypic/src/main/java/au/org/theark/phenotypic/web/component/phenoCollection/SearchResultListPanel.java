@@ -17,6 +17,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -126,14 +127,14 @@ public class SearchResultListPanel extends Panel
 				
 				// TODO when displaying text escape any special characters
 				// Expiry Date
-				if (phenoCollection.getExpiryDate() != null)
+				if (phenoCollection.getEndDate() != null)
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, simpleDateFormat.format(phenoCollection.getExpiryDate())));// the ID here must match
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE, simpleDateFormat.format(phenoCollection.getEndDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_EXPIRY_DATE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE, ""));// the ID here must match the ones in mark-up
 				}
 
 				/* For the alternative stripes */
@@ -153,7 +154,7 @@ public class SearchResultListPanel extends Panel
 
 	private AjaxLink buildLink(final PhenoCollection phenoCollection)
 	{
-		AjaxLink link = new AjaxLink("phenoCollection.name")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phenoCollection.name")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)
