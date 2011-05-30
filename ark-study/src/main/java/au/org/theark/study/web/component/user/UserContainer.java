@@ -15,6 +15,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.IArkComponent;
@@ -54,6 +55,8 @@ public class UserContainer extends Panel implements IArkComponent{
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
+	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService iArkCommonService;	
 	
 	
 	public void initialiseMarkupContainers(){
@@ -152,12 +155,11 @@ public class UserContainer extends Panel implements IArkComponent{
 		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
-		
-		ArkUserVO arkUserVO = new ArkUserVO();
 		try{
 			List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
 			if(sessionStudyId != null && sessionStudyId > 0){
-				 userResultList = userService.searchUser(arkUserVO);	
+				containerForm.getModelObject().getStudyVO().setStudyName(iArkCommonService.getStudy(sessionStudyId).getName());
+				userResultList = userService.searchUser(containerForm.getModelObject());	
 			}
 			
 			
