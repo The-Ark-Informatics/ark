@@ -1,24 +1,25 @@
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
 import java.awt.Color;
+import java.util.Iterator;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
-import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.web.component.chart.JFreeChartImage;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
@@ -41,7 +42,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private IArkCommonService					iArkCommonService;
 	
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService				iPhenotypicService;
 	
 	private JFreeChart chart;
 	private DefaultPieDataset d;
@@ -86,8 +87,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			
 			d = new DefaultPieDataset();
-			d.setValue("Fields with Data", new Integer(phenotypicService.getCountOfFieldsWithDataInStudy(study)));
-			d.setValue("Fields without Data", new Integer(phenotypicService.getCountOfFieldsInStudy(study) - phenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			d.setValue("Fields with Data", new Integer(iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
+			d.setValue("Fields without Data", new Integer(iPhenotypicService.getCountOfFieldsInStudy(study) - iPhenotypicService.getCountOfFieldsWithDataInStudy(study)));
 			
 			chart = ChartFactory.createPieChart("Phenotypic Field Summary", d,
 	                 true,		// Show legend  
@@ -98,8 +99,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
 			
 			d = new DefaultPieDataset();
-			d.setValue("Collections with Data", new Integer(phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
-			d.setValue("Collections without Data", new Integer(phenotypicService.getCountOfCollectionsInStudy(study) - phenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+			d.setValue("Collections with Data", new Integer(iPhenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+			d.setValue("Collections without Data", new Integer(iPhenotypicService.getCountOfCollectionsInStudy(study) - iPhenotypicService.getCountOfCollectionsWithDataInStudy(study)));
 			
 			chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
 	                 true,		// Show legend  
@@ -108,6 +109,39 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	        chart.setBackgroundPaint(Color.white);
 	        chart.setBorderVisible(false);
 			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
+			
+			String[] seriesNames = new String[] {"2001", "2002"};
+			String[] categoryNames = new String[] {"First Quater",
+			                                       "Second Quater"};
+			Number[][] categoryData = new Integer[][] {{new Integer(20),
+			                                            new Integer(35)},
+			                                           {new Integer(40),
+			                                            new Integer(60)}
+			};
+			
+			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+			
+			List<BarChartResult> resultList = iPhenotypicService.getFieldsWithDataResults(study);
+			for (Iterator iterator = resultList.iterator(); iterator.hasNext();)
+			{
+				BarChartResult barChartResult = (BarChartResult) iterator.next();
+				//dataset.setValue(3, "Collection", "ANOTHER");
+				//dataset.setValue(6, "Collection", "NEW_COLLECTION");
+				dataset.setValue(barChartResult.getValue(), barChartResult.getRowKey(), barChartResult.getColumnKey());
+			}
+			
+			
+			chart = ChartFactory.createBarChart(
+			                     "Fields With Data", // Title
+			                      "Collection Name",              // categoryAxisLabel
+			                      "Fields",                 // valueAxisLabel
+			                      dataset,         // Dataset
+			                      PlotOrientation.VERTICAL ,            			// Orientation
+			                      false ,                   // Show legend
+			                      true,						  // Show tooltips
+			                      false						  // Show urls
+			                     );
+			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 400, 400));
 		}
 		else
 		{
