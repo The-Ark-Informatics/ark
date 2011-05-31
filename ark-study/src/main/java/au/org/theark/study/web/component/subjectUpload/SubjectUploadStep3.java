@@ -14,6 +14,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
+import au.org.theark.core.web.component.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -39,6 +40,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+	
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
 
 	/**
 	 * Construct.
@@ -55,6 +58,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		add(downloadValMsgButton);
 
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
@@ -165,13 +169,21 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 		}
 		catch (IOException e)
 		{
-			System.out.println("Failed to display the uploaded file: " + e);
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 		}
 		
-		if (validationMessage != null && validationMessage.length() > 0)
+		containerForm.getModelObject().setValidationMessages(validationMessages);
+		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+		
+		if(validationMessage != null && validationMessage.length() > 0)
 		{
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());	
+			target.addComponent(form.getWizardButtonContainer());
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+			addOrReplace(downloadValMsgButton);
+			target.addComponent(downloadValMsgButton);
 		}
 	}
 
