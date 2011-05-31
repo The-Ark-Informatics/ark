@@ -177,7 +177,7 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 			{
 				PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, inputStream.toString().length());
+				validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
 			
 				HashSet<Integer> insertRows = new HashSet<Integer>();
 				HashSet<Integer> updateRows = new HashSet<Integer>();
@@ -232,10 +232,6 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 					overrideDataValidationContainer.setVisible(false);
 					target.addComponent(overrideDataValidationContainer);
 				}
-			} catch (FileFormatException ffe) {
-				log.error(ffe.getMessage());
-			} catch (PhenotypicSystemException pse) {
-				log.error(pse.getMessage());
 			} catch (IOException ioe){
 				log.error(ioe.getMessage());
 			}
