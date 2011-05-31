@@ -18,6 +18,10 @@ public class ConsentDetailsReportVO extends GenericReportViewVO {
 	protected Date consentDate;
 	protected StudyComp studyComp;
 	
+	public ConsentDetailsReportVO() {
+		this.linkSubjectStudy = new LinkSubjectStudy();
+	}
+	
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
 	}

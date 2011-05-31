@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -166,17 +167,19 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	public List<LinkSubjectStudy> getConsentDetailsList(
 			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
-		if (cdrVO.getLinkSubjectStudy() != null) {
-			if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
-				criteria.add(Restrictions.ilike(Constants.LINKSUBJECTSTUDY_SUBJECTUID, cdrVO.getLinkSubjectStudy().getSubjectUID()));
-			}
-			if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
-				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
-			}
+
+		// Add study in context to criteria first (linkSubjectStudy on the VO should never be null)
+		criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_STUDY, cdrVO.getLinkSubjectStudy().getStudy()));
+		if (cdrVO.getLinkSubjectStudy().getSubjectUID() != null) {
+			criteria.add(Restrictions.ilike(Constants.LINKSUBJECTSTUDY_SUBJECTUID, cdrVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
+		}
+		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
+			criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
 		}
 		if (!onlyStudyLevelConsent && cdrVO.getStudyComp() != null) {
 			// we are dealing with study component consent
-			if (cdrVO.getConsentStatus().getName().equals("Not Consented")) {
+			if (cdrVO.getConsentStatus() == null || 
+					(cdrVO.getConsentStatus() != null && cdrVO.getConsentStatus().getName().equals("Not Consented"))) {
 				// Special-case: Treat the null FK for consentStatus as "Not Consented"
 				criteria.createAlias(Constants.LINKSUBJECTSTUDY_CONSENT, "c", Criteria.LEFT_JOIN);
 			} else {

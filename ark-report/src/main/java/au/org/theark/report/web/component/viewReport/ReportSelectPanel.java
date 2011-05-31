@@ -162,7 +162,8 @@ public class ReportSelectPanel extends Panel
 						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
-				} else if (reportTemplate.getName().equals(Constants.STUDY_LEVEL_CONSENT_REPORT_NAME)) {
+				} 
+				else if (reportTemplate.getName().equals(Constants.STUDY_LEVEL_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
 					}
@@ -176,21 +177,24 @@ public class ReportSelectPanel extends Panel
 						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
-				} else if (reportTemplate.getName().equals(Constants.STUYD_COMP_CONSENT_REPORT_NAME)) {
-					if (reportSelectCPM.getObject().getStudy() == null) {
-						this.error("This report requires a study in context. Please put a study in context first.");
-					}
-					else {
-						ConsentDetailsReportContainer selectedReportPanel = new ConsentDetailsReportContainer("selectedReportContainerPanel");
-						selectedReportPanel.setOutputMarkupId(true);
-						// Replace the old selectedReportPanel with this new one
-						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
-						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
-						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
-						this.info(reportTemplate.getName() + " template selected.");
-					}
-				} else {
+				} 
+				// TODO: Disabled Study Component Consent Details report for now, because it doesn't work the way I think it should
+//				else if (reportTemplate.getName().equals(Constants.STUYD_COMP_CONSENT_REPORT_NAME)) {
+//					if (reportSelectCPM.getObject().getStudy() == null) {
+//						this.error("This report requires a study in context. Please put a study in context first.");
+//					}
+//					else {
+//						ConsentDetailsReportContainer selectedReportPanel = new ConsentDetailsReportContainer("selectedReportContainerPanel");
+//						selectedReportPanel.setOutputMarkupId(true);
+//						// Replace the old selectedReportPanel with this new one
+//						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+//						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+//						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+//						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+//						this.info(reportTemplate.getName() + " template selected.");
+//					}
+//				}
+				else {
 					this.error("System error: " + reportTemplate.getName() + " has no implementation or has been deprecated.");
 				}
 				target.addComponent(reportContainerVO.getFeedbackPanel());

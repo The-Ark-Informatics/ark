@@ -38,26 +38,7 @@ public class ConsentDetailsReportDataSource implements Serializable, JRDataSourc
 	 *
 	 */
 	public ConsentDetailsReportDataSource(IReportService reportService, ConsentDetailsReportVO cdrVO) {
-		data = new ArrayList<ConsentDetailsDataRow>();
-		
-//		List<ConsentDetailsDataRow> results = reportService.getConsentDetailsList(cdrVO, false);
-
-		//TODO query the database 
-		data.add(new ConsentDetailsDataRow("Test-000000001", "Consented",  "Active", 
-									"Mrs.", "Anna", "Kama", 
-									"35 Stirling Hwy", "Crawley", "WA", "6009", "AU", 
-									"123494sf23", "908124213", "noone@home.com.au", 
-									"F", new Date()));
-		data.add(new ConsentDetailsDataRow("Test-000000002", "Consented",  "Active", 
-				"Mr.", "Pope", "John", 
-				"801 Swanston St", "Melbourne", "Vic", "3000", "AU", 
-				"13412321321", "41424321312", "semi@religious.org", 
-				"M", new Date()));
-		data.add(new ConsentDetailsDataRow("Test-000000003", "Unconsented",  "Active", 
-				"Capt.", "Planet", "Anhero", 
-				"1399 Johnston Street", "Vancouver", "", "BC V6H 3R9", "CA", 
-				"+1 604-844-3800 ", "00000000000", "downto@zero.greenhouse.com", 
-				"M", new Date()));
+		data = reportService.getConsentDetailsList(cdrVO, false);
 	}
 
 	/**

@@ -61,7 +61,14 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
+		cpModel.getObject().getLinkSubjectStudy().setStudy(study);
 
+		String reportTitle = study.getName() + " - Study Component Consent Details Report";
+		if (cpModel.getObject().getStudyComp() != null) {
+			String studyComponent = cpModel.getObject().getStudyComp().getName();
+			reportTitle += " - " + studyComponent;
+		}
+		
 		ReportTemplate reportTemplate = cpModel.getObject().getSelectedReportTemplate();
 		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
 
@@ -76,6 +83,10 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 			design = JRXmlLoader.load(reportFile);
 //			System.out.println(" design -- created " );
 			if (design != null) {
+				design.setName(reportTitle);	//set the output file name to match report title
+				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
+					design.setIgnorePagination(true);	//don't paginate CSVs
+				}
 				report = JasperCompileManager.compileReport(design);
 //				System.out.println(" design -- compiled " );
 			}
@@ -86,8 +97,7 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 //		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
-		String consentType = "Study-level Consent (DUMMY Data)";
-		parameters.put("ReportTitle", study.getName() + " - Consent Details Report - " + consentType);
+		parameters.put("ReportTitle", reportTitle);
 		ConsentDetailsReportDataSource reportDS = new ConsentDetailsReportDataSource(reportService, cpModel.getObject());
 		
 		JRResource reportResource = null;
@@ -171,6 +181,7 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 		List<StudyComp> consentStatusList = new ArrayList<StudyComp>(study.getStudyComps());
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>("name", "id");
 		ddcStudyComp = new DropDownChoice<StudyComp>(Constants.STUDY_COMP, consentStatusList, defaultChoiceRenderer);
+		ddcStudyComp.setRequired(true);
 		add(ddcStudyComp);
 	}
 

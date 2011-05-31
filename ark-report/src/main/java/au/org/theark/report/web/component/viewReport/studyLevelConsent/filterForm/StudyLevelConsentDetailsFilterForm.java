@@ -1,7 +1,6 @@
 package au.org.theark.report.web.component.viewReport.studyLevelConsent.filterForm;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +28,12 @@ import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.web.Constants;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportDataSource;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportDataSource;
 
@@ -61,6 +58,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
+		cpModel.getObject().getLinkSubjectStudy().setStudy(study);
 
 		String consentType = "Study-level Consent";
 		String reportTitle = study.getName() + " - Consent Details Report - " + consentType;
@@ -79,7 +77,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 			design = JRXmlLoader.load(reportFile);
 //			System.out.println(" design -- created " );
 			if (design != null) {
-				design.setName(reportTitle);
+				design.setName(reportTitle);	//set the output file name to match report title
 				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 					design.setIgnorePagination(true);	//don't paginate CSVs
 				}
@@ -95,6 +93,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
 		StudyLevelConsentReportDataSource reportDS = new StudyLevelConsentReportDataSource(reportService, cpModel.getObject());
+		
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
 			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
@@ -116,9 +115,6 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 			final JRResource csvResource = new JRConcreteResource<CsvResourceHandler>(new CsvResourceHandler());
 			csvResource.setJasperReport(report);
-//			parameters.put("net.sf.jasperreports.export.csv.exclude.origin.band.1", "columnHeader");
-//			parameters.put("net.sf.jasperreports.export.csv.exclude.origin.band.2", "pageFooter");
-//			parameters.put("net.sf.jasperreports.export.csv.exclude.origin.keep.first.band.1", "columnHeader");
 			csvResource.setReportParameters(parameters).setReportDataSource(reportDS);
 			// This code would emulate a file download as if clicked the user 
 			// clicked on the download link, but unfortunately it seems to 
