@@ -141,7 +141,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			                      true,						  // Show tooltips
 			                      false						  // Show urls
 			                     );
-			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 400, 400));
+			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400));
 		}
 		else
 		{
