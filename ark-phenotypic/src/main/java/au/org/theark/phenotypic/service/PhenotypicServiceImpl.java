@@ -21,6 +21,7 @@ import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.BarChartResult;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.dao.IPhenotypicDao;
@@ -744,5 +745,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public int clearPhenoCollection(PhenoCollection phenoCollection)
 	{
 		return phenotypicDao.clearPhenoCollection(phenoCollection);
+	}
+
+	public List<BarChartResult> getFieldsWithDataResults(Study study)
+	{
+		return phenotypicDao.getFieldsWithDataResults(study);
 	}
 }

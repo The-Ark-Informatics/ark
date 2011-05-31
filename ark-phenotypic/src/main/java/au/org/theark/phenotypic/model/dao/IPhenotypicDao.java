@@ -6,6 +6,7 @@ import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.util.BarChartResult;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -140,4 +141,6 @@ public interface IPhenotypicDao {
 	 */
 	public int getStudyFieldDataCount(PhenoCollectionVO phenoCollectionVoCriteria);
 	public DelimiterType getDelimiterType(Long id);
+	
+	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
 }

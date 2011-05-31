@@ -24,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.util.BarChartResult;
 import au.org.theark.phenotypic.model.entity.DelimiterType;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
@@ -740,7 +741,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 
 		if (field.getName() != null)
 		{
-			criteria.add(Restrictions.eq(au.org.theark.phenotypic.web.Constants.FIELD_NAME, field.getName()));
+			criteria.add(Restrictions.ilike(au.org.theark.phenotypic.web.Constants.FIELD_NAME, field.getName(), MatchMode.ANYWHERE));
 		}
 
 		if (field.getStudy() != null)
@@ -1239,8 +1240,8 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.eq("id",phenoCollectionVo.getFieldData().getId()));	
 		}
 		
-		if(phenoCollectionVo.getPhenoCollection().getId() != null){
-			criteria.add(Restrictions.eq("collection",phenoCollectionVo.getPhenoCollection()));	
+		if(phenoCollectionVo.getFieldData().getCollection().getId() != null){
+			criteria.add(Restrictions.eq("collection",phenoCollectionVo.getFieldData().getCollection()));	
 		}
 		
 		if(phenoCollectionVo.getFieldData().getLinkSubjectStudy() != null && phenoCollectionVo.getFieldData().getLinkSubjectStudy().getSubjectUID() != null){
@@ -1270,7 +1271,6 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			try
 			{
 				String hql="DELETE FROM FieldData WHERE collection.id=" + phenoCollection.getId().intValue();
-				System.out.println("HQL IS:"+hql);
 				Query query= getSession().createQuery(hql);
 				rowsDeleted=query.executeUpdate();
 
@@ -1290,4 +1290,30 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		return rowsDeleted;
 	}
+	
+	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study) {
+		java.util.List<BarChartResult> results = new ArrayList<BarChartResult>();
+		
+		String hql="SELECT COUNT(DISTINCT fd.field) AS value, 'Collection' AS rowKey, c.name AS columnKey\n" +
+						"FROM FieldData fd \n" +
+						"INNER JOIN fd.collection AS c\n" +
+						"WHERE c.study = :study\n" +
+						" GROUP BY fd.collection";
+		Query query= getSession().createQuery(hql);
+		query.setParameter("study", study);
+		List resultList = query.list();
+		if ((resultList != null) && (resultList.size() > 0)) {
+			for(Object r: resultList) {
+				Object[] obj = (Object[]) r;
+				double value = ((Long)obj[0]).doubleValue();
+				Comparable rowKey = (Comparable) obj[1];
+				Comparable columnKey = (Comparable) obj[2];
+				
+				results.add(new BarChartResult(value, rowKey, columnKey));
+			}
+		}
+		return results;
+	}
+	
+	
 }
