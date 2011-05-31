@@ -497,10 +497,10 @@ public class PhenotypicValidator
 				int numberOfColumnsInHeader = headerColumnArray.length;
 				
 				// Check each line has same number of columns as header
-				if (stringLineArray.length < headerColumnArray.length)
-				{
-					fileValidationMessages.add("Error at line " + row + ", the line has missing cells");
-				}
+				//if (stringLineArray.length < headerColumnArray.length)
+				//{
+				//	fileValidationMessages.add("Error at line " + row + ", the line has missing cells");
+				//}
 				
 				subjectCount++;
 				row++;
@@ -845,41 +845,35 @@ public class PhenotypicValidator
 				field.setStudy(study);
 				field.setName(fieldName);
 				
-				if (csvReader.getIndex("FIELD_TYPE") > 0)
+				if (csvReader.get("FIELD_TYPE").length() > 0)
 				{
 					FieldType fieldType = new FieldType();
-					fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
 					field.setFieldType(fieldType);
 				}
-				if (csvReader.getIndex("DESCRIPTION") > 0)
+				if (csvReader.get("DESCRIPTION").length() > 0)
 				{
-					if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
-						field.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
+						field.setDescription(csvReader.get("DESCRIPTION"));
 				}
-				if (csvReader.getIndex("UNITS") > 0)
+				if (csvReader.get("UNITS").length() > 0)
 				{
-					if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
-						field.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
+					field.setUnits((csvReader.get("UNITS")));
 				}
-				if (csvReader.getIndex("ENCODED_VALUES") > 0)
+				if (csvReader.get("ENCODED_VALUES").length() > 0)
 				{
-					if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
-						field.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
+					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
 				}
-				if (csvReader.getIndex("MINIMUM_VALUE") > 0)
+				if (csvReader.get("MINIMUM_VALUE").length() > 0)
 				{
-					if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
-						field.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
+					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
 				}
-				if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
+				if (csvReader.get("MAXIMUM_VALUE").length() > 0)
 				{	
-					if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
-						field.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
+					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 				}
-				if (csvReader.getIndex("MISSING_VALUE") > 0)
+				if (csvReader.get("MISSING_VALUE").length() > 0)
 				{
-					if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
-						field.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
+					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 				}
 				
 				Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
@@ -1085,6 +1079,56 @@ public class PhenotypicValidator
 				}
 			}
 			validationMessages = validateMatrixPhenoFileData(inputStream, inputStream.toString().length());
+		}
+		catch (FileFormatException ffe)
+		{
+			log.error("FILE_FORMAT_EXCPEPTION: " + ffe);
+		}
+		catch (ArkBaseException abe)
+		{
+			log.error("ARK_BASE_EXCEPTION: " + abe);
+		}
+		return validationMessages;
+	}
+	
+	/**
+	 * Validates the file in the default "matrix" data dictionary file format assumed: "FIELD_NAME","FIELD_TYPE","DESCRIPTION","UNITS","ENCODED_VALUES","MINIMUM_VALUE","MAXIMUM_VALUE","MISSING_VALUE"
+	 * 
+	 * @param inputStream
+	 *           is the input stream of the file
+	 * @param fileFormat
+	 *           is the file format (eg CSV, TXT or XLS)
+	 * @param delimChar
+	 *           is the delimiter character of the file (eg COMMA, TAB, PIPE etc)
+	 * @return a collection of validation messages
+	 */
+	public Collection<String> validateDataDictionaryFileData(InputStream inputStream, String fileFormat, char delimChar)
+	{
+		java.util.Collection<String> validationMessages = null;
+
+		try
+		{
+			// If Excel, convert to CSV for validation
+			if (fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = convertXlsToCsv(w);
+					inputStream.reset();
+					phenotypicDelimChr = ',';
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			validationMessages = validateDataDictionaryFileData(inputStream, inputStream.toString().length());
 		}
 		catch (FileFormatException ffe)
 		{
