@@ -16,6 +16,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.service.IReportService;
@@ -41,6 +42,14 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	protected CompoundPropertyModel<T> cpModel;
 	protected ReportOutputPanel reportOutputPanel;
 	protected FeedbackPanel feedbackPanel;
+	
+	// Add a visitor class for required field marking/validation/highlighting
+	ArkFormVisitor formVisitor = new ArkFormVisitor();
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
+	}
 	
 	public AbstractReportFilterForm(String id, CompoundPropertyModel<T> model) {
 		super(id, model);
