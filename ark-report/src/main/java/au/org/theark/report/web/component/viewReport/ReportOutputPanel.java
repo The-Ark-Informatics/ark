@@ -50,6 +50,9 @@ public class ReportOutputPanel extends Panel {
 		
 		downloadReportForm.add(downloadReportButton);
 		add(downloadReportForm);
+		// Button had caching issues
+		downloadReportForm.setVisible(false);
+		
 		this.setVisible(false);	//start off invisible
 	}
 	
@@ -69,8 +72,6 @@ public class ReportOutputPanel extends Panel {
 				downloadReportLink = newLink;
 			}
 		}
-		// Hide link, as using button instead (link forces busyIndicator on, and doesn't turn off..)
-		downloadReportLink.setVisible(false);
 	}
 	
 	private AjaxButton buildDownloadButton(final JRResource reportResource) {
