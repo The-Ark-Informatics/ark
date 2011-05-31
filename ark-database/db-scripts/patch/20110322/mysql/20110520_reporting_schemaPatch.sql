@@ -41,4 +41,9 @@ VALUES
 INSERT INTO `reporting`.`report_template`
 (`ID`, `NAME`, `TEMPLATE_PATH`)
 VALUES 
-(2, 'Study-level Consent Details Reportt', 'ConsentDetailsReport.jrxml');
+(2, 'Study-level Consent Details Report', 'ConsentDetailsReport.jrxml');
+
+INSERT INTO `reporting`.`report_template`
+(`ID`, `NAME`, `TEMPLATE_PATH`)
+VALUES 
+(3, 'Study Component Consent Details Report', 'ConsentDetailsReport.jrxml');
