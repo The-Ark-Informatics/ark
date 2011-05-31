@@ -1,7 +1,7 @@
 package au.org.theark.report.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,15 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.dao.IReportDao;
-import au.org.theark.report.model.entity.LinkStudyReportTemplate;
 import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportSecurity;
 import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
@@ -35,9 +37,6 @@ public class ReportServiceImpl implements IReportService {
 	private IArkCommonService arkCommonService;
 	private IStudyDao studyDao;
 	private IReportDao reportDao;
-	
-	private Long studyId;
-	private Study study;
 	
 	public IReportDao getReportDao() {
 		return reportDao;
@@ -68,16 +67,6 @@ public class ReportServiceImpl implements IReportService {
 	}
 
 	/* Service methods */
-	public List<LinkStudyReportTemplate> getReportsAvailableList(Study study,
-			ArkUser arkUser) {
-		Collection<ReportSecurity> tmpResult = reportDao.getReportSecurity(study, arkUser);
-		ArrayList<LinkStudyReportTemplate> result = new ArrayList<LinkStudyReportTemplate>();
-		for (ReportSecurity item : tmpResult) {
-			result.add(item.getLinkStudyReportTemplate());
-		}
-		return result;
-	}
-	
 	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser) {
 		List<ReportTemplate> result = reportDao.getReportsForUser(arkUser);
 		return result;
@@ -110,6 +99,64 @@ public class ReportServiceImpl implements IReportService {
 
 	public List<ConsentDetailsDataRow> getConsentDetailsList(
 			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
-		return reportDao.getConsentDetailsList(cdrVO, onlyStudyLevelConsent);
+		
+		List<ConsentDetailsDataRow> consentDetailsList = new ArrayList<ConsentDetailsDataRow>();
+		
+		// Perform translation to report data source here...
+		List<LinkSubjectStudy> tmpResults = reportDao.getConsentDetailsList(cdrVO, onlyStudyLevelConsent);
+		for (LinkSubjectStudy subject : tmpResults) {
+			String subjectUID = subject.getSubjectUID();
+			String consentStatus = "Not Consented";
+			ConsentStatus studyConsent = subject.getConsentStatus();
+			if (studyConsent != null) {
+				consentStatus = studyConsent.getName();
+			}
+			String subjectStatus = subject.getSubjectStatus().getName();
+			Person p = subject.getPerson();
+			String title = p.getTitleType().getName();
+			String firstName = p.getFirstName();
+			String lastName = p.getLastName();
+			Address a = reportDao.getBestAddress(subject);
+			String streetAddress = "-NA-";
+			String suburb = "-NA-";
+			String state = "-NA-";
+			String postcode = "-NA-";
+			String country = "-NA-";
+			if (a != null) {
+				streetAddress = a.getStreetAddress();
+				suburb = a.getCity();
+				if (a.getCountryState() != null) {
+					state = a.getCountryState().getState();
+				}
+				else if (a.getOtherState() != null) {
+					state = a.getOtherState();
+				}
+				postcode = a.getPostCode();
+				country = a.getCountry().getCountryCode();
+			}
+			String workPhone = "-NA-";
+			String homePhone = "-NA-";
+			Phone aPhone = reportDao.getWorkPhone(subject);
+			if (aPhone != null) {
+				workPhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+			}
+			aPhone = reportDao.getHomePhone(subject);
+			if (aPhone != null) {
+				homePhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+			}
+			String email = "-NA-";
+			if (p.getPreferredEmail() != null) {
+				email = p.getPreferredEmail();
+			}
+			String sex = p.getGenderType().getName().substring(0, 1);
+			Date consentDate = subject.getConsentDate();
+			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, 
+																title, firstName, lastName, 
+																streetAddress, suburb, state, postcode, country, 
+																workPhone, homePhone, email, 
+																sex, consentDate));
+		}
+
+		return consentDetailsList;
 	}
 }

@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Properties;
 
-import au.org.theark.report.model.entity.LinkStudyReportTemplate;
 import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.entity.ReportTemplate;
 
@@ -22,23 +21,13 @@ public class GenericReportViewVO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private LinkStudyReportTemplate selectedReport;
 	private ReportTemplate selectedReportTemplate;
 	private List<ReportOutputFormat> listReportOutputFormats;
 	private ReportOutputFormat selectedOutputFormat;
 	private Properties parameters;
 	
 	public GenericReportViewVO() {
-		this.selectedReport = new LinkStudyReportTemplate();
 		this.parameters = new Properties();
-	}
-
-	public LinkStudyReportTemplate getSelectedReport() {
-		return selectedReport;
-	}
-
-	public void setSelectedReport(LinkStudyReportTemplate selectedReport) {
-		this.selectedReport = selectedReport;
 	}
 
 	public Properties getParameters() {

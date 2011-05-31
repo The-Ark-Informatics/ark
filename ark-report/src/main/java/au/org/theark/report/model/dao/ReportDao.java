@@ -8,29 +8,25 @@ import java.util.Map;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.core.dao.StudyDao;
+import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportSecurity;
 import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.service.Constants;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
 
 @Repository("reportDao")
 public class ReportDao extends HibernateSessionDao implements IReportDao {
@@ -39,21 +35,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	private static Logger log = LoggerFactory.getLogger(ReportDao.class);
 	private Subject	currentUser;
 	private Date		dateNow;
-	
-	public Study getStudy(Long id){
-		StudyDao studyDao;
-		return null;
-	}
-	
-	public List<ReportSecurity> getReportSecurity(Study study, ArkUser arkUser) {
-		Criteria criteria = getSession().createCriteria(ReportSecurity.class);
-		criteria.createAlias("linkStudyReportTemplate", "linkReportTemplateAlias");
-		criteria.add(Restrictions.or(Restrictions.eq("linkReportTemplateAlias.study", study), Restrictions.isNull("linkReportTemplateAlias.study")));
-		criteria.add(Restrictions.eq("arkUser", arkUser));
-		List<ReportSecurity> reportsAvailListing = criteria.list();
 
-		return reportsAvailListing;
-	}
 
 	public Integer getTotalSubjectCount(Study study) {
 		Integer totalCount = 0;
@@ -181,7 +163,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return outputFormats;
 	}
 
-	public List<ConsentDetailsDataRow> getConsentDetailsList(
+	public List<LinkSubjectStudy> getConsentDetailsList(
 			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		if (cdrVO.getLinkSubjectStudy() != null) {
@@ -193,7 +175,13 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			}
 		}
 		if (!onlyStudyLevelConsent && cdrVO.getStudyComp() != null) {
-			criteria.createAlias(Constants.LINKSUBJECTSTUDY_CONSENT, "c");
+			// we are dealing with study component consent
+			if (cdrVO.getConsentStatus().getName().equals("Not Consented")) {
+				// Special-case: Treat the null FK for consentStatus as "Not Consented"
+				criteria.createAlias(Constants.LINKSUBJECTSTUDY_CONSENT, "c", Criteria.LEFT_JOIN);
+			} else {
+				criteria.createAlias(Constants.LINKSUBJECTSTUDY_CONSENT, "c");	
+			}
 			criteria.add(Restrictions.eq("c." + Constants.CONSENT_STUDYCOMP, cdrVO.getStudyComp()));
 			if (cdrVO.getConsentStatus() != null) {
 				criteria.add(Restrictions.eq("c." + Constants.CONSENT_CONSENTSTATUS, cdrVO.getConsentStatus()));
@@ -205,38 +193,67 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		else {
 			// we are dealing with study-level consent
 			if (cdrVO.getConsentStatus() != null) {
-				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
+				if (cdrVO.getConsentStatus().getName().equals("Not Consented")) {
+					// Special-case: Treat the null FK for consentStatus as "Not Consented"
+					criteria.add(Restrictions.or(
+									Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()),
+									Restrictions.isNull(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS))
+								);
+				}
+				else {
+					criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
+				}
 			}
 			if (cdrVO.getConsentDate() != null) {
 				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
 			}
 		}
-//		if (onlyStudyLevelConsent) {
-//			criteria.setProjection(Projections.projectionList()
-//					.add(Property.forName("subjectUID").as("SubjectUID"))
-//					.add(Property.forName("consentStatus").as("ConsentStatus"))	//study-level
-//					.add(Property.forName("subjectStatus").as("SubjectStatus"))
-//					.add(Property.forName("person.titleType.name").as("Title"))
-//					.add(Property.forName("person.firstName").as("FirstName"))
-//					.add(Property.forName("person.lastName").as("LastName"))
-//					.add(Property.forName("consents.name").as("Consent"))
-//					.add(Property.forName("add"))
-//					);	
-//			criteria.addOrder(Order.asc("subjectUID"));
-//		}
-//		else {
-//			criteria.setProjection(Projections.projectionList()
-//					.add(Property.forName("subjectUID").as("SubjectUID"))
-//					.add(Property.forName("consents.name").as("ConsentStatus"))
-//					.add(Property.forName("subjectStatus").as("SubjectStatus"))
-//					.add(Property.forName("person.titleType.name").as("Title"))
-//					.add(Property.forName("person.firstName").as("FirstName"))
-//					.add(Property.forName("person.lastName").as("LastName"))
-//					);
-//			criteria.addOrder(Order.asc("subjectUID"));
-//		}
-		List<ConsentDetailsDataRow> consentDetailsList = criteria.list();
-
-		return consentDetailsList;
+		return (List<LinkSubjectStudy>)criteria.list();
+	}
+	
+	public Address getBestAddress(LinkSubjectStudy subject) {
+		Address result = null;
+		// Attempt to get the preferred address first
+		Criteria criteria = getSession().createCriteria(Address.class);
+		criteria.add(Restrictions.eq("person", subject.getPerson()));
+		criteria.add(Restrictions.eq("preferredMailingAddress", true));
+		criteria.setMaxResults(1);
+		if (criteria.uniqueResult() != null) {
+			result = (Address) criteria.uniqueResult();
+		}
+		else {
+			// Get any address
+			criteria = getSession().createCriteria(Address.class);
+			criteria.add(Restrictions.eq("person", subject.getPerson()));
+			criteria.setMaxResults(1);
+			result = (Address) criteria.uniqueResult();
+		}
+		return result;
+	}
+	
+	public Phone getWorkPhone(LinkSubjectStudy subject) {
+		Phone result = null;
+		Criteria criteria = getSession().createCriteria(Phone.class);
+		criteria.add(Restrictions.eq("person", subject.getPerson()));
+		criteria.createAlias("phoneType", "pt");
+		criteria.add(Restrictions.eq("pt.name", "Work"));
+		criteria.setMaxResults(1);
+		if (criteria.uniqueResult() != null) {
+			result = (Phone) criteria.uniqueResult();
+		}
+		return result;
+	}
+	
+	public Phone getHomePhone(LinkSubjectStudy subject) {
+		Phone result = null;
+		Criteria criteria = getSession().createCriteria(Phone.class);
+		criteria.add(Restrictions.eq("person", subject.getPerson()));
+		criteria.createAlias("phoneType", "pt");
+		criteria.add(Restrictions.eq("pt.name", "Home"));
+		criteria.setMaxResults(1);
+		if (criteria.uniqueResult() != null) {
+			result = (Phone) criteria.uniqueResult();
+		}
+		return result;
 	}
 }
