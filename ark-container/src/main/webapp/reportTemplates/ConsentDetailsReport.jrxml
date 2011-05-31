@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConsentDetailsReport" pageWidth="1440" pageHeight="595" orientation="Landscape" columnWidth="1373" leftMargin="32" rightMargin="35" topMargin="50" bottomMargin="50">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="507"/>
+	<property name="ireport.x" value="260"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Bold" fontName="DejaVu Sans" fontSize="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -48,12 +48,12 @@
 					<reportElement x="0" y="-1" width="1373" height="1"/>
 				</line>
 				<staticText>
-					<reportElement style="Sans_Bold" x="1223" y="6" width="95" height="15"/>
+					<reportElement style="Sans_Bold" x="1184" y="6" width="118" height="15"/>
 					<textElement textAlignment="Right"/>
-					<text><![CDATA[Total count:]]></text>
+					<text><![CDATA[Sub-total count:]]></text>
 				</staticText>
 				<textField>
-					<reportElement style="Sans_Bold" x="1318" y="6" width="50" height="15"/>
+					<reportElement style="Sans_Bold" x="1302" y="6" width="66" height="15"/>
 					<textElement textAlignment="Right"/>
 					<textFieldExpression class="java.lang.Number"><![CDATA[$V{SectionGroup_COUNT}]]></textFieldExpression>
 				</textField>
@@ -303,20 +303,47 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="40">
+		<band height="28">
 			<line>
-				<reportElement x="0" y="10" width="1373" height="1"/>
+				<reportElement x="0" y="5" width="1373" height="1"/>
 			</line>
 			<textField>
-				<reportElement x="540" y="25" width="80" height="15"/>
+				<reportElement x="615" y="13" width="80" height="15"/>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="620" y="25" width="75" height="15"/>
+				<reportElement x="695" y="13" width="75" height="15"/>
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
+	<lastPageFooter>
+		<band height="27">
+			<staticText>
+				<reportElement style="Sans_Bold" x="1184" y="12" width="118" height="15"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[Total count:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="Sans_Bold" x="1302" y="12" width="66" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="615" y="12" width="80" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="695" y="12" width="75" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="4" width="1373" height="1"/>
+			</line>
+		</band>
+	</lastPageFooter>
 </jasperReport>
