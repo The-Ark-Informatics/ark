@@ -343,6 +343,7 @@ public class SubjectUploadValidator
 		{
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
+			
 			String[] stringLineArray;
 
 			srcLength = inLength;
@@ -410,7 +411,7 @@ public class SubjectUploadValidator
 			row = 1;
 			
 			// Loop through all rows in file
-			while (csvReader.readRecord())
+			/*while (csvReader.readRecord())
 			{
 				// do something with the newline to put the data into
 				// the variables defined above
@@ -437,7 +438,7 @@ public class SubjectUploadValidator
 			else
 			{
 				log.debug("Validation is ok");
-			}
+			}*/
 		}
 		catch (IOException ioe)
 		{
