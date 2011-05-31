@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -49,6 +50,7 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	private CheckBox							overrideDataValidationChkBox;
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
 	
 	/**
 	 * Construct.
@@ -69,6 +71,7 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		add(downloadValMsgButton);
 		
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
@@ -231,16 +234,21 @@ public class PhenoUploadStep3 extends AbstractWizardStepPanel
 					target.addComponent(form.getWizardButtonContainer());
 				}
 			} catch (IOException e1){
-				log.error(e1.getMessage());
+				validationMessage = "Error attempting to display the file. Please check the file and try again.";
+				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			}
 			
-			this.containerForm.getModelObject().setValidationMessages(validationMessages);
+			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			
 			if(validationMessage != null && validationMessage.length() > 0)
 			{
-				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 				form.getNextButton().setEnabled(false);
 				target.addComponent(form.getWizardButtonContainer());
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				addOrReplace(downloadValMsgButton);
+				target.addComponent(downloadValMsgButton);
 			}
 		}
 	}

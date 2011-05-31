@@ -15,12 +15,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.ArkDownloadAjaxButton;
+import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.phenotypic.exception.FileFormatException;
-import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -50,6 +50,9 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 	
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
+	
+	
 	/**
 	 * Construct.
 	 */
@@ -67,6 +70,8 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		
+		add(downloadValMsgButton);
 		
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
@@ -160,6 +165,73 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
+		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		InputStream inputStream;
+		try
+		{
+			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
+			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
+			validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
+		
+			HashSet<Integer> insertRows = new HashSet<Integer>();
+			HashSet<Integer> updateRows = new HashSet<Integer>();
+			HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
+			HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
+			HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
+			HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
+			
+			insertRows = phenotypicValidator.getInsertRows();
+			updateRows = phenotypicValidator.getUpdateRows();
+			insertCells = phenotypicValidator.getInsertCells();
+			updateCells = phenotypicValidator.getUpdateCells();
+			warningCells = phenotypicValidator.getWarningCells();
+			errorCells = phenotypicValidator.getErrorCells();
+			inputStream.reset();
+			
+			// Show file data (and key reference)
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, insertCells, updateCells, warningCells, errorCells);
+			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
+			arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
+			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
+			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
+			
+			// Repaint
+			target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+			target.addComponent(form.getWizardPanelFormContainer());
+			
+			if(updateCells.isEmpty())
+			{
+				containerForm.getModelObject().setUpdateChkBox(true);
+				updateExistingDataContainer.setVisible(false);
+			}
+			else
+			{
+				containerForm.getModelObject().setUpdateChkBox(false);
+				updateExistingDataContainer.setVisible(true);
+			}
+			target.addComponent(updateExistingDataContainer);
+			
+			if(!errorCells.isEmpty())
+			{
+				overrideDataValidationContainer.setVisible(false);
+				target.addComponent(overrideDataValidationContainer);
+				updateExistingDataContainer.setVisible(false);
+				target.addComponent(updateExistingDataContainer);
+				form.getNextButton().setEnabled(false);
+				target.addComponent(form.getWizardButtonContainer());
+			}
+			
+			if(warningCells.isEmpty())
+			{
+				overrideDataValidationContainer.setVisible(false);
+				target.addComponent(overrideDataValidationContainer);
+			}
+		} catch (IOException ioe){
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+		}
+		
+		containerForm.getModelObject().setValidationMessages(validationMessages);
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 		
@@ -167,83 +239,9 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 		{
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
-		}
-		else
-		{
-			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
-			InputStream inputStream;
-			try
-			{
-				PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
-				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-				validationMessages = phenotypicValidator.validateDataDictionaryFileData(inputStream, fileFormat, delimChar);
-			
-				HashSet<Integer> insertRows = new HashSet<Integer>();
-				HashSet<Integer> updateRows = new HashSet<Integer>();
-				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
-				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
-				
-				insertRows = phenotypicValidator.getInsertRows();
-				updateRows = phenotypicValidator.getUpdateRows();
-				insertCells = phenotypicValidator.getInsertCells();
-				updateCells = phenotypicValidator.getUpdateCells();
-				warningCells = phenotypicValidator.getWarningCells();
-				errorCells = phenotypicValidator.getErrorCells();
-				inputStream.reset();
-				
-				// Show file data (and key reference)
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, insertCells, updateCells, warningCells, errorCells);
-				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
-				arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
-				form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
-				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-				
-				// Repaint
-				target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
-				target.addComponent(form.getWizardPanelFormContainer());
-				
-				if(updateCells.isEmpty())
-				{
-					containerForm.getModelObject().setUpdateChkBox(true);
-					updateExistingDataContainer.setVisible(false);
-				}
-				else
-				{
-					containerForm.getModelObject().setUpdateChkBox(false);
-					updateExistingDataContainer.setVisible(true);
-				}
-				target.addComponent(updateExistingDataContainer);
-				
-				if(!errorCells.isEmpty())
-				{
-					overrideDataValidationContainer.setVisible(false);
-					target.addComponent(overrideDataValidationContainer);
-					updateExistingDataContainer.setVisible(false);
-					target.addComponent(updateExistingDataContainer);
-					form.getNextButton().setEnabled(false);
-					target.addComponent(form.getWizardButtonContainer());
-				}
-				
-				if(warningCells.isEmpty())
-				{
-					overrideDataValidationContainer.setVisible(false);
-					target.addComponent(overrideDataValidationContainer);
-				}
-			} catch (IOException ioe){
-				log.error(ioe.getMessage());
-			}
-			
-			this.containerForm.getModelObject().setValidationMessages(validationMessages);
-			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-			if(validationMessage != null && validationMessage.length() > 0)
-			{
-				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-				wizardForm.getNextButton().setEnabled(false);
-				target.addComponent(wizardForm.getWizardButtonContainer());
-			}
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+			addOrReplace(downloadValMsgButton);
+			target.addComponent(downloadValMsgButton);
 		}
 	}
 

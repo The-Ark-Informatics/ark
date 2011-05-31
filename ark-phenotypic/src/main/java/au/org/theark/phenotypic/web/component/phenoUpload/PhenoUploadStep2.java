@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
@@ -44,6 +45,8 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService iPhenotypicService;
 	
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
+	
 	public PhenoUploadStep2(String id) {
 		super(id);
 		initialiseDetailForm();
@@ -60,6 +63,7 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	{
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
+		add(downloadValMsgButton);
 	}
 
 	/**
@@ -107,6 +111,9 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 		{
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+			addOrReplace(downloadValMsgButton);
+			target.addComponent(downloadValMsgButton);
 		}
 		
 		// Show file data
