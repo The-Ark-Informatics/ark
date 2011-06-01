@@ -164,6 +164,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	        chart.setBackgroundPaint(Color.white);
 	        chart.setBorderVisible(false);
 			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 0, 0).setVisible(false));
+			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400).setVisible(false));
 		}
 	}
 
