@@ -1,4 +1,5 @@
-use study;
+USE study;
+
 ALTER TABLE `study`.`consent` DROP FOREIGN KEY `fk_subject` ;
 ALTER TABLE `study`.`consent` 
   ADD CONSTRAINT `fk_subject`
