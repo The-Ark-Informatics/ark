@@ -841,3 +841,7 @@ wicket-ajax-indicator {
 	width: 100%;
 	z-index: 1000;
 }
+
+li {
+	margin-left: 1.5em;
+}
