@@ -372,8 +372,14 @@ public class SubjectUploadValidator
 			boolean headerError = false;
 			for (int i = 0; i < subjectHeaderColumnArray.length; i++)
 			{
-				subjectColumns.add(subjectHeaderColumnArray[i]);
-				if(!subjectColumns.contains(headerColumnArray[i]))
+				String colName = subjectHeaderColumnArray[i];
+				subjectColumns.add(colName);
+			}
+			
+			for (int i = 0; i < headerColumnArray.length; i++)
+			{
+				String colName = headerColumnArray[i];
+				if(!subjectColumns.contains(colName))
 				{
 					headerError = true;
 					break;
