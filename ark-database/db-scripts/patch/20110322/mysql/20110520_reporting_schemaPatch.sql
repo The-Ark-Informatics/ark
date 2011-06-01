@@ -1,3 +1,4 @@
+
 CREATE DATABASE `reporting` /*!40100 DEFAULT CHARACTER SET latin1 */;
 
 USE `reporting`;
