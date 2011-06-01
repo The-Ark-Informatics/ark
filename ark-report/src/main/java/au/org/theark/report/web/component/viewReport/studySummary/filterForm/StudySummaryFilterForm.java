@@ -62,6 +62,8 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 
+		String reportTitle = study.getName() + " - Study Summary Report";
+
 		ReportTemplate reportTemplate = cpModel.getObject().getSelectedReportTemplate();
 		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
 
@@ -76,6 +78,10 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 			design = JRXmlLoader.load(reportFile);
 //			System.out.println(" design -- created " );
 			if (design != null) {
+				design.setName(reportTitle);	//set the output file name to match report title
+				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
+					design.setIgnorePagination(true);	//don't paginate CSVs
+				}
 				report = JasperCompileManager.compileReport(design);
 //				System.out.println(" design -- compiled " );
 			}
@@ -86,7 +92,7 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 //		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
-		parameters.put("ReportTitle", study.getName() + " - Study Summary Report");
+		parameters.put("ReportTitle", reportTitle);
 		StudySummaryReportDataSource reportDS = new StudySummaryReportDataSource(reportService, study);
 		
 		JRResource reportResource = null;

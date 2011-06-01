@@ -121,7 +121,7 @@ public class ReportSelectPanel extends Panel
 				//TODO when displaying text escape any special characters
 				/* Description */
 				if(reportTemplate.getDescription() != null){
-					item.add(new Label("reportTemplate.description", reportTemplate.getDescription()));//the ID here must match the ones in mark-up	
+					item.add(new Label("reportTemplate.description", reportTemplate.getDescription()).setEscapeModelStrings(false));//the ID here must match the ones in mark-up	
 				}else{
 					item.add(new Label("reportTemplate.description", ""));//the ID here must match the ones in mark-up
 				}

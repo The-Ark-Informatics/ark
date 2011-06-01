@@ -14,7 +14,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
+import au.org.theark.core.web.component.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.report.model.entity.ReportOutputFormat;
@@ -63,9 +63,10 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	}
 	
 	private void initialiseComponents() {
-		generateButton = new ArkIndicatingAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
+		generateButton = new ArkBusyAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
+				target.addComponent(feedbackPanel);
 				onGenerateProcess(target);
 			}
 			
