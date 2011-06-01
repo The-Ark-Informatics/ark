@@ -19,6 +19,7 @@ import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.geno.web.Constants;
 import au.org.theark.geno.web.component.genoCollection.GenoCollectionContainerPanel;
 import au.org.theark.geno.web.component.genoCollection.SearchPanel;
@@ -115,7 +116,7 @@ public class GenoSubMenuTab extends Panel {
 			});
 		}
 		
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.GENO_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.GENO_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 }

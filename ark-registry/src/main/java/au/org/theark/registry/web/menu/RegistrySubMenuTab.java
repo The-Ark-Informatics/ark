@@ -17,6 +17,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.registry.web.component.invoice.InvoiceContainerPanel;
 
 /**
@@ -68,7 +69,7 @@ public class RegistrySubMenuTab extends Panel{
 			});
 		}
 
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.MENU_REGISTRY_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_REGISTRY_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 		
 	}

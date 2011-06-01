@@ -22,6 +22,7 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
@@ -162,7 +163,7 @@ public class StudySubMenuTab extends Panel
 			});
 		}
 
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 

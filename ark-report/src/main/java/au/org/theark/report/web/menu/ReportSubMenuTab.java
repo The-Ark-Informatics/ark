@@ -15,6 +15,7 @@ import org.apache.wicket.model.Model;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 
@@ -89,7 +90,7 @@ public class ReportSubMenuTab extends Panel
 			});
 		}
 
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.REPORT_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.REPORT_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 }

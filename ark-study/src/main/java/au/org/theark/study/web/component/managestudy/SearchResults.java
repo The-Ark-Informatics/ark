@@ -203,7 +203,9 @@ public class SearchResults extends Panel{
 				target.addComponent(studyCrudContainerVO.getEditButtonContainer());
 				target.addComponent(studyCrudContainerVO.getSummaryContainer());
 				target.addComponent(studyCrudContainerVO.getDetailPanelFormContainer());
-	
+				
+				// Refresh base container form to remove any feedBack messages
+				target.addComponent(studyContainerForm);
 			}
 			
 		};

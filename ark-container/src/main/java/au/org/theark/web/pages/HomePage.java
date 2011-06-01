@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.PageParameters;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
@@ -94,7 +97,8 @@ public class HomePage extends BasePage
 			moduleTabsList.add(tab);
 		}
 		
-		moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
+		//moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
+		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
 		add(moduleTabbedPanel);
 	}
 

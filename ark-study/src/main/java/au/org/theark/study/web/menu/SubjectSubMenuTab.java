@@ -20,6 +20,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.vo.MenuModule;
+import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
@@ -145,7 +146,7 @@ public class SubjectSubMenuTab extends Panel{
 			});
 		}
 		
-		TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.MENU_SUBJECT_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_SUBJECT_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 
