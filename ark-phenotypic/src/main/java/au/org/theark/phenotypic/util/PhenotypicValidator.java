@@ -419,9 +419,13 @@ public class PhenotypicValidator
 				Collection<String> dataDictionaryColumns = new ArrayList<String>();
 				String[] dataDictionaryColumnArray = au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER;
 				
-				for (int i = 0; i < headerColumnArray.length; i++)
+				for (int i = 0; i < dataDictionaryColumnArray.length; i++)
 				{
 					dataDictionaryColumns.add(dataDictionaryColumnArray[i]);
+				}
+				
+				for (int i = 0; i < headerColumnArray.length; i++)
+				{
 					if(!dataDictionaryColumns.contains(headerColumnArray[i]))
 					{
 						headerError = true;
