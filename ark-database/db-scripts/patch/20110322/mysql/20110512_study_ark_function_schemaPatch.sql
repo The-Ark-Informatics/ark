@@ -1,3 +1,4 @@
+use study;
 DROP TABLE IF EXISTS `ark_function`;
 CREATE TABLE `ark_function` (
   `ID` int(11) NOT NULL auto_increment,
