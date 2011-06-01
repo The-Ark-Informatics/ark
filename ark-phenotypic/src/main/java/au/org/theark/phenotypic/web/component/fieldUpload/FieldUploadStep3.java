@@ -50,7 +50,7 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	private WebMarkupContainer 			updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 	
-	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
 	
 	
 	/**

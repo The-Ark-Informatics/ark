@@ -43,7 +43,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService iPhenotypicService;
 	
-	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", null, "txt");
+	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
 	
 	
 	public FieldUploadStep2(String id) {
