@@ -1,4 +1,4 @@
-use study;
+USE study;
 
 DROP TABLE IF EXISTS `ark_role_policy_template`;
 CREATE  TABLE `study`.`ark_role_policy_template` (
