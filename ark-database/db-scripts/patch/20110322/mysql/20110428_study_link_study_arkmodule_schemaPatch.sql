@@ -1,4 +1,5 @@
 use study;
+
 DROP TABLE IF EXISTS `link_study_arkmodule`;
 CREATE  TABLE `study`.`link_study_arkmodule` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
