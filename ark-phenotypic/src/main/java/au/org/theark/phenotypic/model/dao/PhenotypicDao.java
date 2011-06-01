@@ -1240,7 +1240,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			criteria.add(Restrictions.eq("id",phenoCollectionVo.getFieldData().getId()));	
 		}
 		
-		if(phenoCollectionVo.getFieldData().getCollection().getId() != null){
+		if(phenoCollectionVo.getFieldData().getCollection() != null){
 			criteria.add(Restrictions.eq("collection",phenoCollectionVo.getFieldData().getCollection()));	
 		}
 		
