@@ -1,31 +1,4 @@
-use study;
-
-DROP TABLE IF EXISTS `delimiter_type`;
-CREATE TABLE `delimiter_type` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  `DELIMITER_CHARACTER` varchar(1) default NULL,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
-
-DROP TABLE IF EXISTS `file_format`;
-CREATE TABLE `file_format` (
-  `ID` int(11) NOT NULL auto_increment,
-  `NAME` varchar(50) NOT NULL,
-  `DESCRIPTION` text,
-  PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-
-INSERT INTO `study`.`delimiter_type`(`ID`,`NAME`,`DESCRIPTION`,`DELIMITER_CHARACTER`) VALUES('1', 'COMMA', 'Comma', ',');
-INSERT INTO `study`.`delimiter_type`(`ID`,`NAME`,`DESCRIPTION`,`DELIMITER_CHARACTER`) VALUES('2', 'TAB', 'Tab character', '	');
-INSERT INTO `study`.`delimiter_type`(`ID`,`NAME`,`DESCRIPTION`,`DELIMITER_CHARACTER`) VALUES('3', 'PIPE', 'Pipe character', '|');
-INSERT INTO `study`.`delimiter_type`(`ID`,`NAME`,`DESCRIPTION`,`DELIMITER_CHARACTER`) VALUES('4', 'COLON', 'Colon character', ':');
-INSERT INTO `study`.`delimiter_type`(`ID`,`NAME`,`DESCRIPTION`,`DELIMITER_CHARACTER`) VALUES('5', 'CUSTOM', 'Custom defined character', '');
-
-INSERT INTO `study`.`file_format` (`ID`, `NAME`, `DESCRIPTION`) VALUES ('1', 'CSV', 'Comma separated values');
-INSERT INTO `study`.`file_format` (`ID`, `NAME`, `DESCRIPTION`) VALUES ('2', 'TXT', 'Text file');
-INSERT INTO `study`.`file_format` (`ID`, `NAME`, `DESCRIPTION`) VALUES ('3', 'XLS', 'Excel Spreadsheet');
+USE study;
 
 CREATE TABLE `study`.`upload` (
   `ID` int(11) NOT NULL auto_increment,
