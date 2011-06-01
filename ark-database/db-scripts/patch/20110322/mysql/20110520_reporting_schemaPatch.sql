@@ -21,8 +21,7 @@ CREATE TABLE `report_template` (
   UNIQUE KEY `NAME_UNIQUE` (`NAME`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
--- reference data
-
+-- Reference data values for [report_output_format]
 INSERT INTO `reporting`.`report_output_format`
 (`ID`, `NAME`, `DESCRIPTION`)
 VALUES
@@ -33,17 +32,18 @@ INSERT INTO `reporting`.`report_output_format`
 VALUES
 (2, 'CSV', 'Comma Separated Value (compatible with Excel)');
 
-INSERT INTO `reporting`.`report_template`
-(`ID`, `NAME`, `TEMPLATE_PATH`)
-VALUES
-(1, 'Study Summary Report', 'StudySummaryReport.jrxml');
-
-INSERT INTO `reporting`.`report_template`
-(`ID`, `NAME`, `TEMPLATE_PATH`)
+-- Reference data values for [report_template]
+INSERT INTO `report_template` 
+(ID,NAME,DESCRIPTION,TEMPLATE_PATH,MODULE_ID,FUNCTION_ID) 
 VALUES 
-(2, 'Study-level Consent Details Report', 'ConsentDetailsReport.jrxml');
+(1,'Study Summary Report','This report provides an overview of subject information for a study.  It contains information like: <ul>   <li>total subject count</li>   <li>subject counts grouped by subject status</li>   <li>subject counts grouped by consent status</li> </ul>','StudySummaryReport.jrxml',NULL,NULL);
 
-INSERT INTO `reporting`.`report_template`
-(`ID`, `NAME`, `TEMPLATE_PATH`)
+INSERT INTO `report_template` 
+(ID,NAME,DESCRIPTION,TEMPLATE_PATH,MODULE_ID,FUNCTION_ID) 
 VALUES 
-(3, 'Study Component Consent Details Report', 'ConsentDetailsReport.jrxml');
+(2,'Study-level Consent Details Report','This report lists detailed subject information for a particular study based on their consent status at the study-level.','ConsentDetailsReport.jrxml',NULL,NULL);
+
+INSERT INTO `report_template`
+(ID,NAME,DESCRIPTION,TEMPLATE_PATH,MODULE_ID,FUNCTION_ID) 
+VALUES 
+(3,'Study Component Consent Details Report','This report lists detailed subject information for a particular study based on their consent status for a specific study component.','ConsentDetailsReport.jrxml',NULL,NULL);
