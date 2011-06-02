@@ -1314,6 +1314,20 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		return results;
 	}
-	
-	
+
+	public boolean fieldHasData(Field field)
+	{
+		Criteria criteria =  getSession().createCriteria(FieldData.class);
+		
+		if(field.getStudy() != null){
+			criteria.createAlias("field", "f");
+			criteria.add(Restrictions.eq("f.study", field.getStudy()));
+		}
+		
+		if(field != null){
+			criteria.add(Restrictions.eq("field",field));
+		}
+		
+		return criteria.list().size()>0;
+	}
 }

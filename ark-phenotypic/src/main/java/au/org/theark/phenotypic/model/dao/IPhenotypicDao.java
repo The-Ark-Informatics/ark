@@ -65,6 +65,7 @@ public interface IPhenotypicDao {
 	public java.util.Collection<Field> getField();
 	public Field getFieldByNameAndStudy(String fieldName, Study study);
 	public java.util.Collection<Field> searchField(Field field);
+	public boolean fieldHasData(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
 	public void deleteField(Field field);

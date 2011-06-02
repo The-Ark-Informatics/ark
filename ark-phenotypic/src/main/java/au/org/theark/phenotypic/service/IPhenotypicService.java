@@ -39,6 +39,7 @@ public interface IPhenotypicService {
 	public Field getField(Long fieldId);
 	public java.util.Collection<Field> searchField(Field field);
 	public Field getFieldByNameAndStudy(String fieldName, Study study);
+	public boolean fieldHasData(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
 	public void deleteField(Field field);

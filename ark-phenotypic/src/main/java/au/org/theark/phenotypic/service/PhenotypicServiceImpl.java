@@ -672,7 +672,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 				}
 			}
 			
-			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, inputStream.toString().length());
+			uploadReport = pi.uploadAndReportMatrixFieldDataFile(inputStream, uploadVo.getFileUpload().getSize());
 		}
 		catch (FileFormatException ffe)
 		{
@@ -750,5 +750,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public List<BarChartResult> getFieldsWithDataResults(Study study)
 	{
 		return phenotypicDao.getFieldsWithDataResults(study);
+	}
+
+	public boolean fieldHasData(Field field)
+	{
+		return phenotypicDao.fieldHasData(field);
 	}
 }
