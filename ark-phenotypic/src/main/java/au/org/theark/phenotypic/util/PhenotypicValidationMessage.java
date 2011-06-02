@@ -227,4 +227,33 @@ public class PhenotypicValidationMessage
 		stringBuffer.append(Constants.DD_MM_YYYY.toLowerCase());
 		return(stringBuffer.toString());
 	}
+
+	public static String fieldTypeNotDefined(String fieldName, String fieldType)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" with field type of ");
+		stringBuffer.append(fieldType);
+		stringBuffer.append(" is not in the valid type of: ");
+		stringBuffer.append(Constants.FIELD_TYPE_CHARACTER);
+		stringBuffer.append(", ");
+		stringBuffer.append(Constants.FIELD_TYPE_NUMBER);
+		stringBuffer.append(", or ");
+		stringBuffer.append(Constants.FIELD_TYPE_DATE);
+		return(stringBuffer.toString());
+	}
+	
+	public static String fieldTypeIsDateWithEncodedValue(String fieldName)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" with field type of ");
+		stringBuffer.append(Constants.FIELD_TYPE_DATE);
+		stringBuffer.append(" should not have an associate ENCODED_VALUES");
+		return(stringBuffer.toString());
+	}
 }
