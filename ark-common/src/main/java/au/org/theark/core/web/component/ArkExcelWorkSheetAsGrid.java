@@ -249,7 +249,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 									public void onComponentTag(Component component, ComponentTag tag)
 									{
 										super.onComponentTag(component, tag);
-										tag.put("style", "background: lightyellow;");
+										tag.put("style", "background: lightblue;");
 									};
 								});
 							}
@@ -302,7 +302,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 						{
 							super.onComponentTag(component, tag);
 							// Light yellow for updates
-							tag.put("style", "background: lightyellow;");
+							tag.put("style", "background: lightblue;");
 
 						};
 					});
@@ -403,7 +403,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				insertCellFormat.setBackground(Colour.LIGHT_GREEN);
 
 				WritableCellFormat updateCellFormat = new WritableCellFormat(normalFont);
-				updateCellFormat.setBackground(Colour.YELLOW);
+				updateCellFormat.setBackground(Colour.LIGHT_BLUE);
 
 				WritableFont errorFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
 				WritableCellFormat errorCellFormat = new WritableCellFormat(errorFont);
@@ -516,9 +516,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			WritableCellFormat insertCellFormat = new WritableCellFormat(normalFont);
 			insertCellFormat.setBackground(Colour.LIGHT_GREEN);
 			WritableCellFormat updateCellFormat = new WritableCellFormat(normalFont);
-			// Override to light yellow
-			w.setColourRGB(Colour.YELLOW2, 255, 255, 224);
-			updateCellFormat.setBackground(Colour.YELLOW2);
+			// Override to light blue
+			w.setColourRGB(Colour.LIGHT_BLUE, 173, 216, 230);
+			updateCellFormat.setBackground(Colour.LIGHT_BLUE);
 			WritableCellFormat errorCellFormat = new WritableCellFormat(normalFont);
 			errorCellFormat.setBackground(Colour.RED);
 			WritableCellFormat warningCellFormat = new WritableCellFormat(normalFont);
