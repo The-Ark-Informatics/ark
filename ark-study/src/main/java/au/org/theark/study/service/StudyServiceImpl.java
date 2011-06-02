@@ -852,7 +852,7 @@ public class StudyServiceImpl implements IStudyService{
 		return subjectUploadValidator;
 	}
 
-	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream,	String fileFormat, char delimChar) 
+	public SubjectUploadValidator validateSubjectFileData(InputStream inputStream, String fileFormat, char delimChar) 
 	{
 		java.util.Collection<String> validationMessages = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -876,7 +876,7 @@ public class StudyServiceImpl implements IStudyService{
 		return subjectUploadValidator;
 	}
 
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, String fileFormat, char delimChar) 
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream inputStream, long size, String fileFormat, char delimChar) 
 	{
 		StringBuffer uploadReport = null;
 		Subject currentUser = SecurityUtils.getSubject();
@@ -888,7 +888,7 @@ public class StudyServiceImpl implements IStudyService{
 		try
 		{
 			log.debug("Importing and reporting Subject file");
-			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, inputStream.toString().length(), fileFormat, delimChar);
+			uploadReport = subjectUploader.uploadAndReportMatrixSubjectFile(inputStream, size, fileFormat, delimChar);
 		}
 		catch (FileFormatException ffe)
 		{
