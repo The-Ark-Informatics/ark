@@ -384,9 +384,9 @@ public class SubjectUploader
 			uploadReport.append(" s");
 			uploadReport.append("\n");
 			uploadReport.append("Total file size: ");
-			uploadReport.append(srcLength);
+			uploadReport.append(inLength);
 			uploadReport.append(" B or ");
-			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
 			uploadReport.append("\n");
 
