@@ -10,15 +10,20 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.vo.FieldVO;
+import au.org.theark.phenotypic.service.Constants;
+import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultListPanel extends Panel
 {
+	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
+	private IPhenotypicService				iPhenotypicService;
 
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
@@ -175,6 +180,10 @@ public class SearchResultListPanel extends Panel
 				
 				// Have to Edit, before allowing delete
 				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
+				
+				// Disable fieldType dropdown if data exists
+				boolean hasData = iPhenotypicService.fieldHasData(field);
+				detailPanel.getDetailForm().getFieldTypeDdc().setEnabled(!hasData);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);

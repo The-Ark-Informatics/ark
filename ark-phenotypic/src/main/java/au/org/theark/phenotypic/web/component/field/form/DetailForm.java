@@ -30,6 +30,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -44,7 +45,7 @@ import au.org.theark.phenotypic.web.component.field.DetailPanel;
 public class DetailForm extends AbstractDetailForm<FieldVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService				iPhenotypicService;
 
 	private ContainerForm					fieldContainerForm;
 
@@ -53,6 +54,8 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	private TextField<String>				fieldIdTxtFld;
 	private TextField<String>				fieldNameTxtFld;
 	private DropDownChoice<FieldType>	fieldTypeDdc;
+	
+
 	private TextArea<String>				fieldDescriptionTxtAreaFld;
 	private TextField<String>				fieldUnitsTxtFld;
 	private TextField<String>				fieldMinValueTxtFld;
@@ -83,7 +86,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 
 	private void initFieldTypeDdc()
 	{
-		java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
+		java.util.Collection<FieldType> fieldTypeCollection = iPhenotypicService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
 		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
@@ -179,14 +182,14 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		if (containerForm.getModelObject().getField().getId() == null)
 		{
 			// Save the Field
-			phenotypicService.createField(containerForm.getModelObject().getField());
+			iPhenotypicService.createField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was created successfully");
 			processErrors(target);
 		}
 		else
 		{
 			// Update the Field
-			phenotypicService.updateField(containerForm.getModelObject().getField());
+			iPhenotypicService.updateField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was updated successfully");
 			processErrors(target);
 		}
@@ -217,6 +220,16 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	{
 		this.deleteButton = deleteButton;
 	}
+	
+	public DropDownChoice<FieldType> getFieldTypeDdc()
+	{
+		return fieldTypeDdc;
+	}
+
+	public void setFieldTypeDdc(DropDownChoice<FieldType> fieldTypeDdc)
+	{
+		this.fieldTypeDdc = fieldTypeDdc;
+	}
 
 	/**
 	 * 
@@ -224,7 +237,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		// TODO:(CE) To handle Business and System Exceptions here
-		phenotypicService.deleteField(containerForm.getModelObject().getField());
+		iPhenotypicService.deleteField(containerForm.getModelObject().getField());
 		this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
