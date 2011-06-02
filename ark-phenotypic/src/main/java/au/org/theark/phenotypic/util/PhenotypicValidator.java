@@ -69,7 +69,7 @@ public class PhenotypicValidator
 	private char						phenotypicDelimChr		= Constants.IMPORT_DELIM_CHAR_COMMA;					// default phenotypic file delimiter: COMMA
 	java.util.Collection<String>	fileValidationMessages	= new ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new ArrayList<String>();
-	private IPhenotypicService		iPhenoService			= null;
+	private IPhenotypicService		iPhenotypicService			= null;
 	private IArkCommonService		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
 	private HashSet<Integer>		insertRows 					= new HashSet<Integer>();
@@ -90,20 +90,20 @@ public class PhenotypicValidator
 	{
 	}
 	
-	public PhenotypicValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenoService, UploadVO uploadVo)
+	public PhenotypicValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService, UploadVO uploadVo)
 	{
 		this.iArkCommonService = iArkCommonService;
-		this.iPhenoService = iPhenoService;
+		this.iPhenotypicService = iPhenotypicService;
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		if(sessionCollectionId != null)
 		{
-			this.phenoCollection = iPhenoService.getPhenoCollection(sessionCollectionId);
+			this.phenoCollection = iPhenotypicService.getPhenoCollection(sessionCollectionId);
 		}
 		else
 		{
 			if(uploadVo.getPhenoCollection() != null)
 			{
-				this.phenoCollection = iPhenoService.getPhenoCollection(uploadVo.getPhenoCollection().getId());
+				this.phenoCollection = iPhenotypicService.getPhenoCollection(uploadVo.getPhenoCollection().getId());
 			}
 		}
 		
@@ -292,8 +292,8 @@ public class PhenotypicValidator
 
 		Field field = fieldData.getField();
 
-		// Validate if encoded values is defined
-		if (field.getEncodedValues() != null)
+		// Validate if encoded values is defined, and not a DATE fieldType 
+		if (field.getEncodedValues() != null && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
 		{
 			try
 			{
@@ -410,6 +410,9 @@ public class PhenotypicValidator
 			// 0 1 2 3 N
 			String[] headerColumnArray = csvReader.getHeaders();
 			boolean headerError = false;
+			
+			if(headerColumnArray.length <= 1)
+				headerError = true;
 			
 			// Uploading a data dictionary file
 			if(uploadType.equalsIgnoreCase("FIELD"))
@@ -666,7 +669,7 @@ public class PhenotypicValidator
 					errorCells.add(new ArkGridCell(1, row));
 				}
 				
-				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
+				Collection<FieldData> fieldDataToUpdate = iPhenotypicService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 				// Assume inserts
 				insertRows.add(row);
 				int cols = stringLineArray.length;
@@ -684,7 +687,7 @@ public class PhenotypicValidator
 					
 					// Set field
 					field = new Field();
-					field = iPhenoService.getFieldByNameAndStudy(fieldNameArray[col], study);
+					field = iPhenotypicService.getFieldByNameAndStudy(fieldNameArray[col], study);
 					fieldData.setField(field);
 					
 					// Other/ith columns should be the field data value
@@ -781,9 +784,12 @@ public class PhenotypicValidator
 		}
 		log.debug("Validated " + subjectCount * fieldCount + " rows of data");
 
-		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
-			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		if(errorCells.isEmpty())
+		{
+			for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+				Integer i = (Integer) iterator.next();
+				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+			}
 		}
 		
 		return dataValidationMessages;
@@ -842,45 +848,27 @@ public class PhenotypicValidator
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
 				
+				ArkGridCell gridCell = null;
+				
 				// Fist column should be Field Name
-				String fieldName = stringLineArray[0];
+				fieldName = csvReader.get("FIELD_NAME");
 				int cols = stringLineArray.length;
 				field = new Field();
 				field.setStudy(study);
 				field.setName(fieldName);
 				
-				if (csvReader.get("FIELD_TYPE").length() > 0)
-				{
-					FieldType fieldType = new FieldType();
-					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-					field.setFieldType(fieldType);
-				}
-				if (csvReader.get("DESCRIPTION").length() > 0)
-				{
-						field.setDescription(csvReader.get("DESCRIPTION"));
-				}
-				if (csvReader.get("UNITS").length() > 0)
-				{
-					field.setUnits((csvReader.get("UNITS")));
-				}
-				if (csvReader.get("ENCODED_VALUES").length() > 0)
-				{
-					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
-				}
-				if (csvReader.get("MINIMUM_VALUE").length() > 0)
-				{
-					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
-				}
-				if (csvReader.get("MAXIMUM_VALUE").length() > 0)
-				{	
-					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
-				}
-				if (csvReader.get("MISSING_VALUE").length() > 0)
-				{
-					field.setMissingValue(csvReader.get("MISSING_VALUE"));
-				}
+				FieldType fieldType = new FieldType();
+				fieldType = iPhenotypicService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+				field.setFieldType(fieldType);
+				field.setDescription(csvReader.get("DESCRIPTION"));
+				field.setUnits((csvReader.get("UNITS")));
+				field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+				field.setMinValue(csvReader.get("MINIMUM_VALUE"));
+				field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
+				field.setMissingValue(csvReader.get("MISSING_VALUE"));
 				
-				Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+				
+				Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
 				// Determine updates
 				if(oldField.getId() != null)
 				{
@@ -893,9 +881,27 @@ public class PhenotypicValidator
 					insertRows.add(row);
 				}
 				
-				ArkGridCell gridCell = null;
+				if(csvReader.get("FIELD_TYPE") != null)
+				{
+					gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+					if(!PhenotypicValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages))
+					{
+						errorCells.add(gridCell);
+						field.getFieldType().setName(csvReader.get("FIELD_TYPE"));
+					}
+				}
+				
+				if(csvReader.get("ENCODED_VALUES") != null)
+				{
+					gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), row);
+					// Validate encoded values not a date type
+					if(!PhenotypicValidator.validateEncodedValues(field, dataValidationMessages))
+					{
+						errorCells.add(gridCell);
+					}
+				}
 
-				if(field.getMinValue() != null)
+				if(field.getMinValue() != null  && !field.getMinValue().isEmpty())
 				{
 					gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), row);
 					// Validate the field definition
@@ -905,7 +911,7 @@ public class PhenotypicValidator
 					}
 				}
 				
-				if(field.getMaxValue() != null)
+				if(field.getMaxValue() != null  && !field.getMaxValue().isEmpty())
 				{
 					gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), row);
 					// Validate the field definition
@@ -915,7 +921,7 @@ public class PhenotypicValidator
 					}
 				}
 				
-				if(field.getMissingValue() != null)
+				if(field.getMissingValue() != null && !field.getMissingValue().isEmpty())
 				{
 					gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), row);
 					// Validate the field definition
@@ -987,14 +993,40 @@ public class PhenotypicValidator
 			srcLength = -1;
 		}
 		
-		for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
-			Integer i = (Integer) iterator.next();
-			dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+		if(errorCells.isEmpty())
+		{
+			for (Iterator<Integer> iterator = updateRows.iterator(); iterator.hasNext();) {
+				Integer i = (Integer) iterator.next();
+				dataValidationMessages.add("Data on row " + i.intValue() + " exists, please confirm update");
+			}
 		}
 
 		return dataValidationMessages;
 	}
 	
+	/**
+	 * Validates the ENCODED_VALUES column in a matrix Data Dictionary file
+	 * 
+	 * @param field
+	 *           is the field entity in question
+	 * @param errorMessages
+	 *           is the error messages to add to is any errors
+	 * @return true if field.fieldType is NOT a DATE
+	 */
+	private static boolean validateEncodedValues(Field field, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		if(!field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		{	
+			isValid = true;
+		}
+		else
+		{
+			errorMessages.add(PhenotypicValidationMessage.fieldTypeIsDateWithEncodedValue(field.getName()));
+		}
+		return isValid;
+	}
+
 	/**
 	 * Validates the file in the default "matrix" file format assumed: SUBJECTUID,FIELD1,FIELD2,FIELDN... Where N is any number of columns
 	 * 
@@ -1200,6 +1232,16 @@ public class PhenotypicValidator
 	private static boolean validateFieldMissingDefinition(Field field, Collection<String> errorMessages)
 	{
 		boolean isValid = false;
+		
+		if (!(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)
+				))
+		{
+			errorMessages.add(PhenotypicValidationMessage.fieldMissingValueNotDefinedType(field));
+			return isValid;
+		}
+		
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 		{
@@ -1246,6 +1288,16 @@ public class PhenotypicValidator
 	private static boolean validateFieldMaxDefinition(Field field, Collection<String> errorMessages)
 	{
 		boolean isValid = false;
+		
+		if (!(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)
+				))
+		{
+			errorMessages.add(PhenotypicValidationMessage.fieldMaxValueNotDefinedType(field));
+			return isValid;
+		}
+		
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 		{
@@ -1292,6 +1344,16 @@ public class PhenotypicValidator
 	private static boolean validateFieldMinDefinition(Field field, Collection<String> errorMessages)
 	{
 		boolean isValid = false;
+		
+		if (!(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) ||
+				field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)
+				))
+		{
+			errorMessages.add(PhenotypicValidationMessage.fieldMinValueNotDefinedType(field));
+			return isValid;
+		}
+		
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 		{
@@ -1342,6 +1404,7 @@ public class PhenotypicValidator
 	private static boolean validateFieldDefinition(Field field, Collection<String> errorMessages)
 	{
 		boolean isValid = false;
+		
 		// Number field type
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 		{
@@ -1462,6 +1525,26 @@ public class PhenotypicValidator
 
 		}
 
+		return isValid;
+	}
+	
+	private static boolean validateFieldType(String fieldName, String fieldType, Collection<String> errorMessages)
+	{
+		boolean isValid = false;
+		
+		if (fieldType.equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) ||
+				fieldType.equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) ||
+				fieldType.equalsIgnoreCase(Constants.FIELD_TYPE_DATE)
+				)
+		{
+			isValid = true;
+		}
+		else
+		{
+			errorMessages.add(PhenotypicValidationMessage.fieldTypeNotDefined(fieldName, fieldType));
+			isValid = false;
+		}
+		
 		return isValid;
 	}
 
