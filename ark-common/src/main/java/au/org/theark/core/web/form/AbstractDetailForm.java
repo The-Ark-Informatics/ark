@@ -283,7 +283,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 //			}
 		};
 
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
+		editCancelButton = new ArkBusyAjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
 		{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
