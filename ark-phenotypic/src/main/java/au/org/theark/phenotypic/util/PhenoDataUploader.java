@@ -474,9 +474,9 @@ public class PhenoDataUploader
 			uploadReport.append(" s");
 			uploadReport.append("\n");
 			uploadReport.append("Total file size: ");
-			uploadReport.append(srcLength);
+			uploadReport.append(inLength);
 			uploadReport.append(" B or ");
-			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
 			uploadReport.append("\n");
 
@@ -592,42 +592,15 @@ public class PhenoDataUploader
 					field.setStudy(study);
 					field.setName(fieldName);
 					
-					if (csvReader.getIndex("FIELD_TYPE") > 0)
-					{
-						FieldType fieldType = new FieldType();
-						fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
-						field.setFieldType(fieldType);
-					}
-					if (csvReader.getIndex("DESCRIPTION") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
-							field.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
-					}
-					if (csvReader.getIndex("UNITS") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
-							field.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
-					}
-					if (csvReader.getIndex("ENCODED_VALUES") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
-							field.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
-					}
-					if (csvReader.getIndex("MINIMUM_VALUE") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
-							field.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
-					}
-					if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
-					{	
-						if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
-							field.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
-					}
-					if (csvReader.getIndex("MISSING_VALUE") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
-							field.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
-					}
+					FieldType fieldType = new FieldType();
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					field.setFieldType(fieldType);
+					field.setDescription(csvReader.get("DESCRIPTION"));
+					field.setUnits((csvReader.get("UNITS")));
+					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
+					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
+					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 					
 					uploadReport.append("Creating new field: ");
 					uploadReport.append("\tFIELD: ");
@@ -646,47 +619,22 @@ public class PhenoDataUploader
 				{
 					uploadReport.append("Updating field for: ");
 					uploadReport.append("\tFIELD: ");
-					uploadReport.append(stringLineArray[csvReader.getIndex("FIELD_NAME")]);
+					fieldName = csvReader.get("FIELD_NAME");
+					uploadReport.append(csvReader.get("FIELD_NAME"));
 					uploadReport.append("\n");
 					
 					oldField.setName(fieldName);
 					
-					if (csvReader.getIndex("FIELD_TYPE") > 0)
-					{
-						FieldType fieldType = new FieldType();
-						fieldType = iPhenoService.getFieldTypeByName(stringLineArray[csvReader.getIndex("FIELD_TYPE")]);
-						oldField.setFieldType(fieldType);
-					}
-					if (csvReader.getIndex("DESCRIPTION") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("DESCRIPTION")].length() > 0)
-							oldField.setDescription(stringLineArray[csvReader.getIndex("DESCRIPTION")]);
-					}
-					if (csvReader.getIndex("UNITS") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("UNITS")].length() > 0)
-							oldField.setUnits((stringLineArray[csvReader.getIndex("UNITS")]));
-					}
-					if (csvReader.getIndex("ENCODED_VALUES") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("ENCODED_VALUES")].length() > 0)
-							oldField.setEncodedValues(stringLineArray[csvReader.getIndex("ENCODED_VALUES")]);
-					}
-					if (csvReader.getIndex("MINIMUM_VALUE") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")].length() > 0)
-							oldField.setMinValue(stringLineArray[csvReader.getIndex("MINIMUM_VALUE")]);
-					}
-					if (csvReader.getIndex("MAXIMUM_VALUE") > 0)
-					{	
-						if(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")].length() > 0)
-							oldField.setMaxValue(stringLineArray[csvReader.getIndex("MAXIMUM_VALUE")]);
-					}
-					if (csvReader.getIndex("MISSING_VALUE") > 0)
-					{
-						if(stringLineArray[csvReader.getIndex("MISSING_VALUE")].length() > 0)
-							oldField.setMissingValue(stringLineArray[csvReader.getIndex("MISSING_VALUE")]);
-					}
+					FieldType fieldType = new FieldType();
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					oldField.setFieldType(fieldType);
+					
+					oldField.setDescription(csvReader.get("DESCRIPTION"));
+					oldField.setUnits(csvReader.get("UNITS"));
+					oldField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
+					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
+					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
 					
 					// Try to update the oldField
 					iPhenoService.updateField(oldField);
@@ -726,9 +674,9 @@ public class PhenoDataUploader
 			uploadReport.append(" s");
 			uploadReport.append("\n");
 			uploadReport.append("Total file size: ");
-			uploadReport.append(srcLength);
+			uploadReport.append(inLength);
 			uploadReport.append(" B or ");
-			uploadReport.append(decimalFormat.format(srcLength / 1024.0 / 1024.0));
+			uploadReport.append(decimalFormat.format(inLength / 1024.0 / 1024.0));
 			uploadReport.append(" MB");
 			uploadReport.append("\n");
 
