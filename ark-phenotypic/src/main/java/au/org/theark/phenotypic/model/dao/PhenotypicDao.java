@@ -429,7 +429,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		else
 		{
 			log.error("Field Type Table maybe out of synch. Please check if it has an entry for " + fieldTypeName + " status");
-			log.error("Cannot locate a study status with " + fieldTypeName + " in the database");
+			log.error("Cannot locate a field type with " + fieldTypeName + " in the database");
 		}
 		return fieldType;
 	}
