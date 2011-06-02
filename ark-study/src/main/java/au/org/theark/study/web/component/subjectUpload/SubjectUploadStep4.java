@@ -79,7 +79,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 		try 
 		{
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, fileFormat, delimiterChar);
+			uploadReport = iStudyService.uploadAndReportMatrixSubjectFile(inputStream, containerForm.getModelObject().getFileUpload().getSize(), fileFormat, delimiterChar);
 		} 
 		catch (IOException e) 
 		{
