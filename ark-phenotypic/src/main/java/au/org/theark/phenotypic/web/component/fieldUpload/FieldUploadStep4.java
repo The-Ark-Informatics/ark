@@ -5,6 +5,9 @@ import java.io.InputStream;
 import java.sql.Blob;
 import java.util.Date;
 
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -93,7 +96,28 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		{
 			log.info("Uploading data dictionary file");
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, inputStream.toString().length());
+			
+			if(fileFormat.equalsIgnoreCase("XLS"))
+			{
+				Workbook w;
+				try
+				{
+					w = Workbook.getWorkbook(inputStream);
+					inputStream = phenoUploader.convertXlsToCsv(w);
+					inputStream.reset();
+				}
+				catch (BiffException e)
+				{
+					log.error(e.getMessage());
+				}
+				catch (IOException e)
+				{
+					log.error(e.getMessage());
+				}
+			}
+			
+			
+			uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, containerForm.getModelObject().getFileUpload().getSize());
 			
 			// Determined FieldUpload entities
 			containerForm.getModelObject().setFieldUploadCollection(phenoUploader.getFieldUploadCollection());
