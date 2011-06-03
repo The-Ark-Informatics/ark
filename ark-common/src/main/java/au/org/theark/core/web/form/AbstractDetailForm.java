@@ -15,9 +15,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
 
 /**
@@ -35,7 +38,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 {
 
 	private static final long		serialVersionUID	= 1L;
-
+	private transient Logger log = LoggerFactory.getLogger(AbstractDetailForm.class);
+	
 	protected WebMarkupContainer	resultListContainer;
 	protected WebMarkupContainer	detailPanelContainer;
 	protected WebMarkupContainer	searchPanelContainer;
@@ -54,94 +58,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	protected ModalWindow			selectModalWindow;
 	
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor formVisitor = new ArkFormVisitor();
-	public void onBeforeRender()
-	{
-		super.onBeforeRender();
-		visitChildren(formVisitor);
-	}
-
-	/**
-	 * Implement this to add all the form components/objects
-	 */
-	protected void addFormComponents()
-	{
-		add(saveButton);
-		add(cancelButton.setDefaultFormProcessing(false));
-	}
-
-	abstract protected void attachValidators();
-
-	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target)
-	{
-		selectModalWindow.show(target);
-		target.addComponent(selectModalWindow);
-	}
-
-	abstract protected void onCancel(AjaxRequestTarget target);
-
-	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
-
-	abstract protected void processErrors(AjaxRequestTarget target);
+	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
 	
-	abstract protected boolean isNew();
-	
-	protected boolean isActionPermitted(String actionType){
-		
-		boolean flag = false;
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		
-		if(actionType.equalsIgnoreCase(Constants.SAVE)){
-			
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
-				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
-					
-				flag = true;
-			}else{
-				flag = false;
-			}
-			
-		}
-		else if(actionType.equalsIgnoreCase(Constants.EDIT)){
-			
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
-				flag = true;
-			}else{
-				flag = false;
-			}
-		}
-		else if(actionType.equalsIgnoreCase(Constants.DELETE)){
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
-				flag = true;
-			}else{
-				flag = false;
-			}
-		}
-		
-		return flag;
-	}
-
-	protected void onCancelPostProcess(AjaxRequestTarget target)
-	{
-
-		detailPanelContainer.setVisible(true);
-		viewButtonContainer.setVisible(true);
-		viewButtonContainer.setEnabled(true);
-		detailPanelFormContainer.setEnabled(false);
-		resultListContainer.setVisible(false);
-		searchPanelContainer.setVisible(false);
-		editButtonContainer.setVisible(false);
-		
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(detailPanelFormContainer);
-		target.addComponent(editButtonContainer);
-	}
-
 	/**
 	 * Constructor for AbstractDetailForm class
 	 * 
@@ -234,6 +152,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			}
 		};
 
+		/*
 		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
 		{
 			@Override
@@ -251,6 +170,24 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 //				return isActionPermitted(Constants.DELETE);
 //			}
 		};
+		*/
+		deleteButton = new AjaxDeleteButton(Constants.DELETE,	new StringResourceModel("confirmDelete", this, null),	new StringResourceModel(Constants.DELETE,	this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onDeleteConfirmed(target, null, selectModalWindow);
+			}
+				
+			@Override
+			public boolean isVisible()
+			{
+				//TODO NN Uncomment after User Management UI is completed
+				//return isActionPermitted(Constants.DELETE);
+				return (true);
+			}
+		};
+		
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
 		{
@@ -300,20 +237,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		addComponentsToForm();
 	}
-
 	
-	protected void editCancelProcess(AjaxRequestTarget target){
-		resultListContainer.setVisible(true);
-		detailPanelContainer.setVisible(false);
-		searchPanelContainer.setVisible(true);
-
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
-		onCancel(target);
-		
-	}
 	protected void addComponentsToForm()
 	{
 
@@ -331,6 +255,90 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		add(viewButtonContainer);
 
 	}
+	
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
+	}
+
+	/**
+	 * Implement this to add all the form components/objects
+	 */
+	protected void addFormComponents()
+	{
+		add(saveButton);
+		add(cancelButton.setDefaultFormProcessing(false));
+	}
+
+	protected boolean isActionPermitted(String actionType){
+		
+		boolean flag = false;
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		
+		if(actionType.equalsIgnoreCase(Constants.SAVE)){
+			
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
+					
+				flag = true;
+			}else{
+				flag = false;
+			}
+			
+		}
+		else if(actionType.equalsIgnoreCase(Constants.EDIT)){
+			
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+				flag = true;
+			}else{
+				flag = false;
+			}
+		}
+		else if(actionType.equalsIgnoreCase(Constants.DELETE)){
+			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
+				flag = true;
+			}else{
+				flag = false;
+			}
+		}
+		
+		return flag;
+	}
+
+	protected void onCancelPostProcess(AjaxRequestTarget target)
+	{
+		detailPanelContainer.setVisible(true);
+		viewButtonContainer.setVisible(true);
+		viewButtonContainer.setEnabled(true);
+		detailPanelFormContainer.setEnabled(false);
+		resultListContainer.setVisible(false);
+		searchPanelContainer.setVisible(false);
+		editButtonContainer.setVisible(false);
+		
+		target.addComponent(feedBackPanel);
+		target.addComponent(searchPanelContainer);
+		target.addComponent(detailPanelContainer);
+		target.addComponent(resultListContainer);
+		target.addComponent(viewButtonContainer);
+		target.addComponent(detailPanelFormContainer);
+		target.addComponent(editButtonContainer);
+	}
+
+	
+	protected void editCancelProcess(AjaxRequestTarget target){
+		resultListContainer.setVisible(true);
+		detailPanelContainer.setVisible(false);
+		searchPanelContainer.setVisible(true);
+
+		target.addComponent(feedBackPanel);
+		target.addComponent(searchPanelContainer);
+		target.addComponent(detailPanelContainer);
+		target.addComponent(resultListContainer);
+		onCancel(target);
+	}
+	
 
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
@@ -359,16 +367,33 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 	}
 
-	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
+	/**
+	 * A helper method that handles the press of the Delete button, thus displaying a modal pop-up that required user selection
+	 * 
+	 * @param target
+	 */
+	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target)
+	{
+		selectModalWindow.show(target);
+		target.addComponent(selectModalWindow);
+	}
 
+	/**
+	 * A helper method that handles the press of the Cancel button within the modal pop-up. ie Closes the modal pop-up
+	 * 
+	 * @param target
+	 * @param selectModalWindow
+	 */
 	protected void onDeleteCancel(AjaxRequestTarget target, ModalWindow selectModalWindow)
 	{
 		selectModalWindow.close(target);
 	}
 
+	/**
+	 * A helper method that initialises the modal window for delete confirmation
+	 */
 	protected ModalWindow initialiseModalWindow()
 	{
-
 		// The ModalWindow, showing some choices for the user to select.
 		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow")
 		{
@@ -385,6 +410,17 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		};
 
 		return selectModalWindow;
-
 	}
+	
+	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
+	
+	abstract protected void attachValidators();
+
+	abstract protected void onCancel(AjaxRequestTarget target);
+
+	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
+
+	abstract protected void processErrors(AjaxRequestTarget target);
+	
+	abstract protected boolean isNew();
 }
