@@ -171,7 +171,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		// Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
-		onCancel(target);
+		editCancelProcess(target);
 	}
 
 	/* (non-Javadoc)

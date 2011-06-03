@@ -189,8 +189,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		
 		setModelObject(phenoCollectionVo);
 		preProcessDetailPanel(target);
-		// Hide Delete button on New
-		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
+		
 	}
 	
 	protected boolean isSecure(String actionType)

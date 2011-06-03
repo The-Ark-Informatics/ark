@@ -175,9 +175,6 @@ public class SearchResultListPanel extends Panel
 				viewButtonContainer.setVisible(true);
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
-				
-				// Have to Edit, before allowing delete
-				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
