@@ -1,6 +1,7 @@
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
 import java.awt.Color;
+import java.lang.annotation.Target;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,6 +80,9 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 
 	public void initialiseFieldForm()
 	{
+		// Force versioning to force the refresh of the images (ignoring cache)
+		setVersioned(true);
+		
 		// Study in context
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
@@ -94,21 +98,25 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	                 true,		// Show legend  
 	                 true,		// Show tooltips
 	                 true);		// Show urls
-	        chart.setBackgroundPaint(Color.white);
-	        chart.setBorderVisible(false);
-			add(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
+	      chart.setBackgroundPaint(Color.white);
+	      chart.setBorderVisible(false);
+	      addOrReplace(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
 			
 			d = new DefaultPieDataset();
-			d.setValue("Collections with Data", new Integer(iPhenotypicService.getCountOfCollectionsWithDataInStudy(study)));
-			d.setValue("Collections without Data", new Integer(iPhenotypicService.getCountOfCollectionsInStudy(study) - iPhenotypicService.getCountOfCollectionsWithDataInStudy(study)));
+			int intValue = iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
+			
+			d.setValue("Collections with Data", new Integer(intValue));
+			
+			intValue = iPhenotypicService.getCountOfCollectionsInStudy(study) - iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
+			d.setValue("Collections without Data", new Integer(intValue));
 			
 			chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
 	                 true,		// Show legend  
 	                 true,		// Show tooltips
 	                 true);		// Show urls
-	        chart.setBackgroundPaint(Color.white);
-	        chart.setBorderVisible(false);
-			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
+	      chart.setBackgroundPaint(Color.white);
+	      chart.setBorderVisible(false);
+	      addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
 			
 			String[] seriesNames = new String[] {"2001", "2002"};
 			String[] categoryNames = new String[] {"First Quater",
@@ -141,7 +149,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			                      true,						  // Show tooltips
 			                      false						  // Show urls
 			                     );
-			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400));
+			addOrReplace(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400));
 		}
 		else
 		{
@@ -153,18 +161,18 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	                 true,		// Show legend  
 	                 true,		// Show tooltips
 	                 true);		// Show urls
-	        chart.setBackgroundPaint(Color.white);
-	        chart.setBorderVisible(false);
-			add(new JFreeChartImage("phenoFieldSummaryImage", chart, 0, 0).setVisible(false));
+	      chart.setBackgroundPaint(Color.white);
+	      chart.setBorderVisible(false);
+	      addOrReplace(new JFreeChartImage("phenoFieldSummaryImage", chart, 0, 0).setVisible(false));
 			
 			chart = ChartFactory.createPieChart("Phenotypic Collection Summary", d,
 	                 true,		// Show legend  
 	                 true,		// Show tooltips
 	                 true);		// Show urls
-	        chart.setBackgroundPaint(Color.white);
-	        chart.setBorderVisible(false);
-			add(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 0, 0).setVisible(false));
-			add(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400).setVisible(false));
+	      chart.setBackgroundPaint(Color.white);
+	      chart.setBorderVisible(false);
+			addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 0, 0).setVisible(false));
+			addOrReplace(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400).setVisible(false));
 		}
 	}
 
