@@ -27,6 +27,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -236,10 +238,20 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
-		// TODO:(CE) To handle Business and System Exceptions here
-		iPhenotypicService.deleteField(containerForm.getModelObject().getField());
-		this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
-
+		try
+		{
+			iPhenotypicService.deleteField(containerForm.getModelObject().getField());
+			this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
+		}
+		catch (ArkSystemException e)
+		{
+			this.error(e.getMessage());
+		}
+		catch (EntityCannotBeRemoved e)
+		{
+			this.error(e.getMessage());
+		}
+		
 		// Display delete confirmation message
 		target.addComponent(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
