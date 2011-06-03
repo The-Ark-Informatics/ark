@@ -178,9 +178,17 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 		// Close the confirm modal window
 		selectModalWindow.close(target);
-		// Move focus back to Search form
+		
+		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		FieldData fieldData = new FieldData();
+		
+		containerForm.getModelObject().setStudy(study);
+		containerForm.getModelObject().setFieldData(fieldData);
 		containerForm.setModelObject(phenoCollectionVo);
+		
 		editCancelProcess(target);
 	}
 
