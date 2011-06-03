@@ -7,6 +7,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -17,7 +19,7 @@ import au.org.theark.phenotypic.web.component.summaryModule.form.DetailForm;
 public class DetailPanel extends Panel
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					phenotypicService;
+	private IPhenotypicService					iPhenotypicService;
 
 	private DetailForm							detailForm;
 	private FeedbackPanel						feedBackPanel;
@@ -58,14 +60,14 @@ public class DetailPanel extends Panel
 				if (collectionVo.getPhenoCollection().getId() == null)
 				{
 					// Save the Collection
-					phenotypicService.createCollection(collectionVo.getPhenoCollection());
+					iPhenotypicService.createCollection(collectionVo.getPhenoCollection());
 					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was created successfully");
 					processFeedback(target);
 				}
 				else
 				{
 					// Update the Collection
-					phenotypicService.updateCollection(collectionVo.getPhenoCollection());
+					iPhenotypicService.updateCollection(collectionVo.getPhenoCollection());
 					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was updated successfully");
 					processFeedback(target);
 				}
@@ -143,12 +145,19 @@ public class DetailPanel extends Panel
 		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow"){
 
 	      protected void onSelect(AjaxRequestTarget target, String selection) {
-	      	//TODO Implement try catch for exception handling
-				// try {
-	      	
-	      	// Handle Delete action
-	   		phenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
-	   		this.info("Collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
+	      	try
+				{
+					iPhenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
+					this.info("Collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
+				}
+				catch (ArkSystemException e)
+				{
+					this.error(e.getMessage());
+				}
+				catch (EntityCannotBeRemoved e)
+				{
+					this.error(e.getMessage());
+				}
 	   		
 	   		// Display delete confirmation message
 	   		target.addComponent(feedBackPanel);
