@@ -6,6 +6,7 @@
  */
 package au.org.theark.phenotypic.web.component.fieldData.form;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -16,10 +17,12 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -130,7 +133,14 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 	protected void onCancel(AjaxRequestTarget target)
 	{
+		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		FieldData fieldData = new FieldData();
+		
+		containerForm.getModelObject().setStudy(study);
+		containerForm.getModelObject().setFieldData(fieldData);
 		containerForm.setModelObject(phenoCollectionVo);
 	}
 
