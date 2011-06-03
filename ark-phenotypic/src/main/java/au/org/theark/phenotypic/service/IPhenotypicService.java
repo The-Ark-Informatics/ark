@@ -4,6 +4,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
@@ -31,7 +33,7 @@ public interface IPhenotypicService {
 	public void createCollection(PhenoCollectionVO colVo);
 	public void updateCollection(PhenoCollection col);
 	public void updateCollection(PhenoCollectionVO colVo);
-	public void deleteCollection(PhenoCollection col);
+	public void deleteCollection(PhenoCollection col) throws ArkSystemException, EntityCannotBeRemoved;
 	public void deleteCollection(PhenoCollectionVO colVo);
 	public int clearPhenoCollection(PhenoCollection phenoCollection);
 
@@ -42,7 +44,7 @@ public interface IPhenotypicService {
 	public boolean fieldHasData(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
-	public void deleteField(Field field);
+	public void deleteField(Field field) throws ArkSystemException, EntityCannotBeRemoved;
 	
 	// Field_collections
 	public FieldPhenoCollection getFieldPhenoCollection(FieldPhenoCollection fieldPhenoCollection);
@@ -86,7 +88,7 @@ public interface IPhenotypicService {
 	public void createUpload(PhenoUpload upload);
 	public void createUpload(UploadVO uploadVo);
 	public void updateUpload(PhenoUpload upload);
-	public void deleteUpload(PhenoUpload upload);
+	public void deleteUpload(PhenoUpload upload) throws ArkSystemException, EntityCannotBeRemoved;
 	
 	// CollectionUpload
 	public PhenoCollectionUpload getPhenoCollectionUpload(Long id);

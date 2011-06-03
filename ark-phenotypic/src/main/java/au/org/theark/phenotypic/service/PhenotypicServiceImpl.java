@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
@@ -223,7 +225,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.getFieldTypes();
 	}
 
-	public void deleteCollection(PhenoCollection collection)
+	public void deleteCollection(PhenoCollection collection)  throws ArkSystemException, EntityCannotBeRemoved
 	{
 		phenotypicDao.createPhenoCollection(collection);
 		
@@ -236,7 +238,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	}
 
 
-	public void deleteField(Field field)
+	public void deleteField(Field field) throws ArkSystemException, EntityCannotBeRemoved
 	{
 		phenotypicDao.deleteField(field);
 		
@@ -360,7 +362,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		iArkCommonService.createAuditHistory(ah);
 	}
 
-	public void deleteUpload(PhenoUpload upload)
+	public void deleteUpload(PhenoUpload upload) throws ArkSystemException, EntityCannotBeRemoved
 	{
 		phenotypicDao.deleteUpload(upload);
 		

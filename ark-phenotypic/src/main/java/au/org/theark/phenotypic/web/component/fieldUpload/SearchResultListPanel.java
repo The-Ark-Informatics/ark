@@ -20,6 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.model.entity.FieldUpload;
@@ -30,7 +32,7 @@ import au.org.theark.phenotypic.web.component.fieldUpload.form.ContainerForm;
 @SuppressWarnings({ "serial", "unchecked", "unused"})
 public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService phenotypicService;
+	private IPhenotypicService iPhenotypicService;
 	
 	private transient Logger log = LoggerFactory.getLogger(SearchResultListPanel.class);
 
@@ -329,11 +331,23 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (upload.getId() != null)
-					phenotypicService.deleteUpload(upload);
- 
-				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+				{
+					try
+					{
+						iPhenotypicService.deleteUpload(upload);
+						containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+					}
+					catch (ArkSystemException e)
+					{
+						containerForm.error(e.getMessage());
+					}
+					catch (EntityCannotBeRemoved e)
+					{
+						containerForm.error(e.getMessage());
+					}
+				}
 				
-				// Update the result panel and contianerForm (for feedBack message)
+				// Update the result panel and containerForm (for feedBack message)
 				target.addComponent(searchResultContainer);
 				target.addComponent(containerForm);
 			}

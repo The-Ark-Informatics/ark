@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.BarChartResult;
@@ -285,9 +287,18 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	 *           if(selectedField.equals(existingField)) { fieldListToRemove.add(existingField); } } } } }
 	 */
 
-	public void deletePhenoCollection(PhenoCollection collection)
+	public void deletePhenoCollection(PhenoCollection collection) throws ArkSystemException, EntityCannotBeRemoved
 	{
 		getSession().delete(collection);
+		
+		if (!phenoCollectionHasData(collection))
+		{
+			getSession().delete(collection);
+		}
+		else
+		{
+			throw new EntityCannotBeRemoved("The Collection: " + collection.getName() + " has data associated and cannot be removed.");
+		}
 	}
 
 	public void deletePhenoCollection(PhenoCollectionVO collectionVo)
@@ -397,9 +408,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(field);
 	}
 
-	public void deleteField(Field field)
+	public void deleteField(Field field) throws ArkSystemException, EntityCannotBeRemoved
 	{
-		getSession().delete(field);
+		if (!fieldHasData(field))
+		{
+			getSession().delete(field);
+		}
+		else
+		{
+			throw new EntityCannotBeRemoved("The Field: " + field.getName() + " has data associated and cannot be removed.");
+		}
 	}
 
 	private String formatFieldName(String fieldName)
@@ -710,9 +728,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		getSession().update(upload);
 	}
 
-	public void deleteUpload(PhenoUpload upload)
+	public void deleteUpload(PhenoUpload upload)  throws ArkSystemException, EntityCannotBeRemoved
 	{
-		getSession().delete(upload);
+		if (!uploadHasData(upload))
+		{
+			getSession().delete(upload);
+		}
+		else
+		{
+			throw new EntityCannotBeRemoved("The File: " + upload.getFilename() + " has data associated and cannot be removed.");
+		}
 	}
 
 	public java.util.Collection<FieldType> getFieldTypes()
@@ -1329,5 +1354,31 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		
 		return criteria.list().size()>0;
+	}
+	
+	public boolean phenoCollectionHasData(PhenoCollection phenoCollection)
+	{
+		Criteria criteria =  getSession().createCriteria(FieldData.class);
+		
+		if(phenoCollection != null){
+			criteria.add(Restrictions.eq("collection",phenoCollection));
+		}
+		
+		return criteria.list().size()>0;
+	}
+	
+	private boolean uploadHasData(PhenoUpload upload)
+	{
+		boolean hasData = false;
+		
+		Criteria criteria =  getSession().createCriteria(FieldUpload.class);
+		
+		if(upload != null){
+			criteria.add(Restrictions.eq("upload",upload));
+			if(criteria.list().size()>0)
+				hasData = true;
+		}
+		
+		return hasData;
 	}
 }

@@ -24,6 +24,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.model.entity.Field;
@@ -363,9 +365,21 @@ public class SearchResultListPanel extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
 				if (upload.getId() != null)
-					iPhenotypicService.deleteUpload(upload);
- 
-				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+				{
+					try
+					{
+						iPhenotypicService.deleteUpload(upload);
+						containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
+					}
+					catch (ArkSystemException e)
+					{
+						containerForm.error(e.getMessage());
+					}
+					catch (EntityCannotBeRemoved e)
+					{
+						containerForm.error(e.getMessage());
+					}
+				}
 				
 				// Update the result panel and contianerForm (for feedBack message)
 				target.addComponent(searchResultContainer);
