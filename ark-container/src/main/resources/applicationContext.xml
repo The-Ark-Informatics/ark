@@ -99,7 +99,7 @@
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
-				<prop key="show_sql">false</prop>
+				<prop key="hibernate.show_sql">false</prop>
 				<prop key="cache.use_query_cache">false</prop>
 				<prop key="cache.use_second_level_cache">false</prop>
 				<prop key="hibernate.order_updates">true</prop>
