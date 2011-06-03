@@ -100,7 +100,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	                 true);		// Show urls
 	      chart.setBackgroundPaint(Color.white);
 	      chart.setBorderVisible(false);
-	      addOrReplace(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400));
+	      addOrReplace(new JFreeChartImage("phenoFieldSummaryImage", chart, 400, 400).setVersioned(true));
 			
 			d = new DefaultPieDataset();
 			int intValue = iPhenotypicService.getCountOfCollectionsWithDataInStudy(study);
@@ -116,7 +116,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	                 true);		// Show urls
 	      chart.setBackgroundPaint(Color.white);
 	      chart.setBorderVisible(false);
-	      addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400));
+	      addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400).setVersioned(true));
 			
 			String[] seriesNames = new String[] {"2001", "2002"};
 			String[] categoryNames = new String[] {"First Quater",
@@ -149,7 +149,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			                      true,						  // Show tooltips
 			                      false						  // Show urls
 			                     );
-			addOrReplace(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400));
+			addOrReplace(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400).setVersioned(true));
 		}
 		else
 		{
