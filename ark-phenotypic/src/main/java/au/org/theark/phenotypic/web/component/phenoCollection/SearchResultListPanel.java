@@ -181,9 +181,6 @@ public class SearchResultListPanel extends Panel
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
 				
-				// Have to Edit, before allowing delete
-				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
-				
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, phenoCollection.getStudy().getName(), arkContextMarkup);
 				contextHelper.setPhenoContextLabel(target, phenoCollection.getName(), arkContextMarkup);
