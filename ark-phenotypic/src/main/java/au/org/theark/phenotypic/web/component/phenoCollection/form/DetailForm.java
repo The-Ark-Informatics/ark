@@ -1,18 +1,15 @@
 package au.org.theark.phenotypic.web.component.phenoCollection.form;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.Component;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
-import org.apache.wicket.extensions.markup.html.form.palette.component.Selection;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -29,21 +26,17 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.entity.Status;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
-import au.org.theark.phenotypic.web.component.phenoUpload.DeleteButton;
-import au.org.theark.phenotypic.web.component.phenoUpload.SearchResultListPanel;
 
 /**
  * @author nivedann
@@ -239,10 +232,10 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 	protected void onCancel(AjaxRequestTarget target)
 	{
-		PhenoCollectionVO phenoCollectionVO = new PhenoCollectionVO();
-		containerForm.setModelObject(phenoCollectionVO);
+		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
+		containerForm.setModelObject(phenoCollectionVo);
 
-		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollectionVO.getPhenoCollection());
+		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollectionVo.getPhenoCollection());
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
 	}
 	
