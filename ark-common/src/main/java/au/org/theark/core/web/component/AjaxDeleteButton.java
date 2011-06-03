@@ -7,8 +7,12 @@ import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
-@SuppressWarnings({"rawtypes", "unchecked"})
-public class AjaxDeleteButton extends IndicatingAjaxButton 
+@SuppressWarnings({"unchecked"})
+/**
+ * @author cellis
+ *
+ */
+public abstract class AjaxDeleteButton extends IndicatingAjaxButton 
 {
 
 	/**
@@ -43,6 +47,5 @@ public class AjaxDeleteButton extends IndicatingAjaxButton
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-	}
+	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);
 }
