@@ -26,6 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -129,27 +130,24 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		endDatePicker.bind(endDateTxtFld);
 		endDateTxtFld.add(endDatePicker);
 		
-		clearCollectionButton =  new AjaxButton("clearCollection", new StringResourceModel("clearCollectionKey", this, null))
+		clearCollectionButton =new AjaxDeleteButton("clearCollection",	new StringResourceModel("button.clearCollection.confirm", this, null),	new StringResourceModel("button.clearCollection",	this, null))
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				//TODO: Implement confirm
-				//phenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
-				//this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully");
-				//processErrors(target);
+				phenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
+				this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully");
+				processErrors(target);
 			}
-			
-			//TODO NN Uncomment after User Management UI is completed	
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.DELETE);
-//			}
+				
+			@Override
+			public boolean isVisible()
+			{
+				//TODO NN Uncomment after User Management UI is completed
+				//return isActionPermitted(Constants.DELETE);
+				return (true);
+			}
 		};
-		
-		//TODO: Enable once confirm implemented
-		clearCollectionButton.setVisible(false);
 
 		// Initialise Drop Down Choices
 		initStatusDdc();
