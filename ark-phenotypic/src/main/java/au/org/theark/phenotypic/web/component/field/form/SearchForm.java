@@ -144,8 +144,6 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		fieldVo.getField().setQualityControlStatus(true);
 		setModelObject(fieldVo);
 		preProcessDetailPanel(target);
-		// Hide Delete button on New
-		detailPanel.getDetailForm().getDeleteButton().setVisible(false);
 	}
 
 	protected boolean isSecure(String actionType)

@@ -179,7 +179,7 @@ public class SearchResultListPanel extends Panel
 				editButtonContainer.setVisible(false);
 				
 				// Have to Edit, before allowing delete
-				detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
+				//detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
 				
 				// Disable fieldType dropdown if data exists
 				boolean hasData = iPhenotypicService.fieldHasData(field);

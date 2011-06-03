@@ -252,7 +252,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		// Move focus back to Search form
 		FieldVO fieldVo = new FieldVO();
 		containerForm.setModelObject(fieldVo);
-		onCancel(target);
+		editCancelProcess(target);
 	}
 
 	/* (non-Javadoc)
