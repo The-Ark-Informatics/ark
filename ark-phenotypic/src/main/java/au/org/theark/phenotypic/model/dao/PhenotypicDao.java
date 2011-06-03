@@ -1371,7 +1371,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	{
 		boolean hasData = false;
 		
+		// Data dictionary upload
 		Criteria criteria =  getSession().createCriteria(FieldUpload.class);
+		
+		if(upload != null){
+			criteria.add(Restrictions.eq("upload",upload));
+			if(criteria.list().size()>0)
+				hasData = true;
+		}
+		
+		// field data upload
+		criteria =  getSession().createCriteria(PhenoCollectionUpload.class);
 		
 		if(upload != null){
 			criteria.add(Restrictions.eq("upload",upload));
