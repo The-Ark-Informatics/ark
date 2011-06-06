@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
 
@@ -60,6 +61,9 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
 	
+	private ArkCrudContainerVO arkCrudContainerVO;//Use this for the model where WebMarkupContainers are set inside this VO
+	
+	
 	/**
 	 * Constructor for AbstractDetailForm class
 	 * 
@@ -88,6 +92,146 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		initialiseForm();
 	}
+	
+	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,Form<T> containerForm){
+		super(id);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
+		this.feedBackPanel = feedBackPanel;
+		
+		initialiseForm(true);
+	}
+	
+	
+	protected void initialiseForm(Boolean isArkCrudContainerVOPattern){
+		
+		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
+		{
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				if(isNew()){
+					editCancelProcess(target,true);
+				}else{
+					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+					arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
+					target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+					target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+					onCancelPostProcess(target,true);
+				}
+			}
+		};
+		
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
+		{
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.SAVE);
+			}
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onSave(containerForm, target);
+				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form)
+			{
+				boolean setFocusError = false;
+				WebMarkupContainer wmc = arkCrudContainerVO.getDetailPanelContainer();
+				for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
+				{
+					Component component = (Component) iterator.next();
+					if (component instanceof FormComponent)
+					{
+						FormComponent formComponent = (FormComponent) component;
+						
+						if(!formComponent.isValid())
+						{
+							if(!setFocusError)
+							{
+								// Place focus on field in error (for the first field in error)
+								target.focusComponent(formComponent);
+				            setFocusError = true;	
+							}
+						}
+					}
+				}
+				
+				processErrors(target);
+			}
+		};
+
+		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
+		{
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				// target.addComponent(detailPanelContainer);
+				onDelete(containerForm, target);
+
+			}
+			
+			//TODO NN Uncomment after User Management UI is completed	
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.DELETE);
+			}
+		};
+		
+		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
+		{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				deleteButton.setEnabled(true);
+				// The visibility of the delete button should not be changed from 
+				// any of the abstract classes.  This allows the implementation
+				// to control the visibility of the delete button. 
+				// NB: SearchForm onNew has the Delete button's setEnabled(false)
+//				deleteButton.setVisible(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(false);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(true);
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+				target.addComponent(arkCrudContainerVO.getViewButtonContainer());
+				target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+				target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form)
+			{
+				processErrors(target);
+			}
+			
+			//TODO NN Uncomment after User Management UI is completed	
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.EDIT);
+			}
+		};
+		
+		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
+		{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				editCancelProcess(target,true);
+			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form)
+			{
+				processErrors(target);
+			}
+		};
+		
+		selectModalWindow = initialiseModalWindow();
+
+		addComponentsToForm(true);
+		
+	}
+
+	
 
 	@SuppressWarnings("serial")
 	protected void initialiseForm()
@@ -113,12 +257,12 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		saveButton = new ArkBusyAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
-//TODO NN Uncomment after User Management UI is completed			
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.SAVE);
-//			}
+			//TODO NN Uncomment after User Management UI is completed			
+			//			@Override
+			//			public boolean isVisible()
+			//			{
+			//				return isActionPermitted(Constants.SAVE);
+			//			}
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onSave(containerForm, target);
@@ -256,6 +400,35 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 	}
 	
+	/**
+	 * Overloaded for VO pattern
+	 * @param isArkCrudContainerVoPattern
+	 */
+	protected void addComponentsToForm(boolean isArkCrudContainerVoPattern)
+	{
+		arkCrudContainerVO.getDetailPanelFormContainer().add(selectModalWindow);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
+
+		arkCrudContainerVO.getEditButtonContainer().add(saveButton);
+		arkCrudContainerVO.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
+		arkCrudContainerVO.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
+		
+		//editButtonContainer.add(saveButton);
+		//editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
+		//editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
+
+		arkCrudContainerVO.getViewButtonContainer().add(editButton);
+		arkCrudContainerVO.getViewButtonContainer().add(editCancelButton.setDefaultFormProcessing(false));
+		
+		//viewButtonContainer.add(editButton);
+		//viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
+
+		add(arkCrudContainerVO.getViewButtonContainer());
+		add(arkCrudContainerVO.getEditButtonContainer());
+
+	}
+
+	
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
@@ -327,6 +500,33 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	}
 
 	
+	/**
+	 * Overloaded onCancelPostProcess. Use this when you use the ArkCrudContainerVO to manage the
+	 * WebMarkupContainers.
+	 * @param target
+	 * @param isArkCrudContianerVOPattern
+	 */
+	protected void onCancelPostProcess(AjaxRequestTarget target, Boolean isArkCrudContianerVOPattern){
+			
+			arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+			arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+			arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+			arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+			arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+			arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+			
+			target.addComponent(feedBackPanel);
+			target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
+			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+			target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+			target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+
+			target.addComponent(arkCrudContainerVO.getViewButtonContainer());
+			target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+		
+	}
+	
 	protected void editCancelProcess(AjaxRequestTarget target){
 		resultListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
@@ -337,6 +537,22 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		target.addComponent(detailPanelContainer);
 		target.addComponent(resultListContainer);
 		onCancel(target);
+	}
+	
+	
+	protected void editCancelProcess(AjaxRequestTarget target,boolean isArkCrudContainerVoPattern){
+		
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
+		
+
+		target.addComponent(feedBackPanel);
+		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
+		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		onCancel(target);
+		
 	}
 	
 
