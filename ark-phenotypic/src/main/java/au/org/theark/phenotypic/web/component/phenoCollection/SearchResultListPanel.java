@@ -22,13 +22,14 @@ import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.web.component.field.form.DetailForm;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultListPanel extends Panel
 {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService									phenotypicService;
+	private IPhenotypicService									iPhenotypicService;
 	
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
@@ -161,10 +162,10 @@ public class SearchResultListPanel extends Panel
 			{
 				// Sets the selected object into the model
 				PhenoCollectionVO collectionVo = containerForm.getModelObject();
-				collectionVo =	phenotypicService.getPhenoCollectionAndFields(phenoCollection.getId());
+				collectionVo =	iPhenotypicService.getPhenoCollectionAndFields(phenoCollection.getId());
 				Field field = new Field();
 				field.setStudy(phenoCollection.getStudy());
-				collectionVo.setFieldsAvailable(phenotypicService.searchField(field));
+				collectionVo.setFieldsAvailable(iPhenotypicService.searchField(field));
 				containerForm.setModelObject(collectionVo);
 				
 				// Place the selected collection in session context for the user

@@ -34,7 +34,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 	private ContainerForm						containerForm;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					phenotypicService;
+	private IPhenotypicService					iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -102,7 +102,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 				{
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					containerForm.getModelObject().getPhenoCollection().setStudy(study);
-					phenoCollectionCol = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
+					phenoCollectionCol = iPhenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
 				}
 				
 				listView.removeAll();
@@ -147,7 +147,7 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 		{
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			containerForm.getModelObject().getPhenoCollection().setStudy(study);
-			phenoCollectionCol = phenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
+			phenoCollectionCol = iPhenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
 		}
 
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
