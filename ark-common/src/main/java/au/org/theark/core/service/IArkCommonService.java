@@ -9,6 +9,7 @@ import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -317,4 +318,7 @@ public interface IArkCommonService<T> {
 	 * @return int
 	 */
 	public int getStudySubjectCount(SubjectVO subjectVoCriteria);
+	
+	
+	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles();
 }
