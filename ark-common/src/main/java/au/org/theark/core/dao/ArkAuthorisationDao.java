@@ -9,16 +9,18 @@ import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.jfree.util.Log;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkRolePermission;
-import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -72,17 +74,15 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 * @return ArkRole
 	 */
 	protected ArkRole getArkRoleByName(String roleName){
-		StatelessSession session = getStatelessSession();
-		Criteria criteria = session.createCriteria(ArkRole.class);
+		Criteria criteria = getSession().createCriteria(ArkRole.class);
 		criteria.add(Restrictions.eq("name", roleName));
 		ArkRole arkRole = (ArkRole)criteria.uniqueResult();
-		session.close();
 		return arkRole;
 	}
 	
 	/**
 	 * <p>
-	 * The method takes in a LdapUserName and calls the isUserAdminHelper to do th grunt of the work.
+	 * The method takes in a LdapUserName and calls the isUserAdminHelper to do the grunt of the work.
 	 * The query is again Ark_User_Role table/ArkUserRole entity. The getArkRoleByName is invoked
 	 * to get a object that represents Administrator. The method uses this to then check if the given user
 	 * is/has a role of the type in ArkUserRole table/instance. If yes a boolean true is returned and otherwise
@@ -115,7 +115,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return isAdminType;
 	}
 	
-	private boolean isUserAdminHelper(String ldapUserName, String roleName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
+	private boolean isUserAdminHelper(String ldapUserName, String roleName, ArkFunction arkFunction, ArkModule arkModule) throws EntityNotFoundException{
 		boolean isAdminType = false;
 		StatelessSession session = getStatelessSession();
 		//Check or get user ark_user object based on ldapUserName
@@ -124,7 +124,6 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		ArkRole arkRole  = getArkRoleByName(roleName);
 		criteria.add(Restrictions.eq("arkRole", arkRole));
 		criteria.add(Restrictions.eq("arkUser", arkUser));
-		criteria.add(Restrictions.eq("arkUsecase",arkUseCase));
 		criteria.add(Restrictions.eq("arkModule",arkModule));
 		
 		criteria.setMaxResults(1);
@@ -150,8 +149,8 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 	}
 	
-	public boolean isSuperAdministator(String ldapUserName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
-		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR,arkUseCase,arkModule);
+	public boolean isSuperAdministator(String ldapUserName, ArkFunction arkFunction, ArkModule arkModule) throws EntityNotFoundException{
+		return isUserAdminHelper(ldapUserName,RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR,arkFunction,arkModule);
 	}
 	
 	/**
@@ -166,7 +165,9 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	public Collection<String> getUserAdminRoles(String ldapUserName) throws EntityNotFoundException{
 		
 		ArkUser arkUser  = getArkUser(ldapUserName);
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		
+		StatelessSession session = getStatelessSession();
+		Criteria criteria =  session.createCriteria(ArkUserRole.class);// getSession().createCriteria(ArkUserRole.class);
 		ArkRole arkRoleSuperAdmin  = getArkRoleByName(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
 		ArkRole arkRoleAdmin  = getArkRoleByName(RoleConstants.ARK_ROLE_ADMINISTATOR);
 		criteria.add(Restrictions.or(Restrictions.eq("arkRole", arkRoleSuperAdmin),Restrictions.eq("arkRole", arkRoleAdmin)));
@@ -182,13 +183,16 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		for (String roleName : roles) {
 			userRoles.add(roleName);
 		}
+		session.close();
 		return userRoles;
 	}
 	
 	public String getUserRoleForStudy(String ldapUserName,Study study) throws EntityNotFoundException{
 		String roleName ="";
 		ArkUser arkUser  = getArkUser(ldapUserName);
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		StatelessSession session = getStatelessSession();
+		
+		Criteria criteria = session.createCriteria(ArkUserRole.class);//getSession().createCriteria(ArkUserRole.class);
 		criteria.createAlias("arkUser", "auserObject");
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		criteria.add(Restrictions.eq("auserObject.study", study));
@@ -197,6 +201,7 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		if(arkUserRole != null){
 			roleName = arkUserRole.getArkRole().getName();
 		}
+		session.close();
 		return roleName;
 	}
 	
@@ -206,12 +211,11 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	 * @throws EntityNotFoundException 
 	 */
 	
-	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException{
+	public String getUserRole(String ldapUserName,ArkFunction arkFunction, ArkModule arkModule,Study study) throws EntityNotFoundException{
 		String roleName = "";
 		
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-
 		criteria.createAlias("arkUser", "auserObject");
 		criteria.add(Restrictions.eq("arkUser", arkUser));
 		
@@ -221,11 +225,6 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 				criteria.add(Restrictions.eq("auserObject.study", study));	
 			}
 		}
-		
-		if(arkUseCase != null){
-			criteria.add(Restrictions.eq("arkUsecase", arkUseCase));
-		}
-		
 		if(arkModule != null){
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
@@ -241,21 +240,23 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	
 	
 	
-	public ArkUsecase getArkUsecaseByName(String usecaseName){
-		Criteria criteria = getSession().createCriteria(ArkUsecase.class);
-		criteria.add(Restrictions.eq("name", usecaseName));
+	public ArkFunction getArkFunctionByName(String functionName){
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		criteria.add(Restrictions.eq("name", functionName));
 		criteria.setMaxResults(1);
-		ArkUsecase arkUsecase  = (ArkUsecase)criteria.uniqueResult();
-		return arkUsecase;
+		ArkFunction arkFunction  = (ArkFunction)criteria.uniqueResult();
+		return arkFunction;
 	}
 	
-	public ArkUsecase getArkUsecaseById(Long usecaseId){
-		Criteria criteria = getSession().createCriteria(ArkUsecase.class);
-		criteria.add(Restrictions.eq("id", usecaseId));
+	public ArkFunction getArkFunctionById(Long functionId){
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		criteria.add(Restrictions.eq("id", functionId));
 		criteria.setMaxResults(1);
-		ArkUsecase arkUsecase  = (ArkUsecase)criteria.uniqueResult();
-		return arkUsecase;
+		ArkFunction arkFunction  = (ArkFunction)criteria.uniqueResult();
+		return arkFunction;
 	}
+	
+	
 	
 	public ArkModule getArkModuleByName(String moduleName){
 		Criteria criteria = getSession().createCriteria(ArkModule.class);
@@ -273,45 +274,27 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return arkModule;
 	}
 	
-	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
+	public Collection<String> getArkRolePermission(ArkFunction arkFunction,String userRole, ArkModule arkModule) throws EntityNotFoundException{
+		
 		Collection<String> stringPermissions = new ArrayList<String>();
-		ArkUser arkUser  = getArkUser(ldapUserName);
 		ArkRole arkRole  = getArkRoleByName(userRole);
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		criteria.createAlias("arkUser", "auserObject");
-		//criteria.createAlias("arkUserRole","arkUserRoleObject");
-		criteria.add(Restrictions.eq("arkUser", arkUser));
-		
-		//Even if there is a study in session the criteria must be applied only if the logged in user has a study registered for him. Ie if he is not a Super Admin
-		if(study != null){
-			criteria.add(Restrictions.eq("auserObject.study", study));	
-		}
-		
-		if(arkUseCase != null){
-			criteria.add(Restrictions.eq("arkUsecase", arkUseCase));
-		}
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 		
 		if(arkModule != null){
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
 		
-		if(arkRole != null){
-			criteria.add(Restrictions.eq("arkRole", arkRole));
-			criteria.setMaxResults(1);
-			ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
-			Set<ArkRolePermission> rolePermissions = arkUserRole.getArkRole().getArkRolePermission();
-			if(rolePermissions.size() > 0){
-				for (Iterator<ArkRolePermission> iterator = rolePermissions.iterator(); iterator.hasNext();) {
-					ArkRolePermission arkRolePermission =  iterator.next();
-					String permission  = arkRolePermission.getArkPermission().getName();
-					stringPermissions.add(permission);
-				}
-				Log.debug("\n  Permissions found");
-			}else{
-				Log.debug("\n No Permissions found");
-			}
+		if(arkFunction != null){
+			criteria.add(Restrictions.eq("arkFunction", arkFunction));
 		}
 		
+		if(arkRole != null){
+			criteria.add(Restrictions.eq("arkRole", arkRole));
+			List<ArkRolePolicyTemplate> templateList =  criteria.list();
+			for (ArkRolePolicyTemplate arkRolePolicyTemplate : templateList) {
+				stringPermissions.add(arkRolePolicyTemplate.getArkPermission().getName());
+			}
+		}
 		return stringPermissions;
 	}
 	
@@ -338,5 +321,35 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		arkModuleList = criteria.list();
 		return (Collection<Class<T>>) arkModuleList;
 	}
+	
+	/**
+	 * This overloaded interface can be used when we only want all ther Permissions for a Given Role. It is applicable for Super Administator role
+	 * where we don't need to specify the ArkModule or ArkRole. If this method is invoked for any other role it will return all the permissions for each role, the permissions
+	 * will be duplicated. So avoid invoking this method for Non SuperAdministator type roles.
+	 * @param userRole
+	 * @return
+	 * @throws EntityNotFoundException 
+	 */
+	public Collection<String> getArkRolePermission(String userRole) throws EntityNotFoundException{
+		//Delegate the call to the other getArkRolePermission by passing null for arkFunction and arkModule
+		return getArkRolePermission(null,userRole,null);
+	}
+	
+	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles(){
+		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		criteria.createAlias("arkModule", "moduleName");
+		criteria.addOrder(Order.asc("moduleName.name"));
+		arkModuleList =  criteria.list();
+		Log.info(arkModuleList.size());
+		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
+			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
+			Log.info("\n Module Name " + arkModuleRole.getArkModule().getName());
+			Log.info("\n Role Name " + arkModuleRole.getArkRole().getName());
+		}
+		return arkModuleList;
+	}
+	
+	
 
 }
