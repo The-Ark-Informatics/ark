@@ -99,10 +99,14 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	/* This method should be implemented by sub-classes to secure a control(New button etc..) */
 	abstract protected boolean isSecure(String actionType);
 	
+	
 	protected boolean isActionPermitted(String actionType){
 		boolean flag = false;
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
+		
+		Long useCaseId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
+		Long module = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
 		if(actionType.equalsIgnoreCase(Constants.NEW)){
 			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
 				flag = true;
@@ -320,18 +324,57 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		
 	}
 
-	protected void disableSearchForm(Long sessionId, String errorMessage)
-	{	
-		if (sessionId == null)
-		{
-			searchMarkupContainer.setEnabled(false);			
-			this.error(errorMessage);
+	
+
+	protected void disableSearchForm(Long sessionId, String errorMessage){	
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+			
+				searchMarkupContainer.setEnabled(false);			
+				this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
+			
+		}else{
+			
+			if (sessionId == null){
+				searchMarkupContainer.setEnabled(false);			
+				this.error(errorMessage);
+			}else{
+				searchMarkupContainer.setEnabled(true);
+			}
+			
 		}
-		else
-		{
-			searchMarkupContainer.setEnabled(true);
+
+	}
+	
+	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO){	
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  ||
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+			
+			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
+			
+		}else{
+
+			if (sessionId == null){
+				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				this.error(errorMessage);
+			}else{	
+				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
+			}
 		}
 	}
+	
+	
 	
 	protected void disableSearchButtons(Long sessionId, String errorMessage)
 	{	
