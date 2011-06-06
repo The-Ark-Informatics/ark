@@ -21,9 +21,11 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.EtaUser;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
@@ -35,8 +37,11 @@ import au.org.theark.study.model.dao.IUserDao;
 @Service("userService")
 public class UserServiceImpl implements IUserService {
 
+	
+
 	final Logger log = LoggerFactory.getLogger(UserServiceImpl.class);
 	
+	private IStudyService studyService;//To gain access to Study Schema
 	private IArkCommonService arkCommonService;
 	
 	/* DAO to access database */
@@ -71,7 +76,13 @@ public class UserServiceImpl implements IUserService {
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
 	}
-
+	
+	@Autowired
+	public void setStudyService(IStudyService studyService) {
+		this.studyService = studyService;
+	}
+	
+	
 	public Person createPerson(Person personEntity){
 		
 		return userDAO.createPerson(personEntity);
@@ -188,6 +199,28 @@ public class UserServiceImpl implements IUserService {
 		return iLdapUserDao.getModulesAndRolesForStudy(studyNameCn);
 	}
 	
+	/**
+	 * The interface to look up all ArkUser's linked to a particular Study in Context.The implementation should pull 
+	 * the users from the backend and then get the personal demographic information from LDAP from the people group.
+	 * @param arkUserVO
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<ArkUserVO> lookupArkUser(ArkUserVO arkUserVO, Study study) throws ArkSystemException{
+		//Call the Hibernate service/dao to get the list of users linked to the study
+		//If we want all users in ArkUser Table then the person must be a super admin which will get all the users from ArkUser Table across studies
+		Collection<ArkUser> usersLinkedToStudy = studyService.lookupArkUser(study);
+		List<ArkUserVO> listOfArkUserVO = new ArrayList<ArkUserVO>();
+		//For each user in ArkUser Table fetch the details from LDAP
+		for (ArkUser arkUser : usersLinkedToStudy) {
+			ArkUserVO userVOFromLdap = iLdapUserDao.getUser(arkUser.getLdapUserName()); 
+			listOfArkUserVO.add(userVOFromLdap);
+		}
+		return listOfArkUserVO;
+	}
 	
-
+	public boolean isArkUserPresent(String userName){
+		return userDAO.isArkUserPresent(userName);
+	}
+	
 }

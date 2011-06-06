@@ -11,6 +11,7 @@ import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.EtaUser;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.ModuleVO;
 
@@ -86,6 +87,21 @@ public interface IUserService {
 	 * @throws ArkSystemException
 	 */
 	public Collection<ModuleVO> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
+	
+	
+	/**
+	 * If a study is passed, then interface will  look up all ArkUser's linked to a particular Study in Context.
+	 * If all users in ArkUser table (backend) are to be pulled then do not provide the Study. This will be a mechanism via the
+	 * UI to selectively search for all users or users for the given study.The implementation should pull 
+	 * the users from the backend and then get the personal demographic information from LDAP from the people group.
+	 * @param arkUserVO
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	public List<ArkUserVO> lookupArkUser(ArkUserVO arkUserVO, Study study) throws ArkSystemException;
+	
+	
+	public boolean isArkUserPresent(String userName);
 	
 
 }
