@@ -3,22 +3,15 @@ package au.org.theark.study.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.security.ArkLdapRealm;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
@@ -35,12 +28,12 @@ import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPan
  */
 public class SubjectSubMenuTab extends Panel{
 	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	@SpringBean( name="arkLdapRealm")
-	private ArkLdapRealm realm;
-	
+//	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+//	private IArkCommonService iArkCommonService;
+//	
+//	@SpringBean( name="arkLdapRealm")
+//	private ArkLdapRealm realm;
+//	
 	private WebMarkupContainer	arkContextMarkup;
 	List<ITab> tabList;
 	private ArkFunction  arkFunction;
@@ -143,15 +136,13 @@ public class SubjectSubMenuTab extends Panel{
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
 					
-					/*
-					TODO Uncomment when User Security is completed
+			/*
 					arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_SUBJECT); //Place a default module into session
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
 					SecurityManager securityManager =  ThreadContext.getSecurityManager();
 					Subject currentUser = SecurityUtils.getSubject();	
-					realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-					*/
+					realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());*/
 					//securityManager.hasRole(currentUser.getPrincipals(), "Administrator");//Enforce authorization check here so it loads the roles
 					return panelToReturn;
 				};
