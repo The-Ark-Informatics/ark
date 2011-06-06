@@ -22,6 +22,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -261,10 +263,20 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	{
 		setMultiPart(true); // multipart required for file uploads
 
-		// TODO:(CE) To handle Business and System Exceptions here
-		phenotypicService.deleteUpload(containerForm.getModelObject().getUpload());
-		this.info("Upload file " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
-
+		try
+		{
+			phenotypicService.deleteUpload(containerForm.getModelObject().getUpload());
+			this.info("Upload file " + containerForm.getModelObject().getUpload().getFilename() + " was deleted successfully");
+		}
+		catch (ArkSystemException e)
+		{
+			this.error(e.getMessage());
+		}
+		catch (EntityCannotBeRemoved e)
+		{
+			this.error(e.getMessage());
+		}
+		
 		// Display delete confirmation message
 		target.addComponent(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
