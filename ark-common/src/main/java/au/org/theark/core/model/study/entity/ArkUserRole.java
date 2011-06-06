@@ -28,7 +28,7 @@ public class ArkUserRole implements Serializable{
 	private ArkRole arkRole;
 	private ArkModule arkModule;
 	private ArkUser arkUser;
-	private ArkUsecase arkUsecase;
+	private Study study;
 	
 	public ArkUserRole(){
 		
@@ -77,13 +77,13 @@ public class ArkUserRole implements Serializable{
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARK_USECASE_ID")
-	public ArkUsecase getArkUsecase() {
-		return arkUsecase;
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy() {
+		return study;
 	}
 
-	public void setArkUsecase(ArkUsecase arkUsecase) {
-		this.arkUsecase = arkUsecase;
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 }
