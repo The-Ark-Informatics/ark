@@ -18,7 +18,9 @@ import org.springframework.stereotype.Component;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -49,7 +51,6 @@ public class ArkLdapRealm extends AuthorizingRealm{
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-    	//System.out.println("\n -----In TestLdapRealm");
     	log.info(" in  doGetAuthenticationInfo()");
     	SimpleAuthenticationInfo sai = null;
     	ArkUserVO userVO = null;
@@ -72,48 +73,54 @@ public class ArkLdapRealm extends AuthorizingRealm{
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
     	log.debug("Inside doGetAuthorizationInfo ");
     	
-    	SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+    	SimpleAuthorizationInfo simpleAuthInfo = new SimpleAuthorizationInfo();
+    	
+    	//Get the logged in user name from Shiro Session 
     	String ldapUserName = (String) principals.fromRealm(getName()).iterator().next();
     	
-    	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute("studyId");
-    	Long sessionUsecaseId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_USECASE_KEY);
+    	Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+    	Long sessionFunctionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
     	Long sessionModuleId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
     	
     	try{
     		
-        	if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId == null){
+        	if(sessionModuleId != null && sessionFunctionId != null && sessionStudyId == null){
         		log.info("There is no study in context. Now we can look up the subject's roles for the study");
         		//Load the role for the given module and use case 
-        		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
+        		ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
-        		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, null);
-        		info.addRole(role);
-        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkUsecase,arkModule)){
-        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkPermission();
-        			info.addStringPermissions(userRolePermission);
+        		
+        		String role  = iArkCommonService.getUserRole(ldapUserName, arkFunction, arkModule, null);
+        		simpleAuthInfo.addRole(role);
+        		
+        		/* Check if the logged in user is a Super Administrator */
+        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkFunction,arkModule)){
+        			
+        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkRolePermission(role);
+        			simpleAuthInfo.addStringPermissions(userRolePermission);
         		}else{
             		if(role != null){
-                		java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, null);
-                		info.addStringPermissions(userRolePermission);
+                		java.util.Collection<String> userRolePermission = iArkCommonService.getArkRolePermission(arkFunction, role, arkModule);
+                		simpleAuthInfo.addStringPermissions(userRolePermission);
             		}
         		}
         	}
-        	else if(sessionModuleId != null && sessionUsecaseId != null && sessionStudyId != null){
+        	else if(sessionModuleId != null && sessionFunctionId != null && sessionStudyId != null){
         		log.info("There is a study in context. Now we can look up the subject's roles for the study");
         		//Get the roles for the study in context
         		Study study = iArkCommonService.getStudy(sessionStudyId);
-        		ArkUsecase arkUsecase = iArkCommonService.getArkUsecaseById(sessionUsecaseId);
+        		ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
-        		String role  = iArkCommonService.getUserRole(ldapUserName, arkUsecase, arkModule, study);
-        		info.addRole(role);
+        		String role  = iArkCommonService.getUserRole(ldapUserName, arkFunction, arkModule, study);
+        		simpleAuthInfo.addRole(role);
         		
-        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkUsecase,arkModule)){
-        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkPermission();
-        			info.addStringPermissions(userRolePermission);
+        		if(iArkCommonService.isSuperAdministator(ldapUserName,arkFunction,arkModule)){
+        			java.util.Collection<String> userRolePermission = iArkCommonService.getArkRolePermission(role);
+        			simpleAuthInfo.addStringPermissions(userRolePermission);
         		}else{
             		if(role != null){
-            			java.util.Collection<String> userRolePermission = iArkCommonService.getArkUserRolePermission(ldapUserName, arkUsecase, role, arkModule, study);
-                		info.addStringPermissions(userRolePermission);
+            			java.util.Collection<String> userRolePermission = iArkCommonService.getArkRolePermission(arkFunction, role, arkModule);
+                		simpleAuthInfo.addStringPermissions(userRolePermission);
             		}
         		}
         	}
@@ -124,7 +131,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
 
     	
     	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
-        return info;
+        return simpleAuthInfo;
     }
 
     @Override
