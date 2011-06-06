@@ -209,7 +209,7 @@ public class Constants {
 	public static final String PERSON_SURNAME_HISTORY_SURNAME = "surname";
 	
 	/* Ark Use Case Function Id*/
-	public static final String ARK_USECASE_KEY ="USECASE_KEY";
+	public static final String ARK_FUNCTION_KEY ="ARK_FUNCTION_KEY";
 	
 	
 	/*Ark Use Case Key value that maps to the database table values in ark_usecase.If the values in the table change, this must be modified.  */
