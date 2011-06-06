@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.subject.Subject;
-import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -121,7 +120,7 @@ public class PhenotypicSubMenuTab extends Panel
 		}
 
 		//TabbedPanel moduleTabbedPanel = new TabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
-		AjaxTabbedPanel moduleTabbedPanel = new AjaxTabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
 		
 		add(moduleTabbedPanel);
 	}
