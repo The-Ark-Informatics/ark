@@ -105,7 +105,7 @@ public class PhenotypicValidationMessage
 		stringBuffer.append(field.getName().toString());
 		stringBuffer.append(" value ");
 		stringBuffer.append(fieldData.getValue().toString());
-		stringBuffer.append(" is not in the encoded value: ");
+		stringBuffer.append(" is not in the encoded values: ");
 		stringBuffer.append(field.getEncodedValues().replace('\n', ' '));
 		return(stringBuffer.toString());
 	}

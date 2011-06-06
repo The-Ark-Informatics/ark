@@ -212,7 +212,14 @@ public class PhenotypicValidator
 	{
 		boolean isInValidRange = true;
 		Field field = fieldData.getField();
+		String minValue = field.getMinValue();
+		String maxValue = field.getMaxValue();
 		
+		if((minValue == null || minValue.isEmpty()) && (maxValue == null || maxValue.isEmpty()))
+		{
+			return isInValidRange;
+		}
+			
 		if (field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER))
 		{
 			try
@@ -293,7 +300,7 @@ public class PhenotypicValidator
 		Field field = fieldData.getField();
 
 		// Validate if encoded values is defined, and not a DATE fieldType 
-		if (field.getEncodedValues() != null && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
+		if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty() && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))
 		{
 			try
 			{
@@ -342,7 +349,17 @@ public class PhenotypicValidator
 	 */
 	public static boolean validateFieldData(FieldData fieldData, java.util.Collection<String> errorMessages)
 	 {
-		return(isValidFieldData(fieldData, errorMessages) && isInEncodedValues(fieldData, errorMessages) && isInValidRange(fieldData, errorMessages));
+		boolean isValid = true;
+		boolean isValidFieldData = true;
+		boolean isValidEncodedValues = true;
+		boolean isValidRange = true;
+		
+		isValidFieldData = isValidFieldData(fieldData, errorMessages);
+		isValidEncodedValues = isInEncodedValues(fieldData, errorMessages);
+		isValidRange = isInValidRange(fieldData, errorMessages);
+		
+		isValid = (isValidFieldData && isValidEncodedValues && isValidRange);
+		return(isValid);
 	}
 	
 	public static boolean fieldDataPassesQualityControl(FieldData fieldData, java.util.Collection<String> errorMessages)
@@ -696,7 +713,8 @@ public class PhenotypicValidator
 					
 					ArkGridCell gridCell = new ArkGridCell(col, row);
 					// Validate the field data
-					if(!PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages))
+					boolean isValid = PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages);
+					if(!isValid)
 					{
 						warningCells.add(gridCell);
 					}
@@ -852,87 +870,105 @@ public class PhenotypicValidator
 				
 				// Fist column should be Field Name
 				fieldName = csvReader.get("FIELD_NAME");
-				int cols = stringLineArray.length;
-				field = new Field();
-				field.setStudy(study);
-				field.setName(fieldName);
 				
-				FieldType fieldType = new FieldType();
-				fieldType = iPhenotypicService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-				field.setFieldType(fieldType);
-				field.setDescription(csvReader.get("DESCRIPTION"));
-				field.setUnits((csvReader.get("UNITS")));
-				field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
-				field.setMinValue(csvReader.get("MINIMUM_VALUE"));
-				field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
-				field.setMissingValue(csvReader.get("MISSING_VALUE"));
-				
-				
-				Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
-				// Determine updates
-				if(oldField.getId() != null)
+				// Only check rows with a valid fieldName
+				if(!fieldName.isEmpty())
 				{
-					updateRows.add(row);
-					for(int col = 0; col < cols; col++)
-						updateCells.add(new ArkGridCell(col, row));
-				}
-				else
-				{
-					insertRows.add(row);
-				}
-				
-				if(csvReader.get("FIELD_TYPE") != null)
-				{
-					gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
-					if(!PhenotypicValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages))
+					int cols = stringLineArray.length;
+					field = new Field();
+					field.setStudy(study);
+					field.setName(fieldName);
+					
+					FieldType fieldType = new FieldType();
+					fieldType = iPhenotypicService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					field.setFieldType(fieldType);
+					field.setDescription(csvReader.get("DESCRIPTION"));
+					field.setUnits((csvReader.get("UNITS")));
+					field.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+					field.setMinValue(csvReader.get("MINIMUM_VALUE"));
+					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
+					field.setMissingValue(csvReader.get("MISSING_VALUE"));
+					
+					
+					Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
+					// Determine updates
+					if(oldField.getId() != null)
 					{
-						errorCells.add(gridCell);
-						field.getFieldType().setName(csvReader.get("FIELD_TYPE"));
+						updateRows.add(row);
+						for(int col = 0; col < cols; col++)
+							updateCells.add(new ArkGridCell(col, row));
+						
+						// Check field type same as one in database
+						if(!(field.getFieldType().getName().equalsIgnoreCase(oldField.getFieldType().getName())))
+						{
+							gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+							StringBuffer stringBuffer = new StringBuffer();
+							stringBuffer.append("Error: ");
+							stringBuffer.append("The existing field ");
+							stringBuffer.append(fieldName);
+							stringBuffer.append(" already has data associated with it, and cannot have it's field type changed");
+							dataValidationMessages.add(stringBuffer.toString());
+							errorCells.add(gridCell);
+						}
 					}
-				}
-				
-				if(field.getEncodedValues() != null  && !field.getEncodedValues().isEmpty())
-				{
-					gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), row);
-					// Validate encoded values not a date type
-					if(!PhenotypicValidator.validateEncodedValues(field, dataValidationMessages))
+					else
 					{
-						errorCells.add(gridCell);
+						insertRows.add(row);
 					}
-				}
-
-				if(field.getMinValue() != null  && !field.getMinValue().isEmpty())
-				{
-					gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), row);
-					// Validate the field definition
-					if(!PhenotypicValidator.validateFieldMinDefinition(field, dataValidationMessages))
+					
+					if(csvReader.get("FIELD_TYPE") != null)
 					{
-						errorCells.add(gridCell);
+						gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+						if(!PhenotypicValidator.validateFieldType(this.fieldName, csvReader.get("FIELD_TYPE"), dataValidationMessages))
+						{
+							errorCells.add(gridCell);
+							field.getFieldType().setName(csvReader.get("FIELD_TYPE"));
+						}
 					}
-				}
-				
-				if(field.getMaxValue() != null  && !field.getMaxValue().isEmpty())
-				{
-					gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), row);
-					// Validate the field definition
-					if(!PhenotypicValidator.validateFieldMaxDefinition(field, dataValidationMessages))
+					
+					if(field.getEncodedValues() != null  && !field.getEncodedValues().isEmpty())
 					{
-						errorCells.add(gridCell);
+						gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), row);
+						// Validate encoded values not a date type
+						if(!PhenotypicValidator.validateEncodedValues(field, dataValidationMessages))
+						{
+							errorCells.add(gridCell);
+						}
 					}
-				}
-				
-				if(field.getMissingValue() != null && !field.getMissingValue().isEmpty())
-				{
-					gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), row);
-					// Validate the field definition
-					if(!PhenotypicValidator.validateFieldMissingDefinition(field, dataValidationMessages))
+	
+					if(field.getMinValue() != null  && !field.getMinValue().isEmpty())
 					{
-						errorCells.add(gridCell);
+						gridCell = new ArkGridCell(csvReader.getIndex("MINIMUM_VALUE"), row);
+						// Validate the field definition
+						if(!PhenotypicValidator.validateFieldMinDefinition(field, dataValidationMessages))
+						{
+							errorCells.add(gridCell);
+						}
 					}
+					
+					if(field.getMaxValue() != null  && !field.getMaxValue().isEmpty())
+					{
+						gridCell = new ArkGridCell(csvReader.getIndex("MAXIMUM_VALUE"), row);
+						// Validate the field definition
+						if(!PhenotypicValidator.validateFieldMaxDefinition(field, dataValidationMessages))
+						{
+							errorCells.add(gridCell);
+						}
+					}
+					
+					if(field.getMissingValue() != null && !field.getMissingValue().isEmpty())
+					{
+						gridCell = new ArkGridCell(csvReader.getIndex("MISSING_VALUE"), row);
+						// Validate the field definition
+						if(!PhenotypicValidator.validateFieldMissingDefinition(field, dataValidationMessages))
+						{
+							errorCells.add(gridCell);
+						}
+					}
+					
+					fieldCount++;
+					row++;
 				}
-				
-				fieldCount++;
-				row++;
 			}
 
 			if (dataValidationMessages.size() > 0)
