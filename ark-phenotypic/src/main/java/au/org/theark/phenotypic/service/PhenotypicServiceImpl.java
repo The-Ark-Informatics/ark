@@ -758,4 +758,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenotypicDao.fieldHasData(field);
 	}
+
+	public boolean phenoCollectionHasData(PhenoCollection phenoCollection)
+	{
+		return phenoCollectionHasData(phenoCollection);
+	}
 }

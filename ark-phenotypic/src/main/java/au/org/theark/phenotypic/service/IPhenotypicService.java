@@ -36,6 +36,7 @@ public interface IPhenotypicService {
 	public void deleteCollection(PhenoCollection col) throws ArkSystemException, EntityCannotBeRemoved;
 	public void deleteCollection(PhenoCollectionVO colVo);
 	public int clearPhenoCollection(PhenoCollection phenoCollection);
+	public boolean phenoCollectionHasData(PhenoCollection phenoCollection);
 
 	// Field
 	public Field getField(Long fieldId);
