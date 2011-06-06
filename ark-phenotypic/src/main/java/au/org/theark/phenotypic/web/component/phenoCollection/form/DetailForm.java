@@ -47,7 +47,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService			phenotypicService;
+	private IPhenotypicService			iPhenotypicService;
 	
 	private ContainerForm					fieldContainerForm;
 
@@ -108,7 +108,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 	private void initStatusDdc()
 	{
-		java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
+		java.util.Collection<Status> statusCollection = iPhenotypicService.getStatus();
 		ChoiceRenderer statusRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
 		statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, (List) statusCollection, statusRenderer);
 	}
@@ -135,7 +135,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				phenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
+				iPhenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
 				this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully");
 				processErrors(target);
 			}
@@ -148,7 +148,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 				return (true);
 			}
 		};
-
+		
 		// Initialise Drop Down Choices
 		initStatusDdc();
 		
@@ -207,14 +207,14 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		if (containerForm.getModelObject().getPhenoCollection().getId() == null)
 		{
 			// Save
-			phenotypicService.createCollection(containerForm.getModelObject());
+			iPhenotypicService.createCollection(containerForm.getModelObject());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was created successfully");
 			processErrors(target);
 		}
 		else
 		{
 			// Update
-			phenotypicService.updateCollection(containerForm.getModelObject());
+			iPhenotypicService.updateCollection(containerForm.getModelObject());
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was updated successfully");
 			processErrors(target);
 		}
@@ -225,7 +225,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		contextHelper.setPhenoContextLabel(target, containerForm.getModelObject().getPhenoCollection().getName(), arkContextMarkup);
 		
 		onSavePostProcess(target);
-		//TODO:(CE) To handle Business and System Exceptions here
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
@@ -233,7 +232,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
 
-		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollectionVo.getPhenoCollection());
+		java.util.Collection<PhenoCollection> phenoCollectionCollection = iPhenotypicService.searchPhenotypicCollection(phenoCollectionVo.getPhenoCollection());
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
 	}
 	
@@ -259,7 +258,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		//TODO:(CE) To handle Business and System Exceptions here
-		phenotypicService.deleteCollection(containerForm.getModelObject());
+		iPhenotypicService.deleteCollection(containerForm.getModelObject());
 		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
    		
    	// Display delete confirmation message
@@ -287,5 +286,15 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		}else{
 			return false;
 		}
+	}
+
+	public AjaxButton getClearCollectionButton()
+	{
+		return clearCollectionButton;
+	}
+
+	public void setClearCollectionButton(AjaxButton clearCollectionButton)
+	{
+		this.clearCollectionButton = clearCollectionButton;
 	}
 }
