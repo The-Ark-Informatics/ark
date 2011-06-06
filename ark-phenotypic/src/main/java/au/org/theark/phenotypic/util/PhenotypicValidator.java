@@ -891,7 +891,7 @@ public class PhenotypicValidator
 					}
 				}
 				
-				if(csvReader.get("ENCODED_VALUES") != null)
+				if(field.getEncodedValues() != null  && !field.getEncodedValues().isEmpty())
 				{
 					gridCell = new ArkGridCell(csvReader.getIndex("ENCODED_VALUES"), row);
 					// Validate encoded values not a date type
