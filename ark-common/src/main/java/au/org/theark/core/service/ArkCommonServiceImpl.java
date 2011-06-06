@@ -15,6 +15,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -322,20 +323,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return arkAuthorisationDao.getUserRoleForStudy(ldapUserName, study);
 	}
 	
-	public ArkUsecase getArkUsecaseByName(String usecaseName){
-		return  arkAuthorisationDao.getArkUsecaseByName(usecaseName);
+	public ArkFunction getArkFunctionByName(String functionName){
+		return  arkAuthorisationDao.getArkFunctionByName(functionName);
 	}
 	
 	public ArkModule getArkModuleByName(String moduleName){
 		return arkAuthorisationDao.getArkModuleByName(moduleName);
 	}
 	
-	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException{
-		return  arkAuthorisationDao.getUserRole(ldapUserName, arkUseCase, arkModule, study);
+	public String getUserRole(String ldapUserName,ArkFunction arkFunction, ArkModule arkModule,Study study) throws EntityNotFoundException{
+		return  arkAuthorisationDao.getUserRole(ldapUserName, arkFunction, arkModule, study);
 	}
 
-	public ArkUsecase getArkUsecaseById(Long usecaseId){
-		return arkAuthorisationDao.getArkUsecaseById(usecaseId);
+	public ArkFunction getArkFunctionById(Long functionId){
+		return arkAuthorisationDao.getArkFunctionById(functionId);
 	}
 	
 	public ArkModule getArkModuleById(Long moduleId){
@@ -346,11 +347,11 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	 * 
 	 */
 
-	@SuppressWarnings("unchecked")
-	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
-		
-		return arkAuthorisationDao.getArkUserRolePermission(ldapUserName, arkUseCase, userRole, arkModule, study);
-	}
+//	@SuppressWarnings("unchecked")
+//	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException{
+//		
+//		return arkAuthorisationDao.getArkUserRolePermission(ldapUserName, arkUseCase, userRole, arkModule, study);
+//	}
 	
 	/**
 	 * Returns All Permissions as collection of Strings
@@ -361,8 +362,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return arkAuthorisationDao.getArkPermission();
 	}
 	
-	public boolean isSuperAdministator(String ldapUserName, ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException{
-		return arkAuthorisationDao.isSuperAdministator(ldapUserName,arkUseCase,arkModule);
+	public boolean isSuperAdministator(String ldapUserName, ArkFunction arkFunction, ArkModule arkModule) throws EntityNotFoundException{
+		return arkAuthorisationDao.isSuperAdministator(ldapUserName,arkFunction,arkModule);
 	}
 	
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException{
@@ -382,6 +383,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	public List<SubjectVO> searchPageableSubjects(SubjectVO subjectVoCriteria, int first, int count)
 	{
 		return studyDao.searchPageableSubjects(subjectVoCriteria, first, count);
+	}
+
+	public Collection getArkRolePermission(ArkFunction arkFunction,	String userRole, ArkModule arkModule)	throws EntityNotFoundException {
+	
+		return arkAuthorisationDao.getArkRolePermission(arkFunction, userRole, arkModule);
+	}
+
+	public Collection getArkRolePermission(String userRole)	throws EntityNotFoundException {
+	
+		return arkAuthorisationDao.getArkRolePermission(userRole);
 	}
 	
 }

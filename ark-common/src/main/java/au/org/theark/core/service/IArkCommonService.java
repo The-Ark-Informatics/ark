@@ -7,6 +7,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -221,7 +222,7 @@ public interface IArkCommonService<T> {
 	 *the name in the database table ark_usecase.
 	 *@return ArkUsecase
 	 */
-	public ArkUsecase getArkUsecaseByName(String usecaseName);
+	public ArkFunction getArkFunctionByName(String arkFunctionName);
 	
 	/**
 	 * Returns a ArkModule instance for a given String that represents a module name.The name should match
@@ -240,14 +241,14 @@ public interface IArkCommonService<T> {
 	 * @return String
 	 * @throws EntityNotFoundException
 	 */
-	public String getUserRole(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	public String getUserRole(String ldapUserName,ArkFunction arkFunction, ArkModule arkModule,Study study) throws EntityNotFoundException;
 	
 	/**
 	 * Returns a ArkUsecase instance when provided a Long id that represents a valid use case id.
 	 * @param usecaseId
 	 * @return
 	 */
-	public ArkUsecase getArkUsecaseById(Long usecaseId);
+	public ArkFunction getArkFunctionById(Long arkFunctionId);
 	
 	/**
 	 * Returns a ArkModule instance when provided a Long id that represents a valid module  id.
@@ -257,7 +258,9 @@ public interface IArkCommonService<T> {
 	public ArkModule getArkModuleById(Long moduleId);
 	
 	/**
-	 * 
+	 * For a given ArkRole,ArkFunction and ArkModule return a list of Permissions. This interface does not require the user(ArkUser)
+	 * information.The ArkRole for the current user should be pre-determined before invoking this method.To get the user's role call getUserRole and then call this method. 
+	 * This method will use ArkRolePolicyTemplate table to return the list of Permissions for the given parameters.
 	 * @param ldapUserName
 	 * @param arkUseCase
 	 * @param userRole
@@ -265,7 +268,17 @@ public interface IArkCommonService<T> {
 	 * @param study
 	 * @throws EntityNotFoundException
 	 */
-	public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study) throws EntityNotFoundException;
+	public Collection<String> getArkRolePermission(ArkFunction arkFunction,String userRole, ArkModule arkModule) throws EntityNotFoundException;	
+	
+	
+	/**
+	 * This overloaded interface can be used when we only want all their Permissions for a Given Role. It is applicable for Super Administator role
+	 * where we don't need to specify the ArkModule or ArkRole. If this method is invoked for any other role it will return all the permissions for each role, the permissions
+	 * will be duplicated. So avoid invoking this method for Non SuperAdministator type roles.
+	 * @param userRole
+	 * @return
+	 */
+	public Collection<String> getArkRolePermission(String userRole) throws EntityNotFoundException;
 	
 	/**
 	 * Returns All Permissions as collection of Strings
@@ -281,7 +294,7 @@ public interface IArkCommonService<T> {
 	 * @return
 	 * @throws EntityNotFoundException
 	 */
-	public boolean isSuperAdministator(String ldapUserName,ArkUsecase arkUseCase, ArkModule arkModule) throws EntityNotFoundException;
+	public boolean isSuperAdministator(String ldapUserName,ArkFunction arkFunction, ArkModule arkModule) throws EntityNotFoundException;
 	
 	
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
