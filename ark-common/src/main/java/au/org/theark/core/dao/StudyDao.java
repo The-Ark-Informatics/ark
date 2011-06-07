@@ -751,4 +751,10 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		}
 		return subjectVOList;
 	}
+
+	public List<ConsentStatus> getRecordableConsentStatus() {
+		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
+		criteria.add(Restrictions.not(Restrictions.ilike("name", "Not Consented", MatchMode.ANYWHERE)));
+		return criteria.list();
+	}
 }

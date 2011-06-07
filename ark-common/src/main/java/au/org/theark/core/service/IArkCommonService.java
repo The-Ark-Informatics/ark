@@ -100,6 +100,14 @@ public interface IArkCommonService<T> {
 	 * @return a list of Consent Status
 	 */
 	public List<ConsentStatus> getConsentStatus();
+
+	/**
+	 * Returns a list of consent status options permissible for creating/updating a record in the system.
+	 * At the moment this means it is a list without the following:
+	 *  - "Not Consented" (because it should be null and/or no record in the Consent table)
+	 * @return List of ConsentStatus
+	 */
+	public List<ConsentStatus> getRecordableConsentStatus();
 	
 	/**	
 	 * @return a list of Study Components

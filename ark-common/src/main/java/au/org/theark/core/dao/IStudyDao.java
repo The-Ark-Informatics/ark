@@ -264,4 +264,12 @@ public interface IStudyDao {
 	 * @return int
 	 */
 	public int getStudySubjectCount(SubjectVO subjectVoCriteria);
+
+	/**
+	 * Returns a list of consent status options permissible for creating/updating a record in the system.
+	 * At the moment this means it is a list without the following:
+	 *  - "Not Consented" (because it should be null and/or no record in the Consent table)
+	 * @return List of ConsentStatus
+	 */
+	public List<ConsentStatus> getRecordableConsentStatus();
 }
