@@ -26,6 +26,10 @@ public class ConsentDetailsDataRow implements Serializable {
 	protected String sex;
 	protected Date consentDate;
 
+	public ConsentDetailsDataRow() {
+		
+	}
+	
 	public ConsentDetailsDataRow(String subjectUID, String consentStatus, String subjectStatus, 
 			String title, String firstName, String lastName,
 			String streetAddress, String suburb, String state, String postcode, String country, 
@@ -54,64 +58,128 @@ public class ConsentDetailsDataRow implements Serializable {
 		return subjectUID;
 	}
 
+	public void setSubjectUID(String subjectUID) {
+		this.subjectUID = subjectUID;
+	}
+
 	public String getConsentStatus() {
 		return consentStatus;
 	}
-	
+
+	public void setConsentStatus(String consentStatus) {
+		this.consentStatus = consentStatus;
+	}
+
 	public String getSubjectStatus() {
 		return subjectStatus;
+	}
+
+	public void setSubjectStatus(String subjectStatus) {
+		this.subjectStatus = subjectStatus;
 	}
 
 	public String getTitle() {
 		return title;
 	}
 
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
 	public String getFirstName() {
 		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
 	public String getLastName() {
 		return lastName;
 	}
 
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
 	public String getStreetAddress() {
 		return streetAddress;
+	}
+
+	public void setStreetAddress(String streetAddress) {
+		this.streetAddress = streetAddress;
 	}
 
 	public String getSuburb() {
 		return suburb;
 	}
 
+	public void setSuburb(String suburb) {
+		this.suburb = suburb;
+	}
+
 	public String getState() {
 		return state;
 	}
-	
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
 	public String getPostcode() {
 		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
 	}
 
 	public String getCountry() {
 		return country;
 	}
 
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
 	public String getWorkPhone() {
 		return workPhone;
+	}
+
+	public void setWorkPhone(String workPhone) {
+		this.workPhone = workPhone;
 	}
 
 	public String getHomePhone() {
 		return homePhone;
 	}
 
+	public void setHomePhone(String homePhone) {
+		this.homePhone = homePhone;
+	}
+
 	public String getEmail() {
 		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getSex() {
 		return sex;
 	}
 
+	public void setSex(String sex) {
+		this.sex = sex;
+	}
+
 	public Date getConsentDate() {
 		return consentDate;
+	}
+
+	public void setConsentDate(Date consentDate) {
+		this.consentDate = consentDate;
 	}
 
 }

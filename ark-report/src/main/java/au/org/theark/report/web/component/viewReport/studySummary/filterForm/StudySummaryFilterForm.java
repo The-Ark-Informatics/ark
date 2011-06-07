@@ -13,6 +13,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
@@ -93,6 +94,13 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
+		Subject currentUser = SecurityUtils.getSubject();
+		String userName = "(unknown)";
+		if(currentUser.getPrincipal() != null)
+		{
+			userName = (String) currentUser.getPrincipal();
+		}
+		parameters.put("UserName", userName);
 		StudySummaryReportDataSource reportDS = new StudySummaryReportDataSource(reportService, study);
 		
 		JRResource reportResource = null;

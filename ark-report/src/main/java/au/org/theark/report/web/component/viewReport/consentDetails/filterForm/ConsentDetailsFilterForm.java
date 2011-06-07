@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -98,6 +99,13 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
+		Subject currentUser = SecurityUtils.getSubject();
+		String userName = "(unknown)";
+		if(currentUser.getPrincipal() != null)
+		{
+			userName = (String) currentUser.getPrincipal();
+		}
+		parameters.put("UserName", userName);
 		ConsentDetailsReportDataSource reportDS = new ConsentDetailsReportDataSource(reportService, cpModel.getObject());
 		
 		JRResource reportResource = null;

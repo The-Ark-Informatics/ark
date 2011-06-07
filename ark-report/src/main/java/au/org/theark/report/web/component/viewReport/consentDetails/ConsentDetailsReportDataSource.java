@@ -38,7 +38,7 @@ public class ConsentDetailsReportDataSource implements Serializable, JRDataSourc
 	 *
 	 */
 	public ConsentDetailsReportDataSource(IReportService reportService, ConsentDetailsReportVO cdrVO) {
-		data = reportService.getConsentDetailsList(cdrVO, false);
+		data = reportService.getStudyCompConsentDetailsList(cdrVO);
 	}
 
 	/**

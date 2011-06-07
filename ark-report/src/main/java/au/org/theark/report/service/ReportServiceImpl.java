@@ -2,6 +2,7 @@ package au.org.theark.report.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +13,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -97,16 +100,16 @@ public class ReportServiceImpl implements IReportService {
 		return reportDao.getOutputFormats();
 	}
 
-	public List<ConsentDetailsDataRow> getConsentDetailsList(
-			ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent) {
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(
+			ConsentDetailsReportVO cdrVO) {
 		
 		List<ConsentDetailsDataRow> consentDetailsList = new ArrayList<ConsentDetailsDataRow>();
 		
 		// Perform translation to report data source here...
-		List<LinkSubjectStudy> tmpResults = reportDao.getConsentDetailsList(cdrVO, onlyStudyLevelConsent);
+		List<LinkSubjectStudy> tmpResults = reportDao.getStudyLevelConsentDetailsList(cdrVO);
 		for (LinkSubjectStudy subject : tmpResults) {
 			String subjectUID = subject.getSubjectUID();
-			String consentStatus = "Not Consented";
+			String consentStatus = Constants.NOT_CONSENTED;
 			ConsentStatus studyConsent = subject.getConsentStatus();
 			if (studyConsent != null) {
 				consentStatus = studyConsent.getName();
@@ -125,12 +128,12 @@ public class ReportServiceImpl implements IReportService {
 			if (a != null) {
 				streetAddress = a.getStreetAddress();
 				suburb = a.getCity();
-				if (a.getCountryState() != null) {
-					state = a.getCountryState().getState();
-				}
-				else if (a.getOtherState() != null) {
+				if (a.getOtherState() != null) {
 					state = a.getOtherState();
 				}
+				else if (a.getCountryState() != null) {
+					state = a.getCountryState().getState();
+				} 
 				postcode = a.getPostCode();
 				country = a.getCountry().getCountryCode();
 			}
@@ -158,5 +161,155 @@ public class ReportServiceImpl implements IReportService {
 		}
 
 		return consentDetailsList;
+	}
+		
+	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(
+												ConsentDetailsReportVO cdrVO) {
+		// LinkedHashMap maintains insertion order
+		HashMap<Long, List<ConsentDetailsDataRow>> consentDetailsMap;
+		List<ConsentDetailsDataRow> results = new ArrayList<ConsentDetailsDataRow>();
+
+		//override the default initial capacity and make the loadFactor 1.0
+		consentDetailsMap = new HashMap<Long, List<ConsentDetailsDataRow>>(studyDao.getConsentStatus().size(), (float) 1.0);
+
+		boolean noConsentDateCriteria = (cdrVO.getConsentDate() == null);
+		boolean noConsentStatusCriteria = (cdrVO.getConsentStatus() == null);
+		if (noConsentDateCriteria && noConsentStatusCriteria) {
+			// This means that we can't do a query with LinkSubjectStudy inner join Consent
+			// - so better to just iterate through the subjects that match the initial subject criteria
+			Study study = cdrVO.getLinkSubjectStudy().getStudy();
+			List<LinkSubjectStudy> subjectList = reportDao.getSubjects(cdrVO);
+
+			for (LinkSubjectStudy subject : subjectList) {
+				Consent consentCriteria = new Consent();
+				consentCriteria.setStudy(study);
+				consentCriteria.setLinkSubjectStudy(subject);
+				consentCriteria.setStudyComp(cdrVO.getStudyComp());
+				consentCriteria.setConsentDate(cdrVO.getConsentDate());
+				consentCriteria.setConsentStatus(cdrVO.getConsentStatus());
+				// reportDao.getStudyCompConsent(..) ignores consentDate and consentStatus
+				Consent consentResult = reportDao.getStudyCompConsent(consentCriteria);
+
+				ConsentDetailsDataRow cddr = new ConsentDetailsDataRow();
+				if (consentResult == null) {
+					populateConsentDetailsDataRow(cddr, subject, null);
+					Long key = null;
+					if (!consentDetailsMap.containsKey(key)) {
+						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());		
+					}
+					consentDetailsMap.get(key).add(cddr);
+				}
+				else {
+					populateConsentDetailsDataRow(cddr, subject, consentResult);
+					Long key = consentResult.getConsentStatus().getId();
+					if (!consentDetailsMap.containsKey(key)) {
+						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());		
+					}
+					consentDetailsMap.get(key).add(cddr);
+				}
+			}
+			for (Long key : consentDetailsMap.keySet()) {
+				results.addAll(consentDetailsMap.get(key));
+			}
+		}
+		else {
+			// Perform a consentStatus and/or consentDate constrained lookup
+			// based on LinkSubjectStudy inner join Consent (this is because if either
+			// of these constraints are applied, there will be no such Consent record
+			// for the "Not Consented" state)
+			List<ConsentDetailsDataRow> consents = reportDao.getStudyCompConsentList(cdrVO);
+			if (consents != null) {
+				for (ConsentDetailsDataRow cddr : consents) {
+					populateConsentDetailsDataRow(cddr, null, null);
+					results.add(cddr);
+				}
+			}
+		}
+		
+		return results;
+	}
+	
+	protected void populateConsentDetailsDataRow(ConsentDetailsDataRow consentRow, LinkSubjectStudy subject, Consent consent) {
+		String consentStatus = Constants.NOT_CONSENTED;
+		if (consent != null && consent.getConsentStatus() != null) {
+			consentStatus = consent.getConsentStatus().getName();
+			consentRow.setConsentStatus(consentStatus);	//set ConsentStatus with override from Consent arg
+			consentRow.setConsentDate(consent.getConsentDate());	//set ConsentDate with override from Consent arg
+		}
+		else if (consentRow.getConsentStatus() == null || consentRow.getConsentStatus().isEmpty()) {
+			consentRow.setConsentStatus(consentStatus);	//set ConsentStatus to Not Consented if not set
+		}
+		
+		String streetAddress = "-NA-";
+		String suburb = "-NA-";
+		String state = "-NA-";
+		String postcode = "-NA-";
+		String country = "-NA-";
+		String workPhone = "-NA-";
+		String homePhone = "-NA-";
+		String email = "-NA-";
+
+		try {
+			if (subject == null) {
+				// no subject was passed in, retrieve from DB via subjectUID
+				subject = studyDao.getSubjectByUID(consentRow.getSubjectUID());
+			}
+			else {
+				// set subjectUID if subject passed in
+				consentRow.setSubjectUID(subject.getSubjectUID());
+			}
+			String subjectStatus = subject.getSubjectStatus().getName();
+			consentRow.setSubjectStatus(subjectStatus);	//set SubjectStatus
+			Person p = subject.getPerson();
+			String title = p.getTitleType().getName();
+			consentRow.setTitle(title);	//set Title
+			String firstName = p.getFirstName();
+			consentRow.setFirstName(firstName);	//set FirstName
+			String lastName = p.getLastName();
+			consentRow.setLastName(lastName);	//set LastName
+			Address a = reportDao.getBestAddress(subject);
+
+			if (p.getPreferredEmail() != null) {
+				email = p.getPreferredEmail();
+			}
+			String sex = p.getGenderType().getName().substring(0, 1);
+			consentRow.setSex(sex);	//set Sex
+			
+			if (a != null) {
+				streetAddress = a.getStreetAddress();
+				suburb = a.getCity();
+				if (a.getOtherState() != null) {
+					state = a.getOtherState();
+				}
+				else if (a.getCountryState() != null) {
+					state = a.getCountryState().getState();
+				}
+				postcode = a.getPostCode();
+				country = a.getCountry().getCountryCode();
+			}
+
+			Phone aPhone = reportDao.getWorkPhone(subject);
+			if (aPhone != null) {
+				workPhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+			}
+			aPhone = reportDao.getHomePhone(subject);
+			if (aPhone != null) {
+				homePhone = aPhone.getAreaCode() + " " + aPhone.getPhoneNumber();
+			}
+		}
+		catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			consentRow.setStreetAddress(streetAddress);
+			consentRow.setSuburb(suburb);
+			consentRow.setCountry(country);
+			consentRow.setState(state);
+			consentRow.setPostcode(postcode);
+			consentRow.setWorkPhone(workPhone);
+			consentRow.setHomePhone(homePhone);
+			consentRow.setEmail(email);
+		}
 	}
 }

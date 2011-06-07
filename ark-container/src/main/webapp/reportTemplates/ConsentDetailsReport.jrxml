@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConsentDetailsReport" pageWidth="1440" pageHeight="595" orientation="Landscape" columnWidth="1373" leftMargin="32" rightMargin="35" topMargin="50" bottomMargin="50">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ConsentDetailsReport" pageWidth="1440" pageHeight="963" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1373" leftMargin="32" rightMargin="35" topMargin="50" bottomMargin="50">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="260"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
 	<style name="Sans_Bold" fontName="DejaVu Sans" fontSize="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -9,6 +9,7 @@
 	<style name="pageHeader" style="Sans_Bold" forecolor="#FFFFFF" backcolor="#333333"/>
 	<parameter name="ReportTitle" class="java.lang.String"/>
 	<parameter name="BaseDir" class="java.io.File"/>
+	<parameter name="UserName" class="java.lang.String"/>
 	<field name="SubjectUID" class="java.lang.String"/>
 	<field name="ConsentStatus" class="java.lang.String"/>
 	<field name="SubjectStatus" class="java.lang.String"/>
@@ -317,6 +318,20 @@
 				<textElement/>
 				<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
 			</textField>
+			<textField evaluationTime="Report" pattern="dd MMMMM yyyy h.mm a">
+				<reportElement x="0" y="13" width="169" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10" isBold="false"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="13" width="169" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{UserName}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageFooter>
 	<lastPageFooter>
@@ -344,6 +359,20 @@
 			<line>
 				<reportElement x="0" y="4" width="1373" height="1"/>
 			</line>
+			<textField>
+				<reportElement x="180" y="12" width="169" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{UserName}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report" pattern="dd MMMMM yyyy h.mm a">
+				<reportElement x="0" y="12" width="169" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</lastPageFooter>
 </jasperReport>

@@ -14,6 +14,7 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -92,41 +93,26 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
+		Subject currentUser = SecurityUtils.getSubject();
+		String userName = "(unknown)";
+		if(currentUser.getPrincipal() != null)
+		{
+			userName = (String) currentUser.getPrincipal();
+		}
+		parameters.put("UserName", userName);
 		StudyLevelConsentReportDataSource reportDS = new StudyLevelConsentReportDataSource(reportService, cpModel.getObject());
 		
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
 			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
 			pdfResource.setJasperReport(report);
-			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
-			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//					protected Resource newResource() {
-//						return pdfResource;
-//					}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToPdf", pdfResource));		
+			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);	
 			reportResource = pdfResource;
 		}
 		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 			final JRResource csvResource = new JRConcreteResource<CsvResourceHandler>(new CsvResourceHandler());
 			csvResource.setJasperReport(report);
 			csvResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
-			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//				protected Resource newResource() {
-//					return csvResource;
-//				}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToCsv", csvResource));
 			reportResource = csvResource;
 		}
 		if (reportResource != null) {

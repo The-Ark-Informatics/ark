@@ -16,14 +16,20 @@ public class Constants {
 	public static final String PDF_REPORT_FORMAT = "PDF";
 	public static final Object CSV_REPORT_FORMAT = "CSV";
 
+	public static final String NOT_CONSENTED = "Not Consented";
+
 	public static final String LINKSUBJECTSTUDY_STUDY = "study";
 	public static final String LINKSUBJECTSTUDY_SUBJECTUID = "subjectUID";
 	public static final String LINKSUBJECTSTUDY_SUBJECTSTATUS = "subjectStatus";
 	public static final String LINKSUBJECTSTUDY_CONSENT = "consents";
 	public static final String LINKSUBJECTSTUDY_CONSENTSTATUS = "consentStatus";
 	public static final String LINKSUBJECTSTUDY_CONSENTDATE = "consentDate";
+	public static final String LINKSUBJECTSTUDY_PERSON = "person";
+
 	public static final String CONSENT_STUDYCOMP = "studyComp";
 	public static final String CONSENT_CONSENTSTATUS = "consentStatus";
 	public static final String CONSENT_CONSENTDATE = "consentDate";
+	public static final String CONSENT_LINKSUBJECTSTUDY = "linkSubjectStudy";
+
 
 }

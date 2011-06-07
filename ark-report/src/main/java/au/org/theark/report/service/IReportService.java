@@ -22,6 +22,7 @@ public interface IReportService {
 	// TODO: Revise getReportsAvailableList method when migration to new Ark security done
 	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser);
 	public List<ReportOutputFormat> getOutputFormats();
-	public List<ConsentDetailsDataRow> getConsentDetailsList(ConsentDetailsReportVO cdrVO, boolean onlyStudyLevelConsent);
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(ConsentDetailsReportVO cdrVO);
+	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO);
 
 }
