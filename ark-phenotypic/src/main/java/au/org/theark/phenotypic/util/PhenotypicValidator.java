@@ -366,7 +366,7 @@ public class PhenotypicValidator
 	{
 		boolean passesQualityControl = true;
 		// Validate the field data
-		if (isValidFieldData(fieldData, errorMessages) && isInEncodedValues(fieldData, errorMessages) && isInValidRange(fieldData, errorMessages))
+		if (validateFieldData(fieldData, errorMessages))
 		{
 			passesQualityControl = true;
 		}
