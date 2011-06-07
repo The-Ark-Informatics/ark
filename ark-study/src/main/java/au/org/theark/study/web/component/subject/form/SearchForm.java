@@ -127,7 +127,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 
 	private void initVitalStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,"person");
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm,Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
@@ -137,7 +137,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	
 	private void initSubjectStatusDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"linkSubjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm,"subjectStatus");
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME,Constants.SUBJECT_STATUS_ID);
@@ -146,7 +146,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	
 	private void initGenderTypeDdc(){
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
-		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"subjectStudy");
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm,"linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm,Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm,Constants.GENDER_TYPE);
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType(); 

@@ -69,12 +69,12 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 
 	private WebMarkupContainer arkContextMarkupContainer;
 
+	protected TextField<String> subjectUIDTxtFld;
 	protected TextField<String> firstNameTxtFld;
 	protected TextField<String> middleNameTxtFld;
 	protected TextField<String> lastNameTxtFld;
 	protected TextField<String> previousLastNameTxtFld;
 	protected TextField<String> preferredNameTxtFld;
-	protected TextField<String> subjectUIDTxtFld;
 
 	protected DateTextField dateOfBirthTxtFld;
 	protected DateTextField dateOfDeathTxtFld;
@@ -460,19 +460,19 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	protected void attachValidators() {
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		
-		dateOfBirthTxtFld.setLabel(new StringResourceModel("subjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
-		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("subjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
+		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate",this,null));
-		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("subjectStudy.consentDate.DateValidator.maximum",this,null));
+		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum",this,null));
 		
 		
 //		if(studyApproachDate != null){
 //			consentDateTxtFld.add(DateValidator.range(studyApproachDate.getConvertedInput(),new Date()));
 //		}
-		titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
-		vitalStatusDdc.setRequired(true).setLabel(new StringResourceModel("vital.status.required", this, null));
-		genderTypeDdc.setRequired(true).setLabel(new StringResourceModel("gender.type.required", this, null));
-		subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.subjectStatus.required", this, null));
+		//titleTypeDdc.setRequired(true).setLabel(new StringResourceModel("title.type.required", this, null));
+		//vitalStatusDdc.setRequired(true).setLabel(new StringResourceModel("vital.status.required", this, null));
+		//genderTypeDdc.setRequired(true).setLabel(new StringResourceModel("gender.type.required", this, null));
+		//subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.subjectStatus.required", this, null));
 		
 		preferredEmailTxtFld.add(EmailAddressValidator.getInstance());
 		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
@@ -617,5 +617,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			return false;
 		}
 		
+	}
+
+	public TextField<String> getSubjectUIDTxtFld()
+	{
+		return subjectUIDTxtFld;
+	}
+
+	public void setSubjectUIDTxtFld(TextField<String> subjectUIDTxtFld)
+	{
+		this.subjectUIDTxtFld = subjectUIDTxtFld;
 	}
 }

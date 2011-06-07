@@ -292,13 +292,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		return criteria.list();
 	}
 
-	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException
+	public void createSubject(SubjectVO subjectVo) throws ArkUniqueException, ArkSubjectInsertException
 	{
-		Study study = subjectVO.getLinkSubjectStudy().getStudy();
+		Study study = subjectVo.getLinkSubjectStudy().getStudy();
 		// Add Business Validations here as well apart from UI validation
 		try
 		{
-			if (isSubjectUIDUnique(subjectVO.getLinkSubjectStudy().getSubjectUID(), subjectVO.getLinkSubjectStudy().getStudy().getId(), "Insert"))
+			if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert"))
 			{
 				// Check insertion lock
 				if (getSubjectUidSequenceLock(study) == true)
@@ -310,9 +310,37 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 				{
 					// Enable insertion lock
 					setSubjectUidSequenceLock(study, true);
+					
+					// Set default foreign key reference
+					if(subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || subjectVo.getLinkSubjectStudy().getSubjectStatus().getName().isEmpty())
+					{
+						SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
+						subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
+					}
+					
+					// Set default foreign key reference
+					if(subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName().isEmpty())
+					{
+						TitleType titleType = getTitleType(new Long(0));
+						subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
+					}
+					
+					// Set default foreign key reference
+					if(subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName().isEmpty())
+					{
+						GenderType genderType = getGenderType(new Long(0));
+						subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
+					}
+					
+					// Set default foreign key reference
+					if(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName().isEmpty())
+					{
+						VitalStatus vitalStatus = getVitalStatus(new Long(0));
+						subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
+					}
 
 					Session session = getSession();
-					Person person = subjectVO.getLinkSubjectStudy().getPerson();
+					Person person = subjectVo.getLinkSubjectStudy().getPerson();
 					session.save(person);
 
 					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
@@ -324,16 +352,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 					}
 
 					// Update subjectPreviousLastname
-					subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+					subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
-					LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
+					LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 					session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 																// OpenSessionInViewFilter
 
 					// Auto-generate SubjectUID
-					if (subjectVO.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+					if (subjectVo.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid())
 					{
-						String subjectUID = getNextGeneratedSubjectUID(subjectVO.getLinkSubjectStudy().getStudy());
+						String subjectUID = getNextGeneratedSubjectUID(subjectVo.getLinkSubjectStudy().getStudy());
 						linkSubjectStudy.setSubjectUID(subjectUID);
 						session.update(linkSubjectStudy);
 					}
@@ -349,6 +377,64 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			// Disable insertion lock
 			setSubjectUidSequenceLock(study, false);
 		}
+	}
+
+	private VitalStatus getVitalStatus(Long id)
+	{
+		Criteria criteria = getSession().createCriteria(VitalStatus.class);
+
+		if (id != null)
+		{
+			criteria.add(Restrictions.eq("id", id));
+		}
+		
+		return (VitalStatus) criteria.list().get(0);
+	}
+
+	private GenderType getGenderType(Long id)
+	{
+		Criteria criteria = getSession().createCriteria(GenderType.class);
+
+		if (id != null)
+		{
+			criteria.add(Restrictions.eq("id", id));
+		}
+		
+		return (GenderType) criteria.list().get(0);
+	}
+
+	private TitleType getTitleType(Long id)
+	{
+		Criteria criteria = getSession().createCriteria(TitleType.class);
+
+		if (id != null)
+		{
+			criteria.add(Restrictions.eq("id", id));
+		}
+		
+		return (TitleType) criteria.list().get(0);
+	}
+
+	private SubjectStatus getSubjectStatusByName(String name)
+	{
+		Criteria criteria = getSession().createCriteria(SubjectStatus.class);
+
+		if (name != null)
+		{
+			criteria.add(Restrictions.eq("name", name));
+		}
+		
+		List<SubjectStatus> subjectStatus = criteria.list();
+		if (subjectStatus.size() > 0)
+		{
+			if (subjectStatus.size() > 1)
+			{
+				log.error("Backend database has non-unique Status names, returned the first one");
+			}
+			return (subjectStatus.get(0));
+		}
+		else
+			return null;
 	}
 
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException
@@ -1529,6 +1615,34 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 					{
 						// Enable insertion lock
 						setSubjectUidSequenceLock(study, true);
+						
+						// Set default foreign key reference
+						if(subjectVo.getLinkSubjectStudy().getSubjectStatus() == null || subjectVo.getLinkSubjectStudy().getSubjectStatus().getName().isEmpty())
+						{
+							SubjectStatus subjectStatus = getSubjectStatusByName("Subject");
+							subjectVo.getLinkSubjectStudy().setSubjectStatus(subjectStatus);
+						}
+						
+						// Set default foreign key reference
+						if(subjectVo.getLinkSubjectStudy().getPerson().getTitleType() == null || subjectVo.getLinkSubjectStudy().getPerson().getTitleType().getName().isEmpty())
+						{
+							TitleType titleType = getTitleType(new Long(0));
+							subjectVo.getLinkSubjectStudy().getPerson().setTitleType(titleType);
+						}
+						
+						// Set default foreign key reference
+						if(subjectVo.getLinkSubjectStudy().getPerson().getGenderType() == null || subjectVo.getLinkSubjectStudy().getPerson().getGenderType().getName().isEmpty())
+						{
+							GenderType genderType = getGenderType(new Long(0));
+							subjectVo.getLinkSubjectStudy().getPerson().setGenderType(genderType);
+						}
+						
+						// Set default foreign key reference
+						if(subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus() == null || subjectVo.getLinkSubjectStudy().getPerson().getVitalStatus().getName().isEmpty())
+						{
+							VitalStatus vitalStatus = getVitalStatus(new Long(0));
+							subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
+						}
 
 						Person person = subjectVo.getLinkSubjectStudy().getPerson();
 						session.save(person);

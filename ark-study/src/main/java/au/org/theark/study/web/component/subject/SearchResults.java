@@ -29,6 +29,7 @@ import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
+import au.org.theark.study.web.component.subject.form.DetailsForm;
 import au.org.theark.study.web.component.subject.form.SearchForm;
 
 /**
@@ -113,25 +114,25 @@ public class SearchResults extends Panel{
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 			
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
-					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
+					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}else{
-					item.add(new Label("subjectStudy.person.preferredName",""));
+					item.add(new Label("linkSubjectStudy.person.preferredName",""));
 				}
 				
-				item.add(new Label("subjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
+				item.add(new Label("linkSubjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
 				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				String dateOfBirth ="";
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null){
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
-					item.add(new Label("subjectStudy.person.dateOfBirth", dateOfBirth));
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
 				}else{
-					item.add(new Label("subjectStudy.person.dateOfBirth",""));
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth",""));
 				}
 				
-				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
+				item.add(new Label("linkSubjectStudy.person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
 				
-				item.add(new Label("subjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
+				item.add(new Label("linkSubjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
 				
 				
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
@@ -175,25 +176,25 @@ public class SearchResults extends Panel{
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
 			
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null){
-					item.add(new Label("subjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
+					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
 				}else{
-					item.add(new Label("subjectStudy.person.preferredName",""));
+					item.add(new Label("linkSubjectStudy.person.preferredName",""));
 				}
 				
-				item.add(new Label("subjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
+				item.add(new Label("linkSubjectStudy.person.genderType.name",subject.getPerson().getGenderType().getName()));
 				
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				String dateOfBirth ="";
 				if(subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null){
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
-					item.add(new Label("subjectStudy.person.dateOfBirth", dateOfBirth));
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
 				}else{
-					item.add(new Label("subjectStudy.person.dateOfBirth",""));
+					item.add(new Label("linkSubjectStudy.person.dateOfBirth",""));
 				}
 				
-				item.add(new Label("person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
+				item.add(new Label("linkSubjectStudy.person.vitalStatus.statusName",subject.getPerson().getVitalStatus().getName()));
 				
-				item.add(new Label("subjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
+				item.add(new Label("linkSubjectStudy.subjectStatus.name",subject.getSubjectStatus().getName()));
 				
 				
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
@@ -247,7 +248,11 @@ public class SearchResults extends Panel{
 				searchPanelContainer.setVisible(false);
 				editButtonContainer.setVisible(false);
 				
-				detailPanelFormContainer.get("subjectStudy.subjectUID").setEnabled(false);
+				// Always disable subjectUID
+				Details details = (Details) detailPanelContainer.get("detailsPanel");
+				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
+				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
+				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
 				target.addComponent(detailPanelFormContainer);
