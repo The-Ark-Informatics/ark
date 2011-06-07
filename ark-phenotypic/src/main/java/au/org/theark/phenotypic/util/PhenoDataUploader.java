@@ -70,8 +70,8 @@ public class PhenoDataUploader
 	private List<Field>				fieldList;
 	private Study						study;
 	static Logger						log							= LoggerFactory.getLogger(PhenoDataUploader.class);
-	java.util.Collection<String>	fileValidationMessages	= null;
-	java.util.Collection<String>	dataValidationMessages	= null;
+	java.util.Collection<String>	fileValidationMessages	= new ArrayList<String>();
+	java.util.Collection<String>	dataValidationMessages	= new ArrayList<String>();
 	private IPhenotypicService		iPhenoService			= null;
 	private IArkCommonService		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
