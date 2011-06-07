@@ -243,7 +243,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	 * Initialise the Consent Status Drop Down Choice Control
 	 */
 	protected void initialiseConsentStatusChoice(){
-		List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
+		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
 		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
 		consentStatusChoice  = new DropDownChoice(Constants.SUBJECT_CONSENT_STATUS, consentStatusList,defaultChoiceRenderer);
 	}
