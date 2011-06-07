@@ -212,46 +212,46 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public Collection<SubjectVO> getSubject(SubjectVO subjectVO){
 		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.createAlias("person", "p");
-		criteria.add(Restrictions.eq("study.id",subjectVO.getSubjectStudy().getStudy().getId()));	
+		criteria.add(Restrictions.eq("study.id",subjectVO.getLinkSubjectStudy().getStudy().getId()));	
 		
-		if(subjectVO.getSubjectStudy().getPerson() != null){
+		if(subjectVO.getLinkSubjectStudy().getPerson() != null){
 		
-			if(subjectVO.getSubjectStudy().getPerson().getId() != null){
-				criteria.add(Restrictions.eq("p.id",subjectVO.getSubjectStudy().getPerson().getId() ));	
+			if(subjectVO.getLinkSubjectStudy().getPerson().getId() != null){
+				criteria.add(Restrictions.eq("p.id",subjectVO.getLinkSubjectStudy().getPerson().getId() ));	
 			}
 
-			if(subjectVO.getSubjectStudy().getPerson().getFirstName() != null){
-				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getFirstName() != null){
+				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getLinkSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getMiddleName() != null){
-				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getMiddleName() != null){
+				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getLinkSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
 			}
 		
-			if(subjectVO.getSubjectStudy().getPerson().getLastName() != null){
-				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getLastName() != null){
+				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getLinkSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getDateOfBirth() != null){
-				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getSubjectStudy().getPerson().getDateOfBirth()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth() != null){
+				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth()));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getGenderType() != null){
-				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getSubjectStudy().getPerson().getGenderType().getId()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getGenderType() != null){
+				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getLinkSubjectStudy().getPerson().getGenderType().getId()));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getVitalStatus() != null){
-				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getSubjectStudy().getPerson().getVitalStatus().getId()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus() != null){
+				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus().getId()));
 			}
 			
 		}
 		
-		if( subjectVO.getSubjectStudy().getSubjectUID()!= null && subjectVO.getSubjectStudy().getSubjectUID().length() > 0){
-			criteria.add(Restrictions.eq("subjectUID",subjectVO.getSubjectStudy().getSubjectUID()));
+		if( subjectVO.getLinkSubjectStudy().getSubjectUID()!= null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0){
+			criteria.add(Restrictions.eq("subjectUID",subjectVO.getLinkSubjectStudy().getSubjectUID()));
 		}
 		
-		if(subjectVO.getSubjectStudy().getSubjectStatus() != null){
-			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getSubjectStudy().getSubjectStatus()));
+		if(subjectVO.getLinkSubjectStudy().getSubjectStatus() != null){
+			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
 			if(subjectStatus != null){
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
@@ -273,8 +273,8 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
 			//Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
 			SubjectVO subject = new SubjectVO();
-			subject.setSubjectStudy(linkSubjectStudy);
-			Person person = subject.getSubjectStudy().getPerson();
+			subject.setLinkSubjectStudy(linkSubjectStudy);
+			Person person = subject.getLinkSubjectStudy().getPerson();
 			subject.setSubjectPreviousLastname(getPreviousLastname(person));
 			subjectVOList.add(subject);
 		}
@@ -662,7 +662,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public int getStudySubjectCount(SubjectVO subjectVO)
 	{
 		// Handle for study not in context
-		if(subjectVO.getSubjectStudy().getStudy() == null)
+		if(subjectVO.getLinkSubjectStudy().getStudy() == null)
 		{
 			return 0;
 		}
@@ -676,46 +676,46 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	private Criteria buildGeneralSubjectCriteria(SubjectVO subjectVO) {
 		Criteria criteria =  getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.createAlias("person", "p");
-		criteria.add(Restrictions.eq("study.id",subjectVO.getSubjectStudy().getStudy().getId()));	
+		criteria.add(Restrictions.eq("study.id",subjectVO.getLinkSubjectStudy().getStudy().getId()));	
 		
-		if(subjectVO.getSubjectStudy().getPerson() != null){
+		if(subjectVO.getLinkSubjectStudy().getPerson() != null){
 		
-			if(subjectVO.getSubjectStudy().getPerson().getId() != null){
-				criteria.add(Restrictions.eq("p.id",subjectVO.getSubjectStudy().getPerson().getId() ));	
+			if(subjectVO.getLinkSubjectStudy().getPerson().getId() != null){
+				criteria.add(Restrictions.eq("p.id",subjectVO.getLinkSubjectStudy().getPerson().getId() ));	
 			}
 
-			if(subjectVO.getSubjectStudy().getPerson().getFirstName() != null){
-				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getFirstName() != null){
+				criteria.add(Restrictions.ilike("p.firstName",subjectVO.getLinkSubjectStudy().getPerson().getFirstName(),MatchMode.ANYWHERE));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getMiddleName() != null){
-				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getMiddleName() != null){
+				criteria.add(Restrictions.ilike("p.middleName",subjectVO.getLinkSubjectStudy().getPerson().getMiddleName(),MatchMode.ANYWHERE));
 			}
 		
-			if(subjectVO.getSubjectStudy().getPerson().getLastName() != null){
-				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getLastName() != null){
+				criteria.add(Restrictions.ilike("p.lastName",subjectVO.getLinkSubjectStudy().getPerson().getLastName(),MatchMode.ANYWHERE));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getDateOfBirth() != null){
-				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getSubjectStudy().getPerson().getDateOfBirth()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth() != null){
+				criteria.add(Restrictions.eq("p.dateOfBirth",subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth()));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getGenderType() != null){
-				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getSubjectStudy().getPerson().getGenderType().getId()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getGenderType() != null){
+				criteria.add(Restrictions.eq("p.genderType.id",subjectVO.getLinkSubjectStudy().getPerson().getGenderType().getId()));
 			}
 			
-			if(subjectVO.getSubjectStudy().getPerson().getVitalStatus() != null){
-				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getSubjectStudy().getPerson().getVitalStatus().getId()));
+			if(subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus() != null){
+				criteria.add(Restrictions.eq("p.vitalStatus.id",subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus().getId()));
 			}
 			
 		}
 		
-		if( subjectVO.getSubjectStudy().getSubjectUID()!= null && subjectVO.getSubjectStudy().getSubjectUID().length() > 0){
-			criteria.add(Restrictions.eq("subjectUID",subjectVO.getSubjectStudy().getSubjectUID()));
+		if( subjectVO.getLinkSubjectStudy().getSubjectUID()!= null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0){
+			criteria.add(Restrictions.eq("subjectUID",subjectVO.getLinkSubjectStudy().getSubjectUID()));
 		}
 		
-		if(subjectVO.getSubjectStudy().getSubjectStatus() != null){
-			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getSubjectStudy().getSubjectStatus()));
+		if(subjectVO.getLinkSubjectStudy().getSubjectStatus() != null){
+			criteria.add(Restrictions.eq("subjectStatus",subjectVO.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
 			if(subjectStatus != null){
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));	
@@ -744,8 +744,8 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
 			//Place the LinkSubjectStudy instance into a SubjectVO and add the SubjectVO into a List
 			SubjectVO subject = new SubjectVO();
-			subject.setSubjectStudy(linkSubjectStudy);
-			Person person = subject.getSubjectStudy().getPerson();
+			subject.setLinkSubjectStudy(linkSubjectStudy);
+			Person person = subject.getLinkSubjectStudy().getPerson();
 			subject.setSubjectPreviousLastname(getPreviousLastname(person));
 			subjectVOList.add(subject);
 		}
