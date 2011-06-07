@@ -159,17 +159,17 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 			
 			
 			public int size() {
-				return service.getStudySubjectCount(criteria);
+				return service.getStudySubjectCount(compoundPropertyModel.getObject());
 			}
 			
 			
 			public Iterator<SubjectVO> iterator(int first, int count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-				listSubjects = iArkCommonService.searchPageableSubjects(criteria, first, count);
+				listSubjects = iArkCommonService.searchPageableSubjects(compoundPropertyModel.getObject(), first, count);
 				return listSubjects.iterator();
 			}
 		};
-		subjectProvider.setCriteria(containerForm.getModelObject());
+		subjectProvider.setCompoundPropertyModel(this.cpModel);
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
@@ -179,6 +179,10 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		searchResultsPanel.add(dataView);
 		searchResultPanelContainer.add(searchResultsPanel);
 		return searchResultPanelContainer;
+	}
+	
+	public void resetDataProvider()
+	{
 	}
 
 }

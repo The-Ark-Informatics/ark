@@ -74,13 +74,13 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 			
 			
 			public int size() {
-				return iPhenotypicService.getStudyFieldDataCount(criteria);
+				return iPhenotypicService.getStudyFieldDataCount(compoundPropertyModel.getObject());
 			}
 			
 			
 			public Iterator<PhenoCollectionVO> iterator(int first, int count) {
 				List<PhenoCollectionVO> listFieldData = new ArrayList<PhenoCollectionVO>();
-				listFieldData = iPhenotypicService.searchPageableFieldData(criteria, first, count);
+				listFieldData = iPhenotypicService.searchPageableFieldData(compoundPropertyModel.getObject(), first, count);
 				return listFieldData.iterator();
 			}
 		};
@@ -88,7 +88,7 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		containerForm.getModelObject().setStudy(study);
-		fieldDataProvider.setCriteria(containerForm.getModelObject());
+		fieldDataProvider.setCompoundPropertyModel(this.cpModel);
 		
 		dataView = searchResultPanel.buildDataView(fieldDataProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);

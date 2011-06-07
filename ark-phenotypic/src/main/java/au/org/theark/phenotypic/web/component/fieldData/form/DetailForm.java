@@ -6,6 +6,10 @@
  */
 package au.org.theark.phenotypic.web.component.fieldData.form;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -22,10 +26,12 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.phenotypic.model.entity.Field;
 import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
+import au.org.theark.phenotypic.util.PhenotypicValidator;
 import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
 
 /**
@@ -36,7 +42,7 @@ import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
 public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				phenotypicService;
+	private IPhenotypicService				iPhenotypicService;
 
 	private ContainerForm					fieldContainerForm;
 
@@ -115,20 +121,43 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		if (containerForm.getModelObject().getFieldData().getId() == null)
 		{
 			// Save the Field data
-			phenotypicService.createFieldData(containerForm.getModelObject().getFieldData());
+			iPhenotypicService.createFieldData(containerForm.getModelObject().getFieldData());
 			this.info("Field Data " + containerForm.getModelObject().getFieldData().getId() + " was created successfully");
-			processErrors(target);
+			
+			onSavePostProcess(target);
 		}
 		else
 		{
-			// Update the Field data
-			phenotypicService.updateFieldData(containerForm.getModelObject().getFieldData());
-			this.info("Field Data " + containerForm.getModelObject().getFieldData().getId() + " was updated successfully");
-			processErrors(target);
+			// Validate field data confirms to data dictionary
+			Collection<String> dataValidation = new ArrayList<String>();
+			//TODO: Implement setPassedQualityControl correctly
+			//Currently : org.hibernate.LazyInitializationException: could not initialize proxy - no Session
+			boolean passedQualityControl = PhenotypicValidator.fieldDataPassesQualityControl(containerForm.getModelObject().getFieldData(), dataValidation);
+			containerForm.getModelObject().getFieldData().setPassedQualityControl(passedQualityControl);
+			
+			if(!passedQualityControl)
+			{
+				StringBuffer stringBuffer = new StringBuffer("");
+				
+				if(dataValidation != null)
+				{
+					for (Iterator<String> iterator = dataValidation.iterator(); iterator.hasNext();) {
+						String string = (String) iterator.next();
+						stringBuffer.append(string);
+						stringBuffer.append("\n");
+					}
+				}
+				this.error(stringBuffer.toString());
+			}
+			else
+			{
+				// Update the Field data
+				iPhenotypicService.updateFieldData(containerForm.getModelObject().getFieldData());
+				this.info("Field Data " + containerForm.getModelObject().getFieldData().getId() + " was updated successfully");
+				onSavePostProcess(target);
+			}
 		}
-
-		onSavePostProcess(target);
-		// TODO:(CE) To handle Business and System Exceptions here
+		processErrors(target);
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
@@ -138,10 +167,9 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		FieldData fieldData = new FieldData();
-		
+		containerForm.setModelObject(phenoCollectionVo);
 		containerForm.getModelObject().setStudy(study);
 		containerForm.getModelObject().setFieldData(fieldData);
-		containerForm.setModelObject(phenoCollectionVo);
 	}
 
 	@Override
@@ -166,7 +194,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		// TODO:(CE) To handle Business and System Exceptions here
-		phenotypicService.deleteFieldData(containerForm.getModelObject().getFieldData());
+		iPhenotypicService.deleteFieldData(containerForm.getModelObject().getFieldData());
 		this.info("Field data " + containerForm.getModelObject().getFieldData().getId() + " was deleted successfully");
 
 		// Display delete confirmation message

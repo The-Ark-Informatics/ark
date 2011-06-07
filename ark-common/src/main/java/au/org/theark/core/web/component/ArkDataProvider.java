@@ -1,6 +1,7 @@
 package au.org.theark.core.web.component;
 
 import org.apache.wicket.markup.repeater.data.IDataProvider;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
@@ -11,7 +12,7 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected T criteria;
+	protected CompoundPropertyModel<T> compoundPropertyModel;
 	protected U service;
 	
 	public ArkDataProvider(U service) {
@@ -19,12 +20,12 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 		this.service = service;
 	}
 
-	public T getCriteria() {
-		return criteria;
+	public CompoundPropertyModel<T> getCompoundPropertyModel() {
+		return compoundPropertyModel;
 	}
 
-	public void setCriteria(T criteria) {
-		this.criteria = criteria;
+	public void setCompoundPropertyModel(CompoundPropertyModel<T> compoundPropertyModel) {
+		this.compoundPropertyModel = compoundPropertyModel;
 	}
 	
 	public IModel<T> model (final T object) {
@@ -37,7 +38,7 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 	}
 	
 	public void detach() {
-		//TODO: Anything?
+		//TODO: Anything?...nope
 	}
 }
 

@@ -441,13 +441,16 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	protected  void onCancel(AjaxRequestTarget target){
 		subjectUIDTxtFld.setEnabled(true);
 		SubjectVO subjectVO = new SubjectVO();
+		
+		// Set study in conext
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		subjectVO.getSubjectStudy().setStudy(study);
 		containerForm.setModelObject(subjectVO);
 		
 		stateChoice.setVisible(true);
 		otherState.setVisible(false);
 		target.addComponent(countryStateSelector);
-		//onCancelPostProcess(target);
-		
 	}
 	
 	/* (non-Javadoc)
