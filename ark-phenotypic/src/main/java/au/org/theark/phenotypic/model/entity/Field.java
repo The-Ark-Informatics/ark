@@ -110,7 +110,7 @@ public class Field implements java.io.Serializable {
 		return study;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FIELD_TYPE_ID", nullable = false)
 	public FieldType getFieldType() {
 		return this.fieldType;
