@@ -158,13 +158,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
 		// Set a default Country on new when the Country field is empty
-		if (getModelObject().getSubjectStudy().getCountry() == null) {
+		if (getModelObject().getLinkSubjectStudy().getCountry() == null) {
 			final List<Country> countryList = iArkCommonService.getCountries();
 			//getModelObject().getSubjectStudy().setCountry(countryList.get(0));
 			
-			getModelObject().getSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
+			getModelObject().getLinkSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
 		}
-		updateDetailFormPrerender(getModelObject().getSubjectStudy());
+		updateDetailFormPrerender(getModelObject().getLinkSubjectStudy());
 		
 		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
 		
@@ -174,7 +174,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		if ((studyInContext != null) && (studyInContext.getAutoGenerateSubjectUid()))
 		{
 			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
-			getModelObject().getSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
+			getModelObject().getLinkSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
 			subjectUIDTxtFld.setEnabled(false);
 			target.addComponent(subjectUIDTxtFld);
 		}
@@ -211,7 +211,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		
 		int count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if(count == 0){

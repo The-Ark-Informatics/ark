@@ -30,7 +30,7 @@ public class SubjectVO implements Serializable{
 	
 	protected String subjectFullName;
 	protected SubjectStatus subjectStatus;
-	protected LinkSubjectStudy subjectStudy;
+	protected LinkSubjectStudy linkSubjectStudy;
 	protected Collection<SubjectVO> subjectList;
 	protected SubjectFile subjectFile;
 	protected ConsentAnswer consentAnswerSelect;
@@ -55,7 +55,7 @@ public class SubjectVO implements Serializable{
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
-		subjectStudy = new LinkSubjectStudy();
+		linkSubjectStudy = new LinkSubjectStudy();
 		subjectFile = new SubjectFile();
 		subjectFileList = new ArrayList<SubjectFile>();
 		subjectPreviousLastname = new String();
@@ -79,12 +79,12 @@ public class SubjectVO implements Serializable{
 		this.participants = participants;
 	}
 		
-	public LinkSubjectStudy getSubjectStudy() {
-		return subjectStudy;
+	public LinkSubjectStudy getLinkSubjectStudy() {
+		return linkSubjectStudy;
 	}
 
-	public void setSubjectStudy(LinkSubjectStudy subjectStudy) {
-		this.subjectStudy = subjectStudy;
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 	
 	public Collection<Phone> getPhoneList() {

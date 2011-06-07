@@ -83,8 +83,8 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 				try {
 					person = studyService.getPerson(sessionPersonId);
 					SubjectVO subjectVO = new SubjectVO();
-					subjectVO.getSubjectStudy().setPerson(person);	//must have Person id
-					subjectVO.getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));	//must have Study id
+					subjectVO.getLinkSubjectStudy().setPerson(person);	//must have Person id
+					subjectVO.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));	//must have Study id
 					List<SubjectVO> subjectList = (List<SubjectVO>) iArkCommonService.getSubject(subjectVO);
 					containerForm.setModelObject(subjectList.get(0));
 					contextLoaded = true;
@@ -112,7 +112,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 	protected WebMarkupContainer initialiseSearchPanel(){
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null && sessionStudyId > 0){
-			containerForm.getModelObject().getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
 		searchPanel = new Search("searchComponentPanel",
@@ -151,7 +151,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
-			containerForm.getModelObject().setSubjectStudy(linkSubjectStudy);
+			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
 		}
 		
 		// Data providor to paginate resultList

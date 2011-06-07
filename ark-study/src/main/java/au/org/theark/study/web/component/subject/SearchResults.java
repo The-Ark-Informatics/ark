@@ -89,7 +89,7 @@ public class SearchResults extends Panel{
 			@Override
 			protected void populateItem(final Item<SubjectVO> item)
 			{
-				LinkSubjectStudy subject = item.getModelObject().getSubjectStudy();
+				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
 				
 				StringBuffer sb = new StringBuffer();
@@ -151,7 +151,7 @@ public class SearchResults extends Panel{
 
 			@Override
 			protected void populateItem(final ListItem<SubjectVO> item) {
-				LinkSubjectStudy subject = item.getModelObject().getSubjectStudy();
+				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
 				item.add(buildLink(item.getModelObject()));
 				
 				StringBuffer sb = new StringBuffer();
@@ -213,10 +213,10 @@ public class SearchResults extends Panel{
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				subject.getSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 				
 				// We specify the type of person here as Subject
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getSubjectStudy().getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 				
 				SubjectVO subjectFromBackend = new SubjectVO();
@@ -228,16 +228,16 @@ public class SearchResults extends Panel{
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setStudyContextLabel(target, subjectFromBackend.getSubjectStudy().getStudy().getName(), arkContextMarkup);
-				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectStudy().getSubjectUID(), arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
+				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
 				Search searchPanel = (Search) searchPanelContainer.get("searchComponentPanel");
 				SearchForm sfs = (SearchForm) searchPanel.get("searchForm");
 				List<Country> countryList = iArkCommonService.getCountries();
-				if(subjectFromBackend.getSubjectStudy().getCountry() ==  null){
-					subjectFromBackend.getSubjectStudy().setCountry(countryList.get(0));
+				if(subjectFromBackend.getLinkSubjectStudy().getCountry() ==  null){
+					subjectFromBackend.getLinkSubjectStudy().setCountry(countryList.get(0));
 				}
-				sfs.updateDetailFormPrerender(subjectFromBackend.getSubjectStudy());
+				sfs.updateDetailFormPrerender(subjectFromBackend.getLinkSubjectStudy());
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
@@ -257,7 +257,7 @@ public class SearchResults extends Panel{
 				
 			}
 		};
-		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectStudy().getSubjectUID());
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
 	}

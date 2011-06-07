@@ -241,7 +241,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 			this.error("The Person/Subject in context does not exist in the system. Please contact support.");
 			processErrors(target);
 		}
-		subjectVo.setSubjectStudy(linkSubjectStudy);
+		subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 		containerForm.setModelObject(subjectVo);
 	}
 

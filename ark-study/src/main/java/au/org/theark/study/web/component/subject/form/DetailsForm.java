@@ -257,7 +257,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	// Death details dependent on Vital Status selected to "Deceased"
 	private void setDeathDetailsContainer()
 	{
-		VitalStatus vitalStatus = containerForm.getModelObject().getSubjectStudy().getPerson().getVitalStatus();
+		VitalStatus vitalStatus = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getVitalStatus();
 		if(vitalStatus != null){
 			String vitalStatusName  = vitalStatus.getName();
 			
@@ -276,7 +276,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	
 	// Email required when preferred contact set to "Email"
 	private void setPreferredEmailContainer(){
-		PersonContactMethod personContactMethod = containerForm.getModelObject().getSubjectStudy().getPerson().getPersonContactMethod();
+		PersonContactMethod personContactMethod = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getPersonContactMethod();
 		
 		if(personContactMethod != null){
 			String personContactMethodName  = personContactMethod.getName();
@@ -445,7 +445,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		// Set study in conext
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
-		subjectVO.getSubjectStudy().setStudy(study);
+		subjectVO.getLinkSubjectStudy().setStudy(study);
 		containerForm.setModelObject(subjectVO);
 		
 		stateChoice.setVisible(true);
@@ -493,15 +493,15 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 
 	private void saveUpdateProcess(SubjectVO subjectVO,AjaxRequestTarget target){
 		
-		if(subjectVO.getSubjectStudy().getPerson().getId() == null || 		containerForm.getModelObject().getSubjectStudy().getPerson().getId() == 0){
+		if(subjectVO.getLinkSubjectStudy().getPerson().getId() == null || 		containerForm.getModelObject().getLinkSubjectStudy().getPerson().getId() == 0){
 	
-			subjectVO.getSubjectStudy().setStudy(study);
+			subjectVO.getLinkSubjectStudy().setStudy(study);
 			try
 			{
 				studyService.createSubject(subjectVO);
 				StringBuffer sb = new StringBuffer();
 				sb.append("The Subject with Subject UID: ");
-				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+				sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
 				sb.append(" has been created successfully and linked to the study in context " );
 				sb.append(study.getName());
 				onSavePostProcess(target);
@@ -522,7 +522,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 				studyService.updateSubject(subjectVO);
 				StringBuffer sb = new StringBuffer();
 				sb.append("The Subject with Subject UID: ");
-				sb.append(subjectVO.getSubjectStudy().getSubjectUID());
+				sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
 				sb.append(" has been updated successfully and linked to the study in context " );
 				sb.append(study.getName());
 				onSavePostProcess(target);
@@ -551,17 +551,17 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 		else{
 			
 			study = iArkCommonService.getStudy(studyId);
-			Long yearOfFirstMammogram = containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram();
-			Long yearOfRecentMammogram =containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram();	
+			Long yearOfFirstMammogram = containerForm.getModelObject().getLinkSubjectStudy().getYearOfFirstMamogram();
+			Long yearOfRecentMammogram =containerForm.getModelObject().getLinkSubjectStudy().getYearOfRecentMamogram();	
 			//validate if the fields were supplied
 			if(yearOfFirstMammogram != null){
-				firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfFirstMamogram(),
+				firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getLinkSubjectStudy().getYearOfFirstMamogram(),
 						"Year of Fist Mammogram cannot be in the future.",
 						target);
 			}
 			 
 			if(yearOfRecentMammogram != null){
-				 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getSubjectStudy().getYearOfRecentMamogram(),
+				 recentMamogramFlag =validateCustomFields(containerForm.getModelObject().getLinkSubjectStudy().getYearOfRecentMamogram(),
 							"Year of recent Mammogram cannot be in the future.",
 							target);
 			}
@@ -586,9 +586,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
-			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getSubjectStudy().getSubjectUID(), arkContextMarkupContainer);
+			contextHelper.setSubjectContextLabel(target,containerForm.getModelObject().getLinkSubjectStudy().getSubjectUID(), arkContextMarkupContainer);
 			
-			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getSubjectStudy().getPerson().getId());
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getLinkSubjectStudy().getPerson().getId());
 			//We specify the type of person here as Subject
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
 			detailPanelContainer.setVisible(true);
@@ -611,7 +611,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getSubjectStudy().getId() == null){
+		if(containerForm.getModelObject().getLinkSubjectStudy().getId() == null){
 			return true;
 		}else{
 			return false;
