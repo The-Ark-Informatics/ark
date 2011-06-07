@@ -20,7 +20,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
@@ -121,7 +121,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 	 * Initialise the Consent Status Drop Down Choice Control
 	 */
 	protected void initialiseConsentStatusChoice(){
-		List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
+		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
 		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
 		consentStatusChoice  = new DropDownChoice(Constants.CONSENT_CONSENT_STATUS, consentStatusList,defaultChoiceRenderer);
 	}
@@ -176,6 +176,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 			
 			//Look up based on criteria via back end.
 			//Collection<Consent> consentList =    studyService.searchConsent(getModelObject().getConsent());
+			LinkSubjectStudy subjectInContext = studyService.getSubjectLinkedToStudy(sessionPersonId, study);
+			consent.setLinkSubjectStudy(subjectInContext);
 			Collection<Consent> consentList =    studyService.searchConsent(getModelObject());
 			
 			if(consentList != null && consentList.size() == 0){
