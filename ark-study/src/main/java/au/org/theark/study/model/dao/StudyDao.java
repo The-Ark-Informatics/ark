@@ -294,11 +294,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 
 	public void createSubject(SubjectVO subjectVO) throws ArkUniqueException, ArkSubjectInsertException
 	{
-		Study study = subjectVO.getSubjectStudy().getStudy();
+		Study study = subjectVO.getLinkSubjectStudy().getStudy();
 		// Add Business Validations here as well apart from UI validation
 		try
 		{
-			if (isSubjectUIDUnique(subjectVO.getSubjectStudy().getSubjectUID(), subjectVO.getSubjectStudy().getStudy().getId(), "Insert"))
+			if (isSubjectUIDUnique(subjectVO.getLinkSubjectStudy().getSubjectUID(), subjectVO.getLinkSubjectStudy().getStudy().getId(), "Insert"))
 			{
 				// Check insertion lock
 				if (getSubjectUidSequenceLock(study) == true)
@@ -312,7 +312,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 					setSubjectUidSequenceLock(study, true);
 
 					Session session = getSession();
-					Person person = subjectVO.getSubjectStudy().getPerson();
+					Person person = subjectVO.getLinkSubjectStudy().getPerson();
 					session.save(person);
 
 					PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
@@ -326,14 +326,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 					// Update subjectPreviousLastname
 					subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
 
-					LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+					LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
 					session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
 																// OpenSessionInViewFilter
 
 					// Auto-generate SubjectUID
-					if (subjectVO.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+					if (subjectVO.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid())
 					{
-						String subjectUID = getNextGeneratedSubjectUID(subjectVO.getSubjectStudy().getStudy());
+						String subjectUID = getNextGeneratedSubjectUID(subjectVO.getLinkSubjectStudy().getStudy());
 						linkSubjectStudy.setSubjectUID(subjectUID);
 						session.update(linkSubjectStudy);
 					}
@@ -358,7 +358,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		if (true)
 		{
 			Session session = getSession();
-			Person person = subjectVO.getSubjectStudy().getPerson();
+			Person person = subjectVO.getLinkSubjectStudy().getPerson();
 			session.update(person);// Update Person and associated Phones
 
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
@@ -377,7 +377,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			// Update subjectPreviousLastname
 			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
 
-			LinkSubjectStudy linkSubjectStudy = subjectVO.getSubjectStudy();
+			LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
 			session.update(linkSubjectStudy);
 		}
 		else
@@ -1506,18 +1506,18 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();)
 		{
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
-			study = subjectVo.getSubjectStudy().getStudy();
+			study = subjectVo.getLinkSubjectStudy().getStudy();
 
 			try
 			{
 				// Auto-generate SubjectUID
-				if (subjectVo.getSubjectStudy().getStudy().getAutoGenerateSubjectUid())
+				if (subjectVo.getLinkSubjectStudy().getStudy().getAutoGenerateSubjectUid())
 				{
-					String subjectUID = getNextGeneratedSubjectUID(subjectVo.getSubjectStudy().getStudy());
-					subjectVo.getSubjectStudy().setSubjectUID(subjectUID);
+					String subjectUID = getNextGeneratedSubjectUID(subjectVo.getLinkSubjectStudy().getStudy());
+					subjectVo.getLinkSubjectStudy().setSubjectUID(subjectUID);
 				}
 
-				if (isSubjectUIDUnique(subjectVo.getSubjectStudy().getSubjectUID(), subjectVo.getSubjectStudy().getStudy().getId(), "Insert"))
+				if (isSubjectUIDUnique(subjectVo.getLinkSubjectStudy().getSubjectUID(), subjectVo.getLinkSubjectStudy().getStudy().getId(), "Insert"))
 				{
 					// Check insertion lock
 					if (getSubjectUidSequenceLock(study) == true)
@@ -1530,7 +1530,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 						// Enable insertion lock
 						setSubjectUidSequenceLock(study, true);
 
-						Person person = subjectVo.getSubjectStudy().getPerson();
+						Person person = subjectVo.getLinkSubjectStudy().getPerson();
 						session.save(person);
 
 						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
@@ -1544,7 +1544,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 						// Update subjectPreviousLastname
 						subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
-						LinkSubjectStudy linkSubjectStudy = subjectVo.getSubjectStudy();
+						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 						session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's OpenSessionInViewFilter
 					}
 				}
@@ -1576,9 +1576,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();)
 		{
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
-			study = subjectVo.getSubjectStudy().getStudy();
+			study = subjectVo.getLinkSubjectStudy().getStudy();
 
-			Person person = subjectVo.getSubjectStudy().getPerson();
+			Person person = subjectVo.getLinkSubjectStudy().getPerson();
 			session.update(person);// Update Person and associated Phones
 
 			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
@@ -1597,7 +1597,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			// Update subjectPreviousLastname
 			subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
-			LinkSubjectStudy linkSubjectStudy = subjectVo.getSubjectStudy();
+			LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 			session.update(linkSubjectStudy);
 			if (i++ % 50 == 0)
 			{ // 50, same as the JDBC batch size
