@@ -171,7 +171,7 @@ public class SubjectUploader
 					linkSubjectStudy.setStudy(study);
 				}
 				Person person = linkSubjectStudy.getPerson();
-				subjectVo.setSubjectStudy(linkSubjectStudy);
+				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 
 				if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null)
 				{
@@ -327,15 +327,15 @@ public class SubjectUploader
 				}
 
 				linkSubjectStudy.setPerson(person);
-				subjectVo.setSubjectStudy(linkSubjectStudy);
+				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 
-				if (subjectVo.getSubjectStudy().getId() == null || subjectVo.getSubjectStudy().getPerson().getId() == 0)
+				if (subjectVo.getLinkSubjectStudy().getId() == null || subjectVo.getLinkSubjectStudy().getPerson().getId() == 0)
 				{
 					//iStudyService.createSubject(subjectVo);
 					insertSubjects.add(subjectVo);
 					StringBuffer sb = new StringBuffer();
 					sb.append("Subject UID: ");
-					sb.append(subjectVo.getSubjectStudy().getSubjectUID());
+					sb.append(subjectVo.getLinkSubjectStudy().getSubjectUID());
 					sb.append(" has been created successfully and linked to the study: ");
 					sb.append(study.getName());
 					sb.append("\n");
@@ -348,7 +348,7 @@ public class SubjectUploader
 					updateSubjects.add(subjectVo);
 					StringBuffer sb = new StringBuffer();
 					sb.append("Subject UID: ");
-					sb.append(subjectVo.getSubjectStudy().getSubjectUID());
+					sb.append(subjectVo.getLinkSubjectStudy().getSubjectUID());
 					sb.append(" has been updated successfully and linked to the study: ");
 					sb.append(study.getName());
 					sb.append("\n");
