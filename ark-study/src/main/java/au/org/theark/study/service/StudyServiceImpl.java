@@ -329,9 +329,9 @@ public class StudyServiceImpl implements IStudyService{
 		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-		ah.setComment("Created Subject " + subjectVO.getSubjectStudy().getSubjectUID());
+		ah.setComment("Created Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
-		ah.setEntityId(subjectVO.getSubjectStudy().getId());
+		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		arkCommonService.createAuditHistory(ah);
 	}
 	
@@ -341,9 +341,9 @@ public class StudyServiceImpl implements IStudyService{
 		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Subject " + subjectVO.getSubjectStudy().getSubjectUID());
+		ah.setComment("Updated Subject " + subjectVO.getLinkSubjectStudy().getSubjectUID());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_SUBJECT);
-		ah.setEntityId(subjectVO.getSubjectStudy().getId());
+		ah.setEntityId(subjectVO.getLinkSubjectStudy().getId());
 		arkCommonService.createAuditHistory(ah);
 	}
 	
