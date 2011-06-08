@@ -87,7 +87,7 @@ public class FieldData implements java.io.Serializable
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FIELD_ID", nullable = false)
 	public Field getField() {
 		return this.field;
@@ -97,7 +97,7 @@ public class FieldData implements java.io.Serializable
 		this.field = field;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
 	public PhenoCollection getCollection() {
 		return this.collection;
@@ -107,7 +107,7 @@ public class FieldData implements java.io.Serializable
 		this.collection = collection;
 	}
 	
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_COLLECTED", nullable = false)
 	public Date getDateCollected() {
 		return this.dateCollected;
