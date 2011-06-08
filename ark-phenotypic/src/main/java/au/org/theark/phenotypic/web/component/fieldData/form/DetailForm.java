@@ -84,7 +84,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		fieldDataIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_ID);
 		fieldDataCollectionTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_COLLECTION_NAME);
 		fieldDataSubjectUidTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_SUBJECTUID);
-		fieldDataDateCollectedDteFld = new DateTextField(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_DATE_COLLECTED, au.org.theark.core.Constants.DD_MM_YYYY);
+		fieldDataDateCollectedDteFld = new DateTextField(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_DATE_COLLECTED, au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 		fieldDataFieldTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_FIELD_NAME);
 		fieldDataValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_VALUE);
 		fieldDataValueTxtFld.add(new ArkDefaultFormFocusBehavior());

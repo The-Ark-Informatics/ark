@@ -199,7 +199,7 @@ public class SearchResultListPanel extends Panel
 			protected void populateItem(final Item<PhenoCollectionVO> item)
 			{
 				FieldData fieldData = item.getModelObject().getFieldData();
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY_HH_MM_SS);
 
 				// Link of FieldData ID
 				item.add(buildLink(fieldData));
