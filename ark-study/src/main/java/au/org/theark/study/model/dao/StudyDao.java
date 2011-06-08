@@ -911,6 +911,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		{
 			criteria.add(Restrictions.eq("study.id", consentVO.getConsent().getStudy().getId()));
 
+			//must only get consents for subject in context
+			criteria.add(Restrictions.eq("linkSubjectStudy", consentVO.getConsent().getLinkSubjectStudy()));
+
 			if (consentVO.getConsent().getStudyComp() != null)
 			{
 				criteria.add(Restrictions.eq("studyComp", consentVO.getConsent().getStudyComp()));
