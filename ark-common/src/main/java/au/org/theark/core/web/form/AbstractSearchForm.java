@@ -333,24 +333,15 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	protected void disableSearchForm(Long sessionId, String errorMessage){	
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-
 		
-		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) ||
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  ||
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
-			
-				searchMarkupContainer.setEnabled(false);			
-			
-		}else{
-			
-			if (sessionId == null){
-				searchMarkupContainer.setEnabled(false);			
-				this.error(errorMessage);
-			}else{
-				searchMarkupContainer.setEnabled(true);
-			}
-			
+		if (sessionId == null)
+		{
+			searchMarkupContainer.setEnabled(false);			
+			this.error(errorMessage);
+		}
+		else
+		{
+			searchMarkupContainer.setEnabled(true);
 		}
 
 	}
