@@ -676,8 +676,12 @@ public class PhenotypicValidator
 				// Check date collected is valid
 				try
 				{
-					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 					dateFormat.setLenient(false);
+					if(dateCollectedStr.length() == 10)
+					{
+						dateCollectedStr = dateCollectedStr + " 00:00:00"; 
+					}
 					dateCollected = dateFormat.parse(dateCollectedStr);
 				}
 				catch (ParseException pe)
