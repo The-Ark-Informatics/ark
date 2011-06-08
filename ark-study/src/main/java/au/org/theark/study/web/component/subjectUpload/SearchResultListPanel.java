@@ -67,7 +67,9 @@ public class SearchResultListPanel extends Panel {
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
 		
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_HEADER);
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", 
+				"SubjectUpload", 
+				au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS);
 		add(downloadTemplateButton);
 	}
 
