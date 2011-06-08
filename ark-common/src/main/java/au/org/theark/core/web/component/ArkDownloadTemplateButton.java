@@ -1,5 +1,7 @@
 package au.org.theark.core.web.component;
 import jxl.Workbook;
+import jxl.write.WritableCellFormat;
+import jxl.write.WritableFont;
 import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
@@ -12,8 +14,13 @@ import au.org.theark.core.util.ArkSheetMetaData;
 
 public class ArkDownloadTemplateButton extends AjaxButton{
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -838971531745438763L;
 	private String templateFilename = null;
 	private String[] templateHeader = null;
+	private String[][] templateCells = null;
 	private transient ArkSheetMetaData		sheetMetaData;
 	
 	public ArkDownloadTemplateButton(String id, String templateFilename, String[] templateHeader) {
@@ -21,7 +28,24 @@ public class ArkDownloadTemplateButton extends AjaxButton{
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.templateFilename = templateFilename;
 		this.setTemplateHeader(templateHeader);
+		this.setTemplateCells(new String[][] {templateHeader});
 		this.sheetMetaData.setRows(1);
+		this.sheetMetaData.setCols(templateHeader.length);
+		
+		// Do not submit parent form
+		this.setDefaultFormProcessing(false);
+		
+		// Only show button if filename or templateHeader != null
+		setVisible(templateFilename != null && templateHeader.length > 0);
+	}
+	
+	public ArkDownloadTemplateButton(String id, String templateFilename, String[][] templateCells) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.templateFilename = templateFilename;
+		this.setTemplateHeader(templateCells[0]);
+		this.setTemplateCells(templateCells);
+		this.sheetMetaData.setRows(templateCells.length);
 		this.sheetMetaData.setCols(templateHeader.length);
 		
 		// Do not submit parent form
@@ -34,18 +58,35 @@ public class ArkDownloadTemplateButton extends AjaxButton{
 	public byte[] writeOutXlsFileToBytes()
 	{
 		byte[] bytes = null;
+		
+		WritableFont normalFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.NO_BOLD);
+		WritableFont boldFont = new WritableFont(WritableFont.ARIAL, 10, WritableFont.BOLD);
+		WritableCellFormat cellFormat = null;
+		
 		try
 		{
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			WritableWorkbook w = Workbook.createWorkbook(output);
 			WritableSheet writableSheet = w.createSheet("Sheet", 0);
 
-			for (int row = 0; row < sheetMetaData.getRows(); row++)
+			for (int row = 0; row < getTemplateCells().length; row++)
 			{
 				for (int col = 0; col < sheetMetaData.getCols(); col++)
 				{
-					String cellData = getTemplateHeader()[col];
+					String cellData = getTemplateCells()[row][col];
 					jxl.write.Label label = new jxl.write.Label(col, row, cellData);
+					
+					if(row == 0)
+					{
+						// Header row in bold
+						cellFormat = new WritableCellFormat(boldFont);
+					}
+					else
+					{
+						cellFormat = new WritableCellFormat(normalFont);
+					}
+					
+					label.setCellFormat(cellFormat);		
 					writableSheet.addCell(label);
 				}
 			}
@@ -61,15 +102,7 @@ public class ArkDownloadTemplateButton extends AjaxButton{
 		}
 		return bytes;
 	}
-
-	public void setTemplateHeader(String[] templateHeader) {
-		this.templateHeader = templateHeader;
-	}
-
-	public String[] getTemplateHeader() {
-		return templateHeader;
-	}
-
+	
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		byte[] data = writeOutXlsFileToBytes();
@@ -77,5 +110,35 @@ public class ArkDownloadTemplateButton extends AjaxButton{
 		{
 			getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, templateFilename + ".xls"));
 		}
+	}
+
+	/**
+	 * @param templateHeader the templateHeader to set
+	 */
+	public void setTemplateHeader(String[] templateHeader) {
+		this.templateHeader = templateHeader;
+	}
+
+	/**
+	 * @return the templateHeader
+	 */
+	public String[] getTemplateHeader() {
+		return templateHeader;
+	}
+	
+	/**
+	 * @param templateCells the templateCells to set
+	 */
+	public void setTemplateCells(String[][] templateCells)
+	{
+		this.templateCells = templateCells;
+	}
+
+	/**
+	 * @return the templateCells
+	 */
+	public String[][] getTemplateCells()
+	{
+		return templateCells;
 	}
 }
