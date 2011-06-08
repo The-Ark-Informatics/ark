@@ -9,11 +9,11 @@ import java.util.Iterator;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
-import au.org.theark.phenotypic.model.entity.FieldUpload;
-import au.org.theark.phenotypic.model.entity.FileFormat;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
+import au.org.theark.core.model.pheno.entity.FieldUpload;
+import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 
 /**
  * @author cellis

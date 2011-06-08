@@ -17,9 +17,9 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.GenoCollection;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
-import au.org.theark.geno.model.entity.GenoCollection;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;
 

@@ -10,12 +10,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.pheno.entity.FieldUpload;
+import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.phenotypic.model.entity.FieldUpload;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldUpload.form.ContainerForm;

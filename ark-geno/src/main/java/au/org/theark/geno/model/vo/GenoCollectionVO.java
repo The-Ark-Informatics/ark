@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import au.org.theark.geno.model.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.GenoCollection;
 
 /**
  * @author elam

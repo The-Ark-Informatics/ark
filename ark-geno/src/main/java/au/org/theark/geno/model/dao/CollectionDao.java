@@ -12,16 +12,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.geno.model.entity.CollectionImport;
-import au.org.theark.geno.model.entity.DelimiterType;
-import au.org.theark.geno.model.entity.FileFormat;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.MetaData;
-import au.org.theark.geno.model.entity.MetaDataField;
-import au.org.theark.geno.model.entity.MetaDataType;
-import au.org.theark.geno.model.entity.Status;
-import au.org.theark.geno.model.entity.Upload;
-import au.org.theark.geno.model.entity.UploadCollection;
+import au.org.theark.core.model.geno.entity.CollectionImport;
+import au.org.theark.core.model.geno.entity.DelimiterType;
+import au.org.theark.core.model.geno.entity.FileFormat;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.MetaData;
+import au.org.theark.core.model.geno.entity.MetaDataField;
+import au.org.theark.core.model.geno.entity.MetaDataType;
+import au.org.theark.core.model.geno.entity.Status;
+import au.org.theark.core.model.geno.entity.Upload;
+import au.org.theark.core.model.geno.entity.UploadCollection;
 
 // TODO: Replace all hardcoded userIds with actual code from SecurityManager
 // See SearchStudyFrom.java in ark-common

@@ -6,7 +6,7 @@ package au.org.theark.phenotypic.model.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import au.org.theark.phenotypic.model.entity.Field;
+import au.org.theark.core.model.pheno.entity.Field;
 
 /**
  * @author cellis

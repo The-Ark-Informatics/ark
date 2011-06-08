@@ -17,13 +17,13 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.phenotypic.model.entity.FileFormat;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoUpload.DetailPanel;

@@ -6,7 +6,7 @@ import java.util.Date;
 import org.apache.shiro.SecurityUtils;
 import org.hibernate.Hibernate;
 
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 
 public class PhenoUploadReport
 {

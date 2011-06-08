@@ -7,8 +7,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Properties;
 
-import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 
 /**
  * @author elam
@@ -24,14 +24,8 @@ public class GenericReportViewVO implements Serializable {
 	private ReportTemplate selectedReportTemplate;
 	private List<ReportOutputFormat> listReportOutputFormats;
 	private ReportOutputFormat selectedOutputFormat;
-	private Properties parameters;
 	
 	public GenericReportViewVO() {
-		this.parameters = new Properties();
-	}
-
-	public Properties getParameters() {
-		return parameters;
 	}
 
 	public void setSelectedReportTemplate(ReportTemplate selectedReportTemplate) {

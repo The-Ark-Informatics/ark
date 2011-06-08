@@ -23,6 +23,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -30,11 +32,11 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.service.Constants;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
 
 @Repository("reportDao")
 public class ReportDao extends HibernateSessionDao implements IReportDao {
@@ -409,5 +411,11 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	    criteria.setResultTransformer(Transformers.aliasToBean(Consent.class));
 	    Consent result = (Consent) criteria.uniqueResult();
 		return result;
+	}
+
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
+			FieldDetailsReportVO fdrVO) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -30,16 +30,16 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldData;
+import au.org.theark.core.model.pheno.entity.FieldType;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.phenotypic.exception.FileFormatException;
 import au.org.theark.phenotypic.exception.PhenotypicSystemException;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldData;
-import au.org.theark.phenotypic.model.entity.FieldType;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 

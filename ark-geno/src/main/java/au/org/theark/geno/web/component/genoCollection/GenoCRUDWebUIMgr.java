@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
-import au.org.theark.geno.model.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.GenoCollection;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;
 
 /**

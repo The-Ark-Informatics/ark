@@ -14,12 +14,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.geno.entity.DelimiterType;
+import au.org.theark.core.model.geno.entity.FileFormat;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.UploadCollection;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.geno.model.entity.DelimiterType;
-import au.org.theark.geno.model.entity.FileFormat;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.Constants;
 import au.org.theark.geno.service.IGenoService;

@@ -16,10 +16,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.UploadCollection;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.IGenoService;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;

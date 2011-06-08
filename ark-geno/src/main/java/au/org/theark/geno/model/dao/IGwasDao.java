@@ -1,8 +1,8 @@
 package au.org.theark.geno.model.dao;
 
-import au.org.theark.geno.model.entity.EncodedData;
-import au.org.theark.geno.model.entity.Marker;
-import au.org.theark.geno.model.entity.MarkerType;
+import au.org.theark.core.model.geno.entity.EncodedData;
+import au.org.theark.core.model.geno.entity.Marker;
+import au.org.theark.core.model.geno.entity.MarkerType;
 
 public interface IGwasDao {
 	

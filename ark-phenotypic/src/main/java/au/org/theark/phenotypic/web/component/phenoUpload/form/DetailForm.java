@@ -24,14 +24,14 @@ import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.model.pheno.entity.DelimiterType;
+import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.phenotypic.model.entity.DelimiterType;
-import au.org.theark.phenotypic.model.entity.FileFormat;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;

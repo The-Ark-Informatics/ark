@@ -18,12 +18,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldType;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.DetailPanel;

@@ -26,13 +26,13 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDownloadTemplateButton;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldPhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoCollectionUpload;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoUpload.form.ContainerForm;
 

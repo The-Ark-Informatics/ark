@@ -4,13 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldData;
+import au.org.theark.core.model.pheno.entity.FieldType;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldData;
-import au.org.theark.phenotypic.model.entity.FieldType;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 
 /**
  * @author cellis

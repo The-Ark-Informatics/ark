@@ -7,8 +7,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.phenotypic.model.entity.PhenoUpload;
 
 public class DeleteButton extends AjaxDeleteButton {
 		private static final long serialVersionUID = 4966354164332401574L;

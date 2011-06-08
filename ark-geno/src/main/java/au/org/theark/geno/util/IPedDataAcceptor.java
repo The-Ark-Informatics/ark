@@ -3,8 +3,8 @@
  */
 package au.org.theark.geno.util;
 
+import au.org.theark.core.model.geno.entity.MarkerGroup;
 import au.org.theark.geno.exception.DataAcceptorIOException;
-import au.org.theark.geno.model.entity.MarkerGroup;
 
 /**
  * IPedDataAcceptor is an interface that should be implemented by a class to  

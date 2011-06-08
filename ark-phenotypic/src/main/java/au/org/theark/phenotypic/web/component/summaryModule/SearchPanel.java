@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.summaryModule.form.SearchForm;

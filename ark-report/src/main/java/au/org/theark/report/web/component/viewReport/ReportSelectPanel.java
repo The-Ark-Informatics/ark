@@ -19,10 +19,10 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.Constants;
 import au.org.theark.report.service.IReportService;
@@ -109,9 +109,9 @@ public class ReportSelectPanel extends Panel
 				
 				/* The report module */
 				// TODO : will need to change to foreign key reference when new ARK security is implemented
-				if(reportTemplate.getModule_id() != null){
+				if(reportTemplate.getModule() != null){
 					//Add the study Component Key here
-					item.add(new Label("reportTemplate.module.name", reportTemplate.getModule_id().toString()));	
+					item.add(new Label("reportTemplate.module.name", reportTemplate.getModule().getName()));	
 				}else{
 					item.add(new Label("reportTemplate.module.name",""));
 				}

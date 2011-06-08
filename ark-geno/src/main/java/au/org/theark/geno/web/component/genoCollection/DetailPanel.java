@@ -20,8 +20,8 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.geno.entity.Status;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.geno.model.entity.Status;
 import au.org.theark.geno.model.vo.GenoCollectionVO;
 import au.org.theark.geno.service.IGenoService;
 import au.org.theark.geno.web.component.genoCollection.form.ContainerForm;

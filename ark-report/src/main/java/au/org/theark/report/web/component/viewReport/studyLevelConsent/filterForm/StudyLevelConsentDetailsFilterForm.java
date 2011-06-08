@@ -27,12 +27,12 @@ import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
 import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;

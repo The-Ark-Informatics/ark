@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -25,10 +27,10 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.dao.IReportDao;
-import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
 
 
 @Transactional
@@ -311,5 +313,10 @@ public class ReportServiceImpl implements IReportService {
 			consentRow.setHomePhone(homePhone);
 			consentRow.setEmail(email);
 		}
+	}
+
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
+			FieldDetailsReportVO fdrVO) {
+		return reportDao.getPhenoFieldDetailsList(fdrVO);
 	}
 }

@@ -24,12 +24,12 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.io.IOUtils;
 
+import au.org.theark.core.model.geno.entity.DelimiterType;
+import au.org.theark.core.model.geno.entity.FileFormat;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.UploadCollection;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.geno.model.entity.DelimiterType;
-import au.org.theark.geno.model.entity.FileFormat;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.UploadCollection;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.IGenoService;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;

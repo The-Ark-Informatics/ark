@@ -13,11 +13,11 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.ArkFormVisitor;
-import au.org.theark.report.model.entity.ReportOutputFormat;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.Constants;

@@ -3,6 +3,8 @@ package au.org.theark.report.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.model.report.entity.ReportOutputFormat;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -10,10 +12,10 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.report.model.entity.ReportOutputFormat;
-import au.org.theark.report.model.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
 
 
 public interface IReportDao {
@@ -63,5 +65,7 @@ public interface IReportDao {
 	 * @return
 	 */
 	public Consent getStudyCompConsent(Consent consent);
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
+			FieldDetailsReportVO fdrVO);
 
 }

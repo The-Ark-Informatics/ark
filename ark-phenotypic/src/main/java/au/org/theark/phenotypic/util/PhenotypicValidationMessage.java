@@ -4,8 +4,8 @@
 package au.org.theark.phenotypic.util;
 
 import au.org.theark.core.Constants;
-import au.org.theark.phenotypic.model.entity.Field;
-import au.org.theark.phenotypic.model.entity.FieldData;
+import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldData;
 
 /**
  * @author cellis

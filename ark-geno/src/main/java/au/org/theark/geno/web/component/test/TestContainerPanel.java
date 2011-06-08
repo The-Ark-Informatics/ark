@@ -31,16 +31,16 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.geno.entity.DecodeMask;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.Marker;
+import au.org.theark.core.model.geno.entity.MarkerGroup;
+import au.org.theark.core.model.geno.entity.MarkerType;
+import au.org.theark.core.model.geno.entity.MetaData;
+import au.org.theark.core.model.geno.entity.MetaDataField;
+import au.org.theark.core.model.geno.entity.MetaDataType;
+import au.org.theark.core.model.geno.entity.Status;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.geno.model.entity.DecodeMask;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.Marker;
-import au.org.theark.geno.model.entity.MarkerGroup;
-import au.org.theark.geno.model.entity.MarkerType;
-import au.org.theark.geno.model.entity.MetaData;
-import au.org.theark.geno.model.entity.MetaDataField;
-import au.org.theark.geno.model.entity.MetaDataType;
-import au.org.theark.geno.model.entity.Status;
 import au.org.theark.geno.service.Constants;
 import au.org.theark.geno.service.IGenoService;
 

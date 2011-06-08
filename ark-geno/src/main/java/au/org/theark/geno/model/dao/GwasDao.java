@@ -14,10 +14,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
-import au.org.theark.geno.model.entity.EncodedData;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.Marker;
-import au.org.theark.geno.model.entity.MarkerType;
+import au.org.theark.core.model.geno.entity.EncodedData;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.Marker;
+import au.org.theark.core.model.geno.entity.MarkerType;
 
 @Repository("gwasDao")
 public class GwasDao extends HibernateSessionDao implements IGwasDao

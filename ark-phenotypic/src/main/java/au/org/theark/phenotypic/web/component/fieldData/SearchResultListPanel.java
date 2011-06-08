@@ -18,9 +18,9 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.phenotypic.model.entity.FieldData;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldData.form.ContainerForm;

@@ -16,20 +16,6 @@ public class Constants {
 	// Default display formats
 	public static final DecimalFormat TWO_DECPLACES = new DecimalFormat("0.00");
 
-	// Entity-to-database definitions
-	public static final String GENO_TABLE_SCHEMA = "GENO";	//TODO: To be renamed to "GENO";
-	public static final String COLLECTION_PK_SEQ =  GENO_TABLE_SCHEMA + ".COLLECTION_PK_SEQ";
-	public static final String COLLECTION_IMPORT_PK_SEQ =  GENO_TABLE_SCHEMA + ".COLLECTION_IMPORT_PK_SEQ";
-	public static final String ENCODED_DATA_PK_SEQ = GENO_TABLE_SCHEMA + ".ENCODED_DATA_PK_SEQ";
-	public static final String MARKER_PK_SEQ = GENO_TABLE_SCHEMA + ".MARKER_PK_SEQ";
-	public static final String MARKER_GROUP_PK_SEQ = GENO_TABLE_SCHEMA + ".MARKER_GROUP_PK_SEQ";
-	public static final String META_DATA_PK_SEQ = GENO_TABLE_SCHEMA + ".META_DATA_PK_SEQ";
-	public static final String META_DATA_FIELD_PK_SEQ = GENO_TABLE_SCHEMA + ".META_DATA_FIELD_PK_SEQ";
-	public static final String META_DATA_TYPE_PK_SEQ = GENO_TABLE_SCHEMA + ".META_DATA_TYPE_PK_SEQ";
-	public static final String UPLOAD_PK_SEQ = GENO_TABLE_SCHEMA + ".UPLOAD_PK_SEQ";
-	public static final String UPLOAD_COLLECTION_PK_SEQ = GENO_TABLE_SCHEMA + ".UPLOAD_COLLECTION_PK_SEQ";
-	public static final String UPLOAD_MARKER_PK_SEQ = GENO_TABLE_SCHEMA + ".UPLOAD_MARKER_PK_SEQ";
-	
 	// Entity field name definitions (for HQL criteria building)
 	public static final String GENOCOLLECTION = "genoCollection";
 	public static final String GENOCOLLECTION_ID = "id";

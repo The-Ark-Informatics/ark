@@ -3,7 +3,7 @@ package au.org.theark.report.web.component.viewReport.studySummary;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.report.model.entity.ReportTemplate;
+import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;

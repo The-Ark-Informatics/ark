@@ -5,9 +5,6 @@ public class Constants {
 	// Service-level definitions
 	public static final String REPORT_SERVICE = "reportService";
 	
-	// Entity-to-database definitions
-	public static final String REPORT_TABLE_SCHEMA = "reporting";	//TODO: To be renamed to "GENO";
-
 	// Constants to match database lookup tables
 	public static final String STUDY_SUMMARY_REPORT_NAME = "Study Summary Report";
 	public static final String STUYD_COMP_CONSENT_REPORT_NAME = "Study Component Consent Details Report";

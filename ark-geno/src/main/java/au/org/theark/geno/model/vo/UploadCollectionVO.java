@@ -6,10 +6,10 @@ package au.org.theark.geno.model.vo;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import au.org.theark.geno.model.entity.FileFormat;
-import au.org.theark.geno.model.entity.GenoCollection;
-import au.org.theark.geno.model.entity.Upload;
-import au.org.theark.geno.model.entity.UploadCollection;
+import au.org.theark.core.model.geno.entity.FileFormat;
+import au.org.theark.core.model.geno.entity.GenoCollection;
+import au.org.theark.core.model.geno.entity.Upload;
+import au.org.theark.core.model.geno.entity.UploadCollection;
 
 /**
  * @author elam

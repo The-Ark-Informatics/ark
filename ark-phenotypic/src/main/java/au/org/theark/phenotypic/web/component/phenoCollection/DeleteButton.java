@@ -5,8 +5,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.StringResourceModel;
 
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.phenotypic.model.entity.PhenoCollection;
 
 public class DeleteButton extends AjaxDeleteButton {
 	/**
