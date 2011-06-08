@@ -74,7 +74,7 @@ public class PhenoUploadReport
 		appendAndNewLine(phenoUpload.getFilename());
 		append("File Format: ");
 		appendAndNewLine(phenoUpload.getFileFormat().getName());
-		append("Delimiter Type ");
+		append("Delimiter Type: ");
 		appendAndNewLine(phenoUpload.getDelimiterType().getName());
 	}
 	
