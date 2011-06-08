@@ -233,7 +233,7 @@ public class PhenoCollection implements java.io.Serializable
 	{
 		return phenoCollectionUploads;
 	}
-	
+
 	@Override
 	public int hashCode()
 	{
@@ -250,9 +250,6 @@ public class PhenoCollection implements java.io.Serializable
 			return true;
 		if (obj == null)
 			return false;
-		
-		Class c = getClass();
-		System.out.print(c.getName());
 		if (getClass() != obj.getClass())
 			return false;
 		PhenoCollection other = (PhenoCollection) obj;
@@ -265,4 +262,5 @@ public class PhenoCollection implements java.io.Serializable
 			return false;
 		return true;
 	}
+	
 }
