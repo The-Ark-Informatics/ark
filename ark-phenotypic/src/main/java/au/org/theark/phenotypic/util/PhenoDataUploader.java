@@ -76,6 +76,7 @@ public class PhenoDataUploader
 	private IArkCommonService		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
 	private Collection<FieldUpload> fieldUploadCollection	= new ArrayList<FieldUpload>();
+	private Long 						phenoCollectionId = null;
 
 	/**
 	 * PhenotypicImport constructor
@@ -92,6 +93,7 @@ public class PhenoDataUploader
 		this.iPhenoService = iPhenoService;
 		this.study = study;
 		this.phenoCollection = collection;
+		this.phenoCollectionId = phenoCollection.getId();
 		this.iArkCommonService = iArkCommonService;
 		this.fileFormat = fileFormat;
 		this.phenotypicDelimChr = delimiterChar;
@@ -180,7 +182,7 @@ public class PhenoDataUploader
 						// Second/1th column should be date collected
 						try
 						{
-							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
 						}
 						catch(ParseException pex)
@@ -289,6 +291,8 @@ public class PhenoDataUploader
 	{
 		uploadReport = new StringBuffer();
 		curPos = 0;
+		insertCount = 0;
+		updateCount = 0;
 
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
@@ -338,7 +342,7 @@ public class PhenoDataUploader
 				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
 				
 				// Second/1th column should be date collected
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
 				dateCollected = dateFormat.parse(stringLineArray[1]);
 				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
@@ -408,7 +412,7 @@ public class PhenoDataUploader
 							// Try to create the field data
 							iPhenoService.createFieldData(fieldData);
 							
-							insertCount = insertCount++; 
+							insertCount++; 
 						}
 						else
 						{	
@@ -436,7 +440,7 @@ public class PhenoDataUploader
 							// Try to update the field data
 							iPhenoService.updateFieldData(oldFieldData);
 							
-							updateCount = updateCount++;
+							updateCount++;
 						}
 					}
 
@@ -519,11 +523,12 @@ public class PhenoDataUploader
 		uploadReport.append("\n");
 		
 		// Set status of collection
+		PhenoCollection phenoCollection = iPhenoService.getPhenoCollection(this.phenoCollectionId);
 		Status status = new Status();
 		status = iPhenoService.getStatusByName("ACTIVE");
-		this.phenoCollection.setStatus(status);
-		iPhenoService.updateCollection(this.phenoCollection);
-
+		phenoCollection.setStatus(status);
+		iPhenoService.updateCollection(phenoCollection);
+		
 		return uploadReport;
 	}
 	
