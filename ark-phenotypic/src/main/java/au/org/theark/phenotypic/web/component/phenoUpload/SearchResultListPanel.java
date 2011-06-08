@@ -73,10 +73,7 @@ public class SearchResultListPanel extends Panel {
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
 		
-		
-		
 		Collection<String> fieldCollection = new ArrayList<String>(); 
-		
 		
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		if(sessionPhenoCollectionId != null)
@@ -127,6 +124,18 @@ public class SearchResultListPanel extends Panel {
 				} else {
 					item.add(new Label(
 							au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID,
+							""));
+				}
+				
+				// The collection
+				if (upload.getFilename() != null) {
+					// Add the id component here
+					item.add(new Label(
+							au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION,
+							iPhenotypicService.getPhenoCollectionByUpload(upload).getName()));
+				} else {
+					item.add(new Label(
+							au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION,
 							""));
 				}
 

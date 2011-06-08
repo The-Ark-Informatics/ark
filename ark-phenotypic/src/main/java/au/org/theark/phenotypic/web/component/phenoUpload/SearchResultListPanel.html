@@ -5,8 +5,13 @@
 		<tr>
 			<th width="2%">&nbsp;</th>
 			<th width="5%">
-				<label for="col1">
+				<label for="col0">
 					<wicket:message	key="upload.id">Upload ID</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="col1">
+					<wicket:message	key="phenoCollection">Collection</wicket:message>
 				</label>
 			</th>
 			<th width="20%">
@@ -45,6 +50,9 @@
 			<td width="2%">&nbsp;</td>
 			<td width="5%">
 				<span wicket:id="upload.id">ID</span>&nbsp;
+			</td>
+			<td width="15%">
+			  	<span wicket:id="phenoCollection">Collection</span>
 			</td>
 			<td width="15%">
 			  	<span wicket:id="upload.filename">Filename</span>

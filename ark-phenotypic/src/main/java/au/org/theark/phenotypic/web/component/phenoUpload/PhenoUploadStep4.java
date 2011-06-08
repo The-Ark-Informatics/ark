@@ -81,6 +81,7 @@ public class PhenoUploadStep4 extends AbstractWizardStepPanel
 		// Set Upload report
 		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
+		phenoUploadReport.appendAndNewLine("Collection: " + containerForm.getModelObject().getPhenoCollection().getName());
 		phenoUploadReport.append(uploadReport);
 		byte[] bytes = phenoUploadReport.getReport().toString().getBytes();
 		Blob uploadReportBlob = Hibernate.createBlob(bytes);
