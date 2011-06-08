@@ -35,6 +35,7 @@ public interface IPhenotypicDao {
 	public java.util.Collection<PhenoCollection> getPhenotypicCollectionByStudy(Study study);
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection collectionToMatch);
+	public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload);
 	public void createPhenoCollection(PhenoCollection collection);
 	public void createPhenoCollection(PhenoCollectionVO collectionVo);
 	public void updatePhenoCollection(PhenoCollection collection);
@@ -146,4 +147,5 @@ public interface IPhenotypicDao {
 	public DelimiterType getDelimiterType(Long id);
 	
 	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
+	
 }

@@ -29,6 +29,7 @@ public interface IPhenotypicService {
 	public java.util.Collection<PhenoCollection> getPhenoCollectionByStudy(Study study);
 	public java.util.Collection<PhenoCollection> searchPhenotypicCollection(PhenoCollection phenotypicCollection);
 	public PhenoCollectionVO getPhenoCollectionAndFields(Long id);
+	public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload);
 	public void createCollection(PhenoCollection col);
 	public void createCollection(PhenoCollectionVO colVo);
 	public void updateCollection(PhenoCollection col);

@@ -763,4 +763,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	{
 		return phenoCollectionHasData(phenoCollection);
 	}
+	
+	public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload)
+	{
+		return phenotypicDao.getPhenoCollectionByUpload(upload);
+	}
 }

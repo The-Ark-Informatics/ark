@@ -1121,6 +1121,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 	public Collection<FieldData> searchFieldDataBySubjectAndDateCollected(LinkSubjectStudy linkSubjectStudy, java.util.Date dateCollected)
 	{
 		Criteria criteria = getSession().createCriteria(FieldData.class);
+		String dateStr = dateCollected.toString();
 
 		if (linkSubjectStudy.getId() != null)
 		{
@@ -1367,7 +1368,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return criteria.list().size()>0;
 	}
 	
-	private boolean uploadHasData(PhenoUpload upload)
+	public boolean uploadHasData(PhenoUpload upload)
 	{
 		boolean hasData = false;
 		
@@ -1390,5 +1391,19 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		
 		return hasData;
+	}
+	
+	public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload)
+	{
+		PhenoCollectionUpload phenoCollectionUpload = null;
+		Criteria criteria =  getSession().createCriteria(PhenoCollectionUpload.class);
+		
+		if(upload != null){
+			criteria.add(Restrictions.eq("upload",upload));
+			if(criteria.list().size()>0)
+				phenoCollectionUpload = (PhenoCollectionUpload) criteria.list().get(0);
+		}
+		
+		return phenoCollectionUpload.getCollection();
 	}
 }
