@@ -149,7 +149,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				// isActionPermitted(Constants.SEARCH);
+				 //return isActionPermitted(Constants.SEARCH);
 				return  isSecure(Constants.SEARCH);
 			}
 			
@@ -218,8 +218,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{	// isActionPermitted(Constants.SEARCH);
-				return isSecure(Constants.SEARCH);
+			{	
+				return isActionPermitted(Constants.SEARCH);
+				//return isSecure(Constants.SEARCH);
 			}
 			
 			@Override
@@ -238,7 +239,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				return isSecure(Constants.RESET);
+				
+				return isActionPermitted(Constants.RESET);
+				//return isSecure(Constants.RESET);
 			}
 		};
 
@@ -260,8 +263,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{	// isActionPermitted(Constants.NEW);
-				return isSecure(Constants.NEW);
+			{	
+				return isActionPermitted(Constants.NEW);
+				//return isSecure(Constants.NEW);
 			}
 			
 			@Override
@@ -330,13 +334,13 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
+		
 		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) ||
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  ||
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
 			
 				searchMarkupContainer.setEnabled(false);			
-				this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
 			
 		}else{
 			
@@ -355,9 +359,9 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) ||
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  ||
+		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  &&
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
 			
 			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
