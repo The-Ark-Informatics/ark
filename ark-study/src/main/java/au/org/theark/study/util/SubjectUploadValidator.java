@@ -268,7 +268,8 @@ public class SubjectUploadValidator
 		try
 		{
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
-			fileFormat = uploadVo.getUpload().getFileFormat().getName();
+			String filename = uploadVo.getFileUpload().getClientFileName();
+			fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 
 			// If Excel, convert to CSV for validation
