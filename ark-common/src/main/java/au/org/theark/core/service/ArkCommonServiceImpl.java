@@ -18,7 +18,6 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
-import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -42,6 +41,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SubjectVO;
 /**
@@ -403,4 +403,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return arkAuthorisationDao.getArkModuleAndLinkedRoles();
 	}
 	
+	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study){
+		return arkAuthorisationDao.getArkModulesLinkedToStudy(study);
+	}
 }
