@@ -19,6 +19,9 @@ public class Constants {
 	public static final String CONSENT_DATE = "consentDate";	
 	public static final String CONSENT_STATUS = "consentStatus";
 	public static final String STUDY_COMP = "studyComp";
+
+	public static final String PHENO_COLLECTION = "phenoCollection";
+	public static final String FIELD_DATA_AVAILABLE = "fieldDataAvailable";
 	
 	// TODO :: May become irrelevant
 	public static final String REPORT_NAME = "reportTemplate.name";

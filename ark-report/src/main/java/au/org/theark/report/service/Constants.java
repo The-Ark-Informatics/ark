@@ -7,8 +7,9 @@ public class Constants {
 	
 	// Constants to match database lookup tables
 	public static final String STUDY_SUMMARY_REPORT_NAME = "Study Summary Report";
-	public static final String STUYD_COMP_CONSENT_REPORT_NAME = "Study Component Consent Details Report";
+	public static final String STUDY_COMP_CONSENT_REPORT_NAME = "Study Component Consent Details Report";
 	public static final String STUDY_LEVEL_CONSENT_REPORT_NAME = "Study-level Consent Details Report";
+	public static final String PHENO_FIELD_DETAILS_REPORT_NAME = "Phenotypic Field Details Report (Data Dictionary)";
 
 	public static final String PDF_REPORT_FORMAT = "PDF";
 	public static final Object CSV_REPORT_FORMAT = "CSV";

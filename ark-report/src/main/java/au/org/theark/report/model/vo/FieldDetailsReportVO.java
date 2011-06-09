@@ -1,10 +1,7 @@
 package au.org.theark.report.model.vo;
 
-import java.util.Date;
-
-import au.org.theark.core.model.study.entity.ConsentStatus;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.Study;
 
 public class FieldDetailsReportVO extends GenericReportViewVO {
 
@@ -13,45 +10,39 @@ public class FieldDetailsReportVO extends GenericReportViewVO {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected LinkSubjectStudy linkSubjectStudy;
-	protected ConsentStatus consentStatus;
-	protected Date consentDate;
-	protected StudyComp studyComp;
+	protected Study study;
+	protected PhenoCollection phenoCollection;
+	protected boolean fieldDataAvailable;
 	
 	public FieldDetailsReportVO() {
-		this.linkSubjectStudy = new LinkSubjectStudy();
 	}
-	
-	public LinkSubjectStudy getLinkSubjectStudy() {
-		return linkSubjectStudy;
+
+	public Study getStudy() {
+		return study;
 	}
-	
-	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
-		this.linkSubjectStudy = linkSubjectStudy;
+
+
+	public void setStudy(Study study) {
+		this.study = study;
 	}
-	
-	public ConsentStatus getConsentStatus() {
-		return consentStatus;
+
+	public PhenoCollection getPhenoCollection() {
+		return phenoCollection;
 	}
-	
-	public void setConsentStatus(ConsentStatus consentStatus) {
-		this.consentStatus = consentStatus;
+
+
+	public void setPhenoCollection(PhenoCollection phenoCollection) {
+		this.phenoCollection = phenoCollection;
 	}
-	
-	public Date getConsentDate() {
-		return consentDate;
+
+
+	public boolean getFieldDataAvailable() {
+		return fieldDataAvailable;
 	}
-	
-	public void setConsentDate(Date consentDate) {
-		this.consentDate = consentDate;
+
+
+	public void setFieldDataAvailable(boolean fieldDataAvailable) {
+		this.fieldDataAvailable = fieldDataAvailable;
 	}
-	
-	public StudyComp getStudyComp() {
-		return studyComp;
-	}
-	
-	public void setStudyComp(StudyComp studyComp) {
-		this.studyComp = studyComp;
-	}
-	
+
 }

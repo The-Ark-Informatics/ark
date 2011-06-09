@@ -3,6 +3,7 @@ package au.org.theark.report.model.dao;
 import java.util.List;
 import java.util.Map;
 
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -65,6 +66,9 @@ public interface IReportDao {
 	 * @return
 	 */
 	public Consent getStudyCompConsent(Consent consent);
+
+	
+	public List<PhenoCollection> getPhenoCollectionList(Study study);
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
 			FieldDetailsReportVO fdrVO);
 

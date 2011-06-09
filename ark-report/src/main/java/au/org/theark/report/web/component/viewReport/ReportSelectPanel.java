@@ -27,6 +27,7 @@ import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.Constants;
 import au.org.theark.report.service.IReportService;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportContainer;
+import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoFieldDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportContainer;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 
@@ -178,13 +179,27 @@ public class ReportSelectPanel extends Panel
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				} 
-				// TODO: Disabled Study Component Consent Details report for now, because it doesn't work the way I think it should
-				else if (reportTemplate.getName().equals(Constants.STUYD_COMP_CONSENT_REPORT_NAME)) {
+				else if (reportTemplate.getName().equals(Constants.STUDY_COMP_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
 					}
 					else {
 						ConsentDetailsReportContainer selectedReportPanel = new ConsentDetailsReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					}
+				}
+				else if (reportTemplate.getName().equals(Constants.PHENO_FIELD_DETAILS_REPORT_NAME)) {
+					if (reportSelectCPM.getObject().getStudy() == null) {
+						this.error("This report requires a study in context. Please put a study in context first.");
+					}
+					else {
+						PhenoFieldDetailsReportContainer selectedReportPanel = new PhenoFieldDetailsReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
 						// Replace the old selectedReportPanel with this new one
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);

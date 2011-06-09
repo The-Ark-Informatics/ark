@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
+import au.org.theark.core.model.pheno.entity.FieldData;
+import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -38,6 +41,11 @@ import au.org.theark.report.service.Constants;
 import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
 import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
 
+/**
+ * Provide the backend Data Access Object for Reporting
+ * @author elam
+ *
+ */
 @Repository("reportDao")
 public class ReportDao extends HibernateSessionDao implements IReportDao {
 
@@ -413,9 +421,49 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return result;
 	}
 
+	public List<PhenoCollection> getPhenoCollectionList(Study study) {
+		List<PhenoCollection> results = null;
+		Criteria criteria = getSession().createCriteria(PhenoCollection.class);
+		criteria.add(Restrictions.eq("study", study));
+		results = criteria.list();
+		return results;
+	}
+	
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
 			FieldDetailsReportVO fdrVO) {
-		// TODO Auto-generated method stub
-		return null;
+		List<FieldDetailsDataRow> results = new ArrayList<FieldDetailsDataRow>();
+		Criteria criteria = getSession().createCriteria(FieldPhenoCollection.class, "fpc");
+		criteria.createAlias("phenoCollection", "pc");		//Inner join to Field
+		criteria.createAlias("field", "f");		//Inner join to Field
+		criteria.createAlias("f.fieldType", "ft");	//Inner join to FieldType
+		criteria.add(Restrictions.eq("study", fdrVO.getStudy()));
+		if (fdrVO.getPhenoCollection() != null) {
+			criteria.add(Restrictions.eq("phenoCollection", fdrVO.getPhenoCollection()));
+		}
+		if (fdrVO.getFieldDataAvailable()) {
+			DetachedCriteria fieldDataCriteria = DetachedCriteria.forClass(FieldData.class, "fd");
+			// Join FieldPhenoCollection and FieldData on ID FK
+			fieldDataCriteria.add(Property.forName("f.id").eqProperty("fd." + "field.id"));
+			fieldDataCriteria.add(Property.forName("pc.id").eqProperty("fd." + "collection.id"));
+			criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("fd.id"))));			
+		}
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.property("pc.name"), "collection");
+		projectionList.add(Projections.property("f.name"), "fieldName");
+		projectionList.add(Projections.property("f.description"), "description");
+		projectionList.add(Projections.property("f.minValue"), "minValue");
+		projectionList.add(Projections.property("f.maxValue"), "maxValue");
+		projectionList.add(Projections.property("f.encodedValues"), "encodedValues");
+		projectionList.add(Projections.property("f.missingValue"), "missingValue");
+		projectionList.add(Projections.property("f.units"), "units");
+		projectionList.add(Projections.property("ft.name"), "type");
+		criteria.setProjection(projectionList);	// only return fields required for report
+	    criteria.setResultTransformer(Transformers.aliasToBean(FieldDetailsDataRow.class));
+		criteria.addOrder(Order.asc("pc.id"));
+		criteria.addOrder(Order.asc("f.name"));
+	    results = criteria.list();
+	    
+		return results;
 	}
+
 }

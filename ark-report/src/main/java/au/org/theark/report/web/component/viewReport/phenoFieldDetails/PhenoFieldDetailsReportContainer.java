@@ -5,11 +5,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
-import au.org.theark.report.model.vo.GenericReportViewVO;
+import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
-public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportContainer<ConsentDetailsReportVO> {
+public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportContainer<FieldDetailsReportVO> {
 
 	/**
 	 * 
@@ -23,8 +23,8 @@ public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportCont
 	
 	@Override
 	protected void initialiseCPModel() {
-		ConsentDetailsReportVO reportViewVO = new ConsentDetailsReportVO();
-		cpModel = new CompoundPropertyModel<ConsentDetailsReportVO>(reportViewVO);
+		FieldDetailsReportVO reportViewVO = new FieldDetailsReportVO();
+		cpModel = new CompoundPropertyModel<FieldDetailsReportVO>(reportViewVO);
 	}
 
 	public void initialisePanel(FeedbackPanel feedbackPanel, ReportTemplate reportTemplate) {

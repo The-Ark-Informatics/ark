@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
@@ -318,5 +319,9 @@ public class ReportServiceImpl implements IReportService {
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
 			FieldDetailsReportVO fdrVO) {
 		return reportDao.getPhenoFieldDetailsList(fdrVO);
+	}
+
+	public List<PhenoCollection> getPhenoCollectionList(Study study) {
+		return reportDao.getPhenoCollectionList(study);
 	}
 }
