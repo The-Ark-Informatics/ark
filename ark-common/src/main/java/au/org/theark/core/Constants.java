@@ -78,9 +78,8 @@ public class Constants {
 	public static final String TAB_MODULE_SUBJECT_CORRESPONDENCE = "tab.module.subject.correspondence";
 	
 	/* General date format, as used by ArkDatePicker */
-	public static final String DD_MM_YYYY = "dd/MM/yyyy"; // cap M is for month,
-															// low m is for
-															// minute
+	public static final String DD_MM_YYYY = "dd/MM/yyyy"; // cap M is for month, low m is for minute
+	public static final String	DD_MM_YYYY_HH_MM_SS	= "dd/MM/yyyy hh:mm:ss";
 
 	/* Phenotypic data file column names */
 	public static final String SUBJECTUID = "SUBJECTUID";
@@ -242,6 +241,7 @@ public class Constants {
 	public static final String	DEFAULT_FILE_FORMAT	= "CSV";
 	
 	public static final String STUDY="study";
+	
 	
 	
 }
