@@ -16,8 +16,6 @@ import au.org.theark.core.web.component.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
-import au.org.theark.phenotypic.exception.FileFormatException;
-import au.org.theark.phenotypic.exception.PhenotypicSystemException;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -91,7 +89,8 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 		InputStream inputStream;
 		try

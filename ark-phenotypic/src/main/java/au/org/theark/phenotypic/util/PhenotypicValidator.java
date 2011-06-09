@@ -116,7 +116,10 @@ public class PhenotypicValidator
 		}
 		this.fileValidationMessages = new ArrayList<String>();
 		this.dataValidationMessages = new ArrayList<String>();
-		this.fileFormat = uploadVo.getUpload().getFileFormat().getName();
+		
+		String filename = uploadVo.getFileUpload().getClientFileName();
+		this.fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		
 		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 		if(uploadVo.getUpload().getUploadType() != null)
 			this.uploadType = uploadVo.getUpload().getUploadType();

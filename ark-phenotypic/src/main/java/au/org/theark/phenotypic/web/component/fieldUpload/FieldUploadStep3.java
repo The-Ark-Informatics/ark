@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDownloadAjaxButton;
-import au.org.theark.core.web.component.ArkDownloadTemplateButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.component.ArkGridCell;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -165,7 +164,8 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 		InputStream inputStream;
 		try
