@@ -47,7 +47,7 @@ public class LinkStudyArkModule implements Serializable{
 		this.study = study;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_MODULE_ID")
 	public ArkModule getArkModule() {
 		return arkModule;
