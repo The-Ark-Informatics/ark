@@ -649,7 +649,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
 		}
 		
-		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, uploadVo.getUpload().getFileFormat().getName(), uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0));
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, uploadVo.getUpload().getFileFormat().getName(), uploadVo.getUpload().getDelimiterType().getDelimiterCharacter());
 		
 		try
 		{
@@ -767,5 +767,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 	public PhenoCollection getPhenoCollectionByUpload(PhenoUpload upload)
 	{
 		return phenotypicDao.getPhenoCollectionByUpload(upload);
+	}
+
+	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr) {
+		return phenotypicDao.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
 	}
 }

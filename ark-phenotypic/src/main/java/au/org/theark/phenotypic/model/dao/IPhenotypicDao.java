@@ -147,5 +147,6 @@ public interface IPhenotypicDao {
 	public DelimiterType getDelimiterType(Long id);
 	
 	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
+	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
 	
 }

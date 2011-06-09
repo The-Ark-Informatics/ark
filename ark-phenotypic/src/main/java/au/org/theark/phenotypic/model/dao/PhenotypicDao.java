@@ -1406,4 +1406,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		return phenoCollectionUpload.getCollection();
 	}
+
+	public String getDelimiterTypeByDelimiterChar(char delimiterCharacter) {
+		String delimiterTypeName = null;
+		Criteria criteria =  getSession().createCriteria(DelimiterType.class);
+		criteria.add(Restrictions.eq("delimiterCharacter",delimiterCharacter));
+		
+		if(criteria.list().size()>0) {
+			DelimiterType delimiterType = (DelimiterType) criteria.list().get(0);
+			delimiterTypeName = delimiterType.getName();
+		}
+		return delimiterTypeName;
+	}
 }

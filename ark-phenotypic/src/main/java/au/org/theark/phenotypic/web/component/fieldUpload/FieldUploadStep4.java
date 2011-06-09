@@ -85,7 +85,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);

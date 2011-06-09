@@ -91,7 +91,7 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	{
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		InputStream inputStream;
 		try
 		{

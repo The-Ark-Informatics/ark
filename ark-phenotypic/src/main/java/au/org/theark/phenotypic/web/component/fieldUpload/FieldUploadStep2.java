@@ -38,7 +38,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel
 	public java.util.Collection<String> validationMessages = null;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService<Void> iArkCommonService;
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService iPhenotypicService;
@@ -92,7 +92,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel
 	{
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		InputStream inputStream;
 		
 		// Uploading Fields of the Data Dictionary

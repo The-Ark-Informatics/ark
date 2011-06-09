@@ -152,7 +152,6 @@ public class PhenoUploadStep1 extends AbstractWizardStepPanel
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		log.info("Validating Pheno upload file!");
 	}
 
 	@Override

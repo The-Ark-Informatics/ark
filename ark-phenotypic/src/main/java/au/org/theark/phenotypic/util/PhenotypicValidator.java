@@ -120,7 +120,7 @@ public class PhenotypicValidator
 		String filename = uploadVo.getFileUpload().getClientFileName();
 		this.fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 		
-		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		this.phenotypicDelimChr = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 		if(uploadVo.getUpload().getUploadType() != null)
 			this.uploadType = uploadVo.getUpload().getUploadType();
 	}
@@ -460,9 +460,11 @@ public class PhenotypicValidator
 				{
 					// Invalid file format
 					StringBuffer stringBuffer = new StringBuffer();
+					String delimiterTypeName = iPhenotypicService.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+					
 					stringBuffer.append("The specified file does not appear to conform to the expected data dictionary file format.\n");
 					stringBuffer.append("The specified file format was: " + fileFormat + "\n");
-					stringBuffer.append("The specified delimiter was: " + phenotypicDelimChr + "\n");
+					stringBuffer.append("The specified delimiter was: [" + phenotypicDelimChr + "] (" + delimiterTypeName + ")\n");
 					stringBuffer.append("The default data dictionary format is as follows:\n");
 					stringBuffer.append("FIELD_NAME" + phenotypicDelimChr + "FIELD_TYPE" + phenotypicDelimChr + "DESCRIPTION" + phenotypicDelimChr + "UNITS" + phenotypicDelimChr + "ENCODED_VALUES" + phenotypicDelimChr + "MINIMUM_VALUE" + phenotypicDelimChr + "MAXIMUM_VALUE" + phenotypicDelimChr + "MISSING_VALUE" + "\n");
 					stringBuffer.append("[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + phenotypicDelimChr + "[...]" + "\n");
