@@ -1,4 +1,4 @@
-package au.org.theark.report.web.component.viewReport.phenoFieldDetails;
+package au.org.theark.report.model.vo.report;
 
 import java.io.Serializable;
 import java.util.Date;

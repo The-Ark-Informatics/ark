@@ -30,8 +30,8 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.dao.IReportDao;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
-import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 
 
 @Transactional

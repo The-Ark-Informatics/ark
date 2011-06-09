@@ -10,6 +10,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.report.model.vo.report.StudySummaryDataRow;
 import au.org.theark.report.service.IReportService;
 
 /**
@@ -25,36 +26,7 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	class CustomDataRow implements Serializable {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		protected String section;
-		protected String status;
-		protected Number subjectCount;
-		
-		CustomDataRow(String section, String status, Number subjectCount) {
-			this.section = section;
-			this.status = status;
-			this.subjectCount = subjectCount;
-		}
-		
-		public String getSection() {
-			return section;
-		}
-
-		public String getStatus() {
-			return status;
-		}
-
-		public Number getSubjectCount() {
-			return subjectCount;
-		}
-	}
-
-	private List<CustomDataRow> data = null;
+	private List<StudySummaryDataRow> data = null;
 
 	private int index = -1;
 
@@ -62,23 +34,23 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 	 *
 	 */
 	public StudySummaryReportDataSource(IReportService reportService, Study study) {
-		data = new ArrayList<CustomDataRow>();
-		data.add(new CustomDataRow("Total Subjects", "", reportService.getTotalSubjectCount(study)));
+		data = new ArrayList<StudySummaryDataRow>();
+		data.add(new StudySummaryDataRow("Total Subjects", "", reportService.getTotalSubjectCount(study)));
 		Map<String, Integer> tmpStatusCounts = reportService.getSubjectStatusCounts(study);
 		for(String statusKey: tmpStatusCounts.keySet()) {
-			data.add(new CustomDataRow("Subject Status", statusKey, tmpStatusCounts.get(statusKey)));
+			data.add(new StudySummaryDataRow("Subject Status", statusKey, tmpStatusCounts.get(statusKey)));
 		}
 		tmpStatusCounts = reportService.getStudyConsentCounts(study);
 		for(String statusKey: tmpStatusCounts.keySet()) {
-			data.add(new CustomDataRow("Study Consent Status", statusKey, tmpStatusCounts.get(statusKey)));
+			data.add(new StudySummaryDataRow("Study Consent Status", statusKey, tmpStatusCounts.get(statusKey)));
 		}
 		for (StudyComp studyComp: study.getStudyComps()) {
 			tmpStatusCounts = reportService.getStudyCompConsentCounts(study, studyComp);
 			for(String statusKey: tmpStatusCounts.keySet()) {
-				data.add(new CustomDataRow("Study Component - " + studyComp.getName(), statusKey, tmpStatusCounts.get(statusKey)));
+				data.add(new StudySummaryDataRow("Study Component - " + studyComp.getName(), statusKey, tmpStatusCounts.get(statusKey)));
 			}
 		}
-		data.add(new CustomDataRow("Subjects Without Study Components", "", reportService.getWithoutStudyCompCount(study)));
+		data.add(new StudySummaryDataRow("Subjects Without Study Components", "", reportService.getWithoutStudyCompCount(study)));
 	}
 
 	/**

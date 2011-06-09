@@ -11,8 +11,8 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsDataRow;
-import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 
 
 public interface IReportService {

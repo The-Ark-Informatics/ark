@@ -7,6 +7,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
+import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 import au.org.theark.report.service.IReportService;
 
 /**
