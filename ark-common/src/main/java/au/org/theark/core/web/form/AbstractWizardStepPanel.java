@@ -3,7 +3,6 @@ package au.org.theark.core.web.form;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 
 public abstract class AbstractWizardStepPanel extends Panel
 {
@@ -16,6 +15,7 @@ public abstract class AbstractWizardStepPanel extends Panel
 	protected AbstractWizardHeaderPanel header;
 	protected AbstractWizardStepPanel	previous;
 	protected AbstractWizardStepPanel	next;
+	protected static final String HEXES = "0123456789ABCDEF";
 	
 	public AbstractWizardStepPanel(String id)
 	{
@@ -133,6 +133,19 @@ public abstract class AbstractWizardStepPanel extends Panel
 	public static String getTitleId()
 	{
 		return "title";
+	}
+	
+	public static String getHex(byte[] raw) 
+	{
+		if (raw == null) {
+			return null;
+		}
+		final StringBuilder hex = new StringBuilder(2 * raw.length);
+		for (final byte b : raw) {
+			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(
+					HEXES.charAt((b & 0x0F)));
+		}
+		return hex.toString();
 	}
 
 }
