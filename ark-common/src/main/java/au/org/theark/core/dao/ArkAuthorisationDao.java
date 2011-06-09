@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
@@ -23,8 +24,11 @@ import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
+import au.org.theark.core.vo.ArkModuleVO;
+import au.org.theark.core.vo.ArkUserVO;
 
 /**
  * @author nivedann
@@ -350,6 +354,54 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return arkModuleList;
 	}
 	
+	/**
+	 * 
+	 */
+	public void createArkUser(ArkUserVO arkUserVO){
+		Session session = getSession();
+		session.save(arkUserVO.getArkUserEntity());
+		//Save the Role and Module details for the user
+	}
 	
+	/**
+	 * Get a list of Modules that are linked to the study and then get the roles linked to each module
+	 * A VO List of ArkModuleVO will contain the ArkModule and a list of ArkRoles.
+	 * @param study
+	 * @return Collection<ArkModuleVO>
+	 */
+	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study){
+
+		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
+		
+		Collection<ArkModuleVO> arkModuleVOList = new ArrayList<ArkModuleVO>();
+		
+		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
+		criteria.add(Restrictions.eq("study", study));
+		arkStudyLinkedModuleList  = criteria.list();
+		
+		//For each one in the List get the associated Roles i.e for each module get the Roles
+		for (LinkStudyArkModule linkStudyArkModule : arkStudyLinkedModuleList) {
+			//Here is a Module linked to a study get the Roles linked to this module
+			ArkModuleVO arkModuleVO = new ArkModuleVO();
+			arkModuleVO.setArkModule(linkStudyArkModule.getArkModule());
+			arkModuleVO.setArkModuleRoles(getArkRoleLinkedToModule(linkStudyArkModule.getArkModule()));
+			arkModuleVOList.add(arkModuleVO);
+		}
+		return arkModuleVOList;
+	}
+	
+	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule){
+		
+		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		criteria.add(Restrictions.eq("arkModule", arkModule));
+		arkModuleList =  criteria.list();
+		ArrayList<ArkRole> moduleArkRolesList = new ArrayList<ArkRole>();
+		for (ArkModuleRole arkModuleRole : arkModuleList) {
+			ArkRole arkRole = arkModuleRole.getArkRole();
+			moduleArkRolesList.add(arkRole);
+		}
+		return moduleArkRolesList;
+	}
 
 }

@@ -9,7 +9,10 @@ import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.vo.ArkModuleVO;
+import au.org.theark.core.vo.ArkUserVO;
 
 
 /**
@@ -97,6 +100,15 @@ public interface IArkAuthorisation<T> {
 	public ArkUser getArkUser(String ldapUserName) throws EntityNotFoundException;
 	
 	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles();
+	
+	/**
+	 * Persist the Ark User name that was stored in LDAP and the related Study and Roles
+	 * information for this user.
+	 * @param arkUserVO
+	 */
+	public void createArkUser(ArkUserVO arkUserVO);
+	
+	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study);
 	
 
 }
