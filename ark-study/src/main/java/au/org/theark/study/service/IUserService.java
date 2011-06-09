@@ -103,5 +103,7 @@ public interface IUserService {
 	
 	public boolean isArkUserPresent(String userName);
 	
+	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException;
+	
 
 }

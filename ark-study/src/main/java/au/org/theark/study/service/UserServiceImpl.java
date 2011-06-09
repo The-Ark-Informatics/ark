@@ -10,13 +10,16 @@ import java.util.Set;
 
 import javax.naming.InvalidNameException;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
+import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
@@ -43,6 +46,8 @@ public class UserServiceImpl implements IUserService {
 	
 	private IStudyService studyService;//To gain access to Study Schema
 	private IArkCommonService arkCommonService;
+	
+	private IArkAuthorisation arkAuthorisationService;
 	
 	/* DAO to access database */
 	private IUserDao userDAO;
@@ -82,6 +87,16 @@ public class UserServiceImpl implements IUserService {
 		this.studyService = studyService;
 	}
 	
+	
+	public IArkAuthorisation getArkAuthorisationService() {
+		return arkAuthorisationService;
+	}
+
+	@Autowired
+	public void setArkAuthorisationService(IArkAuthorisation arkAuthorisationService) {
+		this.arkAuthorisationService = arkAuthorisationService;
+	}
+
 	
 	public Person createPerson(Person personEntity){
 		
@@ -222,5 +237,37 @@ public class UserServiceImpl implements IUserService {
 	public boolean isArkUserPresent(String userName){
 		return userDAO.isArkUserPresent(userName);
 	}
+	
+	/**
+	 * This is a new interface that persists the user into ArkUsers group in LDAP
+	 * @param arkUserVO
+	 * @throws UserNameExistsException
+	 * @throws ArkSystemException
+	 */
+	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException{
+		
+		//Create user in LDAP
+		try{
+			iLdapUserDao.createArkUser(arkUserVO);
+			//Setting the Username and Study on the ArkUser Hibernate entity from the Value Object that would reflect what it is on LDAP
+			
+			Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			arkUserVO.getArkUserEntity().setStudy(arkCommonService.getStudy(sessionStudyId));
+			arkUserVO.getArkUserEntity().setLdapUserName(arkUserVO.getUserName());
+			//Create the user in Ark Database as well and persist and update and roles user was assigned
+			arkAuthorisationService.createArkUser(arkUserVO);
+
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created User (in LDAP) " + arkUserVO.getUserName());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+			arkCommonService.createAuditHistory(ah);
+		}catch(UserNameExistsException personExistsException){
+			throw personExistsException;
+		}
+		
+	}
+
+	
 	
 }
