@@ -1,7 +1,12 @@
 package au.org.theark.core.vo;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 
 
 public class ArkUserVO extends BaseVO {
@@ -25,11 +30,12 @@ public class ArkUserVO extends BaseVO {
 	private String addAllBtn;
 	private String selectedRolesLMC;
 	private StudyVO studyVO;
-
-	
-
-	
 	private List<ArkUserVO> userList;
+	
+	/*Database Entity */
+	private ArkUser arkUserEntity;
+	private List<ArkUserRole> arkUserRoleList; // A List that will contain the current user's List Modules and Roles he is linked with for the study in context
+	private List<ArkModuleVO> arkModuleVOList;
 	
 	
 	public StudyVO getStudyVO() {
@@ -81,6 +87,7 @@ public class ArkUserVO extends BaseVO {
 
 	public ArkUserVO(){
 		super();
+		this.arkUserEntity = new ArkUser();
 		this.studyVO = new StudyVO();
 		this.modules = new ArrayList<ModuleVO>();
 		this.userRoleList = new ArrayList<String>();
@@ -310,5 +317,31 @@ public class ArkUserVO extends BaseVO {
 			return false;
 		return true;
 	}
+
+	public ArkUser getArkUserEntity() {
+		return arkUserEntity;
+	}
+
+	public void setArkUserEntity(ArkUser arkUserEntity) {
+		this.arkUserEntity = arkUserEntity;
+	}
+
+	public List<ArkUserRole> getArkUserRoleList() {
+		return arkUserRoleList;
+	}
+
+	public void setArkUserRoleList(List<ArkUserRole> arkUserRoleList) {
+		this.arkUserRoleList = arkUserRoleList;
+	}
+
+	public List<ArkModuleVO> getArkModuleVOList() {
+		return arkModuleVOList;
+	}
+
+	public void setArkModuleVOList(List<ArkModuleVO> arkModuleVOList) {
+		this.arkModuleVOList = arkModuleVOList;
+	}
+
+	
 
 }
