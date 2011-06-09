@@ -84,7 +84,7 @@
 				<textFieldExpression class="java.lang.Number"><![CDATA[$F{Subjects}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement positionType="Float" x="0" y="19" width="515" height="1" forecolor="#808080"/>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="515" height="1" forecolor="#808080"/>
 			</line>
 		</band>
 	</detail>
