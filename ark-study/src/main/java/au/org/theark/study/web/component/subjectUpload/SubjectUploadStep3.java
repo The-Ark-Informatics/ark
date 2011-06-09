@@ -124,7 +124,8 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 	{
 		try
 		{
-			String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+			String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			
