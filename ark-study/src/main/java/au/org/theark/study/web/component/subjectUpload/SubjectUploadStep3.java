@@ -126,7 +126,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel
 		{
 			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 			String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			
 			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);

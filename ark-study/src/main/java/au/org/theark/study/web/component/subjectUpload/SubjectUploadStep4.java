@@ -74,7 +74,7 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		
 		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
-		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		StringBuffer uploadReport = null;
 		try 
 		{

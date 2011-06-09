@@ -195,7 +195,7 @@ public class SubjectUploadValidator
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 			validationMessages = validateSubjectFileFormat(inputStream, fileFormat, delimiterCharacter);
 		}
 		catch (IOException e)
@@ -270,7 +270,7 @@ public class SubjectUploadValidator
 			InputStream inputStream = uploadVo.getFileUpload().getInputStream();
 			String filename = uploadVo.getFileUpload().getClientFileName();
 			fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter().charAt(0);
+			delimiterCharacter = uploadVo.getUpload().getDelimiterType().getDelimiterCharacter();
 
 			// If Excel, convert to CSV for validation
 			if (fileFormat.equalsIgnoreCase("XLS"))
