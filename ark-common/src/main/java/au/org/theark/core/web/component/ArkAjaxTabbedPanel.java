@@ -17,6 +17,9 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
+	
+	private boolean requireStudyInSession = true;
+	
 	protected String setBusyIndicatorOn = "document.getElementById('busyIndicator').style.display ='inline'; " +
 	"overlay = document.getElementById('overlay'); " +
 	"overlay.style.visibility = 'visible';";
@@ -28,6 +31,12 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 	public ArkAjaxTabbedPanel(String id, List<ITab> tabs)
 	{
 		super(id, tabs);
+	}
+	
+	public ArkAjaxTabbedPanel(String id, List<ITab> tabs, boolean requireStudyInSession)
+	{
+		super(id, tabs);
+		this.requireStudyInSession = requireStudyInSession;
 	}
 	
 	protected WebMarkupContainer newLink(String linkId, final int index)
@@ -42,7 +51,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 			{
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				
-				if(sessionStudyId != null)
+				if(sessionStudyId != null || !requireStudyInSession)
 				{
 					// move tabs...
 					setSelectedTab(index);	
@@ -82,5 +91,21 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 		       };
 		   }
 		};
+	}
+
+	/**
+	 * @param requireStudyInSession the requireStudyInSession to set
+	 */
+	public void setRequireStudyInSession(boolean requireStudyInSession)
+	{
+		this.requireStudyInSession = requireStudyInSession;
+	}
+
+	/**
+	 * @return the requireStudyInSession
+	 */
+	public boolean isRequireStudyInSession()
+	{
+		return requireStudyInSession;
 	}
 }

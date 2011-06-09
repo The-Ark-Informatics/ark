@@ -90,7 +90,7 @@ public class ReportSubMenuTab extends Panel
 			});
 		}
 
-		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.REPORT_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.REPORT_SUBMENU, moduleSubTabsList, false);
 		add(moduleTabbedPanel);
 	}
 }

@@ -7,19 +7,13 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUsecase;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
@@ -163,7 +157,7 @@ public class StudySubMenuTab extends Panel
 			});
 		}
 
-		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList, false);
 		add(moduleTabbedPanel);
 	}
 
