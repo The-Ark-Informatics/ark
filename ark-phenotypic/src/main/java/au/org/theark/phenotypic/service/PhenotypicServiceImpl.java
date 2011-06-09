@@ -636,6 +636,8 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		Subject currentUser = SecurityUtils.getSubject();
 		studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		study = iArkCommonService.getStudy(studyId);
+		String filename = uploadVo.getFileUpload().getClientFileName();
+		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = null;
@@ -649,7 +651,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 			phenoCollection = phenotypicDao.getPhenotypicCollection(sessionCollectionId);
 		}
 		
-		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, uploadVo.getUpload().getFileFormat().getName(), uploadVo.getUpload().getDelimiterType().getDelimiterCharacter());
+		PhenoDataUploader pi = new PhenoDataUploader(this, study, phenoCollection, iArkCommonService, fileFormat, uploadVo.getUpload().getDelimiterType().getDelimiterCharacter());
 		
 		try
 		{

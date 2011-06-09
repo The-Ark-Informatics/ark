@@ -84,7 +84,8 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		// Perform actual upload of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
-		String fileFormat = containerForm.getModelObject().getUpload().getFileFormat().getName();
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		
 		Subject currentUser = SecurityUtils.getSubject();
