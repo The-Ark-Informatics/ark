@@ -193,7 +193,7 @@ public class SearchResultListPanel extends Panel {
 				}
 				getRequestCycle().setRequestTarget(
 						new au.org.theark.core.util.ByteDataRequestTarget(
-								"text/plain", data, subjectFile.getFilename()));
+								"", data, subjectFile.getFilename()));
 
 			};
 		};
@@ -223,7 +223,7 @@ public class SearchResultListPanel extends Panel {
 				}
 				getRequestCycle().setRequestTarget(
 						new au.org.theark.core.util.ByteDataRequestTarget(
-								"text/plain", data, subjectFile.getFilename()));
+								"", data, subjectFile.getFilename()));
 			};
 		};
 
