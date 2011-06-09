@@ -169,6 +169,43 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 	}
 	
+	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException{
+		
+		log.debug("Inside createArkUser");
+		try{
+			
+			DirContextAdapter dirContextAdapter = new DirContextAdapter();
+			//Map the Front end values into LDAP Context
+			mapToContext(arkUserVO.getUserName(),arkUserVO.getFirstName(),arkUserVO.getLastName(), arkUserVO.getEmail(),arkUserVO.getPassword(), dirContextAdapter);	
+			LdapName ldapName = new LdapName(basePeopleDn);
+			ldapName.add(new Rdn(Constants.CN, arkUserVO.getUserName())); 
+			Name nameObj = ldapName;
+			//Create the person in ArkUsers Group  in LDAP			
+			ldapTemplate.bind(nameObj, dirContextAdapter,null);
+			
+		}
+		catch(org.springframework.ldap.NameAlreadyBoundException nabe){
+		
+			log.error("The given username " + arkUserVO.getUserName()  + "  exists in LDAP. " + nabe.getMessage());
+			throw new UserNameExistsException("A user with the username " + arkUserVO.getUserName() + " already exists in our system. Please provide a unique username.");
+
+		}catch(InvalidNameException ine){
+		
+			log.error("A System exception occured " + ine.getMessage());
+			//TODO Implement a LDAP ContextSourceTransactionManager for client side Transaction management
+			//Note LDAP as such does not participate in Txn management.
+			throw new ArkSystemException("A System exception occured.");
+		
+		}catch(Exception exception ){
+			//TODO Implement a LDAP ContextSourceTransactionManager for client side Transaction management
+			//Note LDAP as such does not participate in Txn management.
+			log.error("A system exception has occured when trying to add roles to the groups. Need to rollback the LDAP transaction. Remove the user from LDAP People collection " + exception.getMessage());	
+			throw new ArkSystemException("A System exception occured");
+		}
+		
+		
+	}
+	
 	/**
 	 * Create a user in LDAP People and Groups.
 	 * If the user already exists in people wrap the exception and return it

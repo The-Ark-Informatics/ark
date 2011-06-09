@@ -136,7 +136,12 @@ public interface ILdapUserDao {
 	 */
 	public boolean isArkUserPresent(String username);
 	
-	
-	
+	/**
+	 * This is a new interface that persists the user into ArkUsers group in LDAP
+	 * @param arkUserVO
+	 * @throws UserNameExistsException
+	 * @throws ArkSystemException
+	 */
+	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException;	
 
 }
