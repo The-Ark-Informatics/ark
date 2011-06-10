@@ -3,13 +3,12 @@ package au.org.theark.report.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
+import au.org.theark.core.web.component.ArkMainTab;
 import au.org.theark.report.web.Constants;
 
 @SuppressWarnings("serial")
@@ -33,11 +32,16 @@ public class ReportTabProviderImpl extends Panel implements
 	}
 
 	public ITab createTab(String tabName) {
-		return new AbstractTab(new Model<String>(tabName)) {
+		return new ArkMainTab(new Model<String>(tabName)) {
 			@Override
 			public Panel getPanel(String pid) {
 				// The sub menu(s) for Reporting
 				return new ReportSubMenuTab(pid);
+			}
+			
+			public boolean isAccessible()
+			{
+				return true;
 			}
 		};
 	}
