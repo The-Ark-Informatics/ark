@@ -160,7 +160,8 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 			// Make the area code mandatory only for landline phone (home/work) entries
 			String phType = containerForm.getModelObject().getPhone().getPhoneType().getName().toLowerCase();
 			boolean saveOk = true;
-			if (!(phType.equals("mobile") || phType.equals("iphone"))) {
+			
+			if (!phType.equals("mobile")) {
 				//must be landline
 				if (containerForm.getModelObject().getPhone().getAreaCode() == null 
 						|| containerForm.getModelObject().getPhone().getAreaCode().length() < 1) {
