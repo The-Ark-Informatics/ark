@@ -2,6 +2,7 @@ package au.org.theark.study.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -9,6 +10,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
+import au.org.theark.core.web.component.ArkMainTab;
 import au.org.theark.study.web.Constants;
 
 /**
@@ -50,7 +52,7 @@ import au.org.theark.study.web.Constants;
 		this.arkContextMarkup = arkContextMarkup;
 		
 		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
-		ITab tab2 = createTab(Constants.SUBJECT_MAIN_TAB);
+		ITab tab2 = createSubjectTab(Constants.SUBJECT_MAIN_TAB);
 		moduleTabsList.add(tab1);
 		moduleTabsList.add(tab2);
 		return moduleTabsList;
@@ -58,7 +60,7 @@ import au.org.theark.study.web.Constants;
 	
 	public ITab createTab(final String tabName) {
 		
-		return  new AbstractTab(new Model<String>(tabName)) {
+		return new ArkMainTab(new Model<String>(tabName)) {
 			/**
 			 * Implement this to secure the module
 			 */
@@ -66,6 +68,7 @@ import au.org.theark.study.web.Constants;
 				//If the logged in user is a member of this module then allow him to view this tab
 				return true;
 			}
+			
 			@Override
 			public Panel getPanel(String pid) {
 				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
@@ -77,6 +80,47 @@ import au.org.theark.study.web.Constants;
 				return panelToReturn;
 			}
 			
+			public boolean isAccessible()
+			{
+				return true;
+			}
+		};
+		
+	}
+	
+	public ITab createSubjectTab(final String tabName) {
+		
+		return new ArkMainTab(new Model<String>(tabName)) {
+			/**
+			 * Implement this to secure the module
+			 */
+			public boolean isVisible(){
+				//If the logged in user is a member of this module then allow him to view this tab
+				return true;
+			}
+			
+			@Override
+			public Panel getPanel(String pid) {
+				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
+				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
+					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup);//The sub menus for Study 
+				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
+					panelToReturn = new SubjectSubMenuTab(pid,arkContextMarkup);
+				}
+				return panelToReturn;
+			}
+			
+			public boolean isAccessible()
+			{
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(sessionStudyId == null)
+				{
+					this.getPanel(Constants.SUBJECT_MAIN_TAB).error(au.org.theark.core.Constants.STUDY_IN_CONTEXT_MESSAGE);
+					return false;
+				}
+				else
+					return true;
+			}
 		};
 		
 	}

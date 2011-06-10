@@ -157,7 +157,7 @@ public class StudySubMenuTab extends Panel
 			});
 		}
 
-		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList, false);
+		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 
