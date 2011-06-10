@@ -137,7 +137,7 @@ public class Constants {
 	public static final String	STUDY_FILENAME	= "study.filename";
 	
 	public static final String STUDY_MAIN_TAB="Study";
-	public static final String SUBJECT_MAIN_TAB="Subject";
+	public static final String SUBJECT_MAIN_TAB="Participant";
 	//public static final String STUDY_STATUS_KEY="studyStatusId";
 	public static final String STUDY_STATUS_KEY="id";
 	public static final String STUDY_DROP_DOWN_CHOICE ="studyChoice";
