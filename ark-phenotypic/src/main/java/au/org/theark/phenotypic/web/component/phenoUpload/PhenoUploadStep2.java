@@ -11,6 +11,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
@@ -89,35 +90,37 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
-		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
-		char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-		InputStream inputStream;
 		try
 		{
+			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+			String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
+			InputStream inputStream;
+			
+			// Only allow csv, txt or xls
+			if(!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS")))
+			{
+				throw new FileFormatException();
+			}
+		
 			PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			validationMessages = phenotypicValidator.validateMatrixPhenoFileFormat(inputStream, fileFormat, delimChar);
-		} catch (IOException e1){
-			log.error(e1.getMessage());
-		}
 		
-		containerForm.getModelObject().setValidationMessages(validationMessages);
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			
+			if(validationMessage != null && validationMessage.length() > 0)
+			{
+				form.getNextButton().setEnabled(false);
+				target.addComponent(form.getWizardButtonContainer());
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				addOrReplace(downloadValMsgButton);
+				target.addComponent(downloadValMsgButton);
+			}
 		
-		if(validationMessage != null && validationMessage.length() > 0)
-		{
-			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
-			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
-			addOrReplace(downloadValMsgButton);
-			target.addComponent(downloadValMsgButton);
-		}
-		
-		// Show file data
-		try
-		{
+			// Show file data
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload(); 
 			inputStream.reset();
@@ -127,15 +130,26 @@ public class PhenoUploadStep2 extends AbstractWizardStepPanel
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 			target.addComponent(form.getWizardPanelFormContainer());
 		}
-		catch (IOException e)
-		{
-			validationMessage = "Error attempting to display the file. Please check the file and try again.";
-			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		}
 		catch (NullPointerException npe)
 		{
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			form.getNextButton().setEnabled(false);
+			target.addComponent(form.getWizardButtonContainer());
+		}
+		catch (IOException e)
+		{
+			validationMessage = "Error attempting to display the file. Please check the file and try again.";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			form.getNextButton().setEnabled(false);
+			target.addComponent(form.getWizardButtonContainer());
+		}
+		catch (FileFormatException ffe)
+		{
+			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			form.getNextButton().setEnabled(false);
+			target.addComponent(form.getWizardButtonContainer());
 		}
 	}
 	

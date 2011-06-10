@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.ArkDownloadAjaxButton;
@@ -89,6 +90,12 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 			String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 			
+			// Only allow csv, txt or xls
+			if(!(fileFormat.equalsIgnoreCase("CSV") || fileFormat.equalsIgnoreCase("TXT") || fileFormat.equalsIgnoreCase("XLS")))
+			{
+				throw new FileFormatException();
+			}
+			
 			SubjectUploadValidator subjectUploadValidator = new SubjectUploadValidator(iArkCommonService);
 			validationMessages = subjectUploadValidator.validateSubjectFileFormat(containerForm.getModelObject());
 			containerForm.getModelObject().setValidationMessages(validationMessages);
@@ -105,24 +112,33 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(wizardDataGridKeyContainer);
 			target.addComponent(form.getWizardPanelFormContainer());
+			
+			containerForm.getModelObject().setValidationMessages(validationMessages);
+			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			
+			if(validationMessage != null && validationMessage.length() > 0)
+			{
+				form.getNextButton().setEnabled(false);
+				target.addComponent(form.getWizardButtonContainer());
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				addOrReplace(downloadValMsgButton);
+				target.addComponent(downloadValMsgButton);
+			}
 		}
 		catch (IOException e)
 		{
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		}
-			
-		containerForm.getModelObject().setValidationMessages(validationMessages);
-		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
-		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
-		if(validationMessage != null && validationMessage.length() > 0)
-		{
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
-			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
-			addOrReplace(downloadValMsgButton);
-			target.addComponent(downloadValMsgButton);
+		}
+		catch (FileFormatException ffe)
+		{
+			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
+			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
+			form.getNextButton().setEnabled(false);
+			target.addComponent(form.getWizardButtonContainer());
 		}
 	}
 	
