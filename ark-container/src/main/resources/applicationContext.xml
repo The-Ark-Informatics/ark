@@ -29,7 +29,7 @@
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <!-- Enable annotation configuration -->
-    <context:annotation-config/>
+    <context:annotation-config />
 
     <!--  Belongs to the Ark Container Application -->
     <context:component-scan base-package="au.org.theark.dao"/> 
@@ -44,16 +44,23 @@
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
     
     
-     <!--  Development: MySql Data Source Development -->
-
+    <!--  Development: MySql Data Source Development -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
         <property name="username" value="arkadmin"/>
         <property name="password" value="v@Tym4np[]"/>
     </bean>
-
-    <!--  Test: MySql Data Source 
+    
+    <!--  A Dev-LDAP data source. Switch between Test and Development as required --> 
+    <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+      <property name="url"  value="ldap://192.168.2.229:389"/>
+      <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
+      <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
+      <property name="password" value="v@Tym4np[]" />
+    </bean>
+	
+    <!--  Test: MySql Data Source  
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.253:3306"/>
@@ -61,23 +68,14 @@
         <property name="password" value="v@Tym4np[]"/>
     </bean>
 	-->
-
- 	<!--  A Test-LDAP data source. Switch between Test and Development as required
-
-     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+ 	<!--  A Test-LDAP data source. Switch between Test and Development as required  
+    <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
       <property name="url"  value="ldap://192.168.3.253:389"/>
       <property name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
       <property name="password" value="v@Tym4np[]" />
     </bean>
-	-->
-
-    <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-      <property name="url"  value="ldap://192.168.2.229:389"/>
-      <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
-      <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
-      <property name="password" value="v@Tym4np[]" />
-    </bean>
+    -->
 
 	<bean id="ldapTemplate" class="org.springframework.ldap.core.LdapTemplate">
 		<property name="contextSource" ref="ldapDataContextSource" />
