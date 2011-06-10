@@ -1,3 +1,4 @@
+USE study;
 /* Enteries for Super Administrator. Has access to all modules and functions */
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_PERMISSION_ID`) VALUES (1, 1, 1);
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_PERMISSION_ID`) VALUES (2, 1, 2);
