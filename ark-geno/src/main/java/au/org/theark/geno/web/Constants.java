@@ -28,5 +28,7 @@ public class Constants {
 	public static final String MSG_NO_STUDY_CONTEXT = "There is no study in context. Please select a study";
 	public static final String MSG_NO_GENOCOLLECTION_CONTEXT = "There is no Geno collection in context. Please select a Geno collection";
 
+	public static final String	GENOTYPIC_MAIN_TAB	= "Genotypic";
+
 	
 }
