@@ -242,6 +242,5 @@ public class Constants {
 	
 	public static final String STUDY="study";
 	
-	
-	
+	public static final String STUDY_IN_CONTEXT_MESSAGE="There is no study in context. Please select a Study.";
 }
