@@ -73,7 +73,7 @@ public class PhenoDataUploader
 	java.util.Collection<String>	fileValidationMessages	= new ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new ArrayList<String>();
 	private IPhenotypicService		iPhenoService			= null;
-	private IArkCommonService		iArkCommonService			= null;
+	private IArkCommonService<Void>		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
 	private Collection<FieldUpload> fieldUploadCollection	= new ArrayList<FieldUpload>();
 	private Long 						phenoCollectionId = null;
@@ -87,13 +87,24 @@ public class PhenoDataUploader
 	 *           study identifier in context
 	 * @param collection
 	 *           phenotypic collection in context
+	 * @param iArkCommonService
+	 *           the common service for dao
+	 * @param fileFormat
+	 *           format of the file uploaded
+	 * @param delimiterChar
+	 *           delimiter of the file data (comma, tab etc)
 	 */
-	public PhenoDataUploader(IPhenotypicService iPhenoService, Study study, PhenoCollection collection, IArkCommonService iArkCommonService, String fileFormat, char delimiterChar)
+	public PhenoDataUploader(IPhenotypicService iPhenoService, Study study, PhenoCollection collection, IArkCommonService<Void> iArkCommonService, String fileFormat, char delimiterChar)
 	{
 		this.iPhenoService = iPhenoService;
 		this.study = study;
-		this.phenoCollection = collection;
-		this.phenoCollectionId = phenoCollection.getId();
+		
+		// Not needed for Data Dictionary upload
+		if(collection != null)
+		{
+			this.phenoCollection = collection;
+			this.phenoCollectionId = phenoCollection.getId();
+		}
 		this.iArkCommonService = iArkCommonService;
 		this.fileFormat = fileFormat;
 		this.phenotypicDelimChr = delimiterChar;
