@@ -29,7 +29,6 @@ public class PhenotypicSubMenuTab extends Panel
 	private transient Subject	currentUser;
 	private transient Long		studyId;
 	private WebMarkupContainer	arkContextMarkup;
-	List<ITab>						tabList;
 	List<ITab>						moduleSubTabsList	= new ArrayList<ITab>();
 	List<MenuModule>				moduleTabs			= new ArrayList<MenuModule>();
 	MenuModule						menuModule			= new MenuModule();
@@ -37,14 +36,12 @@ public class PhenotypicSubMenuTab extends Panel
 	public PhenotypicSubMenuTab(String id)
 	{
 		super(id);
-		tabList = new ArrayList<ITab>();
 		buildTabs();
 	}
 
 	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
-		tabList = new ArrayList<ITab>();
 		this.arkContextMarkup = arkContextMarkup;
 		buildTabs(arkContextMarkup);
 	}
