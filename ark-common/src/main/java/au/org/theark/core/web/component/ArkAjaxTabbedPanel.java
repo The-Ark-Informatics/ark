@@ -44,7 +44,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 				mainTabs.add((ArkMainTab) iTab);
 			}
 		}
-		if((!(mainTabs.size() == tabs.size()) || mainTabs.size() == 0))
+		if(!((mainTabs.size() == tabs.size()) || mainTabs.size() == 0))
 		{
 			log.error("Not all main tabs are using/extending ArkMainTab....");
 		}
