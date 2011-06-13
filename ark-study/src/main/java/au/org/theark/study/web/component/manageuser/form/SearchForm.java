@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.manageuser.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
@@ -93,20 +94,28 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 		}
 	}
 
+	private void prePopulateArkUserRoleList(){
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		//containerForm.getModelObject().setArkUserRoleList(new ArrayList<ArkUserRole>());
+		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
+			ArkUserRole arkUserRole = new ArkUserRole();
+			arkUserRole.setStudy(study);
+			arkUserRole.setArkModule(arkModuleVO.getArkModule());
+			containerForm.getModelObject().getArkUserRoleList().add(arkUserRole); //ArkUser and ArkRole will need to be set when the data is persisted.
+		}
+	}
+	
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		
 		//We want to roll over the search criteria setting into the detail one so we don't reset or refresh the whole VO
 		//Set up any preloaded stuff here
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
-		//containerForm.getModelObject().setArkUserRoleList(arkUserRoleList)
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		//For the Given study get the linked Modules and the associated Roles for each Module as a List of ArkModuleVO 
-		//Set this list into the ArkUserVO
-		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
-		containerForm.getModelObject().setArkModuleVOList((List)listArkModuleVO);
 		
+		//Pre-Populate the list
+		prePopulateArkUserRoleList();
 		
 		preProcessDetailPanel(target,arkCrudContainerVO);
 		
