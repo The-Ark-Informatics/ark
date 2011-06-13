@@ -12,7 +12,6 @@ import javax.naming.InvalidNameException;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +20,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.EtaUser;
 import au.org.theark.core.model.study.entity.Person;
@@ -266,6 +267,38 @@ public class UserServiceImpl implements IUserService {
 			throw personExistsException;
 		}
 		
+	}
+	
+	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException{
+		
+		iLdapUserDao.updateArkUser(arkUserVO);//Update the LDAP entry
+		
+		//TODO:NNInvoke AuthServices to update Module/Roles user is linked to for the study in context and update user roles(inclusive of New roles && removal of ones via update )
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Ark User (in LDAP) " + arkUserVO.getUserName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_USER);
+		arkCommonService.createAuditHistory(ah);
+		
+		
+	}
+	
+	/**
+	 * 
+	 * @param arkUserVO
+	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException 
+	 */
+	public ArkUserVO lookupArkUser(String arkLdapUserName,Study study) throws ArkSystemException, EntityNotFoundException{
+		//Fetch the Ark User details from LDAP
+		ArkUserVO arkUserVO = iLdapUserDao.lookupArkUser(arkLdapUserName);
+		arkUserVO.setStudy(study);
+		//Fetch ArkUserRole and ArkUser Details from Backend using the arkLdapUserName
+		List<ArkUserRole> arkUserRoleList = arkAuthorisationService.getArkUserLinkedModuleAndRoles(arkUserVO);
+		arkUserVO.setArkUserRoleList(arkUserRoleList);
+		return arkUserVO;
+
 	}
 
 	

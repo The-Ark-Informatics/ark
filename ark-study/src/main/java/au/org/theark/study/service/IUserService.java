@@ -6,6 +6,7 @@ import java.util.List;
 import javax.naming.InvalidNameException;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
@@ -104,6 +105,10 @@ public interface IUserService {
 	public boolean isArkUserPresent(String userName);
 	
 	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException;
+	
+	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException;
+	
+	public ArkUserVO lookupArkUser(String arkLdapUserName,Study study) throws ArkSystemException, EntityNotFoundException;
 	
 
 }
