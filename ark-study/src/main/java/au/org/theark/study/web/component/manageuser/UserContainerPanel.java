@@ -70,6 +70,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 		
 		try{
 			if(sessionStudyId != null && sessionStudyId > 0){
+				//Search Users must list all the users from ArkUser Group and will include all users across studies.
 				 userResultList = userService.searchUser(arkUserVO);	
 			}
 		}catch(ArkSystemException arkException){
