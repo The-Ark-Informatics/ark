@@ -86,4 +86,36 @@ public class ArkUserRole implements Serializable{
 		this.study = study;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((arkModule == null) ? 0 : arkModule.hashCode());
+		result = prime * result + ((arkRole == null) ? 0 : arkRole.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArkUserRole other = (ArkUserRole) obj;
+		if (arkModule == null) {
+			if (other.arkModule != null)
+				return false;
+		} else if (!arkModule.equals(other.arkModule))
+			return false;
+		if (arkRole == null) {
+			if (other.arkRole != null)
+				return false;
+		} else if (!arkRole.equals(other.arkRole))
+			return false;
+		return true;
+	}
+
 }
