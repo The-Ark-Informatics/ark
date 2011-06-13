@@ -10,7 +10,6 @@ import java.util.Iterator;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 
 import au.org.theark.core.model.pheno.entity.FieldUpload;
-import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
@@ -23,7 +22,6 @@ import au.org.theark.core.model.pheno.entity.PhenoUpload;
 public class UploadVO implements Serializable
 {
 	private PhenoUpload								upload;
-	private FileFormat								fileFormat;
 	private FileUpload								fileUpload;
 	private PhenoCollection							phenoCollection;
 	private PhenoCollectionUpload					phenoCollectionUpload;
@@ -76,15 +74,6 @@ public class UploadVO implements Serializable
 	}
 
 	/**
-	 * @param fileFormat
-	 *           the fileFormat to set
-	 */
-	public void setFileFormat(FileFormat fileFormat)
-	{
-		this.fileFormat = fileFormat;
-	}
-
-	/**
 	 * @return the phenoCollection
 	 */
 	public PhenoCollection getPhenoCollection()
@@ -115,14 +104,6 @@ public class UploadVO implements Serializable
 	public PhenoCollectionUpload getPhenoCollectionUpload()
 	{
 		return phenoCollectionUpload;
-	}
-
-	/**
-	 * @return the fileFormat
-	 */
-	public FileFormat getFileFormat()
-	{
-		return fileFormat;
 	}
 
 	/**
@@ -168,7 +149,7 @@ public class UploadVO implements Serializable
 		
 		if(getValidationMessages() != null)
 		{
-			for (Iterator iterator = msgs.iterator(); iterator.hasNext();) {
+			for (Iterator<String> iterator = msgs.iterator(); iterator.hasNext();) {
 				String string = (String) iterator.next();
 				stringBuffer.append(string);
 				stringBuffer.append("\n");
