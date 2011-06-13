@@ -148,5 +148,6 @@ public interface IPhenotypicDao {
 	
 	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study);
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr);
+	public FileFormat getFileFormatByName(String name);
 	
 }

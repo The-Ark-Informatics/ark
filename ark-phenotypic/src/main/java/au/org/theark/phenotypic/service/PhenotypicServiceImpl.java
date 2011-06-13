@@ -47,13 +47,13 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 {
 	final Logger				log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 	
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService<Void> iArkCommonService;
 	private IPhenotypicDao	phenotypicDao;
 	private Long studyId;
 	private Study study;
 
 	@Autowired
-	public void setiArkCommonService(IArkCommonService iArkCommonService)
+	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService)
 	{
 		this.iArkCommonService = iArkCommonService;
 	}
@@ -638,6 +638,9 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		study = iArkCommonService.getStudy(studyId);
 		String filename = uploadVo.getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		FileFormat fileFormatObj = new FileFormat();
+		fileFormatObj.setName(fileFormat);
+		uploadVo.getUpload().setFileFormat(fileFormatObj);
 		
 		Long sessionCollectionId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		PhenoCollection phenoCollection = null;
@@ -773,5 +776,10 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 
 	public String getDelimiterTypeByDelimiterChar(char phenotypicDelimChr) {
 		return phenotypicDao.getDelimiterTypeByDelimiterChar(phenotypicDelimChr);
+	}
+
+	public FileFormat getFileFormatByName(String name)
+	{
+		return phenotypicDao.getFileFormatByName(name);
 	}
 }

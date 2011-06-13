@@ -1418,4 +1418,16 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		return delimiterTypeName;
 	}
+
+	public FileFormat getFileFormatByName(String name)
+	{
+		FileFormat fileFormat = null;
+		Criteria criteria =  getSession().createCriteria(FileFormat.class);
+		criteria.add(Restrictions.eq("name", name));
+		
+		if(criteria.list().size()>0) {
+			fileFormat = (FileFormat) criteria.list().get(0);
+		}
+		return fileFormat;
+	}
 }
