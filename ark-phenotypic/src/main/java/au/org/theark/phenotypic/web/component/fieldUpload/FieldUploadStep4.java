@@ -17,6 +17,8 @@ import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.pheno.entity.FileFormat;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -45,7 +47,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService iPhenotypicService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService<Void> iArkCommonService;
 	
 	/**
 	 * Construct.
@@ -83,15 +85,18 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		
 		// Perform actual upload of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		StringBuffer uploadReport = null;
-		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		StringBuffer uploadReport = null;String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		FileFormat fileFormatObj = new FileFormat();
+		fileFormatObj = iPhenotypicService.getFileFormatByName(fileFormat);
+		containerForm.getModelObject().getUpload().setFileFormat(fileFormatObj);
+		
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 		
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
-		PhenoDataUploader phenoUploader = new PhenoDataUploader(iPhenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);;
+		PhenoDataUploader phenoUploader = new PhenoDataUploader(iPhenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);
 		
 		try
 		{
@@ -116,7 +121,6 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 					log.error(e.getMessage());
 				}
 			}
-			
 			
 			uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, containerForm.getModelObject().getFileUpload().getSize());
 			

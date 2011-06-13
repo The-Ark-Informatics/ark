@@ -46,7 +46,7 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	private transient Logger					log						= LoggerFactory.getLogger(FieldUploadContainerPanel.class);
+	private transient Logger					log						= LoggerFactory.getLogger(FieldUploadStep1.class);
 
 	private Form<UploadVO>						containerForm;
 
@@ -116,7 +116,7 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
 	{
-		log.info("Validating Pheno upload file!");
+		//log.info("Validating Pheno upload file!");
 	}
 
 	@Override
