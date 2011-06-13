@@ -1,12 +1,11 @@
 package au.org.theark.core.vo;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.Study;
 
 
 public class ArkUserVO extends BaseVO {
@@ -35,7 +34,7 @@ public class ArkUserVO extends BaseVO {
 	/*Database Entity */
 	private ArkUser arkUserEntity;
 	private List<ArkUserRole> arkUserRoleList; // A List that will contain the current user's List Modules and Roles he is linked with for the study in context
-	
+	private Study study;
 	
 	
 	public StudyVO getStudyVO() {
@@ -333,6 +332,14 @@ public class ArkUserVO extends BaseVO {
 
 	public void setArkUserRoleList(List<ArkUserRole> arkUserRoleList) {
 		this.arkUserRoleList = arkUserRoleList;
+	}
+
+	public Study getStudy() {
+		return study;
+	}
+
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 
