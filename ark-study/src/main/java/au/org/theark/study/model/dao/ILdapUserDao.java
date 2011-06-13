@@ -143,5 +143,9 @@ public interface ILdapUserDao {
 	 * @throws ArkSystemException
 	 */
 	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException;	
+	
+	public void updateArkUser(ArkUserVO userVO) throws ArkSystemException;
+	
+	public ArkUserVO lookupArkUser(String arkUserName) throws ArkSystemException;
 
 }

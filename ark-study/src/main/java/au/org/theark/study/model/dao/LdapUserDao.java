@@ -36,6 +36,7 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
 import org.springframework.ldap.filter.OrFilter;
+import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -44,6 +45,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.util.UIHelper;
 import au.org.theark.core.vo.ArkUserVO;
@@ -203,6 +205,41 @@ public class LdapUserDao implements ILdapUserDao{
 			throw new ArkSystemException("A System exception occured");
 		}
 		
+		
+	}
+	
+	public void updateArkUser(ArkUserVO userVO) throws ArkSystemException {
+		log.info("update() invoked: Updating user details in LDAP");
+		try{
+			//Assuming that all validation is already done update the attributes in LDAP
+			LdapName ldapName = new LdapName(getBasePeopleDn());
+			ldapName.add(new Rdn("cn", userVO.getUserName()));
+			
+			BasicAttribute sn = new BasicAttribute("sn", userVO.getLastName());
+			BasicAttribute givenName = new BasicAttribute("givenName", userVO.getFirstName());
+			BasicAttribute email = new BasicAttribute("mail", userVO.getEmail());
+
+			ModificationItem itemSn = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, sn);
+			ModificationItem itemGivenName = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, givenName);
+			ModificationItem itemEmail = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, email);
+
+			//Check if password needs to be modified. Make sure client validation is done.
+			//TODO Also enforce the validation check here.
+			if(userVO.isChangePassword()){
+				BasicAttribute userPassword = 	new BasicAttribute("userPassword", new Sha256Hash(userVO.getPassword()).toHex());
+				ModificationItem itemPassword = new	ModificationItem (DirContext.REPLACE_ATTRIBUTE,userPassword);
+				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] {itemSn, itemGivenName, itemEmail,itemPassword });
+			}else{
+				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] {itemSn, itemGivenName, itemEmail});
+			}
+			
+			//updateGroupRoles(userVO);///This now should be done in backend
+			
+			//Add or remove the users from roles
+		
+		}catch(InvalidNameException ine){
+			throw new ArkSystemException("A System error has occured");
+		}
 		
 	}
 	
@@ -449,14 +486,14 @@ public class LdapUserDao implements ILdapUserDao{
 			log.info("\n PersonContext Mapper...");
 			DirContextAdapter context = (DirContextAdapter) ctx;
 			
-			ArkUserVO etaUserVO = new ArkUserVO();
-			etaUserVO.setUserName(context.getStringAttribute("cn"));
-			etaUserVO.setFirstName(context.getStringAttribute("givenName"));
-			etaUserVO.setLastName(context.getStringAttribute("sn"));
-			etaUserVO.setEmail(context.getStringAttribute("mail"));
+			ArkUserVO arkUserVO = new ArkUserVO();
+			arkUserVO.setUserName(context.getStringAttribute("cn"));
+			arkUserVO.setFirstName(context.getStringAttribute("givenName"));
+			arkUserVO.setLastName(context.getStringAttribute("sn"));
+			arkUserVO.setEmail(context.getStringAttribute("mail"));
 			String ldapPassword = new String((byte[]) context.getObjectAttribute("userPassword"));
-			etaUserVO.setPassword(ldapPassword);
-			return etaUserVO;
+			arkUserVO.setPassword(ldapPassword);
+			return arkUserVO;
 		}
 	}
 
@@ -735,10 +772,12 @@ public class LdapUserDao implements ILdapUserDao{
 		Subject currentUser = SecurityUtils.getSubject();
 		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
 		
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_ADMINISTATOR)){
-			
-			
-			log.info("getBaseDn() " + getBasePeopleDn());//ou=people
+		
+		if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)){
+
+			log.debug("getBaseDn() " + getBasePeopleDn());//ou=arkUsers or whatever is configured in the context file.
 			LdapName ldapName;
 			try{
 				
@@ -750,28 +789,28 @@ public class LdapUserDao implements ILdapUserDao{
 				/* User ID */
 				if(StringUtils.hasText(userCriteriaVO.getUserName())){
 					ldapName.add(new Rdn(Constants.CN,userCriteriaVO.getUserName()));
-					andFilter.and(new EqualsFilter(Constants.CN,userCriteriaVO.getUserName()));
+					andFilter.and(new WhitespaceWildcardsFilter(Constants.CN,userCriteriaVO.getUserName()));
 				}
 				/* Given Name */
 				if(StringUtils.hasText(userCriteriaVO.getFirstName())){
 					ldapName.add(new Rdn(Constants.GIVEN_NAME,userCriteriaVO.getFirstName()));
-					andFilter.and(new EqualsFilter(Constants.GIVEN_NAME,userCriteriaVO.getFirstName()));
+					andFilter.and(new WhitespaceWildcardsFilter(Constants.GIVEN_NAME,userCriteriaVO.getFirstName()));
 				}
 				
 				/* Surname Name */
 				if(StringUtils.hasText(userCriteriaVO.getLastName())){
 					ldapName.add(new Rdn(Constants.LAST_NAME,userCriteriaVO.getLastName()));
-					andFilter.and(new EqualsFilter(Constants.LAST_NAME,userCriteriaVO.getLastName()));
+					andFilter.and(new WhitespaceWildcardsFilter(Constants.LAST_NAME,userCriteriaVO.getLastName()));
 				}
 
 				/* Email */
 				if(StringUtils.hasText(userCriteriaVO.getEmail())){
 					ldapName.add(new Rdn(Constants.EMAIL, userCriteriaVO.getEmail()));
-					andFilter.and(new EqualsFilter(Constants.EMAIL,userCriteriaVO.getEmail()));
+					andFilter.and(new WhitespaceWildcardsFilter(Constants.EMAIL,userCriteriaVO.getEmail()));
 				}
 				/* Status is not defined as yet in the schema */
 				userList  = ldapTemplate.search(getBasePeopleDn(),andFilter.encode(),new PersonContextMapper());
-				log.info("Size of list " + userList.size());
+				log.debug("Size of list " + userList.size());
 			}catch(InvalidNameException ine){
 				
 				log.error("Exception occured in searchAllUsers " + ine);
@@ -940,17 +979,26 @@ public class LdapUserDao implements ILdapUserDao{
 //			//delegate call to another method and get back a list of users into userList
 //			userList = searchGroupMembers(userVO, userName);
 //		}
-		
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_ADMINISTATOR)){
-			log.info("User can access all users");
-			userList = searchAllUsers(userVO);
-		}else{
-			log.info("User can access only a sub-set of users.");
-			//Get logged in user's Groups and roles(and permissions)
-			userName = (String) currentUser.getPrincipal();
-			//delegate call to another method and get back a list of users into userList
-			userList = searchGroupMembers(userVO, userName);
+		//Allow only a role that has Create,
+		if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
+			securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
+			securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)){
+			
+			userList = searchAllUsers(userVO);	
+			
+			
 		}
+		
+//		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_ROLE_ADMINISTATOR)){
+//			log.info("User can access all users");
+//			userList = searchAllUsers(userVO);
+//		}else{
+//			log.info("User can access only a sub-set of users.");
+//			//Get logged in user's Groups and roles(and permissions)
+//			userName = (String) currentUser.getPrincipal();
+//			//delegate call to another method and get back a list of users into userList
+//			userList = searchGroupMembers(userVO, userName);
+//		}
 		
 		return userList;
 	}
@@ -1881,6 +1929,54 @@ public class LdapUserDao implements ILdapUserDao{
 		}
 		return isPresent;
 	}
+	
+	/**
+	 * Looks up a particular user from LDAP using the username/login name for Ark System
+	 * @param arkUserName
+	 * @return ArkUserVO
+	 * @throws ArkSystemException
+	 */
+	public ArkUserVO lookupArkUser(String arkUserName) throws ArkSystemException{
+		
+		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
+		
+		
+		if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
+				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)){
+
+			log.debug("getBaseDn() " + getBasePeopleDn());//ou=arkUsers or whatever is configured in the context file.
+			LdapName ldapName;
+			try{
+				
+				AndFilter andFilter = new AndFilter();
+				andFilter.and(new EqualsFilter("objectClass","person"));
+				
+				ldapName = new LdapName(getBasePeopleDn());
+				//if userId was specified
+				/* User ID */
+				if(StringUtils.hasText(arkUserName)){
+					ldapName.add(new Rdn(Constants.CN,arkUserName));
+					andFilter.and(new EqualsFilter(Constants.CN,arkUserName));
+				}
+			
+				userList  = ldapTemplate.search(getBasePeopleDn(),andFilter.encode(),new PersonContextMapper());
+				log.debug("Size of list " + userList.size());
+			}catch(InvalidNameException ine){
+				
+				log.error("Exception occured in lookupArkUser(String arkUserName) " + ine);
+				throw new ArkSystemException("A system errror occured");
+			}
+		}
+		ArkUserVO arkUserVO = new ArkUserVO();
+		if(userList !=null && userList.size() > 0){
+			arkUserVO = userList.get(0);
+		}
+		return arkUserVO;
+	}
+	
 	
 	
 }
