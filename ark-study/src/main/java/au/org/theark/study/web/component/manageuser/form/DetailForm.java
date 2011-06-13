@@ -1,16 +1,14 @@
 package au.org.theark.study.web.component.manageuser.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -19,9 +17,8 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UserNameExistsException;
-import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IUserService;
@@ -101,8 +98,10 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		
 	}
 
-	@Override
+	
 	protected void onCancel(AjaxRequestTarget target) {
+		
+		containerForm.getModelObject().setArkUserRoleList(new ArrayList<ArkUserRole>());
 		containerForm.setModelObject(new ArkUserVO());
 		
 	}
@@ -114,12 +113,15 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			
 			try {
 				//Create the user in LDAP - Step 1 does not have Study related information
+				ArkUserVO savedObject = containerForm.getModelObject();
 				userService.createArkUser(containerForm.getModelObject());
 				StringBuffer sb = new StringBuffer();
 				sb.append("The user with Login/User Name " );
 				sb.append(containerForm.getModelObject().getUserName());
 				sb.append(" has been added successfully into the System.");
-				this.error(sb.toString());
+				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+				onSavePostProcess(target,arkCrudContainerVO);
+				this.info(sb.toString());
 			} catch (ArkSystemException e) {
 				this.error("A System error has occured. Please contact Support.");
 			} catch (UserNameExistsException e) {
@@ -128,8 +130,22 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 				this.error("A System error has occured. Please contact Support");
 			}
 			target.addComponent(feedBackPanel);
-		}else{
+		}else if(containerForm.getModelObject().getMode() == Constants.MODE_EDIT){
 			
+			try {
+				
+				userService.updateArkUser(containerForm.getModelObject());
+				
+				StringBuffer sb = new StringBuffer();
+				sb.append("The user with Login/User Name " );
+				sb.append(containerForm.getModelObject().getUserName());
+				sb.append(" has been updated successfully into the System.");
+				this.info(sb.toString());
+				onSavePostProcess(target,arkCrudContainerVO);
+			} catch (ArkSystemException e) {
+				this.error("A System error has occured. Please contact Support.");
+				
+			}
 			
 		}
 	}
@@ -142,8 +158,11 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	@Override
 	protected boolean isNew() {
-		// TODO Auto-generated method stub
-		return false;
+			if (containerForm.getModelObject().getMode() == Constants.MODE_NEW){
+				return true;
+			}else{
+				return false;
+			}
 	}
 
 	@Override
@@ -152,36 +171,6 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		
 	}
 	
-	/**
-	 * The method that will render a list of all the modules available in a List View. It will also have the roles linked to the Modules in a 
-	 * Drop down.It will default to a specific role for each module. When the User Detail is saved it will persist this to the backend.
-	 * Ark_User_Role will be the table that will contain the result of it.
-	 * 
-	 * @return
-	 */
-	public ListView buildPageableListView(){
-		System.out.println("\n Inside buildPageableListView");
-		@SuppressWarnings("unchecked")
-		ListView  listView = new ListView("moduleRoleList",containerForm.getModelObject().getArkModuleVOList()) {
-
-			private static final long serialVersionUID = 1L;
-			
-			@Override
-			protected void populateItem(ListItem item) {
-				System.out.println("Inside populateItem");
-					//Each item will be ArkModuleVO use that to build the Module name and the drop down
-				ArkModuleVO arkModuleVO = (ArkModuleVO)item.getModelObject();
-				item.add(new Label("moduleName", arkModuleVO.getArkModule().getName()));
-				//Add the drop down here
-				ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>(Constants.NAME, "id");
-				DropDownChoice<ArkRole> ddc = new DropDownChoice<ArkRole>("arkRole",arkModuleVO.getArkModuleRoles(),defaultChoiceRenderer);
-				item.add(ddc);
-			}
-		};
-		
-		return  listView;
-	}
-
 	
 
 }
