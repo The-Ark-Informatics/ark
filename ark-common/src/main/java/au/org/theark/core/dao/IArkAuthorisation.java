@@ -2,6 +2,7 @@ package au.org.theark.core.dao;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -10,6 +11,7 @@ import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkModuleVO;
@@ -112,6 +114,17 @@ public interface IArkAuthorisation<T> {
 	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study);
 	
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
+	
+	public void updateArkUser(ArkUserVO arkUserVO);
+	
+	/**
+	 * Returns a List of ArkUserRole objects that represent the Module and Associated Role assigned for
+	 * a particular study for a given ArkUser.
+	 * @param arkUserVO
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException;
 	
 
 }

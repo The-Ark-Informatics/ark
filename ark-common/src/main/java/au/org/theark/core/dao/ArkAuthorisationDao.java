@@ -64,6 +64,28 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	}
 	
 	/**
+	 * Overloaded method to lookup an ArkUser by username and study
+	 * @param ldapUserName
+	 * @param study
+	 * @return
+	 * @throws EntityNotFoundException
+	 */
+	public ArkUser getArkUser(String ldapUserName, Study study) throws EntityNotFoundException{
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(ArkUser.class);
+		criteria.add(Restrictions.eq("ldapUserName", ldapUserName));
+		criteria.add(Restrictions.eq("study", study));
+		ArkUser arkUser  = (ArkUser)criteria.uniqueResult();
+		//Close the session
+		session.close();
+		if(arkUser != null){
+			return arkUser;
+		}else{
+			throw new EntityNotFoundException("The given Ldap User does not exist in the database system");
+		}
+	}
+	
+	/**
 	 * Returns a list of ArkRole objects from the backend. This does not use the Stateless session.
 	 * Can be used by front-end client's.
 	 * @return  List<ArkRole>
@@ -441,6 +463,38 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		
 		return listOfResults;
 			
+	}
+	
+	/**
+	 * TODO:WIP During an update the system must identify the items that need to be added and removed.
+	 */
+	public void updateArkUser(ArkUserVO arkUserVO){
+		
+		Session session = getSession();
+		session.update(arkUserVO.getArkUserEntity());
+		List<ArkUserRole> arkUserRoleList = arkUserVO.getArkUserRoleList();
+		for (ArkUserRole arkUserRole : arkUserRoleList) {
+			if(arkUserRole.getArkRole() != null){
+				arkUserRole.setArkUser(arkUserVO.getArkUserEntity());
+				session.save(arkUserRole);
+			}
+		}
+		
+	}
+
+	/**
+	 * Get the ArkUserRole details for the given user for a specific study
+	 * @throws EntityNotFoundException 
+	 */
+	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException {
+		// TODO Auto-generated method stub
+		ArkUser arkUser = getArkUser(arkUserVO.getUserName());
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
+		return criteria.list();
+		
 	}
 
 }
