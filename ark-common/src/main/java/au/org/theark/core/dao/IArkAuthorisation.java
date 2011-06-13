@@ -1,5 +1,6 @@
 package au.org.theark.core.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -109,6 +110,8 @@ public interface IArkAuthorisation<T> {
 	public void createArkUser(ArkUserVO arkUserVO);
 	
 	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study);
+	
+	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
 	
 
 }

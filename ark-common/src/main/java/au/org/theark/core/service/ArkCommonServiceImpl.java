@@ -1,5 +1,6 @@
 package au.org.theark.core.service;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -405,5 +407,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	
 	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study){
 		return arkAuthorisationDao.getArkModulesLinkedToStudy(study);
+	}
+	
+	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule){
+		return arkAuthorisationDao.getArkRoleLinkedToModule(arkModule);
 	}
 }

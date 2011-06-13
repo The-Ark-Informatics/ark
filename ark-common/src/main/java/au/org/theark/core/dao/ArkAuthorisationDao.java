@@ -11,7 +11,11 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.jfree.util.Log;
 import org.springframework.stereotype.Repository;
 
@@ -355,11 +359,19 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 	}
 	
 	/**
-	 * 
+	 * Create a new Ark User in the system and associates the arkuser with the study and links the user to one or more Modules and Roles that 
+	 * was configured for the Study.
 	 */
 	public void createArkUser(ArkUserVO arkUserVO){
 		Session session = getSession();
 		session.save(arkUserVO.getArkUserEntity());
+		List<ArkUserRole> arkUserRoleList = arkUserVO.getArkUserRoleList();
+		for (ArkUserRole arkUserRole : arkUserRoleList) {
+			if(arkUserRole.getArkRole() != null){
+				arkUserRole.setArkUser(arkUserVO.getArkUserEntity());
+				session.save(arkUserRole);
+			}
+		}
 		//Save the Role and Module details for the user
 	}
 	
@@ -387,6 +399,8 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			arkModuleVO.setArkModuleRoles(getArkRoleLinkedToModule(linkStudyArkModule.getArkModule()));
 			arkModuleVOList.add(arkModuleVO);
 		}
+		
+		//getArkUserRoleList(study,null);
 		return arkModuleVOList;
 	}
 	
@@ -402,6 +416,31 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			moduleArkRolesList.add(arkRole);
 		}
 		return moduleArkRolesList;
+	}
+	
+	public List<ArkUserRole> getArkUserRoleList(Study study,ArkUser arkUser){
+		
+		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class,"linkStudyArkModule");
+		criteria.add(Restrictions.eq("study", study));
+		criteria.createAlias("arkUserRoleList", "userRole",Criteria.LEFT_JOIN);
+		criteria.add(Restrictions.or(Restrictions.eq("userRole.arkUser", arkUser), Restrictions.isNull("userRole.arkUser")));
+		criteria.add(Restrictions.eq("userRole.study", study));
+		
+		ProjectionList projection =Projections.projectionList();
+		projection.add(Projections.property("userRole.id"),"id");
+		projection.add(Projections.property("userRole.arkUser"),"arkUser");
+		projection.add(Projections.property("userRole.arkRole"),"arkRole");
+		projection.add(Projections.property("linkStudyArkModule.arkModule"),"arkModule");
+		projection.add(Projections.property("linkStudyArkModule.study"),"study");
+		
+		
+		criteria.setProjection(projection);
+
+		criteria.setResultTransformer(Transformers.aliasToBean(ArkUserRole.class));
+		List<ArkUserRole>  listOfResults = criteria.list();
+		
+		return listOfResults;
+			
 	}
 
 }
