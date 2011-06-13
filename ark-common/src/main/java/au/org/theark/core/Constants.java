@@ -60,7 +60,7 @@ public class Constants {
 
 	/* Menu tabs */
 	public static final String MENU_SUBJECT_SUBMENU = "subjectSubMenus";
-	public static final String TAB_SUBJECT_DETAIL = "Subject Detail";
+	public static final String TAB_SUBJECT_DETAIL = "Participant Detail";
 	public static final String TAB_PERSON_PHONE = "Phone";
 	public static final String TAB_PERSON_ADDRESS = "Address";
 	public static final String TAB_SUBJECT_CONSENT = "Consent";
