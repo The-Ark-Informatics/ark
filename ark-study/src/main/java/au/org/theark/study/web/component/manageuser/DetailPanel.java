@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.manageuser;
 
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -14,7 +15,6 @@ public class DetailPanel  extends Panel{
 	private DetailForm detailForm;
 	private ArkCrudContainerVO arkCrudContainerVO;
 	
-		
 	
 	public DetailPanel(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm) {
 		super(id);
@@ -28,7 +28,7 @@ public class DetailPanel  extends Panel{
 		detailForm = new DetailForm("detailForm",feedbackPanel,arkCrudContainerVO,containerForm);
 		detailForm.initialiseDetailForm();
 		//Initialise the Panel that will house the ListView
-		ArkUserAccountPanel arkUserAccountPanel = new ArkUserAccountPanel("arkUserAccountPanel", containerForm);
+		ArkUserAccountPanel arkUserAccountPanel = new ArkUserAccountPanel("arkUserAccountPanel",containerForm);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkUserAccountPanel);
 		add(detailForm);
 	}
