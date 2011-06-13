@@ -35,7 +35,7 @@ public class ArkUserVO extends BaseVO {
 	/*Database Entity */
 	private ArkUser arkUserEntity;
 	private List<ArkUserRole> arkUserRoleList; // A List that will contain the current user's List Modules and Roles he is linked with for the study in context
-	private List<ArkModuleVO> arkModuleVOList;
+	
 	
 	
 	public StudyVO getStudyVO() {
@@ -91,6 +91,7 @@ public class ArkUserVO extends BaseVO {
 		this.studyVO = new StudyVO();
 		this.modules = new ArrayList<ModuleVO>();
 		this.userRoleList = new ArrayList<String>();
+		arkUserRoleList = new ArrayList<ArkUserRole>();
 		
 	}
 	
@@ -334,14 +335,5 @@ public class ArkUserVO extends BaseVO {
 		this.arkUserRoleList = arkUserRoleList;
 	}
 
-	public List<ArkModuleVO> getArkModuleVOList() {
-		return arkModuleVOList;
-	}
-
-	public void setArkModuleVOList(List<ArkModuleVO> arkModuleVOList) {
-		this.arkModuleVOList = arkModuleVOList;
-	}
-
-	
 
 }
