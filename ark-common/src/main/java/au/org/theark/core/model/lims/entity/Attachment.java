@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,31 +13,28 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "attachment", catalog = "lims")
-public class Attachment implements java.io.Serializable
-{
+public class Attachment implements java.io.Serializable {
 
-	private int			id;
-	private String		timestamp;
-	private Integer	deleted;
-	private String		attachedby;
-	private String		fileName;
-	private String		comments;
-	private String		domain;
-	private String		na;
+	private int id;
+	private String timestamp;
+	private Integer deleted;
+	private String attachedby;
+	private String fileName;
+	private String comments;
+	private String domain;
+	private String na;
 
-	public Attachment()
-	{
+	public Attachment() {
 	}
 
-	public Attachment(int id, String attachedby, String domain)
-	{
+	public Attachment(int id, String attachedby, String domain) {
 		this.id = id;
 		this.attachedby = attachedby;
 		this.domain = domain;
 	}
 
-	public Attachment(int id, Integer deleted, String attachedby, String fileName, String comments, String domain, String na)
-	{
+	public Attachment(int id, Integer deleted, String attachedby,
+			String fileName, String comments, String domain, String na) {
 		this.id = id;
 		this.deleted = deleted;
 		this.attachedby = attachedby;
@@ -49,91 +46,75 @@ public class Attachment implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Version
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "ATTACHEDBY", nullable = false, length = 65535)
-	public String getAttachedby()
-	{
+	public String getAttachedby() {
 		return this.attachedby;
 	}
 
-	public void setAttachedby(String attachedby)
-	{
+	public void setAttachedby(String attachedby) {
 		this.attachedby = attachedby;
 	}
 
 	@Column(name = "FILE_NAME", length = 50)
-	public String getFileName()
-	{
+	public String getFileName() {
 		return this.fileName;
 	}
 
-	public void setFileName(String fileName)
-	{
+	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
 
 	@Column(name = "COMMENTS", length = 65535)
-	public String getComments()
-	{
+	public String getComments() {
 		return this.comments;
 	}
 
-	public void setComments(String comments)
-	{
+	public void setComments(String comments) {
 		this.comments = comments;
 	}
 
 	@Column(name = "DOMAIN", nullable = false, length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	@Column(name = "NA", length = 50)
-	public String getNa()
-	{
+	public String getNa() {
 		return this.na;
 	}
 
-	public void setNa(String na)
-	{
+	public void setNa(String na) {
 		this.na = na;
 	}
 

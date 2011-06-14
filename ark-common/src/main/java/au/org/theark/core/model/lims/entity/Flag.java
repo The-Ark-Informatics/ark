@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,30 +13,27 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "flag", catalog = "lims")
-public class Flag implements java.io.Serializable
-{
+public class Flag implements java.io.Serializable {
 
-	private int			id;
-	private String		timestamp;
-	private Integer	deleted;
-	private String		domain;
-	private int			referenceId;
-	private String		user;
+	private int id;
+	private String timestamp;
+	private Integer deleted;
+	private String domain;
+	private int referenceId;
+	private String user;
 
-	public Flag()
-	{
+	public Flag() {
 	}
 
-	public Flag(int id, String domain, int referenceId, String user)
-	{
+	public Flag(int id, String domain, int referenceId, String user) {
 		this.id = id;
 		this.domain = domain;
 		this.referenceId = referenceId;
 		this.user = user;
 	}
 
-	public Flag(int id, Integer deleted, String domain, int referenceId, String user)
-	{
+	public Flag(int id, Integer deleted, String domain, int referenceId,
+			String user) {
 		this.id = id;
 		this.deleted = deleted;
 		this.domain = domain;
@@ -46,69 +43,57 @@ public class Flag implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Version
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "DOMAIN", nullable = false, length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	@Column(name = "REFERENCE_ID", nullable = false)
-	public int getReferenceId()
-	{
+	public int getReferenceId() {
 		return this.referenceId;
 	}
 
-	public void setReferenceId(int referenceId)
-	{
+	public void setReferenceId(int referenceId) {
 		this.referenceId = referenceId;
 	}
 
 	@Column(name = "USER", nullable = false, length = 100)
-	public String getUser()
-	{
+	public String getUser() {
 		return this.user;
 	}
 
-	public void setUser(String user)
-	{
+	public void setUser(String user) {
 		this.user = user;
 	}
 

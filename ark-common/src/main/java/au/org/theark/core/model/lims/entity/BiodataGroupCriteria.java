@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,19 +15,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "biodata_group_criteria", catalog = "lims")
-public class BiodataGroupCriteria implements java.io.Serializable
-{
+public class BiodataGroupCriteria implements java.io.Serializable {
 
-	private int					id;
-	private BiodataGroup		biodataGroup;
-	private BiodataCriteria	biodataCriteria;
+	private int id;
+	private BiodataGroup biodataGroup;
+	private BiodataCriteria biodataCriteria;
 
-	public BiodataGroupCriteria()
-	{
+	public BiodataGroupCriteria() {
 	}
 
-	public BiodataGroupCriteria(int id, BiodataGroup biodataGroup, BiodataCriteria biodataCriteria)
-	{
+	public BiodataGroupCriteria(int id, BiodataGroup biodataGroup,
+			BiodataCriteria biodataCriteria) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataCriteria = biodataCriteria;
@@ -35,37 +33,31 @@ public class BiodataGroupCriteria implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID", nullable = false)
-	public BiodataGroup getBiodataGroup()
-	{
+	public BiodataGroup getBiodataGroup() {
 		return this.biodataGroup;
 	}
 
-	public void setBiodataGroup(BiodataGroup biodataGroup)
-	{
+	public void setBiodataGroup(BiodataGroup biodataGroup) {
 		this.biodataGroup = biodataGroup;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CRITERIA_ID", nullable = false)
-	public BiodataCriteria getBiodataCriteria()
-	{
+	public BiodataCriteria getBiodataCriteria() {
 		return this.biodataCriteria;
 	}
 
-	public void setBiodataCriteria(BiodataCriteria biodataCriteria)
-	{
+	public void setBiodataCriteria(BiodataCriteria biodataCriteria) {
 		this.biodataCriteria = biodataCriteria;
 	}
 

@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import java.util.HashSet;
@@ -20,49 +20,50 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "admission", catalog = "lims")
-public class Admission implements java.io.Serializable
-{
+public class Admission implements java.io.Serializable {
 
-	private String					id;
-	private String					timestamp;
-	private int						admissionId;
-	private int						patientId;
-	private Integer				studyId;
-	private Date					admissiondate;
-	private Integer				deleted;
-	private String					comments;
-	private String					hospital;
-	private Date					surgerydate;
-	private String					diagCategory;
-	private String					refDoctor;
-	private Integer				patientage;
-	private Date					dischargedate;
-	private String					hospitalUr;
-	private Date					diagDate;
-	private Integer				collectiongroupId;
-	private String					episodeNum;
-	private String					episodeDesc;
-	private String					collectiongroup;
-	private String					tissuetype;
-	private String					tissueclass;
-	private String					pathlabno;
-	private Set<Biospecimen>	biospecimens	= new HashSet<Biospecimen>(0);
+	private String id;
+	private String timestamp;
+	private int admissionId;
+	private int patientId;
+	private Integer studyId;
+	private Date admissiondate;
+	private Integer deleted;
+	private String comments;
+	private String hospital;
+	private Date surgerydate;
+	private String diagCategory;
+	private String refDoctor;
+	private Integer patientage;
+	private Date dischargedate;
+	private String hospitalUr;
+	private Date diagDate;
+	private Integer collectiongroupId;
+	private String episodeNum;
+	private String episodeDesc;
+	private String collectiongroup;
+	private String tissuetype;
+	private String tissueclass;
+	private String pathlabno;
+	private Set<Biospecimen> biospecimens = new HashSet<Biospecimen>(0);
 
-	public Admission()
-	{
+	public Admission() {
 	}
 
-	public Admission(String id, int admissionId, int patientId)
-	{
+	public Admission(String id, int admissionId, int patientId) {
 		this.id = id;
 		this.admissionId = admissionId;
 		this.patientId = patientId;
 	}
 
-	public Admission(String id, int admissionId, int patientId, Integer studyId, Date admissiondate, Integer deleted, String comments, String hospital, Date surgerydate, String diagCategory,
-			String refDoctor, Integer patientage, Date dischargedate, String hospitalUr, Date diagDate, Integer collectiongroupId, String episodeNum, String episodeDesc, String collectiongroup,
-			String tissuetype, String tissueclass, String pathlabno, Set<Biospecimen> biospecimens)
-	{
+	public Admission(String id, int admissionId, int patientId,
+			Integer studyId, Date admissiondate, Integer deleted,
+			String comments, String hospital, Date surgerydate,
+			String diagCategory, String refDoctor, Integer patientage,
+			Date dischargedate, String hospitalUr, Date diagDate,
+			Integer collectiongroupId, String episodeNum, String episodeDesc,
+			String collectiongroup, String tissuetype, String tissueclass,
+			String pathlabno, Set<Biospecimen> biospecimens) {
 		this.id = id;
 		this.admissionId = admissionId;
 		this.patientId = patientId;
@@ -90,271 +91,223 @@ public class Admission implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, length = 50)
-	public String getId()
-	{
+	public String getId() {
 		return this.id;
 	}
 
-	public void setId(String id)
-	{
+	public void setId(String id) {
 		this.id = id;
 	}
 
 	@Version
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "ADMISSION_ID", nullable = false)
-	public int getAdmissionId()
-	{
+	public int getAdmissionId() {
 		return this.admissionId;
 	}
 
-	public void setAdmissionId(int admissionId)
-	{
+	public void setAdmissionId(int admissionId) {
 		this.admissionId = admissionId;
 	}
 
 	@Column(name = "PATIENT_ID", nullable = false)
-	public int getPatientId()
-	{
+	public int getPatientId() {
 		return this.patientId;
 	}
 
-	public void setPatientId(int patientId)
-	{
+	public void setPatientId(int patientId) {
 		this.patientId = patientId;
 	}
 
 	@Column(name = "STUDY_ID")
-	public Integer getStudyId()
-	{
+	public Integer getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(Integer studyId)
-	{
+	public void setStudyId(Integer studyId) {
 		this.studyId = studyId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ADMISSIONDATE", length = 19)
-	public Date getAdmissiondate()
-	{
+	public Date getAdmissiondate() {
 		return this.admissiondate;
 	}
 
-	public void setAdmissiondate(Date admissiondate)
-	{
+	public void setAdmissiondate(Date admissiondate) {
 		this.admissiondate = admissiondate;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "COMMENTS", length = 65535)
-	public String getComments()
-	{
+	public String getComments() {
 		return this.comments;
 	}
 
-	public void setComments(String comments)
-	{
+	public void setComments(String comments) {
 		this.comments = comments;
 	}
 
 	@Column(name = "HOSPITAL", length = 50)
-	public String getHospital()
-	{
+	public String getHospital() {
 		return this.hospital;
 	}
 
-	public void setHospital(String hospital)
-	{
+	public void setHospital(String hospital) {
 		this.hospital = hospital;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SURGERYDATE", length = 19)
-	public Date getSurgerydate()
-	{
+	public Date getSurgerydate() {
 		return this.surgerydate;
 	}
 
-	public void setSurgerydate(Date surgerydate)
-	{
+	public void setSurgerydate(Date surgerydate) {
 		this.surgerydate = surgerydate;
 	}
 
 	@Column(name = "DIAG_CATEGORY", length = 50)
-	public String getDiagCategory()
-	{
+	public String getDiagCategory() {
 		return this.diagCategory;
 	}
 
-	public void setDiagCategory(String diagCategory)
-	{
+	public void setDiagCategory(String diagCategory) {
 		this.diagCategory = diagCategory;
 	}
 
 	@Column(name = "REF_DOCTOR", length = 50)
-	public String getRefDoctor()
-	{
+	public String getRefDoctor() {
 		return this.refDoctor;
 	}
 
-	public void setRefDoctor(String refDoctor)
-	{
+	public void setRefDoctor(String refDoctor) {
 		this.refDoctor = refDoctor;
 	}
 
 	@Column(name = "PATIENTAGE")
-	public Integer getPatientage()
-	{
+	public Integer getPatientage() {
 		return this.patientage;
 	}
 
-	public void setPatientage(Integer patientage)
-	{
+	public void setPatientage(Integer patientage) {
 		this.patientage = patientage;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DISCHARGEDATE", length = 19)
-	public Date getDischargedate()
-	{
+	public Date getDischargedate() {
 		return this.dischargedate;
 	}
 
-	public void setDischargedate(Date dischargedate)
-	{
+	public void setDischargedate(Date dischargedate) {
 		this.dischargedate = dischargedate;
 	}
 
 	@Column(name = "HOSPITAL_UR", length = 50)
-	public String getHospitalUr()
-	{
+	public String getHospitalUr() {
 		return this.hospitalUr;
 	}
 
-	public void setHospitalUr(String hospitalUr)
-	{
+	public void setHospitalUr(String hospitalUr) {
 		this.hospitalUr = hospitalUr;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DIAG_DATE", length = 19)
-	public Date getDiagDate()
-	{
+	public Date getDiagDate() {
 		return this.diagDate;
 	}
 
-	public void setDiagDate(Date diagDate)
-	{
+	public void setDiagDate(Date diagDate) {
 		this.diagDate = diagDate;
 	}
 
 	@Column(name = "COLLECTIONGROUP_ID")
-	public Integer getCollectiongroupId()
-	{
+	public Integer getCollectiongroupId() {
 		return this.collectiongroupId;
 	}
 
-	public void setCollectiongroupId(Integer collectiongroupId)
-	{
+	public void setCollectiongroupId(Integer collectiongroupId) {
 		this.collectiongroupId = collectiongroupId;
 	}
 
 	@Column(name = "EPISODE_NUM", length = 50)
-	public String getEpisodeNum()
-	{
+	public String getEpisodeNum() {
 		return this.episodeNum;
 	}
 
-	public void setEpisodeNum(String episodeNum)
-	{
+	public void setEpisodeNum(String episodeNum) {
 		this.episodeNum = episodeNum;
 	}
 
 	@Column(name = "EPISODE_DESC", length = 50)
-	public String getEpisodeDesc()
-	{
+	public String getEpisodeDesc() {
 		return this.episodeDesc;
 	}
 
-	public void setEpisodeDesc(String episodeDesc)
-	{
+	public void setEpisodeDesc(String episodeDesc) {
 		this.episodeDesc = episodeDesc;
 	}
 
 	@Column(name = "COLLECTIONGROUP", length = 50)
-	public String getCollectiongroup()
-	{
+	public String getCollectiongroup() {
 		return this.collectiongroup;
 	}
 
-	public void setCollectiongroup(String collectiongroup)
-	{
+	public void setCollectiongroup(String collectiongroup) {
 		this.collectiongroup = collectiongroup;
 	}
 
 	@Column(name = "TISSUETYPE", length = 50)
-	public String getTissuetype()
-	{
+	public String getTissuetype() {
 		return this.tissuetype;
 	}
 
-	public void setTissuetype(String tissuetype)
-	{
+	public void setTissuetype(String tissuetype) {
 		this.tissuetype = tissuetype;
 	}
 
 	@Column(name = "TISSUECLASS", length = 50)
-	public String getTissueclass()
-	{
+	public String getTissueclass() {
 		return this.tissueclass;
 	}
 
-	public void setTissueclass(String tissueclass)
-	{
+	public void setTissueclass(String tissueclass) {
 		this.tissueclass = tissueclass;
 	}
 
 	@Column(name = "PATHLABNO", length = 20)
-	public String getPathlabno()
-	{
+	public String getPathlabno() {
 		return this.pathlabno;
 	}
 
-	public void setPathlabno(String pathlabno)
-	{
+	public void setPathlabno(String pathlabno) {
 		this.pathlabno = pathlabno;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "admission")
-	public Set<Biospecimen> getBiospecimens()
-	{
+	public Set<Biospecimen> getBiospecimens() {
 		return this.biospecimens;
 	}
 
-	public void setBiospecimens(Set<Biospecimen> biospecimens)
-	{
+	public void setBiospecimens(Set<Biospecimen> biospecimens) {
 		this.biospecimens = biospecimens;
 	}
 

@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -19,32 +19,30 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "inv_box", catalog = "lims")
-public class InvBox implements java.io.Serializable
-{
+public class InvBox implements java.io.Serializable {
 
-	private int				id;
-	private String			timestamp;
-	private InvTank		invTank;
-	private Integer		deleted;
-	private String			name;
-	private Integer		available;
-	private String			description;
-	private Integer		capacity;
-	private Set<InvTray>	invTraies	= new HashSet<InvTray>(0);
+	private int id;
+	private String timestamp;
+	private InvTank invTank;
+	private Integer deleted;
+	private String name;
+	private Integer available;
+	private String description;
+	private Integer capacity;
+	private Set<InvTray> invTraies = new HashSet<InvTray>(0);
 
-	public InvBox()
-	{
+	public InvBox() {
 	}
 
-	public InvBox(int id, InvTank invTank, String name)
-	{
+	public InvBox(int id, InvTank invTank, String name) {
 		this.id = id;
 		this.invTank = invTank;
 		this.name = name;
 	}
 
-	public InvBox(int id, InvTank invTank, Integer deleted, String name, Integer available, String description, Integer capacity, Set<InvTray> invTraies)
-	{
+	public InvBox(int id, InvTank invTank, Integer deleted, String name,
+			Integer available, String description, Integer capacity,
+			Set<InvTray> invTraies) {
 		this.id = id;
 		this.invTank = invTank;
 		this.deleted = deleted;
@@ -57,103 +55,85 @@ public class InvBox implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Version
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TANK_ID", nullable = false)
-	public InvTank getInvTank()
-	{
+	public InvTank getInvTank() {
 		return this.invTank;
 	}
 
-	public void setInvTank(InvTank invTank)
-	{
+	public void setInvTank(InvTank invTank) {
 		this.invTank = invTank;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "AVAILABLE")
-	public Integer getAvailable()
-	{
+	public Integer getAvailable() {
 		return this.available;
 	}
 
-	public void setAvailable(Integer available)
-	{
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 
 	@Column(name = "DESCRIPTION", length = 65535)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Column(name = "CAPACITY")
-	public Integer getCapacity()
-	{
+	public Integer getCapacity() {
 		return this.capacity;
 	}
 
-	public void setCapacity(Integer capacity)
-	{
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invBox")
-	public Set<InvTray> getInvTraies()
-	{
+	public Set<InvTray> getInvTraies() {
 		return this.invTraies;
 	}
 
-	public void setInvTraies(Set<InvTray> invTraies)
-	{
+	public void setInvTraies(Set<InvTray> invTraies) {
 		this.invTraies = invTraies;
 	}
 

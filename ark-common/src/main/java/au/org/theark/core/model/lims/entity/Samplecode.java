@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,31 +12,29 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "samplecode", catalog = "lims")
-public class Samplecode implements java.io.Serializable
-{
+public class Samplecode implements java.io.Serializable {
 
-	private int			id;
-	private int			studyId;
-	private String		sampletype;
-	private String		samplesubtype;
-	private Integer	sampletypeId;
-	private String		code;
-	private Integer	order;
-	private String		childcode;
+	private int id;
+	private int studyId;
+	private String sampletype;
+	private String samplesubtype;
+	private Integer sampletypeId;
+	private String code;
+	private Integer order;
+	private String childcode;
 
-	public Samplecode()
-	{
+	public Samplecode() {
 	}
 
-	public Samplecode(int id, int studyId, String sampletype)
-	{
+	public Samplecode(int id, int studyId, String sampletype) {
 		this.id = id;
 		this.studyId = studyId;
 		this.sampletype = sampletype;
 	}
 
-	public Samplecode(int id, int studyId, String sampletype, String samplesubtype, Integer sampletypeId, String code, Integer order, String childcode)
-	{
+	public Samplecode(int id, int studyId, String sampletype,
+			String samplesubtype, Integer sampletypeId, String code,
+			Integer order, String childcode) {
 		this.id = id;
 		this.studyId = studyId;
 		this.sampletype = sampletype;
@@ -49,90 +47,74 @@ public class Samplecode implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Column(name = "STUDY_ID", nullable = false)
-	public int getStudyId()
-	{
+	public int getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(int studyId)
-	{
+	public void setStudyId(int studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "SAMPLETYPE", nullable = false, length = 100)
-	public String getSampletype()
-	{
+	public String getSampletype() {
 		return this.sampletype;
 	}
 
-	public void setSampletype(String sampletype)
-	{
+	public void setSampletype(String sampletype) {
 		this.sampletype = sampletype;
 	}
 
 	@Column(name = "SAMPLESUBTYPE", length = 50)
-	public String getSamplesubtype()
-	{
+	public String getSamplesubtype() {
 		return this.samplesubtype;
 	}
 
-	public void setSamplesubtype(String samplesubtype)
-	{
+	public void setSamplesubtype(String samplesubtype) {
 		this.samplesubtype = samplesubtype;
 	}
 
 	@Column(name = "SAMPLETYPE_ID")
-	public Integer getSampletypeId()
-	{
+	public Integer getSampletypeId() {
 		return this.sampletypeId;
 	}
 
-	public void setSampletypeId(Integer sampletypeId)
-	{
+	public void setSampletypeId(Integer sampletypeId) {
 		this.sampletypeId = sampletypeId;
 	}
 
 	@Column(name = "CODE", length = 4)
-	public String getCode()
-	{
+	public String getCode() {
 		return this.code;
 	}
 
-	public void setCode(String code)
-	{
+	public void setCode(String code) {
 		this.code = code;
 	}
 
 	@Column(name = "ORDER")
-	public Integer getOrder()
-	{
+	public Integer getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(Integer order)
-	{
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 
 	@Column(name = "CHILDCODE", length = 4)
-	public String getChildcode()
-	{
+	public String getChildcode() {
 		return this.childcode;
 	}
 
-	public void setChildcode(String childcode)
-	{
+	public void setChildcode(String childcode) {
 		this.childcode = childcode;
 	}
 

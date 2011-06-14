@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import java.util.Date;
 import javax.persistence.Column;
@@ -16,34 +16,32 @@ import javax.persistence.Version;
  */
 @Entity
 @Table(name = "appointments", catalog = "lims")
-public class Appointments implements java.io.Serializable
-{
+public class Appointments implements java.io.Serializable {
 
-	private int			id;
-	private String		timestamp;
-	private Integer	deleted;
-	private String		purpose;
-	private String		notify;
-	private int			patientId;
-	private Date		time;
-	private Date		date;
-	private Date		alertDate;
-	private Integer	surveyId;
-	private String		sentTimestamp;
+	private int id;
+	private String timestamp;
+	private Integer deleted;
+	private String purpose;
+	private String notify;
+	private int patientId;
+	private Date time;
+	private Date date;
+	private Date alertDate;
+	private Integer surveyId;
+	private String sentTimestamp;
 
-	public Appointments()
-	{
+	public Appointments() {
 	}
 
-	public Appointments(int id, int patientId, Date date)
-	{
+	public Appointments(int id, int patientId, Date date) {
 		this.id = id;
 		this.patientId = patientId;
 		this.date = date;
 	}
 
-	public Appointments(int id, Integer deleted, String purpose, String notify, int patientId, Date time, Date date, Date alertDate, Integer surveyId, String sentTimestamp)
-	{
+	public Appointments(int id, Integer deleted, String purpose, String notify,
+			int patientId, Date time, Date date, Date alertDate,
+			Integer surveyId, String sentTimestamp) {
 		this.id = id;
 		this.deleted = deleted;
 		this.purpose = purpose;
@@ -58,127 +56,105 @@ public class Appointments implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Version
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "PURPOSE", length = 65535)
-	public String getPurpose()
-	{
+	public String getPurpose() {
 		return this.purpose;
 	}
 
-	public void setPurpose(String purpose)
-	{
+	public void setPurpose(String purpose) {
 		this.purpose = purpose;
 	}
 
 	@Column(name = "NOTIFY", length = 100)
-	public String getNotify()
-	{
+	public String getNotify() {
 		return this.notify;
 	}
 
-	public void setNotify(String notify)
-	{
+	public void setNotify(String notify) {
 		this.notify = notify;
 	}
 
 	@Column(name = "PATIENT_ID", nullable = false)
-	public int getPatientId()
-	{
+	public int getPatientId() {
 		return this.patientId;
 	}
 
-	public void setPatientId(int patientId)
-	{
+	public void setPatientId(int patientId) {
 		this.patientId = patientId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TIME", length = 19)
-	public Date getTime()
-	{
+	public Date getTime() {
 		return this.time;
 	}
 
-	public void setTime(Date time)
-	{
+	public void setTime(Date time) {
 		this.time = time;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE", nullable = false, length = 19)
-	public Date getDate()
-	{
+	public Date getDate() {
 		return this.date;
 	}
 
-	public void setDate(Date date)
-	{
+	public void setDate(Date date) {
 		this.date = date;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ALERT_DATE", length = 19)
-	public Date getAlertDate()
-	{
+	public Date getAlertDate() {
 		return this.alertDate;
 	}
 
-	public void setAlertDate(Date alertDate)
-	{
+	public void setAlertDate(Date alertDate) {
 		this.alertDate = alertDate;
 	}
 
 	@Column(name = "SURVEY_ID")
-	public Integer getSurveyId()
-	{
+	public Integer getSurveyId() {
 		return this.surveyId;
 	}
 
-	public void setSurveyId(Integer surveyId)
-	{
+	public void setSurveyId(Integer surveyId) {
 		this.surveyId = surveyId;
 	}
 
 	@Column(name = "SENT_TIMESTAMP", length = 55)
-	public String getSentTimestamp()
-	{
+	public String getSentTimestamp() {
 		return this.sentTimestamp;
 	}
 
-	public void setSentTimestamp(String sentTimestamp)
-	{
+	public void setSentTimestamp(String sentTimestamp) {
 		this.sentTimestamp = sentTimestamp;
 	}
 

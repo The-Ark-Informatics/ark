@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "biodata_type", catalog = "lims")
-public class BiodataType implements java.io.Serializable
-{
+public class BiodataType implements java.io.Serializable {
 
-	private int		id;
-	private String	name;
-	private String	description;
+	private int id;
+	private String name;
+	private String description;
 
-	public BiodataType()
-	{
+	public BiodataType() {
 	}
 
-	public BiodataType(int id, String name)
-	{
+	public BiodataType(int id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public BiodataType(int id, String name, String description)
-	{
+	public BiodataType(int id, String name, String description) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -38,35 +34,29 @@ public class BiodataType implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

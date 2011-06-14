@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,27 +15,25 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "biodata_field_group", catalog = "lims")
-public class BiodataFieldGroup implements java.io.Serializable
-{
+public class BiodataFieldGroup implements java.io.Serializable {
 
-	private int				id;
-	private BiodataGroup	biodataGroup;
-	private BiodataField	biodataField;
-	private Integer		position;
+	private int id;
+	private BiodataGroup biodataGroup;
+	private BiodataField biodataField;
+	private Integer position;
 
-	public BiodataFieldGroup()
-	{
+	public BiodataFieldGroup() {
 	}
 
-	public BiodataFieldGroup(int id, BiodataGroup biodataGroup, BiodataField biodataField)
-	{
+	public BiodataFieldGroup(int id, BiodataGroup biodataGroup,
+			BiodataField biodataField) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataField = biodataField;
 	}
 
-	public BiodataFieldGroup(int id, BiodataGroup biodataGroup, BiodataField biodataField, Integer position)
-	{
+	public BiodataFieldGroup(int id, BiodataGroup biodataGroup,
+			BiodataField biodataField, Integer position) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataField = biodataField;
@@ -44,48 +42,40 @@ public class BiodataFieldGroup implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID", nullable = false)
-	public BiodataGroup getBiodataGroup()
-	{
+	public BiodataGroup getBiodataGroup() {
 		return this.biodataGroup;
 	}
 
-	public void setBiodataGroup(BiodataGroup biodataGroup)
-	{
+	public void setBiodataGroup(BiodataGroup biodataGroup) {
 		this.biodataGroup = biodataGroup;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_ID", nullable = false)
-	public BiodataField getBiodataField()
-	{
+	public BiodataField getBiodataField() {
 		return this.biodataField;
 	}
 
-	public void setBiodataField(BiodataField biodataField)
-	{
+	public void setBiodataField(BiodataField biodataField) {
 		this.biodataField = biodataField;
 	}
 
 	@Column(name = "POSITION")
-	public Integer getPosition()
-	{
+	public Integer getPosition() {
 		return this.position;
 	}
 
-	public void setPosition(Integer position)
-	{
+	public void setPosition(Integer position) {
 		this.position = position;
 	}
 

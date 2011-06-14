@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "biodata_unit", catalog = "lims")
-public class BiodataUnit implements java.io.Serializable
-{
+public class BiodataUnit implements java.io.Serializable {
 
-	private int		id;
-	private String	unitname;
-	private String	description;
+	private int id;
+	private String unitname;
+	private String description;
 
-	public BiodataUnit()
-	{
+	public BiodataUnit() {
 	}
 
-	public BiodataUnit(int id, String unitname)
-	{
+	public BiodataUnit(int id, String unitname) {
 		this.id = id;
 		this.unitname = unitname;
 	}
 
-	public BiodataUnit(int id, String unitname, String description)
-	{
+	public BiodataUnit(int id, String unitname, String description) {
 		this.id = id;
 		this.unitname = unitname;
 		this.description = description;
@@ -38,35 +34,29 @@ public class BiodataUnit implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Column(name = "UNITNAME", nullable = false, length = 50)
-	public String getUnitname()
-	{
+	public String getUnitname() {
 		return this.unitname;
 	}
 
-	public void setUnitname(String unitname)
-	{
+	public void setUnitname(String unitname) {
 		this.unitname = unitname;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

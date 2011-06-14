@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,25 +12,21 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "bio_sampletype", catalog = "lims")
-public class BioSampletype implements java.io.Serializable
-{
+public class BioSampletype implements java.io.Serializable {
 
-	private int		id;
-	private String	sampletype;
-	private String	samplesubtype;
+	private int id;
+	private String sampletype;
+	private String samplesubtype;
 
-	public BioSampletype()
-	{
+	public BioSampletype() {
 	}
 
-	public BioSampletype(int id, String sampletype)
-	{
+	public BioSampletype(int id, String sampletype) {
 		this.id = id;
 		this.sampletype = sampletype;
 	}
 
-	public BioSampletype(int id, String sampletype, String samplesubtype)
-	{
+	public BioSampletype(int id, String sampletype, String samplesubtype) {
 		this.id = id;
 		this.sampletype = sampletype;
 		this.samplesubtype = samplesubtype;
@@ -38,35 +34,29 @@ public class BioSampletype implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Column(name = "SAMPLETYPE", nullable = false)
-	public String getSampletype()
-	{
+	public String getSampletype() {
 		return this.sampletype;
 	}
 
-	public void setSampletype(String sampletype)
-	{
+	public void setSampletype(String sampletype) {
 		this.sampletype = sampletype;
 	}
 
 	@Column(name = "SAMPLESUBTYPE")
-	public String getSamplesubtype()
-	{
+	public String getSamplesubtype() {
 		return this.samplesubtype;
 	}
 
-	public void setSamplesubtype(String samplesubtype)
-	{
+	public void setSamplesubtype(String samplesubtype) {
 		this.samplesubtype = samplesubtype;
 	}
 

@@ -1,6 +1,6 @@
 package au.org.theark.core.model.lims.entity;
 
-// Generated 14/06/2011 1:11:20 PM by Hibernate Tools 3.3.0.GA
+// Generated Jun 14, 2011 3:39:29 PM by Hibernate Tools 3.4.0.CR1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,20 +12,17 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "biodata_field_lov", catalog = "lims")
-public class BiodataFieldLov implements java.io.Serializable
-{
+public class BiodataFieldLov implements java.io.Serializable {
 
-	private int		id;
-	private int		listId;
-	private String	value;
-	private int		order;
+	private int id;
+	private int listId;
+	private String value;
+	private int order;
 
-	public BiodataFieldLov()
-	{
+	public BiodataFieldLov() {
 	}
 
-	public BiodataFieldLov(int id, int listId, String value, int order)
-	{
+	public BiodataFieldLov(int id, int listId, String value, int order) {
 		this.id = id;
 		this.listId = listId;
 		this.value = value;
@@ -34,46 +31,38 @@ public class BiodataFieldLov implements java.io.Serializable
 
 	@Id
 	@Column(name = "ID", unique = true, nullable = false)
-	public int getId()
-	{
+	public int getId() {
 		return this.id;
 	}
 
-	public void setId(int id)
-	{
+	public void setId(int id) {
 		this.id = id;
 	}
 
 	@Column(name = "LIST_ID", nullable = false)
-	public int getListId()
-	{
+	public int getListId() {
 		return this.listId;
 	}
 
-	public void setListId(int listId)
-	{
+	public void setListId(int listId) {
 		this.listId = listId;
 	}
 
 	@Column(name = "VALUE", nullable = false, length = 50)
-	public String getValue()
-	{
+	public String getValue() {
 		return this.value;
 	}
 
-	public void setValue(String value)
-	{
+	public void setValue(String value) {
 		this.value = value;
 	}
 
 	@Column(name = "ORDER", nullable = false)
-	public int getOrder()
-	{
+	public int getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(int order)
-	{
+	public void setOrder(int order) {
 		this.order = order;
 	}
 
