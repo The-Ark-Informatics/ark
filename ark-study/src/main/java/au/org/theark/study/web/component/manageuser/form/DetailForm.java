@@ -15,7 +15,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -58,21 +57,6 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 	
-	/**
-	 * A new constructor that has a reference to CompoundPropertyModel
-	 * @param id
-	 * @param cpmModel
-	 * @param feedBackPanel
-	 * @param arkCrudContainerVO
-	 * @param containerForm
-	 */
-	public DetailForm(String id, CompoundPropertyModel<ArkUserVO> cpmModel, FeedbackPanel feedBackPanel,	ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
-		super(id, cpmModel,feedBackPanel, arkCrudContainerVO, containerForm);
-		this.arkCrudContainerVO = arkCrudContainerVO;
-	}
-
-	
-	//
 
 	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm(){
