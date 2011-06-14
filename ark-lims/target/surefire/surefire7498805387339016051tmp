@@ -1,0 +1,5 @@
+#surefire
+#Tue Jun 14 12:06:16 WST 2011
+user.dir=/home/cellis/workspace/ark-lims
+localRepository=/home/cellis/.m2/repository
+basedir=/home/cellis/workspace/ark-lims
