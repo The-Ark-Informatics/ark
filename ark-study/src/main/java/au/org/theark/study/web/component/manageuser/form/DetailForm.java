@@ -6,10 +6,17 @@ import java.util.List;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
@@ -17,7 +24,10 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -29,7 +39,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-
+	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	private ArkUserVO arkUserVO;
 	
 	protected TextField<String> userNameTxtField  =new TextField<String>(Constants.USER_NAME);
 	protected TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
@@ -41,12 +53,28 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 	protected WebMarkupContainer groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
 	private ArkCrudContainerVO arkCrudContainerVO;
 	
-	public DetailForm(String id, FeedbackPanel feedBackPanel,	ArkCrudContainerVO arkCrudContainerVO, Form<ArkUserVO> containerForm) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel,	ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		
+	}
+	
+	/**
+	 * A new constructor that has a reference to CompoundPropertyModel
+	 * @param id
+	 * @param cpmModel
+	 * @param feedBackPanel
+	 * @param arkCrudContainerVO
+	 * @param containerForm
+	 */
+	public DetailForm(String id, CompoundPropertyModel<ArkUserVO> cpmModel, FeedbackPanel feedBackPanel,	ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+		super(id, cpmModel,feedBackPanel, arkCrudContainerVO, containerForm);
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
+	
+	//
+
+	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm(){
 		userNameTxtField  =new TextField<String>(Constants.USER_NAME);
 		firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
@@ -56,23 +84,53 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		confirmPasswordField = new PasswordTextField(Constants.CONFIRM_PASSWORD);
 		oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 		groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
+	
+		@SuppressWarnings("rawtypes")
+		ListView listView = new ListView("arkUserRoleList",(List) containerForm.getModelObject().getArkUserRoleList()) {
+
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			protected void populateItem(ListItem item) {
+				
+				//Each item will be ArkModuleVO use that to build the Module name and the drop down
+				ArkUserRole arkUserRole = (ArkUserRole)item.getModelObject();
+				ArkModule arkModule = arkUserRole.getArkModule();
+				//Acts as the data source for ArkRoles
+				ArrayList<ArkRole> arkRoleList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
+				
+				PropertyModel arkUserRolePm = new PropertyModel(arkUserRole,"arkRole");
+				ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>(Constants.NAME, "id");
+				
+				DropDownChoice<ArkRole> ddc = new DropDownChoice<ArkRole>("arkRole",arkUserRolePm,arkRoleList,defaultChoiceRenderer);
+				
+				item.add(new Label("moduleName", arkModule.getName()));//arkModule within ArkUserRole
+				item.add(ddc);
+				
+			}
+		};
+		
+		listView.setReuseItems(true);
+		arkCrudContainerVO.getWmcForarkUserAccountPanel().add(listView);
 		attachValidators();
 		addDetailFormComponents();
+		
 	}
-	
+
 	private void addDetailFormComponents(){
 		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(userNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(emailTxtField);
-		
-		
+	
 		//We use this markup to hide unhide the password fields during edit. i.e. if the user selects edit password then make it visible/enabled.
 		
 		groupPasswordContainer.add(userPasswordField);
 		groupPasswordContainer.add(confirmPasswordField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(groupPasswordContainer);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkCrudContainerVO.getWmcForarkUserAccountPanel());
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	
@@ -100,9 +158,8 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	
 	protected void onCancel(AjaxRequestTarget target) {
-		
-		containerForm.getModelObject().setArkUserRoleList(new ArrayList<ArkUserRole>());
-		containerForm.setModelObject(new ArkUserVO());
+		arkUserVO = new ArkUserVO();
+		containerForm.setModelObject(arkUserVO);
 		
 	}
 
@@ -112,9 +169,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		if(containerForm.getModelObject().getMode() == Constants.MODE_NEW){
 			
 			try {
-				//Create the user in LDAP - Step 1 does not have Study related information
-				ArkUserVO savedObject = containerForm.getModelObject();
+				
 				userService.createArkUser(containerForm.getModelObject());
+				
 				StringBuffer sb = new StringBuffer();
 				sb.append("The user with Login/User Name " );
 				sb.append(containerForm.getModelObject().getUserName());
@@ -122,6 +179,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				onSavePostProcess(target,arkCrudContainerVO);
 				this.info(sb.toString());
+				
 			} catch (ArkSystemException e) {
 				this.error("A System error has occured. Please contact Support.");
 			} catch (UserNameExistsException e) {
@@ -129,7 +187,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			} catch (Exception e) {
 				this.error("A System error has occured. Please contact Support");
 			}
-			target.addComponent(feedBackPanel);
+			
 		}else if(containerForm.getModelObject().getMode() == Constants.MODE_EDIT){
 			
 			try {
@@ -146,8 +204,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 				this.error("A System error has occured. Please contact Support.");
 				
 			}
-			
 		}
+		
+		target.addComponent(feedBackPanel);
 	}
 
 	@Override
@@ -169,6 +228,14 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public ArkUserVO getArkUserVO() {
+		return arkUserVO;
+	}
+
+	public void setArkUserVO(ArkUserVO arkUserVO) {
+		this.arkUserVO = arkUserVO;
 	}
 	
 	
