@@ -582,6 +582,28 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		target.addComponent(editButtonContainer);
 
 	}
+	
+	protected void onSavePostProcess(AjaxRequestTarget target,ArkCrudContainerVO crudVO){
+		//Visibility
+		crudVO.getDetailPanelContainer().setVisible(true);
+		crudVO.getViewButtonContainer().setVisible(true);
+		crudVO.getSearchResultPanelContainer().setVisible(false);
+		crudVO.getSearchPanelContainer().setVisible(false);
+		crudVO.getEditButtonContainer().setVisible(false);
+		
+		//Enable
+		crudVO.getDetailPanelFormContainer().setEnabled(false);
+		crudVO.getViewButtonContainer().setEnabled(true);
+	
+		target.addComponent(crudVO.getSearchResultPanelContainer());
+		target.addComponent(crudVO.getDetailPanelContainer());
+		target.addComponent(crudVO.getDetailPanelFormContainer());
+		target.addComponent(crudVO.getSearchPanelContainer());
+		target.addComponent(crudVO.getViewButtonContainer());
+		target.addComponent(crudVO.getEditButtonContainer());
+		
+		target.addComponent(feedBackPanel);
+	}
 
 	/**
 	 * A helper method that handles the press of the Delete button, thus displaying a modal pop-up that required user selection
