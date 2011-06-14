@@ -20,6 +20,7 @@ import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
@@ -44,7 +45,7 @@ public class ArkUserAccountPanel extends Panel{
 	 * @param containerForm
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ArkUserAccountPanel(String id,ContainerForm containerForm) {
+	public ArkUserAccountPanel(String id,ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		
 		this.containerForm = containerForm;
@@ -53,12 +54,12 @@ public class ArkUserAccountPanel extends Panel{
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		//For the Given study get the linked Modules and the associated Roles for each Module as a List of ArkModuleVO 
 		//Set this list into the ArkUserVO
-		final Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		//final Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
 		
 		
 		final List<ArkUserRole> arkUserRoleList = containerForm.getModelObject().getArkUserRoleList();
 		
-	ListView listView = new ListView("arkUserRoleList",(List)arkUserRoleList) {
+		ListView listView = new ListView("arkUserRoleList",(List)arkUserRoleList) {
 
 			private static final long serialVersionUID = 1L;
 			
@@ -66,9 +67,12 @@ public class ArkUserAccountPanel extends Panel{
 			protected void populateItem(ListItem item) {
 				
 				
+				
 				//Each item will be ArkModuleVO use that to build the Module name and the drop down
 				ArkUserRole arkUserRole = (ArkUserRole)item.getModelObject();
 				ArkModule arkModule = arkUserRole.getArkModule();
+				System.out.println("\n List View - populateItem Invoked : Module " + arkModule.getName());
+				//Acts as the data source for ArkRoles
 				ArrayList<ArkRole> arkRoleList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
 				
 				PropertyModel arkUserRolePm = new PropertyModel(arkUserRole,"arkRole");
@@ -81,9 +85,9 @@ public class ArkUserAccountPanel extends Panel{
 				
 			}
 		};
-
-
-		this.add(listView);
+		listView.setReuseItems(true);
+		arkCrudContainerVO.getWmcForarkUserAccountPanel().add(listView);
+		
 	}
 	
 
