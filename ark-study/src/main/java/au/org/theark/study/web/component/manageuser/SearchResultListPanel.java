@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.manageuser;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -24,6 +25,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -54,20 +56,17 @@ public class SearchResultListPanel extends Panel{
 	
 	public PageableListView<ArkUserVO> buildPageableListView(IModel iModel,  final WebMarkupContainer searchResultsContainer){
 		//This has to be populated earlier
-		//final List<ArkUsecase> arkUsecaseList = (List)iArkCommonService.getEntityList(ArkUsecase.class);
+
 		PageableListView<ArkUserVO>  pageableListView = new PageableListView<ArkUserVO>("userList",  iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
 		{
 			@Override
 			protected void populateItem(final ListItem<ArkUserVO> item) {
 				
 				ArkUserVO arkUserVO =  item.getModelObject();
-				//arkUserVO.setArkUsecaseList(arkUsecaseList);
-				//ChoiceRenderer<ArkUsecase> defaultChoiceRenderer = new ChoiceRenderer<ArkUsecase>(Constants.NAME, "id");
-				//DropDownChoice<ArkUsecase> ddc = new DropDownChoice<ArkUsecase>("arkUsecase",arkUsecaseList,defaultChoiceRenderer);	
 				item.add(buildLink(arkUserVO, searchResultsContainer));
 				item.add(new Label("lastName", arkUserVO.getLastName()));//the ID here must match the ones in mark-up
 				item.add(new Label("firstName", arkUserVO.getFirstName()));
-				//item.add(ddc);
+				
 			}
 		};
 		
@@ -79,15 +78,16 @@ public class SearchResultListPanel extends Panel{
 		AjaxLink link = new AjaxLink("userName") {
 				@Override
 				public void onClick(AjaxRequestTarget target) {
-					//TODO Get the ArkUser LDAP details again and the backend Module/Roles details and updat the model
-					
 					try {
 						
 						//Fetch the user and related details from backend
 						Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						Study study = iArkCommonService.getStudy(sessionStudyId);
 						ArkUserVO arkUserVOFromBackend = userService.lookupArkUser(arkUserVo.getUserName(),study);
+						
 						containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
+						//prePopulateArkUserRoleList(arkUserVOFromBackend);
+						//containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
 						containerForm.setModelObject(arkUserVOFromBackend);
 						
 						//Render the UI
@@ -109,10 +109,10 @@ public class SearchResultListPanel extends Panel{
 						target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
 						target.addComponent(containerForm);
 					} catch (ArkSystemException e) {
-						// TODO Auto-generated catch block
+						// TODO:NN Auto-generated catch block
 						e.printStackTrace();
 					} catch (EntityNotFoundException e) {
-						// TODO Auto-generated catch block
+						// TODO:NN Auto-generated catch block
 						e.printStackTrace();
 					}
 					
@@ -122,5 +122,24 @@ public class SearchResultListPanel extends Panel{
 		Label userNameLinkLabel = new Label("userNameLink", arkUserVo.getUserName());
 		link.add(userNameLinkLabel);
 		return link;
+	}
+	
+	private void prePopulateArkUserRoleList(ArkUserVO arkUserVOFromBackend){
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		//Get a List of ArkModules and associated ArkRoles linked to the study 
+		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		
+		//Iterate over the List of Modules and Roles 
+		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
+			//Check if the ArkUser has not been linked to the module/role if so then add that Module into the list
+			if(!arkUserVOFromBackend.getArkUserRoleList().contains(arkModuleVO.getArkModule())){
+				
+				ArkUserRole userRole = new ArkUserRole();
+				userRole.setStudy(study);
+				userRole.setArkModule(arkModuleVO.getArkModule());
+				arkUserVOFromBackend.getArkUserRoleList().add(userRole);
+			}
+		}
 	}
 }
