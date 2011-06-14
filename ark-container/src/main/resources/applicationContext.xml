@@ -92,6 +92,7 @@
 				<value>au.org.theark.core.model.geno.entity</value>
 				<value>au.org.theark.core.model.report.entity</value>
 			<!-- <value>au.org.theark.registry.model.entity</value>-->
+			<!--<value>au.org.theark.core.model.lims.entity</value> -->
         	</list>
         </property>
         <property name="hibernateProperties">

@@ -63,6 +63,13 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		
+		<!-- Ark LIMS Module -->
+		<dependency>
+			<groupId>au.org.theark.lims</groupId>
+			<artifactId>ark-lims</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		
 		<!-- Ark Reporting Module -->		
 		<dependency>
 			<groupId>au.org.theark.report</groupId>
