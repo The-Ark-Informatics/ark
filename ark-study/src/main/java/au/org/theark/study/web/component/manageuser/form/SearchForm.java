@@ -1,6 +1,5 @@
 package au.org.theark.study.web.component.manageuser.form;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,7 +30,7 @@ import au.org.theark.study.web.Constants;
 
 public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	
-	private Long sessionStudyId;
+	
 	private CompoundPropertyModel<ArkUserVO> cpmModel;
 	private ContainerForm containerForm;
 	private ArkCrudContainerVO arkCrudContainerVO;
@@ -59,6 +58,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	 * @param cpmModel
 	 * @param containerForm 
 	 */
+	//CompoundPropertyModel<StudyModelVO> studyModelVOCpm, 
 	public SearchForm(String id, CompoundPropertyModel<ArkUserVO> cpmModel,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedbackPanel, ContainerForm containerForm, PageableListView<ArkUserVO> pageableListView,ListView moduleRoleListView) {
 		
 		super(id, cpmModel,feedbackPanel,arkCrudContainerVO);
@@ -68,10 +68,13 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 		this.feedbackPanel = feedbackPanel;
 		this.moduleRoleListView = moduleRoleListView;
 		initialiseSearchForm();
+		attachValidators();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study.",arkCrudContainerVO);
 	}
+	
+
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
@@ -95,29 +98,33 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	}
 
 	private void prePopulateArkUserRoleList(){
+		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
-		//containerForm.getModelObject().setArkUserRoleList(new ArrayList<ArkUserRole>());
+
 		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
 			ArkUserRole arkUserRole = new ArkUserRole();
 			arkUserRole.setStudy(study);
 			arkUserRole.setArkModule(arkModuleVO.getArkModule());
-			containerForm.getModelObject().getArkUserRoleList().add(arkUserRole); //ArkUser and ArkRole will need to be set when the data is persisted.
+			containerForm.getModelObject().getArkUserRoleList().add(arkUserRole);
 		}
 	}
 	
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
+	
 		
-		//We want to roll over the search criteria setting into the detail one so we don't reset or refresh the whole VO
-		//Set up any preloaded stuff here
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
-		
-		//Pre-Populate the list
 		prePopulateArkUserRoleList();
+		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
+		ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
+		if(listView != null){
+			listView.removeAll();
+		}
 		
 		preProcessDetailPanel(target,arkCrudContainerVO);
+		target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());//This should re-render the list again
 		
 	}
 
@@ -151,7 +158,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 		add(firstNameTxtField);
 		add(lastNameTxtField);
 		add(userNameTxtField);
-		//add(usersLinkedToStudyOnlyChoice);
 	}
 
 }
