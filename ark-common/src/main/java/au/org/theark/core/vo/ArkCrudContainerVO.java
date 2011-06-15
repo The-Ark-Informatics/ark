@@ -25,6 +25,8 @@ public class ArkCrudContainerVO implements Serializable{
 	protected WebMarkupContainer wizardPanelContainer;
 	protected WebMarkupContainer wizardPanelFormContainer;
 	
+	protected WebMarkupContainer wmcForarkUserAccountPanel;
+	
 	public ArkCrudContainerVO(){
 		
 		searchPanelContainer = new WebMarkupContainer("searchContainer");
@@ -51,7 +53,10 @@ public class ArkCrudContainerVO implements Serializable{
 		//Contains the controls of the Wizard
 		wizardPanelFormContainer = new WebMarkupContainer("wizardFormContainer");
 		wizardPanelFormContainer.setOutputMarkupPlaceholderTag(true);
-
+		
+		//Will contain User Management related Modules and Roles Panel
+		wmcForarkUserAccountPanel = new WebMarkupContainer("arkUserAccountPanelcontainer");
+		wmcForarkUserAccountPanel.setOutputMarkupPlaceholderTag(true);
 		detailPanelContainer.setVisible(false);
 		detailPanelFormContainer.setEnabled(false);
 		searchResultPanelContainer.setVisible(true);
@@ -99,6 +104,15 @@ public class ArkCrudContainerVO implements Serializable{
 	}
 	public void setEditButtonContainer(WebMarkupContainer editButtonContainer) {
 		this.editButtonContainer = editButtonContainer;
+	}
+
+	public WebMarkupContainer getWmcForarkUserAccountPanel() {
+		return wmcForarkUserAccountPanel;
+	}
+
+	public void setWmcForarkUserAccountPanel(
+			WebMarkupContainer wmcForarkUserAccountPanel) {
+		this.wmcForarkUserAccountPanel = wmcForarkUserAccountPanel;
 	}
 
 }
