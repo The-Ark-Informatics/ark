@@ -15,6 +15,8 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -33,14 +35,16 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
+@SuppressWarnings("serial")
 public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
+	@SuppressWarnings("rawtypes")
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
-	private ArkUserVO arkUserVO;
+	
 	
 	protected TextField<String> userNameTxtField  =new TextField<String>(Constants.USER_NAME);
 	protected TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
@@ -68,9 +72,24 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		confirmPasswordField = new PasswordTextField(Constants.CONFIRM_PASSWORD);
 		oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 		groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
-	
+		
+		final List<ArkUserRole> rolesList = new ArrayList<ArkUserRole>();
+		
+		IModel<List<ArkUserRole>> iModel =  new LoadableDetachableModel() {
+			private static final long serialVersionUID = 1L;
+			@Override
+			protected Object load() {
+				System.out.println("load()");
+				List<ArkUserRole> rolesList = new ArrayList<ArkUserRole>();
+				return containerForm.getModelObject().getArkUserRoleList();
+				
+			}
+		};
+		 
+		
 		@SuppressWarnings("rawtypes")
-		ListView listView = new ListView("arkUserRoleList",(List) containerForm.getModelObject().getArkUserRoleList()) {
+		ListView listView = new ListView("arkUserRoleList", iModel) {
+			
 
 			private static final long serialVersionUID = 1L;
 			
@@ -142,9 +161,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	
 	protected void onCancel(AjaxRequestTarget target) {
-		arkUserVO = new ArkUserVO();
-		containerForm.setModelObject(arkUserVO);
 		
+		ArkUserVO arkUserVO = new ArkUserVO();
+		containerForm.setModelObject(arkUserVO);
 	}
 
 	@Override
@@ -201,11 +220,11 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	@Override
 	protected boolean isNew() {
-			if (containerForm.getModelObject().getMode() == Constants.MODE_NEW){
-				return true;
-			}else{
-				return false;
-			}
+		if (containerForm.getModelObject().getMode() == Constants.MODE_NEW){
+			return true;
+		}else{
+			return false;
+		}
 	}
 
 	@Override
@@ -213,15 +232,5 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		// TODO Auto-generated method stub
 		
 	}
-
-	public ArkUserVO getArkUserVO() {
-		return arkUserVO;
-	}
-
-	public void setArkUserVO(ArkUserVO arkUserVO) {
-		this.arkUserVO = arkUserVO;
-	}
-	
-	
 
 }
