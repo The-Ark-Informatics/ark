@@ -18,8 +18,6 @@ public class SearchPanel extends Panel{
 	private ArkCrudContainerVO arkCrudContainerVO;
 	private ContainerForm containerForm;
 	private PageableListView<ArkUserVO> pageableListView;
-	private ListView moduleRoleListView;
-	
 	/**
 	 * Constructor
 	 * @param id
@@ -33,11 +31,10 @@ public class SearchPanel extends Panel{
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.pageableListView  = pageableListView;
-		this.moduleRoleListView = moduleRoleListView;
 	}
 	
 	public void initialisePanel(CompoundPropertyModel<ArkUserVO> arkUserVOCPM){
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM,arkUserVOCPM,arkCrudContainerVO,feedBackPanel,containerForm,pageableListView,moduleRoleListView);
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM,arkUserVOCPM,arkCrudContainerVO,feedBackPanel,containerForm,pageableListView);
 		add(searchForm);
 	}
 	
