@@ -23,11 +23,6 @@ import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 @SuppressWarnings("serial")
 public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 
-
-	/** 
-	 * Private members
-	 **/
-	
 	private ContainerForm containerForm;
 	private DetailPanel detailsPanel;
 	private SearchPanel searchPanel;
@@ -106,9 +101,9 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailsPanel = new DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
-		detailsPanel.initialisePanel();
-		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		 detailsPanel = new DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
+		 detailsPanel.initialisePanel();
+		 arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
