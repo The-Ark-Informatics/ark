@@ -121,6 +121,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 					onCancelPostProcess(target,true);
 				}
 			}
+		
 		};
 		
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
@@ -406,23 +407,16 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	 */
 	protected void addComponentsToForm(boolean isArkCrudContainerVoPattern)
 	{
-		arkCrudContainerVO.getDetailPanelFormContainer().add(selectModalWindow);
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
-
 		arkCrudContainerVO.getEditButtonContainer().add(saveButton);
 		arkCrudContainerVO.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
 		arkCrudContainerVO.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
 		
-		//editButtonContainer.add(saveButton);
-		//editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		//editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
-
 		arkCrudContainerVO.getViewButtonContainer().add(editButton);
 		arkCrudContainerVO.getViewButtonContainer().add(editCancelButton.setDefaultFormProcessing(false));
 		
-		//viewButtonContainer.add(editButton);
-		//viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(selectModalWindow);
 
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 		add(arkCrudContainerVO.getViewButtonContainer());
 		add(arkCrudContainerVO.getEditButtonContainer());
 
