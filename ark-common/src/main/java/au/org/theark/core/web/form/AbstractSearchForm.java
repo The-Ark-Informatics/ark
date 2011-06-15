@@ -191,7 +191,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				//return  isActionPermitted(Constants.NEW);
+				//isActionPermitted(Constants.NEW);
 				return isSecure(Constants.NEW);
 			}
 			
@@ -219,8 +219,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				return isActionPermitted(Constants.SEARCH);
-				//return isSecure(Constants.SEARCH);
+				//return isActionPermitted(Constants.SEARCH);
+				return isSecure(Constants.SEARCH);
 			}
 			
 			@Override
@@ -239,13 +239,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				
-				return isActionPermitted(Constants.RESET);
-				//return isSecure(Constants.RESET);
+				return true;
 			}
 		};
 
-		newButton = new AjaxButton(Constants.NEW)
+		newButton = new ArkBusyAjaxButton(Constants.NEW)
 		{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -264,8 +262,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				return isActionPermitted(Constants.NEW);
-				//return isSecure(Constants.NEW);
+				//return isActionPermitted(Constants.NEW);
+				return isSecure(Constants.NEW);
 			}
 			
 			@Override
