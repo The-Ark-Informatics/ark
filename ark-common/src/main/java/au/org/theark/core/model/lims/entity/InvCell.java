@@ -5,9 +5,12 @@ package au.org.theark.core.model.lims.entity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Version;
 
@@ -54,7 +57,8 @@ public class InvCell implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="invcell_generator", sequenceName="INVCELL_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invcell_generator")
 	public int getId()
 	{
 		return this.id;

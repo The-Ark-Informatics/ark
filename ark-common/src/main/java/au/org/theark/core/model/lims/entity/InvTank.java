@@ -9,10 +9,13 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -75,7 +78,8 @@ public class InvTank implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="invtank_generator", sequenceName="INVTANK_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invtank_generator")
 	public int getId()
 	{
 		return this.id;

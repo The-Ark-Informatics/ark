@@ -4,7 +4,10 @@ package au.org.theark.core.model.lims.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -33,7 +36,9 @@ public class BarcodeidEngine implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="barcodeidengine_generator", sequenceName="BARCODEIDENGINE_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "barcodeidengine_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public int getId()
 	{
 		return this.id;

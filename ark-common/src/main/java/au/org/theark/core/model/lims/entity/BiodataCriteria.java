@@ -8,8 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -51,7 +54,9 @@ public class BiodataCriteria implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="biodatacriteria_generator", sequenceName="BIODATACRITERIA_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatacriteria_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public int getId()
 	{
 		return this.id;

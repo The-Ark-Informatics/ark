@@ -8,8 +8,11 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -60,7 +63,8 @@ public class BiodataField implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="biodatafield_generator", sequenceName="BIODATAFIELD_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatafield_generator")
 	public int getId()
 	{
 		return this.id;

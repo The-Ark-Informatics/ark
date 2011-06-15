@@ -4,7 +4,10 @@ package au.org.theark.core.model.lims.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -39,7 +42,8 @@ public class BiodataType implements java.io.Serializable
 	}
 
 	@Id
-	@Column(name = "ID", unique = true, nullable = false)
+	@SequenceGenerator(name="biodatatype_generator", sequenceName="BIODATATYPE_SEQUENCE")
+	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatatype_generator")
 	public int getId()
 	{
 		return this.id;
