@@ -90,8 +90,9 @@ public class ArkUserVO extends BaseVO {
 		this.studyVO = new StudyVO();
 		this.modules = new ArrayList<ModuleVO>();
 		this.userRoleList = new ArrayList<String>();
-		arkUserRoleList = new ArrayList<ArkUserRole>();
-		
+		this.arkUserRoleList = new ArrayList<ArkUserRole>();
+		this.study = new Study();
+		this.userName = new String();
 	}
 	
 	public ArkUserVO(String userName, String firstName, String lastName,
