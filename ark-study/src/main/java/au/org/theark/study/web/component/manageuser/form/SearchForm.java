@@ -5,10 +5,8 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -50,7 +48,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	private IArkCommonService iArkCommonService;
 	
 	private PageableListView<ArkUserVO> pageableListView;
-	private ListView moduleRoleListView;
 
 	/**
 	 * Constructor
@@ -58,15 +55,14 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	 * @param cpmModel
 	 * @param containerForm 
 	 */
-	//CompoundPropertyModel<StudyModelVO> studyModelVOCpm, 
-	public SearchForm(String id, CompoundPropertyModel<ArkUserVO> cpmModel,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedbackPanel, ContainerForm containerForm, PageableListView<ArkUserVO> pageableListView,ListView moduleRoleListView) {
+	public SearchForm(String id, CompoundPropertyModel<ArkUserVO> cpmModel,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedbackPanel, ContainerForm containerForm, PageableListView<ArkUserVO> pageableListView) {
 		
 		super(id, cpmModel,feedbackPanel,arkCrudContainerVO);
 		this.pageableListView = pageableListView;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.feedbackPanel = feedbackPanel;
-		this.moduleRoleListView = moduleRoleListView;
+		
 		initialiseSearchForm();
 		attachValidators();
 		addSearchComponentsToForm();
@@ -98,7 +94,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	}
 
 	private void prePopulateArkUserRoleList(){
-		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
@@ -113,25 +108,17 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 	
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-	
-		
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
-		ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
-		if(listView != null){
-			listView.removeAll();
-		}
-		
 		preProcessDetailPanel(target,arkCrudContainerVO);
 		target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());//This should re-render the list again
-		
 	}
 
 	@Override
 	protected boolean isSecure(String actionType) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 	
 	protected void initialiseSearchForm(){
@@ -140,9 +127,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 		firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 		lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
 		emailTxtField = new TextField<String>(Constants.EMAIL);
-		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList(); 
-		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME,Constants.ID);
-		usersLinkedToStudyOnlyChoice = new DropDownChoice<YesNo>("usersLinkedToStudyOnly",(List)yesNoList,yesnoRenderer);
 	}
 	
 	protected void attachValidators(){
