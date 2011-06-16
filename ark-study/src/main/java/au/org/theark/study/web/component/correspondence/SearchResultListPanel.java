@@ -64,10 +64,10 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("correspondenceStatusType.name", ""));
 				}
 				
-				if(correspondence.getStudyManager() != null) {
-					item.add(new Label("studyManager", correspondence.getStudyManager()));
+				if(correspondence.getOperator() != null) {
+					item.add(new Label("operator.ldapUserName", correspondence.getOperator().getLdapUserName()));
 				}else {
-					item.add(new Label("studyManager", ""));
+					item.add(new Label("operator.ldapUserName", ""));
 				}
 
 				if(correspondence.getCorrespondenceModeType() != null) {

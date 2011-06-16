@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.correspondence.form;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,11 +19,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -35,11 +39,14 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 
+	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	private DetailPanel detailPanel;
 	private PageableListView<Correspondences> pageableListView;
 	
 	private DropDownChoice<CorrespondenceStatusType> statusTypeChoice;
-	private TextField<String> studyManagerTxtFld;
+	private DropDownChoice<ArkUser> operatorChoice;
 	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
 	private TextArea<String> reasonTxtArea;
@@ -72,8 +79,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private void initialiseSearchForm() {
 
 		initialiseStatusTypeDropDown();
-		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
-		
+		initialiseOperatorDropDown();
 		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
 		datePicker.bind(dateFld);
@@ -89,6 +95,18 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		addSearchComponentsToForm();
 	}
 	
+	
+	private void initialiseOperatorDropDown() {
+
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		
+		Collection<ArkUser> coll = studyService.lookupArkUser(study);
+		List<ArkUser> list = new ArrayList<ArkUser>(coll);
+		
+		ChoiceRenderer<ArkUser> defaultRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
+		operatorChoice = new DropDownChoice<ArkUser>("correspondence.operator", list, defaultRenderer); 
+	}
 
 	private void initialiseStatusTypeDropDown() {
 		
@@ -125,7 +143,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private void addSearchComponentsToForm() {
 
 		add(statusTypeChoice);
-		add(studyManagerTxtFld);
+		add(operatorChoice);
 		add(dateFld);
 		add(timeTxtFld);
 		add(reasonTxtArea);

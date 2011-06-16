@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.correspondence.form;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -17,6 +19,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
@@ -40,7 +43,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private IStudyService studyService;
 	
 	private DropDownChoice<CorrespondenceStatusType> statusTypeChoice;
-	private TextField<String> studyManagerTxtFld;
+	private DropDownChoice<ArkUser> operatorChoice;
 	private DateTextField dateFld;
 	private TextField<String> timeTxtFld;
 	private DropDownChoice<CorrespondenceModeType> modeTypeChoice;
@@ -69,8 +72,9 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	public void initialiseDetailForm() {
 		
 		initialiseStatusTypeDropDown();
-		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
-		studyManagerTxtFld.add(new ArkDefaultFormFocusBehavior());
+		initialiseOperatorDropDown();
+//		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
+//		studyManagerTxtFld.add(new ArkDefaultFormFocusBehavior());
 		// create new DateTextField and assign date format
 		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
@@ -95,9 +99,22 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		List<CorrespondenceStatusType> list = studyService.getCorrespondenceStatusTypes();
 		ChoiceRenderer<CorrespondenceStatusType> defaultRenderer = new ChoiceRenderer<CorrespondenceStatusType>("name", "id");
-		statusTypeChoice = new DropDownChoice<CorrespondenceStatusType>("correspondence.correspondenceStatusType", list, defaultRenderer); 
+		statusTypeChoice = new DropDownChoice<CorrespondenceStatusType>("correspondence.correspondenceStatusType", list, defaultRenderer);
+		statusTypeChoice.add(new ArkDefaultFormFocusBehavior());
 	}
 
+	private void initialiseOperatorDropDown() {
+
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		
+		Collection<ArkUser> coll = studyService.lookupArkUser(study);
+		List<ArkUser> list = new ArrayList<ArkUser>(coll);
+		
+		ChoiceRenderer<ArkUser> defaultRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
+		operatorChoice = new DropDownChoice<ArkUser>("correspondence.operator", list, defaultRenderer); 
+	}
+	
 	private void initialiseModeTypeDropDown() {
 		
 		List<CorrespondenceModeType> list = studyService.getCorrespondenceModeTypes();
@@ -122,7 +139,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	public void addDetailFormComponents() {
 		
 		detailPanelFormContainer.add(statusTypeChoice);
-		detailPanelFormContainer.add(studyManagerTxtFld);
+		detailPanelFormContainer.add(operatorChoice);
 		detailPanelFormContainer.add(dateFld);
 		detailPanelFormContainer.add(timeTxtFld);
 		detailPanelFormContainer.add(modeTypeChoice);
