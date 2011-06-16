@@ -102,7 +102,7 @@ public class BioTransaction implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{

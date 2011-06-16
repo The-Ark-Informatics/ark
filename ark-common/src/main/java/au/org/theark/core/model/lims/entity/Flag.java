@@ -62,7 +62,7 @@ public class Flag implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{

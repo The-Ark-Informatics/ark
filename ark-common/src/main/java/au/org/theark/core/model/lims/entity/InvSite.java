@@ -71,7 +71,7 @@ public class InvSite implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{
@@ -149,6 +149,7 @@ public class InvSite implements java.io.Serializable
 		this.ldapGroup = ldapGroup;
 	}
 
+	/*
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite")
 	public Set<InvTank> getInvTanks()
 	{
@@ -159,5 +160,5 @@ public class InvSite implements java.io.Serializable
 	{
 		this.invTanks = invTanks;
 	}
-
+	 */
 }

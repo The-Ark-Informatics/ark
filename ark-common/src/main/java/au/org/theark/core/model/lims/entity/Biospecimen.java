@@ -3,7 +3,6 @@ package au.org.theark.core.model.lims.entity;
 // Generated 15/06/2011 1:22:58 PM by Hibernate Tools 3.3.0.GA
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -14,7 +13,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -76,8 +74,11 @@ public class Biospecimen implements java.io.Serializable
 	private Long						withdrawn;
 	private String						status;
 	private String						treatment;
+	
+	/*
 	private Set<InvCell>				invCells				= new HashSet<InvCell>(0);
 	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
+	*/
 
 	public Biospecimen()
 	{
@@ -136,8 +137,10 @@ public class Biospecimen implements java.io.Serializable
 		this.withdrawn = withdrawn;
 		this.status = status;
 		this.treatment = treatment;
+		/*
 		this.invCells = invCells;
 		this.bioTransactions = bioTransactions;
+		*/
 	}
 
 	@Id
@@ -153,7 +156,7 @@ public class Biospecimen implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{
@@ -592,6 +595,7 @@ public class Biospecimen implements java.io.Serializable
 		this.treatment = treatment;
 	}
 
+	/*
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
 	public Set<InvCell> getInvCells()
 	{
@@ -613,5 +617,6 @@ public class Biospecimen implements java.io.Serializable
 	{
 		this.bioTransactions = bioTransactions;
 	}
+	*/
 
 }

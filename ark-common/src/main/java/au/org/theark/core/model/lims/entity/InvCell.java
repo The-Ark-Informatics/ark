@@ -24,32 +24,28 @@ import au.org.theark.core.model.Constants;
 public class InvCell implements java.io.Serializable
 {
 
-	private Long				id;
-	private String			timestamp;
-	private InvTray		invTray;
-	private Biospecimen	biospecimen;
-	private Integer		patientId;
-	private Integer		deleted;
-	private Integer		rowno;
-	private Integer		colno;
-	private String			status;
+	private Long	id;
+	private String	timestamp;
+	private InvBox	invBox;
+	private Long	deleted;
+	private Long	rowno;
+	private Long	colno;
+	private String	status;
 
 	public InvCell()
 	{
 	}
 
-	public InvCell(Long id, InvTray invTray)
+	public InvCell(Long id, InvBox invTray)
 	{
 		this.id = id;
-		this.invTray = invTray;
+		this.invBox = invTray;
 	}
 
-	public InvCell(Long id, InvTray invTray, Biospecimen biospecimen, Integer patientId, Integer deleted, Integer rowno, Integer colno, String status)
+	public InvCell(Long id, InvBox invTray, Long deleted, Long rowno, Long colno, String status)
 	{
 		this.id = id;
-		this.invTray = invTray;
-		this.biospecimen = biospecimen;
-		this.patientId = patientId;
+		this.invBox = invTray;
 		this.deleted = deleted;
 		this.rowno = rowno;
 		this.colno = colno;
@@ -69,7 +65,7 @@ public class InvCell implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{
@@ -82,69 +78,46 @@ public class InvCell implements java.io.Serializable
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "TRAY_ID", nullable = false)
-	public InvTray getInvTray()
+	@JoinColumn(name = "BOX_ID", nullable = false)
+	public InvBox getInvBox()
 	{
-		return this.invTray;
+		return this.invBox;
 	}
 
-	public void setInvTray(InvTray invTray)
+	public void setInvBox(InvBox invBox)
 	{
-		this.invTray = invTray;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BIOSPECIMEN_ID")
-	public Biospecimen getBiospecimen()
-	{
-		return this.biospecimen;
-	}
-
-	public void setBiospecimen(Biospecimen biospecimen)
-	{
-		this.biospecimen = biospecimen;
-	}
-
-	@Column(name = "PATIENT_ID")
-	public Integer getPatientId()
-	{
-		return this.patientId;
-	}
-
-	public void setPatientId(Integer patientId)
-	{
-		this.patientId = patientId;
+		this.invBox = invBox;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
+	public Long getDeleted()
 	{
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
+	public void setDeleted(Long deleted)
 	{
 		this.deleted = deleted;
 	}
 
 	@Column(name = "ROWNO")
-	public Integer getRowno()
+	public Long getRowno()
 	{
 		return this.rowno;
 	}
 
-	public void setRowno(Integer rowno)
+	public void setRowno(Long rowno)
 	{
 		this.rowno = rowno;
 	}
 
 	@Column(name = "COLNO")
-	public Integer getColno()
+	public Long getColno()
 	{
 		return this.colno;
 	}
 
-	public void setColno(Integer colno)
+	public void setColno(Long colno)
 	{
 		this.colno = colno;
 	}

@@ -45,7 +45,7 @@ public class InvTank implements java.io.Serializable
 	private Date			commissiondate;
 	private Date			lastservicedate;
 	private String			description;
-	private Set<InvBox>	invBoxes	= new HashSet<InvBox>(0);
+	private Set<InvTray>	invTrays	= new HashSet<InvTray>(0);
 
 	public InvTank()
 	{
@@ -59,7 +59,7 @@ public class InvTank implements java.io.Serializable
 	}
 
 	public InvTank(Long id, InvSite invSite, Integer deleted, String location, String status, Integer capacity, String lastservicenote, String name, Integer available, Date decommissiondate,
-			Date commissiondate, Date lastservicedate, String description, Set<InvBox> invBoxes)
+			Date commissiondate, Date lastservicedate, String description, Set<InvTray> invTrays)
 	{
 		this.id = id;
 		this.invSite = invSite;
@@ -74,7 +74,7 @@ public class InvTank implements java.io.Serializable
 		this.commissiondate = commissiondate;
 		this.lastservicedate = lastservicedate;
 		this.description = description;
-		this.invBoxes = invBoxes;
+		this.invTrays = invTrays;
 	}
 
 	@Id
@@ -90,7 +90,7 @@ public class InvTank implements java.io.Serializable
 		this.id = id;
 	}
 
-	@Version
+	
 	@Column(name = "TIMESTAMP", length = 55)
 	public String getTimestamp()
 	{
@@ -238,15 +238,16 @@ public class InvTank implements java.io.Serializable
 		this.description = description;
 	}
 
+	/*
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invTank")
-	public Set<InvBox> getInvBoxes()
+	public Set<InvTray> getInvTrays()
 	{
-		return this.invBoxes;
+		return this.invTrays;
 	}
 
-	public void setInvBoxes(Set<InvBox> invBoxes)
+	public void setInvTrays(Set<InvTray> invTrays)
 	{
-		this.invBoxes = invBoxes;
+		this.invTrays = invTrays;
 	}
-
+	*/
 }

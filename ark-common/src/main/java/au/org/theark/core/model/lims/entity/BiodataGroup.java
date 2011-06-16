@@ -85,6 +85,7 @@ public class BiodataGroup implements java.io.Serializable
 		this.domain = domain;
 	}
 
+	/*
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataGroup")
 	public Set<BiodataGroupCriteria> getBiodataGroupCriterias()
 	{
@@ -106,5 +107,6 @@ public class BiodataGroup implements java.io.Serializable
 	{
 		this.biodataFieldGroups = biodataFieldGroups;
 	}
+	*/
 
 }
