@@ -45,7 +45,7 @@ import au.org.theark.lims.web.component.bioCollection.DetailPanel;
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unchecked", "unused" })
+@SuppressWarnings( { "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<LimsVO>
 {
 	@SpringBean(name = Constants.LIMS_SERVICE)
