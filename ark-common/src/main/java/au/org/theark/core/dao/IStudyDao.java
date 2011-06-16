@@ -3,6 +3,7 @@ package au.org.theark.core.dao;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -272,4 +273,14 @@ public interface IStudyDao {
 	 * @return List of ConsentStatus
 	 */
 	public List<ConsentStatus> getRecordableConsentStatus();
+
+	/**
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
+	 * a subject or contact.
+	 * @param personId
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException;
 }

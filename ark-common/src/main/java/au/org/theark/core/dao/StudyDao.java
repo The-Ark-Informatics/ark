@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -756,5 +757,31 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
 		criteria.add(Restrictions.not(Restrictions.ilike("name", "Not Consented", MatchMode.ANYWHERE)));
 		return criteria.list();
+	}
+
+
+	/**
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can
+	 * represent a subject or contact.
+	 * 
+	 * @param personId
+	 * @return
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
+	 */
+	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException
+	{
+
+		Criteria personCriteria = getSession().createCriteria(Person.class);
+		personCriteria.add(Restrictions.eq("id", personId));
+		List<Person> listOfPerson = personCriteria.list();
+		if (listOfPerson != null && listOfPerson.size() > 0)
+		{
+			return listOfPerson.get(0);
+		}
+		else
+		{
+			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
+		}
 	}
 }
