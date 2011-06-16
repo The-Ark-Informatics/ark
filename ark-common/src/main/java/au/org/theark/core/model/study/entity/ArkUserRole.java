@@ -46,7 +46,7 @@ public class ArkUserRole implements Serializable{
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_ROLE_ID")
 	public ArkRole getArkRole() {
 		return arkRole;
@@ -56,7 +56,7 @@ public class ArkUserRole implements Serializable{
 		this.arkRole = arkRole;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ARK_MODULE_ID")
 	public ArkModule getArkModule() {
 		return arkModule;
