@@ -365,7 +365,7 @@ public class BioCollection implements java.io.Serializable
 		this.pathlabno = pathlabno;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "collection")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bioCollection")
 	public Set<Biospecimen> getBiospecimens()
 	{
 		return this.biospecimens;
