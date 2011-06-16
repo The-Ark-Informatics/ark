@@ -26,7 +26,7 @@ public class Correspondences implements Serializable {
 	private Person person;
 	private Study study;
 	private CorrespondenceStatusType correspondenceStatusType;
-	private String studyManager;
+	private ArkUser operator;
 	private Date date;
 	private String time;
 	private String reason;
@@ -79,13 +79,14 @@ public class Correspondences implements Serializable {
 		this.correspondenceStatusType = correspondenceStatusType;
 	}
 	
-	@Column(name = "STUDY_MANAGER", length = 255)
-	public String getStudyManager() {
-		return studyManager;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ARK_USER_ID")
+	public ArkUser getOperator() {
+		return operator;
 	}
 	
-	public void setStudyManager(String studyManager) {
-		this.studyManager = studyManager;
+	public void setOperator(ArkUser operator) {
+		this.operator = operator;
 	}
 	
 	@Temporal(TemporalType.DATE)
