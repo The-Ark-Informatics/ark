@@ -12,13 +12,13 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="id">
-							<wicket:message key="phenoCollection.id">Collection ID:</wicket:message>
+							<wicket:message key="bioCollection.id">Collection ID:</wicket:message>
 						</label>
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.id" type="text" />
+						<input wicket:id="bioCollection.id" type="text" />
 					</div>
 				</div>
 				
@@ -26,64 +26,30 @@
 				
 				<div id="fldLabel">
 					<div class="label">
-						<label for="name"><wicket:message	key="phenoCollection.name">Name:</wicket:message></label>
+						<label for="name"><wicket:message	key="bioCollection.name">Name:</wicket:message></label>
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.name" type="text" /> 
+						<input wicket:id="bioCollection.name" type="text" /> 
 					</div>
 				</div>
 				
 				<div id="detailPanelContentRight">&nbsp;</div>
 			
 				<div id="detailPanelBreaker">&nbsp;</div>
-				
-				<div id="panelContentLeft">&nbsp;</div>
-				
-				<div id="fldLabel">
-					<div class="label">
-						<label for="status"><wicket:message	key="phenoCollection.status">Status:</wicket:message></label> 
-					</div>
-				</div>
-				<div id="fldControl">
-					<div class="label">
-						<select wicket:id="phenoCollection.status">
-		       				<option>Created</option>
-							<option>Active</option>
-							<option>Disabled</option>
-							<option>Expired</option>
-		       			</select>
-			       	</div>
-				</div>
-				
-				<div id="panelMargin">&nbsp;</div>
-							
-				<div id="fldLabel">
-		 			<div class="label">
-						<label for="fieldDescription"><wicket:message key="phenoCollection.description">Description:</wicket:message></label>
-		 			</div> 
-		 		</div> 			       			
-				
-				<div id="fldControl">
-					<div class="label">
-						<textarea wicket:id="phenoCollection.description" cols="25"></textarea> 
-					</div>
-				</div>
-				
-				<div id="detailPanelBreaker">&nbsp;</div>
 		       	
 		       	<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="startDate"><wicket:message key="phenoCollection.startDate">Start Date:</wicket:message></label>
+						<label for="bioCollection.collectionDate"><wicket:message key="bioCollection.collectionDate">Collection Date:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.startDate"  type="text" maxLength="10"/>
+						<input wicket:id="bioCollection.collectionDate"  type="text" maxLength="10"/>
 					</div>
 				</div>
 		       	   		       			
@@ -91,32 +57,38 @@
 						
 				<div id="fldLabel">
 		 			<div class="label">
-						<label for="endDate"><wicket:message key="phenoCollection.endDate">End Date:</wicket:message></label>
+						<label for="bioCollection.surgeryDate"><wicket:message key="bioCollection.surgeryDate">Surgery Date:</wicket:message></label>
 		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="phenoCollection.endDate"  type="text" maxLength="10"/>
+						<input wicket:id="bioCollection.surgeryDate"  type="text" maxLength="10"/>
 					</div>
 				</div>
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
-		       	
-		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
 				
 				<div id="fldLabel">
-					<div class="label">
-						<wicket:message	key="phenoCollection.fieldPalette">Fields in Collection:</wicket:message>
-					</div>
-		 			<span wicket:id="phenoCollection.fieldPalette"></span> 
+		 			<div class="label">
+						<label for="bioCollection.comments"><wicket:message key="bioCollection.comments">Comments:</wicket:message></label>
+		 			</div> 
 		 		</div> 			       			
 				
 				<div id="fldControl">
 					<div class="label">
-						&nbsp;
+						<textarea wicket:id="bioCollection.comments" cols="25"></textarea> 
 					</div>
 				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+							
+				<!--
+					Empty place
+				-->
+				
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
@@ -150,8 +122,6 @@
 						<input wicket:id="cancel" type="submit"	wicket:message="value:button.cancel" />
 						<div id="panelMargin">&nbsp;</div>
 						<input wicket:id="delete" type="submit" wicket:message="value:button.delete" />&nbsp;
-						<div id="panelMargin">&nbsp;</div>
-						<input wicket:id="clearCollection" type="submit" wicket:message="value:button.clearCollection" />&nbsp;
 				  	</div>
 				</div>
 			</div>

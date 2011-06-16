@@ -5,33 +5,28 @@
 		<tr>
 			<th width="2%">&nbsp;</th>
 			<th width="5%">
-				<label for="id">
-					<wicket:message	key="phenoCollection.id">Collection ID:</wicket:message>
+				<label for="bioCollection.id">
+					<wicket:message	key="bioCollection.id">Collection ID:</wicket:message>
 				</label>
 			</th>
 			<th width="10%">
-				<label for="name">
-					<wicket:message	key="phenoCollection.name">Collection Name:</wicket:message>
+				<label for="bioCollection.name">
+					<wicket:message	key="bioCollection.name">Collection Name:</wicket:message>
 				</label>
 			</th>
 			<th width="10%">
-				<label for="status">
-					<wicket:message	key="phenoCollection.status">Status:</wicket:message>
+				<label for="bioCollection.collectionDate">
+					<wicket:message	key="bioCollection.collectionDate">Collection Date:</wicket:message>
 				</label>
 			</th>
 			<th width="10%">
-				<label for="description">
-					<wicket:message	key="phenoCollection.description">Description:</wicket:message>
+				<label for="bioCollection.surgeryDate">
+					<wicket:message	key="bioCollection.surgeryDate">Surgery Date:</wicket:message>
 				</label>
 			</th>
-			<th width="10%">
-				<label for="startDate">
-					<wicket:message	key="phenoCollection.startDate">Start Date:</wicket:message>
-				</label>
-			</th>
-			<th width="10%">
-				<label for="expiryDate">
-					<wicket:message	key="phenoCollection.endDate">End Date:</wicket:message>
+			<th width="30%">
+				<label for="bioCollection.comments">
+					<wicket:message	key="bioCollection.comments">Comments:</wicket:message>
 				</label>
 			</th>
 			<th width="2%">&nbsp;</th>
@@ -40,30 +35,27 @@
 		<tr wicket:id="collectionList">
 			<td width="2%">&nbsp;</td>
 			<td width="5%">
-				<span wicket:id="phenoCollection.id">100</span>
+				<span wicket:id="bioCollection.id">ID</span>
 			</td>
 			<td width="10%">
-			  <a href="#"wicket:id="phenoCollection.name">
+			  <a href="#"wicket:id="bioCollection.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
 			</td>
 			<td width="10%">
-				<span wicket:id="phenoCollection.status">Status</span>
+				<span wicket:id="bioCollection.collectionDate"></span>
 			</td>
 			<td width="10%">
-				<span wicket:id="phenoCollection.description">Description</span>
+				<span wicket:id="bioCollection.surgeryDate"></span>
 			</td>
-			<td width="10%">
-				<span wicket:id="phenoCollection.startDate"></span>
-			</td>
-			<td width="10%">
-				<span wicket:id="phenoCollection.endDate"></span>
+			<td width="30%">
+				<span wicket:id="bioCollection.comments">Comments</span>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 		<tr>
 			<td width="2%">&nbsp;</td>
-		 	<td width="96%" colspan="6"><span wicket:id="navigator" class="a"></span></td>
+		 	<td width="96%" colspan="5"><span wicket:id="navigator" class="a"></span></td>
 			<td width="2%">&nbsp;</td>
 		</tr>
 	</table>

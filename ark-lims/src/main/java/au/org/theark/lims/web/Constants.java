@@ -3,11 +3,18 @@ package au.org.theark.lims.web;
 public class Constants
 {
 	public static final String	LIMS_MAIN_TAB								= "LIMS";
-	public static final String	TAB_MODULE_LIMS							= "tab.module.lims";
+	
+	/* Tab names */
 	public static final String	MENU_LIMS_SUBMENU							= "limsSubMenus";
 	public static final String	TAB_BIO_COLLECTION						= "Collection";
 	public static final String	TAB_BIOSPECIMEN							= "Biospecimen";
 	public static final String	TAB_INVENTORY								= "Inventory";
+	
+	/* Resource Keys */
+	public static final String	TAB_MODULE_LIMS							= "tab.module.lims";
+	public static final String TAB_MODULE_LIMS_COLLECTION = "tab.module.lims.collection";
+	
+	
 
 	public static final String	LIMS_SERVICE								= "limsService";
 

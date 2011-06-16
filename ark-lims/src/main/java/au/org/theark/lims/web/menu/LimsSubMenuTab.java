@@ -58,6 +58,11 @@ public class LimsSubMenuTab extends Panel
 		menuModule.setModuleName(au.org.theark.core.Constants.TAB_SUBJECT_DETAIL);
 		menuModule.setResourceKey(au.org.theark.core.Constants.TAB_MODULE_LIMS_SUBJECT_DETAIL);
 		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_BIO_COLLECTION);
+		menuModule.setResourceKey(Constants.TAB_MODULE_LIMS_COLLECTION);
+		moduleTabs.add(menuModule);
 
 		for (final MenuModule moduleName : moduleTabs)
 		{

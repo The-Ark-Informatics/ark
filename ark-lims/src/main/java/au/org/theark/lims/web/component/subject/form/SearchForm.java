@@ -96,6 +96,9 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		
+		// Disable New button in LIMS
+		newButton.setVisible(false);
 	}
 	
 	protected void addSearchComponentsToForm(){

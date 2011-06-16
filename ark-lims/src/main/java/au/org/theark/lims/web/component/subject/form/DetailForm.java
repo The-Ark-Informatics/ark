@@ -8,7 +8,6 @@ package au.org.theark.lims.web.component.subject.form;
 
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -24,8 +23,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
 
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
@@ -56,7 +53,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 7474337471880286417L;
+	private static final long	serialVersionUID	= 6510243238571556231L;
 
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void> iArkCommonService;
@@ -359,7 +356,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 	}
 	
 	public void addDetailFormComponents(){
-
 		detailPanelFormContainer.add(subjectUIDTxtFld);
 		detailPanelFormContainer.add(titleTypeDdc);
 		detailPanelFormContainer.add(firstNameTxtFld);
@@ -384,24 +380,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
 		detailPanelFormContainer.add(wmcPreferredEmailContainer);
 		detailPanelFormContainer.add(otherEmailTxtFld);
-		
-		//Add the supposed-to-be custom controls into the form container.
-		detailPanelFormContainer.add(amdrifIdTxtFld);
-		detailPanelFormContainer.add(studyApproachDate);
-		detailPanelFormContainer.add(yearOfFirstMamogramTxtFld);
-		detailPanelFormContainer.add(yearOfRecentMamogramTxtFld);
-		detailPanelFormContainer.add(totalNumberOfMamogramsTxtFld);
-		detailPanelFormContainer.add(streetAddressTxtFld);
-		detailPanelFormContainer.add(cityTxtFld);
-		detailPanelFormContainer.add(postCodeTxtFld);
-		detailPanelFormContainer.add(countryChoice);
-		detailPanelFormContainer.add(countryStateSelector);//This contains the drop-downn for State
-		detailPanelFormContainer.add(consentToActiveContactDdc);
-		detailPanelFormContainer.add(consentToUseDataDdc);
-		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
-		detailPanelFormContainer.add(consentStatusChoice);
-		detailPanelFormContainer.add(consentTypeChoice);
-		detailPanelFormContainer.add(consentDateTxtFld);
 	}
 
 	/* (non-Javadoc)
@@ -421,10 +399,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		subjectVO.getLinkSubjectStudy().setStudy(study);
 		containerForm.setModelObject(subjectVO);
-		
-		stateChoice.setVisible(true);
-		otherState.setVisible(false);
-		target.addComponent(countryStateSelector);
 	}
 	
 	/* (non-Javadoc)
@@ -432,14 +406,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
-		
-		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
-		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
-		consentDateTxtFld.setLabel(new StringResourceModel("consentDate",this,null));
-		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum",this,null));
-		preferredEmailTxtFld.add(EmailAddressValidator.getInstance());
-		otherEmailTxtFld.add(EmailAddressValidator.getInstance());
 	}
 
 	private boolean validateCustomFields(Long fieldToValidate,String message, AjaxRequestTarget target){

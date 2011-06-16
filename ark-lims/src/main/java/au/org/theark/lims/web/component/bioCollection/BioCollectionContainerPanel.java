@@ -1,7 +1,6 @@
 package au.org.theark.lims.web.component.bioCollection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -12,7 +11,7 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -155,7 +154,9 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 		if (sessionStudyId != null && sessionStudyId > 0)
 		{
 			Study study = iArkCommonService.getStudy(sessionStudyId);
-			containerForm.getModelObject().getBioCollection().setStudy(study);
+			BioCollection bioCollection = new BioCollection();
+			bioCollection.setStudy(study);
+			containerForm.getModelObject().setBioCollection(bioCollection);
 			try
 			{
 				limsCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());

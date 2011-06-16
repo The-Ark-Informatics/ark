@@ -36,28 +36,28 @@ import au.org.theark.lims.web.component.bioCollection.DetailPanel;
 public class SearchForm extends AbstractSearchForm<LimsVO>
 {
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService									iLimsService;
+	private ILimsService								iLimsService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService									iArkCommonService;
+	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<BioCollection>				listView;
-	private CompoundPropertyModel<LimsVO>	cpmModel;
-	private TextField<String>									limsCollectionIdTxtFld;
-	private TextArea<String>									commentsTxtAreaFld;
-	private DateTextField									collectionDateTxtFld;
-	private DateTextField									surgeryDateTxtFld;
-	private DetailPanel											detailPanel;
-	private Long 													sessionStudyId;
-	private WebMarkupContainer arkContextMarkup;
+	private PageableListView<BioCollection>	listView;
+	private CompoundPropertyModel<LimsVO>		cpmModel;
+	private TextField<String>						idTxtFld;
+	private TextField<String>						nameTxtFld;
+	private TextArea<String>						commentsTxtAreaFld;
+	private DateTextField							collectionDateTxtFld;
+	private DateTextField							surgeryDateTxtFld;
+	private DetailPanel								detailPanel;
+	private Long										sessionStudyId;
+	private WebMarkupContainer						arkContextMarkup;
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> model, PageableListView<BioCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
-			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
-			WebMarkupContainer arkContextMarkup)
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> model, PageableListView<BioCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup)
 	{
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
@@ -67,9 +67,9 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		this.detailPanel = detailPanel;
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
-		
-		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 
 	/**
@@ -84,26 +84,27 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 
 	public void initialiseFieldForm()
 	{
-		limsCollectionIdTxtFld = new TextField<String>("collectionId");
-		commentsTxtAreaFld = new TextArea<String>("comments");
-		collectionDateTxtFld = new DateTextField("collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		surgeryDateTxtFld = new DateTextField("surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		 
-		ArkDatePicker startDatePicker = new ArkDatePicker(); 
+		idTxtFld = new TextField<String>("bioCollection.id");
+		nameTxtFld = new TextField<String>("bioCollection.name");
+		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
+		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
+
+		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(collectionDateTxtFld);
 		collectionDateTxtFld.add(startDatePicker);
-		
-		ArkDatePicker endDatePicker = new ArkDatePicker(); 
+
+		ArkDatePicker endDatePicker = new ArkDatePicker();
 		endDatePicker.bind(surgeryDateTxtFld);
 		surgeryDateTxtFld.add(endDatePicker);
-		
+
 		addFieldComponents();
 	}
 
 	private void addFieldComponents()
 	{
-		add(limsCollectionIdTxtFld);
-		add(commentsTxtAreaFld);
+		add(idTxtFld);
+		add(nameTxtFld);
 		add(collectionDateTxtFld);
 		add(surgeryDateTxtFld);
 	}
@@ -113,13 +114,13 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	{
 		LimsVO limsVo = getModelObject();
 		limsVo.setMode(au.org.theark.core.Constants.MODE_NEW);
-		limsVo.getBioCollection().setId(null);	//must ensure Id is blank onNew
+		limsVo.getBioCollection().setId(null); // must ensure Id is blank onNew
 
 		// Set study for the new collection
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		limsVo.getBioCollection().setStudy(study);
-		
+
 		setModelObject(limsVo);
 		preProcessDetailPanel(target);
 	}
@@ -159,27 +160,30 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);// For ajax this is required so
 	}
-	
+
 	protected boolean isSecure(String actionType)
 	{
 		boolean flag = false;
 		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
 		{
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();		
-			if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
+			SecurityManager securityManager = ThreadContext.getSecurityManager();
+			Subject currentUser = SecurityUtils.getSubject();
+			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
+			{
 				flag = true;
-			};
+			}
+			;
 		}
-		else{
+		else
+		{
 			flag = true;
 		}
 		return flag;
 	}
 
 	/**
-	 * @param arkContextMarkup the arkContextMarkup to set
+	 * @param arkContextMarkup
+	 *           the arkContextMarkup to set
 	 */
 	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
 	{

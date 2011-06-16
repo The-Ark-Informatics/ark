@@ -223,16 +223,11 @@ public class SearchResultsPanel extends Panel{
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
+				//contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
-				SearchPanel searchPanel = (SearchPanel) searchPanelContainer.get("searchComponentPanel");
-				SearchForm sfs = (SearchForm) searchPanel.get("searchForm");
-				List<Country> countryList = iArkCommonService.getCountries();
-				if(subjectFromBackend.getLinkSubjectStudy().getCountry() ==  null){
-					subjectFromBackend.getLinkSubjectStudy().setCountry(countryList.get(0));
-				}
-				sfs.updateDetailFormPrerender(subjectFromBackend.getLinkSubjectStudy());
+				// Set SubjectUID into context
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);

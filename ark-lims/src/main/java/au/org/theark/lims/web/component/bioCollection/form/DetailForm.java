@@ -26,10 +26,13 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.Status;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.AjaxDeleteButton;
@@ -48,6 +51,9 @@ import au.org.theark.lims.web.component.bioCollection.DetailPanel;
 @SuppressWarnings( { "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<LimsVO>
 {
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService iArkCommonService;
+	
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService			iLimsService;
 	
@@ -56,6 +62,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	private int								mode;
 
 	private TextField<String>			idTxtFld;
+	private TextField<String>			nameTxtFld;
 	private TextField<String>			collectionIdTxtFld;
 	private TextArea<String>			commentsTxtAreaFld;
 	private DateTextField			collectionDateTxtFld;
@@ -105,12 +112,11 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 
 	public void initialiseDetailForm()
 	{
-		idTxtFld = new TextField<String>("id");
-		collectionIdTxtFld = new TextField<String>("collectionId");
-		collectionIdTxtFld.add(new ArkDefaultFormFocusBehavior());
-		commentsTxtAreaFld = new TextArea<String>("comments");
-		collectionDateTxtFld = new DateTextField("collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		surgeryDateTxtFld = new DateTextField("surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);		 
+		idTxtFld = new TextField<String>("bioCollection.id");
+		nameTxtFld = new TextField<String>("bioCollection.name");
+		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
+		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);	 
 
 		ArkDatePicker startDatePicker = new ArkDatePicker(); 
 		startDatePicker.bind(collectionDateTxtFld);
@@ -126,13 +132,13 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	
 	protected void attachValidators()
 	{
-		collectionIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.limsCollection.collectionId.required", this, new Model<String>("Name")));
+		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.name.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents()
 	{
 		detailPanelFormContainer.add(idTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(collectionIdTxtFld);
+		detailPanelFormContainer.add(nameTxtFld);
 		detailPanelFormContainer.add(commentsTxtAreaFld);
 		detailPanelFormContainer.add(collectionDateTxtFld);
 		detailPanelFormContainer.add(surgeryDateTxtFld);
@@ -142,23 +148,37 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target)
 	{
-
-		if (containerForm.getModelObject().getBioCollection().getId() == null)
-		{
-			// Save
-			iLimsService.createBioCollection(containerForm.getModelObject());
-			this.info("Phenotypic collection " + containerForm.getModelObject().getBioCollection().getName() + " was created successfully");
-			processErrors(target);
-		}
-		else
-		{
-			// Update
-			iLimsService.updateBioCollection(containerForm.getModelObject());
-			this.info("Phenotypic collection " + containerForm.getModelObject().getBioCollection().getName() + " was updated successfully");
-			processErrors(target);
-		}
+		// Subject in context
+		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		
-		onSavePostProcess(target);
+		try
+		{
+			linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
+			containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);
+
+			if (containerForm.getModelObject().getBioCollection().getId() == null)
+			{
+				// Save
+				iLimsService.createBioCollection(containerForm.getModelObject());
+				this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was created successfully");
+				processErrors(target);
+			}
+			else
+			{
+				// Update
+				iLimsService.updateBioCollection(containerForm.getModelObject());
+				this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was updated successfully");
+				processErrors(target);
+			}
+			
+			onSavePostProcess(target);
+		}
+		catch (EntityNotFoundException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void onCancel(AjaxRequestTarget target)
@@ -202,7 +222,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	{
 		//TODO:(CE) To handle Business and System Exceptions here
 		iLimsService.deleteBioCollection(containerForm.getModelObject());
-		this.info("LIMS collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
+		this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
    		
    	// Display delete confirmation message
    	target.addComponent(feedBackPanel);

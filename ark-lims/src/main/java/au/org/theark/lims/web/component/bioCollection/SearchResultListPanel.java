@@ -72,56 +72,56 @@ public class SearchResultListPanel extends Panel
 			@Override
 			protected void populateItem(final ListItem<BioCollection> item)
 			{
-				BioCollection limsCollection = item.getModelObject();
+				BioCollection bioCollection = item.getModelObject();
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
-				/* The phenoCollection ID */
-				if (limsCollection.getId() != null)
+				/* The ID */
+				if (bioCollection.getId() != null)
 				{
 					// Add the id component here
-					item.add(new Label("id", limsCollection.getId().toString()));
+					item.add(new Label("bioCollection.id", bioCollection.getId().toString()));
 				}
 				else
 				{
-					item.add(new Label("id", ""));
+					item.add(new Label("bioCollection.id", ""));
 				}
 
 				// Component Name Link
-				item.add(buildLink(limsCollection));
+				item.add(buildLink(bioCollection));
 
 				// TODO when displaying text escape any special characters
-				if (limsCollection.getComments() != null)
+				if (bioCollection.getComments() != null)
 				{
-					item.add(new Label("comments", limsCollection.getComments()));// the ID here must match
+					item.add(new Label("bioCollection.comments", bioCollection.getComments()));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("comments", ""));// the ID here must match the ones in mark-up
+					item.add(new Label("bioCollection.comments", ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Start Date
-				if (limsCollection.getCollectionDate() != null)
+				if (bioCollection.getCollectionDate() != null)
 				{
-					item.add(new Label("collectionDate", simpleDateFormat.format(limsCollection.getCollectionDate())));// the ID here must match
+					item.add(new Label("bioCollection.collectionDate", simpleDateFormat.format(bioCollection.getCollectionDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("collectionDate", ""));// the ID here must match the ones in mark-up
+					item.add(new Label("bioCollection.collectionDate", ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
 				// Expiry Date
-				if (limsCollection.getSurgeryDate() != null)
+				if (bioCollection.getSurgeryDate() != null)
 				{
-					item.add(new Label("surgeryDate", simpleDateFormat.format(limsCollection.getSurgeryDate())));// the ID here must match
+					item.add(new Label("bioCollection.surgeryDate", simpleDateFormat.format(bioCollection.getSurgeryDate())));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("surgeryDate", ""));// the ID here must match the ones in mark-up
+					item.add(new Label("bioCollection.surgeryDate", ""));// the ID here must match the ones in mark-up
 				}
 
 				/* For the alternative stripes */
@@ -141,7 +141,7 @@ public class SearchResultListPanel extends Panel
 
 	private AjaxLink buildLink(final BioCollection limsCollection)
 	{
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("limsCollection.name")
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("bioCollection.name")
 		{
 			@Override
 			public void onClick(AjaxRequestTarget target)
