@@ -21,7 +21,7 @@ import au.org.theark.core.model.Constants;
 public class Attachment implements java.io.Serializable
 {
 
-	private int			id;
+	private Long		id;
 	private String		timestamp;
 	private Integer	deleted;
 	private String		attachedby;
@@ -34,14 +34,14 @@ public class Attachment implements java.io.Serializable
 	{
 	}
 
-	public Attachment(int id, String attachedby, String domain)
+	public Attachment(Long id, String attachedby, String domain)
 	{
 		this.id = id;
 		this.attachedby = attachedby;
 		this.domain = domain;
 	}
 
-	public Attachment(int id, Integer deleted, String attachedby, String fileName, String comments, String domain, String na)
+	public Attachment(Long id, Integer deleted, String attachedby, String fileName, String comments, String domain, String na)
 	{
 		this.id = id;
 		this.deleted = deleted;
@@ -53,15 +53,15 @@ public class Attachment implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="attachment_generator", sequenceName="ATTACHMENT_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "attachment_generator")
+	@SequenceGenerator(name = "attachment_generator", sequenceName = "ATTACHMENT_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "attachment_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public int getId()
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

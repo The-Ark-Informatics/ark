@@ -26,7 +26,7 @@ import au.org.theark.core.model.Constants;
 public class InvSite implements java.io.Serializable
 {
 
-	private int				id;
+	private Long				id;
 	private String			timestamp;
 	private Integer		deleted;
 	private String			contact;
@@ -40,13 +40,13 @@ public class InvSite implements java.io.Serializable
 	{
 	}
 
-	public InvSite(int id, String name)
+	public InvSite(Long id, String name)
 	{
 		this.id = id;
 		this.name = name;
 	}
 
-	public InvSite(int id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, Set<InvTank> invTanks)
+	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, Set<InvTank> invTanks)
 	{
 		this.id = id;
 		this.deleted = deleted;
@@ -59,14 +59,14 @@ public class InvSite implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="invsite_generator", sequenceName="INVSITE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invsite_generator")
-	public int getId()
+	@SequenceGenerator(name = "invsite_generator", sequenceName = "INVSITE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invsite_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

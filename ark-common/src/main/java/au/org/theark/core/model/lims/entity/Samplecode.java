@@ -20,7 +20,7 @@ import au.org.theark.core.model.Constants;
 public class Samplecode implements java.io.Serializable
 {
 
-	private int			id;
+	private Long		id;
 	private int			studyId;
 	private String		sampletype;
 	private String		samplesubtype;
@@ -33,14 +33,14 @@ public class Samplecode implements java.io.Serializable
 	{
 	}
 
-	public Samplecode(int id, int studyId, String sampletype)
+	public Samplecode(Long id, int studyId, String sampletype)
 	{
 		this.id = id;
 		this.studyId = studyId;
 		this.sampletype = sampletype;
 	}
 
-	public Samplecode(int id, int studyId, String sampletype, String samplesubtype, Integer sampletypeId, String code, Integer order, String childcode)
+	public Samplecode(Long id, int studyId, String sampletype, String samplesubtype, Integer sampletypeId, String code, Integer order, String childcode)
 	{
 		this.id = id;
 		this.studyId = studyId;
@@ -53,14 +53,14 @@ public class Samplecode implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="samplecode_generator", sequenceName="SAMPLECODE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "samplecode_generator")
-	public int getId()
+	@SequenceGenerator(name = "samplecode_generator", sequenceName = "SAMPLECODE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "samplecode_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

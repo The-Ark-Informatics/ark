@@ -23,7 +23,7 @@ import au.org.theark.core.model.Constants;
 public class BiodataFieldGroup implements java.io.Serializable
 {
 
-	private int				id;
+	private Long				id;
 	private BiodataGroup	biodataGroup;
 	private BiodataField	biodataField;
 	private Integer		position;
@@ -32,14 +32,14 @@ public class BiodataFieldGroup implements java.io.Serializable
 	{
 	}
 
-	public BiodataFieldGroup(int id, BiodataGroup biodataGroup, BiodataField biodataField)
+	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField)
 	{
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataField = biodataField;
 	}
 
-	public BiodataFieldGroup(int id, BiodataGroup biodataGroup, BiodataField biodataField, Integer position)
+	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField, Integer position)
 	{
 		this.id = id;
 		this.biodataGroup = biodataGroup;
@@ -48,14 +48,14 @@ public class BiodataFieldGroup implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="biodatafieldgroup_generator", sequenceName="BIODATAFIELDGROUP_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatafieldgroup_generator")
-	public int getId()
+	@SequenceGenerator(name = "biodatafieldgroup_generator", sequenceName = "BIODATAFIELDGROUP_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatafieldgroup_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

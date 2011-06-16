@@ -25,7 +25,7 @@ import au.org.theark.core.model.Constants;
 public class Appointments implements java.io.Serializable
 {
 
-	private int			id;
+	private Long		id;
 	private String		timestamp;
 	private Integer	deleted;
 	private String		purpose;
@@ -41,14 +41,14 @@ public class Appointments implements java.io.Serializable
 	{
 	}
 
-	public Appointments(int id, int patientId, Date date)
+	public Appointments(Long id, int patientId, Date date)
 	{
 		this.id = id;
 		this.patientId = patientId;
 		this.date = date;
 	}
 
-	public Appointments(int id, Integer deleted, String purpose, String notify, int patientId, Date time, Date date, Date alertDate, Integer surveyId, String sentTimestamp)
+	public Appointments(Long id, Integer deleted, String purpose, String notify, int patientId, Date time, Date date, Date alertDate, Integer surveyId, String sentTimestamp)
 	{
 		this.id = id;
 		this.deleted = deleted;
@@ -63,15 +63,15 @@ public class Appointments implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="appointments_generator", sequenceName="APPOINTMENTS_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "appontments_generator")
+	@SequenceGenerator(name = "appointments_generator", sequenceName = "APPOINTMENTS_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "appontments_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public int getId()
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

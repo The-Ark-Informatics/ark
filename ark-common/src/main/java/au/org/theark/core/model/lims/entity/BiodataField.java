@@ -25,8 +25,8 @@ import au.org.theark.core.model.Constants;
 public class BiodataField implements java.io.Serializable
 {
 
-	private int								id;
-	private int								typeId;
+	private Long							id;
+	private Long								typeId;
 	private String							format;
 	private String							columnname;
 	private Integer						unitId;
@@ -40,14 +40,14 @@ public class BiodataField implements java.io.Serializable
 	{
 	}
 
-	public BiodataField(int id, int typeId, String columnname)
+	public BiodataField(Long id, Long typeId, String columnname)
 	{
 		this.id = id;
 		this.typeId = typeId;
 		this.columnname = columnname;
 	}
 
-	public BiodataField(int id, int typeId, String format, String columnname, Integer unitId, String lovtype, String domain, String fieldname, Set<Biodata> biodatas,
+	public BiodataField(Long id, Long typeId, String format, String columnname, Integer unitId, String lovtype, String domain, String fieldname, Set<Biodata> biodatas,
 			Set<BiodataFieldGroup> biodataFieldGroups)
 	{
 		this.id = id;
@@ -63,25 +63,25 @@ public class BiodataField implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="biodatafield_generator", sequenceName="BIODATAFIELD_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatafield_generator")
-	public int getId()
+	@SequenceGenerator(name = "biodatafield_generator", sequenceName = "BIODATAFIELD_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatafield_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
 
 	@Column(name = "TYPE_ID", nullable = false)
-	public int getTypeId()
+	public Long getTypeId()
 	{
 		return this.typeId;
 	}
 
-	public void setTypeId(int typeId)
+	public void setTypeId(Long typeId)
 	{
 		this.typeId = typeId;
 	}

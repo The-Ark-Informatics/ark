@@ -20,7 +20,7 @@ import au.org.theark.core.model.Constants;
 public class Barcodeformat implements java.io.Serializable
 {
 
-	private int			id;
+	private Long		id;
 	private Integer	studyId;
 	private String		fieldname;
 	private String		const_;
@@ -33,12 +33,12 @@ public class Barcodeformat implements java.io.Serializable
 	{
 	}
 
-	public Barcodeformat(int id)
+	public Barcodeformat(Long id)
 	{
 		this.id = id;
 	}
 
-	public Barcodeformat(int id, Integer studyId, String fieldname, String const_, Integer type, Integer length, String format, Integer order)
+	public Barcodeformat(Long id, Integer studyId, String fieldname, String const_, Integer type, Integer length, String format, Integer order)
 	{
 		this.id = id;
 		this.studyId = studyId;
@@ -51,15 +51,15 @@ public class Barcodeformat implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="barcodeformat_generator", sequenceName="BARCODEFORMAT_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "barcodeformat_generator")
+	@SequenceGenerator(name = "barcodeformat_generator", sequenceName = "BARCODEFORMAT_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "barcodeformat_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public int getId()
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

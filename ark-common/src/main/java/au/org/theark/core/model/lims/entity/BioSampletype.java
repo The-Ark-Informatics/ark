@@ -20,7 +20,7 @@ import au.org.theark.core.model.Constants;
 public class BioSampletype implements java.io.Serializable
 {
 
-	private int		id;
+	private Long		id;
 	private String	sampletype;
 	private String	samplesubtype;
 
@@ -28,13 +28,13 @@ public class BioSampletype implements java.io.Serializable
 	{
 	}
 
-	public BioSampletype(int id, String sampletype)
+	public BioSampletype(Long id, String sampletype)
 	{
 		this.id = id;
 		this.sampletype = sampletype;
 	}
 
-	public BioSampletype(int id, String sampletype, String samplesubtype)
+	public BioSampletype(Long id, String sampletype, String samplesubtype)
 	{
 		this.id = id;
 		this.sampletype = sampletype;
@@ -42,14 +42,14 @@ public class BioSampletype implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="biosampletype_generator", sequenceName="BIOSAMPLETYPE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biosampletype_generator")
-	public int getId()
+	@SequenceGenerator(name = "biosampletype_generator", sequenceName = "BIOSAMPLETYPE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biosampletype_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

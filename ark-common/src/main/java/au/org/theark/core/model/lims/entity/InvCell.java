@@ -24,7 +24,7 @@ import au.org.theark.core.model.Constants;
 public class InvCell implements java.io.Serializable
 {
 
-	private int				id;
+	private Long				id;
 	private String			timestamp;
 	private InvTray		invTray;
 	private Biospecimen	biospecimen;
@@ -38,13 +38,13 @@ public class InvCell implements java.io.Serializable
 	{
 	}
 
-	public InvCell(int id, InvTray invTray)
+	public InvCell(Long id, InvTray invTray)
 	{
 		this.id = id;
 		this.invTray = invTray;
 	}
 
-	public InvCell(int id, InvTray invTray, Biospecimen biospecimen, Integer patientId, Integer deleted, Integer rowno, Integer colno, String status)
+	public InvCell(Long id, InvTray invTray, Biospecimen biospecimen, Integer patientId, Integer deleted, Integer rowno, Integer colno, String status)
 	{
 		this.id = id;
 		this.invTray = invTray;
@@ -57,14 +57,14 @@ public class InvCell implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="invcell_generator", sequenceName="INVCELL_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invcell_generator")
-	public int getId()
+	@SequenceGenerator(name = "invcell_generator", sequenceName = "INVCELL_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invcell_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

@@ -31,7 +31,7 @@ import au.org.theark.core.model.Constants;
 public class InvTank implements java.io.Serializable
 {
 
-	private int				id;
+	private Long				id;
 	private String			timestamp;
 	private InvSite		invSite;
 	private Integer		deleted;
@@ -51,14 +51,14 @@ public class InvTank implements java.io.Serializable
 	{
 	}
 
-	public InvTank(int id, InvSite invSite, String name)
+	public InvTank(Long id, InvSite invSite, String name)
 	{
 		this.id = id;
 		this.invSite = invSite;
 		this.name = name;
 	}
 
-	public InvTank(int id, InvSite invSite, Integer deleted, String location, String status, Integer capacity, String lastservicenote, String name, Integer available, Date decommissiondate,
+	public InvTank(Long id, InvSite invSite, Integer deleted, String location, String status, Integer capacity, String lastservicenote, String name, Integer available, Date decommissiondate,
 			Date commissiondate, Date lastservicedate, String description, Set<InvBox> invBoxes)
 	{
 		this.id = id;
@@ -78,14 +78,14 @@ public class InvTank implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="invtank_generator", sequenceName="INVTANK_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invtank_generator")
-	public int getId()
+	@SequenceGenerator(name = "invtank_generator", sequenceName = "INVTANK_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtank_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

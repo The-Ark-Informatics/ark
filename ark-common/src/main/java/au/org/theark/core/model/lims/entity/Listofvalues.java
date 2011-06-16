@@ -21,7 +21,7 @@ import au.org.theark.core.model.Constants;
 public class Listofvalues implements java.io.Serializable
 {
 
-	private int			id;
+	private Long		id;
 	private String		timestamp;
 	private Integer	studyId;
 	private Integer	deleted;
@@ -39,14 +39,14 @@ public class Listofvalues implements java.io.Serializable
 	{
 	}
 
-	public Listofvalues(int id, int iseditable, String language)
+	public Listofvalues(Long id, int iseditable, String language)
 	{
 		this.id = id;
 		this.iseditable = iseditable;
 		this.language = language;
 	}
 
-	public Listofvalues(int id, Integer studyId, Integer deleted, String type, String value, Integer sortorder, Integer groupId, String description, String parenttype, String parentvalue,
+	public Listofvalues(Long id, Integer studyId, Integer deleted, String type, String value, Integer sortorder, Integer groupId, String description, String parenttype, String parentvalue,
 			int iseditable, String language)
 	{
 		this.id = id;
@@ -64,14 +64,14 @@ public class Listofvalues implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="listofvalues_generator", sequenceName="LISTOFVALUES_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "listofvalues_generator")
-	public int getId()
+	@SequenceGenerator(name = "listofvalues_generator", sequenceName = "LISTOFVALUES_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "listofvalues_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

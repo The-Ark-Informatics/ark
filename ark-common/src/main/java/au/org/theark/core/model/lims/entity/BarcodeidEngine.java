@@ -20,7 +20,7 @@ import au.org.theark.core.model.Constants;
 public class BarcodeidEngine implements java.io.Serializable
 {
 
-	private int		id;
+	private Long	id;
 	private int		studyId;
 	private String	class_;
 
@@ -28,7 +28,7 @@ public class BarcodeidEngine implements java.io.Serializable
 	{
 	}
 
-	public BarcodeidEngine(int id, int studyId, String class_)
+	public BarcodeidEngine(Long id, int studyId, String class_)
 	{
 		this.id = id;
 		this.studyId = studyId;
@@ -36,15 +36,15 @@ public class BarcodeidEngine implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="barcodeidengine_generator", sequenceName="BARCODEIDENGINE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "barcodeidengine_generator")
+	@SequenceGenerator(name = "barcodeidengine_generator", sequenceName = "BARCODEIDENGINE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "barcodeidengine_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public int getId()
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

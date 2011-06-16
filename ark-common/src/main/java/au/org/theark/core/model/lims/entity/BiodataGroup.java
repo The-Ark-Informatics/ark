@@ -25,7 +25,7 @@ import au.org.theark.core.model.Constants;
 public class BiodataGroup implements java.io.Serializable
 {
 
-	private int									id;
+	private Long									id;
 	private String								groupName;
 	private String								domain;
 	private Set<BiodataGroupCriteria>	biodataGroupCriterias	= new HashSet<BiodataGroupCriteria>(0);
@@ -35,13 +35,13 @@ public class BiodataGroup implements java.io.Serializable
 	{
 	}
 
-	public BiodataGroup(int id, String groupName)
+	public BiodataGroup(Long id, String groupName)
 	{
 		this.id = id;
 		this.groupName = groupName;
 	}
 
-	public BiodataGroup(int id, String groupName, String domain, Set<BiodataGroupCriteria> biodataGroupCriterias, Set<BiodataFieldGroup> biodataFieldGroups)
+	public BiodataGroup(Long id, String groupName, String domain, Set<BiodataGroupCriteria> biodataGroupCriterias, Set<BiodataFieldGroup> biodataFieldGroups)
 	{
 		this.id = id;
 		this.groupName = groupName;
@@ -51,14 +51,14 @@ public class BiodataGroup implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="biodatagroup_generator", sequenceName="BIODATAGROUP_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "biodatagroup_generator")
-	public int getId()
+	@SequenceGenerator(name = "biodatagroup_generator", sequenceName = "BIODATAGROUP_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatagroup_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}

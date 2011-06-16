@@ -28,7 +28,7 @@ import au.org.theark.core.model.Constants;
 public class InvTray implements java.io.Serializable
 {
 
-	private int				id;
+	private Long				id;
 	private String			timestamp;
 	private InvBox			invBox;
 	private Integer		deleted;
@@ -47,7 +47,7 @@ public class InvTray implements java.io.Serializable
 	{
 	}
 
-	public InvTray(int id, InvBox invBox, int noofcol, String colnotype, int noofrow, String rownotype, int type)
+	public InvTray(Long id, InvBox invBox, int noofcol, String colnotype, int noofrow, String rownotype, int type)
 	{
 		this.id = id;
 		this.invBox = invBox;
@@ -58,8 +58,8 @@ public class InvTray implements java.io.Serializable
 		this.type = type;
 	}
 
-	public InvTray(int id, InvBox invBox, Integer deleted, int noofcol, String colnotype, Integer capacity, String name, Integer available, int noofrow, String rownotype, Integer transferId, int type,
-			Set<InvCell> invCells)
+	public InvTray(Long id, InvBox invBox, Integer deleted, int noofcol, String colnotype, Integer capacity, String name, Integer available, int noofrow, String rownotype, Integer transferId,
+			int type, Set<InvCell> invCells)
 	{
 		this.id = id;
 		this.invBox = invBox;
@@ -77,14 +77,14 @@ public class InvTray implements java.io.Serializable
 	}
 
 	@Id
-	@SequenceGenerator(name="invtray_generator", sequenceName="INVTRAY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "invtray_generator")
-	public int getId()
+	@SequenceGenerator(name = "invtray_generator", sequenceName = "INVTRAY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtray_generator")
+	public Long getId()
 	{
 		return this.id;
 	}
 
-	public void setId(int id)
+	public void setId(Long id)
 	{
 		this.id = id;
 	}
