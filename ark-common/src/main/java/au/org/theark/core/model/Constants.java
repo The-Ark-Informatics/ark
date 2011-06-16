@@ -22,7 +22,7 @@ public class Constants {
 	// Reporting
 	public static final String REPORT_TABLE_SCHEMA = "reporting";
 
-// Pheno
+	// Lims
 	public static final String LIMS_TABLE_SCHEMA = "lims";
 	public static final String	LIMS_COLLECTION_PK_SEQ	= LIMS_TABLE_SCHEMA + ".COLLECTION_PK_SEQ";
 }
