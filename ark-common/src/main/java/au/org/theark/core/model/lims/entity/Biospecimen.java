@@ -592,7 +592,7 @@ public class Biospecimen implements java.io.Serializable
 		this.treatment = treatment;
 	}
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "cell")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
 	public Set<InvCell> getInvCells()
 	{
 		return this.invCells;
