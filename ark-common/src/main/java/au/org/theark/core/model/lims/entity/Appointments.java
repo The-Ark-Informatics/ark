@@ -64,7 +64,7 @@ public class Appointments implements java.io.Serializable
 
 	@Id
 	@SequenceGenerator(name = "appointments_generator", sequenceName = "APPOINTMENTS_SEQUENCE")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "appontments_generator")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "appointments_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId()
 	{
