@@ -77,7 +77,6 @@ public class Constants {
 	public static final String TAB_MODULE_SUBJECT_SUBJECT_UPLOAD = "tab.module.subject.subjectUpload";
 	public static final String TAB_MODULE_SUBJECT_CORRESPONDENCE = "tab.module.subject.correspondence";
 	public static final String TAB_MODULE_LIMS_SUBJECT_DETAIL = "tab.module.lims.subject.detail";
-	public static final String TAB_MODULE_LIMS_COLLECTION = "tab.module.lims.collection";
 	
 	/* General date format, as used by ArkDatePicker */
 	public static final String DD_MM_YYYY = "dd/MM/yyyy"; // cap M is for month, low m is for minute
