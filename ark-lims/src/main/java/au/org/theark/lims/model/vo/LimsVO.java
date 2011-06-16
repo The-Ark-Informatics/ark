@@ -1,11 +1,17 @@
 package au.org.theark.lims.model.vo;
 
-import au.org.theark.core.model.lims.entity.Biospecimen;
+import java.io.Serializable;
+
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
-public class LimsVO
+public class LimsVO implements Serializable
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3823264588506863044L;
 	protected LinkSubjectStudy LinkSubjectStudy;  
 	protected BioCollection bioCollection;
 	protected Biospecimen biospecimen;
