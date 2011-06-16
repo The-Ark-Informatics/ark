@@ -5,6 +5,7 @@ package au.org.theark.lims.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,34 @@ public class LimsServiceImpl implements ILimsService
 	
 	private IArkCommonService<Void> arkCommonService;
 	private IStudyDao iStudyDao;
-	private IBioCollectionDao iLimsCollectionDao;
+	private IBioCollectionDao iBioCollectionDao;
+
+	/**
+	 * @param arkCommonService the arkCommonService to set
+	 */
+	@Autowired
+	public void setArkCommonService(IArkCommonService<Void> arkCommonService)
+	{
+		this.arkCommonService = arkCommonService;
+	}
+
+	/**
+	 * @param iStudyDao the iStudyDao to set
+	 */
+	@Autowired
+	public void setiStudyDao(IStudyDao iStudyDao)
+	{
+		this.iStudyDao = iStudyDao;
+	}
+	
+	/**
+	 * @param iBioCollectionDao the iBioCollectionDao to set
+	 */
+	@Autowired
+	public void setiBioCollectionDao(IBioCollectionDao iBioCollectionDao)
+	{
+		this.iBioCollectionDao = iBioCollectionDao;
+	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.service.ILimsService#createCollection(au.org.theark.lims.model.vo.LimsVO)
@@ -37,7 +65,7 @@ public class LimsServiceImpl implements ILimsService
 	public void createBioCollection(LimsVO modelObject)
 	{
 		log.info("Creating bioCollection: " + modelObject.getBioCollection().getName());
-		iLimsCollectionDao.createBioCollection(modelObject.getBioCollection());
+		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +74,7 @@ public class LimsServiceImpl implements ILimsService
 	public void deleteBioCollection(LimsVO modelObject)
 	{
 		log.info("Deleting bioCollection: " + modelObject.getBioCollection().getName());
-		iLimsCollectionDao.deleteBioCollection(modelObject.getBioCollection());
+		iBioCollectionDao.deleteBioCollection(modelObject.getBioCollection());
 	}
 
 	/* (non-Javadoc)
@@ -55,7 +83,7 @@ public class LimsServiceImpl implements ILimsService
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException
 	{
 		log.info("Getting bioCollection: " + id.intValue());
-		return iLimsCollectionDao.getBioCollection(id);
+		return iBioCollectionDao.getBioCollection(id);
 	}
 
 	/* (non-Javadoc)
@@ -72,7 +100,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException
 	{
-		return iLimsCollectionDao.searchBioCollection(bioCollection);
+		return iBioCollectionDao.searchBioCollection(bioCollection);
 	}
 
 	/* (non-Javadoc)
