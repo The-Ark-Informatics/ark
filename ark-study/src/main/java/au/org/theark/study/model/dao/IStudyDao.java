@@ -259,7 +259,7 @@ public interface IStudyDao {
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) throws ArkUniqueException, ArkSubjectInsertException;
 	
 	/**
-	 * Returns a Collection of ArkUser entities who are linke to a particular study.
+	 * Returns a Collection of ArkUser entities who are linked to a particular study.
 	 * @param study
 	 * @return Collection<ArkUser>
 	 */

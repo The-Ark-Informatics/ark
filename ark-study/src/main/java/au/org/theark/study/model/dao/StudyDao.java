@@ -1055,9 +1055,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			{
 				criteria.add(Restrictions.ilike("comments", correspondence.getComments(), MatchMode.ANYWHERE));
 			}
-			if (correspondence.getStudyManager() != null)
+			if (correspondence.getOperator() != null)
 			{
-				criteria.add(Restrictions.ilike("studyManager", correspondence.getStudyManager()));
+				criteria.add(Restrictions.eq("operator", correspondence.getOperator()));
 			}
 		}
 
