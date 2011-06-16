@@ -79,13 +79,13 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected Object load() {
-				System.out.println("load()");
-				List<ArkUserRole> rolesList = new ArrayList<ArkUserRole>();
+				
 				return containerForm.getModelObject().getArkUserRoleList();
 				
 			}
 		};
 		 
+		System.out.println("\n Detail Form initialiseDetailForm() ");
 		
 		@SuppressWarnings("rawtypes")
 		ListView listView = new ListView("arkUserRoleList", iModel) {
@@ -95,17 +95,16 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			
 			@Override
 			protected void populateItem(ListItem item) {
-				
 				//Each item will be ArkModuleVO use that to build the Module name and the drop down
 				ArkUserRole arkUserRole = (ArkUserRole)item.getModelObject();
 				ArkModule arkModule = arkUserRole.getArkModule();
 				//Acts as the data source for ArkRoles
-				ArrayList<ArkRole> arkRoleList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
+				ArrayList<ArkRole> arkRoleSourceList = iArkCommonService.getArkRoleLinkedToModule(arkModule);
 				
 				PropertyModel arkUserRolePm = new PropertyModel(arkUserRole,"arkRole");
 				ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>(Constants.NAME, "id");
 				
-				DropDownChoice<ArkRole> ddc = new DropDownChoice<ArkRole>("arkRole",arkUserRolePm,arkRoleList,defaultChoiceRenderer);
+				DropDownChoice<ArkRole> ddc = new DropDownChoice<ArkRole>("arkRole",arkUserRolePm,arkRoleSourceList,defaultChoiceRenderer);
 				
 				item.add(new Label("moduleName", arkModule.getName()));//arkModule within ArkUserRole
 				item.add(ddc);

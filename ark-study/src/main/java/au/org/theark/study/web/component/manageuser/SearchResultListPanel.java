@@ -9,9 +9,8 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -19,16 +18,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUsecase;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
-import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel{
@@ -66,6 +63,7 @@ public class SearchResultListPanel extends Panel{
 				item.add(buildLink(arkUserVO, searchResultsContainer));
 				item.add(new Label("lastName", arkUserVO.getLastName()));//the ID here must match the ones in mark-up
 				item.add(new Label("firstName", arkUserVO.getFirstName()));
+				item.add(new Label("email", arkUserVO.getEmail()));
 				
 			}
 		};
@@ -86,9 +84,15 @@ public class SearchResultListPanel extends Panel{
 						ArkUserVO arkUserVOFromBackend = userService.lookupArkUser(arkUserVo.getUserName(),study);
 						
 						containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
-						//prePopulateArkUserRoleList(arkUserVOFromBackend);
+						prePopulateArkUserRoleList(arkUserVOFromBackend);
 						//containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
 						containerForm.setModelObject(arkUserVOFromBackend);
+						
+						//This triggers the call to populateItem() of the ListView
+						ListView listView = (ListView) arkCrudContainerVO.getWmcForarkUserAccountPanel().get("arkUserRoleList");
+						if(listView != null){
+							listView.removeAll();
+						}
 						
 						//Render the UI
 						arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
@@ -98,24 +102,21 @@ public class SearchResultListPanel extends Panel{
 						arkCrudContainerVO.getViewButtonContainer().setVisible(true);//saveBtn
 						arkCrudContainerVO.getViewButtonContainer().setEnabled(true);//saveBtn
 						arkCrudContainerVO.getEditButtonContainer().setVisible(false);
-						
-						
+						arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
+						target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());//This should re-render the list again
 						target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
 						target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 						target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 						target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 						target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-						
 						target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-						target.addComponent(containerForm);
+						
+						
 					} catch (ArkSystemException e) {
-						// TODO:NN Auto-generated catch block
-						e.printStackTrace();
+						this.error("There was a System error. Please contact the Administator");
 					} catch (EntityNotFoundException e) {
-						// TODO:NN Auto-generated catch block
-						e.printStackTrace();
+						this.error("The Ark User was not located on the system. Please contact the Administator");
 					}
-					
 				}
 		};
 		//Add the label for the link
@@ -125,19 +126,30 @@ public class SearchResultListPanel extends Panel{
 	}
 	
 	private void prePopulateArkUserRoleList(ArkUserVO arkUserVOFromBackend){
+		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		//Get a List of ArkModules and associated ArkRoles linked to the study 
-		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		Collection<ArkModuleVO> listOfModulesAndRolesForStudy = iArkCommonService.getArkModulesLinkedToStudy(study);
+		List<ArkUserRole> arkUserRoleListToAdd = new ArrayList<ArkUserRole>();
 		
-		//Iterate over the List of Modules and Roles 
-		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
-			//Check if the ArkUser has not been linked to the module/role if so then add that Module into the list
-			if(!arkUserVOFromBackend.getArkUserRoleList().contains(arkModuleVO.getArkModule())){
-				
+		//Note:Ideally using a Hibernate Criteria we should be able to get a List of Modules
+		for (ArkModuleVO arkModuleVO : listOfModulesAndRolesForStudy) {
+
+			boolean moduleFoundFlag=false;
+			ArkModule module  = arkModuleVO.getArkModule();
+			for (ArkUserRole arkUserRole : arkUserVOFromBackend.getArkUserRoleList()){
+				ArkModule arkModule = arkUserRole.getArkModule();
+				if(module.equals(arkModule)){
+					moduleFoundFlag=true;
+					break;
+				}
+			}
+			
+			if(!moduleFoundFlag){
 				ArkUserRole userRole = new ArkUserRole();
 				userRole.setStudy(study);
-				userRole.setArkModule(arkModuleVO.getArkModule());
+				userRole.setArkModule(module);
 				arkUserVOFromBackend.getArkUserRoleList().add(userRole);
 			}
 		}
