@@ -12,8 +12,8 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Person;
 
 @SuppressWarnings("unchecked")
-@Repository("limsPersonDao")
-public class LimsPersonDao extends HibernateSessionDao implements ILimsPersonDao
+@Repository("bioPersonDao")
+public class BioPersonDao extends HibernateSessionDao implements IBioPersonDao
 {
 	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException
 	{
