@@ -45,11 +45,12 @@
     
     
     <!--  Development: MySql Data Source Development -->
+    <!-- NOTE: Please remember to put in the correct password before deployment.-->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://192.168.3.252:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="v@Tym4np[]"/>
+        <property name="password" value="insert-real-password"/>
     </bean>
     
     <!--  A Dev-LDAP data source. Switch between Test and Development as required --> 
@@ -57,26 +58,30 @@
       <property name="url"  value="ldap://192.168.2.229:389"/>
       <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
-      <property name="password" value="v@Tym4np[]" />
+      <property name="password" value="insert-real-password" />
     </bean>
 	
-    <!--  Test: MySql Data Source  
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	<!--  NOTE: URL will now use "ark-database" mapping as defined in the host file. -->
+	<!-- 
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://192.168.3.253:3306"/>
+        <property name="url" value="jdbc:mysql://ark-database:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="v@Tym4np[]"/>
+        <property name="password" value="insert-real-password"/>
     </bean>
-	-->
- 	<!--  A Test-LDAP data source. Switch between Test and Development as required  
-    <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
-      <property name="url"  value="ldap://192.168.3.253:389"/>
+     -->
+    
+    <!--  NOTE: URL will now use "ark-ldap" mapping as defined in the host file.  -->
+	<!-- 
+     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
+      <property name="url"  value="ldap://ark-ldap:389"/>
       <property name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
-      <property name="password" value="v@Tym4np[]" />
+      <property name="password" value="insert-real-password" />
     </bean>
-    -->
-
+ 	-->
+ 	
+ 	
     <!--  Melbourne: MySql Data Source 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
