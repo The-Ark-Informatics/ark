@@ -1,9 +1,3 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.lims.web.component.subject.form;
 
 import java.util.Calendar;
@@ -125,6 +119,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 	
 			super(id,feedBackPanel,resultListContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,containerForm);
 			this.arkContextMarkupContainer = arkContextContainer;
+			
+			// Disable editing of Subject details in LIMS
+			editCancelButton.setVisible(false);
 	}
 		
 	@SuppressWarnings("unchecked")
