@@ -139,7 +139,9 @@ public class Constants {
 	public static final String DELETE = "delete";
 	public static final String EDIT = "edit";
 	public static final String EDIT_CANCEL = "editCancel";
+	public static final String SEARCH_RESULTS = "searchResults";
 	public static final String OK = "ok";
+	public static final String FIRST = "first";
 	public static final String PREVIOUS = "previous";
 	public static final String NEXT = "next";
 	public static final String LAST = "last";
