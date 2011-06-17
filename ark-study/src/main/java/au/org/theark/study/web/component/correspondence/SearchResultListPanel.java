@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.correspondence;
 
+import java.text.SimpleDateFormat;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -58,10 +60,10 @@ public class SearchResultListPanel extends Panel {
 				// set the date to be the link to details
 				item.add(buildLink(correspondence));
 			
-				if(correspondence.getCorrespondenceStatusType() != null) {
-					item.add(new Label("correspondenceStatusType.name", correspondence.getCorrespondenceStatusType().getName()));
+				if(correspondence.getTime() != null) {
+					item.add(new Label("time", correspondence.getTime()));
 				} else {
-					item.add(new Label("correspondenceStatusType.name", ""));
+					item.add(new Label("time", ""));
 				}
 				
 				if(correspondence.getOperator() != null) {
@@ -88,6 +90,13 @@ public class SearchResultListPanel extends Panel {
 				}else {
 					item.add(new Label("correspondenceOutcomeType.name", ""));
 				}
+				
+				if(correspondence.getReason() != null) {
+					item.add(new Label("reason", correspondence.getReason()));
+				}else {
+					item.add(new Label("reason", ""));
+				}
+				
 			}
 		};
 		
@@ -120,11 +129,17 @@ public class SearchResultListPanel extends Panel {
 				target.addComponent(editButtonContainer);
 			}
 		};
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+		String dateOfCorrespondence = "";
 		
-		Label nameLinkLabel = new Label("correspondenceLabel", correspondence.getDate().toString());
+		if(correspondence.getDate() != null)
+			dateOfCorrespondence = simpleDateFormat.format(correspondence.getDate());
+		
+		Label nameLinkLabel = new Label("correspondenceLabel", dateOfCorrespondence);
 		link.add(nameLinkLabel);
 		return link;
 	}
-	
+
 	
 }

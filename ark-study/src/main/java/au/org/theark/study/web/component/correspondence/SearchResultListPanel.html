@@ -12,8 +12,8 @@
 			
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
-				<label for="correspondenceStatus">
-					<wicket:message	key="correspondenceStatus">Status:</wicket:message>
+				<label for="time">
+					<wicket:message	key="time">Time:</wicket:message>
 				</label>
 			</th>
 
@@ -27,7 +27,7 @@
 			<th width="5%">&nbsp;</th>
 			<th width="10%">
 				<label for="correspondenceMode">
-					<wicket:message	key="correspondenceMode">Mode:</wicket:message>
+					<wicket:message	key="correspondenceMode">Type:</wicket:message>
 				</label>
 			</th>
 						
@@ -44,7 +44,14 @@
 					 <wicket:message key="correspondenceOutcome">Outcome:</wicket:message>
 				</label>
 			</th>
-			
+
+			<th width="5%">&nbsp;</th>
+			<th width="10%">
+				<label for="reason">
+					 <wicket:message key="reason">Reason:</wicket:message>
+				</label>
+			</th>
+						
 		</tr>
 		<!--  The Data Result Set -->
 		<tr wicket:id="correspondenceList">
@@ -58,7 +65,7 @@
 
 			<td width="5%">&nbsp;</td>
 			<td width="10%">
-  				<span wicket:id="correspondenceStatusType.name">Active</span>			   
+  				<span wicket:id="time">3:30pm</span>			   
 			</td>
 
 			<td width="5%">&nbsp;</td>
@@ -80,7 +87,12 @@
 			<td width="10%">
 				<span wicket:id="correspondenceOutcomeType.name">Sent</span>		
 			</td>
-			
+
+			<td width="5%">&nbsp;</td>
+			<td width="10%">
+				<span wicket:id="reason">To return a phone call.</span>		
+			</td>
+						
 		</tr>
 		<tr>
 			<td width="5%">&nbsp;</td>

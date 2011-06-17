@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.correspondence.form;
 
+import java.io.IOException;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,8 +16,13 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.lang.Bytes;
+import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -52,7 +59,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private TextArea<String> reasonTxtArea;
 	private TextArea<String> detailsTxtArea;
 	private TextArea<String> commentsTxtArea;
-//	private FileUploadField fileCorrespondenceFileField;
+	private FileUploadField fileUploadField;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel,
 			WebMarkupContainer resultListContainer,
@@ -66,6 +73,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
 				editButtonContainer, containerForm);
 
+		setMultiPart(true);
 	}
 
 	
@@ -73,8 +81,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		initialiseStatusTypeDropDown();
 		initialiseOperatorDropDown();
-//		studyManagerTxtFld = new TextField<String>("correspondence.studyManager");
-//		studyManagerTxtFld.add(new ArkDefaultFormFocusBehavior());
 		// create new DateTextField and assign date format
 		dateFld = new DateTextField("correspondence.date", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
@@ -88,10 +94,10 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		reasonTxtArea = new TextArea<String>("correspondence.reason");
 		detailsTxtArea = new TextArea<String>("correspondence.details");
 		commentsTxtArea = new TextArea<String>("correspondence.comments");
-		
-//		fileCorrespondenceFileField = new FileUploadField("correspondenceAttachment.filename");
-//		fileCorrespondenceFileField.add(new ArkDefaultFormFocusBehavior());
-		
+
+		fileUploadField = new FileUploadField("correspondence.attachmentFilename", new Model<FileUpload>());
+		setMaxSize(Bytes.kilobytes(2048));
+
 		addDetailFormComponents();
 	}
 	
@@ -110,11 +116,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		
 		Collection<ArkUser> coll = studyService.lookupArkUser(study);
 		List<ArkUser> list = new ArrayList<ArkUser>(coll);
-		
+
 		ChoiceRenderer<ArkUser> defaultRenderer = new ChoiceRenderer<ArkUser>("ldapUserName", "id");
-		operatorChoice = new DropDownChoice<ArkUser>("correspondence.operator", list, defaultRenderer); 
+		operatorChoice = new DropDownChoice<ArkUser>("correspondence.operator", list, defaultRenderer);
 	}
-	
+
 	private void initialiseModeTypeDropDown() {
 		
 		List<CorrespondenceModeType> list = studyService.getCorrespondenceModeTypes();
@@ -148,7 +154,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		detailPanelFormContainer.add(reasonTxtArea);		
 		detailPanelFormContainer.add(detailsTxtArea);
 		detailPanelFormContainer.add(commentsTxtArea);
-//		detailPanelFormContainer.add(fileCorrespondenceFileField);
+		detailPanelFormContainer.add(fileUploadField);
 	}
 	
 	protected void attachValidators() {
@@ -217,6 +223,18 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				containerForm.getModelObject().getCorrespondenceAttachment().setChecksum(checksum);
 				containerForm.getModelObject().getCorrespondenceAttachment().setFilename(fileCorrespondenceAttachment.getClientFileName());
 */
+				
+				// store correspondence file attachment
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+				{
+					// retrieve file and store as Blob in database
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					// copy file to Blob object
+					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
+					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
+				}
+				
 				// save
 				studyService.create(containerForm.getModelObject().getCorrespondence());
 				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
@@ -232,25 +250,11 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			ex.printStackTrace();
 		}catch (ArkSystemException ex) {
 			ex.printStackTrace();
+		} catch (IOException ex) {
+			this.error("There was an error transferring the specified correspondence attachment.");
+			ex.printStackTrace();
 		}
 	}
-
-	static final String	HEXES	= "0123456789ABCDEF";
-
-	public static String getHex(byte[] raw)
-	{
-		if (raw == null) {
-			return null;
-		}
-		
-		final StringBuilder hex = new StringBuilder(2 * raw.length);
-		for (final byte b : raw) {
-			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
-		}
-		
-		return hex.toString();
-	}
-	
 	
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
