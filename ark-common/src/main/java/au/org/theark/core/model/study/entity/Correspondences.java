@@ -1,6 +1,7 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -35,6 +36,8 @@ public class Correspondences implements Serializable {
 	private CorrespondenceOutcomeType correspondenceOutcomeType;
 	private String details;
 	private String comments;
+	private String attachmentFilename;
+	private Blob attachmentPayload;
 
     @Id
     @SequenceGenerator(name="correspondences_generator", sequenceName="CORRESPONDENCES_SEQUENCE")
@@ -166,6 +169,24 @@ public class Correspondences implements Serializable {
 	
 	public void setComments(String comments) {
 		this.comments = comments;
+	}
+	
+	@Column(name = "ATTACHMENT_FILENAME", length = 255)	
+	public String getAttachmentFilename() {
+		return attachmentFilename;
+	}
+	
+	public void setAttachmentFilename(String attachmentFilename) {
+		this.attachmentFilename = attachmentFilename;
+	}
+	
+	@Column(name = "ATTACHMENT_PAYLOAD")	
+	public Blob getAttachmentPayload() {
+		return attachmentPayload;
+	}
+	
+	public void setAttachmentPayload(Blob attachmentPayload) {
+		this.attachmentPayload = attachmentPayload;
 	}
 	
 	
