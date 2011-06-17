@@ -15,8 +15,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
@@ -39,7 +37,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 {
 
 	private static final long		serialVersionUID	= 1L;
-	private transient Logger log = LoggerFactory.getLogger(AbstractDetailForm.class);
+	//private transient Logger log = LoggerFactory.getLogger(AbstractDetailForm.class);
 	
 	protected WebMarkupContainer	resultListContainer;
 	protected WebMarkupContainer	detailPanelContainer;
@@ -108,6 +106,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
 		{
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1684005199059571017L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -126,6 +129,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -423605230448635419L;
+
 			@Override
 			public boolean isVisible()
 			{
@@ -137,6 +145,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
+			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
 				boolean setFocusError = false;
@@ -166,6 +175,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -2430231894703055744L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -184,6 +198,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -6282464357368710796L;
+
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				deleteButton.setEnabled(true);
@@ -215,6 +234,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5457464178392550628L;
+
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				editCancelProcess(target,true);
@@ -270,6 +294,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				target.addComponent(detailPanelContainer);
 			}
 
+			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
 				boolean setFocusError = false;
@@ -423,6 +448,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
@@ -629,6 +655,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		// The ModalWindow, showing some choices for the user to select.
 		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow")
 		{
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -1116985092871743122L;
 
 			protected void onSelect(AjaxRequestTarget target, String selection)
 			{
