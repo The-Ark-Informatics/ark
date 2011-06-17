@@ -8,6 +8,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -71,12 +72,12 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 		if(studyId != null)
 		{
 			study = iArkCommonService.getStudy(studyId);
-			PhenoUpload phenoUpload = new PhenoUpload();
-			phenoUpload.setStudy(study);
+			PhenoCollection phenoCollection = new PhenoCollection();
+			phenoCollection.setStudy(study);
 		
-			java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
+			java.util.Collection<PhenoCollection> phenoCollections = iPhenotypicService.searchPhenotypicCollection(phenoCollection);
 			
-			if(phenoUploads.size() == 0)
+			if(phenoCollections.size() == 0)
 			{
 				disableWizardForm(null, "There is no Phenotypic Collections defined for this study. Please create a Phenotypic Collection");
 			}
