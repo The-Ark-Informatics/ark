@@ -21,30 +21,25 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebResponse;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.time.Duration;
 import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
 public class LoginPage<T> extends WebPage
 {
-
 	private transient Logger	log				= LoggerFactory.getLogger(LoginPage.class);
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
-
-	FeedbackPanel					feedBackPanel	= new FeedbackPanel("feedbackMessage");
+	private FeedbackPanel					feedBackPanel	= new FeedbackPanel("feedbackMessage");
 
 	// Add a visitor class for required field marking/validation/highlighting
-	IVisitor							formVisitor		= new ArkFormVisitor();
+	private IVisitor							formVisitor		= new ArkFormVisitor();
 
+	@SuppressWarnings("unchecked")
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
@@ -54,11 +49,10 @@ public class LoginPage<T> extends WebPage
 	/**
 	 * Page Constructor
 	 */
-	@SuppressWarnings( { "serial" })
+	@SuppressWarnings( { "serial", "unchecked" })
 	public LoginPage()
 	{
-
-		log.info("LoginPage() constructor");
+		//log.info("LoginPage() constructor");
 
 		feedBackPanel.setOutputMarkupId(true);
 
@@ -67,7 +61,7 @@ public class LoginPage<T> extends WebPage
 		this.add(form);
 		this.add(feedBackPanel);
 
-		AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
+		//AjaxFormValidatingBehavior.addToAllFormComponents(form, "onKeyup", Duration.seconds(2));
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 
@@ -105,10 +99,9 @@ public class LoginPage<T> extends WebPage
 	@SuppressWarnings("serial")
 	class LoginForm extends StatelessForm<ArkUserVO>
 	{
-
 		TextField<String>	userNameTxtFld	= new TextField<String>("userName");
 		PasswordTextField	passwordTxtFld	= new PasswordTextField("password");
-		AjaxButton				submitButton;
+		AjaxButton			submitButton;
 
 		private void decorateComponents()
 		{
@@ -127,21 +120,25 @@ public class LoginPage<T> extends WebPage
 		/* Constructor */
 		public LoginForm(String id)
 		{
-
 			// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
-
 			super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 
-			submitButton = new ArkIndicatingAjaxButton ("submitBtn", new StringResourceModel("submit", null))
+			submitButton = new ArkIndicatingAjaxButton("submitBtn", new StringResourceModel("submit", null))
 			{
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 				{
 					ArkUserVO user = (ArkUserVO) getForm().getModelObject();
-					if (authenticate(user))
+					if (authenticate(target, user))
 					{
 						setResponsePage(HomePage.class);
 					}
+				}
+				
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form)
+				{
+					target.addComponent(feedBackPanel);
 				}
 			};
 
@@ -149,9 +146,8 @@ public class LoginPage<T> extends WebPage
 			addComponentsToForm();
 		}
 
-		public final boolean authenticate(ArkUserVO user)
+		public final boolean authenticate(AjaxRequestTarget target, ArkUserVO user)
 		{
-
 			Subject subject = SecurityUtils.getSubject();
 			UsernamePasswordToken usernamePasswordToken = new UsernamePasswordToken(user.getUserName(), user.getPassword(), false);// Disable Remember me
 
@@ -167,13 +163,11 @@ public class LoginPage<T> extends WebPage
 			}
 			catch (UnknownAccountException uae)
 			{
-
 				String errMessage = getLocalizer().getString("page.account.notfound", LoginPage.this, "User account not found.");
 				error(errMessage);
 			}
 			catch (AuthenticationException ae)
 			{
-
 				String errMessage = getLocalizer().getString("page.invalid.username.password", LoginPage.this, "Invalid username and/or password.");
 				error(errMessage);
 			}
@@ -183,6 +177,7 @@ public class LoginPage<T> extends WebPage
 				error(errMessage);
 			}
 
+			target.addComponent(feedBackPanel);
 			return false;
 		}
 	}
