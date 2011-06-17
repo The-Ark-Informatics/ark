@@ -17,7 +17,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
@@ -69,7 +71,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		initialiseFieldForm();
 
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
+		//disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 
 	/**
@@ -131,23 +133,35 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		// Refresh the FB panel if there was an old message from previous search result
 		target.addComponent(feedbackPanel);
 
-		// Set study in context
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		// Get a list of all Fields for the Study in context
-		Study study = iArkCommonService.getStudy(studyId);
+		// Get a list of collections for the study/subject in context by default
+		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		BioCollection limsCollection = getModelObject().getBioCollection();
-		limsCollection.setStudy(study);
-
-		java.util.List<BioCollection> bioCollectionList = new ArrayList<BioCollection>(0);
-		try
+		if (sessionStudyId != null && sessionStudyId > 0)
 		{
-			bioCollectionList = iLimsService.searchBioCollection(limsCollection);
-		}
-		catch (ArkSystemException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			BioCollection bioCollection = new BioCollection();
+			bioCollection.setStudy(study);
+			// Subject in context
+			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+			String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+			
+			try
+			{
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
+				bioCollection.setLinkSubjectStudy(linkSubjectStudy);
+				getModelObject().setBioCollection(bioCollection);
+				
+				bioCollectionList = iLimsService.searchBioCollection(getModelObject().getBioCollection());
+			}
+			catch (ArkSystemException e)
+			{
+				this.error(e.getMessage());
+			}
+			catch (EntityNotFoundException e)
+			{
+				this.info(e.getMessage());
+			}
 		}
 
 		if (bioCollectionList != null && bioCollectionList.size() == 0)
@@ -155,7 +169,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 			this.info("Collections with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
-		getModelObject().setLimsCollectionList(bioCollectionList);
+		getModelObject().setBioCollectionList(bioCollectionList);
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);// For ajax this is required so

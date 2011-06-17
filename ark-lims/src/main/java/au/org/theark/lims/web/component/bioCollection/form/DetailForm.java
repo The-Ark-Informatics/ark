@@ -109,7 +109,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 		this.arkContextMarkup = arkContextMarkup;
 		
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableDetailForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
+		//disableDetailForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 
 
@@ -199,7 +199,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		containerForm.getModelObject().setLimsCollectionList(bioCollectionList);
+		containerForm.getModelObject().setBioCollectionList(bioCollectionList);
 	}
 	
 	@Override

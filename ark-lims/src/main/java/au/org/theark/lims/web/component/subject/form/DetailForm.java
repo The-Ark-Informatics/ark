@@ -121,7 +121,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 			this.arkContextMarkupContainer = arkContextContainer;
 			
 			// Disable editing of Subject details in LIMS
-			editCancelButton.setVisible(false);
+			editButton.setVisible(false);
 	}
 		
 	@SuppressWarnings("unchecked")

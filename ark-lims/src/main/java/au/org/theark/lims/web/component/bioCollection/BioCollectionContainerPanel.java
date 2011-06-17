@@ -11,7 +11,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -94,28 +96,44 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 			@Override
 			protected Object load()
 			{
-				// Get a list of collections for the study in context by default
+				// Get a list of collections for the study/subject in context by default
 				java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 				if (sessionStudyId != null && sessionStudyId > 0)
 				{
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					containerForm.getModelObject().getBioCollection().setStudy(study);
+					BioCollection bioCollection = new BioCollection();
+					bioCollection.setStudy(study);
+					// Subject in context
+					LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+					String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+					
 					try
 					{
+						linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
+						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
+						containerForm.getModelObject().setBioCollection(bioCollection);
+						
 						bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
 					}
 					catch (ArkSystemException e)
 					{
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						//this.error(e.getMessage());
+					}
+					catch (EntityNotFoundException e)
+					{
+						//this.info(e.getMessage());
+					}
+					catch (NullPointerException e)
+					{
+						error("There is no subject in context. Please select a Subject.");
 					}
 				}
-				
+
 				listView.removeAll();
-				containerForm.getModelObject().setLimsCollectionList(bioCollectionList);
-				return containerForm.getModelObject().getLimsCollectionList();
+				containerForm.getModelObject().setBioCollectionList(bioCollectionList);
+				return containerForm.getModelObject().getBioCollectionList();
 			}
 		};
 
@@ -147,8 +165,6 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 
 	protected WebMarkupContainer initialiseSearchPanel()
 	{
-		// Get a list of collections for the study in context by default
-		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> limsCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		if (sessionStudyId != null && sessionStudyId > 0)
@@ -157,18 +173,7 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 			BioCollection bioCollection = new BioCollection();
 			bioCollection.setStudy(study);
 			containerForm.getModelObject().setBioCollection(bioCollection);
-			try
-			{
-				limsCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
-			}
-			catch (ArkSystemException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
-
-		containerForm.getModelObject().setLimsCollectionList(limsCollectionList);
 
 		searchComponentPanel = new SearchPanel("searchPanel", 
 															feedBackPanel, 
