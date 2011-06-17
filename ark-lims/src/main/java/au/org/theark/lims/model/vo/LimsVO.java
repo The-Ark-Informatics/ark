@@ -79,7 +79,7 @@ public class LimsVO implements Serializable
 	/**
 	 * @return the bioCollectionCollection
 	 */
-	public java.util.List<BioCollection> getLimsCollectionList()
+	public java.util.List<BioCollection> getBioCollectionList()
 	{
 		return bioCollectionList;
 	}
@@ -87,7 +87,7 @@ public class LimsVO implements Serializable
 	/**
 	 * @param bioCollectionList the bioCollectionList to set
 	 */
-	public void setLimsCollectionList(java.util.List<BioCollection> bioCollectionList)
+	public void setBioCollectionList(java.util.List<BioCollection> bioCollectionList)
 	{
 		this.bioCollectionList = bioCollectionList;
 	}
