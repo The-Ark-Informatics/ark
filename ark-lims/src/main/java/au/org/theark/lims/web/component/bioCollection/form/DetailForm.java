@@ -52,7 +52,7 @@ import au.org.theark.lims.web.component.bioCollection.DetailPanel;
 public class DetailForm extends AbstractDetailForm<LimsVO>
 {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService<Void> iArkCommonService;
 	
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService			iLimsService;
@@ -107,6 +107,9 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 				containerForm);
 		
 		this.arkContextMarkup = arkContextMarkup;
+		
+		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		disableDetailForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 
 
