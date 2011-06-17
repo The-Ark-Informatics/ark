@@ -50,6 +50,9 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if(bioCollection.getSurgeryDate() != null)
 			criteria.add(Restrictions.eq("surgeryDate", bioCollection.getSurgeryDate()));
 		
+		if(bioCollection.getLinkSubjectStudy() != null)
+			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollection.getLinkSubjectStudy()));
+		
 		List<BioCollection> list = criteria.list();
 		return list;
 	}
