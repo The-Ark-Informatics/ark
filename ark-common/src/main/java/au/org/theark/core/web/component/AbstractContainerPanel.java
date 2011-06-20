@@ -27,9 +27,8 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 @SuppressWarnings("serial")
 public abstract class AbstractContainerPanel<T> extends Panel{
 	
-//	Do not remove this (NN) it is as part of the new security enforcement
-//	@SpringBean( name="arkLdapRealm")
-//	private ArkLdapRealm realm;
+	@SpringBean( name="arkLdapRealm")
+	private ArkLdapRealm realm;
 	
 	protected FeedbackPanel feedBackPanel;
 	
@@ -56,10 +55,9 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	public AbstractContainerPanel(String id) {
 
 		super(id);
-		
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();		
-		//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());//TODO(NN) Uncomment after the User management usecase is complete
+		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		currentUser.hasRole("Administrator");
 		initialiseMarkupContainers();
 	}
 	
@@ -67,7 +65,7 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 		super(id);
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();		
-		//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());//TODO(NN) Uncomment after the User management usecase is complete
+		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());//TODO(NN) Uncomment after the User management usecase is complete
 	}
 	
 	public void initCrudContainerVO(){
