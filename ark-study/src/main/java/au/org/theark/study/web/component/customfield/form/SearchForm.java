@@ -84,15 +84,6 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO>{
 	}
 	
 	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
-	 */
-	@Override
-	protected boolean isSecure(String actionType) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-	/* (non-Javadoc)
 	 * @see au.org.theark.core.web.form.AbstractSearchForm#onNew(org.apache.wicket.ajax.AjaxRequestTarget)
 	 */
 	@Override
