@@ -210,23 +210,24 @@ public class Constants {
 	public static final String PERSON_SURNAME_HISTORY_PERSON = "person";
 	public static final String PERSON_SURNAME_HISTORY_SURNAME = "surname";
 	
-	/* Ark Use Case Function Id*/
+	/* Ark Function Id*/
 	public static final String ARK_FUNCTION_KEY ="ARK_FUNCTION_KEY";
 	
 	
-	/*Ark Use Case Key value that maps to the database table values in ark_usecase.If the values in the table change, this must be modified.  */
-	public static final String USECASE_KEY_VALUE_STUDY="STUDY";
-	public static final String USECASE_KEY_VALUE_STUDY_COMPONENT="STUDY_COMPONENT";
-	public static final String USECASE_KEY_VALUE_MY_DETAIL="MY_DETAIL";
-	public static final String USECASE_KEY_VALUE_USER="USER";
-	public static final String USECASE_KEY_VALUE_SUBJECT="SUBJECT";
-	public static final String USECASE_KEY_VALUE_PHONE="PHONE";
-	public static final String USECASE_KEY_VALUE_CONSENT="CONSENT";
-	public static final String USECASE_KEY_VALUE_ATTACHMENT="ATTACHMENT";
-	public static final String USECASE_KEY_VALUE_ADDRESS="ADDRESS";
-	public static final String USECASE_KEY_VALUE_SUBJECT_FILE="SUBJECT_FILE";
-	public static final String USECASE_KEY_VALUE_SUBJECT_UPLOAD="SUBJECT_UPLOAD";
-	public static final String USECASE_KEY_VALUE_SUBJECT_CORRESPONDENCE="SUBJECT_CORRESPONDENCE";
+	/*Ark Function Key value that maps to the database table values in ark_usecase.If the values in the table change, this must be modified.  */
+	public static final String FUNCTION_KEY_VALUE_STUDY="STUDY";
+	public static final String FUNCTION_KEY_VALUE_STUDY_COMPONENT="STUDY_COMPONENT";
+	public static final String FUNCTION_KEY_VALUE_MY_DETAIL="MY_DETAIL";
+	public static final String FUNCTION_KEY_VALUE_USER="USER";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT="SUBJECT";
+	public static final String FUNCTION_KEY_VALUE_PHONE="PHONE";
+	public static final String FUNCTION_KEY_VALUE_CONSENT="CONSENT";
+	public static final String FUNCTION_KEY_VALUE_ATTACHMENT="ATTACHMENT";
+	public static final String FUNCTION_KEY_VALUE_ADDRESS="ADDRESS";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_FILE="SUBJECT_FILE";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD="SUBJECT_UPLOAD";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE="SUBJECT_CORRESPONDENCE";
+	public static final String FUNCTION_KEY_VALUE_REPORT="REPORT";
 	
 	/*Ark Module Keys */
 	public static final String ARK_MODULE_KEY ="MODULE_KEY";
