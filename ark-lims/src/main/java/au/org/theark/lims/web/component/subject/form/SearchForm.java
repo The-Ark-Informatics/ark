@@ -10,9 +10,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -33,8 +30,6 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -222,44 +217,4 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		target.addComponent(listContainer);// For ajax this is required so
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
-	 */
-	@Override
-	protected boolean isSecure(String actionType)
-	{
-		boolean flag = false;
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		Long useCaseId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		Long module = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-
-		if (actionType.equalsIgnoreCase(Constants.NEW))
-		{
-			// Disable New button in LIMS
-			flag = false;
-		}
-		else if (actionType.equalsIgnoreCase(Constants.SEARCH))
-		{
-
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-
-			flag = true;
-		}
-		else
-		{
-			flag = true;
-		}
-		return flag;
-	}
 }
