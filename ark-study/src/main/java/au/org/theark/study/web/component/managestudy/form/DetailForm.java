@@ -105,7 +105,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	// Application Select Palette
 	private Palette							appPalette;
 	//NN Working on this. Commented until we turn the new security mechanism
-	//private Palette arkModulePalette;
+	private Palette arkModulePalette;
 
 	// Study logo uploader
 	private FileUploadField					fileUploadField;
@@ -254,9 +254,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);
 
-		initPalette();
-		//TODO: Do not remove
-		//initialiseArkModulePalette();
+		//initPalette();
+		
+		initialiseArkModulePalette();
 		
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
@@ -381,23 +381,23 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	}
 
 	//TODO Do not remove: This has been implemented but will be turned on after we have the user management
-//	private void initialiseArkModulePalette(){
-//		
-//		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
-//		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
-//		PropertyModel<Collection<ArkModule>> selectedModPm =  new PropertyModel<Collection<ArkModule>>(sm,"selectedArkModules");
-//		PropertyModel<Collection<ArkModule>> availableModulesPm =  new PropertyModel<Collection<ArkModule>>(sm,"availableArkModules");
-//		
-//		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false)
-//		{
-//			@Override
-//			public ResourceReference getCSS()
-//			{
-//				return null;
-//			}
-//		};
-//		
-//	}
+	private void initialiseArkModulePalette(){
+		
+		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
+		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
+		PropertyModel<Collection<ArkModule>> selectedModPm =  new PropertyModel<Collection<ArkModule>>(sm,"selectedArkModules");
+		PropertyModel<Collection<ArkModule>> availableModulesPm =  new PropertyModel<Collection<ArkModule>>(sm,"availableArkModules");
+		
+		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false)
+		{
+			@Override
+			public ResourceReference getCSS()
+			{
+				return null;
+			}
+		};
+		
+	}
 
 	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel)
 	{
@@ -471,9 +471,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
-		studyCrudVO.getDetailPanelFormContainer().add(appPalette);
+		//studyCrudVO.getDetailPanelFormContainer().add(appPalette);
 		/* New Model NN Do not remove*/
-		//studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
+		studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoImageContainer());
@@ -584,13 +584,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		if (studyModel.getStudy() != null && studyModel.getStudy().getId() == null)
 		{
 			// Create
-			studyService.createStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
-			//TODO: Do not remove:This will be the new create service called
-			//studyService.createStudy(studyModel);
+			studyService.createStudy(studyModel);
 			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
-
 			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);// added as part of refactoring
@@ -598,12 +595,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		else
 		{
 			// Update
-			studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
+			//studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
 			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
-
-			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
+			this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
+			//this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
 		}
