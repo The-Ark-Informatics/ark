@@ -167,8 +167,8 @@ public class FieldData implements java.io.Serializable
 	/**
 	 * @return the linkSubjectStudy
 	 */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "LINK_SUBJECT_STUDY_KEY")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
 	public LinkSubjectStudy getLinkSubjectStudy()
 	{
 		return linkSubjectStudy;
