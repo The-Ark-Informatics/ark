@@ -153,13 +153,6 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 		add(detailsTxtArea);	
 	}
 	
-	
-	@Override
-	protected boolean isSecure(String actionType) {
-		return true;
-	}
-
-	
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		
