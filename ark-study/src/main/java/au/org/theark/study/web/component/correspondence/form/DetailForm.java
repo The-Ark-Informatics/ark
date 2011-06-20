@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -20,8 +21,10 @@ import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -43,8 +46,13 @@ import au.org.theark.study.web.Constants;
 
 public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2900999695563378447L;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService iArkCommonService;
+	protected IArkCommonService<Void> iArkCommonService;
 	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
@@ -99,6 +107,7 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 		setMaxSize(Bytes.kilobytes(2048));
 
 		addDetailFormComponents();
+		attachValidators();
 	}
 	
 	private void initialiseStatusTypeDropDown() {
@@ -158,7 +167,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	}
 	
 	protected void attachValidators() {
-
+		dateFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("correspondence.date", this,null ));
+		dateFld.setRequired(true);
 	}
 
 	@Override
