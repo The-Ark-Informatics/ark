@@ -12,12 +12,12 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -26,6 +26,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel{
@@ -38,17 +39,18 @@ public class SearchResultListPanel extends Panel{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
-	
+	private FeedbackPanel feedbackPanel;
 	/**
 	 * Constructor
 	 * @param id
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm,FeedbackPanel feedbackPanel) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
+		this.feedbackPanel = feedbackPanel;
 	}
 	
 	public PageableListView<ArkUserVO> buildPageableListView(IModel iModel,  final WebMarkupContainer searchResultsContainer){
@@ -78,14 +80,26 @@ public class SearchResultListPanel extends Panel{
 				public void onClick(AjaxRequestTarget target) {
 					try {
 						
+				
 						//Fetch the user and related details from backend
 						Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 						Study study = iArkCommonService.getStudy(sessionStudyId);
+						
 						ArkUserVO arkUserVOFromBackend = userService.lookupArkUser(arkUserVo.getUserName(),study);
+						if(!arkUserVOFromBackend.isArkUserPresentInDatabase()){
+							containerForm.info("This User is not yet present in the Ark Database but is present in LDAP.If you wish to continue, please assign the Modules and Roles.");
+							target.addComponent(feedbackPanel);
+							arkUserVOFromBackend.setChangePassword(true);
+							arkUserVOFromBackend.getArkUserEntity().setLdapUserName(arkUserVo.getUserName());
+							arkUserVOFromBackend.getArkUserEntity().setStudy(study);
+							
+							prePopulateForNewUser(arkUserVOFromBackend);
+						}else{
+							prePopulateArkUserRoleList(arkUserVOFromBackend);
+						}
 						
 						containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
-						prePopulateArkUserRoleList(arkUserVOFromBackend);
-						//containerForm.getModelObject().setArkUserRoleList(arkUserVOFromBackend.getArkUserRoleList());
+						
 						containerForm.setModelObject(arkUserVOFromBackend);
 						
 						//This triggers the call to populateItem() of the ListView
@@ -110,12 +124,12 @@ public class SearchResultListPanel extends Panel{
 						target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 						target.addComponent(arkCrudContainerVO.getEditButtonContainer());
 						target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-						
-						
+						target.addComponent(containerForm);
+						//Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode 
+						containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 					} catch (ArkSystemException e) {
-						this.error("There was a System error. Please contact the Administator");
-					} catch (EntityNotFoundException e) {
-						this.error("The Ark User was not located on the system. Please contact the Administator");
+						containerForm.error("There was a System error. Please contact the Administator");
+						target.addComponent(feedbackPanel);
 					}
 				}
 		};
@@ -125,6 +139,20 @@ public class SearchResultListPanel extends Panel{
 		return link;
 	}
 	
+	
+	private void prePopulateForNewUser(ArkUserVO arkUserVOFromBackend){
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+
+		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
+			ArkUserRole arkUserRole = new ArkUserRole();
+			arkUserRole.setStudy(study);
+			arkUserRole.setArkModule(arkModuleVO.getArkModule());
+			arkUserVOFromBackend.getArkUserRoleList().add(arkUserRole);
+		}
+		
+	}
 	private void prePopulateArkUserRoleList(ArkUserVO arkUserVOFromBackend){
 		
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
