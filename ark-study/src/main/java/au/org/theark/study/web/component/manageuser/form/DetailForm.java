@@ -3,6 +3,7 @@ package au.org.theark.study.web.component.manageuser.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -12,22 +13,27 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -73,7 +79,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 		groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
 		
-		final List<ArkUserRole> rolesList = new ArrayList<ArkUserRole>();
+		
+		
+		
 		
 		IModel<List<ArkUserRole>> iModel =  new LoadableDetachableModel() {
 			private static final long serialVersionUID = 1L;
@@ -85,7 +93,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			}
 		};
 		 
-		System.out.println("\n Detail Form initialiseDetailForm() ");
+	
 		
 		@SuppressWarnings("rawtypes")
 		ListView listView = new ListView("arkUserRoleList", iModel) {
@@ -131,8 +139,9 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		groupPasswordContainer.add(userPasswordField);
 		groupPasswordContainer.add(confirmPasswordField);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(groupPasswordContainer);
-		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkCrudContainerVO.getWmcForarkUserAccountPanel());
+		
+		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 	
@@ -156,6 +165,11 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 		userPasswordField.setRequired(false);
 		confirmPasswordField.setRequired(false);
 		
+		//Set the confirm password with a password pattern
+		userPasswordField.setLabel(Model.of("Password")); 
+		userPasswordField.add(new PatternValidator(Constants.PASSWORD_PATTERN));
+		confirmPasswordField.setLabel(Model.of("Confirm Password")); 
+		
 	}
 
 	
@@ -167,13 +181,17 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	@Override
 	protected void onSave(Form<ArkUserVO> containerForm,AjaxRequestTarget target) {
-		//Persist the user to ArkUser Group
+		
+		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		containerForm.getModelObject().setStudy(study);
+		
 		if(containerForm.getModelObject().getMode() == Constants.MODE_NEW){
 			
 			try {
 				
 				userService.createArkUser(containerForm.getModelObject());
-				
+				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				StringBuffer sb = new StringBuffer();
 				sb.append("The user with Login/User Name " );
 				sb.append(containerForm.getModelObject().getUserName());
@@ -181,7 +199,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				onSavePostProcess(target,arkCrudContainerVO);
 				this.info(sb.toString());
-				
+				target.addComponent(feedBackPanel);
 			} catch (ArkSystemException e) {
 				this.error("A System error has occured. Please contact Support.");
 			} catch (UserNameExistsException e) {
@@ -195,17 +213,18 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 			try {
 				
 				userService.updateArkUser(containerForm.getModelObject());
-				
+				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				StringBuffer sb = new StringBuffer();
 				sb.append("The user with Login/User Name " );
 				sb.append(containerForm.getModelObject().getUserName());
 				sb.append(" has been updated successfully into the System.");
 				this.info(sb.toString());
 				onSavePostProcess(target,arkCrudContainerVO);
-			} catch (ArkSystemException e) {
+			} catch (EntityNotFoundException e) {
+				this.error("The specified Ark User does not exist in the system.");
+			}catch (ArkSystemException e) {
 				this.error("A System error has occured. Please contact Support.");
-				
-			}
+			} 
 		}
 		
 		target.addComponent(feedBackPanel);
@@ -213,7 +232,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
+		target.addComponent(feedBackPanel);
 		
 	}
 
