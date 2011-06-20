@@ -35,6 +35,7 @@ public class ArkUserVO extends BaseVO {
 	private ArkUser arkUserEntity;
 	private List<ArkUserRole> arkUserRoleList; // A List that will contain the current user's List Modules and Roles he is linked with for the study in context
 	private Study study;
+	private boolean isArkUserPresentInDatabase;//Specifies if the user was found in database. if this field is false then changePassword must be set to true.
 	
 	
 	public StudyVO getStudyVO() {
@@ -341,6 +342,14 @@ public class ArkUserVO extends BaseVO {
 
 	public void setStudy(Study study) {
 		this.study = study;
+	}
+
+	public boolean isArkUserPresentInDatabase() {
+		return isArkUserPresentInDatabase;
+	}
+
+	public void setArkUserPresentInDatabase(boolean isArkUserPresentInDatabase) {
+		this.isArkUserPresentInDatabase = isArkUserPresentInDatabase;
 	}
 
 
