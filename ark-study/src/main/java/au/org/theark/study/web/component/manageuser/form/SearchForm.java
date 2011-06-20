@@ -114,12 +114,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO>{
 		preProcessDetailPanel(target,arkCrudContainerVO);
 		target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());//This should re-render the list again
 	}
-
-	@Override
-	protected boolean isSecure(String actionType) {
-		// TODO Auto-generated method stub
-		return true;
-	}
 	
 	protected void initialiseSearchForm(){
 		
