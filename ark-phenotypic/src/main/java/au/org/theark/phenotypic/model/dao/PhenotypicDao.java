@@ -24,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -362,7 +363,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		return field;
 	}
 
-	public Field getFieldByNameAndStudy(String fieldName, Study study)
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException
 	{
 		Field field = new Field();
 		Criteria criteria = getSession().createCriteria(Field.class);
@@ -373,7 +374,12 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 
 		if(criteria.list().size() > 0)
+		{
 			field = (Field) criteria.list().get(0);
+		}
+		else{
+			throw new EntityNotFoundException();
+		}
 		
 		return field;
 	}
@@ -696,6 +702,11 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		
 		if(phenoUploadVo.getUpload().getStartTime() == null)
 			phenoUploadVo.getUpload().setStartTime(dateNow);
+		
+		FileFormat fileFormat = new FileFormat();
+		String fileFormatName = phenoUploadVo.getUpload().getFileFormat().getName(); 
+		fileFormat = getFileFormatByName(fileFormatName);
+		phenoUploadVo.getUpload().setFileFormat(fileFormat);
 
 		Session session = getSession();
 		session.save(phenoUploadVo.getUpload());
@@ -1280,6 +1291,7 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		}
 		
 		criteria.addOrder(Order.asc("id"));
+		
 		return criteria;
 	}
 
