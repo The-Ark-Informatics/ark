@@ -20,8 +20,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
@@ -51,7 +49,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
     }
 
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
-    	log.info(" in  doGetAuthenticationInfo()");
+    	log.debug(" in  doGetAuthenticationInfo()");
     	SimpleAuthenticationInfo sai = null;
     	ArkUserVO userVO = null;
     	UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
@@ -106,7 +104,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
         		}
         	}
         	else if(sessionModuleId != null && sessionFunctionId != null && sessionStudyId != null){
-        		log.info("There is a study in context. Now we can look up the subject's roles for the study");
+        		log.debug("There is a study in context. Now we can look up the subject's roles for the study");
         		//Get the roles for the study in context
         		Study study = iArkCommonService.getStudy(sessionStudyId);
         		ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
@@ -130,7 +128,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	}
 
     	
-    	log.info("\n --- Inside doGetAuthorizationInfo invoked ----");
+    	log.debug("\n --- Inside doGetAuthorizationInfo invoked ----");
         return simpleAuthInfo;
     }
 
