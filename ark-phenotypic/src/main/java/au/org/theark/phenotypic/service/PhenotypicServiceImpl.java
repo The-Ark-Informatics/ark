@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -277,7 +278,7 @@ public class PhenotypicServiceImpl implements IPhenotypicService
 		return phenotypicDao.searchField(field);
 	}
 
-	public Field getFieldByNameAndStudy(String fieldName, Study study)
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException
 	{
 		return phenotypicDao.getFieldByNameAndStudy(fieldName, study);
 	}

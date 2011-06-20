@@ -6,6 +6,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -42,7 +43,7 @@ public interface IPhenotypicService {
 	// Field
 	public Field getField(Long fieldId);
 	public java.util.Collection<Field> searchField(Field field);
-	public Field getFieldByNameAndStudy(String fieldName, Study study);
+	public Field getFieldByNameAndStudy(String fieldName, Study study) throws EntityNotFoundException;
 	public boolean fieldHasData(Field field);
 	public void createField(Field field);
 	public void updateField(Field field);
