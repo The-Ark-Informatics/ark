@@ -711,40 +711,52 @@ public class PhenotypicValidator
 					// If no Subject UID found, caught by exception catch
 					fieldData.setLinkSubjectStudy(linkSubjectStudy);
 					
-					// Set field
-					field = new Field();
-					field = iPhenotypicService.getFieldByNameAndStudy(fieldNameArray[col], study);
-					fieldData.setField(field);
-					
-					// Other/ith columns should be the field data value
-					String value = stringLineArray[col];
-					fieldData.setValue(value);
-					
-					ArkGridCell gridCell = new ArkGridCell(col, row);
-					// Validate the field data
-					boolean isValid = PhenotypicValidator.validateFieldData(fieldData, dataValidationMessages);
-					if(!isValid)
+					// Check field exists
+					try
 					{
-						warningCells.add(gridCell);
-					}
-					
-					// Determine updates
-					if(fieldDataToUpdate.contains(fieldData))
-					{
-						updateCells.add(gridCell);
-						updateRows.add(row);
-					}
-					else
-					{
-						insertCells.add(gridCell);
-						insertRows.add(row);
-					}
-					
-					// Update progress
-					curPos += stringLineArray[col].length() + 1; // update progress
+						// Set field
+						field = new Field();
+						fieldName = fieldNameArray[col];
+						field = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
+						fieldData.setField(field);
+						
+						// Other/ith columns should be the field data value
+						String value = stringLineArray[col];
+						fieldData.setValue(value);
+						
+						ArkGridCell gridCell = new ArkGridCell(col, row);
+						// Validate the field data
+						boolean isValid = validateFieldData(fieldData, dataValidationMessages);
+						if(!isValid)
+						{
+							warningCells.add(gridCell);
+						}
+						
+						// Determine updates
+						if(fieldDataToUpdate.contains(fieldData))
+						{
+							updateCells.add(gridCell);
+							updateRows.add(row);
+						}
+						else
+						{
+							insertCells.add(gridCell);
+							insertRows.add(row);
+						}
+						
+						// Update progress
+						curPos += stringLineArray[col].length() + 1; // update progress
 
-					// Debug only - Show progress and speed
-					log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+						// Debug only - Show progress and speed
+						log.debug("progress: " + decimalFormat.format(getProgress()) + " % | speed: " + decimalFormat.format(getSpeed()) + " KB/sec");
+					}
+					catch (au.org.theark.core.exception.EntityNotFoundException enfe)
+					{
+						// Field not found...error
+						ArkGridCell cell = new ArkGridCell(0, row);
+						errorCells.add(cell);
+						dataValidationMessages.add(PhenotypicValidationMessage.fieldNotFound(fieldName));
+					}	
 				}
 
 				log.debug("\n");
