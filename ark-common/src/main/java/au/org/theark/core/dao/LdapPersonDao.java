@@ -196,7 +196,7 @@ public class LdapPersonDao implements ILdapPersonDao{
 		String personDn="";
 		try {
 			LdapName ldapName = new LdapName(baseDC);
-			ldapName.add( new Rdn("ou","people"));
+			ldapName.add( new Rdn("ou",basePeopleDn));
 			ldapName.add(new Rdn("cn", etaUserVO.getUserName()));
 			personDn = ldapName.toString();
 		
