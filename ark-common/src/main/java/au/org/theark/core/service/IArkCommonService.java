@@ -335,4 +335,6 @@ public interface IArkCommonService<T> {
 	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study);
 	
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
+	
+	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study);
 }
