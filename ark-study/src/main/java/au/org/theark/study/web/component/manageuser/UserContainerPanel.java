@@ -58,7 +58,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 	protected WebMarkupContainer initialiseSearchResults() {
 		ArkUserVO arkUserVO = new ArkUserVO();
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm,feedBackPanel);
 		
 		Collection<ArkModuleRole> listOfModulRoles = iArkCommonService.getArkModuleAndLinkedRoles();
 		List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
