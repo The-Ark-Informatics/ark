@@ -24,7 +24,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
@@ -48,8 +50,8 @@ public class SearchResults extends Panel{
 	@SpringBean( name = "userService")
 	private IUserService userService;
 	
-//	@SpringBean( name="arkLdapRealm")
-//	private ArkLdapRealm realm;
+	@SpringBean( name="arkLdapRealm")
+	private ArkLdapRealm realm;
 	
 	private Container studyContainerForm;
 	
@@ -117,13 +119,10 @@ public class SearchResults extends Panel{
 				Subject currentUser = SecurityUtils.getSubject();		
 				//Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
-				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				
+				//SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+				//SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 				//Force clearing of Cache to re-load roles for the user for the study
-				//realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-				//securityManager.hasRole(currentUser.getPrincipals(), "Administrator");//Trigger authorization so it invokes the doGetAuthorizationInfo() where the roles for the study will be loaded
-				
+				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 				
 				Study searchStudy = iArkCommonService.getStudy(study.getId()); 
 				studyContainerForm.getModelObject().setStudy(searchStudy);
@@ -166,17 +165,12 @@ public class SearchResults extends Panel{
 				
 				List<ModuleVO> modules = new ArrayList<ModuleVO>();
 				Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
-				try {
-					modules = userService.getModules(true);//source this from a static list or on application startup 
-					modulesLinkedToStudy  = userService.getModulesLinkedToStudy(searchStudy.getName(), true);
-					studyContainerForm.getModelObject().setModulesSelected(modulesLinkedToStudy);
-					studyContainerForm.getModelObject().setModulesAvailable(modules);
-					
-				} catch (ArkSystemException e) {
-					//log the error message and notify sys admin to take appropriate action
-					this.error("A system error has occured. Please try after some time.");
-				}
-				
+				//Get the Source and Linked Modules for the Stuy from Backend
+				Collection<ArkModule> availableArkModules  = iArkCommonService.getEntityList(ArkModule.class);
+				Collection<ArkModule> arkModulesLinkedToStudy =  iArkCommonService.getArkModulesLinkedWithStudy(study);
+				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
+				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
+	
 				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
 				studyCrudContainerVO.getDetailPanelContainer().setVisible(true);
