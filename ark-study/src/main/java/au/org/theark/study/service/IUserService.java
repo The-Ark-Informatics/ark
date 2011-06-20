@@ -106,9 +106,9 @@ public interface IUserService {
 	
 	public void createArkUser(ArkUserVO arkUserVO) throws UserNameExistsException, ArkSystemException;
 	
-	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException;
+	public void updateArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
 	
-	public ArkUserVO lookupArkUser(String arkLdapUserName,Study study) throws ArkSystemException, EntityNotFoundException;
+	public ArkUserVO lookupArkUser(String arkLdapUserName,Study study) throws ArkSystemException;
 	
 
 }
