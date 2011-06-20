@@ -174,13 +174,5 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 		getModelObject().getPhone().setId(null);	//only reset ID (not user definable)
 		preProcessDetailPanel(target);
 	}
-
-	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
-	 */
-	@Override
-	protected boolean isSecure(String actionType) {
-		// TODO Auto-generated method stub
-		return true;
-	}
+	
 }

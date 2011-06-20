@@ -223,28 +223,4 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>{
 		target.addComponent(listContainer);//For ajax this is required so
 	}
 
-	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
-	 */
-	@Override
-	protected boolean isSecure(String actionType) {
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();		
-		boolean flag = false;
-		
-		if(actionType.equalsIgnoreCase(Constants.NEW)){
-			if(		
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-				flag = true;
-			}
-			
-		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
-			flag = true;
-		}else{
-			flag = true;
-		}
-		return flag;
-	}
 }
