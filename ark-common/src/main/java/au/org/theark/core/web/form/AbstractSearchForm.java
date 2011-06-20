@@ -95,10 +95,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	abstract protected void onSearch(AjaxRequestTarget target);
 
 	abstract protected void onNew(AjaxRequestTarget target);
-
-	/* This method should be implemented by sub-classes to secure a control(New button etc..) */
-	abstract protected boolean isSecure(String actionType);
-	
 	
 	protected boolean isActionPermitted(String actionType){
 		boolean flag = false;
@@ -149,8 +145,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				 //return isActionPermitted(Constants.SEARCH);
-				return  isSecure(Constants.SEARCH);
+				 return isActionPermitted(Constants.SEARCH);
+				//return  isSecure(Constants.SEARCH);
 			}
 			
 			@Override
@@ -169,7 +165,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isSecure(Constants.RESET);
+				return true;
 			}
 		};
 
@@ -191,8 +187,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				//isActionPermitted(Constants.NEW);
-				return isSecure(Constants.NEW);
+				return isActionPermitted(Constants.NEW);
+				//return isSecure(Constants.NEW);
 			}
 			
 			@Override
@@ -219,8 +215,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				//return isActionPermitted(Constants.SEARCH);
-				return isSecure(Constants.SEARCH);
+				return isActionPermitted(Constants.SEARCH);
 			}
 			
 			@Override
@@ -262,8 +257,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{	
-				//return isActionPermitted(Constants.NEW);
-				return isSecure(Constants.NEW);
+				return isActionPermitted(Constants.NEW);
+				//return isSecure(Constants.NEW);
 			}
 			
 			@Override
@@ -332,14 +327,25 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		SecurityManager securityManager =  ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		
-		if (sessionId == null)
-		{
-			searchMarkupContainer.setEnabled(false);			
-			this.error(errorMessage);
+		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
+				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
+				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  &&
+				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+				
+				searchMarkupContainer.setEnabled(false);
+				this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
+				
 		}
-		else
-		{
-			searchMarkupContainer.setEnabled(true);
+		else{
+			if (sessionId == null)
+			{
+				searchMarkupContainer.setEnabled(false);			
+				this.error(errorMessage);
+			}
+			else
+			{
+				searchMarkupContainer.setEnabled(true);
+			}
 		}
 
 	}
@@ -367,22 +373,5 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		}
 	}
 	
-	
-	
-	protected void disableSearchButtons(Long sessionId, String errorMessage)
-	{	
-		if (sessionId == null)
-		{
-			searchButton.setEnabled(false);
-			newButton.setEnabled(false);
-			resetButton.setEnabled(false);
-			this.error(errorMessage);
-		}
-		else
-		{
-			newButton.setEnabled(true);
-			searchButton.setEnabled(true);
-			resetButton.setEnabled(true);
-		}
-	}
+
 }
