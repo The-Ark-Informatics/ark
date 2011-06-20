@@ -17,7 +17,7 @@
    <!--  Ark Development LDAP -->
 	<bean id="ldapPersonDao" class="au.org.theark.core.dao.LdapPersonDao">
 		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=people" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="baseGroupDn" value="ou=groups"/>
 		<property name="baseModuleDn" value="ou=modules"/>
 		<property name="baseDC" value="dc=ldapdevel,dc=wager,dc=org,dc=au" />
@@ -26,7 +26,7 @@
 	<!-- Use this for Ark Test and comment the one above 
 	<bean id="ldapPersonDao" class="au.org.theark.core.dao.LdapPersonDao">
 		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=people" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="baseGroupDn" value="ou=groups"/>
 		<property name="baseModuleDn" value="ou=modules"/>
 		<property name="baseDC" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
