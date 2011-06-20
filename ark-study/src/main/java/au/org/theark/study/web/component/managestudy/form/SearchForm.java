@@ -1,12 +1,9 @@
 package au.org.theark.study.web.component.managestudy.form;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -19,29 +16,23 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.Details;
 import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 
 public class SearchForm extends AbstractSearchForm<StudyModelVO>{
-
 	
 	private static final long serialVersionUID = -5468677674413992897L;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
 	
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -133,95 +124,61 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO>{
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE,pmStudyStatus,studyStatusList,defaultChoiceRenderer);
 	}
 
-	@Override
-	protected boolean isSecure(String actionType) {
-		boolean flag = false;
-		if(actionType.equalsIgnoreCase(Constants.NEW)){
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();		
-			
-			if(		
-					securityManager.hasRole(currentUser.getPrincipals(),RoleConstants.ARK_ROLE_ADMINISTATOR)||
-					securityManager.hasRole(currentUser.getPrincipals(),RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-				flag = true;
-			}else{
-				flag=false;
-			}	
-		}else if(actionType.equalsIgnoreCase(Constants.SEARCH)){
-			flag= true;
-		}else{
-			
-			flag=true;
-		}
-		
-		//if it is a Super or Study admin then make the new available
-		return flag;
-	}
-	
-
 	
 	protected void onNew(AjaxRequestTarget target){
 		
 		containerForm.setModelObject(new StudyModelVO());
 
 		List<ModuleVO> modules = new ArrayList<ModuleVO>();
+		Collection<ArkModule> availableArkModules = new ArrayList<ArkModule>();
 		
-		try {
-			modules = userService.getModules(true);//source this from a static list or on application startup 
-			containerForm.getModelObject().setModulesAvailable(modules);
-			
-			// Hide Summary details on new
-			studyCrudContainerVO.getSummaryContainer().setVisible(false);
-			target.addComponent(studyCrudContainerVO.getSummaryContainer());
-			
-			// Show upload item for new Study
-			studyCrudContainerVO.getStudyLogoMarkup().setVisible(true);
-			studyCrudContainerVO.getStudyLogoImageContainer().setVisible(true);
-			studyCrudContainerVO.getStudyLogoUploadContainer().setVisible(true);
-			
-			StudyHelper studyHelper = new StudyHelper();
-			studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(),target,studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
-			studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
-			
-			target.addComponent(studyCrudContainerVO.getStudyLogoMarkup());
-			target.addComponent(studyCrudContainerVO.getStudyLogoUploadContainer());
-			target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
-			
-			// Clear context items
-			ContextHelper contextHelper = new ContextHelper();
-			contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
-			studyNameTxtFld.setEnabled(true);
-			
-			// Default boolean selections
-			containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
-			containerForm.getModelObject().getStudy().setAutoConsent(false);
-					
-			// Disable SubjectUID pattern fields by default for New study
-			WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
-			Details detailsPanel = (Details) wmc.get("detailsPanel");
-			DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
-			WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
-			WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
-			
-			// Example auto-generated SubjectUID to "AAA-0000000001" on new
-			containerForm.getModelObject().setSubjectUidExample(Constants.SUBJECTUID_EXAMPLE);
-			Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
-			subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
-			target.addComponent(subjectUidExampleLbl);
-			
-			autoSubjectUidcontainer.setEnabled(true);
-			subjectUidcontainer.setEnabled(false);
-			target.addComponent(subjectUidcontainer);
-			
-			preProcessDetailPanel(target,studyCrudContainerVO);
-			
-		} catch (ArkSystemException e) {
-			//log the error message and notify sys admin to take appropriate action
-			this.error("A system error has occured. Please try after some time.");
-		}
+		availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
+		containerForm.getModelObject().setAvailableArkModules(availableArkModules);//ArkModule from database not LDAP.
+		
+		// Hide Summary details on new
+		studyCrudContainerVO.getSummaryContainer().setVisible(false);
+		target.addComponent(studyCrudContainerVO.getSummaryContainer());
+		
+		// Show upload item for new Study
+		studyCrudContainerVO.getStudyLogoMarkup().setVisible(true);
+		studyCrudContainerVO.getStudyLogoImageContainer().setVisible(true);
+		studyCrudContainerVO.getStudyLogoUploadContainer().setVisible(true);
+		
+		StudyHelper studyHelper = new StudyHelper();
+		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(),target,studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
+		
+		target.addComponent(studyCrudContainerVO.getStudyLogoMarkup());
+		target.addComponent(studyCrudContainerVO.getStudyLogoUploadContainer());
+		target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
+		
+		// Clear context items
+		ContextHelper contextHelper = new ContextHelper();
+		contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
+		studyNameTxtFld.setEnabled(true);
+		
+		// Default boolean selections
+		containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
+		containerForm.getModelObject().getStudy().setAutoConsent(false);
+				
+		// Disable SubjectUID pattern fields by default for New study
+		WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
+		Details detailsPanel = (Details) wmc.get("detailsPanel");
+		DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
+		WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
+		WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
+		
+		// Example auto-generated SubjectUID to "AAA-0000000001" on new
+		containerForm.getModelObject().setSubjectUidExample(Constants.SUBJECTUID_EXAMPLE);
+		Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
+		subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
+		target.addComponent(subjectUidExampleLbl);
+		
+		autoSubjectUidcontainer.setEnabled(true);
+		subjectUidcontainer.setEnabled(false);
+		target.addComponent(subjectUidcontainer);
+		
+		preProcessDetailPanel(target,studyCrudContainerVO);
 	
 	}
 }
