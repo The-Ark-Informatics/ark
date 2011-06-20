@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.DelimiterType;
+import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -159,6 +160,11 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(study);
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormatName = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		FileFormat fileFormat = new FileFormat();
+		fileFormat = iPhenotypicService.getFileFormatByName(fileFormatName);
+		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
