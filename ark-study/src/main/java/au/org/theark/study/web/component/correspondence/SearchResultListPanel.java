@@ -1,17 +1,21 @@
 package au.org.theark.study.web.component.correspondence;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
@@ -46,11 +50,16 @@ public class SearchResultListPanel extends Panel
 		this.containerForm = containerForm;
 	}
 
+	@SuppressWarnings("unchecked")
 	public PageableListView<Correspondences> buildPageableListView(IModel iModel)
 	{
 
 		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 9076367524574951367L;
 
 			@Override
 			protected void populateItem(final ListItem<Correspondences> item)
@@ -113,9 +122,17 @@ public class SearchResultListPanel extends Panel
 				{
 					item.add(new Label("reason", ""));
 				}
-
+				
+				// Download file link button
+				item.add(buildDownloadButton(correspondence));
+				
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
 				{
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= -1588380616547616236L;
+
 					@Override
 					public String getObject()
 					{
@@ -128,10 +145,15 @@ public class SearchResultListPanel extends Panel
 		return pageableListView;
 	}
 
+	@SuppressWarnings({ "unchecked"})
 	private AjaxLink buildLink(final Correspondences correspondence)
 	{
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence")
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 826367436671619720L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target)
@@ -164,5 +186,37 @@ public class SearchResultListPanel extends Panel
 		Label nameLinkLabel = new Label("correspondenceLabel", dateOfCorrespondence);
 		link.add(nameLinkLabel);
 		return link;
+	}
+	
+	private AjaxButton buildDownloadButton(final Correspondences correspondences) {
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) 
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 4494157023173040075L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;
+				try {
+					data = correspondences.getAttachmentPayload().getBytes(1, (int) correspondences.getAttachmentPayload().length());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				getRequestCycle().setRequestTarget(
+						new au.org.theark.core.util.ByteDataRequestTarget("", data, correspondences.getAttachmentFilename()));
+			};
+		};
+
+		ajaxButton.setVisible(true);
+		ajaxButton.setDefaultFormProcessing(false);
+
+		if (correspondences.getAttachmentFilename() == null)
+			ajaxButton.setVisible(false);
+
+		return ajaxButton;
 	}
 }
