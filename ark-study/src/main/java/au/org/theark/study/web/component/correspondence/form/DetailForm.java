@@ -250,6 +250,17 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 				this.info("Correspondence was successfully added and linked to subject: " + person.getFirstName() + " " + person.getLastName());
 				processErrors(target);
 			}else {
+			// store correspondence file attachment
+				if (fileUploadField != null && fileUploadField.getFileUpload() != null)
+				{
+					// retrieve file and store as Blob in database
+					FileUpload fileUpload = fileUploadField.getFileUpload();
+					// copy file to Blob object
+					Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
+					containerForm.getModelObject().getCorrespondence().setAttachmentPayload(payload);
+					containerForm.getModelObject().getCorrespondence().setAttachmentFilename(fileUpload.getClientFileName());
+				}
+				
 				studyService.update(containerForm.getModelObject().getCorrespondence());
 				this.info("Correspondence was successfully updated and linked to subject: " + person.getFirstName() + " " + person.getLastName());
 				processErrors(target);
