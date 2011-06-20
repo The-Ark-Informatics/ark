@@ -256,4 +256,14 @@ public class PhenotypicValidationMessage
 		stringBuffer.append(" should not have an associate ENCODED_VALUES");
 		return(stringBuffer.toString());
 	}
+
+	public static String fieldNotFound(String fieldName)
+	{
+		stringBuffer = new StringBuffer();
+		stringBuffer.append("Error: ");
+		stringBuffer.append("The field ");
+		stringBuffer.append(fieldName);
+		stringBuffer.append(" was not found in the database. Please check the name and try again, or add the field to the Data Dictionary.");
+		return(stringBuffer.toString());
+	}
 }
