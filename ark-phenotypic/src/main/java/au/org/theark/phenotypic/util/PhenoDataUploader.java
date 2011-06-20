@@ -194,7 +194,15 @@ public class PhenoDataUploader
 						try
 						{
 							DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
-							fieldData.setDateCollected(dateFormat.parse(stringLineArray[1]));
+							String dateString = stringLineArray[1];
+							
+							// If date, just raw date with no time, add default time
+							if(dateString.length() <= 10)
+							{
+								dateString = dateString.concat(" 00:00:00");
+							}
+							
+							fieldData.setDateCollected(dateFormat.parse(dateString));
 						}
 						catch(ParseException pex)
 						{
@@ -353,8 +361,25 @@ public class PhenoDataUploader
 				LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUid);
 				
 				// Second/1th column should be date collected
-				DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
-				dateCollected = dateFormat.parse(stringLineArray[1]);
+				try
+				{
+					DateFormat dateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY_HH_MM_SS);
+					String dateString = stringLineArray[1];
+					
+					// If date, just raw date with no time, add default time
+					if(dateString.length() <= 10)
+					{
+						dateString = dateString.concat(" 00:00:00");
+					}
+					
+					dateCollected =  dateFormat.parse(dateString);
+				}
+				catch(ParseException pex)
+				{
+					// Shouldn't really get here, as date validiated well before this point
+					log.error("DateCollected not parsed");
+				}
+				
 				Collection<FieldData> fieldDataToUpdate = iPhenoService.searchFieldDataBySubjectAndDateCollected(linkSubjectStudy, dateCollected);
 
 				// Loop through columns in current row in file, starting from the 2th position
