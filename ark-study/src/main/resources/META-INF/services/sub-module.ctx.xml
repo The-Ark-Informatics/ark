@@ -18,7 +18,7 @@
     <!--  Study Module bean that deals with User management on LDAP -->
 	<bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
 		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=people" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="baseGroupDn" value="ou=groups"/>
 		<property name="baseModuleDn" value="ou=modules"/>
 		<property name="baseSiteDn" value="ou=sites"/>
@@ -28,7 +28,7 @@
     <!--  
     <bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
     	<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=people" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
 		<property name="baseGroupDn" value="ou=groups"/>
 		<property name="baseModuleDn" value="ou=modules"/>
 		<property name="baseDC" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
