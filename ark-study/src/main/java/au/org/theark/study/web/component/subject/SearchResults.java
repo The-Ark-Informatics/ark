@@ -219,13 +219,16 @@ public class SearchResults extends Panel{
 				// We specify the type of person here as Subject
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-				
+			
 				SubjectVO subjectFromBackend = new SubjectVO();
 				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
 				for (SubjectVO subjectVO2 : subjects) {
 					subjectFromBackend = subjectVO2;
 					break;
 				}
+				
+				// Set SubjectUID into context
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
 				ContextHelper contextHelper = new ContextHelper();
