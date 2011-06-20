@@ -14,11 +14,13 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.jfree.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -38,10 +40,15 @@ import au.org.theark.core.vo.ArkUserVO;
  * @author nivedann
  *
  */
+/**
+ * @author nivedan
+ *
+ * @param <T>
+ */
 @Repository("arkAuthorisationDao")
 public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArkAuthorisation{
 
-
+	final Logger log = LoggerFactory.getLogger(ArkAuthorisationDao.class);
 	/**
 	 * Looks up a ArkUser based on a String that represents the user name in LDAP.
 	 * If the user name provided is null or is invalid/does not exist in the database, the method will return NULL for a ArkUser
@@ -426,6 +433,18 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return arkModuleVOList;
 	}
 	
+	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study){
+		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
+		criteria.add(Restrictions.eq("study", study));
+		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
+		arkStudyLinkedModuleList  = criteria.list();
+		Collection<ArkModule> arkModuleList = new ArrayList<ArkModule>();
+		for (LinkStudyArkModule linkStudyArkModule : arkStudyLinkedModuleList) {
+			arkModuleList.add(linkStudyArkModule.getArkModule());
+		}
+		return arkModuleList;
+	}
+	
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule){
 		
 		Collection<ArkModuleRole> arkModuleList = new ArrayList<ArkModuleRole>();
@@ -465,35 +484,112 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 			
 	}
 	
+
 	/**
-	 * TODO:WIP During an update the system must identify the items that need to be added and removed.
+	 * Will update the ArkUser or adds the user into ArkUser table. It determines the List of ArkUserRoles for
+	 * insertion and removal and processes these ArkUserRole lists.
+	 * @param arkUserVO
+	 * @throws EntityNotFoundException
+	 * @throws ArkSystemException
 	 */
-	public void updateArkUser(ArkUserVO arkUserVO){
+	public void updateArkUser(ArkUserVO arkUserVO) throws EntityNotFoundException,ArkSystemException{
 		
-		Session session = getSession();
-		session.update(arkUserVO.getArkUserEntity());
-		List<ArkUserRole> arkUserRoleList = arkUserVO.getArkUserRoleList();
-		for (ArkUserRole arkUserRole : arkUserRoleList) {
-			if(arkUserRole.getArkRole() != null){
-				arkUserRole.setArkUser(arkUserVO.getArkUserEntity());
-				session.save(arkUserRole);
+		try{
+			
+			
+			if(arkUserVO.getArkUserEntity() != null && arkUserVO.getArkUserEntity().getId() != null){
+				//User is present in the ArkUserTable can go for update of the entity and related objects (ArkUserRoles)
+				Session session = getSession();
+				session.update(arkUserVO.getArkUserEntity());
+				
+				//Insert new ArkUserRole
+				for (ArkUserRole arkUserRoleToAdd : getArkUserRolesToAdd(arkUserVO)) {
+					if(arkUserRoleToAdd.getArkRole() != null){
+						arkUserRoleToAdd.setArkUser(arkUserVO.getArkUserEntity());
+						session.save(arkUserRoleToAdd);
+					}
+				}
+
+				for (ArkUserRole arkUserRoleToRemove : getArkUserRolesToRemove(arkUserVO)) {
+					session.delete(arkUserRoleToRemove);
+				}
+			}else{
+				createArkUser(arkUserVO);
+				
 			}
+			
+		}catch(Exception exception){
+			StringBuffer sb = new StringBuffer();
+			sb.append("There was an exception while updating the ArkUser in the backend.");
+			sb.append(exception.getMessage());
+			log.error(sb.toString() );
+			throw new ArkSystemException();
 		}
 		
 	}
-
+	
+	/**
+	 * Determines a List of ArkUserRoles that are not present in the existing(backend) ArkUserRole
+	 * mapping table for the given ArkUser.
+	 * @param arkUserVO
+	 * @return List<ArkUserRole> 
+	 * @throws EntityNotFoundException
+	 */
+	private List<ArkUserRole>  getArkUserRolesToAdd(ArkUserVO arkUserVO) throws EntityNotFoundException{
+		//Get a List of existing ArkUserRole from backend and determine items to add/remove
+		List<ArkUserRole> arkUserRolesToAdd = new ArrayList<ArkUserRole>();
+		
+		List<ArkUserRole> existingArkUserRoleList = getArkUserLinkedModuleAndRoles(arkUserVO);
+		
+		for (ArkUserRole arkUserRole : arkUserVO.getArkUserRoleList()) {
+			if(!existingArkUserRoleList.contains(arkUserRole)){
+				arkUserRolesToAdd.add(arkUserRole);
+			}else{
+				
+			}
+		}
+		return arkUserRolesToAdd;
+	}
+	
+	/**
+	 * Determines a List of ArkUserRoles that need to be removed from the backend as part of the update.
+	 * mapping table for the given ArkUser.
+	 * @param arkUserVO
+	 * @return List<ArkUserRole> 
+	 * @throws EntityNotFoundException
+	 */
+	private List<ArkUserRole>  getArkUserRolesToRemove(ArkUserVO arkUserVO) throws EntityNotFoundException{
+		//Get a List of existing ArkUserRole from backend and determine items to add/remove
+		List<ArkUserRole> arkUserRolesToRemove = new ArrayList<ArkUserRole>();
+		
+		List<ArkUserRole> existingArkUserRoleList = getArkUserLinkedModuleAndRoles(arkUserVO);
+		for (ArkUserRole arkUserRole : existingArkUserRoleList) {
+			//If the selected items from the View/Model does not contain an existing ArkUserRole from backend remove it
+			if(!arkUserVO.getArkUserRoleList().contains(arkUserRole)){
+				arkUserRolesToRemove.add(arkUserRole);
+			}
+		}
+		return arkUserRolesToRemove;
+	}
+	
+	
 	/**
 	 * Get the ArkUserRole details for the given user for a specific study
 	 * @throws EntityNotFoundException 
 	 */
 	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException {
-		// TODO Auto-generated method stub
-		ArkUser arkUser = getArkUser(arkUserVO.getUserName());
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		
-		criteria.add(Restrictions.eq("arkUser", arkUser));
-		criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
-		return criteria.list();
+		ArkUser arkUser;
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>();
+	
+			arkUser = getArkUser(arkUserVO.getUserName());
+			arkUserVO.setArkUserPresentInDatabase(true);
+			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+			criteria.add(Restrictions.eq("arkUser", arkUser));
+			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
+			arkUserRoleList = criteria.list();
+		
+		return arkUserRoleList;
 		
 	}
 

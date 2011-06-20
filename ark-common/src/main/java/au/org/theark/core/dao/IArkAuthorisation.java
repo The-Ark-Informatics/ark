@@ -4,15 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkUsecase;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
-import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -115,16 +114,19 @@ public interface IArkAuthorisation<T> {
 	
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
 	
-	public void updateArkUser(ArkUserVO arkUserVO);
+	public void updateArkUser(ArkUserVO arkUserVO) throws EntityNotFoundException, ArkSystemException;
 	
 	/**
-	 * Returns a List of ArkUserRole objects that represent the Module and Associated Role assigned for
-	 * a particular study for a given ArkUser.
+	 * Returns a List of ArkUserRole objects if the specified ArkUser was present in the database.
+	 * In the event that the Arkuser was not located in the database, an empty ArkUserRole list will be returned.
+	 * 
 	 * @param arkUserVO
-	 * @return
-	 * @throws EntityNotFoundException
+	 * @return List<ArkUserRole>
+	 * @throws 
 	 */
-	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException;
+	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException ;
+	
+	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study);
 	
 
 }
