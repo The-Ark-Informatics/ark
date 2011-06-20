@@ -150,11 +150,11 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))	{
 			
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.SAVE);
-//			}
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.SAVE);
+			}
 			
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -191,11 +191,11 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))	{
 			
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.EDIT);
-//			}
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.EDIT);
+			}
 			
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
