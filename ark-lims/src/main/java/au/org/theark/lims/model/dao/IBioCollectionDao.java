@@ -27,19 +27,19 @@ public interface IBioCollectionDao
 	
 	/**
 	 * Create a LIMS collection based on the supplied limsCollection
-	 * @param modelObject
+	 * @param limsCollection
 	 */
 	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
 	
 	/**
 	 * Update a LIMS collection based on the supplied limsCollection
-	 * @param modelObject
+	 * @param limsCollection
 	 */
 	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
 	
 	/**
 	 * Delete a LIMS collection based on the supplied limsCollection
-	 * @param modelObject
+	 * @param limsCollection
 	 */
 	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
 }
