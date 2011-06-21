@@ -1,6 +1,5 @@
 package au.org.theark.phenotypic.web;
 
-import au.org.theark.phenotypic.exception.FileFormatException;
 
 public class Constants {
 	// DAO
@@ -16,7 +15,7 @@ public class Constants {
 	public static final String FIELD_UPLOAD_SUBMENU = "Data Dictionary Upload";
 	public static final String PHENO_COLLECTION_SUBMENU = "Collection";
 	public static final String	FIELD_DATA_SUBMENU	= "Field Data";
-	public static final String PHENOTYPIC_DATA_UPLOAD_SUBMENU = "Data Upload";
+	public static final String FIELD_DATA_UPLOAD_SUBMENU = "Data Upload";
 	public static final String REPORT_SUBMENU = "Reports";
 	
 	// Resource keys
