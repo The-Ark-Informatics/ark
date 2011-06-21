@@ -218,27 +218,17 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 		this.deleteButton = deleteButton;
 	}
 	
-	/**
-	 * 
-	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
-		//TODO:(CE) To handle Business and System Exceptions here
 		iLimsService.deleteBioCollection(containerForm.getModelObject());
 		this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
    		
    	// Display delete confirmation message
    	target.addComponent(feedBackPanel);
-	   //TODO Implement Exceptions in PhentoypicService
-		//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-     
-		// Close the confirm modal window
-	   selectModalWindow.close(target);
+   	
 	   // Move focus back to Search form
-		LimsVO phenoCollectionVo = new LimsVO();
-		containerForm.setModelObject(phenoCollectionVo);
+		LimsVO limsVo = new LimsVO();
+		containerForm.setModelObject(limsVo);
 		editCancelProcess(target);
 	}
 
