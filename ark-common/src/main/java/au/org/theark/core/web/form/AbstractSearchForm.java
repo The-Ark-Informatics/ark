@@ -35,7 +35,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -408051334961302312L;
+	private static final long		serialVersionUID	= -408051334961302312L;
 	protected AjaxButton				searchButton;
 	protected AjaxButton				newButton;
 	protected Button					resetButton;
@@ -46,8 +46,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	protected WebMarkupContainer	listContainer;
 	protected WebMarkupContainer	detailFormCompContainer;
 	protected FeedbackPanel			feedbackPanel;
-	
-	
 
 	/**
 	 * @param id
@@ -76,18 +74,16 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		initialiseForm();
 
 	}
-	
 
 	/**
 	 * Nivedan working
+	 * 
 	 * @param id
 	 * @param cpmModel
 	 */
-	public AbstractSearchForm(	String id, 
-								IModel<T> cpmModel, 
-								FeedbackPanel feedBackPanel,
-								ArkCrudContainerVO arkCrudContainerVO){
-		super(id,cpmModel);
+	public AbstractSearchForm(String id, IModel<T> cpmModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO)
+	{
+		super(id, cpmModel);
 		this.feedbackPanel = feedBackPanel;
 		initialiseForm(arkCrudContainerVO);
 	}
@@ -95,35 +91,43 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	abstract protected void onSearch(AjaxRequestTarget target);
 
 	abstract protected void onNew(AjaxRequestTarget target);
-	
-	protected boolean isActionPermitted(String actionType){
+
+	protected boolean isActionPermitted(String actionType)
+	{
 		boolean flag = false;
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		
-		Long useCaseId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY);
-		Long module = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
-		if(actionType.equalsIgnoreCase(Constants.NEW)){
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
+
+		if (actionType.equalsIgnoreCase(Constants.NEW))
+		{
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
+			{
 				flag = true;
-			}else{
+			}
+			else
+			{
 				flag = false;
 			}
-		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
-			
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)){
-				flag = true;	
-			}else{
+		}
+		else if (actionType.equalsIgnoreCase(Constants.SEARCH))
+		{
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
+			{
+				flag = true;
+			}
+			else
+			{
 				flag = false;
 			}
-			
+
 			flag = true;
-		}else{
+		}
+		else
+		{
 			flag = true;
 		}
 		return flag;
 	}
-	
 
 	protected void onReset()
 	{
@@ -135,6 +139,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	{
 		searchButton = new AjaxButton(Constants.SEARCH)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -3504899640173586559L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -145,18 +154,24 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				 return isActionPermitted(Constants.SEARCH);
-				//return  isSecure(Constants.SEARCH);
+				return isActionPermitted(Constants.SEARCH);
+				// return isSecure(Constants.SEARCH);
 			}
-			
+
 			@Override
-			 protected void onError(final AjaxRequestTarget target, Form form) {
+			protected void onError(final AjaxRequestTarget target, Form form)
+			{
 				target.addComponent(feedbackPanel);
-			} 
+			}
 		};
 
 		resetButton = new Button(Constants.RESET)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -6785467702774902246L;
+
 			public void onSubmit()
 			{
 				onReset();
@@ -171,12 +186,18 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 		newButton = new ArkBusyAjaxButton(Constants.NEW)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 3592424656251078184L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				// Make the details panel visible, disabling delete button (if found)
 				AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
-				if (ajaxButton != null) {
+				if (ajaxButton != null)
+				{
 					ajaxButton.setEnabled(false);
 					target.addComponent(ajaxButton);
 				}
@@ -188,11 +209,12 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			public boolean isVisible()
 			{
 				return isActionPermitted(Constants.NEW);
-				//return isSecure(Constants.NEW);
+				// return isSecure(Constants.NEW);
 			}
-			
+
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form) {
+			protected void onError(final AjaxRequestTarget target, Form form)
+			{
 				target.addComponent(feedbackPanel);
 			}
 		};
@@ -200,11 +222,15 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		addComponentsToForm();
 	}
 
-	
 	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO)
 	{
 		searchButton = new AjaxButton(Constants.SEARCH)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -8096410123770458109L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
@@ -214,18 +240,24 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{	
+			{
 				return isActionPermitted(Constants.SEARCH);
 			}
-			
+
 			@Override
-			 protected void onError(final AjaxRequestTarget target, Form form) {
+			protected void onError(final AjaxRequestTarget target, Form form)
+			{
 				target.addComponent(feedbackPanel);
-			} 
+			}
 		};
 
 		resetButton = new Button(Constants.RESET)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5818909400695185935L;
+
 			public void onSubmit()
 			{
 				onReset();
@@ -233,20 +265,26 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{	
+			{
 				return true;
 			}
 		};
 
 		newButton = new ArkBusyAjaxButton(Constants.NEW)
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1666656098281624401L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				// Make the details panel visible, disabling delete button (if found)
-				//AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
-				AjaxButton ajaxButton = (AjaxButton)arkCrudContainerVO.getEditButtonContainer().get("delete");
-				if (ajaxButton != null) {
+				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
+				if (ajaxButton != null)
+				{
 					ajaxButton.setEnabled(false);
 					target.addComponent(ajaxButton);
 				}
@@ -256,19 +294,21 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 			@Override
 			public boolean isVisible()
-			{	
+			{
 				return isActionPermitted(Constants.NEW);
-				//return isSecure(Constants.NEW);
+				// return isSecure(Constants.NEW);
 			}
-			
+
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form) {
+			protected void onError(final AjaxRequestTarget target, Form form)
+			{
 				target.addComponent(feedbackPanel);
 			}
 		};
 
 		addComponentsToForm();
 	}
+
 	protected void addComponentsToForm()
 	{
 		add(searchButton);
@@ -293,53 +333,52 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		target.addComponent(editButtonContainer);
 		target.addComponent(detailFormCompContainer);
 	}
-	
+
 	/**
 	 * Overloaded Method that uses the VO to set the WMC's
+	 * 
 	 * @param target
 	 * @param flag
 	 */
 	protected void preProcessDetailPanel(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO)
 	{
-		
+
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
-	
+
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
 		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
-		
+
 		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
 		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-		
+
 		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
 		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-		
 	}
 
-	
-
-	protected void disableSearchForm(Long sessionId, String errorMessage){	
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+	protected void disableSearchForm(Long sessionId, String errorMessage)
+	{
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		
-		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
-				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
-				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  &&
-				!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
-				
-				searchMarkupContainer.setEnabled(false);
-				this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
-				
+
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
+				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
+		{
+
+			searchMarkupContainer.setEnabled(false);
+			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
+
 		}
-		else{
+		else
+		{
 			if (sessionId == null)
 			{
-				searchMarkupContainer.setEnabled(false);			
+				searchMarkupContainer.setEnabled(false);
 				this.error(errorMessage);
 			}
 			else
@@ -349,29 +388,32 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		}
 
 	}
-	
-	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO){	
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+
+	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
+	{
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  &&
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
-			
-			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
-			
-		}else{
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
+				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
+		{
 
-			if (sessionId == null){
+			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
+
+		}
+		else
+		{
+
+			if (sessionId == null)
+			{
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 				this.error(errorMessage);
-			}else{	
+			}
+			else
+			{
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
 			}
 		}
 	}
-	
-
 }
