@@ -90,7 +90,7 @@ public class PhenotypicSubMenuTab extends Panel
 
 		menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.FIELD_DATA_UPLOAD_SUBMENU);
-		menuModule.setResourceKey(Constants.PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY);
+		menuModule.setResourceKey(Constants.FIELD_DATA_UPLOAD_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 	}
 

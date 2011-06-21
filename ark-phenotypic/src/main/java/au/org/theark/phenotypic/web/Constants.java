@@ -24,7 +24,7 @@ public class Constants {
 	public static final String FIELD_RESOURCEKEY = "tab.module.phenotypic.field";
 	public static final String FIELD_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.fieldUpload";
 	public static final String FIELD_DATA_RESOURCEKEY = "tab.module.phenotypic.fieldData";
-	public static final String PHENOTYPIC_DATA_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.phenoUpload";
+	public static final String FIELD_DATA_UPLOAD_RESOURCEKEY = "tab.module.phenotypic.phenoUpload";
 	public static final String REPORT_RESOURCEKEY = "tab.module.phenotypic.report";
 	
 	// Generic Buttons
