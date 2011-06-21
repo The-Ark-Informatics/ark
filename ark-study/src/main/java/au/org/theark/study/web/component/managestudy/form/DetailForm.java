@@ -47,6 +47,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
@@ -364,23 +365,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		return subjectUidExample;
 	}
 
-	private void initPalette()
-	{
-		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
-		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("module", "module");
-		PropertyModel<Collection<ModuleVO>> selectedModPm = new PropertyModel<Collection<ModuleVO>>(sm, "modulesSelected");
-		PropertyModel<Collection<ModuleVO>> lhsPm = new PropertyModel<Collection<ModuleVO>>(sm, "modulesAvailable");
-		appPalette = new Palette("modulesSelected", selectedModPm, lhsPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false)
-		{
-			@Override
-			public ResourceReference getCSS()
-			{
-				return null;
-			}
-		};
-	}
-
-	//TODO Do not remove: This has been implemented but will be turned on after we have the user management
 	private void initialiseArkModulePalette(){
 		
 		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
@@ -471,8 +455,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		studyCrudVO.getDetailPanelFormContainer().add(autoSubjectUidContainer);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentRdChoice);
 		studyCrudVO.getDetailPanelFormContainer().add(autoConsentChkBox);
-		//studyCrudVO.getDetailPanelFormContainer().add(appPalette);
-		/* New Model NN Do not remove*/
 		studyCrudVO.getDetailPanelFormContainer().add(arkModulePalette);
 		studyCrudVO.getDetailPanelFormContainer().add(studyCrudVO.getStudyLogoUploadContainer());
 		studyCrudVO.getSummaryContainer().add(studySummaryLabel);
@@ -570,7 +552,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		return validFlag;
 	}
 
-	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved
+	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved, CannotRemoveArkModuleException
 	{
 		Collection<ModuleVO> moduleVoCollection = studyModel.getModulesSelected();
 		// Convert to Set<String> this can be removed later by changing the interface
@@ -585,7 +567,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		{
 			// Create
 			studyService.createStudy(studyModel);
-			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
 			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
@@ -595,12 +576,13 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		else
 		{
 			// Update
+			studyService.updateStudy(studyModel);
 			//studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
 			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
-			this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
-			//this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
+			//this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
+			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
 		}
@@ -683,6 +665,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		catch (UnAuthorizedOperation e)
 		{
 			this.error("You (logged in user) is unauthorised to create/update or archive this study.");
+		} catch (CannotRemoveArkModuleException e) {
+			this.error("You cannot remove the modules as part of the update. There are System Users who are associated with this study and modules.");
 		}
 
 	}
