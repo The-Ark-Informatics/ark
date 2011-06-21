@@ -9,7 +9,7 @@ import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.Constants;
@@ -17,7 +17,6 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
@@ -41,7 +40,6 @@ public class SubjectSubMenuTab extends Panel{
 	
 	private WebMarkupContainer	arkContextMarkup;
 	List<ITab> tabList;
-	private ArkFunction  arkFunction;
 	private ArkModule arkModule;
 	
 	/**
@@ -54,103 +52,62 @@ public class SubjectSubMenuTab extends Panel{
 		buildTabs();
 	}
 	
+	@SuppressWarnings({ "serial", "unchecked" })
 	public  void buildTabs(){
 		
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
-		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
+		//List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 		
-		//THis way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
-		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_DETAIL);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_DETAIL);
-		moduleTabs.add(menuModule);
-
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_PERSON_PHONE);
-		menuModule.setResourceKey(Constants.TAB_MODULE_PERSON_PHONE);
-		moduleTabs.add(menuModule);
+		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_SUBJECT);
+		List<ArkFunction>   arkFunctionList = iArkCommonService.getModuleFunction(arkModule);//Gets a list of ArkFunctions for the given Module
 		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_PERSON_ADDRESS);
-		menuModule.setResourceKey(Constants.TAB_MODULE_PERSON_ADDRESS);
-		moduleTabs.add(menuModule);
-
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_CONSENT);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CONSENT);
-		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_CORRESPONDENCE);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_CORRESPONDENCE);
-		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_FILE);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_FILE);
-		moduleTabs.add(menuModule);
-		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_SUBJECT_SUBJECT_UPLOAD);
-		menuModule.setResourceKey(Constants.TAB_MODULE_SUBJECT_SUBJECT_UPLOAD);
-		moduleTabs.add(menuModule);
-
-		
-		for(final MenuModule moduleName : moduleTabs)
-		{
-			moduleSubTabsList.add( new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), SubjectSubMenuTab.this, moduleName.getModuleName())) )
+		for (final ArkFunction menuArkFunction : arkFunctionList) {
+			
+			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(),this, null))
 			{
-				public boolean isVisible(){
-					
-					return true;
-				}
-				
 				@Override
-				public Panel getPanel(String panelId) 
+				public Panel getPanel(String panelId)
 				{
-
-					Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
+					Panel panelToReturn = null;// Set
+					if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)){
 					
-					if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_DETAIL)){
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new SubjectContainer(panelId, arkContextMarkup);//Note the constructor
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_PHONE)){
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)){
+					
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new PhoneContainerPanel(panelId);
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_PERSON_ADDRESS)){
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)){
+
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new AddressContainerPanel(panelId);
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CONSENT)){
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT)){
 						
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new ConsentContainerPanel(panelId);
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_FILE)){
-					
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_FILE); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_FILE)){
+						
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new SubjectFileContainerPanel(panelId);
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_SUBJECT_UPLOAD)){
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)){
 						
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD); //Place a default use case into session
-						processAuthorizationCache(arkFunction);
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new SubjectUploadContainerPanel(panelId);
 					}
-					else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_SUBJECT_CORRESPONDENCE)) {
-						arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE); //Place a default use case into session						
-						processAuthorizationCache(arkFunction);
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
+						
+						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
+		
 					return panelToReturn;
-				};
+				}
+			
 			});
 		}
 		
