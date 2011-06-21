@@ -62,7 +62,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public void createBioCollection(LimsVO modelObject)
 	{
-		log.info("Creating bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Creating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
@@ -71,7 +71,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public void deleteBioCollection(LimsVO modelObject)
 	{
-		log.info("Deleting bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Deleting bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.deleteBioCollection(modelObject.getBioCollection());
 	}
 
@@ -80,7 +80,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException
 	{
-		log.info("Getting bioCollection: " + id.intValue());
+		log.debug("Getting bioCollection: " + id.intValue());
 		return iBioCollectionDao.getBioCollection(id);
 	}
 
@@ -89,7 +89,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException
 	{
-		log.info("Getting Person: " + id.intValue());
+		log.debug("Getting Person: " + id.intValue());
 		return iStudyDao.getPerson(id);
 	}
 
@@ -106,7 +106,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public void updateBioCollection(LimsVO modelObject)
 	{
-		log.info("Updating bioCollection: " + modelObject.getBioCollection().getName());
+		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
 	}
 }
