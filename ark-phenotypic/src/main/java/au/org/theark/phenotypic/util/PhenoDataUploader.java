@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
@@ -402,8 +403,16 @@ public class PhenoDataUploader
 
 						// Set field
 						String fieldName = fieldNameArray[i];
-						field = iPhenoService.getFieldByNameAndStudy(fieldName, study);
-						fieldData.setField(field);
+						
+						try
+						{
+							field = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+							fieldData.setField(field);
+						}
+						catch(EntityNotFoundException enf)
+						{
+							log.error(enf.getMessage());
+						}
 						
 						// Check if field in collection
 						FieldPhenoCollection fieldPhenoCollection = new FieldPhenoCollection();
@@ -626,8 +635,38 @@ public class PhenoDataUploader
 				field = new Field();
 				field.setStudy(study);
 				
-				Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
-				if(oldField == null || oldField.getId() == null)
+				try
+				{
+					Field oldField = iPhenoService.getFieldByNameAndStudy(fieldName, study);
+					
+					uploadReport.append("Updating field for: ");
+					uploadReport.append("\tFIELD: ");
+					fieldName = csvReader.get("FIELD_NAME");
+					uploadReport.append(csvReader.get("FIELD_NAME"));
+					uploadReport.append("\n");
+					
+					oldField.setName(fieldName);
+					
+					FieldType fieldType = new FieldType();
+					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
+					oldField.setFieldType(fieldType);
+					
+					oldField.setDescription(csvReader.get("DESCRIPTION"));
+					oldField.setUnits(csvReader.get("UNITS"));
+					oldField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
+					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
+					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
+					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
+					
+					// Try to update the oldField
+					iPhenoService.updateField(oldField);
+					updateCount++;
+					
+					FieldUpload fieldUpload = new FieldUpload();
+					fieldUpload.setField(oldField);
+					fieldUploadCollection.add(fieldUpload);
+				}
+				catch(EntityNotFoundException enf)
 				{
 					field = new Field();
 					field.setStudy(study);
@@ -654,35 +693,6 @@ public class PhenoDataUploader
 					
 					FieldUpload fieldUpload = new FieldUpload();
 					fieldUpload.setField(field);
-					fieldUploadCollection.add(fieldUpload);
-				}
-				else
-				{
-					uploadReport.append("Updating field for: ");
-					uploadReport.append("\tFIELD: ");
-					fieldName = csvReader.get("FIELD_NAME");
-					uploadReport.append(csvReader.get("FIELD_NAME"));
-					uploadReport.append("\n");
-					
-					oldField.setName(fieldName);
-					
-					FieldType fieldType = new FieldType();
-					fieldType = iPhenoService.getFieldTypeByName(csvReader.get("FIELD_TYPE"));
-					oldField.setFieldType(fieldType);
-					
-					oldField.setDescription(csvReader.get("DESCRIPTION"));
-					oldField.setUnits(csvReader.get("UNITS"));
-					oldField.setEncodedValues(csvReader.get("ENCODED_VALUES"));
-					oldField.setMinValue(csvReader.get("MINIMUM_VALUE"));
-					oldField.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
-					oldField.setMissingValue(csvReader.get("MISSING_VALUE"));
-					
-					// Try to update the oldField
-					iPhenoService.updateField(oldField);
-					updateCount++;
-					
-					FieldUpload fieldUpload = new FieldUpload();
-					fieldUpload.setField(oldField);
 					fieldUploadCollection.add(fieldUpload);
 				}
 				

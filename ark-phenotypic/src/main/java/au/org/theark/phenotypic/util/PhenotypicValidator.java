@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkBaseException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldType;
@@ -70,7 +71,7 @@ public class PhenotypicValidator
 	java.util.Collection<String>	fileValidationMessages	= new ArrayList<String>();
 	java.util.Collection<String>	dataValidationMessages	= new ArrayList<String>();
 	private IPhenotypicService		iPhenotypicService			= null;
-	private IArkCommonService		iArkCommonService			= null;
+	private IArkCommonService<Void>		iArkCommonService			= null;
 	private StringBuffer				uploadReport				= null;
 	private HashSet<Integer>		insertRows 					= new HashSet<Integer>();
 	private HashSet<Integer>		updateRows 					= new HashSet<Integer>();
@@ -90,7 +91,7 @@ public class PhenotypicValidator
 	{
 	}
 	
-	public PhenotypicValidator(IArkCommonService iArkCommonService, IPhenotypicService iPhenotypicService, UploadVO uploadVo)
+	public PhenotypicValidator(IArkCommonService<Void> iArkCommonService, IPhenotypicService iPhenotypicService, UploadVO uploadVo)
 	{
 		this.iArkCommonService = iArkCommonService;
 		this.iPhenotypicService = iPhenotypicService;
@@ -910,29 +911,31 @@ public class PhenotypicValidator
 					field.setMaxValue(csvReader.get("MAXIMUM_VALUE"));
 					field.setMissingValue(csvReader.get("MISSING_VALUE"));
 					
-					
-					Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
-					// Determine updates
-					if(oldField.getId() != null)
+					try
 					{
-						updateRows.add(row);
-						for(int col = 0; col < cols; col++)
-							updateCells.add(new ArkGridCell(col, row));
-						
-						// Check field type same as one in database
-						if(!(field.getFieldType().getName().equalsIgnoreCase(oldField.getFieldType().getName())))
+						Field oldField = iPhenotypicService.getFieldByNameAndStudy(fieldName, study);
+						// Determine updates
+						if(oldField.getId() != null)
 						{
-							gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
-							StringBuffer stringBuffer = new StringBuffer();
-							stringBuffer.append("Error: ");
-							stringBuffer.append("The existing field ");
-							stringBuffer.append(fieldName);
-							stringBuffer.append(" already has data associated with it, and cannot have it's field type changed");
-							dataValidationMessages.add(stringBuffer.toString());
-							errorCells.add(gridCell);
+							updateRows.add(row);
+							for(int col = 0; col < cols; col++)
+								updateCells.add(new ArkGridCell(col, row));
+							
+							// Check field type same as one in database
+							if(!(field.getFieldType().getName().equalsIgnoreCase(oldField.getFieldType().getName())))
+							{
+								gridCell = new ArkGridCell(csvReader.getIndex("FIELD_TYPE"), row);
+								StringBuffer stringBuffer = new StringBuffer();
+								stringBuffer.append("Error: ");
+								stringBuffer.append("The existing field ");
+								stringBuffer.append(fieldName);
+								stringBuffer.append(" already has data associated with it, and cannot have it's field type changed");
+								dataValidationMessages.add(stringBuffer.toString());
+								errorCells.add(gridCell);
+							}
 						}
 					}
-					else
+					catch(EntityNotFoundException enf)
 					{
 						insertRows.add(row);
 					}
