@@ -8,7 +8,8 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
-import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -283,4 +284,12 @@ public interface IStudyDao {
 	 * @throws ArkSystemException
 	 */
 	public Person getPerson(Long personId) throws EntityNotFoundException, ArkSystemException;
+	
+	/**
+	 * Retrieves a List of ArkFunction for a given ArkModule. This can be used to determine what functions/use cases
+	 * are tied to a particular module.
+	 * @param arkModule
+	 * @return List<ArkFunction>
+	 */
+	public List<ArkFunction> getModuleFunction(ArkModule arkModule);
 }

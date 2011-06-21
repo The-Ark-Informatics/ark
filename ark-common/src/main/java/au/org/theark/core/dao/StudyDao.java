@@ -25,6 +25,9 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -783,5 +786,17 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		{
 			throw new EntityNotFoundException("The entity with id" + personId.toString() + " cannot be found.");
 		}
+	}
+	
+	public List<ArkFunction> getModuleFunction(ArkModule arkModule){
+		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+		criteria.add(Restrictions.eq("arkModule", arkModule));
+		List<ArkModuleFunction> listOfArkModuleFunction = criteria.list();
+		List<ArkFunction> arkFunctionList = new ArrayList<ArkFunction>();
+		for (ArkModuleFunction arkModuleFunction : listOfArkModuleFunction) {
+			arkFunctionList.add(arkModuleFunction.getArkFunction());
+		}
+		
+		return arkFunctionList;
 	}
 }
