@@ -28,19 +28,19 @@ public interface IBiospecimenDao
 	
 	/**
 	 * Create a LIMS Biospecimen based on the supplied biospecimen
-	 * @param modelObject
+	 * @param biospecimen
 	 */
 	public void createBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
 	
 	/**
 	 * Update a LIMS Biospecimen based on the supplied biospecimen
-	 * @param modelObject
+	 * @param biospecimen
 	 */
 	public void updateBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
 	
 	/**
 	 * Delete a LIMS Biospecimen based on the supplied biospecimen
-	 * @param modelObject
+	 * @param biospecimen
 	 */
 	public void deleteBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
 
