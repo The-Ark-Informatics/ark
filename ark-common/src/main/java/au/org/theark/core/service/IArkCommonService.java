@@ -10,6 +10,7 @@ import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -337,4 +338,11 @@ public interface IArkCommonService<T> {
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
 	
 	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study);
+	
+	/**
+	 * Get a collection of Functions associated with the given module.
+	 * @param arkModule
+	 * @return
+	 */
+	public List<ArkFunction> getModuleFunction(ArkModule arkModule);
 }

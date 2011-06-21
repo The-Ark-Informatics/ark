@@ -416,4 +416,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study){
 		return arkAuthorisationDao.getArkModulesLinkedWithStudy(study);
 	}
+	
+	public List<ArkFunction> getModuleFunction(ArkModule arkModule){
+		return studyDao.getModuleFunction(arkModule);
+	}
 }
