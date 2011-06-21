@@ -24,6 +24,7 @@ import au.org.theark.core.exception.ArkBaseException;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -120,39 +121,28 @@ public class StudyServiceImpl implements IStudyService{
 		
 	}
 
-	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws ArkSystemException, EntityExistsException, UnAuthorizedOperation{
-		try{
-			//Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();
-			
-			if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
-				studyDao.create(studyEntity);
-				iLdapUserDao.createStudy(studyEntity.getName(), selectedApplications, au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
-				
-				AuditHistory ah = new AuditHistory();
-				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-				ah.setComment("Created Study " + studyEntity.getName());
-				ah.setEntityId(studyEntity.getId());
-				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
-				arkCommonService.createAuditHistory(ah);
-				
-			}else{
-			 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
-			}
-		}catch(ArkSystemException arkSystemException){
-			throw arkSystemException;
-		}
-		
-	}
 	
 	public void createStudy(StudyModelVO studyModelVo){
 		//Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		if(securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
-			studyDao.create(studyModelVo.getStudy(),studyModelVo.getSelectedArkModules());
-		}
+		studyDao.create(studyModelVo.getStudy(),studyModelVo.getSelectedArkModules());
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+		ah.setComment("Created Study " + studyModelVo.getStudy().getName());
+		ah.setEntityId(studyModelVo.getStudy().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		arkCommonService.createAuditHistory(ah);
+	}
+	
+	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException{
+		
+		studyDao.updateStudy(studyModelVo.getStudy(),studyModelVo.getSelectedArkModules());
+		
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Study " + studyModelVo.getStudy().getName());
+		ah.setEntityId(studyModelVo.getStudy().getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		arkCommonService.createAuditHistory(ah);
 		
 	}
 	

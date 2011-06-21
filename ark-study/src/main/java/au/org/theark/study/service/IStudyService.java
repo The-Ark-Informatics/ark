@@ -10,6 +10,7 @@ import org.apache.wicket.util.file.File;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -47,15 +48,14 @@ import au.org.theark.study.util.SubjectUploadValidator;
 
 
 public interface IStudyService {
-	/**
-	 * This interface must be accessible to only super administrator role
-	 * @param studyEntity
-	 * @param selectedApplications
-	 * @throws ArkSystemException
-	 */
-	public void createStudy(Study studyEntity, Set<String> selectedApplications) throws EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
+	/**
+	 * 
+	 * @param studyModelVo
+	 */
 	public void createStudy(StudyModelVO studyModelVo);
+	
+	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException;
 	
 	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved,EntityExistsException,UnAuthorizedOperation, ArkSystemException;
 	
