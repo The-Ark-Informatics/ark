@@ -19,6 +19,8 @@ public class ArkFunction implements Serializable{
 	private Long id;
 	private String name;
 	private String description;
+	private String resourceKey;
+	
 	
 	@Id
 	@SequenceGenerator(name="ark_function_generator", sequenceName="ARK_FUNCTION_SEQUENCE")
@@ -48,6 +50,15 @@ public class ArkFunction implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@Column(name="RESOURCE_KEY")
+	public String getResourceKey() {
+		return resourceKey;
+	}
+
+	public void setResourceKey(String resourceKey) {
+		this.resourceKey = resourceKey;
 	}	
 	
 
