@@ -228,6 +228,16 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD="SUBJECT_UPLOAD";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE="SUBJECT_CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT="REPORT";
+	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY	= "DATA_DICTIONARY";
+	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD	= "DATA_DICTIONARY_UPLOAD";
+	public static final String	FUNCTION_KEY_VALUE_PHENO_COLLECTION	= "PHENO_COLLECTION";
+	public static final String	FUNCTION_KEY_VALUE_FIELD_DATA	= "FIELD_DATA";
+	public static final String	FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD	= "FIELD_DATA_UPLOAD";
+	public static final String	FUNCTION_KEY_VALUE_LIMS_SUBJECT	= "LIMS_SUBJECT";
+	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION	= "LIMS_COLLECTION";
+	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN	= "BIOSPECIMEN";
+	public static final String	FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
+	
 	
 	/*Ark Module Keys */
 	public static final String ARK_MODULE_KEY ="MODULE_KEY";
