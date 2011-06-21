@@ -3,9 +3,6 @@ package au.org.theark.lims.web.component.bioCollection.form;
 import java.util.ArrayList;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -21,7 +18,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -34,20 +30,23 @@ import au.org.theark.lims.web.component.bioCollection.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<LimsVO>
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3935670037697869845L;
+
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService								iLimsService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService<Void>						iArkCommonService;
 
 	private PageableListView<BioCollection>	listView;
 	private CompoundPropertyModel<LimsVO>		cpmModel;
 	private TextField<String>						idTxtFld;
 	private TextField<String>						nameTxtFld;
-	private TextArea<String>						commentsTxtAreaFld;
 	private DateTextField							collectionDateTxtFld;
 	private DateTextField							surgeryDateTxtFld;
 	private DetailPanel								detailPanel;
@@ -64,14 +63,14 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
-		this.cpmModel = model;
+		this.setCpmModel(model);
 		this.listView = listView;
-		this.detailPanel = detailPanel;
+		this.setDetailPanel(detailPanel);
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
-
+		
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		//disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
+		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
 	}
 
 	/**
@@ -80,7 +79,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel)
 	{
 		super(id, compoundPropertyModel);
-		this.cpmModel = compoundPropertyModel;
+		this.setCpmModel(compoundPropertyModel);
 		initialiseFieldForm();
 	}
 
@@ -88,7 +87,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	{
 		idTxtFld = new TextField<String>("bioCollection.id");
 		nameTxtFld = new TextField<String>("bioCollection.name");
-		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
+		new TextArea<String>("bioCollection.comments");
 		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
 
@@ -175,26 +174,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		target.addComponent(listContainer);// For ajax this is required so
 	}
 
-	protected boolean isSecure(String actionType)
-	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
-			SecurityManager securityManager = ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();
-			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
-			{
-				flag = true;
-			}
-			;
-		}
-		else
-		{
-			flag = true;
-		}
-		return flag;
-	}
-
 	/**
 	 * @param arkContextMarkup
 	 *           the arkContextMarkup to set
@@ -210,5 +189,37 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	public WebMarkupContainer getArkContextMarkup()
 	{
 		return arkContextMarkup;
+	}
+
+	/**
+	 * @param detailPanel the detailPanel to set
+	 */
+	public void setDetailPanel(DetailPanel detailPanel)
+	{
+		this.detailPanel = detailPanel;
+	}
+
+	/**
+	 * @return the detailPanel
+	 */
+	public DetailPanel getDetailPanel()
+	{
+		return detailPanel;
+	}
+
+	/**
+	 * @param cpmModel the cpmModel to set
+	 */
+	public void setCpmModel(CompoundPropertyModel<LimsVO> cpmModel)
+	{
+		this.cpmModel = cpmModel;
+	}
+
+	/**
+	 * @return the cpmModel
+	 */
+	public CompoundPropertyModel<LimsVO> getCpmModel()
+	{
+		return cpmModel;
 	}
 }
