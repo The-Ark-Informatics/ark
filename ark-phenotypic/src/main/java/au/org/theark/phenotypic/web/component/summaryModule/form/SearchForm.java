@@ -1,7 +1,6 @@
 package au.org.theark.phenotypic.web.component.summaryModule.form;
 
 import java.awt.Color;
-import java.lang.annotation.Target;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,15 +31,14 @@ import au.org.theark.phenotypic.web.component.summaryModule.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
-	private PageableListView<PhenoCollection>				listView;
-	private CompoundPropertyModel<PhenoCollectionVO>	cpmModel;
-	private DetailPanel											detailPanel;
-	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 7554016167563013219L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService<Void>					iArkCommonService;
 	
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
@@ -58,9 +56,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
-		this.cpmModel = model;
-		this.listView = listView;
-		this.detailPanel = detailPanel;
 		initialiseFieldForm();
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -73,7 +68,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel)
 	{
 		super(id, compoundPropertyModel);
-		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
 		addFieldComponents();
 	}
@@ -118,26 +112,14 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	      chart.setBorderVisible(false);
 	      addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 400, 400).setVersioned(true));
 			
-			String[] seriesNames = new String[] {"2001", "2002"};
-			String[] categoryNames = new String[] {"First Quater",
-			                                       "Second Quater"};
-			Number[][] categoryData = new Integer[][] {{new Integer(20),
-			                                            new Integer(35)},
-			                                           {new Integer(40),
-			                                            new Integer(60)}
-			};
-			
 			DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 			
 			List<BarChartResult> resultList = iPhenotypicService.getFieldsWithDataResults(study);
-			for (Iterator iterator = resultList.iterator(); iterator.hasNext();)
+			for (Iterator<BarChartResult> iterator = resultList.iterator(); iterator.hasNext();)
 			{
 				BarChartResult barChartResult = (BarChartResult) iterator.next();
-				//dataset.setValue(3, "Collection", "ANOTHER");
-				//dataset.setValue(6, "Collection", "NEW_COLLECTION");
 				dataset.setValue(barChartResult.getValue(), barChartResult.getRowKey(), barChartResult.getColumnKey());
 			}
-			
 			
 			chart = ChartFactory.createBarChart(
 			                     "Fields With Data", // Title
@@ -183,26 +165,16 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.viewButtonContainer.setVisible(false);
 		this.editButtonContainer.setVisible(false);
 	}
-	
-	protected boolean isSecure(String actionType)
+
+	@Override
+	protected void onNew(AjaxRequestTarget target)
 	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
-			flag = false;
-		}
-		return flag;
+		// Required abstract method
 	}
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	protected void onNew(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
-		
+	protected void onSearch(AjaxRequestTarget target)
+	{
+		// Required abstract method
 	}
 }
