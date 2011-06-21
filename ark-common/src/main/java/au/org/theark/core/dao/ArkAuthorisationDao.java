@@ -581,16 +581,50 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		
 		ArkUser arkUser;
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>();
-	
-			arkUser = getArkUser(arkUserVO.getUserName());
-			arkUserVO.setArkUserPresentInDatabase(true);
-			Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-			criteria.add(Restrictions.eq("arkUser", arkUser));
-			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
-			arkUserRoleList = criteria.list();
+
+		arkUser = getArkUser(arkUserVO.getUserName());
+		arkUserVO.setArkUserPresentInDatabase(true);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
+		arkUserRoleList = criteria.list();
 		
 		return arkUserRoleList;
 		
 	}
+	
+	/**
+	 * Get a List of ArkUserRole objects for a given study and Module. This method can be used to determine
+	 * a list of Ark Modules arkUsers are linked to for a given study.
+	 * @param study
+	 * @param arkModule
+	 * @return
+	 */
+	public List<ArkUserRole> getArkUserLinkedModule(Study study, ArkModule arkModule){
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>();
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkModule", arkModule));
+		criteria.add(Restrictions.eq("study", study));
+		arkUserRoleList = criteria.list();
+		return arkUserRoleList;
+	}
+	
+	/**
+	 * 
+	 * Returns an existing collection of LinkStudyArkModule objects for a given Study
+	 * 
+	 * @param study
+	 * @return  List<LinkStudyArkModule>
+	 */
+	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study){
+
+		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
+		
+		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
+		criteria.add(Restrictions.eq("study", study));
+		return criteria.list();
+	}
+	
+
 
 }

@@ -12,6 +12,7 @@ import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
@@ -127,6 +128,17 @@ public interface IArkAuthorisation<T> {
 	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException ;
 	
 	public Collection<ArkModule> getArkModulesLinkedWithStudy(Study study);
+	
+	/**
+	 * 
+	 * @param study
+	 * @param arkModule
+	 * @return
+	 */
+	public List<ArkUserRole> getArkUserLinkedModule(Study study, ArkModule arkModule);
+	
+	
+	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study);
 	
 
 }
