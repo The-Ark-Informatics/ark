@@ -109,7 +109,7 @@ public class SearchPanel extends Panel {
 //			} else {
 //				setSearchButtonsEnabled(true);
 //			}
-			disableSearchButtons(sessionGenoColId, au.org.theark.geno.web.Constants.MSG_NO_GENOCOLLECTION_CONTEXT);
+			disableSearchForm(sessionGenoColId, au.org.theark.geno.web.Constants.MSG_NO_GENOCOLLECTION_CONTEXT);
 		}
 		
 		//TODO
@@ -144,12 +144,6 @@ public class SearchPanel extends Panel {
 			add(uploadCollectionUploadFilenameTxtFld);
 			add(uploadFileformatDdc);
 			add(uploadDelimiterTypeDdc);
-		}
-
-		@Override
-		protected boolean isSecure(String actionType) {
-			// TODO Auto-generated method stub
-			return true;
 		}
 
 		@Override

@@ -128,7 +128,7 @@ public class SearchPanel extends Panel {
 //			} else {
 //				setSearchButtonsEnabled(true);
 //			}
-			disableSearchButtons(sessionStudyId, au.org.theark.geno.web.Constants.MSG_NO_STUDY_CONTEXT);
+			disableSearchForm(sessionStudyId, au.org.theark.geno.web.Constants.MSG_NO_STUDY_CONTEXT);
 
 		}
 		
@@ -155,12 +155,6 @@ public class SearchPanel extends Panel {
 			add(genoStatusDdc);
 			add(genoCollectionStartDateFld);
 			add(genoCollectionExpiryDateFld);
-		}
-
-		@Override
-		protected boolean isSecure(String actionType) {
-			// TODO Auto-generated method stub
-			return true;
 		}
 
 		@Override
