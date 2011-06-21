@@ -21,6 +21,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -28,6 +29,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
+import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
@@ -419,5 +421,13 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	
 	public List<ArkFunction> getModuleFunction(ArkModule arkModule){
 		return studyDao.getModuleFunction(arkModule);
+	}
+	
+	public List<ArkUserRole> getArkUserLinkedModule(Study study, ArkModule arkModule){
+		return arkAuthorisationDao.getArkUserLinkedModule(study, arkModule);
+	}
+	
+	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study){
+		return arkAuthorisationDao.getLinkStudyArkModulesList(study);
 	}
 }
