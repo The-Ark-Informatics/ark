@@ -28,7 +28,6 @@ public class LimsServiceImpl implements ILimsService
 {
 	private static Logger log = LoggerFactory.getLogger(LimsServiceImpl.class);
 	
-	private IArkCommonService<Void> arkCommonService;
 	private IStudyDao iStudyDao;
 	private IBioCollectionDao iBioCollectionDao;
 
@@ -38,7 +37,6 @@ public class LimsServiceImpl implements ILimsService
 	@Autowired
 	public void setArkCommonService(IArkCommonService<Void> arkCommonService)
 	{
-		this.arkCommonService = arkCommonService;
 	}
 
 	/**
@@ -108,8 +106,7 @@ public class LimsServiceImpl implements ILimsService
 	 */
 	public void updateBioCollection(LimsVO modelObject)
 	{
-		// TODO Auto-generated method stub
-
+		log.info("Updating bioCollection: " + modelObject.getBioCollection().getName());
+		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
 	}
-
 }
