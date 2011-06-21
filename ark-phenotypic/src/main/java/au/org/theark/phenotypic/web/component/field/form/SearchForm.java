@@ -3,9 +3,6 @@ package au.org.theark.phenotypic.web.component.field.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -21,7 +18,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.FieldVO;
@@ -64,7 +60,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 
 		this.cpmModel = model;
 		this.listView = listView;
-		this.detailPanel = detailPanel;
+		this.setDetailPanel(detailPanel);
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -146,24 +142,19 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		preProcessDetailPanel(target);
 	}
 
-	protected boolean isSecure(String actionType)
+	/**
+	 * @param detailPanel the detailPanel to set
+	 */
+	public void setDetailPanel(DetailPanel detailPanel)
 	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
+		this.detailPanel = detailPanel;
+	}
 
-			SecurityManager securityManager = ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();
-			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
-			{
-				flag = true;
-			}
-		}
-		else
-		{
-			flag = true;
-		}
-
-		return flag;
+	/**
+	 * @return the detailPanel
+	 */
+	public DetailPanel getDetailPanel()
+	{
+		return detailPanel;
 	}
 }
