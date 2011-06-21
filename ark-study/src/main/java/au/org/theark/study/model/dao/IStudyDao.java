@@ -6,6 +6,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
@@ -46,6 +47,9 @@ public interface IStudyDao {
 	public void create(Study study);
 	
 	public void create(Study study,Collection<ArkModule> selectedApplications);
+	
+	public void updateStudy(Study study,Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException;
+	
 	
 	public void create(StudyComp studyComponent) throws ArkSystemException;
 	

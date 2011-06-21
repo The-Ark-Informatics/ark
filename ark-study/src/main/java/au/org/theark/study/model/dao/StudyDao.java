@@ -1,5 +1,6 @@
 package au.org.theark.study.model.dao;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -28,12 +29,14 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
@@ -62,6 +65,7 @@ import au.org.theark.core.model.study.entity.SubjectUidSequence;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.study.service.Constants;
@@ -70,6 +74,8 @@ import au.org.theark.study.service.Constants;
 public class StudyDao extends HibernateSessionDao implements IStudyDao
 {
 
+	private IArkCommonService arkCommonService;
+	
 	private static Logger	log	= LoggerFactory.getLogger(StudyDao.class);
 	private Subject			currentUser;
 	private Date				dateNow;
@@ -82,6 +88,12 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		this.arkUidGenerator = arkUidGenerator;
 	}
 
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
+	}
+	
+	
 	public void create(Study study)
 	{
 		getSession().save(study);
@@ -157,6 +169,82 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		session.flush();
 		session.refresh(studyEntity);
 	}
+	
+	public void updateStudy(Study study,Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
+		Session session = getSession();
+		session.update(study);
+		session.flush();
+		session.refresh(study);
+		
+		//Determine a insertion List
+		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study,selectedApplications);
+		//Determine Removal List here
+		//Collection<LinkStudyArkModule> linkStudyArkModulesToRemove = getModulesToRemoveList(study,selectedApplications);
+		
+		//Insert the new modules for the Study
+		for (LinkStudyArkModule linkStudyArkModule : linkStudyArkModulesToAdd) {
+			session.save(linkStudyArkModule);
+		}
+		//NN:TODO WIP
+		//Process the Removal of Linked ArkModules for this study
+		//		for (LinkStudyArkModule linkStudyArkModule : linkStudyArkModulesToRemove) {
+		//			session.delete(linkStudyArkModule);
+		//		}
+	}
+	
+	/**
+	 * Creates a list of ArkModule to which the Study should be linked to.
+	 * @param study
+	 * @param selectedApplications
+	 * @return
+	 */
+	private Collection<LinkStudyArkModule> getModulesToAddList(Study study, Collection<ArkModule> selectedApplications){
+		
+		Collection<LinkStudyArkModule> modulesToLink = new ArrayList<LinkStudyArkModule>();
+		//Existing List of ArkModules that were linked to this study
+		Collection<ArkModule> arkModules = arkCommonService.getArkModulesLinkedWithStudy(study);
+		for (ArkModule arkModule : selectedApplications) {
+			if(!arkModules.contains(arkModule)){
+				LinkStudyArkModule linkStudyArkModule = new LinkStudyArkModule();
+				linkStudyArkModule.setArkModule(arkModule);
+				linkStudyArkModule.setStudy(study);
+				modulesToLink.add(linkStudyArkModule);
+			}
+		}
+		return modulesToLink;
+	}
+	
+	/**
+	 * Creates a list of ArkModules that have been requested to be removed for a given study. A business validation to check if
+	 * there are any ArkUsers linked to this ArkModule must be determined before we finalise the list. If there was any conflicts this must be notified via a
+	 * business exception and abort the update process.
+	 * @param study
+	 * @param selectedApplications
+	 * @throws CannotRemoveArkModuleException 
+	 */
+	private Collection<LinkStudyArkModule> getModulesToRemoveList(Study study, Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException  {
+		//If there are users linked to a study and the module then do not add the module for removal
+		Collection<LinkStudyArkModule> linkStudyArkModuleCollection = arkCommonService.getLinkStudyArkModulesList(study);
+		
+		Collection<LinkStudyArkModule> modulesToRemove = new ArrayList<LinkStudyArkModule>();
+		
+		for (LinkStudyArkModule  linkStudyArkModule : linkStudyArkModuleCollection) {
+		
+			if(!selectedApplications.contains(linkStudyArkModule.getArkModule())){
+				//Check if there are any ArkUsers linked to this module
+				List<ArkUserRole> usersLinkedToModule = arkCommonService.getArkUserLinkedModule(study, linkStudyArkModule.getArkModule());
+				if(usersLinkedToModule != null && usersLinkedToModule.size() > 0){
+					throw new CannotRemoveArkModuleException();
+				}else{
+					modulesToRemove.add(linkStudyArkModule);	
+				}
+				
+			}
+		}
+		
+		return modulesToRemove;
+	}
+		
 
 	/*
 	 * (non-Javadoc)
