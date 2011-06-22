@@ -52,6 +52,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	private DetailPanel								detailPanel;
 	private Long										sessionStudyId;
 	private WebMarkupContainer						arkContextMarkup;
+	private String subjectUIDInContext;
 
 	/**
 	 * @param id
@@ -69,8 +70,12 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
 		
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject in context. Please select a Subject.");
+		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		if(subjectUIDInContext == null || subjectUIDInContext.isEmpty())
+		{
+			// Cannot create new BioCollection without a subject
+			newButton.setVisible(false);
+		}
 	}
 
 	/**
@@ -141,25 +146,14 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			BioCollection bioCollection = new BioCollection();
 			bioCollection.setStudy(study);
-			// Subject in context
-			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-			String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 			
 			try
 			{
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
-				bioCollection.setLinkSubjectStudy(linkSubjectStudy);
-				getModelObject().setBioCollection(bioCollection);
-				
 				bioCollectionList = iLimsService.searchBioCollection(getModelObject().getBioCollection());
 			}
 			catch (ArkSystemException e)
 			{
 				this.error(e.getMessage());
-			}
-			catch (EntityNotFoundException e)
-			{
-				this.info(e.getMessage());
 			}
 		}
 

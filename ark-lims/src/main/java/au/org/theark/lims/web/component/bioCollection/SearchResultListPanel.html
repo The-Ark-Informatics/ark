@@ -15,6 +15,11 @@
 				</label>
 			</th>
 			<th width="10%">
+				<label for="bioCollection.linkSubjectStudy">
+					<wicket:message	key="bioCollection.linkSubjectStudy">Subject UID:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
 				<label for="bioCollection.collectionDate">
 					<wicket:message	key="bioCollection.collectionDate">Collection Date:</wicket:message>
 				</label>
@@ -41,6 +46,9 @@
 			  <a href="#"wicket:id="bioCollection.name">
 			  	<span wicket:id="nameLbl">Name</span>
 			  </a>
+			</td>
+			<td width="10%">
+				<span wicket:id="bioCollection.linkSubjectStudy"></span>
 			</td>
 			<td width="10%">
 				<span wicket:id="bioCollection.collectionDate"></span>

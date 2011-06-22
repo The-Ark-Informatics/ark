@@ -30,7 +30,6 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 	 * 
 	 */
 	private static final long																		serialVersionUID	= -573200292391828047L;
-
 	private static final Logger																	log					= LoggerFactory.getLogger(BioCollectionContainerPanel.class);
 
 	// Panels
@@ -103,39 +102,22 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 				// Get a list of collections for the study/subject in context by default
 				java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-				BioCollection bioCollection = new BioCollection();
 				
 				if (sessionStudyId != null && sessionStudyId > 0)
 				{
 					Study study = iArkCommonService.getStudy(sessionStudyId);
-					bioCollection.setStudy(study);
-					// Subject in context
-					LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-					String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
+					containerForm.getModelObject().getBioCollection().setStudy(study);
+					
 					try
 					{
-						linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
-						bioCollection.setLinkSubjectStudy(linkSubjectStudy);
 						bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
 					}
 					catch (ArkSystemException e)
 					{
-						log.error(e.getMessage());
-					}
-					catch (EntityNotFoundException e)
-					{
-						//error("There is no subject in context. Please select a Subject.");
-					}
-					catch (NullPointerException e)
-					{
-						//error("There is no subject in context. Please select a Subject.");
 					}
 				}
 
 				listView.removeAll();
-				containerForm.getModelObject().setBioCollection(bioCollection);
 				containerForm.getModelObject().setBioCollectionList(bioCollectionList);
 				return containerForm.getModelObject().getBioCollectionList();
 			}

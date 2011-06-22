@@ -13,22 +13,15 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.bioCollection.form.ContainerForm;
 
 @SuppressWarnings( { "serial", "unchecked" })
 public class SearchResultListPanel extends Panel
 {
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService									iLimsService;
-	
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
@@ -54,7 +47,7 @@ public class SearchResultListPanel extends Panel
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.arkContextMarkup = arkContextMarkup;
+		this.setArkContextMarkup(arkContextMarkup);
 		this.setDetailPanel(detail);
 		
 	}
@@ -62,11 +55,10 @@ public class SearchResultListPanel extends Panel
 	/**
 	 * 
 	 * @param iModel
-	 * @return the pageableListView of Collection
+	 * @return the pageableListView of BioCollection
 	 */
 	public PageableListView<BioCollection> buildPageableListView(IModel iModel)
 	{
-
 		PageableListView<BioCollection> sitePageableListView = new PageableListView<BioCollection>("collectionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
 		{
 			@Override
@@ -90,14 +82,14 @@ public class SearchResultListPanel extends Panel
 				item.add(buildLink(bioCollection));
 
 				// TODO when displaying text escape any special characters
-				if (bioCollection.getComments() != null)
+				if (bioCollection.getLinkSubjectStudy() != null)
 				{
-					item.add(new Label("bioCollection.comments", bioCollection.getComments()));// the ID here must match
+					item.add(new Label("bioCollection.linkSubjectStudy", bioCollection.getLinkSubjectStudy().getSubjectUID()));// the ID here must match
 					// the ones in mark-up
 				}
 				else
 				{
-					item.add(new Label("bioCollection.comments", ""));// the ID here must match the ones in mark-up
+					item.add(new Label("bioCollection.linkSubjectStudy", ""));// the ID here must match the ones in mark-up
 				}
 				
 				// TODO when displaying text escape any special characters
@@ -123,6 +115,17 @@ public class SearchResultListPanel extends Panel
 				{
 					item.add(new Label("bioCollection.surgeryDate", ""));// the ID here must match the ones in mark-up
 				}
+				
+				// TODO when displaying text escape any special characters
+				if (bioCollection.getComments() != null)
+				{
+					item.add(new Label("bioCollection.comments", bioCollection.getComments()));// the ID here must match
+					// the ones in mark-up
+				}
+				else
+				{
+					item.add(new Label("bioCollection.comments", ""));// the ID here must match the ones in mark-up
+				}
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
@@ -139,7 +142,7 @@ public class SearchResultListPanel extends Panel
 		return sitePageableListView;
 	}
 
-	private AjaxLink buildLink(final BioCollection limsCollection)
+	private AjaxLink buildLink(final BioCollection bioCollection)
 	{
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("bioCollection.name")
 		{
@@ -148,11 +151,11 @@ public class SearchResultListPanel extends Panel
 			{
 				// Sets the selected object into the model
 				LimsVO limsVo = containerForm.getModelObject();
-				limsVo.setBioCollection(limsCollection);
+				limsVo.setBioCollection(bioCollection);
 				containerForm.setModelObject(limsVo);
 				
 				// Place the selected collection in session context for the user
-				//SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, limsCollection.getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.lims.web.Constants.BIO_COLLECTION, bioCollection.getId());
 		
 				detailsPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);
@@ -164,10 +167,6 @@ public class SearchResultListPanel extends Panel
 				viewButtonContainer.setVisible(true);
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
-				
-				ContextHelper contextHelper = new ContextHelper();
-				//contextHelper.setStudyContextLabel(target, limsCollection.getStudy().getName(), arkContextMarkup);
-				//contextHelper.setPhenoContextLabel(target, limsCollection.getName(), arkContextMarkup);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
@@ -179,7 +178,7 @@ public class SearchResultListPanel extends Panel
 
 		// Add the label for the link
 		// TODO when displaying text escape any special characters
-		Label nameLinkLabel = new Label("nameLbl", limsCollection.getName());
+		Label nameLinkLabel = new Label("nameLbl", bioCollection.getName());
 		link.add(nameLinkLabel);
 		return link;
 	}
@@ -199,5 +198,21 @@ public class SearchResultListPanel extends Panel
 	public DetailPanel getDetailPanel()
 	{
 		return detailPanel;
+	}
+
+	/**
+	 * @param arkContextMarkup the arkContextMarkup to set
+	 */
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
+	{
+		this.arkContextMarkup = arkContextMarkup;
+	}
+
+	/**
+	 * @return the arkContextMarkup
+	 */
+	public WebMarkupContainer getArkContextMarkup()
+	{
+		return arkContextMarkup;
 	}
 }
