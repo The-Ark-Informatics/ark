@@ -208,7 +208,6 @@ public class LdapUserDao implements ILdapUserDao{
 	}
 	
 	public void updateArkUser(ArkUserVO userVO) throws ArkSystemException {
-		log.info("update() invoked: Updating user details in LDAP");
 		try{
 			//Assuming that all validation is already done update the attributes in LDAP
 			LdapName ldapName = new LdapName(getBasePeopleDn());
@@ -222,19 +221,13 @@ public class LdapUserDao implements ILdapUserDao{
 			ModificationItem itemGivenName = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, givenName);
 			ModificationItem itemEmail = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, email);
 
-			//Check if password needs to be modified. Make sure client validation is done.
-			//TODO Also enforce the validation check here.
-			if(userVO.isChangePassword()){
+			if(userVO.getPassword() != null && userVO.getPassword().length() > 0){
 				BasicAttribute userPassword = 	new BasicAttribute("userPassword", new Sha256Hash(userVO.getPassword()).toHex());
 				ModificationItem itemPassword = new	ModificationItem (DirContext.REPLACE_ATTRIBUTE,userPassword);
 				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] {itemSn, itemGivenName, itemEmail,itemPassword });
 			}else{
 				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] {itemSn, itemGivenName, itemEmail});
 			}
-			
-			//updateGroupRoles(userVO);///This now should be done in backend
-			
-			//Add or remove the users from roles
 		
 		}catch(InvalidNameException ine){
 			throw new ArkSystemException("A System error has occured");
