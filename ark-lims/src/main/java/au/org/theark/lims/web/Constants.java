@@ -13,8 +13,10 @@ public class Constants
 	/* Resource Keys */
 	public static final String	TAB_MODULE_LIMS							= "tab.module.lims";
 	public static final String TAB_MODULE_LIMS_COLLECTION = "tab.module.lims.collection";
+	public static final String	TAB_MODULE_BIOSPECIMEN	= "tab.module.lims.biospecimen";
 	
-	
+	/* Session items */
+	public static final String	BIO_COLLECTION	= "BIO_COLLECTION";
 
 	public static final String	LIMS_SERVICE								= "limsService";
 
