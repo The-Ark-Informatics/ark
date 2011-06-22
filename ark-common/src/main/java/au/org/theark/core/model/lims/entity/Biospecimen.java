@@ -3,6 +3,7 @@ package au.org.theark.core.model.lims.entity;
 // Generated 15/06/2011 1:22:58 PM by Hibernate Tools 3.3.0.GA
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -13,12 +14,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 
 /**
@@ -39,7 +42,7 @@ public class Biospecimen implements java.io.Serializable
 	private String						biospecimenId;
 	private Study						study;
 	private Long						substudyId;
-	private Long						patientId;
+	private LinkSubjectStudy						linkSubjectStudy;
 	private Long						parentId;
 	private String						parentid;
 	private Long						oldId;
@@ -50,7 +53,7 @@ public class Biospecimen implements java.io.Serializable
 	private String						grade;
 	private InvCell					cell;
 	private Long						depth;
-	private Date						sampledate;
+	private Date						sampleDate;
 	private Date						extractedTime;
 	private String						location;
 	private BioSampletype			sampleType;
@@ -73,12 +76,8 @@ public class Biospecimen implements java.io.Serializable
 	private Long						withdrawn;
 	private String						status;
 	private String						treatment;
-	
-	/*
-	private Set<InvCell>				invCells				= new HashSet<InvCell>(0);
 	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
-	*/
-
+	
 	public Biospecimen()
 	{
 	}
@@ -91,8 +90,8 @@ public class Biospecimen implements java.io.Serializable
 		this.sampleType = sampleType;
 	}
 
-	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenId, Study study, Long substudyId, Long patientId, Long parentId, String parentid, Long oldId, Long deleted, String otherid,
-			String storedIn, Date sampleTime, String grade, InvCell cell, Long depth, Date sampledate, Date extractedTime, String location, Long sampleTypeId, BioSampletype sampleType,
+	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenId, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentid, Long oldId, Long deleted, String otherid,
+			String storedIn, Date sampleTime, String grade, InvCell cell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId, BioSampletype sampleType,
 			String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments, Date datedistributed,
 			String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, String units, String quality, Long withdrawn, String status,
 			String treatment, Set<InvCell> invCells, Set<BioTransaction> bioTransactions)
@@ -102,7 +101,7 @@ public class Biospecimen implements java.io.Serializable
 		this.biospecimenId = biospecimenId;
 		this.study = study;
 		this.substudyId = substudyId;
-		this.patientId = patientId;
+		this.linkSubjectStudy = linkSubjectStudy;
 		this.parentId = parentId;
 		this.parentid = parentid;
 		this.oldId = oldId;
@@ -113,7 +112,7 @@ public class Biospecimen implements java.io.Serializable
 		this.grade = grade;
 		this.cell = cell;
 		this.depth = depth;
-		this.sampledate = sampledate;
+		this.sampleDate = sampleDate;
 		this.extractedTime = extractedTime;
 		this.location = location;
 		this.sampleType = sampleType;
@@ -213,15 +212,16 @@ public class Biospecimen implements java.io.Serializable
 		this.substudyId = substudyId;
 	}
 
-	@Column(name = "PATIENT_ID")
-	public Long getPatientId()
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
+	public LinkSubjectStudy getLinkSubjectStudy()
 	{
-		return this.patientId;
+		return this.linkSubjectStudy;
 	}
 
-	public void setPatientId(Long patientId)
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
 	{
-		this.patientId = patientId;
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
 	@Column(name = "PARENT_ID")
@@ -338,14 +338,14 @@ public class Biospecimen implements java.io.Serializable
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "SAMPLEDATE", length = 19)
-	public Date getSampledate()
+	public Date getSampleDate()
 	{
-		return this.sampledate;
+		return this.sampleDate;
 	}
 
-	public void setSampledate(Date sampledate)
+	public void setSampleDate(Date sampleDate)
 	{
-		this.sampledate = sampledate;
+		this.sampleDate = sampleDate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
@@ -594,18 +594,6 @@ public class Biospecimen implements java.io.Serializable
 		this.treatment = treatment;
 	}
 
-	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
-	public Set<InvCell> getInvCells()
-	{
-		return this.invCells;
-	}
-
-	public void setInvCells(Set<InvCell> invCells)
-	{
-		this.invCells = invCells;
-	}
-
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
 	public Set<BioTransaction> getBioTransactions()
 	{
@@ -616,6 +604,4 @@ public class Biospecimen implements java.io.Serializable
 	{
 		this.bioTransactions = bioTransactions;
 	}
-	*/
-
 }

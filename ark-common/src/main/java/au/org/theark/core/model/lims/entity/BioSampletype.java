@@ -20,7 +20,12 @@ import au.org.theark.core.model.Constants;
 public class BioSampletype implements java.io.Serializable
 {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -6857329961855700249L;
 	private Long		id;
+	private String name;
 	private String	sampletype;
 	private String	samplesubtype;
 
@@ -54,6 +59,17 @@ public class BioSampletype implements java.io.Serializable
 		this.id = id;
 	}
 
+	@Column(name = "NAME")
+	public String getName()
+	{
+		return name;
+	}
+	
+	public void setName(String name)
+	{
+		this.name = name;
+	}
+
 	@Column(name = "SAMPLETYPE", nullable = false)
 	public String getSampletype()
 	{
@@ -65,7 +81,7 @@ public class BioSampletype implements java.io.Serializable
 		this.sampletype = sampletype;
 	}
 
-	@Column(name = "SAMPLESUBTYPE")
+	
 	public String getSamplesubtype()
 	{
 		return this.samplesubtype;
