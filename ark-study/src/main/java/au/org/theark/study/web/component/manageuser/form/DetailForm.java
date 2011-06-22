@@ -38,11 +38,12 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 @SuppressWarnings("serial")
-public class DetailForm extends AbstractDetailForm<ArkUserVO>{
+public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -174,7 +175,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 
 	
 	protected void onCancel(AjaxRequestTarget target) {
-		
+		userNameTxtField.setEnabled(true);
 		ArkUserVO arkUserVO = new ArkUserVO();
 		containerForm.setModelObject(arkUserVO);
 	}
@@ -197,6 +198,7 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 				sb.append(containerForm.getModelObject().getUserName());
 				sb.append(" has been added successfully into the System.");
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
+				userNameTxtField.setEnabled(false);
 				onSavePostProcess(target,arkCrudContainerVO);
 				this.info(sb.toString());
 				target.addComponent(feedBackPanel);
@@ -249,6 +251,15 @@ public class DetailForm extends AbstractDetailForm<ArkUserVO>{
 	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.core.web.form.AbstractUserDetailForm#onEditButtonClick()
+	 */
+	@Override
+	public void onEditButtonClick() {
+		userNameTxtField.setEnabled(false);
 	}
 
 }
