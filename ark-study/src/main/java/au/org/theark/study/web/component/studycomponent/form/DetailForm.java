@@ -21,6 +21,7 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -121,11 +122,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 	 */
 	@Override
 	protected void onSave(Form<StudyCompVo> containerForm,	AjaxRequestTarget target) {
-		// 
 		target.addComponent(detailPanelContainer);
-		
-		
-		
 		try {
 
 			Long studyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -147,7 +144,10 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo>{
 			}
 			onSavePostProcess(target);
 			
-		} catch (UnAuthorizedOperation e) {
+		}catch (EntityExistsException e) {
+			this.error("A Study Component with the same name already exists for this study." );
+			processErrors(target);
+		}catch (UnAuthorizedOperation e) {
 			 this.error("You are not authorised to manage study components for the given study " + study.getName());
 			 processErrors(target);
 		} catch (ArkSystemException e) {
