@@ -36,7 +36,7 @@ import au.org.theark.lims.web.component.subject.form.SearchForm;
  *
  */
 @SuppressWarnings({ "unchecked", "serial" })
-public class SearchResultsPanel extends Panel{
+public class SearchResultListPanel extends Panel{
 	
 	
 	/**
@@ -55,7 +55,7 @@ public class SearchResultsPanel extends Panel{
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 
-	public SearchResultsPanel(String id, 
+	public SearchResultListPanel(String id, 
 							WebMarkupContainer  detailPanelContainer,
 							WebMarkupContainer  detailPanelFormContainer, 
 							WebMarkupContainer searchPanelContainer,
@@ -222,12 +222,11 @@ public class SearchResultsPanel extends Panel{
 				}
 				
 				subjectContainerForm.setModelObject(subjectFromBackend);
-				ContextHelper contextHelper = new ContextHelper();
-				//contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
-				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
 				// Set SubjectUID into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
+				ContextHelper contextHelper = new ContextHelper();
+				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 				
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);

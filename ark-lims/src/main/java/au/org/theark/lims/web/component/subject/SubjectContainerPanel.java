@@ -33,7 +33,7 @@ import au.org.theark.lims.web.component.subject.form.ContainerForm;
 public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	private SearchPanel searchPanel;
-	private SearchResultsPanel searchResultsPanel;
+	private SearchResultListPanel searchResultsPanel;
 	private DetailPanel detailsPanel;
 	private PageableListView<SubjectVO> pageableListView;
 	private ContainerForm containerForm;
@@ -143,7 +143,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	
 	protected WebMarkupContainer initialiseSearchResults(){
 		
-		searchResultsPanel = new SearchResultsPanel("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
+		searchResultsPanel = new SearchResultListPanel("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
 		
 		// Restrict to subjects in current study in session
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
