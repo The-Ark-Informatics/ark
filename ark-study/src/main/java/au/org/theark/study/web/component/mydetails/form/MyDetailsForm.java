@@ -6,11 +6,14 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
+import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.vo.ArkUserVO;
@@ -83,8 +86,13 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 		
 		lastNameTxtField.add(StringValidator.lengthBetween(3, 50)).setLabel(new StringResourceModel("lastNameLength", this, null));
 		lastNameTxtField.setRequired(true).setLabel(new StringResourceModel("lastName", this, null));
-		userPasswordField.setRequired(false).setLabel(new StringResourceModel("userPassword", this, null));
-		confirmPasswordField.setRequired(false).setLabel(new StringResourceModel("confirmPassword", this, null));
+		
+		userPasswordField.setRequired(false);
+		confirmPasswordField.setRequired(false);
+		
+		userPasswordField.setLabel(Model.of("Password")); 
+		userPasswordField.add(new PatternValidator(Constants.PASSWORD_PATTERN));
+		confirmPasswordField.setLabel(Model.of("Confirm Password")); 
 		
 	}
 	
@@ -98,6 +106,7 @@ public class MyDetailsForm extends Form<ArkUserVO>{
 		groupPasswordContainer.add(confirmPasswordField);
 		add(groupPasswordContainer);
 		//add(cancelBtn.setDefaultFormProcessing(false));
+		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(saveBtn);
 	}
 	
