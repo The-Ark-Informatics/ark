@@ -35,16 +35,16 @@ public class InvCell implements java.io.Serializable
 	{
 	}
 
-	public InvCell(Long id, InvBox invTray)
+	public InvCell(Long id, InvBox invBox)
 	{
 		this.id = id;
-		this.invBox = invTray;
+		this.invBox = invBox;
 	}
 
-	public InvCell(Long id, InvBox invTray, Long deleted, Long rowno, Long colno, String status)
+	public InvCell(Long id, InvBox invBox, Long deleted, Long rowno, Long colno, String status)
 	{
 		this.id = id;
-		this.invBox = invTray;
+		this.invBox = invBox;
 		this.deleted = deleted;
 		this.rowno = rowno;
 		this.colno = colno;
