@@ -59,7 +59,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
 	
-	private ArkCrudContainerVO arkCrudContainerVO;//Use this for the model where WebMarkupContainers are set inside this VO
+	protected ArkCrudContainerVO arkCrudContainerVO;//Use this for the model where WebMarkupContainers are set inside this VO
 	
 	
 	/**
@@ -100,7 +100,65 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		initialiseForm(true);
 	}
 	
+	protected void editCancelProcessForUpdate(AjaxRequestTarget target){
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
+		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		onCancelPostProcess(target,true);
+		
+	}
 	
+	protected void saveOnErrorProcess(AjaxRequestTarget target){
+		
+		boolean setFocusError = false;
+		WebMarkupContainer wmc = arkCrudContainerVO.getDetailPanelContainer();
+		for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
+		{
+			Component component = (Component) iterator.next();
+			if (component instanceof FormComponent)
+			{
+				FormComponent formComponent = (FormComponent) component;
+				
+				if(!formComponent.isValid())
+				{
+					if(!setFocusError)
+					{
+						// Place focus on field in error (for the first field in error)
+						target.focusComponent(formComponent);
+		            setFocusError = true;	
+					}
+				}
+			}
+		}
+		
+		processErrors(target);
+	}
+	
+	protected void editButtonProcess(AjaxRequestTarget target){
+		
+		deleteButton.setEnabled(true);
+		// The visibility of the delete button should not be changed from 
+		// any of the abstract classes.  This allows the implementation
+		// to control the visibility of the delete button. 
+		// NB: SearchForm onNew has the Delete button's setEnabled(false)
+//		deleteButton.setVisible(true);
+		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
+		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
+		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+		
+	}
+	
+	/**
+	 * Initialise method that is specific to classes that follow the CrudContainerVO Pattern.
+	 * The code related to each function has been modularised into protected methods, this is to provide 
+	 * the subclasses to refer to the protected methods without having to re-create/duplicate them when they extend the classes.
+	 * 
+	 * @param isArkCrudContainerVOPattern
+	 */
 	protected void initialiseForm(Boolean isArkCrudContainerVOPattern){
 		
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
@@ -117,11 +175,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				if(isNew()){
 					editCancelProcess(target,true);
 				}else{
-					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
-					arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
-					target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-					target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-					onCancelPostProcess(target,true);
+					editCancelProcessForUpdate(target);
 				}
 			}
 		
@@ -148,28 +202,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
-				boolean setFocusError = false;
-				WebMarkupContainer wmc = arkCrudContainerVO.getDetailPanelContainer();
-				for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
-				{
-					Component component = (Component) iterator.next();
-					if (component instanceof FormComponent)
-					{
-						FormComponent formComponent = (FormComponent) component;
-						
-						if(!formComponent.isValid())
-						{
-							if(!setFocusError)
-							{
-								// Place focus on field in error (for the first field in error)
-								target.focusComponent(formComponent);
-				            setFocusError = true;	
-							}
-						}
-					}
-				}
 				
-				processErrors(target);
+				saveOnErrorProcess(target);
 			}
 		};
 
@@ -203,18 +237,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				deleteButton.setEnabled(true);
-				// The visibility of the delete button should not be changed from 
-				// any of the abstract classes.  This allows the implementation
-				// to control the visibility of the delete button. 
-				// NB: SearchForm onNew has the Delete button's setEnabled(false)
-//				deleteButton.setVisible(true);
-				arkCrudContainerVO.getViewButtonContainer().setVisible(false);
-				arkCrudContainerVO.getEditButtonContainer().setVisible(true);
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
-				target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-				target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-				target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+
+				editButtonProcess(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
@@ -254,8 +278,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		addComponentsToForm(true);
 		
 	}
-
-	
 
 	@SuppressWarnings("serial")
 	protected void initialiseForm()
@@ -321,25 +343,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			}
 		};
 
-		/*
-		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				// target.addComponent(detailPanelContainer);
-				onDelete(containerForm, target);
-
-			}
-			
-			//TODO NN Uncomment after User Management UI is completed	
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.DELETE);
-//			}
-		};
-		*/
 		deleteButton = new AjaxDeleteButton(Constants.DELETE,	new StringResourceModel("confirmDelete", this, null),	new StringResourceModel(Constants.DELETE,	this, null))
 		{
 			@Override
