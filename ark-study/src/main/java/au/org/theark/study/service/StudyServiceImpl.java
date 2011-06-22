@@ -199,7 +199,7 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.searchStudyComp(studyCompCriteria);
 	}
 	
-	public void create(StudyComp studyComponent) throws UnAuthorizedOperation,ArkSystemException{
+	public void create(StudyComp studyComponent) throws UnAuthorizedOperation,ArkSystemException, EntityExistsException{
 		
 		studyDao.create(studyComponent);
 		AuditHistory ah = new AuditHistory();
@@ -212,7 +212,7 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 	}
 	
-	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException{
+	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException{
 		
 		studyDao.update(studyComponent);
 		AuditHistory ah = new AuditHistory();

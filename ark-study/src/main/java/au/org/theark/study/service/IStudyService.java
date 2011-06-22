@@ -86,9 +86,9 @@ public interface IStudyService {
 	public List<StudyComp> searchStudyComp(StudyComp studyCompCriteria) throws ArkSystemException;
 	
 	
-	public void create(StudyComp sc) throws UnAuthorizedOperation, ArkSystemException;
+	public void create(StudyComp sc) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException;
 	
-	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException;
+	public void update(StudyComp studyComponent)throws UnAuthorizedOperation, ArkSystemException, EntityExistsException;
 	
 	public void create(Phone phone) throws ArkSystemException, ArkUniqueException;
 	

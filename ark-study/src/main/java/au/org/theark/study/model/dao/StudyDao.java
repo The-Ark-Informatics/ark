@@ -31,6 +31,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -251,11 +252,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	 * 
 	 * @see au.org.theark.study.model.dao.IStudyDao#create(au.org.theark.study.model.entity.StudyComp)
 	 */
-	public void create(StudyComp studyComponent) throws ArkSystemException
+	public void create(StudyComp studyComponent) throws ArkSystemException, EntityExistsException
 	{
 		try
 		{
-			getSession().save(studyComponent);
+			if(!isStudyComponentPresent(studyComponent.getName(), studyComponent.getStudy())){
+				getSession().save(studyComponent);	
+			}else{
+				throw new EntityExistsException("A Study component already exists for this study.");
+			}
+			
 		}
 		catch (HibernateException hibException)
 		{
@@ -265,11 +271,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 
 	}
 
-	public void update(StudyComp studyComponent) throws ArkSystemException
+	public void update(StudyComp studyComponent) throws ArkSystemException, EntityExistsException
 	{
 		try
 		{
-			getSession().update(studyComponent);
+			if(!isStudyComponentPresent(studyComponent.getName(), studyComponent.getStudy())){
+				getSession().update(studyComponent);	
+			}else{
+				throw new EntityExistsException("A Study component already exists for this study.");
+			}
+			
 		}
 		catch (HibernateException hibException)
 		{
@@ -1834,6 +1845,23 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	{
 		DelimiterType delimiterType = (DelimiterType) getSession().get(DelimiterType.class, id);
 		return delimiterType;
+	}
+	
+	/**
+	 * Determines if study component with a given name is already present for a Study.
+	 * @param studyComponentName
+	 * @param study
+	 * @return
+	 */
+	public boolean isStudyComponentPresent(String studyComponentName, Study study){
+		boolean isPresent = false;
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("name", studyComponentName));
+		criteria.add(Restrictions.eq("study", study));
+		if(criteria.list() != null && criteria.list().size() > 0){
+			isPresent = true;
+		}
+		return isPresent;
 	}
 	
 }

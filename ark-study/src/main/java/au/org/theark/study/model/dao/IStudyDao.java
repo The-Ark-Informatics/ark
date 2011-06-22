@@ -8,6 +8,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.CannotRemoveArkModuleException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
@@ -51,9 +52,9 @@ public interface IStudyDao {
 	public void updateStudy(Study study,Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException;
 	
 	
-	public void create(StudyComp studyComponent) throws ArkSystemException;
+	public void create(StudyComp studyComponent) throws ArkSystemException, EntityExistsException;
 	
-	public void update(StudyComp studyComponent) throws ArkSystemException;
+	public void update(StudyComp studyComponent) throws ArkSystemException, EntityExistsException;
 	
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved;
 	
@@ -273,4 +274,6 @@ public interface IStudyDao {
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId,Study study) throws EntityNotFoundException, ArkSystemException;
 
 	public DelimiterType getDelimiterType(Long id);
+	
+	
 }
