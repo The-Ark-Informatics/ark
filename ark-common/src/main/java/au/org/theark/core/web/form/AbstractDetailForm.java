@@ -187,8 +187,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				onDelete(containerForm, target);
 
 			}
-			
-			//TODO NN Uncomment after User Management UI is completed	
 			@Override
 			public boolean isVisible()
 			{
@@ -224,7 +222,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				processErrors(target);
 			}
 			
-			//TODO NN Uncomment after User Management UI is completed	
 			@Override
 			public boolean isVisible()
 			{
@@ -248,6 +245,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			{
 				processErrors(target);
 			}
+			
+			
 		};
 		
 		selectModalWindow = initialiseModalWindow();
@@ -282,12 +281,12 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		saveButton = new ArkBusyAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
-			//TODO NN Uncomment after User Management UI is completed			
-			//			@Override
-			//			public boolean isVisible()
-			//			{
-			//				return isActionPermitted(Constants.SAVE);
-			//			}
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.SAVE);
+			}
+			
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onSave(containerForm, target);
@@ -352,9 +351,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				//TODO NN Uncomment after User Management UI is completed
-				//return isActionPermitted(Constants.DELETE);
-				return (true);
+				return isActionPermitted(Constants.DELETE);
+				
 			}
 		};
 		
@@ -382,12 +380,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				processErrors(target);
 			}
 			
-			//TODO NN Uncomment after User Management UI is completed	
-//			@Override
-//			public boolean isVisible()
-//			{
-//				return isActionPermitted(Constants.EDIT);
-//			}
+			@Override
+			public boolean isVisible()
+			{
+				return isActionPermitted(Constants.EDIT);
+			}
 		};
 
 		editCancelButton = new ArkBusyAjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
