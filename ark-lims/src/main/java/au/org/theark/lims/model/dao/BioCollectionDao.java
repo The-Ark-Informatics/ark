@@ -10,6 +10,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
@@ -44,14 +45,17 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		if(bioCollection.getName() != null)
 			criteria.add(Restrictions.eq("name", bioCollection.getName()));
 		
+		if(bioCollection.getLinkSubjectStudy() != null)
+			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollection.getLinkSubjectStudy()));
+		
+		if(bioCollection.getStudy() != null)
+			criteria.add(Restrictions.eq("study", bioCollection.getStudy()));
+		
 		if(bioCollection.getCollectionDate() != null)
 			criteria.add(Restrictions.eq("collectionDate", bioCollection.getCollectionDate()));
 		
 		if(bioCollection.getSurgeryDate() != null)
 			criteria.add(Restrictions.eq("surgeryDate", bioCollection.getSurgeryDate()));
-		
-		if(bioCollection.getLinkSubjectStudy() != null)
-			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollection.getLinkSubjectStudy()));
 		
 		List<BioCollection> list = criteria.list();
 		return list;
@@ -70,5 +74,12 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection)
 	{
 		getSession().update(limsCollection);
+	}
+
+	public List<BioSampletype> getSampleTypes()
+	{
+		Criteria criteria = getSession().createCriteria(BioSampletype.class);
+		List<BioSampletype> list = criteria.list();
+		return list;
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioSampletype;
 
 public interface IBioCollectionDao
 {
@@ -42,4 +43,10 @@ public interface IBioCollectionDao
 	 * @param limsCollection
 	 */
 	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection);
+
+	/**
+	 * Get a list of all sampleTypes
+	 * @return List
+	 */
+	public List<BioSampletype> getSampleTypes();
 }

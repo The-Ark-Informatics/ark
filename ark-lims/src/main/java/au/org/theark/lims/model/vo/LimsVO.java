@@ -3,6 +3,7 @@ package au.org.theark.lims.model.vo;
 import java.io.Serializable;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
@@ -15,9 +16,16 @@ public class LimsVO implements Serializable
 	protected LinkSubjectStudy LinkSubjectStudy;  
 	protected BioCollection bioCollection;
 	protected Biospecimen biospecimen;
+	protected BioTransaction bioTransaction;
 	
-	/** A List of bioCollection(s) for the linkSubjectStudy in context*/
+	/** A List of bioCollection(s) for the linkSubjectStudy in context */
 	protected java.util.List<BioCollection> bioCollectionList;
+	
+	/** A List of biospecimen(s) for the linkSubjectStudy in context */
+	protected java.util.List<Biospecimen> biospecimenList;
+	
+	/** A List of bioTransaction(s) for the biospecimen in context */
+	protected java.util.List<BioTransaction> bioTransactionList;
 	
 	protected int mode;
 	
@@ -77,6 +85,22 @@ public class LimsVO implements Serializable
 	}
 
 	/**
+	 * @return the bioTransaction
+	 */
+	public BioTransaction getBioTransaction()
+	{
+		return bioTransaction;
+	}
+
+	/**
+	 * @param bioTransaction the bioTransaction to set
+	 */
+	public void setBioTransaction(BioTransaction bioTransaction)
+	{
+		this.bioTransaction = bioTransaction;
+	}
+
+	/**
 	 * @return the bioCollectionCollection
 	 */
 	public java.util.List<BioCollection> getBioCollectionList()
@@ -90,6 +114,38 @@ public class LimsVO implements Serializable
 	public void setBioCollectionList(java.util.List<BioCollection> bioCollectionList)
 	{
 		this.bioCollectionList = bioCollectionList;
+	}
+
+	/**
+	 * @return the biospecimenList
+	 */
+	public java.util.List<Biospecimen> getBiospecimenList()
+	{
+		return biospecimenList;
+	}
+
+	/**
+	 * @param biospecimenList the biospecimenList to set
+	 */
+	public void setBiospecimenList(java.util.List<Biospecimen> biospecimenList)
+	{
+		this.biospecimenList = biospecimenList;
+	}
+
+	/**
+	 * @return the bioTransactionList
+	 */
+	public java.util.List<BioTransaction> getBioTransactionList()
+	{
+		return bioTransactionList;
+	}
+
+	/**
+	 * @param bioTransactionList the bioTransactionList to set
+	 */
+	public void setBioTransactionList(java.util.List<BioTransaction> bioTransactionList)
+	{
+		this.bioTransactionList = bioTransactionList;
 	}
 
 	/**

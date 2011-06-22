@@ -3,6 +3,8 @@
  */
 package au.org.theark.lims.service;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,13 @@ import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
+import au.org.theark.lims.model.dao.IBioTransactionDao;
+import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
@@ -30,14 +36,8 @@ public class LimsServiceImpl implements ILimsService
 	
 	private IStudyDao iStudyDao;
 	private IBioCollectionDao iBioCollectionDao;
-
-	/**
-	 * @param arkCommonService the arkCommonService to set
-	 */
-	@Autowired
-	public void setArkCommonService(IArkCommonService<Void> arkCommonService)
-	{
-	}
+	private IBiospecimenDao iBiospecimenDao;
+	private IBioTransactionDao iBioTransactionDao;
 
 	/**
 	 * @param iStudyDao the iStudyDao to set
@@ -55,6 +55,24 @@ public class LimsServiceImpl implements ILimsService
 	public void setiBioCollectionDao(IBioCollectionDao iBioCollectionDao)
 	{
 		this.iBioCollectionDao = iBioCollectionDao;
+	}
+
+	/**
+	 * @param iBiospeciemenDao the iBiospeciemenDao to set
+	 */
+	@Autowired
+	public void setiBiospeciemenDao(IBiospecimenDao iBiospecimenDao)
+	{
+		this.iBiospecimenDao = iBiospecimenDao;
+	}
+
+	/**
+	 * @param iBioTransactionDao the iBioTransactionDao to set
+	 */
+	@Autowired
+	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao)
+	{
+		this.iBioTransactionDao = iBioTransactionDao;
 	}
 
 	/* (non-Javadoc)
@@ -108,5 +126,93 @@ public class LimsServiceImpl implements ILimsService
 	{
 		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
+	}
+	
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#getBiospecimen(Long)
+	 */
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException, ArkSystemException
+	{
+		return iBiospecimenDao.getBiospecimen(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#searchBiospecimen(Biospecimen)
+	 */
+	public List<Biospecimen> searchBiospecimen(Biospecimen biospecimen) throws ArkSystemException
+	{
+		return iBiospecimenDao.searchBiospecimen(biospecimen);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#createBiospecimen(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void createBiospecimen(LimsVO modelObject)
+	{
+		iBiospecimenDao.createBiospecimen(modelObject.getBiospecimen());
+	}
+	
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#updateBiospecimen(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void updateBiospecimen(LimsVO modelObject)
+	{
+		iBiospecimenDao.updateBiospecimen(modelObject.getBiospecimen());
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#deleteBiospecimen(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void deleteBiospecimen(LimsVO modelObject)
+	{
+		iBiospecimenDao.deleteBiospecimen(modelObject.getBiospecimen());
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#getBioTransaction(Long)
+	 */
+	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException
+	{
+		return iBioTransactionDao.getBioTransaction(id);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#searchBioTransaction(BioTransaction)
+	 */
+	public List<BioTransaction> searchBioTransaction(BioTransaction bioTransaction) throws ArkSystemException
+	{
+		return iBioTransactionDao.searchBioTransaction(bioTransaction);
+	}
+	
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#createBioTransaction(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void createBioTransaction(LimsVO modelObject)
+	{
+		iBioTransactionDao.createBioTransaction(modelObject.getBioTransaction());
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#deleteBioTransaction(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void deleteBioTransaction(LimsVO modelObject)
+	{
+		iBioTransactionDao.deleteBioTransaction(modelObject.getBioTransaction());
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#updateBioTransaction(au.org.theark.lims.model.vo.LimsVO)
+	 */
+	public void updateBioTransaction(LimsVO modelObject)
+	{
+		iBioTransactionDao.updateBioTransaction(modelObject.getBioTransaction());
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#getSampleTypes()
+	 */
+	public List<BioSampletype> getBioSampleTypes()
+	{
+		return iBioCollectionDao.getSampleTypes();
 	}
 }
