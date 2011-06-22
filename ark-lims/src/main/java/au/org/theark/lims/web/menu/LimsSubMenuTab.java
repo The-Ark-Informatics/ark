@@ -20,6 +20,7 @@ import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.bioCollection.BioCollectionContainerPanel;
+import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.subject.SubjectContainerPanel;
 
 @SuppressWarnings("serial")
@@ -65,6 +66,11 @@ public class LimsSubMenuTab extends Panel
 		menuModule.setModuleName(Constants.TAB_BIO_COLLECTION);
 		menuModule.setResourceKey(Constants.TAB_MODULE_LIMS_COLLECTION);
 		moduleTabs.add(menuModule);
+		
+		menuModule = new MenuModule();
+		menuModule.setModuleName(Constants.TAB_BIOSPECIMEN);
+		menuModule.setResourceKey(Constants.TAB_MODULE_BIOSPECIMEN);
+		moduleTabs.add(menuModule);
 
 		for (final MenuModule moduleName : moduleTabs)
 		{
@@ -94,7 +100,12 @@ public class LimsSubMenuTab extends Panel
 			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION); //Place a default use case into session
 			processAuthorizationCache(arkFunction);
 			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);//Note the constructor
-		}	 
+		}
+		else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_BIOSPECIMEN)){
+			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN); //Place a default use case into session
+			processAuthorizationCache(arkFunction);
+			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);//Note the constructor
+		}	
 		return panelToReturn;
 	}
 	
