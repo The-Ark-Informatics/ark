@@ -524,9 +524,9 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	 * Overloaded onCancelPostProcess. Use this when you use the ArkCrudContainerVO to manage the
 	 * WebMarkupContainers.
 	 * @param target
-	 * @param isArkCrudContianerVOPattern
+	 * @param isArkCrudContainerVOPattern
 	 */
-	protected void onCancelPostProcess(AjaxRequestTarget target, Boolean isArkCrudContianerVOPattern){
+	protected void onCancelPostProcess(AjaxRequestTarget target, Boolean isArkCrudContainerVOPattern){
 			
 			arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 			arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
