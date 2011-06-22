@@ -72,7 +72,7 @@ public abstract class BasePage extends WebPage{
 		//add(bannerImage);
 		
 		add(userNameLbl);
-		add(new BookmarkablePageLink<Void>("logoutLink", LogoutPage.class));
+		add(new BookmarkablePageLink<Void>("logoutLink", LoginPage.class));
 	}
 
 	@Override
