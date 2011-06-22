@@ -148,21 +148,14 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved, UnAuthorizedOperation, ArkSystemException, EntityExistsException{
 		
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)){
-			studyDao.updateStudy(studyEntity);
-			iLdapUserDao.updateStudyApplication(studyEntity.getName(), selectedApplications,au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
-			
-			AuditHistory ah = new AuditHistory();
-			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated Study " + studyEntity.getName());
-			ah.setEntityId(studyEntity.getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
-			arkCommonService.createAuditHistory(ah);
-		}else{
-		 throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");//Throw an exception
-		}
+		studyDao.updateStudy(studyEntity);
+		iLdapUserDao.updateStudyApplication(studyEntity.getName(), selectedApplications,au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+		ah.setComment("Updated Study " + studyEntity.getName());
+		ah.setEntityId(studyEntity.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
+		arkCommonService.createAuditHistory(ah);
 	}
 	
 	
@@ -208,18 +201,7 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void create(StudyComp studyComponent) throws UnAuthorizedOperation,ArkSystemException{
 		
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		
-		if(
-				(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)) &&
-		        (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)) ){
-			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
-			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
-		}
-
 		studyDao.create(studyComponent);
-	
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 		
@@ -232,16 +214,7 @@ public class StudyServiceImpl implements IStudyService{
 	
 	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException{
 		
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		
-		if( (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN))&&
-		    (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))){
-			log.warn("Unauthorised request to update study component by " + currentUser .getPrincipal());			
-			throw new UnAuthorizedOperation("The logged in user does not have the permission to update this Study Component.");
-		}
 		studyDao.update(studyComponent);
-		
 		AuditHistory ah = new AuditHistory();
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		
@@ -677,14 +650,6 @@ public class StudyServiceImpl implements IStudyService{
 	}
 
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation{
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-		if(	(!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN)) && 
-		    (!securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)) ){
-			log.warn("Unauthorised request to create study component by " + currentUser .getPrincipal());			
-			throw new UnAuthorizedOperation("The logged in user does not have the permission to create a study.");
-		}
-		
 		studyDao.delete(studyComp);
 	}
 
