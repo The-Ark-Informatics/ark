@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -14,6 +15,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -67,6 +69,12 @@ public class SearchResultListPanel extends Panel{
 				item.add(new Label("firstName", arkUserVO.getFirstName()));
 				item.add(new Label("email", arkUserVO.getEmail()));
 				
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
 			}
 		};
 		
