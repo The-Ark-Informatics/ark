@@ -36,7 +36,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private Person person;
 	private String subjectUID;
 	private String otherState;
-	private Long amdrifId;
+	private Long amdrfId;
 	private Date studyApproachDate;
 	private Long yearOfFirstMamogram;
 	private Long yearOfRecentMamogram;
@@ -97,15 +97,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@Column(name = "AMDRIF_ID", precision = 22, scale = 0)
-	public Long getAmdrifId() {
-		return amdrifId;
-	}
-
-	public void setAmdrifId(Long amdrifId) {
-		this.amdrifId = amdrifId;
 	}
 	
 	@Temporal(TemporalType.DATE)
@@ -315,6 +306,15 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setConsents(Set<Consent> consents) {
 		this.consents = consents;
+	}
+
+	@Column(name = "AMDRF_ID", precision = 22, scale = 0)
+	public Long getAmdrfId() {
+		return amdrfId;
+	}
+
+	public void setAmdrfId(Long amdrfId) {
+		this.amdrfId = amdrfId;
 	}
 
 }
