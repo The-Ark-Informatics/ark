@@ -110,5 +110,13 @@ public interface IUserService {
 	
 	public ArkUserVO lookupArkUser(String arkLdapUserName,Study study) throws ArkSystemException;
 	
+	/**
+	 * Remove the user from the Ark Database system.
+	 * @param arkUserVO
+	 * @throws ArkSystemException
+	 * @throws EntityNotFoundException
+	 */
+	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
+	
 
 }

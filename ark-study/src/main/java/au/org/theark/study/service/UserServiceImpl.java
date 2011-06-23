@@ -306,6 +306,10 @@ public class UserServiceImpl implements IUserService {
 		return arkUserVO;
 	}
 
-	
+	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException{
+		//Note: Only Remove the Ark User from database not in LDAP
+		arkAuthorisationService.deleteArkUser(arkUserVO);
+		
+	}	
 	
 }
