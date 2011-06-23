@@ -625,6 +625,15 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		return criteria.list();
 	}
 	
-
+	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException{
+		
+		Session session = getSession();
+		//Remove all roles linked to this ark user
+		for (ArkUserRole arkUserRole : arkUserVO.getArkUserRoleList()) {
+			session.delete(arkUserRole);
+		}
+		
+		session.delete(arkUserVO.getArkUserEntity());
+	}
 
 }
