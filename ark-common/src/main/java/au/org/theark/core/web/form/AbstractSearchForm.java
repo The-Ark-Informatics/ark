@@ -366,8 +366,10 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && 
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) &&
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && 
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
 		{
 
 			searchMarkupContainer.setEnabled(false);
@@ -394,8 +396,10 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && 
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) &&
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && 
+				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
 		{
 
 			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
