@@ -291,7 +291,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO>{
 	}
 	 
 	private void initCustomFields(){
-		amdrifIdTxtFld = new TextField<String>(Constants.SUBJECT_AMDRIFID);
+		amdrifIdTxtFld = new TextField<String>(Constants.SUBJECT_AMDRFID);
 		
 		studyApproachDate = new DateTextField(Constants.SUBJECT_STUDY_APPROACH_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
 		
