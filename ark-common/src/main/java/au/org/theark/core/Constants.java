@@ -224,9 +224,9 @@ public class Constants {
 	public static final String FUNCTION_KEY_VALUE_CONSENT="CONSENT";
 	public static final String FUNCTION_KEY_VALUE_ATTACHMENT="ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_ADDRESS="ADDRESS";
-	public static final String FUNCTION_KEY_VALUE_SUBJECT_FILE="SUBJECT_FILE";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_FILE="ATTACHMENT";
 	public static final String FUNCTION_KEY_VALUE_SUBJECT_UPLOAD="SUBJECT_UPLOAD";
-	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE="SUBJECT_CORRESPONDENCE";
+	public static final String FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE="CORRESPONDENCE";
 	public static final String FUNCTION_KEY_VALUE_REPORT="REPORT";
 	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY	= "DATA_DICTIONARY";
 	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD	= "DATA_DICTIONARY_UPLOAD";
@@ -237,6 +237,7 @@ public class Constants {
 	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION	= "LIMS_COLLECTION";
 	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN	= "BIOSPECIMEN";
 	public static final String	FUNCTION_KEY_VALUE_INVENTORY = "INVENTORY";
+	public static final String FUNTION_KEY_VALUE_SUBJECT_CUSTOM ="SUBJECT_CUSTOM";
 	
 	
 	/*Ark Module Keys */
