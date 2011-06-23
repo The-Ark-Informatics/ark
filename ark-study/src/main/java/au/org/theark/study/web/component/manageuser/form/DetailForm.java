@@ -37,7 +37,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -51,7 +50,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 	@SuppressWarnings("rawtypes")
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
-	
 	
 	protected TextField<String> userNameTxtField  =new TextField<String>(Constants.USER_NAME);
 	protected TextField<String> firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
@@ -80,10 +78,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 		oldPasswordField = new PasswordTextField(Constants.OLD_PASSWORD);
 		groupPasswordContainer = new WebMarkupContainer("groupPasswordContainer");
 		
-		
-		
-		
-		
 		IModel<List<ArkUserRole>> iModel =  new LoadableDetachableModel() {
 			private static final long serialVersionUID = 1L;
 			@Override
@@ -94,8 +88,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 			}
 		};
 		 
-	
-		
 		@SuppressWarnings("rawtypes")
 		ListView listView = new ListView("arkUserRoleList", iModel) {
 			
@@ -193,21 +185,18 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 				
 				userService.createArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
-				StringBuffer sb = new StringBuffer();
-				sb.append("The user with Login/User Name " );
-				sb.append(containerForm.getModelObject().getUserName());
-				sb.append(" has been added successfully into the System.");
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				userNameTxtField.setEnabled(false);
 				onSavePostProcess(target,arkCrudContainerVO);
-				this.info(sb.toString());
+				this.info(new StringResourceModel("user.saved",this, null).getString());
 				target.addComponent(feedBackPanel);
-			} catch (ArkSystemException e) {
-				this.error("A System error has occured. Please contact Support.");
-			} catch (UserNameExistsException e) {
-				this.error("The given username is already present in the Ark System. Please provide a unique username.");
-			} catch (Exception e) {
-				this.error("A System error has occured. Please contact Support");
+				
+			}catch (UserNameExistsException e) {
+				this.error(new StringResourceModel("user.exists",this, null).getString());
+			}catch (ArkSystemException e) {
+				this.error(new StringResourceModel("ark.system.error",this, null).getString());
+			}catch (Exception e) {
+				this.error(new StringResourceModel("severe.system.error",this, null).getString());
 			}
 			
 		}else if(containerForm.getModelObject().getMode() == Constants.MODE_EDIT){
@@ -216,16 +205,13 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 				
 				userService.updateArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
-				StringBuffer sb = new StringBuffer();
-				sb.append("The user with Login/User Name " );
-				sb.append(containerForm.getModelObject().getUserName());
-				sb.append(" has been updated successfully into the System.");
-				this.info(sb.toString());
+				this.info(new StringResourceModel("user.updated",this, null).getString());
 				onSavePostProcess(target,arkCrudContainerVO);
-			} catch (EntityNotFoundException e) {
-				this.error("The specified Ark User does not exist in the system.");
+				
+			}catch (EntityNotFoundException e) {
+				this.error(new StringResourceModel("user.notFound",this, null).getString());
 			}catch (ArkSystemException e) {
-				this.error("A System error has occured. Please contact Support.");
+				this.error(new StringResourceModel("ark.system.error",this, null).getString());
 			} 
 		}
 		
@@ -249,8 +235,19 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO>{
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target,	String selection, ModalWindow selectModalWindow) {
-		// TODO Auto-generated method stub
 		
+		//Remove the Ark User from the Ark Database and his roles.
+		try {
+			userService.deleteArkUser(containerForm.getModelObject());
+			this.info(new StringResourceModel("user.deleted",this, null).getString());
+			editCancelProcess(target,true);
+		}catch (EntityNotFoundException e) {
+			this.error(new StringResourceModel("user.notFound",this, null).getString());
+		}catch (ArkSystemException e) {
+			this.error(new StringResourceModel("ark.system.error",this, null).getString());
+		} 
+		selectModalWindow.close(target);
+		onCancel(target);
 	}
 
 
