@@ -256,7 +256,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	{
 		try
 		{
-			if(!isStudyComponentPresent(studyComponent.getName(), studyComponent.getStudy())){
+			Session session  = getSession();
+		
+			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent,session)){					
 				getSession().save(studyComponent);	
 			}else{
 				throw new EntityExistsException("A Study component already exists for this study.");
@@ -275,8 +277,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	{
 		try
 		{
-			if(!isStudyComponentPresent(studyComponent.getName(), studyComponent.getStudy())){
-				getSession().update(studyComponent);	
+			Session session  = getSession();
+			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent, session)){	
+				session.update(studyComponent);
 			}else{
 				throw new EntityExistsException("A Study component already exists for this study.");
 			}
@@ -284,6 +287,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		}
 		catch (HibernateException hibException)
 		{
+			log.error("Update of Study Component Failed: "  + hibException.getMessage());
 			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getId() + " Cause " + hibException.getStackTrace());
 			throw new ArkSystemException("Cannot update Study component due to system error");
 		}
@@ -1862,6 +1866,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 			isPresent = true;
 		}
 		return isPresent;
+	}
+	
+	public boolean  isStudyCompUnique(String studyComponentName, Study study, StudyComp studyComponentToUpdate,Session session){
+	
+		boolean isUnique = true;
+		Criteria criteria = session.createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("name", studyComponentName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.setMaxResults(1);
+		
+		StudyComp existingComponent = (StudyComp) criteria.uniqueResult();
+		
+		if( (studyComponentToUpdate.getId() != null && studyComponentToUpdate.getId() > 0)){
+			
+			if(existingComponent != null  &&  !studyComponentToUpdate.getId().equals(existingComponent.getId()) ){
+				isUnique = false;
+			}
+		}else{
+			if(existingComponent != null){
+				isUnique = false;
+			}
+		}
+		
+		return isUnique;
+		
 	}
 	
 }
