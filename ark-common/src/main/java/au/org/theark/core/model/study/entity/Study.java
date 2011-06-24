@@ -64,7 +64,6 @@ public class Study implements java.io.Serializable {
 	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(0);
 	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(0);
 	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(0);
-	private Set<LinkStudyArkModule> linkStudyArkModules = new HashSet<LinkStudyArkModule>(0);
 
 	// Constructors
 
@@ -417,14 +416,5 @@ public class Study implements java.io.Serializable {
 
 	public void setSubjectUidPadChar(SubjectUidPadChar subjectUidPadChar) {
 		this.subjectUidPadChar = subjectUidPadChar;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
-	public Set<LinkStudyArkModule> getLinkStudyArkModules() {
-		return linkStudyArkModules;
-	}
-
-	public void setLinkStudyArkModules(Set<LinkStudyArkModule> linkStudyArkModules) {
-		this.linkStudyArkModules = linkStudyArkModules;
 	}
 }
