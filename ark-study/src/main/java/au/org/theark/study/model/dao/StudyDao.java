@@ -174,23 +174,22 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	public void updateStudy(Study study,Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
 		Session session = getSession();
 		session.update(study);
-		session.flush();
 		session.refresh(study);
 		
-		//Determine a insertion List
 		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study,selectedApplications);
 		//Determine Removal List here
-		//Collection<LinkStudyArkModule> linkStudyArkModulesToRemove = getModulesToRemoveList(study,selectedApplications);
+		Collection<LinkStudyArkModule> linkStudyArkModulesToRemove = getModulesToRemoveList(study,selectedApplications);
 		
+		//Process the Removal of Linked ArkModules for this study
+		for (LinkStudyArkModule linkStudyArkModule : linkStudyArkModulesToRemove) {
+		    session.delete(linkStudyArkModule);
+		}
 		//Insert the new modules for the Study
 		for (LinkStudyArkModule linkStudyArkModule : linkStudyArkModulesToAdd) {
 			session.save(linkStudyArkModule);
 		}
-		//NN:TODO WIP
-		//Process the Removal of Linked ArkModules for this study
-		//		for (LinkStudyArkModule linkStudyArkModule : linkStudyArkModulesToRemove) {
-		//			session.delete(linkStudyArkModule);
-		//		}
+		//Flush must be the last thing to call. If there is any other code/logic to be added make sure session.flush() is invoked after that.
+		session.flush();
 	}
 	
 	/**
