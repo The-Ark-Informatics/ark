@@ -348,6 +348,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 
 			criteria.add(Restrictions.ilike(Constants.STUDY_COMP_KEYWORD, studyCompCriteria.getKeyword(), MatchMode.ANYWHERE));
 		}
+		//Restrict the search for the study do not pull other study components
+		criteria.add(Restrictions.eq("study", studyCompCriteria.getStudy()));
+		
 		List<StudyComp> list = criteria.list();
 		return list;
 	}
