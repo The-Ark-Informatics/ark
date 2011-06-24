@@ -21,6 +21,7 @@ import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
+import au.org.theark.study.web.component.customfield.CustomFieldContainer;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
@@ -103,6 +104,9 @@ public class SubjectSubMenuTab extends Panel{
 						
 						processAuthorizationCache(menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
+					}else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNTION_KEY_VALUE_SUBJECT_CUSTOM)){
+						processAuthorizationCache(menuArkFunction);
+						panelToReturn = new CustomFieldContainer(panelId);
 					}
 		
 					return panelToReturn;
