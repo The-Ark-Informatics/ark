@@ -1,5 +1,7 @@
 package au.org.theark.study.web.component.subjectUpload;
 
+import java.util.ArrayList;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -12,9 +14,7 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDownloadTemplateLink;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
 public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO>
@@ -92,20 +92,18 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 			{
 				// Return all Uploads for the Study in context
 				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				StudyUpload studyUpload = new StudyUpload();
+				java.util.Collection<StudyUpload> studyUploads = new ArrayList<StudyUpload>();
 				
+				if(isActionPermitted())
+				{
+					if (sessionStudyId != null)
+					{	StudyUpload studyUpload = new StudyUpload();
+						studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
+						studyUploads = studyService.searchUpload(studyUpload);
+					}
+				}
 				listView.removeAll();
-				
-				if (sessionStudyId != null)
-				{
-					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
-					java.util.Collection<StudyUpload> studyUploads = studyService.searchUpload(studyUpload); 
-					return  studyUploads;
-				}
-				else
-				{
-					return null;
-				}
+				return  studyUploads;
 			}
 		};
 

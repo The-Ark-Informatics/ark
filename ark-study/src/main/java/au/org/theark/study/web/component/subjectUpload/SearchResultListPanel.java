@@ -2,6 +2,10 @@ package au.org.theark.study.web.component.subjectUpload;
 
 import java.sql.SQLException;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -21,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkDownloadTemplateButton;
@@ -340,6 +345,20 @@ public class SearchResultListPanel extends Panel {
 				target.addComponent(searchResultContainer);
 				target.addComponent(containerForm);
 			}
+			
+			@Override
+			public boolean isVisible()
+			{
+				SecurityManager securityManager =  ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				boolean flag = false;
+				if(securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
+					return flag = true;
+				}
+				
+				return flag;
+			}
+			
 		};
 
 		// TODO: Check permissions for delete
