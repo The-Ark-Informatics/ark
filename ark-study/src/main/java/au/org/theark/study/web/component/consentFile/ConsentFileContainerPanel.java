@@ -165,19 +165,18 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			{	
 				//Get the PersonId from session and get the phoneList from back end
 				Collection<ConsentFile> consentFileList = new ArrayList<ConsentFile>();
-				
 				// Use consent in context
 				Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
-				Consent consent = new Consent();
-				
 				try 
 				{
 					if(sessionConsentId != null)
 					{	
-						consent = studyService.getConsent(sessionConsentId);
-						ConsentFile consentFile = new ConsentFile();
-						consentFile.setConsent(consent);
-						consentFileList = studyService.searchConsentFile(consentFile);
+						if(isActionPermitted()){
+							Consent consent = studyService.getConsent(sessionConsentId);
+							ConsentFile consentFile = new ConsentFile();
+							consentFile.setConsent(consent);
+							consentFileList = studyService.searchConsentFile(consentFile);
+						}
 					}
 				} 
 				catch (EntityNotFoundException e) 

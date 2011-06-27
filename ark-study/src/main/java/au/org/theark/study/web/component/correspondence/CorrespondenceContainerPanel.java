@@ -141,8 +141,10 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 				Long sessionPersonId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				
 				try {
-					if(sessionPersonId != null) {
-						correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
+					if(isActionPermitted()){
+						if(sessionPersonId != null) {
+							correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, containerForm.getModelObject().getCorrespondence());
+						}
 					}
 				}catch(EntityNotFoundException ex) {
 					ex.printStackTrace();

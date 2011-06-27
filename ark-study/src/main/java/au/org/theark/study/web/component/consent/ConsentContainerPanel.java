@@ -153,15 +153,17 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				
-				Study study =	iArkCommonService.getStudy(sessionStudyId);
-				Person subject;
 				try {
-					if(sessionPersonId != null){
-						subject = studyService.getPerson(sessionPersonId);
-						LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId,study);
-						containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
-						containerForm.getModelObject().getConsent().setStudy(study);
-						consentList = studyService.searchConsent(containerForm.getModelObject());
+					if(isActionPermitted()){
+						if(sessionPersonId != null){
+							Study study =	iArkCommonService.getStudy(sessionStudyId);
+							Person subject = studyService.getPerson(sessionPersonId);
+							LinkSubjectStudy linkSubjectStudy = studyService.getSubjectLinkedToStudy(sessionPersonId,study);
+							containerForm.getModelObject().getConsent().setLinkSubjectStudy(linkSubjectStudy);
+							containerForm.getModelObject().getConsent().setStudy(study);
+							consentList = studyService.searchConsent(containerForm.getModelObject());
+						}
+						
 					}
 				} catch (EntityNotFoundException e) {
 					containerForm.error("Subject is not available in the system");

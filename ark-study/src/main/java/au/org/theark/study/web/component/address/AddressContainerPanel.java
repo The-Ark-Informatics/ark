@@ -138,18 +138,15 @@ public class AddressContainerPanel extends  AbstractContainerPanel<AddressVO>{
 				Collection<Address> addressList = new ArrayList<Address>();
 				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				try {
-			
-					if(sessionPersonId != null){
-						addressList = studyService.getPersonAddressList(sessionPersonId,containerForm.getModelObject().getAddress());
+					if(isActionPermitted()){
+						if(sessionPersonId != null){
+							addressList = studyService.getPersonAddressList(sessionPersonId,containerForm.getModelObject().getAddress());
+						}
 					}
 				} catch (EntityNotFoundException e) {
-					//Report this to user
-					// 	TODO Auto-generated catch block
-					//e.printStackTrace();
+					containerForm.error("The specified Address is not found in the system.");
 				} catch (ArkSystemException e) {
-					//Report this to user
-					// TODO Auto-generated catch block
-					//e.printStackTrace();
+					containerForm.error("A System Exception has occured please contact support.");
 				}
 			pageableListView.removeAll();
 			return addressList;
