@@ -5,7 +5,6 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 
 import au.org.theark.core.Constants;
 
-@SuppressWarnings( { "serial"})
 public abstract class SelectModalWindow extends ModalWindow
 {
 	public SelectModalWindow(String id)
