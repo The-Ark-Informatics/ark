@@ -6,6 +6,7 @@ import java.util.Iterator;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -21,6 +22,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
@@ -28,6 +30,7 @@ import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subject.bioCollection.DetailPanel;
 
 /**
  * @author cellis
@@ -54,6 +57,8 @@ public class ListDetailForm extends Form<LimsVO>
 	private TextField<String>				commentsTxtFld;
 	private DateTextField					collectionDateTxtFld;
 	private DateTextField					surgeryDateTxtFld;
+	private ModalWindow						modalWindow;
+	private DetailForm						detailForm;
 
 	public ListDetailForm(String id, FeedbackPanel feedBackPanel)
 	{
@@ -174,6 +179,8 @@ public class ListDetailForm extends Form<LimsVO>
 				attachValidators();
 			}
 		};
+		
+		modalWindow = initialiseModalWindow();
 
 		addComponents();
 	}
@@ -190,6 +197,31 @@ public class ListDetailForm extends Form<LimsVO>
 		{
 			error(e.getMessage());
 		}
+	}
+	
+	protected ModalWindow initialiseModalWindow()
+	{
+		// The ModalWindow, showing some choices for the user to select.
+		modalWindow = new AbstractDetailModalWindow("modalwindow", "Collection Details", detailForm)
+		//modalWindow = new AbstractDetailModalWindow("modalwindow", "Collection Details")
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -1116985092871743122L;
+		};
+
+		return modalWindow;
+	}
+
+	protected void onModalWindowCancel(AjaxRequestTarget target)
+	{
+		modalWindow.close(target);
+	}
+
+	protected void onModalWindowConfirmed(AjaxRequestTarget target, String selection)
+	{
+		modalWindow.close(target);
 	}
 
 	protected void attachValidators()
@@ -217,6 +249,8 @@ public class ListDetailForm extends Form<LimsVO>
 				
 				// Only repaint ListDetailForm?
 				target.addComponent(f);
+				
+				modalWindow.show(target);
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -270,6 +304,7 @@ public class ListDetailForm extends Form<LimsVO>
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				initialiseForm();
+				onModalWindowCancel(target);
 				processErrors(target);
 			}
 
@@ -281,6 +316,8 @@ public class ListDetailForm extends Form<LimsVO>
 		};
 		cancelButton.setDefaultFormProcessing(false);
 		addOrReplace(cancelButton);
+		
+		addOrReplace(modalWindow);
 	}
 
 	@SuppressWarnings("unchecked")

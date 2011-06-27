@@ -78,7 +78,7 @@ public class DetailPanel extends Panel {
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
 		
-		ListDetailPanel listDetailPanel = new ListDetailPanel("listDetailPanel", this.feedBackPanel);
+		ListDetailPanel listDetailPanel = new ListDetailPanel("listDetailPanel", this.feedBackPanel, detailPanelFormContainer);
 		listDetailPanel.initialisePanel();
 		add(listDetailPanel);
 	}
