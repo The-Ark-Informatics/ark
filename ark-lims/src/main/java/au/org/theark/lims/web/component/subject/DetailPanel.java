@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
 
@@ -20,6 +21,10 @@ import au.org.theark.lims.web.component.subject.form.DetailForm;
 public class DetailPanel extends Panel {
 
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 6327429091464686833L;
 	private DetailForm detailsForm;
 	private FeedbackPanel feedBackPanel;
 	private WebMarkupContainer searchResultPanelContainer;
@@ -30,6 +35,7 @@ public class DetailPanel extends Panel {
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer arkContextContainer;
 	private ContainerForm containerForm;
+
 
 	public DetailPanel(	String id,
 					FeedbackPanel feedBackPanel,
@@ -70,8 +76,11 @@ public class DetailPanel extends Panel {
 									containerForm);
 		
 		detailsForm.initialiseDetailForm();
-		
 		add(detailsForm);
+		
+		ListDetailPanel listDetailPanel = new ListDetailPanel("listDetailPanel", this.feedBackPanel);
+		listDetailPanel.initialisePanel();
+		add(listDetailPanel);
 	}
 	
 
@@ -82,5 +91,8 @@ public class DetailPanel extends Panel {
 	public void setDetailsForm(DetailForm detailsForm) {
 		this.detailsForm = detailsForm;
 	}
+
+
+	
 
 }

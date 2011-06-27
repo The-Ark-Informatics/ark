@@ -2,7 +2,6 @@ package au.org.theark.lims.web.component.subject;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -19,17 +18,18 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel;
+import au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
-import au.org.theark.lims.web.component.subject.form.SearchForm;
 
 /**
  * @author nivedann
@@ -240,6 +240,19 @@ public class SearchResultListPanel extends Panel{
 				DetailPanel details = (DetailPanel) detailPanelContainer.get("detailsPanel");
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
+				
+				// Set up BioCollections listDetail
+				LimsVO limsVo = new LimsVO();
+				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				limsVo.getBioCollection().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				
+				ListDetailPanel listDetailPanel = (ListDetailPanel) details.get("listDetailPanel");
+				ListDetailForm listDetailForm = (ListDetailForm) listDetailPanel.get("listDetailForm");
+				
+				listDetailForm.setModelObject(limsVo);
+				listDetailForm.initialiseList();
+				listDetailForm.initialiseForm();
+				listDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);

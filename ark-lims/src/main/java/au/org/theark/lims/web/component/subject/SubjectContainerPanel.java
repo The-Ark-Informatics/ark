@@ -22,8 +22,11 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel;
+import au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 
 /**
@@ -97,6 +100,20 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 				}
 				
 				if (contextLoaded) {
+					// Set up BioCollections listDetail
+					DetailPanel details = (DetailPanel) detailPanelContainer.get("detailsPanel");
+					LimsVO limsVo = new LimsVO();
+					limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+					limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+					
+					ListDetailPanel listDetailPanel = (ListDetailPanel) details.get("listDetailPanel");
+					ListDetailForm listDetailForm = (ListDetailForm) listDetailPanel.get("listDetailForm");
+					
+					listDetailForm.setModelObject(limsVo);
+					listDetailForm.initialiseList();
+					listDetailForm.initialiseForm();
+					listDetailForm.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+					
 					// Put into Detail View mode
 					searchPanelContainer.setVisible(false);
 					searchResultPanelContainer.setVisible(false);
