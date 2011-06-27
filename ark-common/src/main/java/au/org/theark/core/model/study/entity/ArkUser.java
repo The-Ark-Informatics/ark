@@ -25,10 +25,9 @@ public class ArkUser implements Serializable{
 
 	private Long id;
 	private String ldapUserName;
-	private Study study;
+	
 	
 	public ArkUser(){
-		study= new Study();
 	}
 
 	@Id
@@ -51,16 +50,5 @@ public class ArkUser implements Serializable{
 	public void setLdapUserName(String ldapUserName) {
 		this.ldapUserName = ldapUserName;
 	}
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy() {
-		return study;
-	}
 
-	public void setStudy(Study study) {
-		this.study = study;
-	}
-	
-	
 }
