@@ -1,7 +1,6 @@
 package au.org.theark.study.web.component.manageuser;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -13,7 +12,6 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -56,37 +54,29 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		ArkUserVO arkUserVO = new ArkUserVO();
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		
+		
 		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm,feedBackPanel);
-		
-		Collection<ArkModuleRole> listOfModulRoles = iArkCommonService.getArkModuleAndLinkedRoles();
-		List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
-		
-		try{
-			if(sessionStudyId != null && sessionStudyId > 0){
-				//Search Users must list all the users from ArkUser Group and will include all users across studies.
-				 userResultList = userService.searchUser(arkUserVO);	
-			}
-		}catch(ArkSystemException arkException){
-					
-		}
-		
-		containerForm.getModelObject().setUserList(userResultList);
-	
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 			@Override
 			protected Object load() {
-				List<ArkUserVO> arkUserList = new ArrayList<ArkUserVO>();
-				
+				ArkUserVO arkUserVO = new ArkUserVO();
+				List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
 				try {
-					pageableListView.removeAll();
-					arkUserList =  userService.searchUser(containerForm.getModelObject());
+					Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					if(isActionPermitted()){
+						if(sessionStudyId != null && sessionStudyId > 0){
+							//Search Users must list all the users from ArkUser Group and will include all users across studies.
+							userResultList = userService.searchUser(arkUserVO);
+							containerForm.getModelObject().setUserList(userResultList);
+						}
+						pageableListView.removeAll();
+					}
 				} catch (ArkSystemException e) {
 					feedBackPanel.error("A System Error has occured. Please contact support.");
 				}
-				return arkUserList;
+				return userResultList;
 			}
 		};
 	
