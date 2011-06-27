@@ -2,6 +2,10 @@ package au.org.theark.study.web.component.subjectFile;
 
 import java.sql.SQLException;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -23,6 +27,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.SubjectFile;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
@@ -238,6 +243,9 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton)
 	{
+	
+
+		
 		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this)
 		{
 			@Override
@@ -264,6 +272,19 @@ public class SearchResultListPanel extends Panel {
 				// Update the result panel
 				target.addComponent(searchResultContainer);
 				target.addComponent(containerForm);
+			}
+			
+			@Override
+			public boolean isVisible()
+			{
+				SecurityManager securityManager =  ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+				boolean flag = false;
+				if(securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
+					return flag = true;
+				}
+				
+				return flag;
 			}
 		};
 
