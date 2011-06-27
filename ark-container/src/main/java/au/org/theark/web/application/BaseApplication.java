@@ -18,9 +18,9 @@ public abstract class BaseApplication extends WebApplication{
 	protected void init(){
 		log.info("In constructor of BaseApplication");
 		super.init();
-		CustomAuthorizationStrategy cas = new CustomAuthorizationStrategy();
-		getSecuritySettings().setAuthorizationStrategy(cas);
-		getSecuritySettings().setUnauthorizedComponentInstantiationListener(new CustomUnauthorizedStrategy());//TODO:NN Modify the constructor
+		//CustomAuthorizationStrategy cas = new CustomAuthorizationStrategy();
+		//getSecuritySettings().setAuthorizationStrategy(cas);
+		//getSecuritySettings().setUnauthorizedComponentInstantiationListener(new CustomUnauthorizedStrategy());//TODO:NN Modify the constructor
 		//mountBookmarkablePage("/login",LoginPage.class);
 		//Strip out the wicket tags 
 		//Set up error message stuff
