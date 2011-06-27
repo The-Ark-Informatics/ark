@@ -10,8 +10,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.security.ArkLdapRealm;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
@@ -121,7 +123,7 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	}
 	
 	
-	protected abstract WebMarkupContainer initialiseSearchResults();
+	protected  abstract WebMarkupContainer initialiseSearchResults();
 	
 	protected abstract WebMarkupContainer initialiseDetailPanel();
 	
@@ -129,5 +131,33 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 	
 	protected abstract WebMarkupContainer initialiseSearchPanel();
 	
+	protected boolean isActionPermitted(){
+		boolean flag = false;
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
+		{
+			flag = true;
+		}
+		else
+		{
+			flag = false;
+		}
+		return flag;
+	}
+	
+	protected void processList(){
+		iModel = new LoadableDetachableModel<Object>() {
+
+			@Override
+			protected Object load() {
+				
+				return null;
+			}
+			
+		};
+		
+		
+	}
 	
 }
