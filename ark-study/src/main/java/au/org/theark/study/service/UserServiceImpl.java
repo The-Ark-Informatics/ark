@@ -253,7 +253,7 @@ public class UserServiceImpl implements IUserService {
 			//Setting the Username and Study on the ArkUser Hibernate entity from the Value Object that would reflect what it is on LDAP
 			
 			Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			arkUserVO.getArkUserEntity().setStudy(arkCommonService.getStudy(sessionStudyId));
+			arkUserVO.setStudy(arkCommonService.getStudy(sessionStudyId));
 			arkUserVO.getArkUserEntity().setLdapUserName(arkUserVO.getUserName());
 			//Create the user in Ark Database as well and persist and update and roles user was assigned
 			arkAuthorisationService.createArkUser(arkUserVO);
