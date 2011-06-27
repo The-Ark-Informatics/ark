@@ -99,8 +99,6 @@ public class SearchResultListPanel extends Panel{
 							target.addComponent(feedbackPanel);
 							arkUserVOFromBackend.setChangePassword(true);
 							arkUserVOFromBackend.getArkUserEntity().setLdapUserName(arkUserVo.getUserName());
-							arkUserVOFromBackend.getArkUserEntity().setStudy(study);
-							
 							prePopulateForNewUser(arkUserVOFromBackend);
 						}else{
 							prePopulateArkUserRoleList(arkUserVOFromBackend);
