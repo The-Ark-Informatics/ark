@@ -1,5 +1,9 @@
 package au.org.theark.core.web.form;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -17,6 +21,9 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.Constants;
+import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
@@ -36,35 +43,35 @@ import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 public abstract class AbstractWizardForm<T> extends Form<T>
 {
 
-	private static final long		serialVersionUID	= 1L;
+	private static final long			serialVersionUID	= 1L;
 
-	private static final Logger	log					= LoggerFactory.getLogger(AbstractWizardForm.class);
+	private static final Logger		log					= LoggerFactory.getLogger(AbstractWizardForm.class);
 
-	protected Form<T>					containerForm;
-	protected FeedbackPanel			feedBackPanel;
-	protected WebMarkupContainer	resultListContainer;
-	protected WebMarkupContainer	searchPanelContainer;
-	protected WebMarkupContainer	wizardPanelContainer;
-	protected WebMarkupContainer	wizardPanelFormContainer;
-	protected WebMarkupContainer	wizardButtonContainer;
+	protected Form<T>						containerForm;
+	protected FeedbackPanel				feedBackPanel;
+	protected WebMarkupContainer		resultListContainer;
+	protected WebMarkupContainer		searchPanelContainer;
+	protected WebMarkupContainer		wizardPanelContainer;
+	protected WebMarkupContainer		wizardPanelFormContainer;
+	protected WebMarkupContainer		wizardButtonContainer;
 
-	private ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid;
-	private AjaxButton				nextButton;
-	private AjaxLink					previousLink;
-	private AjaxLink					cancelLink;
-	private AjaxButton				finishButton;
+	private ArkExcelWorkSheetAsGrid	arkExcelWorkSheetAsGrid;
+	private AjaxButton					nextButton;
+	private AjaxLink						previousLink;
+	private AjaxLink						cancelLink;
+	private AjaxButton					finishButton;
 
-	protected IBehavior				buttonStyleBehavior;
+	protected IBehavior					buttonStyleBehavior;
 
-	private boolean					cancelled			= false;
-	
+	private boolean						cancelled			= false;
+
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor formVisitor = new ArkFormVisitor();
-	public void onBeforeRender()
-	{
-		super.onBeforeRender();
-		visitChildren(formVisitor);
-	}
+	ArkFormVisitor							formVisitor			= new ArkFormVisitor();
+
+	protected ArkCrudContainerVO		arkCrudContainerVO;																		// Use this for the model where
+
+	// WebMarkupContainers are set inside this
+	// VO
 
 	public AbstractWizardForm(String id)
 	{
@@ -158,13 +165,19 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		wizardButtonContainer.add(cancelLink);
 		add(wizardButtonContainer);
 	}
-	
+
 	private void initialiseGridView()
 	{
 		arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView");
 		arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 		arkExcelWorkSheetAsGrid.setVisible(false);
 		wizardPanelFormContainer.addOrReplace(arkExcelWorkSheetAsGrid);
+	}
+
+	public void onBeforeRender()
+	{
+		super.onBeforeRender();
+		visitChildren(formVisitor);
 	}
 
 	public WebMarkupContainer getWizardButtonContainer()
@@ -201,7 +214,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	{
 		this.previousLink = previousLink;
 	}
-	
+
 	public ArkExcelWorkSheetAsGrid getArkExcelWorkSheetAsGrid()
 	{
 		return arkExcelWorkSheetAsGrid;
@@ -229,7 +242,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		nextButton = new ArkBusyAjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
 		{
 			private static final long	serialVersionUID	= 0L;
-			
+
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form)
 			{
@@ -257,7 +270,6 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 			{
 				onPreviousClick(target);
 			}
-
 		};
 
 		return link;
@@ -380,7 +392,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		finishButton.setVisible(true);
 		finishButton.setEnabled(false);
 		resultListContainer.setVisible(true);
-		
+
 		target.addComponent(wizardPanelFormContainer);
 		target.addComponent(wizardButtonContainer);
 		target.addComponent(resultListContainer);
@@ -469,6 +481,51 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 			current = current.getParent();
 		}
 		return null;
+	}
+
+	protected boolean isActionPermitted(String actionType)
+	{
+		boolean flag = false;
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if (actionType.equalsIgnoreCase(Constants.SAVE))
+		{
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
+			{
+
+				flag = true;
+			}
+			else
+			{
+				flag = false;
+			}
+		}
+		else if (actionType.equalsIgnoreCase(Constants.EDIT))
+		{
+
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
+			{
+				flag = true;
+			}
+			else
+			{
+				flag = false;
+			}
+		}
+		else if (actionType.equalsIgnoreCase(Constants.DELETE))
+		{
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
+			{
+				flag = true;
+			}
+			else
+			{
+				flag = false;
+			}
+		}
+
+		return flag;
 	}
 
 	public boolean isCancelled()
@@ -574,18 +631,63 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	/**
 	 * Called to disable entire WizardForm, and display reason.
 	 * 
-	 * @param target
+	 * @param sessionId
+	 * @param errorMessage
 	 */
 	protected void disableWizardForm(Long sessionId, String errorMessage)
 	{
-		if (sessionId == null)
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
 		{
+			//arkCrudContainerVO.getSearchPanelContainer()
 			this.setEnabled(false);
-			this.error(errorMessage);
+			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
+
 		}
 		else
 		{
-			this.setEnabled(true);
+			if (sessionId == null)
+			{
+				this.setEnabled(false);
+				this.error(errorMessage);
+			}
+			else
+			{
+				this.setEnabled(true);
+			}
+		}
+	}
+
+	/**
+	 * Called to disable entire WizardForm, and display reason.
+	 * 
+	 * @param sessionId
+	 * @param errorMessage
+	 * @param arkCrudContainserVO
+	 */
+	protected void disableWizardForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
+	{
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
+		{
+			this.setEnabled(false);
+			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
+		}
+		else
+		{
+			if (sessionId == null)
+			{
+				//arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				this.error(errorMessage);
+			}
+			else
+			{
+				//arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
+			}
 		}
 	}
 }
