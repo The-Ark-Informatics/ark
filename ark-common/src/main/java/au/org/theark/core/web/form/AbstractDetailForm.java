@@ -695,18 +695,18 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		if(	!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE) &&
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) &&
 			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.READ)  &&
-			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+			!securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
 			
-			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+			arkCrudContainerVO.getDetailPanelContainer().setEnabled(false);
 			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
 			
 		}else{
 
 			if (sessionId == null){
-				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}else{	
-				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
+				arkCrudContainerVO.getDetailPanelContainer().setEnabled(true);
 			}
 		}
 	}
