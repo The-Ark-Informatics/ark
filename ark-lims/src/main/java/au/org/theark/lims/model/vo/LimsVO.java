@@ -7,6 +7,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.vo.SubjectVO;
 
 public class LimsVO implements Serializable
 {
@@ -14,6 +15,7 @@ public class LimsVO implements Serializable
 	 * 
 	 */
 	private static final long	serialVersionUID	= 3823264588506863044L;
+	protected SubjectVO subjectVo;
 	protected LinkSubjectStudy LinkSubjectStudy;  
 	protected BioCollection bioCollection;
 	protected Biospecimen biospecimen;
@@ -32,12 +34,29 @@ public class LimsVO implements Serializable
 	
 	public LimsVO()
 	{
+		this.subjectVo = new SubjectVO();
 		this.LinkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
 		this.bioCollectionList = new ArrayList<BioCollection>(0);
 		this.biospecimenList = new ArrayList<Biospecimen>(0);
 		this.bioTransactionList = new ArrayList<BioTransaction>(0);
+	}
+
+	/**
+	 * @return the subjectVo
+	 */
+	public SubjectVO getSubjectVo()
+	{
+		return subjectVo;
+	}
+
+	/**
+	 * @param subjectVo the subjectVo to set
+	 */
+	public void setSubjectVo(SubjectVO subjectVo)
+	{
+		this.subjectVo = subjectVo;
 	}
 
 	/**
