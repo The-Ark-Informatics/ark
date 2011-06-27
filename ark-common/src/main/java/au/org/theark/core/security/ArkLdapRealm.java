@@ -83,7 +83,7 @@ public class ArkLdapRealm extends AuthorizingRealm{
     	try{
     		
         	if(sessionModuleId != null && sessionFunctionId != null && sessionStudyId == null){
-        		log.info("There is no study in context. Now we can look up the subject's roles for the study");
+        		log.debug("There is no study in context. Now we can look up the subject's roles for the study");
         		//Load the role for the given module and use case 
         		ArkFunction arkFunction = iArkCommonService.getArkFunctionById(sessionFunctionId);
         		ArkModule arkModule = iArkCommonService.getArkModuleById(sessionModuleId);
