@@ -1,6 +1,7 @@
 package au.org.theark.lims.model.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
@@ -34,6 +35,9 @@ public class LimsVO implements Serializable
 		this.LinkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
+		this.bioCollectionList = new ArrayList<BioCollection>(0);
+		this.biospecimenList = new ArrayList<Biospecimen>(0);
+		this.bioTransactionList = new ArrayList<BioTransaction>(0);
 	}
 
 	/**
