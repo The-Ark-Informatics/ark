@@ -254,23 +254,37 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 		ArkUser arkUser  = getArkUser(ldapUserName);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.createAlias("arkUser", "auserObject");
-		criteria.add(Restrictions.eq("arkUser", arkUser));
 		
+		criteria.add(Restrictions.eq("arkUser", arkUser));		
 		//Even if there is a study in session the criteria must be applied only if the logged in user has a study registered for him. Ie if he is not a Super Admin
-		if(!isSuperAdministrator(ldapUserName)){
-			if(study != null){
-				criteria.add(Restrictions.eq("auserObject.study", study));	
+		if(!isSuperAdministrator(ldapUserName) && study != null){
+			
+			criteria.add(Restrictions.eq("study", study));
+			if(arkModule != null){
+				criteria.add(Restrictions.eq("arkModule", arkModule));
+			}
+			//criteria.setMaxResults(1);
+			List<ArkUserRole> list  = (List<ArkUserRole>)criteria.list();
+			if(list.size() > 0 ){
+				ArkUserRole arkUserRole  = (ArkUserRole)criteria.list().get(0);
+				//ArkUserRole arkUserRole  = (ArkUserRole)criteria.list().get(0);
+				if(arkUserRole != null){
+					roleName = arkUserRole.getArkRole().getName();
+				}
+			}
+		
+		}else{
+			if(arkModule != null){
+				criteria.add(Restrictions.eq("arkModule", arkModule));
+			}
+			
+			criteria.setMaxResults(1);
+			ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
+			if(arkUserRole != null){
+				roleName = arkUserRole.getArkRole().getName();
 			}
 		}
-		if(arkModule != null){
-			criteria.add(Restrictions.eq("arkModule", arkModule));
-		}
 		
-		criteria.setMaxResults(1);
-		ArkUserRole arkUserRole  = (ArkUserRole)criteria.uniqueResult();
-		if(arkUserRole != null){
-			roleName = arkUserRole.getArkRole().getName();
-		}
 		return roleName;
 	}
 	
@@ -401,7 +415,6 @@ public class ArkAuthorisationDao<T>  extends HibernateSessionDao implements IArk
 				session.save(arkUserRole);
 			}
 		}
-		//Save the Role and Module details for the user
 	}
 	
 	/**
