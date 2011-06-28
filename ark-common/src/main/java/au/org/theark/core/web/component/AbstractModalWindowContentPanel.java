@@ -51,7 +51,15 @@ public abstract class AbstractModalWindowContentPanel extends Panel
 	protected void initialise()
 	{
 		setOutputMarkupId(true);
-		Form form = new Form("modalWindowForm");
-		add(form);
+		if(form == null)
+		{
+			Form form = new Form("detailForm");
+			add(form);
+		}
+		else
+		{
+			form.getId();
+			addOrReplace(form);
+		}
 	}
 }
