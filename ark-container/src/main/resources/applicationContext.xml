@@ -43,38 +43,41 @@
     <!-- Spring AOP auto-proxy creation (required to support Shiro annotations) -->
     <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
     
-    
-    <!--  Development: MySql Data Source Development -->
-    
- 	<!--  NOTE: URL will now use "ark-database" mapping as defined in the host file. 
-	
+    <!--  MySql Data Source -->
+ 	<!--  NOTE: URL will now use "ark-database" mapping as defined in the host file. -->	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://ark-database:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="insert-real-password"/>
+        <property name="password" value="v@Tym4np[]"/>
     </bean>
     
-    
-    <!--  NOTE: URL will now use "ark-ldap" mapping as defined in the host file.  
-	
+    <!--  LDAP Data Source -->
+    <!--  NOTE: URL will now use "ark-ldap" mapping as defined in the host file. -->
      <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
       <property name="url"  value="ldap://ark-ldap:389"/>
+      <!-- Development LDAP -->
+      <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
+      <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
+      <!-- Test LDAP
       <property name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
-      <property name="password" value="insert-real-password" />
+      -->
+      <!-- Production LDAP
+      <property name="base" value="dc=ldap,dc=the-ark,dc=org,dc=au"/>
+      <property name="userDn" value="cn=admin,dc=ldap,dc=the-ark,dc=org,dc=au" />
+      -->
+      <property name="password" value="v@Tym4np[]" />
     </bean>
- 	-->
-    
-    <!--  Development:LDAP Data Source -->
-    
+ 	
+    <!--  Development:LDAP Data Source 
     <bean id="ldapDataContextSource" class="org.springframework.ldap.core.support.LdapContextSource">
       <property name="url"  value="ldap://192.168.2.229:389"/>
       <property name="base" value="dc=ldapdevel,dc=wager,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldapdevel,dc=wager,dc=org,dc=au" />
       <property name="password" value="insert-real-password" />
     </bean>
-    	
+    -->
  	
     <!--  Melbourne: MySql Data Source 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
