@@ -10,8 +10,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -144,20 +144,6 @@ public abstract class AbstractContainerPanel<T> extends Panel{
 			flag = false;
 		}
 		return flag;
-	}
-	
-	protected void processList(){
-		iModel = new LoadableDetachableModel<Object>() {
-
-			@Override
-			protected Object load() {
-				
-				return null;
-			}
-			
-		};
-		
-		
 	}
 	
 }
