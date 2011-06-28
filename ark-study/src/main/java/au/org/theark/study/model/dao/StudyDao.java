@@ -1834,11 +1834,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	}
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
-
-		Criteria criteria = getSession().createCriteria(ArkUser.class);
-		criteria.add(Restrictions.eq("study", study));
-		Collection<ArkUser> arkUsersLinkedToStudy = criteria.list();
-		return arkUsersLinkedToStudy;
+		StringBuffer hqlQuery = new StringBuffer();
+		hqlQuery.append("  select distinct arkUserObj from ArkUserRole as arkuserRole,ArkUser as arkUserObj ");
+		hqlQuery.append("  where arkuserRole.study = ");
+		hqlQuery.append(study.getId());
+		hqlQuery.append(" and arkuserRole.arkUser.id = arkUserObj.id");
+		org.hibernate.Query queryObject = getSession().createQuery(hqlQuery.toString());
+		return  queryObject.list();
+		
 	}
 	
 	public LinkSubjectStudy getSubjectLinkedToStudy(Long personId,Study study) throws EntityNotFoundException, ArkSystemException{
