@@ -146,18 +146,17 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>{
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		Study study = new Study();
-		containerForm.getModelObject().setStudyList(iArkCommonService.getStudy(study));
 		
 		searchResultsPanel = new SearchResults("searchResults", studyCrudContainerVO, containerForm);
-		
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long serialVersionUID = 1L;
 
 			@Override
 			protected Object load() {
+				List<Study> studyList = new ArrayList<Study>();
+				studyList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
 				studyCrudContainerVO.getPageableListView().removeAll();
-				return iArkCommonService.getStudy(containerForm.getModelObject().getStudy()); 
+				return studyList;
 			}
 		};
 		
