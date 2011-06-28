@@ -1,53 +1,82 @@
 package au.org.theark.lims.web.component.subject.bioCollection;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subject.bioCollection.form.DetailForm;
-import au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm;
 
-
-
-
-@SuppressWarnings("serial")
 public class DetailPanel extends Panel
 {
-	protected WebMarkupContainer detailPanelFormContainer;
-	protected DetailForm							detailForm;
-	protected FeedbackPanel						feedBackPanel;
-	protected ListDetailForm						containerForm;
-	protected ArkCrudContainerVO	arkCrudContainerVo;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8745753185256494362L;
+	private FeedbackPanel		detailFeedbackPanel;
+	private ModalWindow 			modalWindow;
+	private DetailForm			detailForm;
+	private Form<LimsVO> containerForm;
+	private ArkCrudContainerVO	arkCrudContainerVo;
 
-	public DetailPanel(	String id, 
-					FeedbackPanel feedBackPanel,
-					ListDetailForm containerForm,
-					WebMarkupContainer detailPanelFormContainer)
+	public DetailPanel(String id)
 	{
 		super(id);
-		this.feedBackPanel = feedBackPanel;
-		this.containerForm = containerForm;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.detailFeedbackPanel = initialiseFeedBackPanel();
+		arkCrudContainerVo = new ArkCrudContainerVO();
+		initialisePanel();
 	}
 
-	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ListDetailForm containerForm)
+	public DetailPanel(String id, ModalWindow modalWindow)
 	{
 		super(id);
-		this.feedBackPanel = feedBackPanel;
+		this.detailFeedbackPanel = initialiseFeedBackPanel();
+		this.setModalWindow(modalWindow);
+		this.arkCrudContainerVo = new ArkCrudContainerVO();
+		initialisePanel();
+	}
+	
+	public DetailPanel(String id, ModalWindow modalWindow, Form<LimsVO> containerForm)
+	{
+		super(id);
+		this.detailFeedbackPanel = initialiseFeedBackPanel();
+		this.setModalWindow(modalWindow);
+		this.arkCrudContainerVo = new ArkCrudContainerVO();
 		this.containerForm = containerForm;
-		this.arkCrudContainerVo = arkCrudContainerVo;
+		initialisePanel();
+	}
+	
+	protected FeedbackPanel initialiseFeedBackPanel(){
+		/* Feedback Panel */
+		detailFeedbackPanel= new FeedbackPanel("detailFeedback");
+		detailFeedbackPanel.setOutputMarkupId(true);
+		return detailFeedbackPanel;
 	}
 
 	public void initialisePanel()
 	{
-		detailForm = new DetailForm(	"detailForm", 
-										feedBackPanel, 
-										arkCrudContainerVo,
-										containerForm);
-		
+		detailForm = new DetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, containerForm);
 		detailForm.initialiseDetailForm();
+		add(detailFeedbackPanel);
 		add(detailForm);
+	}
+
+	/**
+	 * @param modalWindow the modalWindow to set
+	 */
+	public void setModalWindow(ModalWindow modalWindow)
+	{
+		this.modalWindow = modalWindow;
+	}
+
+	/**
+	 * @return the modalWindow
+	 */
+	public ModalWindow getModalWindow()
+	{
+		return modalWindow;
 	}
 
 	public DetailForm getDetailForm()
@@ -55,8 +84,8 @@ public class DetailPanel extends Panel
 		return detailForm;
 	}
 
-	public void setDetailForm(DetailForm detailsForm)
+	public void setDetailForm(DetailForm detailForm)
 	{
-		this.detailForm = detailsForm;
+		this.detailForm = detailForm;
 	}
 }

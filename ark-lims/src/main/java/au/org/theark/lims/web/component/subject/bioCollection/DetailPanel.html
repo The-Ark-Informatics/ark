@@ -1,8 +1,10 @@
-<wicket:panel>
-	&nbsp;
+<wicket:panel>&nbsp;
+	<span wicket:id="detailFeedback"> </span>
 	<form wicket:id="detailForm">
 		<div id="detailsPanelBorder">
-			<div wicket:id="listDetailFormContainer">
+		
+			<div wicket:id="detailFormContainer">
+				
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- Row 1 ID and Name-->
@@ -89,11 +91,7 @@
 					Empty place
 				-->
 				
-				
 				<div id="detailPanelBreaker">&nbsp;</div>
-				
-				<!-- ModalWindow for confirm Delete window -->
-				<div wicket:id="modalwindow"></div>
 			</div>
 			<!-- Detail container end-->
 			
@@ -110,19 +108,6 @@
 						  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 						  <div id="panelMargin">&nbsp;</div>
 						  <input wicket:id="delete" type="submit" wicket:message="value:page.delete" />&nbsp;
-					  	</div>
-					</div>
-				</div>
-			
-				<div wicket:id="viewButtonContainer">
-					<div id="fldLabel">&nbsp;</div>
-					<div id="fldControl">&nbsp;</div>
-					<div id="panelMargin">&nbsp;</div>
-					<div id="actionButtons">&nbsp;
-						<div class="label">
-							<input wicket:id="edit" type="submit" wicket:message="value:page.edit" />&nbsp;
-							<div id="panelMargin">&nbsp;</div>
-							<input wicket:id="editCancel" type="submit"	wicket:message="value:page.newSearch" />
 					  	</div>
 					</div>
 				</div>

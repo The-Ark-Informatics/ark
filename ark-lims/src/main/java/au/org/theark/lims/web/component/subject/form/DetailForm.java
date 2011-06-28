@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -114,14 +115,16 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 						WebMarkupContainer viewButtonContainer,
 						WebMarkupContainer editButtonContainer,
 						WebMarkupContainer arkContextContainer,
-						ContainerForm containerForm				) {
+						ContainerForm containerForm) {
 		
 	
 			super(id,feedBackPanel,resultListContainer,detailPanelContainer,detailPanelFormContainer,searchPanelContainer,viewButtonContainer,editButtonContainer,containerForm);
 			this.arkContextMarkupContainer = arkContextContainer;
 			
 			// Disable editing of Subject details in LIMS
-			editButton.setVisible(false);
+			editButton.setVisibilityAllowed(false);
+			this.viewButtonContainer.addOrReplace(editButton);
+			addOrReplace(this.viewButtonContainer);
 	}
 		
 	@SuppressWarnings("unchecked")
@@ -233,9 +236,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		initialiseConsentTypeChoice();
 		attachValidators();
 		addDetailFormComponents();
-		
-		viewButtonContainer.setVisible(false);
-		editButtonContainer.setVisible(false);
 	}
 	
 	/**

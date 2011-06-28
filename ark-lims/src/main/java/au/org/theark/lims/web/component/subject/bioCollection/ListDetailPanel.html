@@ -54,21 +54,14 @@
 
 			<!--	Row 2 Action Buttons -->
 			<div id="buttons">
-				<input wicket:id="listNewButton" type="submit" value="New"/>&nbsp;
-				<input wicket:id="listSaveButton" type="submit" value="Save"/>&nbsp;
-				<input wicket:id="listCancelButton" type="submit" value="Cancel"/>
+				<input wicket:id="listNewButton" type="submit" value="New"/>
 			</div>
 			<!--	End buttons -->
 		<!--	End listDetailsPanelBorder -->
 		</div>
 		
-		<!-- ModalWindow for detail -->
-		<div wicket:id="modalwindow">
-			<!--  The detailContainer  WebMarkupContainer that has the DetailsPanel -->
-			<div wicket:id="detailContainer">
-				<div wicket:id="detailPanel"></div>
-			 </div>
-		</div>
+		<!--  The detailModalWindow for detail edit/add from listDetail -->
+		<div wicket:id="detailModalWindow"></div>
 		
 		<div id="detailPanelBreaker">&nbsp;</div>
 	</form>

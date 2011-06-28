@@ -33,8 +33,13 @@ import au.org.theark.lims.web.component.subject.form.ContainerForm;
  * @author nivedann
  *
  */
-public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
-
+@SuppressWarnings("unchecked")
+public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> 
+{
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -2956968644138345497L;
 	private SearchPanel searchPanel;
 	private SearchResultListPanel searchResultsPanel;
 	private DetailPanel detailsPanel;
@@ -42,6 +47,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	private ContainerForm containerForm;
 	
 	private WebMarkupContainer arkContextMarkup;
+	
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
@@ -110,7 +116,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 					ListDetailForm listDetailForm = (ListDetailForm) listDetailPanel.get("listDetailForm");
 					
 					listDetailForm.setModelObject(limsVo);
-					listDetailForm.initialiseList();
+					//listDetailForm.initialiseList();
 					listDetailForm.initialiseForm();
 					listDetailForm.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
 					
@@ -173,8 +179,12 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 		
 		// Data providor to paginate resultList
 		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
-			
-			
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5965748714329690977L;
+
+
 			public int size() {
 				return service.getStudySubjectCount(compoundPropertyModel.getObject());
 			}
