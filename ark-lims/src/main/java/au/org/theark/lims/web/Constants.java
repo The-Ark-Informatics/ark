@@ -50,6 +50,7 @@ public class Constants
 	public static final String	NEW											= "new";
 	public static final String	RESET											= "reset";
 	public static final String	ADD_PHONE									= "addPhone";
+	public static final String	EDIT											= "edit";
 	public static final int		MODE_NEW										= 1;
 	public static final int		MODE_EDIT									= 2;
 	public static final int		MODE_READ									= 3;
@@ -115,5 +116,5 @@ public class Constants
 	public static final String	SUBJECT_CONSENT_TO_USEDATA				= "linkSubjectStudy.consentToUseData";
 	public static final String	SUBJECT_CONSENT_PASSIVE_DATA_GATHER	= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String	SUBJECT_AUTO_GENERATED					= "Auto-generated";
-	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";
+	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";	
 }
