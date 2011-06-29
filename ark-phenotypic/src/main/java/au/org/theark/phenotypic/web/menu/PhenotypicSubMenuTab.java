@@ -37,7 +37,7 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 	private transient Long		studyId;
 	private WebMarkupContainer	arkContextMarkup;
 	private List<ITab>						moduleSubTabsList	= new ArrayList<ITab>();
-	//private ArkFunction  arkFunction;
+
 
 	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
