@@ -29,13 +29,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 	private List<ITab> tabList;
 	private WebMarkupContainer	arkContextMarkup;
 	
-	public LimsSubMenuTab(String id)
-	{
-		super(id);
-		tabList = new ArrayList<ITab>();
-		buildTabs();
-	}
-
 	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
