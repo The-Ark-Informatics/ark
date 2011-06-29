@@ -159,8 +159,8 @@ public class ListDetailForm extends Form<LimsVO>
 				idTxtFld = new TextField<String>("id");
 				idTxtFld.setEnabled(false);
 				nameTxtFld = new TextField<String>("biospecimenId");
-				sampleTypeTxtFld = new TextField<String>("sampleType");
-				collectionTxtFld = new TextField<String>("bioCollection");
+				sampleTypeTxtFld = new TextField<String>("sampleType.name");
+				collectionTxtFld = new TextField<String>("bioCollection.name");
 				commentsTxtFld = new TextField<String>("comments");
 				quantityTxtFld = new TextField<String>("quantity");
 
@@ -175,8 +175,8 @@ public class ListDetailForm extends Form<LimsVO>
 				{
 					item.get("id").setEnabled(false);
 					item.get("biospecimenId").setEnabled(false);
-					item.get("sampleType").setEnabled(false);
-					item.get("bioCollection").setEnabled(false);
+					item.get("sampleType.name").setEnabled(false);
+					item.get("bioCollection.name").setEnabled(false);
 					item.get("comments").setEnabled(false);
 					item.get("quantity").setEnabled(false);
 				}
