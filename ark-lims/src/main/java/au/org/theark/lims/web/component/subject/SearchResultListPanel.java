@@ -17,7 +17,10 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
@@ -25,9 +28,8 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel;
-import au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
 
@@ -43,6 +45,7 @@ public class SearchResultListPanel extends Panel{
 	 * 
 	 */
 	private static final long	serialVersionUID	= -8517602411833622907L;
+	private static final Logger		log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private WebMarkupContainer detailPanelContainer;
 	private WebMarkupContainer detailPanelFormContainer;
 	private WebMarkupContainer searchPanelContainer;
@@ -54,6 +57,9 @@ public class SearchResultListPanel extends Panel{
 
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
+	
+	@SpringBean(name = Constants.LIMS_SERVICE)
+	private ILimsService								iLimsService;
 
 	public SearchResultListPanel(String id, 
 							WebMarkupContainer  detailPanelContainer,
@@ -241,18 +247,49 @@ public class SearchResultListPanel extends Panel{
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 				
-				// Set up BioCollections listDetail
+				// Set up LimsVO
 				LimsVO limsVo = new LimsVO();
 				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.getBioCollection().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				limsVo.getBioCollection().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
+				try
+				{
+					limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
+				}
+				catch (ArkSystemException e)
+				{
+					log.error(e.getMessage());
+				}
+				limsVo.getBiospecimen().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				limsVo.getBiospecimen().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
+				try
+				{
+					limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
+				}
+				catch (ArkSystemException e)
+				{
+					log.error(e.getMessage());
+				}
 				
-				ListDetailPanel listDetailPanel = (ListDetailPanel) details.get("listDetailPanel");
-				ListDetailForm listDetailForm = (ListDetailForm) listDetailPanel.get("listDetailForm");
+				// Set up BioCollection listDetail
+				au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel collectionListDetailPanel = 
+					(au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel) details.get("collectionListDetailPanel");
+				au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm collectionListDetailForm = 
+					(au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm) collectionListDetailPanel.get("collectionListDetailForm");
 				
-				listDetailForm.setModelObject(limsVo);
-				listDetailForm.initialiseList();
-				listDetailForm.initialiseForm();
-				listDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				collectionListDetailForm.setModelObject(limsVo);
+				collectionListDetailForm.initialiseForm();
+				collectionListDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				
+				// Set up Biospecimen listDetail
+				au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
+					(au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel) details.get("biospecimenListDetailPanel");
+				au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm biospecimenListDetailForm =
+					(au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm) biospecimenListDetailPanel.get("biospecimenListDetailForm");
+				
+				biospecimenListDetailForm.setModelObject(limsVo);
+				biospecimenListDetailForm.initialiseForm();
+				biospecimenListDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
