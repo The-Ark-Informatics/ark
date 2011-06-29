@@ -26,13 +26,11 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void> iArkCommonService;
 	
-	private List<ITab> tabList;
 	private WebMarkupContainer	arkContextMarkup;
 	
 	public LimsSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
-		tabList = new ArrayList<ITab>();
 		this.arkContextMarkup = arkContextMarkup;
 		buildTabs();
 	}
