@@ -30,19 +30,18 @@ public class ListDetailPanel extends Panel
 	}
 	
 	/**
-	 * @return the listBioCollectionsForm
+	 * @return the listDetailForm
 	 */
-	public ListDetailForm getListBioCollectionsForm()
+	public ListDetailForm getListDetailForm()
 	{
 		return listDetailForm;
 	}
 
 	/**
-	 * @param listBioCollectionsForm the listBioCollectionsForm to set
+	 * @param listDetailForm the listDetailForm to set
 	 */
-	public void setListBioCollectionsForm(ListDetailForm listBioCollectionsForm)
+	public void setListDetailForm(ListDetailForm listDetailForm)
 	{
-		this.listDetailForm = listBioCollectionsForm;
+		this.listDetailForm = listDetailForm;
 	}
-
 }
