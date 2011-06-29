@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -24,7 +21,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.security.ArkSecurity;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -144,14 +141,6 @@ public class ListDetailForm extends Form<LimsVO>
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 					{
-						// used to edit item within listEditor 
-						//item.get("id").setEnabled(true);
-						//item.get("name").setEnabled(true);
-						//item.get("collectionDate").setEnabled(true);
-						//item.get("surgeryDate").setEnabled(true);
-						//item.get("comments").setEnabled(true);
-						//target.addComponent(item);
-
 						// Set selected item into model.context, then show modalWindow for editing
 						Form<LimsVO> containerForm = (Form<LimsVO>) form;
 						containerForm.setModelObject(new LimsVO());
@@ -162,11 +151,11 @@ public class ListDetailForm extends Form<LimsVO>
 						containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);
 						modalWindow.show(target);
 					}
-
+					
 					@Override
-					public boolean isEnabled()
+					public boolean isVisible()
 					{
-						return (bioCollection.getId() != null);
+						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.EDIT);
 					}
 				};
 				
@@ -227,6 +216,12 @@ public class ListDetailForm extends Form<LimsVO>
 					{
 						return (bioCollection.getId() != null);
 					}
+					
+					@Override
+					public boolean isVisible()
+					{
+						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.DELETE);
+					}
 
 				};
 				item.addOrReplace(deleteButton);
@@ -284,7 +279,7 @@ public class ListDetailForm extends Form<LimsVO>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.NEW);
+				return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.NEW);
 			}
 		};
 		
@@ -293,62 +288,6 @@ public class ListDetailForm extends Form<LimsVO>
 		addOrReplace(newButton);
 		addOrReplace(listEditor);
 		addOrReplace(modalWindow);
-	}
-
-	protected boolean isActionPermitted(String actionType)
-	{
-		boolean flag = false;
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (actionType.equalsIgnoreCase(Constants.NEW))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || 
-					securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-		else if (actionType.equalsIgnoreCase(Constants.SAVE))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || 
-					securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-		else if (actionType.equalsIgnoreCase(Constants.EDIT))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-		else if (actionType.equalsIgnoreCase(Constants.DELETE))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-
-		return flag;
 	}
 
 	@SuppressWarnings("unchecked")
