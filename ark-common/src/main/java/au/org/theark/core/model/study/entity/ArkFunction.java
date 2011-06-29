@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -20,6 +23,8 @@ public class ArkFunction implements Serializable{
 	private String name;
 	private String description;
 	private String resourceKey;
+	private ArkFunctionType arkFunctionType;
+
 	
 	
 	@Id
@@ -59,6 +64,16 @@ public class ArkFunction implements Serializable{
 
 	public void setResourceKey(String resourceKey) {
 		this.resourceKey = resourceKey;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_FUNCTION_TYPE_ID")
+	public ArkFunctionType getArkFunctionType() {
+		return arkFunctionType;
+	}
+
+	public void setArkFunctionType(ArkFunctionType arkFunctionType) {
+		this.arkFunctionType = arkFunctionType;
 	}	
 	
 
