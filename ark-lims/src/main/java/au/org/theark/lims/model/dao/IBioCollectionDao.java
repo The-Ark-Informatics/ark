@@ -5,6 +5,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 public interface IBioCollectionDao
 {
@@ -49,4 +50,10 @@ public interface IBioCollectionDao
 	 * @return List
 	 */
 	public List<BioSampletype> getSampleTypes();
+
+	/**
+	 * Determine if provided linkSubjectStudy has any BioCollections associated
+	 * @return true if provided linkSubjectStudy has one or more BioCollections
+	 */
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy);
 }

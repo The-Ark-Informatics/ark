@@ -7,6 +7,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -134,5 +135,11 @@ public interface ILimsService
 	 * @return List
 	 */
 	public List<BioSampletype> getBioSampleTypes();
+
+	/**
+	 * Determine if provided linkSubjectStudy has any BioCollections associated
+	 * @return true if provided linkSubjectStudy has one or more BioCollections
+	 */
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy);
 
 }

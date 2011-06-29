@@ -11,6 +11,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
@@ -81,5 +82,13 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		Criteria criteria = getSession().createCriteria(BioSampletype.class);
 		List<BioSampletype> list = criteria.list();
 		return list;
+	}
+
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
+	{
+		Criteria criteria = getSession().createCriteria(BioCollection.class);
+		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
+		List<BioCollection> list = criteria.list();
+		return list.size() > 0;
 	}
 }

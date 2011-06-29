@@ -18,6 +18,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBioTransactionDao;
@@ -214,5 +215,13 @@ public class LimsServiceImpl implements ILimsService
 	public List<BioSampletype> getBioSampleTypes()
 	{
 		return iBioCollectionDao.getSampleTypes();
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#hasBioCollections()
+	 */
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
+	{
+		return iBioCollectionDao.hasBioCollections(linkSubjectStudy);
 	}
 }
