@@ -9,14 +9,13 @@ import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.MenuModule;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.bioCollection.BioCollectionContainerPanel;
@@ -32,7 +31,7 @@ public class LimsSubMenuTab extends Panel
 	@SpringBean( name="arkLdapRealm")
 	private ArkLdapRealm realm;
 	
-	List<ITab> tabList;
+	private List<ITab> tabList;
 	private WebMarkupContainer	arkContextMarkup;
 	private ArkFunction  arkFunction;
 	private ArkModule arkModule;
@@ -55,59 +54,47 @@ public class LimsSubMenuTab extends Panel
 	public void buildTabs()
 	{
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
-		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
-
-		MenuModule menuModule = new MenuModule();
-		menuModule.setModuleName(au.org.theark.core.Constants.TAB_SUBJECT_DETAIL);
-		menuModule.setResourceKey(au.org.theark.core.Constants.TAB_MODULE_LIMS_SUBJECT_DETAIL);
-		moduleTabs.add(menuModule);
 		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_BIO_COLLECTION);
-		menuModule.setResourceKey(Constants.TAB_MODULE_LIMS_COLLECTION);
-		moduleTabs.add(menuModule);
+		ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_LIMS);
+		List<ArkFunction>   arkFunctionList = iArkCommonService.getModuleFunction(arkModule);//Gets a list of ArkFunctions for the given Module
 		
-		menuModule = new MenuModule();
-		menuModule.setModuleName(Constants.TAB_BIOSPECIMEN);
-		menuModule.setResourceKey(Constants.TAB_MODULE_BIOSPECIMEN);
-		moduleTabs.add(menuModule);
-
-		for (final MenuModule moduleName : moduleTabs)
-		{
-			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), LimsSubMenuTab.this, moduleName.getModuleName())))
+		for (final ArkFunction menuArkFunction : arkFunctionList) {
+			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(),this, null))
 			{
 				@Override
 				public Panel getPanel(String panelId)
 				{
-					return buildPanels(moduleName, panelId);
-				};
+					return buildPanels(menuArkFunction.getName(), panelId);
+				}
 			});
 		}
-
+		
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_LIMS_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 	
-	protected Panel buildPanels(final MenuModule moduleName, String panelId)
-	{
-		Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
-		if(moduleName.getModuleName().equalsIgnoreCase(au.org.theark.core.Constants.TAB_SUBJECT_DETAIL)){
+	protected Panel buildPanels(final String functionName, String panelId){
+		Panel panelToReturn = null;// Set
+		
+		if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
 			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT); //Place a default use case into session
 			processAuthorizationCache(arkFunction);
 			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}
-		else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_BIO_COLLECTION)){
+		else if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)){
 			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION); //Place a default use case into session
 			processAuthorizationCache(arkFunction);
 			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}
-		else if(moduleName.getModuleName().equalsIgnoreCase(Constants.TAB_BIOSPECIMEN)){
+		else if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)){
 			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN); //Place a default use case into session
 			processAuthorizationCache(arkFunction);
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}	
 		return panelToReturn;
 	}
+	
+
 	
 	private void processAuthorizationCache(ArkFunction arkFunction){
 		arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_LIMS); //Place a default module into session
