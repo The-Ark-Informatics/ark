@@ -24,7 +24,7 @@ public class ListDetailPanel extends Panel
 
 	public void initialisePanel()
 	{
-		listDetailForm = new ListDetailForm("listDetailForm", new CompoundPropertyModel<LimsVO>(new LimsVO()), feedBackPanel);
+		listDetailForm = new ListDetailForm("collectionListDetailForm", new CompoundPropertyModel<LimsVO>(new LimsVO()), feedBackPanel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 	}
