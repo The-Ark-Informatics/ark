@@ -13,7 +13,6 @@ import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.mydetails.form.MyDetailsForm;
-import au.org.theark.study.web.form.UserForm;
 
 /**
  * A panel that allows the loggeg in user to update his personal details.
@@ -23,7 +22,7 @@ import au.org.theark.study.web.form.UserForm;
 public class MyDetails extends Panel{
 	
 	private transient Logger log = LoggerFactory.getLogger(MyDetails.class);
-	private UserForm userForm;
+	//private UserForm userForm;
 	private FeedbackPanel feedBackPanel;
 
 	
@@ -78,43 +77,4 @@ public class MyDetails extends Panel{
 		add(myDetailForm);
 	}
 	
-//	public MyDetails(String id, ArkUserVO userVO) {
-//		
-//		super(id);
-//		userForm  = new UserForm(Constants.USER_DETAILS_FORM,userVO){
-//			
-//			//Do an update
-//			protected  void onSave(ArkUserVO userVO){
-//				//Update the user details TODO
-//				try {
-//					//forcing update of password
-//					userVO.setChangePassword(true);
-//					userService.updateLdapUser(userVO);
-//				} catch (ArkSystemException arkSystemException) {
-//					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
-//					//add custom error message to feedback panel. 
-//				}catch(Exception ex){
-//					//Handle all other type of exceptions
-//					log.error("Exception occured when saving user details " + ex.getMessage());
-//				}
-//			}
-//			
-//			protected void onCancel(){
-//				log.info("\n -----------------onCancel Clicked hide Details-----------------\n");
-//				this.setVisible(false);
-//			}
-//			
-//		};
-//		
-//		userForm.initialiseForm();
-//		
-//		if(userVO.getMode() == Constants.MODE_EDIT){
-//			userForm.getUserNameTxtField().setEnabled(false);
-//		}
-//		
-//		userForm.getDeleteBtn().setVisible(false);
-//		//userForm.getDeleteButton().setVisible(false);
-//		add(userForm);
-//		
-//	}
 }
