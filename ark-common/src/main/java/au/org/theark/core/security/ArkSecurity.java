@@ -8,17 +8,14 @@ import org.apache.shiro.util.ThreadContext;
 import au.org.theark.core.Constants;
 
 /**
- * Global common class that determines permissions od particular action
+ * Global common class that determines permissions of particular action
  * @author cellis
  *
  */
 public class ArkSecurity
 {
-	protected static SecurityManager securityManager;
-	protected static Subject currentUser;
-	
 	/**
-	 * Determines whether a particular actionis permitted by the user in context (eg Save, Edit, Delete)
+	 * Determines whether a particular action is permitted by the user in context (eg Save, Edit, Delete)
 	 * @param actionType
 	 * @return true if action is permitted
 	 */
@@ -26,20 +23,20 @@ public class ArkSecurity
 	{
 		boolean actionPermitted = false;
 		
-		securityManager = ThreadContext.getSecurityManager();
-		currentUser = SecurityUtils.getSubject();
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
+		Subject currentUser = SecurityUtils.getSubject();
 
-		if (actionType.equalsIgnoreCase(Constants.SAVE))
+		if (actionType.equalsIgnoreCase(Constants.SAVE)  || actionType.equalsIgnoreCase(Constants.NEW))
 		{
-			actionPermitted = hasSavePermission();
+			actionPermitted = hasSavePermission(securityManager,currentUser);
 		}
 		else if (actionType.equalsIgnoreCase(Constants.EDIT))
 		{
-			actionPermitted = hasEditPermission();
+			actionPermitted = hasEditPermission(securityManager,currentUser);
 		}
 		else if (actionType.equalsIgnoreCase(Constants.DELETE))
 		{
-			actionPermitted = hasDeletePermission();	
+			actionPermitted = hasDeletePermission(securityManager,currentUser);	
 		}
 		return actionPermitted;
 	}
@@ -48,9 +45,10 @@ public class ArkSecurity
 	 * Determines if current user has Save permissions
 	 * @return true if CREATE or UPDATE permission allowed
 	 */
-	public static boolean hasSavePermission()
+	public static boolean hasSavePermission(SecurityManager securityManager,Subject currentUser )
 	{
 		boolean flag = false;
+		
 		// Save allowed if user has CREATE or UPDATE permissions
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) || 
 				securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
@@ -68,7 +66,7 @@ public class ArkSecurity
 	 * Determines if current user has Edit permissions
 	 * @return true if UPDATE permission allowed
 	 */
-	public static boolean hasEditPermission()
+	public static boolean hasEditPermission(SecurityManager securityManager,Subject currentUser)
 	{
 		boolean flag = false;
 	
@@ -88,7 +86,7 @@ public class ArkSecurity
 	 * Determines if current user has Delete permissions
 	 * @return true if DELETE permission allowed
 	 */
-	public static boolean hasDeletePermission()
+	public static boolean hasDeletePermission(SecurityManager securityManager,Subject currentUser)
 	{
 		boolean flag = false;
 		
