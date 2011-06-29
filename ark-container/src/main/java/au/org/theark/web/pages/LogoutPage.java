@@ -3,9 +3,7 @@ package au.org.theark.web.pages;
 import javax.servlet.http.Cookie;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
