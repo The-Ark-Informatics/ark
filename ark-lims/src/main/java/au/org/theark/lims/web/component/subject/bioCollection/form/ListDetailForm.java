@@ -113,6 +113,7 @@ public class ListDetailForm extends Form<LimsVO>
 		
 		initialiseForm();
 		target.addComponent(this);
+		target.addComponent(feedBackPanel);
 	}
 
 	@SuppressWarnings("unchecked")
