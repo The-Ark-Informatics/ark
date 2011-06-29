@@ -9,14 +9,14 @@ import java.util.Calendar;
  */
 public class BiospecimenIdGenerator
 {
-	private String biospecimenId = new String();
-	private Calendar calendar = Calendar.getInstance();
+	private static String biospecimenId = new String();
+	private static Calendar calendar = Calendar.getInstance();
 	
 	/**
 	 * Generate a unique BiospecimenID, based on a simple formatted current timestamp
 	 * @return String
 	 */
-	public String generateBiospecimenId()
+	public static String generateBiospecimenId()
 	{
 		java.util.Date now = calendar.getTime();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddhhmmss");
