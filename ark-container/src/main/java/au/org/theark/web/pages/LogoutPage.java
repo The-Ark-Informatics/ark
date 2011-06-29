@@ -3,7 +3,9 @@ package au.org.theark.web.pages;
 import javax.servlet.http.Cookie;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
 import org.apache.wicket.PageParameters;
@@ -54,8 +56,13 @@ public class LogoutPage<T> extends WebPage
 
 		this.setStatelessHint(true);
 		setResponsePage(pageClass);
+		
 		// this should remove the cookie...
 		Subject subject = SecurityUtils.getSubject();
+		//Place the selected study in session context for the user
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 		subject.logout();
 		Session.get().invalidateNow(); // invalidate the wicket session
 		return;
