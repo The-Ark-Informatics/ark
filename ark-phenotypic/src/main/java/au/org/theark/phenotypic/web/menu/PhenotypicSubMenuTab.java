@@ -37,7 +37,7 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 	private transient Long		studyId;
 	private WebMarkupContainer	arkContextMarkup;
 	private List<ITab>						moduleSubTabsList	= new ArrayList<ITab>();
-	private ArkFunction  arkFunction;
+	//private ArkFunction  arkFunction;
 
 	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
@@ -57,7 +57,7 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 				@Override
 				public Panel getPanel(String panelId)
 				{
-					return buildPanels(menuArkFunction.getName(), panelId);
+					return buildPanels(menuArkFunction, panelId);
 				}
 			});
 		}
@@ -66,35 +66,30 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 		add(moduleTabbedPanel);
 	}
 	
-	protected Panel buildPanels(final String functionName, String panelId){
+	protected Panel buildPanels(final ArkFunction arkFunction, String panelId){
 		Panel panelToReturn = null;// Set
 		
-		if(functionName.equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU)){
+		if(arkFunction.getName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU)){
 			
 			panelToReturn = new SummaryContainerPanel(panelId); // Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(Constants.FIELD_SUBMENU)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
 			panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(Constants.FIELD_UPLOAD_SUBMENU)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_UPLOAD_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
 			panelToReturn = new FieldUploadContainerPanel(panelId); // Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
 			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup); // Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
 			panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
 			panelToReturn = new PhenoUploadContainerPanel(panelId); // Note the constructor
 		}
