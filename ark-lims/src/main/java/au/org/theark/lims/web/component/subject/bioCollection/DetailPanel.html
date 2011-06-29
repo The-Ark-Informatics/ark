@@ -2,11 +2,8 @@
 	<span wicket:id="detailFeedback"> </span>
 	<form wicket:id="detailForm">
 		<div id="detailsPanelBorder">
-		
 			<div wicket:id="detailFormContainer">
-				
 				<div id="detailPanelBreaker">&nbsp;</div>
-				
 				<!-- Row 1 ID and Name-->
 				
 				<div id="panelContentLeft">&nbsp;</div>
@@ -93,7 +90,7 @@
 				
 				<div id="detailPanelBreaker">&nbsp;</div>
 			</div>
-			<!-- Detail container end-->
+			<!-- detailFormContainer end-->
 			
 			<!--  Row 2 Action Buttons -->
 			<div id="buttons">
@@ -104,6 +101,8 @@
 					<div id="actionButtons">&nbsp;
 						<div class="label">
 						  <input wicket:id="save" type="submit" wicket:message="value:page.save" />&nbsp;
+						  <div id="panelMargin">&nbsp;</div>
+						  <input wicket:id="done" type="submit" wicket:message="value:page.done" />&nbsp;
 						  <div id="panelMargin">&nbsp;</div>
 						  <input wicket:id="cancel" type="submit"	wicket:message="value:page.cancel" />
 						  <div id="panelMargin">&nbsp;</div>
@@ -117,5 +116,5 @@
 			<div id="detailPanelBreaker">&nbsp;</div>
 		</div>
 	</form>
-	<br>&nbsp;<br>&nbsp;<br>&nbsp;
+	<br>&nbsp;
 </wicket:panel>
