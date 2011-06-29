@@ -100,12 +100,12 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 
 	private void addComponents()
 	{
-		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
-		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtAreaFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(collectionDateTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(surgeryDateTxtFld);
-		add(arkCrudContainerVO.getDetailPanelFormContainer());
+		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
+		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
+		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
 	@Override
