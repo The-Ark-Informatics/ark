@@ -5,12 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.util.file.File;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -54,11 +51,8 @@ import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
-import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
-import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
@@ -111,16 +105,6 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getListOfStudyStatus();
 	}
 	
-	public void createSite(SiteVO siteVo) throws EntityExistsException,ArkSystemException{
-		iLdapUserDao.createSite(siteVo);
-	}
-	
-	public List<SiteVO> getSite(SiteVO siteVo){
-		
-		return iLdapUserDao.getSite(siteVo);
-		
-	}
-
 	
 	public void createStudy(StudyModelVO studyModelVo){
 		//Create the study group in the LDAP for the selected applications and also add the roles to each of the application.
@@ -145,28 +129,6 @@ public class StudyServiceImpl implements IStudyService{
 		arkCommonService.createAuditHistory(ah);
 		
 	}
-	
-	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved, UnAuthorizedOperation, ArkSystemException, EntityExistsException{
-		
-		studyDao.updateStudy(studyEntity);
-		iLdapUserDao.updateStudyApplication(studyEntity.getName(), selectedApplications,au.org.theark.study.service.Constants.ARK_SYSTEM_USER);
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Study " + studyEntity.getName());
-		ah.setEntityId(studyEntity.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
-		arkCommonService.createAuditHistory(ah);
-	}
-	
-	
-	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException{
-		
-		return iLdapUserDao.getModulesLinkedToStudy(studyNameCN);
-	}
-	
-	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException{
-		return iLdapUserDao.getModulesLinkedToStudy(studyNameCN, isForDisplay);
-	}
 	/**
 	 * This will mark the study as archived.
 	 */
@@ -181,16 +143,6 @@ public class StudyServiceImpl implements IStudyService{
 		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
 		ah.setComment("Archived Study " + studyEntity.getName());
 		ah.setEntityId(studyEntity.getId());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
-		arkCommonService.createAuditHistory(ah);
-	}
-	
-	public void updateSite(SiteVO siteVo)throws ArkSystemException{
-		iLdapUserDao.updateSite(siteVo);
-		
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-		ah.setComment("Updated Site " + siteVo.getSiteName());
 		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY);
 		arkCommonService.createAuditHistory(ah);
 	}
@@ -890,5 +842,7 @@ public class StudyServiceImpl implements IStudyService{
 	{
 		return studyDao.getDelimiterType(id);
 	}
+
+
 
 }

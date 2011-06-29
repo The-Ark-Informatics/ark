@@ -3,7 +3,6 @@ package au.org.theark.study.service;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.wicket.util.file.File;
 
@@ -38,7 +37,6 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
-import au.org.theark.core.vo.SiteVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
@@ -57,26 +55,7 @@ public interface IStudyService {
 	
 	public void updateStudy(StudyModelVO studyModelVo) throws CannotRemoveArkModuleException;
 	
-	public void updateStudy(Study studyEntity,Set<String> selectedApplications) throws EntityCannotBeRemoved,EntityExistsException,UnAuthorizedOperation, ArkSystemException;
-	
-	/**
-	 * Fetch the list of applications/modules the study is currently associated with from LDAP.
-	 * @param studyNameCN
-	 * @return
-	 * @throws ArkSystemException
-	 */
-	public Set<String> getModulesLinkedToStudy(String studyNameCN) throws ArkSystemException;
-	
-	
-	public Set<String> getModulesLinkedToStudy(String studyNameCN, boolean isForDisplay) throws ArkSystemException;
-	
 	public void archiveStudy(Study studyEntity) throws UnAuthorizedOperation,StatusNotAvailableException, ArkSystemException;
-	
-	public void createSite(SiteVO siteVo) throws EntityExistsException,ArkSystemException; 
-	
-	public List<SiteVO> getSite(SiteVO siteVo);
-	
-	public void updateSite(SiteVO siteVo) throws ArkSystemException;
 	
 	/**
 	 * Search for Study components with a certain criteria.
