@@ -28,7 +28,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 	
 	private List<ITab> tabList;
 	private WebMarkupContainer	arkContextMarkup;
-	private ArkFunction  arkFunction;
 	
 	public LimsSubMenuTab(String id)
 	{
@@ -58,7 +57,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 				@Override
 				public Panel getPanel(String panelId)
 				{
-					return buildPanels(menuArkFunction.getName(), panelId);
+					return buildPanels(menuArkFunction, panelId);
 				}
 			});
 		}
@@ -67,21 +66,18 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 		add(moduleTabbedPanel);
 	}
 	
-	protected Panel buildPanels(final String functionName, String panelId){
+	protected Panel buildPanels(final ArkFunction arkFunction, String panelId){
 		Panel panelToReturn = null;// Set
 		
-		if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT); //Place a default use case into session
+		if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS,arkFunction);
 			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS,arkFunction);
 			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}
-		else if(functionName.equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)){
-			arkFunction = iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN); //Place a default use case into session
+		else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS,arkFunction);
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}	
