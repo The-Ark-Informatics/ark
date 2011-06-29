@@ -791,6 +791,7 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public List<ArkFunction> getModuleFunction(ArkModule arkModule){
 		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
 		criteria.add(Restrictions.eq("arkModule", arkModule));
+		criteria.addOrder(Order.asc("functionSequence"));
 		List<ArkModuleFunction> listOfArkModuleFunction = criteria.list();
 		List<ArkFunction> arkFunctionList = new ArrayList<ArkFunction>();
 		for (ArkModuleFunction arkModuleFunction : listOfArkModuleFunction) {
