@@ -2,6 +2,7 @@
 	<form wicket:id="listDetailForm">
 		<div id="listDetailsPanelBorder">
 			<table width="100%" cellspacing="0" class="dataview" border="0">
+				<!-- Header row -->
 				<tr>
 					<th width="2%">&nbsp;</th>
 					<th width="5%">
@@ -31,8 +32,9 @@
 					</th>
 					<th width="2%">&nbsp;</th>
 				</tr>
+				<!-- Repeated item row -->
 				<tr wicket:id="bioCollections">
-					<td><input wicket:id="listEditButton" type="submit" value="Edit"/></td>
+					<td width="2%"><input wicket:id="listEditButton" type="submit" value="Edit"/></td>
 					<td width="5%">
 						<input wicket:id="id" type="text" />
 					</td>
@@ -40,29 +42,25 @@
 					  <input wicket:id="name" type="text" /> 
 					</td>
 					<td width="10%">
-						<input wicket:id="collectionDate"  type="text" maxLength="10"/>
+						<input wicket:id="collectionDate" type="text" maxLength="10"/>
 					</td>
 					<td width="10%">
-						<input wicket:id="surgeryDate"  type="text" maxLength="10"/>
+						<input wicket:id="surgeryDate" type="text" maxLength="10"/>
 					</td>
 					<td width="10%">
 						<input wicket:id="comments" type="text" maxLength="50"/>
 					</td>
-					<td><input wicket:id="listDeleteButton" type="submit" value="Delete"/></td>
+					<td width="2%"><input wicket:id="listDeleteButton" type="submit" value="Delete"/></td>
 				</tr>
 			</table>
-
-			<!--	Row 2 Action Buttons -->
+			<!-- New button row -->
 			<div id="buttons">
 				<input wicket:id="listNewButton" type="submit" value="New"/>
 			</div>
-			<!--	End buttons -->
 		<!--	End listDetailsPanelBorder -->
 		</div>
 		
 		<!--  The detailModalWindow for detail edit/add from listDetail -->
 		<div wicket:id="detailModalWindow"></div>
-		
-		<div id="detailPanelBreaker">&nbsp;</div>
 	</form>
 </wicket:panel>
