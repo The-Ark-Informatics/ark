@@ -15,30 +15,27 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
+import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.study.web.component.managestudy.StudyContainer;
 import au.org.theark.study.web.component.manageuser.UserContainerPanel;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 import au.org.theark.study.web.component.studycomponent.StudyComponentContainerPanel;
 
 @SuppressWarnings("serial")
-public class StudySubMenuTab extends Panel
+public class StudySubMenuTab extends AbstractArkTabPanel
 {
 	
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
-	@SpringBean( name="arkLdapRealm")
-	private ArkLdapRealm realm;
-	
 	List<ITab> tabList;
 	private WebMarkupContainer	studyNameMarkup;
 	private WebMarkupContainer	studyLogoMarkup;
 	private WebMarkupContainer	arkContextMarkup;
-	private ArkModule arkModule;
+	//private ArkModule arkModule;
 	
 	public StudySubMenuTab(String id)
 	{
@@ -85,22 +82,22 @@ public class StudySubMenuTab extends Panel
 					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
 					
 					if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_USER)){
-						processAuthorizationCache(menuArkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY,menuArkFunction);
 						panelToReturn = new UserContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY))
 					{
-						processAuthorizationCache(menuArkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY,menuArkFunction);
 						panelToReturn = new StudyContainer(panelId, studyNameMarkup, studyLogoMarkup, arkContextMarkup);						
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_STUDY_COMPONENT))
 					{
-						processAuthorizationCache(menuArkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY,menuArkFunction);
 						panelToReturn = new StudyComponentContainerPanel(panelId);
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_MY_DETAIL))
 					{
-						processAuthorizationCache(menuArkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_STUDY,menuArkFunction);
 						Subject currentUser = SecurityUtils.getSubject();	
 						panelToReturn = new MyDetailsContainer(panelId, new ArkUserVO(), currentUser);
 					}
@@ -112,14 +109,6 @@ public class StudySubMenuTab extends Panel
 
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_STUDY_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
-	}
-	
-	private void processAuthorizationCache(ArkFunction arkFunction){
-		arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_STUDY); //Place a default module into session
-		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
-		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
-		Subject currentUser = SecurityUtils.getSubject();	
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 	}
 
 }
