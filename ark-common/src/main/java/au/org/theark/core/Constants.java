@@ -257,4 +257,8 @@ public class Constants {
 	
 	public static final String STUDY="study";
 	public static final String STUDY_IN_CONTEXT_MESSAGE="There is no study in context. Please select a Study.";
+	
+	/* Ark Function Types */
+	public static final String ARK_FUNCTION_TYPE_REPORT = "REPORT";
+	public static final String ARK_FUNCTION_TYPE_NON_REPORT = "NON-REPORT";
 }

@@ -26,6 +26,7 @@ import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.AuditHistory;
@@ -788,9 +789,22 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		}
 	}
 	
+	public ArkFunctionType getArkFunctionType(String reportType){
+		Criteria criteria = getSession().createCriteria(ArkFunctionType.class);
+		criteria.add(Restrictions.eq("name", reportType));
+		criteria.setMaxResults(1);
+		return (ArkFunctionType)criteria.uniqueResult();
+	}
+	
 	public List<ArkFunction> getModuleFunction(ArkModule arkModule){
+		
+		ArkFunctionType arkFunctionType = getArkFunctionType(Constants.ARK_FUNCTION_TYPE_NON_REPORT);
+		
 		Criteria criteria = getSession().createCriteria(ArkModuleFunction.class);
+		criteria.createAlias("arkFunction", "aliasArkFunction");
 		criteria.add(Restrictions.eq("arkModule", arkModule));
+		//Pass in an instance that represents arkFunctionType non-report
+		criteria.add(Restrictions.eq("aliasArkFunction.arkFunctionType", arkFunctionType));
 		criteria.addOrder(Order.asc("functionSequence"));
 		List<ArkModuleFunction> listOfArkModuleFunction = criteria.list();
 		List<ArkFunction> arkFunctionList = new ArrayList<ArkFunction>();
