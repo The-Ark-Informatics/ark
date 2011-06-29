@@ -64,7 +64,7 @@ public class Search extends Panel{
 				
 				//Refresh the FB panel if there was an old message from previous search result
 				target.addComponent(fbPanel);
-				List<SiteVO> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
+				List<SiteVO> resultList = new ArrayList<SiteVO>();
 				if(resultList != null && resultList.size() == 0){
 					this.info("Site with the specified criteria does not exist in the system.");
 					target.addComponent(fbPanel);

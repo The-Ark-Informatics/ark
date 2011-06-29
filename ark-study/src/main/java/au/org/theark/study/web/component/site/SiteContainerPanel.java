@@ -1,5 +1,6 @@
 package au.org.theark.study.web.component.site;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -93,7 +94,8 @@ public class SiteContainerPanel extends Panel{
 	
 	private WebMarkupContainer initialiseSearchPanel(){
 		SiteVO siteVo = new SiteVO();
-		List<SiteVO> resultList = studyService.getSite(siteVo);
+		List<SiteVO> resultList = new ArrayList<SiteVO>(); 
+			//studyService.getSite(siteVo);
 		//List<SiteVO> resultList = studyService.getSite(containerForm.getModelObject().getSiteVo());
 		siteContainerForm.getModelObject().setSiteVoList(resultList);
 		searchSitesPanel = new Search("searchSitePanel",feedBackPanel,searchPanelContainer,listView, resultListContainer,detailPanelContainer,siteContainerForm);
@@ -120,7 +122,7 @@ public class SiteContainerPanel extends Panel{
 			@Override
 			protected Object load() {
 				SiteVO siteVo = new SiteVO();
-				List<SiteVO> resultList = studyService.getSite(siteVo);
+				List<SiteVO> resultList = new ArrayList<SiteVO>(); 
 				siteContainerForm.getModelObject().setSiteVoList(resultList);
 				return siteContainerForm.getModelObject().getSiteVoList();
 			}

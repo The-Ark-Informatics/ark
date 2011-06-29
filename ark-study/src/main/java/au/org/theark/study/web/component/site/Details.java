@@ -55,27 +55,27 @@ public class Details extends Panel{
 				List<String> siteMembers = new ArrayList<String>();
 				siteMembers.add(au.org.theark.study.service.Constants.ARK_SYSTEM_USER);//Add rest of the members
 				
-				try{
+			//	try{
 					if(siteModel.getMode() == Constants.MODE_NEW){
 						/* This will change a bit when we get the members from the front end*/
 						siteModel.getSiteVo().setSiteMembers(siteMembers);
-						studyService.createSite(siteModel.getSiteVo());
+					//	studyService.createSite(siteModel.getSiteVo());
 						this.info("The site " + siteModel.getSiteVo().getSiteName() + " was created sucessfully.");
 						processFeedback(target);
 					}else{
 						//When users are added to the site then update it
 						siteModel.getSiteVo().setSiteMembers(siteMembers);
-						studyService.updateSite(siteModel.getSiteVo());
+						//studyService.updateSite(siteModel.getSiteVo());
 						this.info("The site " + siteModel.getSiteVo().getSiteName() + " was updated sucessfully.");
 						processFeedback(target);
 					}
-				}catch(EntityExistsException exits){
-					this.error("The site you entered already exists in the system.");
-					processFeedback(target);
-				}catch(ArkSystemException arksystem){
-					this.error("A system error has occured. Please try after some time.");
-					processFeedback(target);
-				}
+//				}catch(EntityExistsException exits){
+//					this.error("The site you entered already exists in the system.");
+//					processFeedback(target);
+//				}catch(ArkSystemException arksystem){
+//					this.error("A system error has occured. Please try after some time.");
+//					processFeedback(target);
+//				}
 				
 				System.out.println("Site Name ");
 				target.addComponent(feedBackPanel);
