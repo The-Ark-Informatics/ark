@@ -31,27 +31,11 @@ public class StudySubMenuTab extends AbstractArkTabPanel
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
 	
-	List<ITab> tabList;
+	private List<ITab> tabList;
 	private WebMarkupContainer	studyNameMarkup;
 	private WebMarkupContainer	studyLogoMarkup;
 	private WebMarkupContainer	arkContextMarkup;
-	//private ArkModule arkModule;
 	
-	public StudySubMenuTab(String id)
-	{
-		super(id);
-		tabList = new ArrayList<ITab>();
-		buildTabs();
-	}
-
-	public StudySubMenuTab(String id, WebMarkupContainer studyLogoMarkup)
-	{
-		super(id);
-		tabList = new ArrayList<ITab>();
-		this.studyLogoMarkup = studyLogoMarkup;
-		buildTabs();
-	}
-
 	public StudySubMenuTab(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup)
 	{
 		super(id);
