@@ -27,6 +27,7 @@ import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
+import au.org.theark.lims.util.BiospecimenIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subject.biospecimen.DetailModalWindow;
 
@@ -263,6 +264,11 @@ public class ListDetailForm extends Form<LimsVO>
 				Study study = linkSubjectStudy.getStudy();
 				containerForm.getModelObject().getBiospecimen().setStudy(study);
 				containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+				
+				// TODO: Replace with Study specific generated biospecimenId's
+				// Create new BiospecimenUID
+				containerForm.getModelObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
+				
 				modalWindow.show(target);
 			}
 
