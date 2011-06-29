@@ -26,26 +26,28 @@ public class ArkSecurity
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (actionType.equalsIgnoreCase(Constants.SAVE)  || actionType.equalsIgnoreCase(Constants.NEW))
+		if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW))
 		{
-			actionPermitted = hasSavePermission(securityManager,currentUser);
+			actionPermitted = hasSavePermission(securityManager, currentUser);
 		}
 		else if (actionType.equalsIgnoreCase(Constants.EDIT))
 		{
-			actionPermitted = hasEditPermission(securityManager,currentUser);
+			actionPermitted = hasEditPermission(securityManager, currentUser);
 		}
 		else if (actionType.equalsIgnoreCase(Constants.DELETE))
 		{
-			actionPermitted = hasDeletePermission(securityManager,currentUser);	
+			actionPermitted = hasDeletePermission(securityManager, currentUser);	
 		}
 		return actionPermitted;
 	}
 	
 	/**
 	 * Determines if current user has Save permissions
+	 * @param securityManager
+	 * @param currentUser
 	 * @return true if CREATE or UPDATE permission allowed
 	 */
-	public static boolean hasSavePermission(SecurityManager securityManager,Subject currentUser )
+	public static boolean hasSavePermission(SecurityManager securityManager, Subject currentUser)
 	{
 		boolean flag = false;
 		
@@ -64,9 +66,11 @@ public class ArkSecurity
 	
 	/**
 	 * Determines if current user has Edit permissions
+	 * @param securityManager
+	 * @param currentUser
 	 * @return true if UPDATE permission allowed
 	 */
-	public static boolean hasEditPermission(SecurityManager securityManager,Subject currentUser)
+	public static boolean hasEditPermission(SecurityManager securityManager, Subject currentUser)
 	{
 		boolean flag = false;
 	
@@ -84,9 +88,11 @@ public class ArkSecurity
 	
 	/**
 	 * Determines if current user has Delete permissions
+	 * @param securityManager
+	 * @param currentUser
 	 * @return true if DELETE permission allowed
 	 */
-	public static boolean hasDeletePermission(SecurityManager securityManager,Subject currentUser)
+	public static boolean hasDeletePermission(SecurityManager securityManager, Subject currentUser)
 	{
 		boolean flag = false;
 		
