@@ -19,7 +19,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkSecurity;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.AjaxDeleteButton;
 
 /**
  * @author cellis
@@ -28,7 +27,6 @@ import au.org.theark.core.web.component.AjaxDeleteButton;
  */
 public abstract class AbstractModalDetailForm<T> extends Form<T>
 {
-
 	/**
 	 * 
 	 */
@@ -39,8 +37,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 	protected AjaxButton				saveButton;
 	protected AjaxButton				cancelButton;
-	protected AjaxButton				deleteButton;
-	protected AjaxButton				editButton;
 	protected AjaxButton				doneButton;
 
 	// Add a visitor class for required field marking/validation/highlighting
@@ -100,7 +96,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				editCancelProcess(target);
+				onCancel(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
@@ -120,37 +116,9 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				if (isNew())
-				{
-					editCancelProcess(target);
-				}
-				else
-				{
-					editCancelProcessForUpdate(target);
-				}
+				onCancel(target);
 			}
 
-		};
-
-		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null))
-		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -4929802987078142352L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onDeleteConfirmed(target);
-			}
-
-			@Override
-			public boolean isVisible()
-			{
-				return ArkSecurity.isActionPermitted(Constants.DELETE);
-
-			}
 		};
 		
 		// Override default settings as set in ArkCrudContainerVO 
@@ -167,7 +135,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		arkCrudContainerVo.getEditButtonContainer().add(saveButton);
 		arkCrudContainerVo.getEditButtonContainer().add(doneButton.setDefaultFormProcessing(false));
 		arkCrudContainerVo.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
-		arkCrudContainerVo.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
 
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 		add(arkCrudContainerVo.getEditButtonContainer());
@@ -183,7 +150,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	@SuppressWarnings("unchecked")
 	protected void saveOnErrorProcess(AjaxRequestTarget target)
 	{
-
 		boolean setFocusError = false;
 		WebMarkupContainer wmc = arkCrudContainerVo.getDetailPanelFormContainer();
 		for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
@@ -208,61 +174,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		processErrors(target);
 	}
 
-	protected void editButtonProcess(AjaxRequestTarget target)
-	{
-		deleteButton.setEnabled(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
-	}
-	
-	protected void editCancelProcessForUpdate(AjaxRequestTarget target)
-	{
-		arkCrudContainerVo.getDetailPanelContainer().setVisible(false);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		onCancelPostProcess(target, true);
-	}
-	
-	protected void onCancelPostProcess(AjaxRequestTarget target)
-	{
-		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-
-		target.addComponent(feedbackPanel);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
-	}
-
-	/**
-	 * Overloaded onCancelPostProcess. Use this when you use the ArkCrudContainerVO to manage the WebMarkupContainers.
-	 * 
-	 * @param target
-	 * @param isArkCrudContainerVOPattern
-	 */
-	protected void onCancelPostProcess(AjaxRequestTarget target, Boolean isArkCrudContainerVOPattern)
-	{
-		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-
-		target.addComponent(feedbackPanel);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
-	}
-
-	protected void editCancelProcess(AjaxRequestTarget target)
-	{
-		arkCrudContainerVo.getDetailPanelContainer().setVisible(false);
-
-		target.addComponent(feedbackPanel);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		onCancel(target);
-	}
-
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
 	 * implementation.Once the user has pressed Save either to create a new entity or update, invoking this method will place the new/edited record
@@ -281,13 +192,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
 	}
 
-	protected void onSavePostProcess(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO)
-	{
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-		target.addComponent(feedbackPanel);
-	}
-
-	protected void disableDetailForm(Long sessionId, String errorMessage)
+	protected void disableModalDetailForm(Long sessionId, String errorMessage)
 	{
 		if (sessionId == null)
 		{
@@ -332,8 +237,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	abstract protected void onCancel(AjaxRequestTarget target);
 
 	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
-
-	abstract protected void onDeleteConfirmed(AjaxRequestTarget target);
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
