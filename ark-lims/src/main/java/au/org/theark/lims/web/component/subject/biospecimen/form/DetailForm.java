@@ -228,21 +228,6 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target)
-	{
-		iLimsService.deleteBiospecimen(containerForm.getModelObject());
-		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
-
-		// Display delete confirmation message
-		target.addComponent(feedbackPanel);
-
-		// Move focus back to Search form
-		LimsVO limsVo = new LimsVO();
-		containerForm.setModelObject(limsVo);
-		editCancelProcess(target);
-	}
-
-	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
 		target.addComponent(feedbackPanel);
@@ -256,9 +241,13 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	@Override
 	protected boolean isNew()
 	{
-		/*
-		 * if (containerForm.getModelObject().getBioCollection().getId() == null) { return true; } else { return false; }
-		 */
-		return true;
+		 if (containerForm.getModelObject().getBiospecimen().getId() == null) 
+		 { 
+			 return true; 
+		 } 
+		 else 
+		 { 
+			 return false; 
+		 }
 	}
 }

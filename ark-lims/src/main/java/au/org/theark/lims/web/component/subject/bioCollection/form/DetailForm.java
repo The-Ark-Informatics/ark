@@ -143,35 +143,15 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 			this.error(e.getMessage());
 			processErrors(target);
 		}
-		
-		// Refresh parent listDetailForm
-		//target.addComponent(containerForm);
 	}
 
 	@Override
 	protected void onCancel(AjaxRequestTarget target)
 	{
-		//this.info("Cancel clicked");
-		
 		target.addComponent(feedbackPanel);
-		//target.addComponent(containerForm);
 		modalWindow.close(target);
 	}
 
-	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target)
-	{
-		iLimsService.deleteBioCollection(containerForm.getModelObject());
-		this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
-
-		// Display delete confirmation message
-		target.addComponent(feedbackPanel);
-
-		// Move focus back to Search form
-		LimsVO limsVo = new LimsVO();
-		containerForm.setModelObject(limsVo);
-		editCancelProcess(target);
-	}
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target)
@@ -187,7 +167,6 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	@Override
 	protected boolean isNew()
 	{
-		/*
 		if (containerForm.getModelObject().getBioCollection().getId() == null)
 		{
 			return true;
@@ -196,7 +175,5 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		{
 			return false;
 		}
-		*/
-		return true;
 	}
 }
