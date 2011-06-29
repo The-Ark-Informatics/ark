@@ -26,6 +26,7 @@ public class ArkModuleFunction implements Serializable{
 	private Long id;
 	private ArkModule arkModule;
 	private ArkFunction arkFunction;
+	private Long functionSequence;
 	
 	/**
 	 * Constructor
@@ -65,6 +66,15 @@ public class ArkModuleFunction implements Serializable{
 
 	public void setArkFunction(ArkFunction arkFunction) {
 		this.arkFunction = arkFunction;
+	}
+
+	@Column(name ="FUNCTION_SEQUENCE", precision = 22, scale = 0)
+	public Long getFunctionSequence() {
+		return functionSequence;
+	}
+
+	public void setFunctionSequence(Long functionSequence) {
+		this.functionSequence = functionSequence;
 	}
 	
 	
