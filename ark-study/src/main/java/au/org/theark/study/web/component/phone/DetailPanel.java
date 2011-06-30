@@ -1,9 +1,3 @@
-/**
- * 
- * This is a new file
- *
- *
- */
 package au.org.theark.study.web.component.phone;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;

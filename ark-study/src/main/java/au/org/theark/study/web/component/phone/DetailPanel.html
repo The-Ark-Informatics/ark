@@ -75,6 +75,102 @@
 		
 			<div id="searchPanelBreaker">&nbsp;</div>
 			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			<!--  wmc-areaCode is a WebMarkupContainer to allow updates to areaCode textfield -->
+			<!--<div wicket:id="wmc-areaCode"> -->
+				<div id="fldLabel">
+					<div class="label">
+						<label for="phoneStatus"><wicket:message key="phoneStatus">Phone Status:</wicket:message></label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="phone.phoneStatus">
+	       					<option>Current</option>
+	       				</select>
+					</div>
+				</div>
+			<!-- </div>-->			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<wicket:message	key="source">Source:</wicket:message>
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="phone.source" type="text" /> 
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			<div id="fldLabel">
+					<div class="label">
+						<label for="dateRecieved"><wicket:message key="dateReceived">Date Received:</wicket:message></label>
+					</div>
+			</div>
+			<div id="fldControl">
+					<div class="label">
+						<input wicket:id="phone.dateReceived" type="text"	maxlength="10" />
+					</div>
+			</div>
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<wicket:message	key="silentMode">Silent Mode:</wicket:message>
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="phone.silentMode">
+	       					<option>Yes</option>
+	       			</select>
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			<div id="fldLabel">
+				<div class="label">
+					<label for="comment"><wicket:message key="comment">Comment:</wicket:message></label>
+				</div>
+			</div>
+			<div id="fldControl">
+			  <div class="label">
+			    <textarea wicket:id="phone.comment" maxlength="1000" cols="25"></textarea>
+			  </div>
+			</div>
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div id="fldControl">
+				<div class="label">
+					&nbsp;
+				</div>
+			</div>
+			
+			<div id="searchPanelContentRight">&nbsp;</div>
+		
+			<div id="searchPanelBreaker">&nbsp;</div>
+			
 
 			<!-- ModalWindow for confirm Delete window -->
 			<div wicket:id="modalwindow"></div>

@@ -6,15 +6,18 @@
  */
 package au.org.theark.study.web.component.phone.form;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -25,10 +28,13 @@ import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
+import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
@@ -49,7 +55,14 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 	private TextField<String> phoneIdTxtFld;
 	private TextField<String> areaCodeTxtFld;
 	private TextField<String> phoneNumberTxtFld;
+	private TextField<String> source;
+	private TextArea<String> commentsTxtArea;
+	
+	private DateTextField dateReceivedDp;
 	private DropDownChoice<PhoneType> phoneTypeChoice;
+	private DropDownChoice<PhoneStatus> phoneStatusChoice;
+	private DropDownChoice<YesNo> silentModeChoice;
+	
 	
 	/**
 	 * @param id
@@ -88,6 +101,23 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		phoneIdTxtFld = new TextField<String>("phone.id");
 		areaCodeTxtFld = new TextField<String>("phone.areaCode");
 		phoneNumberTxtFld = new TextField<String>("phone.phoneNumber");
+		
+		source = new TextField<String>("phone.source");
+		commentsTxtArea = new TextArea<String>("phone.comment");
+		
+		dateReceivedDp = new DateTextField("phone.dateReceived", au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker datePicker = new ArkDatePicker();
+		datePicker.bind(dateReceivedDp);
+		dateReceivedDp.add(datePicker);
+		
+		List<PhoneStatus> phoneStatusSourceList = iArkCommonService.getPhoneStatus();
+		ChoiceRenderer<PhoneStatus> phoneStatusRenderer = new ChoiceRenderer<PhoneStatus>(Constants.NAME, Constants.ID);
+		phoneStatusChoice = new DropDownChoice<PhoneStatus>("phone.phoneStatus",phoneStatusSourceList,phoneStatusRenderer);
+		
+		List<YesNo> yesNoListSource  =  iArkCommonService.getYesNoList();
+		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
+		silentModeChoice =  new DropDownChoice<YesNo>("phone.silentMode",yesNoListSource,yesNoRenderer );
+		
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phone.phoneType",phoneTypeList,defaultChoiceRenderer);
@@ -102,6 +132,13 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 		detailPanelFormContainer.add(areaCodeTxtFld);
 		detailPanelFormContainer.add(phoneNumberTxtFld);
 		detailPanelFormContainer.add(phoneTypeChoice);
+		
+		detailPanelFormContainer.add(phoneStatusChoice);
+		detailPanelFormContainer.add(source);
+		detailPanelFormContainer.add(commentsTxtArea);
+		detailPanelFormContainer.add(dateReceivedDp);
+		detailPanelFormContainer.add(silentModeChoice);
+		
 	}
 
 
