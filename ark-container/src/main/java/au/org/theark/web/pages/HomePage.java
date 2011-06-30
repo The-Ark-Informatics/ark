@@ -3,6 +3,8 @@ package au.org.theark.web.pages;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
@@ -35,8 +37,15 @@ public class HomePage extends BasePage
 	 */
 	public HomePage(final PageParameters parameters)
 	{
-		buildContextPanel();
-		buildModuleTabs();
+		Subject currentUser = SecurityUtils.getSubject();
+
+		if(currentUser.getPrincipal() != null){
+			buildContextPanel();
+			buildModuleTabs();
+		}else{
+			setResponsePage(LoginPage.class);
+		}
+	
 	}
 	
 	protected void buildContextPanel()
