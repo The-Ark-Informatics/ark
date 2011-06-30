@@ -2,11 +2,13 @@ package au.org.theark.web.pages;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
 /**
@@ -36,43 +38,54 @@ public abstract class BasePage extends WebPage{
 		ContextImage hostedByImage = new ContextImage("hostedByImage",new Model<String>("images/"+Constants.HOSTED_BY_IMAGE));
 		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/"+Constants.NO_STUDY_LOGO_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/"+Constants.PRODUCT_IMAGE));
-		//ContextImage bannerImage = new ContextImage("bannerImage", new Model<String>("images/"+Constants.BANNER_IMAGE));
 		
 		Subject currentUser = SecurityUtils.getSubject();
 
 		if(currentUser.getPrincipal() != null)
 		{
 			principal = (String) currentUser.getPrincipal();
-			userNameLbl = new Label("loggedInUser", new Model(principal));			
+			userNameLbl = new Label("loggedInUser", new Model(principal));
+			studyNameLbl = new Label("studyNameLabel", new Model(" "));
+			
+			// Markup for Study name
+			studyNameMarkup = new WebMarkupContainer("studyNameMarkupContainer");
+			studyNameMarkup.add(studyNameLbl);
+			studyNameMarkup.setOutputMarkupPlaceholderTag(true);
+
+			// Markup for Study Logo
+			studyLogoMarkup = new WebMarkupContainer("studyLogoMarkupContainer");
+			studyLogoMarkup.add(studyLogoImage);
+			studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
+			
+			// Add images
+			add(hostedByImage);
+			add(studyNameMarkup);
+			add(studyLogoMarkup);
+			add(productImage);
+			//add(bannerImage);
+			
+			add(userNameLbl);
+		
+			AjaxLink link = new AjaxLink("ajaxLogoutLink") {
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					Subject subject = SecurityUtils.getSubject();
+					//Place the selected study in session context for the user
+					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+					subject.logout();
+					Session.get().invalidateNow(); // invalidate the wicket session
+					setResponsePage(LoginPage.class);
+				}
+			};
+			add(link);
 		}
 		else
 		{
-			//user has not logged in as yet.
-			principal="Guest";
-			userNameLbl = new Label("loggedInUser", new Model("Guest"));
+			setResponsePage(LoginPage.class);
 		}
 		
-		studyNameLbl = new Label("studyNameLabel", new Model(" "));
-		
-		// Markup for Study name
-		studyNameMarkup = new WebMarkupContainer("studyNameMarkupContainer");
-		studyNameMarkup.add(studyNameLbl);
-		studyNameMarkup.setOutputMarkupPlaceholderTag(true);
-
-		// Markup for Study Logo
-		studyLogoMarkup = new WebMarkupContainer("studyLogoMarkupContainer");
-		studyLogoMarkup.add(studyLogoImage);
-		studyLogoMarkup.setOutputMarkupPlaceholderTag(true);
-		
-		// Add images
-		add(hostedByImage);
-		add(studyNameMarkup);
-		add(studyLogoMarkup);
-		add(productImage);
-		//add(bannerImage);
-		
-		add(userNameLbl);
-		add(new BookmarkablePageLink<Void>("logoutLink", LoginPage.class));
 	}
 
 	@Override
