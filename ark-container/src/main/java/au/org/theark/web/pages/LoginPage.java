@@ -141,6 +141,7 @@ public class LoginPage<T> extends WebPage
 						SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 						SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
 						setResponsePage(HomePage.class);
+						
 					}
 				}
 				
