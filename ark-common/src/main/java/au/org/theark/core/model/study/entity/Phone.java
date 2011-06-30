@@ -1,5 +1,7 @@
 package au.org.theark.core.model.study.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import au.org.theark.core.Constants;
@@ -28,6 +32,12 @@ public class Phone implements java.io.Serializable {
 	private Person person;
 	private String phoneNumber;
 	private String areaCode;
+	private PhoneStatus phoneStatus;
+	private String source;
+	private Date dateReceived; 
+	private YesNo silentMode;
+	private String comment;
+	
 
 	// Constructors
 
@@ -99,6 +109,54 @@ public class Phone implements java.io.Serializable {
 
 	public void setAreaCode(String areaCode) {
 		this.areaCode = areaCode;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PHONE_STATUS_ID")
+	public PhoneStatus getPhoneStatus() {
+		return phoneStatus;
+	}
+
+	public void setPhoneStatus(PhoneStatus phoneStatus) {
+		this.phoneStatus = phoneStatus;
+	}
+
+	@Column(name = "SOURCE", length = 500)
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_RECEIVED", length = 7)
+	public Date getDateReceived() {
+		return dateReceived;
+	}
+
+	public void setDateReceived(Date dateReceived) {
+		this.dateReceived = dateReceived;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SILENT")
+	public YesNo getSilentMode() {
+		return silentMode;
+	}
+
+	public void setSilentMode(YesNo silentMode) {
+		this.silentMode = silentMode;
+	}
+
+	@Column(name = "COMMENT", length = 1000)
+	public String getComment() {
+		return comment;
+	}
+
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
 	
 }
