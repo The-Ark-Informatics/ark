@@ -27,6 +27,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
+import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -351,4 +352,6 @@ public interface IArkCommonService<T> {
 	public List<ArkUserRole> getArkUserLinkedModule(Study study, ArkModule arkModule);
 	
 	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study);
+	
+	public List<PhoneStatus> getPhoneStatus();
 }

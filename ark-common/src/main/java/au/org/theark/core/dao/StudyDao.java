@@ -43,6 +43,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
@@ -813,5 +814,11 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		}
 		
 		return arkFunctionList;
+	}
+	
+	public List<PhoneStatus> getPhoneStatus(){
+		Criteria criteria = getSession().createCriteria(PhoneStatus.class);
+		criteria.addOrder(Order.asc("name"));
+		return criteria.list();
 	}
 }
