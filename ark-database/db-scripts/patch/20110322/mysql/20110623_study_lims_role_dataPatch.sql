@@ -26,8 +26,8 @@ INSERT INTO `study`.`ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_
 INSERT INTO `study`.`ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`) VALUES ('21', '5', '20');
 
 -- Modify read/update only permission for BioCollection and Biospecimen
---UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='2' WHERE `ID`='76';
---UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='2' WHERE `ID`='77';
+-- UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='2' WHERE `ID`='76';
+-- UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='2' WHERE `ID`='77';
 UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='3' WHERE `ID`='76';
 UPDATE `study`.`ark_role_policy_template` SET `ARK_PERMISSION_ID`='3' WHERE `ID`='77';
 
