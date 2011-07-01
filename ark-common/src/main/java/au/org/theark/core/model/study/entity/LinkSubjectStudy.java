@@ -54,6 +54,11 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private ConsentType consentType;
 	private Date consentDate;
 	
+	private Date dateLastKnownAlive;
+	private String heardAboutStudy;
+	private String comment;
+	private Long consentDownloaded;
+	
 	private Set<Consent> consents = new HashSet<Consent>();	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -315,6 +320,43 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setAmdrfId(Long amdrfId) {
 		this.amdrfId = amdrfId;
+	}
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_LAST_KNOWN_ALIVE", length = 7)
+	public Date getDateLastKnownAlive() {
+		return dateLastKnownAlive;
+	}
+
+	public void setDateLastKnownAlive(Date dateLastKnownAlive) {
+		this.dateLastKnownAlive = dateLastKnownAlive;
+	}
+
+	@Column(name = "HEARD_ABOUT_STUDY", length = 1000)
+	public String getHeardAboutStudy() {
+		return heardAboutStudy;
+	}
+
+	public void setHeardAboutStudy(String heardAboutStudy) {
+		this.heardAboutStudy = heardAboutStudy;
+	}
+
+	public String getComment() {
+		return comment;
+	}
+	
+	@Column(name = "COMMENTS", length = 1000)
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+
+	@Column(name = "CONSENT_DOWNLOADED", precision = 22, scale = 0)
+	public Long getConsentDownloaded() {
+		return consentDownloaded;
+	}
+
+	public void setConsentDownloaded(Long consentDownloaded) {
+		this.consentDownloaded = consentDownloaded;
 	}
 
 }
