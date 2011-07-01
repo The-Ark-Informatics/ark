@@ -31,6 +31,7 @@ public class Address implements java.io.Serializable {
 	// Fields
 	private Long id;
 	private Person person; 
+	private String addressLineOne;//Building address or something of the type
 	private String streetAddress;
 	private String postCode;
 	private String city;
@@ -42,6 +43,7 @@ public class Address implements java.io.Serializable {
 	private Date dateReceived;
 	private String comments;
 	private Boolean preferredMailingAddress;
+	private String source;
 	
 	private Set<StudySite> studySites = new HashSet<StudySite>(0);
 
@@ -194,5 +196,23 @@ public class Address implements java.io.Serializable {
 
 	public void setPreferredMailingAddress(Boolean preferredMailingAddress) {
 		this.preferredMailingAddress = preferredMailingAddress;
+	}
+
+	@Column(name = "ADDRESS_LINE_1")
+	public String getAddressLineOne() {
+		return addressLineOne;
+	}
+
+	public void setAddressLineOne(String addressLineOne) {
+		this.addressLineOne = addressLineOne;
+	}
+	
+	@Column(name = "SOURCE")
+	public String getSource() {
+		return source;
+	}
+
+	public void setSource(String source) {
+		this.source = source;
 	}
 }
