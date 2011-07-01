@@ -8,6 +8,8 @@ package au.org.theark.study.web.component.address.form;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -67,6 +69,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	private CheckBox preferredMailingAddressChkBox;
 	private DateTextField		dateReceivedDp;
 	private TextArea<String> commentsTxtArea;
+	private TextField<String> sourceTxtFld;
+	private TextField<String> addressLineOneTxtFld;
 	
 	protected TextField<String> otherState;
 	
@@ -103,6 +107,8 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		postCodeTxtFld = new TextField<String>("address.postCode");
 		commentsTxtArea = new TextArea<String>("address.comments");
 		otherState = new TextField<String>("address.otherState");
+		sourceTxtFld = new TextField<String>("address.source");
+		addressLineOneTxtFld = new TextField<String>("address.addressLineOne");
 		initialiaseCountryDropDown();
 		initialiseStateSelector();
 		initialiseAddressTypeDropDown();
@@ -124,6 +130,10 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 		detailPanelFormContainer.add(dateReceivedDp);
 		detailPanelFormContainer.add(commentsTxtArea);
 		detailPanelFormContainer.add(preferredMailingAddressChkBox);
+		detailPanelFormContainer.add(sourceTxtFld);
+		detailPanelFormContainer.add(addressLineOneTxtFld);
+		
+		
 	}
 	
 	private void initialiseAddressTypeDropDown(){
@@ -220,10 +230,12 @@ public class DetailForm  extends AbstractDetailForm<AddressVO>{
 	 */
 	@Override
 	protected void attachValidators() {
-		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("city", this, new Model<String>("City")));
+	
+		addressLineOneTxtFld.add(StringValidator.maximumLength(255));
+		sourceTxtFld.add(StringValidator.maximumLength(255));
 		streetAddressTxtFld.setRequired(true).setLabel(new StringResourceModel("street.address", this, new Model<String>("Street Address")));
 		streetAddressTxtFld.add(StringValidator.maximumLength(255));
-		
+		cityTxtFld.setRequired(true).setLabel( new StringResourceModel("city", this, new Model<String>("City")));
 		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code")));
 		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("postcode", this , new Model<String>("Post Code Max Length")));
 		postCodeTxtFld.add(StringValidator.minimumLength(4));
