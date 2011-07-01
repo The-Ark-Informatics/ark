@@ -7,6 +7,7 @@
 package au.org.theark.study.web.component.phone.form;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -20,7 +21,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -152,6 +155,9 @@ public class DetailForm extends AbstractDetailForm<PhoneVO>{
 //		areaCodeTxtFld.setRequired(true);	// Removed due to ARK-73:: May be option depending on phone type
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 		phoneTypeChoice.setRequired(true);
+		dateReceivedDp.add(
+		DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
+		
 	}
 
 
