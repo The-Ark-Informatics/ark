@@ -167,7 +167,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		// session.update and session.flush required as Blob read/writes are used, and InputStream may cause NullPointers when closed incorrectly
 		Session session = getSession();
 		session.update(studyEntity);
-		session.refresh(studyEntity);
+		//session.refresh(studyEntity);
 		
 		session.flush();
 	}
@@ -175,7 +175,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	public void updateStudy(Study study,Collection<ArkModule> selectedApplications) throws CannotRemoveArkModuleException {
 		Session session = getSession();
 		session.update(study);
-		session.refresh(study);
+		//session.refresh(study);
 	
 		
 		Collection<LinkStudyArkModule> linkStudyArkModulesToAdd = getModulesToAddList(study,selectedApplications);
