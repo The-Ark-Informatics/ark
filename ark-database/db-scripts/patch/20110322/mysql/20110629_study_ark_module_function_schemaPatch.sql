@@ -1,4 +1,5 @@
-use study;
+USE study;
+
 ALTER TABLE `study`.`ark_module_function` ADD COLUMN `FUNCTION_SEQUENCE` INT NULL  AFTER `ARK_FUNCTION_ID` ;
 
 

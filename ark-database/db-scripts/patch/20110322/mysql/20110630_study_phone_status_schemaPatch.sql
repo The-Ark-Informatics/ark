@@ -1,4 +1,5 @@
-use study;
+USE study;
+
 CREATE  TABLE `study`.`phone_status` (
   `ID` INT NOT NULL AUTO_INCREMENT ,
   `NAME` VARCHAR(255) NULL ,

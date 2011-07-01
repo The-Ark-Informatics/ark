@@ -47,3 +47,4 @@ INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE
 INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (101, 8, 3, 26, 2);
 -- Update the FK from report_template to match the function ID
 UPDATE `reporting`.`report_template` SET `FUNCTION_ID`=26 WHERE `ID`='4';
+
