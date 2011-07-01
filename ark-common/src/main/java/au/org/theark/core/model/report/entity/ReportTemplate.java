@@ -12,6 +12,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 
 /**
@@ -29,8 +30,7 @@ public class ReportTemplate implements java.io.Serializable
 	private String						description;
 	private String						templatePath;
 	private ArkModule					module;
-	// TODO : Fix these to proper foreign key mappings!!!
-	private Long						function_id;
+	private ArkFunction					function;
 
 	// Constructors
 
@@ -118,13 +118,13 @@ public class ReportTemplate implements java.io.Serializable
 		this.module = module;
 	}
 
-	// TODO : Fix these to proper foreign key mappings!!!
-	@Column(name = "FUNCTION_ID", precision = 22)
-	public Long getFunction_id() {
-		return function_id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "FUNCTION_ID")
+	public ArkFunction getFunction() {
+		return function;
 	}
 
-	public void setFunction_id(Long functionId) {
-		function_id = functionId;
+	public void setFunction(ArkFunction function) {
+		this.function = function;
 	}
 }

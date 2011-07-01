@@ -23,7 +23,7 @@ public interface IReportService {
 	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp);
 	public Long getWithoutStudyCompCount(Study study);
 	// TODO: Revise getReportsAvailableList method when migration to new Ark security done
-	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser);
+	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser, Study study);
 	public List<ReportOutputFormat> getOutputFormats();
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(ConsentDetailsReportVO cdrVO);
 	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO);

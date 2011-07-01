@@ -73,8 +73,8 @@ public class ReportServiceImpl implements IReportService {
 	}
 
 	/* Service methods */
-	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser) {
-		List<ReportTemplate> result = reportDao.getReportsForUser(arkUser);
+	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser, Study study) {
+		List<ReportTemplate> result = reportDao.getReportsForUser(arkUser, study);
 		return result;
 	}
 	

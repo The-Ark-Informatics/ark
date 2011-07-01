@@ -2,7 +2,10 @@ package au.org.theark.report.web.component.viewReport;
 
 import java.util.List;
 
+import mx4j.log.Log;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -16,8 +19,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.dao.ArkAuthorisationDao;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -34,6 +39,8 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
 @SuppressWarnings("serial")
 public class ReportSelectPanel extends Panel
 {
+	private static Logger log = LoggerFactory.getLogger(ReportSelectPanel.class);
+
 	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
 	private IReportService reportService;
 	
@@ -57,23 +64,26 @@ public class ReportSelectPanel extends Panel
 
 	public void initialisePanel()
 	{
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Subject subject = SecurityUtils.getSubject();
+		Long sessionStudyId = (Long)subject.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = null;
 
 		if(sessionStudyId != null && sessionStudyId > 0) {			
-			reportSelectCPM.getObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
+			study = iArkCommonService.getStudy(sessionStudyId);
+			reportSelectCPM.getObject().setStudy(study);
 		}
-		//TODO: Fix the arkUser to be pulled out of the context
 		ArkUser arkUser;
-		try{
-			arkUser = iArkCommonService.getArkUser("arkuser1@ark.org.au");
-			List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser);
+		try { 
+			arkUser = iArkCommonService.getArkUser(subject.getPrincipal().toString());
+//			List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser, study);
+			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, null);
 			
 			if (resultList == null || (resultList != null && resultList.size() == 0)) {
-				this.info("No reports are available to you as this user");
+				this.info("No reports are available to you under your current role (NB: roles may depend on the study in context)");
 			}
 			reportSelectCPM.getObject().setReportsAvailableList(resultList);
 		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
+			log.error("ReportSelectPanel.initialisePanel() could not load the ArkUser based on username in context.  This should not happen.");
 			this.error("A system error has occured. Please notify support if this happens after trying again.");
 		}
 		
@@ -116,6 +126,22 @@ public class ReportSelectPanel extends Panel
 				}else{
 					item.add(new Label("reportTemplate.module.name",""));
 				}
+				
+				// Perform security check upon selection of the report
+				Subject subject = SecurityUtils.getSubject();
+				boolean securityCheckOk = false;
+				try {
+					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), 
+							reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
+					if (userRole.length() > 0) {
+						securityCheckOk = true;
+					}
+				} catch (EntityNotFoundException e) {
+					// TODO I don't like this kind of code - if there isn't a record, we should just return NULL.
+					// Only if it really is an error to not have a record, then we should throw an exception.
+				}
+				item.setVisible(securityCheckOk);
+				
 				/* Component Name Link */
 				item.add(buildLink(reportTemplate));
 				
@@ -148,11 +174,27 @@ public class ReportSelectPanel extends Panel
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-
-				if (reportTemplate.getName().equals(Constants.STUDY_SUMMARY_REPORT_NAME)) {
+				// Perform security check upon selection of the report
+				Subject subject = SecurityUtils.getSubject();
+				boolean securityCheckOk = false;
+				try {
+					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), 
+							reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
+					if (userRole.length() > 0) {
+						securityCheckOk = true;
+					}
+				} catch (EntityNotFoundException e) {
+					// TODO I don't like this kind of code - if there isn't a record, we should just return NULL.
+					// Only if it really is an error to not have a record, then we should throw an exception.
+				}
+				
+				if (securityCheckOk == false) {
+					this.error("You do not have enough privileges to access this report.  If you believe this is incorrect, then please contact your administrator.");
+				}
+				else if (reportTemplate.getName().equals(Constants.STUDY_SUMMARY_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
-					}
+					} 
 					else {
 						StudySummaryReportContainer selectedReportPanel = new StudySummaryReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);

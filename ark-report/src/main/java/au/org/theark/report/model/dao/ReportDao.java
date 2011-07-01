@@ -29,12 +29,15 @@ import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.security.RoleConstants;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
@@ -63,7 +66,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 		return totalCount;
 	}
-
+	
 	public Map<String, Integer> getSubjectStatusCounts(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -164,10 +167,23 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return undefCount;
 	}
 	
-	public List<ReportTemplate> getReportsForUser(ArkUser arkUser) {
-		Criteria criteria = getSession().createCriteria(ReportTemplate.class);
-//		TODO : Add security here
+	public List<ReportTemplate> getReportsForUser(ArkUser arkUser, Study study) {
+		Criteria criteria = getSession().createCriteria(ReportTemplate.class, "rt");
+/*
+* TODO : Filter reports based on security criteria
+* For now we will implement security upon the selection of a report
+* 
+// The following is not yet designed to work with super admins
 //		criteria.add(Restrictions.eq("arkUser", arkUser));
+		DetachedCriteria functionCriteria = DetachedCriteria.forClass(ArkRolePolicyTemplate.class, "arpt");
+		// Join FieldPhenoCollection and FieldData on ID FK
+		functionCriteria.add(Property.forName("rt.module").eqProperty("arpt." + "arkModule"));
+		functionCriteria.add(Property.forName("rt.function").eqProperty("arpt." + "arkFunction"));
+		criteria.createAlias("arpt." + "arkFunction", "aFn");
+		ArkFunction reportArkFnType = getArkFunctionByName(RoleConstants.REPORT_FUNCTION_TYPE);
+		functionCriteria.add(Restrictions.eq("aFn.arkFunctionType", reportArkFnType));
+		criteria.add(Subqueries.exists(functionCriteria.setProjection(Projections.property("arpt.id"))));
+*/		
 		List<ReportTemplate> reportsAvailListing = criteria.list();
 
 		return reportsAvailListing;
@@ -464,6 +480,14 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 	    results = criteria.list();
 	    
 		return results;
+	}
+
+	protected ArkFunction getArkFunctionByName(String functionName){
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		criteria.add(Restrictions.eq("name", functionName));
+		criteria.setMaxResults(1);
+		ArkFunction arkFunction  = (ArkFunction)criteria.uniqueResult();
+		return arkFunction;
 	}
 
 }

@@ -26,7 +26,7 @@ public interface IReportDao {
 	public Map<String, Integer> getStudyConsentCounts(Study study);
 	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp);
 	public Long getWithoutStudyCompCount(Study study);
-	public List<ReportTemplate> getReportsForUser(ArkUser arkUser);
+	public List<ReportTemplate> getReportsForUser(ArkUser arkUser, Study study);
 	public List<ReportOutputFormat> getOutputFormats();
 	public List<LinkSubjectStudy> getStudyLevelConsentDetailsList(
 			ConsentDetailsReportVO cdrVO);
