@@ -341,11 +341,12 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.heardAboutStudy = heardAboutStudy;
 	}
 
+	@Column(name = "COMMENTS", length = 1000)
 	public String getComment() {
 		return comment;
 	}
 	
-	@Column(name = "COMMENTS", length = 1000)
+	
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
