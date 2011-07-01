@@ -1,3 +1,4 @@
-use study;
+USE study;
+
 ALTER TABLE `study`.`address` CHANGE COLUMN `DATE_RECEIVED` `DATE_RECEIVED` DATE NULL DEFAULT NULL  ;
 
