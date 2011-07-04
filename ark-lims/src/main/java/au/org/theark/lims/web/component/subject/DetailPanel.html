@@ -1,6 +1,6 @@
 <wicket:panel>&nbsp;
 	<div id="detailsPanelBorder">
-	<form wicket:id="detailsForm">
+		<form wicket:id="detailsForm">
 			<div wicket:id="detailFormContainer">
 				<div id="detailPanelBreaker">&nbsp;</div>
 				
@@ -85,21 +85,10 @@
 							<wicket:message key="lastName">Last Name:</wicket:message>
 						</label>
 					</div>
-					<div class="label">
-						<label for="lastName">
-							<wicket:message key="subjectPreviousLastname">(previous)</wicket:message>
-							<div id="note">
-								<wicket:message	key="subjectPreviousLastname.note">[Note replaced from properties]</wicket:message>
-							</div>
-						</label>
-					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
 						<input wicket:id="linkSubjectStudy.person.lastName"/> 
-					</div>
-					<div class="label" style="padding-top: 5px;">
-						<input wicket:id="subjectPreviousLastname"/> 
 					</div>
 				</div>
 				
@@ -354,11 +343,12 @@
 			</div>
 			<!--  End buttons -->
 		<div id="detailPanelBreaker">&nbsp;</div>
-	</form>
+		</form>
 	<!--  End detailsPanelBorder -->
 	</div>
-	<div wicket:id="collectionListDetailPanel">[List Details panel]</div>
-	<div id="detailPanelBreaker">&nbsp;</div>
-	<div wicket:id="biospecimenListDetailPanel">[List Details panel]</div>
-	<br>&nbsp;<br>&nbsp;<br>&nbsp;
+	
+	<div wicket:id="subContainerWebMarkupContainer">
+		<div wicket:id="subContainerPanel">[Sub container panel]</div>
+	</div>
+	<br>&nbsp;
 </wicket:panel>

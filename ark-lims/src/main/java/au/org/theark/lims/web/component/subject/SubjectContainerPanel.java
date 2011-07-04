@@ -1,6 +1,7 @@
 package au.org.theark.lims.web.component.subject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +34,7 @@ import au.org.theark.lims.web.component.subject.form.ContainerForm;
  * 
  */
 @SuppressWarnings("unchecked")
-public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
+public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO>
 {
 	/**
 	 * 
@@ -66,16 +67,15 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
+		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
-
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 
 		prerenderContextCheck();
-
+		
 		add(containerForm);
 	}
 
@@ -84,6 +84,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		// Get the Person in Context and determine the Person Type
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		SubjectVO subjectFromBackend = new SubjectVO();
 
 		if ((sessionStudyId != null) && (sessionPersonId != null))
 		{
@@ -98,8 +99,14 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 					SubjectVO subjectVO = new SubjectVO();
 					subjectVO.getLinkSubjectStudy().setPerson(person); // must have Person id
 					subjectVO.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId)); // must have Study id
-					List<SubjectVO> subjectList = (List<SubjectVO>) iArkCommonService.getSubject(subjectVO);
-					containerForm.setModelObject(subjectList.get(0));
+					
+					Collection<SubjectVO> subjects = iArkCommonService.getSubject(subjectVO);
+					for (SubjectVO subjectVO2 : subjects) {
+						subjectFromBackend = subjectVO2;
+						break;
+					}
+					
+					containerForm.getModelObject().setSubjectVo(subjectFromBackend);
 					contextLoaded = true;
 				}
 				catch (EntityNotFoundException e)
@@ -113,13 +120,13 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 
 				if (contextLoaded)
 				{
-					// Set up BioCollections listDetail
-					DetailPanel details = (DetailPanel) detailPanelContainer.get("detailsPanel");
 					// Set up LimsVO
 					LimsVO limsVo = new LimsVO();
-					limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-					limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-					limsVo.getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+					limsVo.setSubjectVo(subjectFromBackend);
+					limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+					limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+					limsVo.getBioCollection().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+					limsVo.getBioCollection().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
 					try
 					{
 						limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
@@ -128,8 +135,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 					{
 						log.error(e.getMessage());
 					}
-					limsVo.getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-					limsVo.getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+					limsVo.getBiospecimen().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+					limsVo.getBiospecimen().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
 					try
 					{
 						limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
@@ -138,27 +145,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 					{
 						log.error(e.getMessage());
 					}
-
-					// Set up BioCollection listDetail
-					au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel collectionListDetailPanel = (au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel) details
-							.get("collectionListDetailPanel");
-					au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm collectionListDetailForm = (au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm) collectionListDetailPanel
-							.get("collectionListDetailForm");
-
-					collectionListDetailForm.setModelObject(limsVo);
-					collectionListDetailForm.initialiseForm();
-					collectionListDetailForm.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-
-					// Set up Biospecimen listDetail
-					au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel biospecimenListDetailPanel = (au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel) details
-							.get("biospecimenListDetailPanel");
-					au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm biospecimenListDetailForm = (au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm) biospecimenListDetailPanel
-							.get("biospecimenListDetailForm");
-
-					biospecimenListDetailForm.setModelObject(limsVo);
-					biospecimenListDetailForm.initialiseForm();
-					biospecimenListDetailForm.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-
+					containerForm.setModelObject(limsVo);
+					
 					// Put into Detail View mode
 					searchPanelContainer.setVisible(false);
 					searchResultPanelContainer.setVisible(false);
@@ -182,7 +170,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer,
 				viewButtonContainer, editButtonContainer, detailsPanel, containerForm);
 
-		searchPanel.initialisePanel(cpModel);
+		searchPanel.initialisePanel(new CompoundPropertyModel<SubjectVO>(cpModel.getObject().getSubjectVo()));
 		searchPanelContainer.add(searchPanel);
 		return searchPanelContainer;
 	}
@@ -210,7 +198,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
-			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
+			//containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
+			containerForm.getModelObject().getSubjectVo().setLinkSubjectStudy(linkSubjectStudy);
 		}
 
 		// Data providor to paginate resultList
@@ -233,7 +222,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 				return listSubjects.iterator();
 			}
 		};
-		subjectProvider.setCompoundPropertyModel(this.cpModel);
+		subjectProvider.setCompoundPropertyModel(new CompoundPropertyModel<SubjectVO>(cpModel.getObject().getSubjectVo()));
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);

@@ -32,6 +32,9 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
+import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
+import au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel;
+import au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm;
 
 /**
  * @author nivedann
@@ -53,7 +56,7 @@ public class SearchResultListPanel extends Panel{
 	private WebMarkupContainer viewButtonContainer;
 	private WebMarkupContainer editButtonContainer;
 	private WebMarkupContainer arkContextMarkup;
-	private ContainerForm subjectContainerForm;
+	private ContainerForm containerForm;
 
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService iArkCommonService;
@@ -74,7 +77,7 @@ public class SearchResultListPanel extends Panel{
 		super(id);
 		
 		this.detailPanelContainer = detailPanelContainer;
-		this.subjectContainerForm = containerForm;
+		this.containerForm = containerForm;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
@@ -227,8 +230,6 @@ public class SearchResultListPanel extends Panel{
 					break;
 				}
 				
-				subjectContainerForm.setModelObject(subjectFromBackend);
-				
 				// Set SubjectUID into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
 				ContextHelper contextHelper = new ContextHelper();
@@ -249,6 +250,8 @@ public class SearchResultListPanel extends Panel{
 				
 				// Set up LimsVO
 				LimsVO limsVo = new LimsVO();
+				limsVo.setSubjectVo(subjectFromBackend);
+				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.getBioCollection().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.getBioCollection().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
@@ -270,26 +273,13 @@ public class SearchResultListPanel extends Panel{
 				{
 					log.error(e.getMessage());
 				}
+				containerForm.setModelObject(limsVo);
 				
-				// Set up BioCollection listDetail
-				au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel collectionListDetailPanel = 
-					(au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel) details.get("collectionListDetailPanel");
-				au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm collectionListDetailForm = 
-					(au.org.theark.lims.web.component.subject.bioCollection.form.ListDetailForm) collectionListDetailPanel.get("collectionListDetailForm");
-				
-				collectionListDetailForm.setModelObject(limsVo);
-				collectionListDetailForm.initialiseForm();
-				collectionListDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
-				
-				// Set up Biospecimen listDetail
-				au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
-					(au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel) details.get("biospecimenListDetailPanel");
-				au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm biospecimenListDetailForm =
-					(au.org.theark.lims.web.component.subject.biospecimen.form.ListDetailForm) biospecimenListDetailPanel.get("biospecimenListDetailForm");
-				
-				biospecimenListDetailForm.setModelObject(limsVo);
-				biospecimenListDetailForm.initialiseForm();
-				biospecimenListDetailForm.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
+				WebMarkupContainer wmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
+				SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) wmc.get("subContainerPanel");
+				ListDetailPanel listDetailsPanel = (ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
+				ListDetailForm collectionslistDetailForm = listDetailsPanel.getListDetailForm();
+				collectionslistDetailForm.initialiseForm();
 				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);

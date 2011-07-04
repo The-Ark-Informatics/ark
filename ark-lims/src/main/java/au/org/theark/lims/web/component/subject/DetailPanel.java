@@ -10,8 +10,10 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
+import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
 
 /**
  * @author cellis
@@ -19,6 +21,10 @@ import au.org.theark.lims.web.component.subject.form.DetailForm;
  */
 public class DetailPanel extends Panel
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 858762052753650329L;
 	private DetailForm			detailsForm;
 	private FeedbackPanel		feedBackPanel;
 	private WebMarkupContainer	searchResultPanelContainer;
@@ -29,6 +35,10 @@ public class DetailPanel extends Panel
 	private WebMarkupContainer	editButtonContainer;
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
+	
+	private WebMarkupContainer	subContainerWebMarkupContainer;
+	private SubjectSubContainerPanel   subContainerPanel;
+	private LimsVO limsVo;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm)
@@ -54,18 +64,15 @@ public class DetailPanel extends Panel
 
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
-
-		// Add Collection list detail panel
-		au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel collectionListDetailPanel = new au.org.theark.lims.web.component.subject.bioCollection.ListDetailPanel(
-				"collectionListDetailPanel", this.feedBackPanel);
-		collectionListDetailPanel.initialisePanel();
-		add(collectionListDetailPanel);
-
-		// Add Biospecimen list detail panel
-		au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel biospecimenListDetailPanel = new au.org.theark.lims.web.component.subject.biospecimen.ListDetailPanel(
-				"biospecimenListDetailPanel", this.feedBackPanel);
-		biospecimenListDetailPanel.initialisePanel();
-		add(biospecimenListDetailPanel);
+		
+		limsVo = new LimsVO();
+		
+		subContainerWebMarkupContainer = new WebMarkupContainer("subContainerWebMarkupContainer");
+		subContainerWebMarkupContainer.setOutputMarkupPlaceholderTag(true);
+		// SubContainer with child details
+		subContainerPanel = new SubjectSubContainerPanel("subContainerPanel", arkContextContainer, containerForm, containerForm.getModelObject());
+		subContainerWebMarkupContainer.add(subContainerPanel);
+		add(subContainerWebMarkupContainer);
 	}
 
 	public DetailForm getDetailsForm()
@@ -76,5 +83,37 @@ public class DetailPanel extends Panel
 	public void setDetailsForm(DetailForm detailsForm)
 	{
 		this.detailsForm = detailsForm;
+	}
+	
+	/**
+	 * @return the subContainerPanel
+	 */
+	public SubjectSubContainerPanel getSubContainerPanel()
+	{
+		return subContainerPanel;
+	}
+
+	/**
+	 * @param subContainerPanel the subContainerPanel to set
+	 */
+	public void setSubContainerPanel(SubjectSubContainerPanel subContainerPanel)
+	{
+		this.subContainerPanel = subContainerPanel;
+	}
+
+	/**
+	 * @return the limsVo
+	 */
+	public LimsVO getLimsVo()
+	{
+		return limsVo;
+	}
+
+	/**
+	 * @param limsVo the limsVo to set
+	 */
+	public void setLimsVo(LimsVO limsVo)
+	{
+		this.limsVo = limsVo;
 	}
 }
