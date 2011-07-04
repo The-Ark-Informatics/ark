@@ -71,6 +71,4 @@ public abstract class AjaxEditorButton extends AjaxButton
 			}
 		};
 	}
-	
-	protected abstract void onDeleteConfirmed(AjaxRequestTarget target);
 }
