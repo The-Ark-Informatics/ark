@@ -843,6 +843,8 @@ public class StudyServiceImpl implements IStudyService{
 		return studyDao.getDelimiterType(id);
 	}
 
-
-
+	public FileFormat getFileFormatByName(String fileFormatName)
+	{
+		return studyDao.getFileFormatByName(fileFormatName);
+	}
 }

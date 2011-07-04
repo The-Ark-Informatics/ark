@@ -1900,5 +1900,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		return isUnique;
 		
 	}
+
+	public FileFormat getFileFormatByName(String name)
+	{
+		FileFormat fileFormat = null;
+		Criteria criteria =  getSession().createCriteria(FileFormat.class);
+		criteria.add(Restrictions.eq("name", name));
+		
+		if(criteria.list().size()>0) {
+			fileFormat = (FileFormat) criteria.list().get(0);
+		}
+		return fileFormat;
+	}
 	
 }

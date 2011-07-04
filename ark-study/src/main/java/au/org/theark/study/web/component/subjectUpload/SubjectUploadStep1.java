@@ -153,7 +153,12 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(study);
-
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormatName = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();
+		fileFormat = iStudyService.getFileFormatByName(fileFormatName);
+		//containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
+		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);
