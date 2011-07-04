@@ -1,5 +1,6 @@
 package au.org.theark.core.web.component;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -12,23 +13,35 @@ public abstract class AbstractDetailModalWindow extends ModalWindow
 	 */
 	private static final long	serialVersionUID	= -794586150493541168L;
 	protected String title;
-	protected FeedbackPanel modalFeedbackPanel; 
-	protected Panel contentPanel;
+	protected FeedbackPanel feedbackPanel; 
+	protected Panel panel;
+	
+	
+	public AbstractDetailModalWindow(String id)
+	{
+		super(id);
+		this.title = "";
+		this.panel = new Panel("content");
+		initialise();
+		initialiseContentPanel(panel);
+	}
 	
 	public AbstractDetailModalWindow(String id, String title)
 	{
 		super(id);
 		this.title = title;
+		this.panel = new Panel("content");
 		initialise();
+		initialiseContentPanel(panel);
 	}
 
 	public AbstractDetailModalWindow(String id, String title, Panel panel)
 	{
 		super(id);
 		this.title = title;
-		this.contentPanel = panel;
+		this.panel = panel;
 		initialise();
-		initialiseContentPanel(contentPanel);
+		initialiseContentPanel(panel);
 	}
 
 	protected void initialise()
@@ -43,9 +56,9 @@ public abstract class AbstractDetailModalWindow extends ModalWindow
 	
 	protected WebMarkupContainer initialiseFeedBackPanel(){
 		/* Feedback Panel */
-		modalFeedbackPanel= new FeedbackPanel("modalFeedback");
-		modalFeedbackPanel.setOutputMarkupId(true);
-		return modalFeedbackPanel;
+		feedbackPanel= new FeedbackPanel("modalWindowFeedback");
+		feedbackPanel.setOutputMarkupId(true);
+		return feedbackPanel;
 	}
 	
 	protected void initialiseContentPanel(Panel panel)
@@ -53,13 +66,21 @@ public abstract class AbstractDetailModalWindow extends ModalWindow
 		// Set the content panel, implementing the abstract methods
 		setContent(panel);
 	}
+	
+	public void close(final AjaxRequestTarget target)
+	{
+		super.close(target);
+		onCloseModalWindow(target);
+	}
+	
+	abstract protected void onCloseModalWindow(AjaxRequestTarget target);
 
 	/**
 	 * @return the feedbackPanel
 	 */
 	public FeedbackPanel getModalFeedbackPanel()
 	{
-		return modalFeedbackPanel;
+		return feedbackPanel;
 	}
 
 	/**
@@ -67,6 +88,6 @@ public abstract class AbstractDetailModalWindow extends ModalWindow
 	 */
 	public void setModalFeedbackPanel(FeedbackPanel feedbackPanel)
 	{
-		this.modalFeedbackPanel = feedbackPanel;
+		this.feedbackPanel = feedbackPanel;
 	}
 }
