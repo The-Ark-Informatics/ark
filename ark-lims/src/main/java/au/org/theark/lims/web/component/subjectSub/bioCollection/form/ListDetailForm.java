@@ -151,14 +151,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 				
 				commentsLblFld = new Label("comments");
 
-				ArkDatePicker datePicker = new ArkDatePicker();
-				datePicker.bind(collectionDateLblFld);
-				collectionDateLblFld.add(datePicker);
-
-				ArkDatePicker datePicker2 = new ArkDatePicker();
-				datePicker2.bind(surgeryDateLblFld);
-				surgeryDateLblFld.add(datePicker2);
-
 				item.add(idLblFld);
 				item.add(nameLblFld);
 				item.add(collectionDateLblFld);
