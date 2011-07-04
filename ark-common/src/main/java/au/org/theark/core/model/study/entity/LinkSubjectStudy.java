@@ -340,7 +340,9 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.comment = comment;
 	}
 
-	@Column(name = "", precision = 22, scale = 0)
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CONSENT_DOWNLOADED")
 	public YesNo getConsentDownloaded() {
 		return consentDownloaded;
 	}
