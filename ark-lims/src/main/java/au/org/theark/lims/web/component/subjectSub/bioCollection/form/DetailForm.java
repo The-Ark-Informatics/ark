@@ -11,8 +11,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -26,9 +28,14 @@ import au.org.theark.lims.web.component.subject.form.ContainerForm;
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
+@SuppressWarnings( { "unused" })
 public class DetailForm extends AbstractModalDetailForm<LimsVO>
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2926069852602563767L;
+	private static final Logger		log					= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -115,48 +122,39 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		}
 
 		onSavePostProcess(target);
-		
-		/*
-		// Subject in context
-		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
-		try
-		{
-			linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
-			containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);
-			containerForm.getModelObject().getBioCollection().setStudy(linkSubjectStudy.getStudy());
-
-			if (containerForm.getModelObject().getBioCollection().getId() == null)
-			{
-				// Save
-				iLimsService.createBioCollection(containerForm.getModelObject());
-				this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was created successfully");
-				processErrors(target);
-			}
-			else
-			{
-				// Update
-				iLimsService.updateBioCollection(containerForm.getModelObject());
-				this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was updated successfully");
-				processErrors(target);
-			}
-
-			onSavePostProcess(target);
-		}
-		catch (EntityNotFoundException e)
-		{
-			this.error(e.getMessage());
-			processErrors(target);
-		}
-		*/
 	}
 
 	@Override
 	protected void onCancel(AjaxRequestTarget target)
 	{
-		containerForm.setModelObject(new LimsVO());
+		// Reset LimsVO
+		LimsVO limsVo = new LimsVO();
+		limsVo.setSubjectVo(containerForm.getModelObject().getSubjectVo());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		try
+		{
+			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
+		}
+		catch (ArkSystemException e)
+		{
+			log.error(e.getMessage());
+		}
+		limsVo.getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		try
+		{
+			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
+		}
+		catch (ArkSystemException e)
+		{
+			log.error(e.getMessage());
+		}
+		containerForm.setModelObject(limsVo);
 		target.addComponent(feedbackPanel);
+		target.addComponent(containerForm);
 		modalWindow.close(target);
 	}
 	

@@ -1,7 +1,6 @@
 package au.org.theark.lims.web.component.subjectSub;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.web.component.AbstractSubContainerPanel;
 import au.org.theark.lims.model.vo.LimsVO;

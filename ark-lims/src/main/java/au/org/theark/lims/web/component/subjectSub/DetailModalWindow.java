@@ -6,7 +6,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 
 public class DetailModalWindow extends AbstractDetailModalWindow
 {
@@ -15,8 +14,8 @@ public class DetailModalWindow extends AbstractDetailModalWindow
 	 */
 	private static final long	serialVersionUID	= 4739679880093551297L;
 	private ArkCrudContainerVO arkCrudContainerVo;
+	private Panel listDetailPanel;
 	private Form<?> listDetailForm;
-	private AbstractListEditor<?> listEditor;
 	
 	public DetailModalWindow(String id)
 	{
@@ -44,8 +43,8 @@ public class DetailModalWindow extends AbstractDetailModalWindow
 	
 	protected void onCloseModalWindow(AjaxRequestTarget target)
 	{
-		listEditor.removeAll();
 		target.addComponent(listDetailForm);
+		target.addComponent(listDetailPanel);
 	}
 
 	/**
@@ -65,21 +64,21 @@ public class DetailModalWindow extends AbstractDetailModalWindow
 	}
 
 	/**
-	 * @param listEditor the listEditor to set
+	 * @param listDetailPanel the listDetailPanel to set
 	 */
-	public void setListEditor(AbstractListEditor<?> listEditor)
+	public void setListDetailPanel(Panel listDetailPanel)
 	{
-		this.listEditor = listEditor;
+		this.listDetailPanel = listDetailPanel;
 	}
 
 	/**
-	 * @return the listEditor
+	 * @return the listDetailPanel
 	 */
-	public AbstractListEditor<?> getListEditor()
+	public Panel getListDetailPanel()
 	{
-		return listEditor;
+		return listDetailPanel;
 	}
-
+	
 	/**
 	 * @param arkCrudContainerVo the arkCrudContainerVo to set
 	 */
