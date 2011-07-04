@@ -25,33 +25,32 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 
 /**
- * @author nivedann
+ * @author cellis
  * 
  */
-@SuppressWarnings( { "unused" })
-public class DetailForm extends AbstractModalDetailForm<LimsVO>
-{
+@SuppressWarnings({ "unused" })
+public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 2926069852602563767L;
-	private static final Logger		log					= LoggerFactory.getLogger(DetailForm.class);
+	private static final long serialVersionUID = 2926069852602563767L;
+	private static final Logger log = LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
+	private IArkCommonService<Void> iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService					iLimsService;
+	private ILimsService iLimsService;
 
-	private int								mode;
+	private int mode;
 
-	private TextField<String>			idTxtFld;
-	private TextField<String>			nameTxtFld;
-	private TextField<String>			collectionIdTxtFld;
-	private TextArea<String>			commentsTxtAreaFld;
-	private DateTextField				collectionDateTxtFld;
-	private DateTextField				surgeryDateTxtFld;
-	private ModalWindow					modalWindow;
-	private WebMarkupContainer			arkContextMarkup;
+	private TextField<String> idTxtFld;
+	private TextField<String> nameTxtFld;
+	private TextField<String> collectionIdTxtFld;
+	private TextArea<String> commentsTxtAreaFld;
+	private DateTextField collectionDateTxtFld;
+	private DateTextField surgeryDateTxtFld;
+	private ModalWindow modalWindow;
+	private WebMarkupContainer arkContextMarkup;
 
 	/**
 	 * Constructor
@@ -62,19 +61,22 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	 * @param modalWindow
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, ContainerForm containerForm)
-	{
+	public DetailForm(String id, FeedbackPanel feedBackPanel,
+			ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow,
+			ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVo, containerForm);
 		this.modalWindow = modalWindow;
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
 		nameTxtFld = new TextField<String>("bioCollection.name");
 		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
-		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		collectionDateTxtFld = new DateTextField(
+				"bioCollection.collectionDate",
+				au.org.theark.core.Constants.DD_MM_YYYY);
+		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate",
+				au.org.theark.core.Constants.DD_MM_YYYY);
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(collectionDateTxtFld);
@@ -88,36 +90,39 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.name.required", this, new Model<String>("Name")));
+	protected void attachValidators() {
+		nameTxtFld.setRequired(true).setLabel(
+				new StringResourceModel("error.bioCollection.name.required",
+						this, new Model<String>("Name")));
 	}
 
-	private void addComponents()
-	{
-		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
+	private void addComponents() {
+		arkCrudContainerVo.getDetailPanelFormContainer().add(
+				idTxtFld.setEnabled(false));
 		arkCrudContainerVo.getDetailPanelFormContainer().add(nameTxtFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
-		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer()
+				.add(commentsTxtAreaFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(
+				collectionDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
 	@Override
-	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target)
-	{
-		if (containerForm.getModelObject().getBioCollection().getId() == null)
-		{
+	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
+		if (containerForm.getModelObject().getBioCollection().getId() == null) {
 			// Save
 			iLimsService.createBioCollection(containerForm.getModelObject());
-			this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was created successfully");
+			this.info("Biospecimen collection "
+					+ containerForm.getModelObject().getBioCollection()
+							.getName() + " was created successfully");
 			processErrors(target);
-		}
-		else
-		{
+		} else {
 			// Update
 			iLimsService.updateBioCollection(containerForm.getModelObject());
-			this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was updated successfully");
+			this.info("Biospecimen collection "
+					+ containerForm.getModelObject().getBioCollection()
+							.getName() + " was updated successfully");
 			processErrors(target);
 		}
 
@@ -125,31 +130,36 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		// Reset LimsVO
 		LimsVO limsVo = new LimsVO();
 		limsVo.setSubjectVo(containerForm.getModelObject().getSubjectVo());
-		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
-		try
-		{
-			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
-		}
-		catch (ArkSystemException e)
-		{
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject()
+				.getLinkSubjectStudy());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject()
+				.getLinkSubjectStudy());
+		limsVo.getBioCollection().setLinkSubjectStudy(
+				containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection()
+				.setStudy(
+						containerForm.getModelObject().getLinkSubjectStudy()
+								.getStudy());
+		try {
+			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo
+					.getBioCollection()));
+		} catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		limsVo.getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
-		try
-		{
-			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
-		}
-		catch (ArkSystemException e)
-		{
+		limsVo.getBiospecimen().setLinkSubjectStudy(
+				containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBiospecimen()
+				.setStudy(
+						containerForm.getModelObject().getLinkSubjectStudy()
+								.getStudy());
+		try {
+			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo
+					.getBiospecimen())));
+		} catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
 		containerForm.setModelObject(limsVo);
@@ -157,17 +167,15 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		target.addComponent(containerForm);
 		modalWindow.close(target);
 	}
-	
+
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form)
-	{
-		try
-		{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
+		try {
 			iLimsService.deleteBioCollection(containerForm.getModelObject());
-			this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
-		}
-		catch(org.hibernate.NonUniqueObjectException noe)
-		{
+			this.info("Biospecimen collection "
+					+ containerForm.getModelObject().getBioCollection()
+							.getName() + " was deleted successfully");
+		} catch (org.hibernate.NonUniqueObjectException noe) {
 			this.error(noe.getMessage());
 		}
 
@@ -175,10 +183,8 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		target.addComponent(feedbackPanel);
 	}
 
-
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 	}
 
@@ -188,14 +194,10 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
-	protected boolean isNew()
-	{
-		if (containerForm.getModelObject().getBioCollection().getId() == null)
-		{
+	protected boolean isNew() {
+		if (containerForm.getModelObject().getBioCollection().getId() == null) {
 			return true;
-		}
-		else
-		{
+		} else {
 			return false;
 		}
 	}
