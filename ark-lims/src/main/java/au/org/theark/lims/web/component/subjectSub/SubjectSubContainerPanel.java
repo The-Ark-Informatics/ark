@@ -25,13 +25,10 @@ public class SubjectSubContainerPanel extends AbstractSubContainerPanel<LimsVO>
 		super(id);
 		this.setArkContextMarkup(arkContextMarkup);
 		
-		/* Initialise the CPM */
-		//cpModel = (CompoundPropertyModel<LimsVO>) containerForm.getModel();
 		initCrudContainerVO();
 
 		add(initialiseFeedBackPanel());
 		
-		//containerForm = new ContainerForm("subContainerForm", cpModel);
 		this.containerForm = containerForm;
 		modalWindow = new DetailModalWindow("detailModalWindow");
 		
@@ -41,15 +38,12 @@ public class SubjectSubContainerPanel extends AbstractSubContainerPanel<LimsVO>
 		collectionListDetailPanel.initialisePanel(containerForm, modalWindow);
 		add(collectionListDetailPanel);
 		
-		//, "Collection Detail", arkCrudContainerVo, collectionListDetailPanel);
 
-		/*
 		// Add Biospecimen list detail panel
-		au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = new au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel(
-				"biospecimenListDetailPanel", this.feedbackPanel, cpModel);
-		biospecimenListDetailPanel.initialisePanel(cpModel);
-		subContainerForm.add(biospecimenListDetailPanel);
-		*/
+		au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
+			new au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel("biospecimenListDetailPanel", this.feedbackPanel, modalWindow);
+		biospecimenListDetailPanel.initialisePanel(containerForm, modalWindow);
+		add(biospecimenListDetailPanel);
 		
 		//add(containerForm);
 		add(modalWindow);
