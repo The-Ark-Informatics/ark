@@ -43,6 +43,7 @@ public class Person implements java.io.Serializable {
 	private PersonContactMethod personContactMethod;
 	private String preferredEmail;
 	private String otherEmail;
+	private Date dateLastKnownAlive;
 	
 	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
 	private Set<Phone> phones = new HashSet<Phone>(0);
@@ -360,5 +361,15 @@ public class Person implements java.io.Serializable {
 	public Date getDateOfDeath()
 	{
 		return dateOfDeath;
+	}
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DATE_LAST_KNOWN_ALIVE", length = 7)
+	public Date getDateLastKnownAlive() {
+		return dateLastKnownAlive;
+	}
+
+	public void setDateLastKnownAlive(Date dateLastKnownAlive) {
+		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 }
