@@ -15,6 +15,12 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 */
 	private static final long	serialVersionUID	= -5555167696920984309L;
 	List<T>	items;
+	
+	public AbstractListEditor(String id)
+	{
+		super(id);
+		setOutputMarkupId(true);
+	}
 
 	public AbstractListEditor(String id, IModel<List<T>> model)
 	{
