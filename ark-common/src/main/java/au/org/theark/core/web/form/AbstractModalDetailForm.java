@@ -106,7 +106,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				onSave(containerForm, target);
+				onSave(target);
 				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
 			}
 
@@ -284,7 +284,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	
 	abstract protected void attachValidators();
 
-	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
+	abstract protected void onSave(AjaxRequestTarget target);
 	
 	abstract protected void onCancel(AjaxRequestTarget target);
 
