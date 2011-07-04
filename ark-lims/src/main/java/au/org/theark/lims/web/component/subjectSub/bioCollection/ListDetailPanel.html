@@ -1,0 +1,63 @@
+<wicket:panel>&nbsp;
+	<form wicket:id="collectionListDetailForm">
+		<div id="listDetailsPanelBorder">
+			<table width="100%" cellspacing="0" class="dataview" border="0">
+				<!-- Header row -->
+				<tr>
+					<th width="2%">&nbsp;</th>
+					<th width="5%">
+						<label for="id">
+							<wicket:message	key="id">Collection ID:</wicket:message>
+						</label>
+					</th>
+					<th width="10%">
+						<label for="name">
+							<wicket:message	key="name">Collection Name:</wicket:message>
+						</label>
+					</th>
+					<th width="10%">
+						<label for="collectionDate">
+							<wicket:message	key="collectionDate">Collection Date:</wicket:message>
+						</label>
+					</th>
+					<th width="10%">
+						<label for="surgeryDate">
+							<wicket:message	key="surgeryDate">Surgery Date:</wicket:message>
+						</label>
+					</th>
+					<th width="10%">
+						<label for="comments">
+							<wicket:message	key="comments">Comments:</wicket:message>
+						</label>
+					</th>
+					<th width="2%">&nbsp;</th>
+				</tr>
+				<!-- Repeated item row -->
+				<tr wicket:id="bioCollections">
+					<td width="2%"><input wicket:id="listEditButton" type="submit" value="Edit"/></td>
+					<td width="5%">
+						<input wicket:id="id" type="text" />
+					</td>
+					<td width="10%">
+					  <input wicket:id="name" type="text" /> 
+					</td>
+					<td width="10%">
+						<input wicket:id="collectionDate" type="text" maxLength="10"/>
+					</td>
+					<td width="10%">
+						<input wicket:id="surgeryDate" type="text" maxLength="10"/>
+					</td>
+					<td width="10%">
+						<input wicket:id="comments" type="text" maxLength="50"/>
+					</td>
+					<td width="2%"><input wicket:id="listDeleteButton" type="submit" value="Delete"/></td>
+				</tr>
+			</table>
+			<!-- New button row -->
+			<div id="buttons">
+				<input wicket:id="listNewButton" type="submit" value="New"/>
+			</div>
+		<!--	End listDetailsPanelBorder -->
+		</div>
+	</form>
+</wicket:panel>
