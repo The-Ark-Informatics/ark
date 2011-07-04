@@ -54,7 +54,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private ConsentType consentType;
 	private Date consentDate;
 	
-	private Date dateLastKnownAlive;
 	private String heardAboutStudy;
 	private String comment;
 	private Long consentDownloaded;
@@ -320,16 +319,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setAmdrfId(Long amdrfId) {
 		this.amdrfId = amdrfId;
-	}
-
-	@Temporal(TemporalType.DATE)
-	@Column(name = "DATE_LAST_KNOWN_ALIVE", length = 7)
-	public Date getDateLastKnownAlive() {
-		return dateLastKnownAlive;
-	}
-
-	public void setDateLastKnownAlive(Date dateLastKnownAlive) {
-		this.dateLastKnownAlive = dateLastKnownAlive;
 	}
 
 	@Column(name = "HEARD_ABOUT_STUDY", length = 1000)
