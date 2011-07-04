@@ -109,20 +109,20 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 	}
 
 	@Override
-	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
-		if (containerForm.getModelObject().getBioCollection().getId() == null) {
+	protected void onSave(AjaxRequestTarget target) 
+	{
+		if (containerForm.getModelObject().getBioCollection().getId() == null)
+		{
 			// Save
 			iLimsService.createBioCollection(containerForm.getModelObject());
-			this.info("Biospecimen collection "
-					+ containerForm.getModelObject().getBioCollection()
-							.getName() + " was created successfully");
+			this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was created successfully");
 			processErrors(target);
-		} else {
+		} 
+		else 
+		{
 			// Update
 			iLimsService.updateBioCollection(containerForm.getModelObject());
-			this.info("Biospecimen collection "
-					+ containerForm.getModelObject().getBioCollection()
-							.getName() + " was updated successfully");
+			this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was updated successfully");
 			processErrors(target);
 		}
 
