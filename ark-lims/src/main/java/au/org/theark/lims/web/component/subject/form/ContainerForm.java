@@ -2,8 +2,8 @@ package au.org.theark.lims.web.component.subject.form;
 
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.lims.model.vo.LimsVO;
 
 
 
@@ -12,9 +12,9 @@ import au.org.theark.core.web.form.AbstractContainerForm;
  *
  */
 @SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<SubjectVO>{
+public class ContainerForm extends AbstractContainerForm<LimsVO>{
 	
-	public ContainerForm(String id, CompoundPropertyModel<SubjectVO> model){
+	public ContainerForm(String id, CompoundPropertyModel<LimsVO> model){
 		super(id,model);
 	}
 

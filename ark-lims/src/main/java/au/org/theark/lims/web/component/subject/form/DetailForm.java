@@ -7,7 +7,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,13 +36,14 @@ import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
 
 /**
  * @author cellis
  *
  */
-public class DetailForm extends AbstractDetailForm<SubjectVO>{
+public class DetailForm extends AbstractDetailForm<LimsVO>{
 
 	/**
 	 * 
@@ -136,8 +136,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
 		lastNameTxtFld = new TextField<String>(Constants.PERSON_LAST_NAME);
-		previousLastNameTxtFld = new TextField<String>(Constants.SUBJECT_PREVIOUS_LAST_NAME);
-		previousLastNameTxtFld.setEnabled(false);
+		
 		preferredNameTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_NAME);
 		
 		preferredEmailTxtFld = new TextField<String>(Constants.PERSON_PREFERRED_EMAIL);
@@ -358,7 +357,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		detailPanelFormContainer.add(firstNameTxtFld);
 		detailPanelFormContainer.add(middleNameTxtFld);
 		detailPanelFormContainer.add(lastNameTxtFld);
-		detailPanelFormContainer.add(previousLastNameTxtFld);
 		detailPanelFormContainer.add(preferredNameTxtFld);
 		detailPanelFormContainer.add(dateOfBirthTxtFld);
 		detailPanelFormContainer.add(vitalStatusDdc);
@@ -395,7 +393,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		subjectVO.getLinkSubjectStudy().setStudy(study);
-		containerForm.setModelObject(subjectVO);
+		containerForm.getModelObject().setSubjectVo(subjectVO);
 	}
 	
 	/* (non-Javadoc)
@@ -422,7 +420,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 	}
 	
 	@Override
-	protected void onSave(Form<SubjectVO> containerForm,	AjaxRequestTarget target) {
+	protected void onSave(Form<LimsVO> containerForm,	AjaxRequestTarget target) {
 		boolean firstMammogramFlag =false;
 		boolean recentMamogramFlag = false;
 		target.addComponent(detailPanelContainer);
@@ -453,16 +451,16 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>{
 			
 			//When both the year fields were supplied, save only if they are valid
 			if( (yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram != null && recentMamogramFlag)){
-				saveUpdateProcess(containerForm.getModelObject(), target);
+				saveUpdateProcess(containerForm.getModelObject().getSubjectVo(), target);
 			}
 			else if((yearOfFirstMammogram != null && firstMammogramFlag)  && (yearOfRecentMammogram == null)){//when only yearOfFirstMammogram was supplied
-				saveUpdateProcess(containerForm.getModelObject(), target);
+				saveUpdateProcess(containerForm.getModelObject().getSubjectVo(), target);
 			}
 			else if((yearOfFirstMammogram == null )  && (yearOfRecentMammogram != null && recentMamogramFlag)){
-				saveUpdateProcess(containerForm.getModelObject(), target);
+				saveUpdateProcess(containerForm.getModelObject().getSubjectVo(), target);
 			}else if(yearOfFirstMammogram == null && yearOfRecentMammogram == null){
 				//When other
-				saveUpdateProcess(containerForm.getModelObject(), target);
+				saveUpdateProcess(containerForm.getModelObject().getSubjectVo(), target);
 			}
 			
 			//String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
