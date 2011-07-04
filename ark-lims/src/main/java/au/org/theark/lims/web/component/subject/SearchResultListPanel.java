@@ -33,8 +33,6 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subject.form.DetailForm;
 import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
-import au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel;
-import au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm;
 
 /**
  * @author nivedann
@@ -277,9 +275,15 @@ public class SearchResultListPanel extends Panel{
 				
 				WebMarkupContainer wmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
 				SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) wmc.get("subContainerPanel");
-				ListDetailPanel listDetailsPanel = (ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
-				ListDetailForm collectionslistDetailForm = listDetailsPanel.getListDetailForm();
+				au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel collectionListDetailPanel = 
+					(au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
+				au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm collectionslistDetailForm = collectionListDetailPanel.getListDetailForm();
 				collectionslistDetailForm.initialiseForm();
+
+				au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
+					(au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel) subContainerPanel.get("biospecimenListDetailPanel");
+				au.org.theark.lims.web.component.subjectSub.biospecimen.form.ListDetailForm biospecimenListDetailForm = biospecimenListDetailPanel.getListDetailForm();
+				biospecimenListDetailForm.initialiseForm();
 				
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
