@@ -56,7 +56,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	
 	private String heardAboutStudy;
 	private String comment;
-	private Long consentDownloaded;
+	private YesNo consentDownloaded;
 	
 	private Set<Consent> consents = new HashSet<Consent>();	
 	
@@ -340,12 +340,12 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.comment = comment;
 	}
 
-	@Column(name = "CONSENT_DOWNLOADED", precision = 22, scale = 0)
-	public Long getConsentDownloaded() {
+	@Column(name = "", precision = 22, scale = 0)
+	public YesNo getConsentDownloaded() {
 		return consentDownloaded;
 	}
 
-	public void setConsentDownloaded(Long consentDownloaded) {
+	public void setConsentDownloaded(YesNo consentDownloaded) {
 		this.consentDownloaded = consentDownloaded;
 	}
 
