@@ -13,12 +13,14 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkSecurity;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.AjaxDeleteButton;
 
 /**
  * @author cellis
@@ -35,9 +37,26 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	protected FeedbackPanel			feedbackPanel;
 	protected Form<T>					containerForm;
 
+	/**
+	 * @return the containerForm
+	 */
+	public Form<T> getContainerForm()
+	{
+		return containerForm;
+	}
+
+	/**
+	 * @param containerForm the containerForm to set
+	 */
+	public void setContainerForm(Form<T> containerForm)
+	{
+		this.containerForm = containerForm;
+	}
+
 	protected AjaxButton				saveButton;
-	protected AjaxButton				cancelButton;
 	protected AjaxButton				doneButton;
+	protected AjaxButton				cancelButton;
+	protected AjaxButton				deleteButton;
 
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
@@ -51,6 +70,16 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.containerForm = containerForm;
+		
+		initialiseForm();
+	}
+
+	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> compoundPropertyModel)
+	{
+		super(id);
+		this.feedbackPanel = feedbackPanel;
+		this.arkCrudContainerVo = arkCrudContainerVo;
+		setModel(compoundPropertyModel);
 		
 		initialiseForm();
 	}
@@ -121,6 +150,26 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 		};
 		
+		deleteButton = new AjaxDeleteButton(Constants.DELETE,	new StringResourceModel("confirmDelete", this, null),	new StringResourceModel(Constants.DELETE,	this, null))
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -6596207763260166508L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				onDeleteConfirmed(target, form);
+			}
+				
+			@Override
+			public boolean isVisible()
+			{
+				return ArkSecurity.isActionPermitted(Constants.DELETE);
+			}
+		};
+		
 		// Override default settings as set in ArkCrudContainerVO 
 		arkCrudContainerVo.getDetailPanelContainer().setEnabled(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
@@ -135,6 +184,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		arkCrudContainerVo.getEditButtonContainer().add(saveButton);
 		arkCrudContainerVo.getEditButtonContainer().add(doneButton.setDefaultFormProcessing(false));
 		arkCrudContainerVo.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
+		arkCrudContainerVo.getEditButtonContainer().add(deleteButton);
 
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 		add(arkCrudContainerVo.getEditButtonContainer());
@@ -234,9 +284,11 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	
 	abstract protected void attachValidators();
 
+	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
+	
 	abstract protected void onCancel(AjaxRequestTarget target);
 
-	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
+	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
 
 	abstract protected void processErrors(AjaxRequestTarget target);
 
