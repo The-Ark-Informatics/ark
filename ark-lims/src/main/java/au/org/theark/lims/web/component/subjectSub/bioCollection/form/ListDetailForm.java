@@ -138,8 +138,17 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 
 				idLblFld = new Label("id", item.getModelObject().getId().toString());
 				nameLblFld = new Label("name", item.getModelObject().getName());
-				collectionDateLblFld = new Label("collectionDate", simpleDateFormat.format(item.getModelObject().getCollectionDate()));
-				surgeryDateLblFld = new Label("surgeryDate", simpleDateFormat.format(item.getModelObject().getCollectionDate()));
+				
+				if(item.getModelObject().getCollectionDate() != null)
+					collectionDateLblFld = new Label("collectionDate", simpleDateFormat.format(item.getModelObject().getCollectionDate()));
+				else
+					collectionDateLblFld = new Label("collectionDate", "");
+					
+				if(item.getModelObject().getSurgeryDate() != null)
+					surgeryDateLblFld = new Label("surgeryDate", simpleDateFormat.format(item.getModelObject().getSurgeryDate()));
+				else
+					surgeryDateLblFld = new Label("surgeryDate", "");
+				
 				commentsLblFld = new Label("comments");
 
 				ArkDatePicker datePicker = new ArkDatePicker();
