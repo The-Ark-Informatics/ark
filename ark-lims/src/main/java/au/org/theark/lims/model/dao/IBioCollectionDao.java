@@ -4,6 +4,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
@@ -56,4 +57,10 @@ public interface IBioCollectionDao
 	 * @return true if provided linkSubjectStudy has one or more BioCollections
 	 */
 	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy);
+
+	/**
+	 * Determine if provided bioCollection has any biospecimens associated
+	 * @return true if provided bioCollection has one or more Biospecimens
+	 */
+	public Boolean hasBiospecimens(BioCollection bioCollection);
 }

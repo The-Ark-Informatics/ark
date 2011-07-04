@@ -86,7 +86,7 @@ public class LimsServiceImpl implements ILimsService
 	}
 
 	/* (non-Javadoc)
-	 * @see au.org.theark.lims.service.ILimsService#deleteCollection(au.org.theark.lims.model.vo.LimsVO)
+	 * @see au.org.theark.lims.service.ILimsService#deleteBioCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void deleteBioCollection(LimsVO modelObject)
 	{
@@ -95,7 +95,7 @@ public class LimsServiceImpl implements ILimsService
 	}
 
 	/* (non-Javadoc)
-	 * @see au.org.theark.lims.service.ILimsService#getCollection(au.org.theark.core.model.lims.entity.Collection)
+	 * @see au.org.theark.lims.service.ILimsService#getBioCollection(au.org.theark.core.model.lims.entity.Collection)
 	 */
 	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException
 	{
@@ -223,5 +223,13 @@ public class LimsServiceImpl implements ILimsService
 	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
 	{
 		return iBioCollectionDao.hasBioCollections(linkSubjectStudy);
+	}
+
+	/* (non-Javadoc)
+	 * @see au.org.theark.lims.service.ILimsService#hasBiospecimens()
+	 */
+	public Boolean hasBiospecimens(BioCollection bioCollection)
+	{
+		return iBioCollectionDao.hasBiospecimens(bioCollection);
 	}
 }

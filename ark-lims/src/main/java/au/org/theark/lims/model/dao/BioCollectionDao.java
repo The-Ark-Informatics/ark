@@ -11,6 +11,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
+import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 @SuppressWarnings("unchecked")
@@ -62,19 +63,19 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		return list;
 	}
 
-	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection)
+	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
 	{
-		getSession().save(limsCollection);
+		getSession().save(bioCollection);
 	}
 
-	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection)
+	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
 	{
-		getSession().delete(limsCollection);
+		getSession().delete(bioCollection);
 	}
 	
-	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection limsCollection)
+	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
 	{
-		getSession().update(limsCollection);
+		getSession().update(bioCollection);
 	}
 
 	public List<BioSampletype> getSampleTypes()
@@ -89,6 +90,14 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
 		List<BioCollection> list = criteria.list();
+		return list.size() > 0;
+	}
+
+	public Boolean hasBiospecimens(BioCollection bioCollection)
+	{
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("bioCollection", bioCollection));
+		List<Biospecimen> list = criteria.list();
 		return list.size() > 0;
 	}
 }
