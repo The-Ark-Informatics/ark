@@ -1,7 +1,6 @@
 package au.org.theark.lims.web.component.subjectSub.biospecimen.form;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -10,6 +9,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -18,24 +18,27 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkSecurity;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
+import au.org.theark.core.web.form.AbstractListDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.BiospecimenIdGenerator;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subjectSub.biospecimen.DetailModalWindow;
+import au.org.theark.lims.web.component.subject.form.ContainerForm;
+import au.org.theark.lims.web.component.subjectSub.DetailModalWindow;
+import au.org.theark.lims.web.component.subjectSub.biospecimen.DetailPanel;
+import au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel;
 
 /**
  * @author cellis
  * 
  */
-public class ListDetailForm extends Form<LimsVO>
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 {
 	/**
 	 * 
@@ -49,7 +52,7 @@ public class ListDetailForm extends Form<LimsVO>
 	private ILimsService								iLimsService;
 
 	private AbstractListEditor<Biospecimen>	listEditor				= null;
-	protected FeedbackPanel							feedBackPanel;
+	protected FeedbackPanel							feedbackPanel;
 
 	private LinkSubjectStudy						linkSubjectStudy;
 	private TextField<String>						idTxtFld;
@@ -58,28 +61,20 @@ public class ListDetailForm extends Form<LimsVO>
 	private TextField<String>						collectionTxtFld;
 	private TextField<String>						commentsTxtFld;
 	private TextField<String>						quantityTxtFld;
+	private ListDetailPanel							listDetailPanel;
+	private DetailPanel								detailPanel;
 	private DetailModalWindow						modalWindow;
-	private ArkCrudContainerVO						arkCrudContainerVo	= new ArkCrudContainerVO();
-	private Boolean									hasBioCollections = false;
 
-	public ListDetailForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, FeedbackPanel feedBackPanel)
+	public ListDetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, DetailModalWindow modalWindow, ListDetailPanel listDetailPanel)
 	{
-		super(id, compoundPropertyModel);
-		this.feedBackPanel = feedBackPanel;
-		modalWindow = new DetailModalWindow("detailModalWindow", arkCrudContainerVo, this)
-		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -1230939436872065515L;
-
-			@Override
-			public void close(AjaxRequestTarget target)
-			{
-				super.close(target);
-				onCloseModalWindow(target);
-			}
-		};
+		super(id);
+		this.feedbackPanel = feedbackPanel;
+		this.containerForm = containerForm;
+		this.modalWindow = modalWindow;
+		this.listDetailPanel = listDetailPanel;
+		
+		this.detailPanel = new DetailPanel("content", modalWindow, containerForm);
+		
 		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		
 		if(subjectUID != null)
@@ -92,29 +87,66 @@ public class ListDetailForm extends Form<LimsVO>
 			{
 			}
 		}
-	}
-
-	protected void onCloseModalWindow(AjaxRequestTarget target)
-	{/*
-		setModelObject(new LimsVO());
-		getModelObject().setLinkSubjectStudy(linkSubjectStudy);
-		getModelObject().setBiospecimen(new Biospecimen());
-		Study study = linkSubjectStudy.getStudy();
-		getModelObject().getBiospecimen().setStudy(study);
-		getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
-
-		initialiseForm();
 		
-		*/
-		target.addComponent(this);
-		target.addComponent(feedBackPanel);
+		modalWindow.setTitle("Biospecimen Detail");
+		modalWindow.setContent(detailPanel);
+		modalWindow.setListDetailPanel(listDetailPanel);
+		
+		// Override newButton, determining if bioCollections exist
+		initialiseNewButton();
 	}
 
-	@SuppressWarnings("unchecked")
-	public void initialiseForm()
+	private void initialiseNewButton() 
 	{
-		//initialiseList();
-		listEditor = new AbstractListEditor<Biospecimen>("biospecimens", new PropertyModel(getModelObject(), "biospecimenList"))
+		newButton = new AjaxButton("listNewButton")
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -8505652280527122102L;
+
+			@Override
+			public boolean isVisible()
+			{
+				// Needs CREATE permission AND a BioCollection to select from
+				boolean hasBioCollections = false;
+				
+				if(linkSubjectStudy!= null)
+				{
+					hasBioCollections = iLimsService.hasBioCollections(linkSubjectStudy);
+				}
+				else
+				{
+					hasBioCollections = iLimsService.hasBioCollections(containerForm.getModelObject().getLinkSubjectStudy());
+				}
+				
+				if(!hasBioCollections)
+				{
+					hasBioCollections = false;
+					this.error("No Biospecimen Collections exist. Please create at least one Collection.");
+				}
+				else
+				{
+					hasBioCollections = true;
+				}
+				return (ArkSecurity.isActionPermitted(au.org.theark.core.Constants.NEW) && hasBioCollections);
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onNew(target, containerForm);	
+			}
+		};
+		
+		newButton.setDefaultFormProcessing(false);
+
+		addOrReplace(newButton);
+	}
+
+	@Override
+	protected AbstractListEditor<Biospecimen> initialiseListEditor()
+	{
+		listEditor = new AbstractListEditor<Biospecimen>("listDetails", new PropertyModel(containerForm.getModelObject(), "biospecimenList"))
 		{
 			/**
 			 * 
@@ -138,14 +170,17 @@ public class ListDetailForm extends Form<LimsVO>
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 					{
+						// Refresh any feedback
+						target.addComponent(feedbackPanel);
+						
 						// Set selected item into model.context, then show modalWindow for editing
-						Form<LimsVO> containerForm = (Form<LimsVO>) form;
-						containerForm.setModelObject(new LimsVO());
-						containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
-						containerForm.getModelObject().setBiospecimen(biospecimen);
-						Study study = linkSubjectStudy.getStudy();
-						containerForm.getModelObject().getBiospecimen().setStudy(study);
-						containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+						Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
+						
+						Biospecimen bioSpecimenSelected = biospecimen;
+						containerForm.getModelObject().setBiospecimen(bioSpecimenSelected);
+							
+						// Set the modalWindow title and content
+						modalWindow.setListDetailForm(listDetailsForm);
 						modalWindow.show(target);
 					}
 					
@@ -208,7 +243,7 @@ public class ListDetailForm extends Form<LimsVO>
 						}
 
 						// Display delete confirmation message
-						target.addComponent(feedBackPanel);
+						target.addComponent(feedbackPanel);
 					}
 
 					@Override
@@ -230,7 +265,7 @@ public class ListDetailForm extends Form<LimsVO>
 			}
 		};
 
-		addComponents();
+		return (AbstractListEditor<Biospecimen>) listEditor;
 	}
 
 	public void initialiseList()
@@ -249,138 +284,67 @@ public class ListDetailForm extends Form<LimsVO>
 
 	protected void attachValidators()
 	{
-		// Used when editing ListDetail directly (ie not using modalWindow)
-		//nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
+		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 	}
 
-	@SuppressWarnings("unchecked")
-	private void addComponents()
+	/**
+	 * @return the listDetailPanel
+	 */
+	public ListDetailPanel getListDetailPanel()
 	{
-		AjaxButton newButton = new AjaxButton("listNewButton")
-		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -8505652280527122102L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				// Set new LimsVO into model for new Biospecimen, then show modalWindow to save
-				Form<LimsVO> containerForm = (Form<LimsVO>) form;
-				containerForm.setModelObject(new LimsVO());
-				containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
-				containerForm.getModelObject().setBiospecimen(new Biospecimen());
-				Study study = linkSubjectStudy.getStudy();
-				containerForm.getModelObject().getBiospecimen().setStudy(study);
-				containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
-				
-				// TODO: Replace with Study specific generated biospecimenId's
-				// Create new BiospecimenUID
-				containerForm.getModelObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
-				
-				// TODO: Set DetailForm model to Subject in context!!
-				
-				modalWindow.show(target);
-			}
-
-			@Override
-			public boolean isVisible()
-			{
-				// Needs CREATE permission AND a BioCollection to select from
-				hasBioCollections = iLimsService.hasBioCollections(linkSubjectStudy);
-				
-				if(!hasBioCollections)
-				{
-					hasBioCollections = false;
-					this.error("No Biospecimen Collections exist. Please create at least one Collection.");
-				}
-				else
-				{
-					hasBioCollections = true;
-				}
-				return (ArkSecurity.isActionPermitted(au.org.theark.core.Constants.NEW) && hasBioCollections);
-			}
-		};
-		
-		newButton.setDefaultFormProcessing(false);
-
-		addOrReplace(newButton);
-		addOrReplace(listEditor);
-		addOrReplace(modalWindow);
+		return listDetailPanel;
 	}
 
-	@SuppressWarnings("unchecked")
-	protected void onSave(Form<?> form, AjaxRequestTarget target)
+	/**
+	 * @param listDetailPanel the listDetailPanel to set
+	 */
+	public void setListDetailPanel(ListDetailPanel listDetailPanel)
 	{
-		// Subject in context
-		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		Form<LimsVO> containerForm = (Form<LimsVO>) form;
-
-		java.util.List<Biospecimen> biospecimenList = containerForm.getModelObject().getBiospecimenList();
-
-		for (Iterator iterator = biospecimenList.iterator(); iterator.hasNext();)
-		{
-			Biospecimen biospecimen = (Biospecimen) iterator.next();
-			try
-			{
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
-				biospecimen.setLinkSubjectStudy(linkSubjectStudy);
-				biospecimen.setStudy(linkSubjectStudy.getStudy());
-				LimsVO limsVo = new LimsVO();
-				limsVo.setBiospecimen(biospecimen);
-
-				if (limsVo.getBiospecimen().getId() == null)
-				{
-					// Save
-					iLimsService.createBiospecimen(limsVo);
-					this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenId() + " was created successfully");
-					processErrors(target);
-				}
-				else
-				{
-					// Update
-					iLimsService.updateBioCollection(limsVo);
-					this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenId() + " was updated successfully");
-					processErrors(target);
-				}
-			}
-			catch (EntityNotFoundException e)
-			{
-				error(e.getMessage());
-				target.addComponent(feedBackPanel);
-			}
-
-		}
+		this.listDetailPanel = listDetailPanel;
 	}
 
 	protected void saveOnErrorProcess(AjaxRequestTarget target)
 	{
-		target.addComponent(feedBackPanel);
+		target.addComponent(feedbackPanel);
 		target.addComponent(this);
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
 	{
-		target.addComponent(feedBackPanel);
+		target.addComponent(feedbackPanel);
 		target.addComponent(this);
 	}
 
-	/**
-	 * @param linkSubjectStudy
-	 *           the linkSubjectStudy to set
-	 */
-	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
+	@Override
+	protected void onNew(AjaxRequestTarget target, Form<LimsVO> form)
 	{
-		this.linkSubjectStudy = linkSubjectStudy;
-	}
-
-	/**
-	 * @return the linkSubjectStudy
-	 */
-	public LinkSubjectStudy getLinkSubjectStudy()
-	{
-		return linkSubjectStudy;
+		// Set new LimsVO into model for new Biospecimen, then show modalWindow to save
+		Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
+		containerForm.setModelObject(new LimsVO());
+		
+		if(linkSubjectStudy != null)
+		{
+			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
+			containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+			containerForm.getModelObject().getBiospecimen().setStudy(linkSubjectStudy.getStudy());
+		}
+		else
+		{
+			containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+			containerForm.getModelObject().getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		}
+		
+		containerForm.getModelObject().setBiospecimen(new Biospecimen());
+		
+		// TODO: Replace with Study specific generated biospecimenId's
+		// Create new BiospecimenUID
+		containerForm.getModelObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
+		
+		// Set the modalWindow title and content
+		modalWindow.setTitle("Biospecimen Detail");
+		modalWindow.setContent(detailPanel);
+		modalWindow.setListDetailPanel(listDetailPanel);
+		modalWindow.setListDetailForm(listDetailsForm);
+		modalWindow.show(target);
 	}
 }

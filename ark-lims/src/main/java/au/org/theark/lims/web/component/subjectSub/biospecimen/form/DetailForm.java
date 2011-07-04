@@ -184,46 +184,55 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target)
 	{
-		// Subject in context
-		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		
-		try
+		if (containerForm.getModelObject().getBiospecimen().getId() == null)
 		{
-			linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
-			containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+			// Save
+			iLimsService.createBiospecimen(containerForm.getModelObject());
+			this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was created successfully");
+			processErrors(target);
+		}
+		else
+		{
+			// Update
+			iLimsService.updateBiospecimen(containerForm.getModelObject());
+			this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
+			processErrors(target);
+		}
 
-			if (containerForm.getModelObject().getBiospecimen().getId() == null)
-			{
-				// Save
-				iLimsService.createBiospecimen(containerForm.getModelObject());
-				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was created successfully");
-				processErrors(target);
-			}
-			else
-			{
-				// Update
-				iLimsService.updateBiospecimen(containerForm.getModelObject());
-				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
-				processErrors(target);
-			}
-
-			onSavePostProcess(target);
-		}
-		catch (EntityNotFoundException e)
-		{
-			this.error(e.getMessage());
-		}
-		catch(NullPointerException e)
-		{
-			this.error("Cannot save a Biospecimen without a Subject in context");
-		}
+		onSavePostProcess(target);
 	}
 
 	@Override
 	protected void onCancel(AjaxRequestTarget target)
 	{
+		// Reset LimsVO
+		LimsVO limsVo = new LimsVO();
+		limsVo.setSubjectVo(containerForm.getModelObject().getSubjectVo());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		try
+		{
+			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
+		}
+		catch (ArkSystemException e)
+		{
+			log.error(e.getMessage());
+		}
+		limsVo.getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		try
+		{
+			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
+		}
+		catch (ArkSystemException e)
+		{
+			log.error(e.getMessage());
+		}
+		containerForm.setModelObject(limsVo);
 		target.addComponent(feedbackPanel);
+		target.addComponent(containerForm);
 		modalWindow.close(target);
 	}
 	
