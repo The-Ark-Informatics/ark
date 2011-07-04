@@ -3,13 +3,14 @@ package au.org.theark.lims.web.component.subjectSub.biospecimen.form;
 import java.util.ArrayList;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -55,12 +56,12 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 	protected FeedbackPanel							feedbackPanel;
 
 	private LinkSubjectStudy						linkSubjectStudy;
-	private TextField<String>						idTxtFld;
-	private TextField<String>						nameTxtFld;
-	private TextField<String>						sampleTypeTxtFld;
-	private TextField<String>						collectionTxtFld;
-	private TextField<String>						commentsTxtFld;
-	private TextField<String>						quantityTxtFld;
+	private Label									idLblFld;
+	private Label									nameLblFld;
+	private Label									sampleTypeLblFld;
+	private Label									collectionLblFld;
+	private Label									commentsLblFld;
+	private Label									quantityLblFld;
 	private ListDetailPanel							listDetailPanel;
 	private DetailPanel								detailPanel;
 	private DetailModalWindow						modalWindow;
@@ -87,10 +88,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			{
 			}
 		}
-		
-		modalWindow.setTitle("Biospecimen Detail");
-		modalWindow.setContent(detailPanel);
-		modalWindow.setListDetailPanel(listDetailPanel);
 		
 		// Override newButton, determining if bioCollections exist
 		initialiseNewButton();
@@ -179,9 +176,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 						Biospecimen bioSpecimenSelected = biospecimen;
 						containerForm.getModelObject().setBiospecimen(bioSpecimenSelected);
 							
-						// Set the modalWindow title and content
-						modalWindow.setListDetailForm(listDetailsForm);
-						modalWindow.show(target);
+						showModalWindow(target, listDetailsForm);
 					}
 					
 					@Override
@@ -193,30 +188,19 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 				
 				item.addOrReplace(listEditButton);
 
-				idTxtFld = new TextField<String>("id");
-				idTxtFld.setEnabled(false);
-				nameTxtFld = new TextField<String>("biospecimenId");
-				sampleTypeTxtFld = new TextField<String>("sampleType.name");
-				collectionTxtFld = new TextField<String>("bioCollection.name");
-				commentsTxtFld = new TextField<String>("comments");
-				quantityTxtFld = new TextField<String>("quantity");
+				idLblFld = new Label("id", item.getModelObject().getId().toString());
+				nameLblFld = new Label("biospecimenId");
+				sampleTypeLblFld = new Label("sampleType.name");
+				collectionLblFld = new Label("bioCollection.name");
+				commentsLblFld = new Label("comments");
+				quantityLblFld = new Label("quantity");
 
-				item.add(idTxtFld);
-				item.add(nameTxtFld);
-				item.add(sampleTypeTxtFld);
-				item.add(collectionTxtFld);
-				item.add(commentsTxtFld);
-				item.add(quantityTxtFld);
-
-				if (biospecimen.getId() != null)
-				{
-					item.get("id").setEnabled(false);
-					item.get("biospecimenId").setEnabled(false);
-					item.get("sampleType.name").setEnabled(false);
-					item.get("bioCollection.name").setEnabled(false);
-					item.get("comments").setEnabled(false);
-					item.get("quantity").setEnabled(false);
-				}
+				item.add(idLblFld);
+				item.add(nameLblFld);
+				item.add(sampleTypeLblFld);
+				item.add(collectionLblFld);
+				item.add(commentsLblFld);
+				item.add(quantityLblFld);
 
 				AjaxListDeleteButton deleteButton = new AjaxListDeleteButton("listDeleteButton", new StringResourceModel("confirmDelete", this, null),
 						new StringResourceModel(Constants.DELETE, this, null))
@@ -260,6 +244,18 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 
 				};
 				item.addOrReplace(deleteButton);
+				
+				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 7193815665666917507L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+					}
+				}));
 
 				attachValidators();
 			}
@@ -284,7 +280,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 
 	protected void attachValidators()
 	{
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 	}
 
 	/**
@@ -338,8 +333,16 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 		// Create new BiospecimenUID
 		containerForm.getModelObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
 		
+		showModalWindow(target, listDetailsForm);
+	}
+	
+	protected void showModalWindow(AjaxRequestTarget target, Form<LimsVO> form)
+	{
 		// Set the modalWindow title and content
-		modalWindow.setListDetailForm(listDetailsForm);
+		modalWindow.setTitle("Biospecimen Detail");
+		modalWindow.setContent(detailPanel);
+		modalWindow.setListDetailPanel(listDetailPanel);
+		modalWindow.setListDetailForm(form);
 		modalWindow.show(target);
 	}
 }

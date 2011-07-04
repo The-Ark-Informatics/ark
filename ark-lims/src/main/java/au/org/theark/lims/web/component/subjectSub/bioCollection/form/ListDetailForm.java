@@ -1,16 +1,17 @@
 package au.org.theark.lims.web.component.subjectSub.bioCollection.form;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -52,13 +53,13 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 	private ILimsService								iLimsService;
 
 	private LinkSubjectStudy						linkSubjectStudy;
-	private TextField<String>						idTxtFld;
-	private TextField<String>						nameTxtFld;
-	private TextField<String>						commentsTxtFld;
-	private DateTextField							collectionDateTxtFld;
-	private DateTextField							surgeryDateTxtFld;
+	private Label									idLblFld;
+	private Label									nameLblFld;
+	private Label									commentsLblFld;
+	private Label									collectionDateLblFld;
+	private Label									surgeryDateLblFld;
 	private ListDetailPanel							listDetailPanel;
-	private DetailPanel 								detailPanel;
+	private DetailPanel 							detailPanel;
 	private DetailModalWindow						modalWindow;
 	
 	public ListDetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm,  DetailModalWindow modalWindow, ListDetailPanel listDetailPanel)
@@ -83,11 +84,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			{
 			}
 		}
-		
-		// Set the modalWindow title and content
-		modalWindow.setTitle("Collection Detail");
-		modalWindow.setContent(detailPanel);
-		modalWindow.setListDetailPanel(listDetailPanel);
 	}
 
 	@Override
@@ -117,7 +113,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 					{
-						// Refresh any feeedback
+						// Refresh any feedback
 						target.addComponent(feedbackPanel);
 						
 						// Set selected item into model.context, then show modalWindow for editing
@@ -126,8 +122,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 						BioCollection bioCollectionSelected = bioCollection;
 						containerForm.getModelObject().setBioCollection(bioCollectionSelected);
 						
-						modalWindow.setListDetailForm(listDetailsForm);
-						modalWindow.show(target);
+						showModalWindow(target, listDetailsForm);
 					}
 					
 					@Override
@@ -138,36 +133,28 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 				};
 				
 				item.addOrReplace(listEditButton);
+				
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
-				idTxtFld = new TextField<String>("id");
-				idTxtFld.setEnabled(false);
-				nameTxtFld = new TextField<String>("name");
-				collectionDateTxtFld = new DateTextField("collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
-				surgeryDateTxtFld = new DateTextField("surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
-				commentsTxtFld = new TextField<String>("comments");
+				idLblFld = new Label("id", item.getModelObject().getId().toString());
+				nameLblFld = new Label("name", item.getModelObject().getName());
+				collectionDateLblFld = new Label("collectionDate", simpleDateFormat.format(item.getModelObject().getCollectionDate()));
+				surgeryDateLblFld = new Label("surgeryDate", simpleDateFormat.format(item.getModelObject().getCollectionDate()));
+				commentsLblFld = new Label("comments");
 
 				ArkDatePicker datePicker = new ArkDatePicker();
-				datePicker.bind(collectionDateTxtFld);
-				collectionDateTxtFld.add(datePicker);
+				datePicker.bind(collectionDateLblFld);
+				collectionDateLblFld.add(datePicker);
 
 				ArkDatePicker datePicker2 = new ArkDatePicker();
-				datePicker2.bind(surgeryDateTxtFld);
-				surgeryDateTxtFld.add(datePicker2);
+				datePicker2.bind(surgeryDateLblFld);
+				surgeryDateLblFld.add(datePicker2);
 
-				item.add(idTxtFld);
-				item.add(nameTxtFld);
-				item.add(collectionDateTxtFld);
-				item.add(surgeryDateTxtFld);
-				item.add(commentsTxtFld);
-
-				if (bioCollection.getId() != null)
-				{
-					item.get("id").setEnabled(false);
-					item.get("name").setEnabled(false);
-					item.get("collectionDate").setEnabled(false);
-					item.get("surgeryDate").setEnabled(false);
-					item.get("comments").setEnabled(false);
-				}
+				item.add(idLblFld);
+				item.add(nameLblFld);
+				item.add(collectionDateLblFld);
+				item.add(surgeryDateLblFld);
+				item.add(commentsLblFld);
 
 				AjaxListDeleteButton deleteButton = new AjaxListDeleteButton("listDeleteButton", new StringResourceModel("confirmDelete", this, null),
 						new StringResourceModel(Constants.DELETE, this, null))
@@ -211,6 +198,18 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					}
 				};
 				item.addOrReplace(deleteButton);
+				
+				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long serialVersionUID = 1710579139006313949L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+					}
+				}));
 
 				attachValidators();
 			}
@@ -237,7 +236,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 
 	protected void attachValidators()
 	{
-		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.name.required", this, new Model<String>("Name")));
 	}
 	
 	/**
@@ -306,7 +304,16 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			containerForm.getModelObject().getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
 		}
 		
-		modalWindow.setListDetailForm(listDetailsForm);
+		showModalWindow(target, listDetailsForm);
+	}
+	
+	protected void showModalWindow(AjaxRequestTarget target, Form<LimsVO> form)
+	{
+		// Set the modalWindow title and content
+		modalWindow.setTitle("Collection Detail");
+		modalWindow.setContent(detailPanel);
+		modalWindow.setListDetailPanel(listDetailPanel);
+		modalWindow.setListDetailForm(form);
 		modalWindow.show(target);
 	}
 }

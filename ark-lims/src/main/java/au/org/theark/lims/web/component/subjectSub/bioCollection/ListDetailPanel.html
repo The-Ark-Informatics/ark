@@ -5,7 +5,7 @@
 				<!-- Header row -->
 				<tr>
 					<th width="2%">&nbsp;</th>
-					<th width="5%">
+					<th width="2%">
 						<label for="id">
 							<wicket:message	key="id">Collection ID:</wicket:message>
 						</label>
@@ -34,9 +34,32 @@
 				</tr>
 				<!-- Repeated item row -->
 				<tr wicket:id="listDetails">
+					<td width="2%">
+						<input wicket:id="listEditButton" type="submit" value="Edit"/>
+					</td>
+					<td width="2%">
+						<span wicket:id="id">ID</span>
+					</td>
+					<td width="10%">
+					  <span wicket:id="name"></span> 
+					</td>
+					<td width="10%">
+						<span wicket:id="collectionDate"></span>
+					</td>
+					<td width="10%">
+						<span wicket:id="surgeryDate"></span>
+					</td>
+					<td width="10%">
+						<span wicket:id="comments"></span>
+					</td>
+					<td width="2%">
+						<input wicket:id="listDeleteButton" type="submit" value="Delete"/>
+					</td>
+				
+					<!-- Text boxes
 					<td width="2%"><input wicket:id="listEditButton" type="submit" value="Edit"/></td>
-					<td width="5%">
-						<input wicket:id="id" type="text" />
+					<td width="2%">
+						<span wicket:id="id">ID</span>
 					</td>
 					<td width="10%">
 					  <input wicket:id="name" type="text" /> 
@@ -50,7 +73,10 @@
 					<td width="10%">
 						<input wicket:id="comments" type="text" maxLength="50"/>
 					</td>
-					<td width="2%"><input wicket:id="listDeleteButton" type="submit" value="Delete"/></td>
+					<td width="2%">
+						<input wicket:id="listDeleteButton" type="submit" value="Delete"/>
+					</td>
+					-->
 				</tr>
 			</table>
 			<!-- New button row -->
