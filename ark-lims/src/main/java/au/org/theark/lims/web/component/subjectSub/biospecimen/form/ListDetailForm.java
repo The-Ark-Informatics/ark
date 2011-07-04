@@ -320,7 +320,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 	{
 		// Set new LimsVO into model for new Biospecimen, then show modalWindow to save
 		Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
-		containerForm.setModelObject(new LimsVO());
+		containerForm.getModelObject().setBiospecimen(new Biospecimen());
 		
 		if(linkSubjectStudy != null)
 		{
@@ -334,16 +334,11 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			containerForm.getModelObject().getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
 		}
 		
-		containerForm.getModelObject().setBiospecimen(new Biospecimen());
-		
 		// TODO: Replace with Study specific generated biospecimenId's
 		// Create new BiospecimenUID
 		containerForm.getModelObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
 		
 		// Set the modalWindow title and content
-		modalWindow.setTitle("Biospecimen Detail");
-		modalWindow.setContent(detailPanel);
-		modalWindow.setListDetailPanel(listDetailPanel);
 		modalWindow.setListDetailForm(listDetailsForm);
 		modalWindow.show(target);
 	}

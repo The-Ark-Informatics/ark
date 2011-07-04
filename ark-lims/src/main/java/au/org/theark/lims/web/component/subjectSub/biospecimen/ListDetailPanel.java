@@ -2,9 +2,7 @@ package au.org.theark.lims.web.component.subjectSub.biospecimen;
 
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectSub.DetailModalWindow;
 import au.org.theark.lims.web.component.subjectSub.biospecimen.form.ListDetailForm;
@@ -22,6 +20,7 @@ public class ListDetailPanel extends Panel
 	{
 		super(id);
 		this.feedbackPanel = feedbackPanel;
+		setOutputMarkupPlaceholderTag(true);
 	}
 	
 	public void initialisePanel(ContainerForm containerForm, DetailModalWindow modalWindow)

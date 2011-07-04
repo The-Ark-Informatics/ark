@@ -182,7 +182,7 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target)
+	protected void onSave(AjaxRequestTarget target)
 	{
 		if (containerForm.getModelObject().getBiospecimen().getId() == null)
 		{
