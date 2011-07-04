@@ -41,7 +41,7 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton
       
       // only repaint ListDetailForm
       target.addComponent(form);
-      onDeleteConfirmed(target);
+      onDeleteConfirmed(target, form);
 	}
 	
 	@Override
@@ -51,5 +51,5 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton
 		super.onError(target, form);
 	}
 
-	protected abstract void onDeleteConfirmed(AjaxRequestTarget target);
+	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
 }
