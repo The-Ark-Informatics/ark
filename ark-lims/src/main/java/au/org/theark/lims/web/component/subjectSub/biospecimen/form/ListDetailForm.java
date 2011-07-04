@@ -342,7 +342,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 		modalWindow.setTitle("Biospecimen Detail");
 		modalWindow.setContent(detailPanel);
 		modalWindow.setListDetailPanel(listDetailPanel);
-		modalWindow.setListDetailForm(form);
+		modalWindow.setListDetailForm(this);
 		modalWindow.show(target);
 	}
 }
