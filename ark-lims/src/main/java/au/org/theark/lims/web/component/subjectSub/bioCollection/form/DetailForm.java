@@ -22,7 +22,9 @@ import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subject.DetailPanel;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
+import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
 
 /**
  * @author cellis
@@ -134,35 +136,41 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 		// Reset LimsVO
 		LimsVO limsVo = new LimsVO();
 		limsVo.setSubjectVo(containerForm.getModelObject().getSubjectVo());
-		limsVo.setLinkSubjectStudy(containerForm.getModelObject()
-				.getLinkSubjectStudy());
-		limsVo.setLinkSubjectStudy(containerForm.getModelObject()
-				.getLinkSubjectStudy());
-		limsVo.getBioCollection().setLinkSubjectStudy(
-				containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.getBioCollection()
-				.setStudy(
-						containerForm.getModelObject().getLinkSubjectStudy()
-								.getStudy());
-		try {
-			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo
-					.getBioCollection()));
-		} catch (ArkSystemException e) {
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		try 
+		{
+			limsVo.setBioCollectionList(iLimsService.searchBioCollection(limsVo.getBioCollection()));
+		} 
+		catch (ArkSystemException e) 
+		{
 			log.error(e.getMessage());
 		}
-		limsVo.getBiospecimen().setLinkSubjectStudy(
-				containerForm.getModelObject().getLinkSubjectStudy());
-		limsVo.getBiospecimen()
-				.setStudy(
-						containerForm.getModelObject().getLinkSubjectStudy()
-								.getStudy());
-		try {
-			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo
-					.getBiospecimen())));
-		} catch (ArkSystemException e) {
+		
+		limsVo.getBiospecimen().setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		limsVo.getBiospecimen().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
+		
+		try 
+		{
+			limsVo.setBiospecimenList(iLimsService.searchBiospecimen((limsVo.getBiospecimen())));
+		} 
+		catch (ArkSystemException e) 
+		{
 			log.error(e.getMessage());
 		}
+		
 		containerForm.setModelObject(limsVo);
+		
+		DetailPanel details = (DetailPanel) arkCrudContainerVo.getDetailPanelContainer().get("detailsPanel");
+		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
+		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
+		au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel collectionListDetailPanel = 
+			(au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
+		au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm collectionListDetailForm = collectionListDetailPanel.getListDetailForm();
+		collectionListDetailForm.initialiseForm();
+		
 		target.addComponent(feedbackPanel);
 		target.addComponent(containerForm);
 		modalWindow.close(target);
