@@ -21,9 +21,9 @@ import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.phenotypic.web.Constants;
 import au.org.theark.phenotypic.web.component.field.FieldContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
+import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
-import au.org.theark.phenotypic.web.component.phenoUpload.PhenoUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
 @SuppressWarnings( { "serial", "unused" })
@@ -91,7 +91,7 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 		}
 		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
-			panelToReturn = new PhenoUploadContainerPanel(panelId); // Note the constructor
+			panelToReturn = new FieldDataUploadContainerPanel(panelId); // Note the constructor
 		}
 
 		return panelToReturn; 
