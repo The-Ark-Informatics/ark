@@ -38,6 +38,7 @@ import au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel
  * @author cellis
  * 
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 {
 	/**
@@ -82,6 +83,11 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			{
 			}
 		}
+		
+		// Set the modalWindow title and content
+		modalWindow.setTitle("Collection Detail");
+		modalWindow.setContent(detailPanel);
+		modalWindow.setListDetailPanel(listDetailPanel);
 	}
 
 	@Override
@@ -119,11 +125,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 						
 						BioCollection bioCollectionSelected = bioCollection;
 						containerForm.getModelObject().setBioCollection(bioCollectionSelected);
-							
-						// Set the modalWindow title and content
-						modalWindow.setTitle("Collection Detail");
-						modalWindow.setContent(detailPanel);
-						modalWindow.setListDetailPanel(listDetailPanel);
+						
 						modalWindow.setListDetailForm(listDetailsForm);
 						modalWindow.show(target);
 					}
@@ -304,10 +306,6 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 			containerForm.getModelObject().getBioCollection().setStudy(containerForm.getModelObject().getLinkSubjectStudy().getStudy());
 		}
 		
-		// Set the modalWindow title and content
-		modalWindow.setTitle("Collection Detail");
-		modalWindow.setContent(detailPanel);
-		modalWindow.setListDetailPanel(listDetailPanel);
 		modalWindow.setListDetailForm(listDetailsForm);
 		modalWindow.show(target);
 	}
