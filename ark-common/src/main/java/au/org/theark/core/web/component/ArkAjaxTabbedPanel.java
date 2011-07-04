@@ -19,7 +19,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long serialVersionUID = -3340777937373315256L;
 	private transient Logger	log = LoggerFactory.getLogger(ArkAjaxTabbedPanel.class);
 	protected List<ArkMainTab> mainTabs;
 	
@@ -49,14 +49,12 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 			log.error("Not all main tabs are using/extending ArkMainTab....");
 		}
 	}
-
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	protected WebMarkupContainer newLink(final String linkId, final int index)
 	{
 		return new AjaxFallbackLink(linkId)
 		{
-
 			private static final long serialVersionUID = 1L;
 
 			@Override
@@ -75,7 +73,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 			}
 
 			@Override
-		   protected IAjaxCallDecorator getAjaxCallDecorator() {
+		    protected IAjaxCallDecorator getAjaxCallDecorator() {
 		       return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
 		           private static final long serialVersionUID = 1L;
 
