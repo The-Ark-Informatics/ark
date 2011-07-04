@@ -13,9 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -114,6 +112,7 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO>
 					}
 					catch (ArkSystemException e)
 					{
+						log.error(e.getMessage());
 					}
 				}
 
