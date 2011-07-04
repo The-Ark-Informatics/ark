@@ -36,8 +36,8 @@ public class Constants {
 	public static final int MODE_READ =3;
 	
 	/* Person */
-	public static final String	PERSON_PREFERRED_EMAIL	= "linkSubjectStudy.person.preferredEmail";
-	public static final String	PERSON_OTHER_EMAIL	= "linkSubjectStudy.person.otherEmail";
+	public static final String PERSON_PREFERRED_EMAIL	= "linkSubjectStudy.person.preferredEmail";
+	public static final String PERSON_OTHER_EMAIL	= "linkSubjectStudy.person.otherEmail";
 	public static final String PERSON_PREFERRED_NAME="linkSubjectStudy.person.preferredName";
 	public static final String PERSON_VITAL_STATUS ="linkSubjectStudy.person.vitalStatus";
 	public static final String PERSON_PERSON_ID="linkSubjectStudy.person.id";
@@ -57,7 +57,10 @@ public class Constants {
 	public static final String PERSON_CONTACT_METHOD	= "linkSubjectStudy.person.personContactMethod";
 	public static final String PERSON_DOB="linkSubjectStudy.person.dateOfBirth";
 	public static final String PERSON_DOD	= "linkSubjectStudy.person.dateOfDeath";
+	public static final String PERSON_COMMENT	= "linkSubjectStudy.comment";
+	public static final String PERSON_DATE_LAST_KNOWN_ALIVE	= "linkSubjectStudy.person.dateLastKnownAlive";
 	public static final String PERSON_CONSENT_DATE="linkSubjectStudy.consentDate";
+	public static final String PERSON_CONSENT_DOWNLOADED="linkSubjectStudy.consentDownloaded";
 	public static final String SUBJECT_CONSENT_STATUS="linkSubjectStudy.consentStatus";
 	public static final String SUBJECT_CONSENT_TYPE="linkSubjectStudy.consentType";
 	public static final String PERSON_CAUSE_OF_DEATH	= "linkSubjectStudy.person.causeOfDeath";
@@ -76,6 +79,7 @@ public class Constants {
 	public static final String PHONE_NUMBER_VALUE = "phoneNumberValue";
 	public static final String CONSENT_LIST = "consentList";
 	public static final String CONSENT_COMPONENT_LABEL="consentComponentLabel";
+	
 	
 	public static final String ADDRESS_LIST="addressList";
 	public static final String ADDRESS_LABEL="addressLabel";
@@ -257,6 +261,7 @@ public class Constants {
 	public static final String SUBJECT_CONSENT_TO_ACTIVE_CONTACT ="linkSubjectStudy.consentToActiveContact";
 	public static final String SUBJECT_CONSENT_TO_USEDATA ="linkSubjectStudy.consentToUseData";
 	public static final String SUBJECT_CONSENT_PASSIVE_DATA_GATHER ="linkSubjectStudy.consentToPassiveDataGathering";
+	public static final String SUBJECT_HEARD_ABOUT_STUDY_FROM = "linkSubjectStudy.heardAboutStudy";
 	public static final String SUBJECT_AUTO_GENERATED = "Auto-generated";
 	public static final String	SUBJECTUID_EXAMPLE	= "AAA-000000001";
 	
@@ -317,6 +322,7 @@ public class Constants {
 	
 	//1 digit, 1 lower, 1 upper, 1 symbol "@#$%", from 6 to 20
 	public static final String PASSWORD_PATTERN = "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+	
 	
 	
 	
