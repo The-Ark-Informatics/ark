@@ -116,7 +116,23 @@ public abstract class AbstractListDetailForm<T> extends Form<T>
 
 	abstract protected void attachValidators();
 	
+	/**
+	 * Initialises the listEditor within the form
+	 * @return
+	 */
 	abstract protected AbstractListEditor<?> initialiseListEditor();
 
+	/**
+	 * Sub-class implements the action when New button clicked
+	 * @param target
+	 * @param form
+	 */
 	abstract protected void onNew(AjaxRequestTarget target, Form<T> form);
+	
+	/**
+	 * Show the modal window that contains the detail form to create/edit/delete
+	 * @param target
+	 * @param form
+	 */
+	abstract protected void showModalWindow(AjaxRequestTarget target, Form<T> form);
 }
