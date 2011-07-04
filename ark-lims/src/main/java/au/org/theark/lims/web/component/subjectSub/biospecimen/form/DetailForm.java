@@ -7,6 +7,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,6 +33,8 @@ import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.subject.DetailPanel;
+import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
 
 /**
  * @author cellis
@@ -231,6 +234,15 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 			log.error(e.getMessage());
 		}
 		containerForm.setModelObject(limsVo);
+		
+		DetailPanel details = (DetailPanel) arkCrudContainerVo.getDetailPanelContainer().get("detailsPanel");
+		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
+		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
+		au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
+			(au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel) subContainerPanel.get("biospecimenListDetailPanel");
+		au.org.theark.lims.web.component.subjectSub.biospecimen.form.ListDetailForm biospecimenListDetailForm = biospecimenListDetailPanel.getListDetailForm();
+		biospecimenListDetailForm.initialiseForm();
+		
 		target.addComponent(feedbackPanel);
 		target.addComponent(containerForm);
 		modalWindow.close(target);
