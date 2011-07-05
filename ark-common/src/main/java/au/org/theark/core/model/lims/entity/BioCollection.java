@@ -358,4 +358,37 @@ public class BioCollection implements java.io.Serializable
 	{
 		this.pathlabno = pathlabno;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime
+				* result
+				+ ((linkSubjectStudy == null) ? 0 : linkSubjectStudy.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BioCollection other = (BioCollection) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (linkSubjectStudy == null) {
+			if (other.linkSubjectStudy != null)
+				return false;
+		} else if (!linkSubjectStudy.equals(other.linkSubjectStudy))
+			return false;
+		return true;
+	}
 }
