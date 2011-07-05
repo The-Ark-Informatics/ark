@@ -3,6 +3,8 @@ package au.org.theark.core.web.form;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractWizardStepPanel extends Panel
 {
@@ -16,6 +18,7 @@ public abstract class AbstractWizardStepPanel extends Panel
 	protected AbstractWizardStepPanel	previous;
 	protected AbstractWizardStepPanel	next;
 	protected static final String HEXES = "0123456789ABCDEF";
+	protected transient Logger log = LoggerFactory.getLogger(AbstractWizardStepPanel.class);
 	
 	public AbstractWizardStepPanel(String id)
 	{
