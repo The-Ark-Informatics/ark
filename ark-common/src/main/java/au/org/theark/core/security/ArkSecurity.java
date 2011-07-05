@@ -26,7 +26,11 @@ public class ArkSecurity
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW))
+		if (actionType.equalsIgnoreCase(Constants.SEARCH))
+		{
+			actionPermitted = hasSearchPermission(securityManager, currentUser);	
+		}
+		else if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW))
 		{
 			actionPermitted = hasSavePermission(securityManager, currentUser);
 		}
@@ -38,9 +42,32 @@ public class ArkSecurity
 		{
 			actionPermitted = hasDeletePermission(securityManager, currentUser);	
 		}
+		
 		return actionPermitted;
 	}
 	
+	/**
+	 * Determines if current user has Search permissions
+	 * @param securityManager
+	 * @param currentUser
+	 * @return true if READ permission allowed
+	 */
+	private static boolean hasSearchPermission(SecurityManager securityManager, Subject currentUser)
+	{
+		boolean flag = false;
+		
+		// Search allowed if user has READ permission
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
+		{
+			flag = true;
+		}
+		else
+		{
+			flag = false;
+		}
+		return flag;
+	}
+
 	/**
 	 * Determines if current user has Save permissions
 	 * @param securityManager
