@@ -35,8 +35,6 @@ public class FieldUploadStep5 extends AbstractWizardStepPanel
 	@Override
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) 
 	{
-		initialiseDetailForm();
-		
 		if(this.containerForm.getModelObject().getValidationMessages() != null)
 		{
 			form.getNextButton().setEnabled(false);
