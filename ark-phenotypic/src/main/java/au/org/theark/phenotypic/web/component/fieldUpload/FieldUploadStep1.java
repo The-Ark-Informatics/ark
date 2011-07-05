@@ -15,8 +15,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.hibernate.Hibernate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.DelimiterType;
 import au.org.theark.core.model.pheno.entity.FileFormat;
@@ -46,8 +44,6 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
-
-	private transient Logger					log						= LoggerFactory.getLogger(FieldUploadStep1.class);
 
 	private Form<UploadVO>						containerForm;
 
@@ -155,7 +151,7 @@ public class FieldUploadStep1 extends AbstractWizardStepPanel
 		}
 		catch (IOException ioe)
 		{
-			System.out.println("Failed to save the uploaded file: " + ioe);
+			log.error("Failed to save the uploaded file: " + ioe);
 		}
 
 		// Set details of Upload object
