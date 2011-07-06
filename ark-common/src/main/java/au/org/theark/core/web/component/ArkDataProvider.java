@@ -12,7 +12,7 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	protected CompoundPropertyModel<T> compoundPropertyModel;
+	protected IModel<T> model;
 	protected U service;
 	
 	public ArkDataProvider(U service) {
@@ -20,14 +20,14 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 		this.service = service;
 	}
 
-	public CompoundPropertyModel<T> getCompoundPropertyModel() {
-		return compoundPropertyModel;
+	public IModel<T> getModel() {
+		return model;
 	}
 
-	public void setCompoundPropertyModel(CompoundPropertyModel<T> compoundPropertyModel) {
-		this.compoundPropertyModel = compoundPropertyModel;
+	public void setModel(IModel<T> model) {
+		this.model = model;
 	}
-	
+
 	public IModel<T> model (final T object) {
 		return new LoadableDetachableModel<T>() {
 			@Override
