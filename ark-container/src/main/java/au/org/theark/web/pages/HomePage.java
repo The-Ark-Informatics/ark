@@ -84,21 +84,21 @@ public class HomePage extends BasePage
 			moduleTabsList.add(itab);
 		}
 
-		// Geno
-		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
-		List<ITab> genoTabsList = genoTabs.buildTabs();
-		for (ITab itab : genoTabsList)
-		{
-			moduleTabsList.add(itab);
-		}
+		// Geno & Registry not to be deployed as yet into Test
+//		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
+//		List<ITab> genoTabsList = genoTabs.buildTabs();
+//		for (ITab itab : genoTabsList)
+//		{
+//			moduleTabsList.add(itab);
+//		}
 		
 		// Registry
-		RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
-		List<ITab> registryTabList =	registryTabProvider.buildTabs();
-		for(ITab tab : registryTabList){
-			moduleTabsList.add(tab);
-		}
-		
+//		RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
+//		List<ITab> registryTabList =	registryTabProvider.buildTabs();
+//		for(ITab tab : registryTabList){
+//			moduleTabsList.add(tab);
+//		}
+//		
 		// LIMS
 		LimsTabProviderImpl limsTabProvider = new LimsTabProviderImpl("lims");
 		List<ITab> limsTabList =	limsTabProvider.buildTabs(this.arkContextPanelMarkup);
