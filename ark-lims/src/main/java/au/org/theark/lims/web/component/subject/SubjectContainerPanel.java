@@ -11,6 +11,7 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -212,17 +213,17 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO>
 
 			public int size()
 			{
-				return service.getStudySubjectCount(compoundPropertyModel.getObject());
+				return service.getStudySubjectCount(model.getObject());
 			}
 
 			public Iterator<SubjectVO> iterator(int first, int count)
 			{
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-				listSubjects = iArkCommonService.searchPageableSubjects(compoundPropertyModel.getObject(), first, count);
+				listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
 				return listSubjects.iterator();
 			}
 		};
-		subjectProvider.setCompoundPropertyModel(new CompoundPropertyModel<SubjectVO>(cpModel.getObject().getSubjectVo()));
+		subjectProvider.setModel(new PropertyModel<SubjectVO>(cpModel.getObject(), "subjectVo"));
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);

@@ -22,7 +22,6 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
 import au.org.theark.core.web.component.listeditor.ListItem;
@@ -32,7 +31,7 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectSub.DetailModalWindow;
-import au.org.theark.lims.web.component.subjectSub.bioCollection.DetailPanel;
+import au.org.theark.lims.web.component.subjectSub.bioCollection.CollectionModalDetailPanel;
 import au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel;
 
 /**
@@ -59,7 +58,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 	private Label									collectionDateLblFld;
 	private Label									surgeryDateLblFld;
 	private ListDetailPanel							listDetailPanel;
-	private DetailPanel 							detailPanel;
+	private CollectionModalDetailPanel 							collectionDetailSubPanel;
 	private DetailModalWindow						modalWindow;
 	
 	public ListDetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm,  DetailModalWindow modalWindow, ListDetailPanel listDetailPanel)
@@ -70,7 +69,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 		this.modalWindow = modalWindow;
 		this.listDetailPanel = listDetailPanel;
 		
-		this.detailPanel = new DetailPanel("content", modalWindow, containerForm);
+		this.collectionDetailSubPanel = new CollectionModalDetailPanel("content", modalWindow, containerForm, listDetailPanel);
 		
 		String subjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 		
@@ -170,15 +169,15 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					{
 						containerForm.getModelObject().setBioCollection(bioCollection);
 						
-						try
-						{
+//						try
+//						{
 							iLimsService.deleteBioCollection(containerForm.getModelObject());
 							this.info("Biospecimen collection " + bioCollection.getName() + " was deleted successfully");
-						}
-						catch(org.hibernate.NonUniqueObjectException noe)
-						{
-							this.error(noe.getMessage());
-						}
+//						}
+//						catch(org.hibernate.NonUniqueObjectException noe)
+//						{
+//							this.error(noe.getMessage());
+//						}
 
 						// Display delete confirmation message
 						target.addComponent(feedbackPanel);
@@ -312,7 +311,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 	{
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Collection Detail");
-		modalWindow.setContent(detailPanel);
+		modalWindow.setContent(collectionDetailSubPanel);
 		modalWindow.setListDetailPanel(listDetailPanel);
 		modalWindow.setListDetailForm(this);
 		modalWindow.show(target);

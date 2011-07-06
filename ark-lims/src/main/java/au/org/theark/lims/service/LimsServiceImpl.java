@@ -132,7 +132,7 @@ public class LimsServiceImpl implements ILimsService
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.service.ILimsService#getBiospecimen(Long)
 	 */
-	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException, ArkSystemException
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException
 	{
 		return iBiospecimenDao.getBiospecimen(id);
 	}

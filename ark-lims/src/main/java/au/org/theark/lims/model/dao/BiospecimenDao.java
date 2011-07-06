@@ -15,7 +15,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 @Repository("biospecimenDao")
 public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenDao
 {
-	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException, ArkSystemException
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException
 	{
 		Biospecimen biospecimen = null;
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);

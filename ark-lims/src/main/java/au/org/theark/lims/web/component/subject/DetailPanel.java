@@ -38,7 +38,6 @@ public class DetailPanel extends Panel
 	
 	private WebMarkupContainer	subContainerWebMarkupContainer;
 	private SubjectSubContainerPanel   subContainerPanel;
-	private LimsVO limsVo;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm)
@@ -64,9 +63,7 @@ public class DetailPanel extends Panel
 
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
-		
-		limsVo = new LimsVO();
-		
+			
 		subContainerWebMarkupContainer = new WebMarkupContainer("subContainerWebMarkupContainer");
 		subContainerWebMarkupContainer.setOutputMarkupPlaceholderTag(true);
 		// SubContainer with child details
@@ -101,19 +98,4 @@ public class DetailPanel extends Panel
 		this.subContainerPanel = subContainerPanel;
 	}
 
-	/**
-	 * @return the limsVo
-	 */
-	public LimsVO getLimsVo()
-	{
-		return limsVo;
-	}
-
-	/**
-	 * @param limsVo the limsVo to set
-	 */
-	public void setLimsVo(LimsVO limsVo)
-	{
-		this.limsVo = limsVo;
-	}
 }

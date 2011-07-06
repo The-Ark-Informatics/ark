@@ -247,9 +247,8 @@ public class SearchResultListPanel extends Panel{
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 				
 				// Set up LimsVO
-				LimsVO limsVo = new LimsVO();
+				LimsVO limsVo = containerForm.getModelObject();
 				limsVo.setSubjectVo(subjectFromBackend);
-				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.getBioCollection().setLinkSubjectStudy(subjectFromBackend.getLinkSubjectStudy());
 				limsVo.getBioCollection().setStudy(subjectFromBackend.getLinkSubjectStudy().getStudy());
@@ -271,7 +270,7 @@ public class SearchResultListPanel extends Panel{
 				{
 					log.error(e.getMessage());
 				}
-				containerForm.setModelObject(limsVo);
+//				containerForm.setModelObject(limsVo);
 				
 				WebMarkupContainer wmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
 				SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) wmc.get("subContainerPanel");

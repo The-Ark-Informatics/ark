@@ -181,11 +181,7 @@ public class SearchResultListPanel extends Panel
 				{
 					this.error(e.getMessage());
 				}
-				catch (ArkSystemException e)
-				{
-					this.error(e.getMessage());
-				}
-				
+
 				// Sets the selected object into the model
 				LimsVO limsVo = containerForm.getModelObject();
 				limsVo.setBiospecimen(biospecimenFromBackend);

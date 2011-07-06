@@ -22,21 +22,20 @@ import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subject.DetailPanel;
 import au.org.theark.lims.web.component.subject.form.ContainerForm;
-import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
+import au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel;
 
 /**
  * @author cellis
  * 
  */
 @SuppressWarnings({ "unused" })
-public class DetailForm extends AbstractModalDetailForm<LimsVO> {
+public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2926069852602563767L;
-	private static final Logger log = LoggerFactory.getLogger(DetailForm.class);
+	private static final Logger log = LoggerFactory.getLogger(CollectionModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void> iArkCommonService;
 
@@ -53,6 +52,7 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 	private DateTextField surgeryDateTxtFld;
 	private ModalWindow modalWindow;
 	private WebMarkupContainer arkContextMarkup;
+	private ListDetailPanel listDetailPanel;
 
 	/**
 	 * Constructor
@@ -62,12 +62,12 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 	 * @param arkCrudContainerVo
 	 * @param modalWindow
 	 * @param containerForm
+	 * @param detailPanelContainer 
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel,
-			ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow,
-			ContainerForm containerForm) {
+	public CollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, ContainerForm containerForm, ListDetailPanel listDetailPanel) {
 		super(id, feedBackPanel, arkCrudContainerVo, containerForm);
 		this.modalWindow = modalWindow;
+		this.listDetailPanel = listDetailPanel;
 	}
 
 	public void initialiseDetailForm() {
@@ -163,12 +163,14 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 		
 		containerForm.setModelObject(limsVo);
 		
-		DetailPanel details = (DetailPanel) arkCrudContainerVo.getDetailPanelContainer().get("detailsPanel");
-		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
-		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
-		au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel collectionListDetailPanel = 
-			(au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
-		au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm collectionListDetailForm = collectionListDetailPanel.getListDetailForm();
+//		DetailPanel details = (DetailPanel) detailPanelContainer.get("detailsPanel");
+//		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
+//		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
+//		au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel collectionListDetailPanel = 
+//			(au.org.theark.lims.web.component.subjectSub.bioCollection.ListDetailPanel) subContainerPanel.get("collectionListDetailPanel");
+//		au.org.theark.lims.web.component.subjectSub.bioCollection.form.ListDetailForm collectionListDetailForm = collectionListDetailPanel.getListDetailForm();
+		ListDetailForm collectionListDetailForm = listDetailPanel.getListDetailForm();
+		
 		collectionListDetailForm.initialiseForm();
 		
 		target.addComponent(feedbackPanel);
@@ -178,14 +180,14 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO> {
 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-		try {
+//		try {
 			iLimsService.deleteBioCollection(containerForm.getModelObject());
 			this.info("Biospecimen collection "
 					+ containerForm.getModelObject().getBioCollection()
 							.getName() + " was deleted successfully");
-		} catch (org.hibernate.NonUniqueObjectException noe) {
-			this.error(noe.getMessage());
-		}
+//		} catch (org.hibernate.NonUniqueObjectException noe) {
+//			this.error(noe.getMessage());
+//		}
 
 		// Display delete confirmation message
 		target.addComponent(feedbackPanel);

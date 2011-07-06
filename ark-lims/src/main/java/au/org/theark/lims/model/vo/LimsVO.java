@@ -38,9 +38,9 @@ public class LimsVO implements Serializable
 		this.LinkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
-		this.bioCollectionList = new ArrayList<BioCollection>(0);
-		this.biospecimenList = new ArrayList<Biospecimen>(0);
-		this.bioTransactionList = new ArrayList<BioTransaction>(0);
+		this.bioCollectionList = new ArrayList<BioCollection>();
+		this.biospecimenList = new ArrayList<Biospecimen>();
+		this.bioTransactionList = new ArrayList<BioTransaction>();
 	}
 
 	/**

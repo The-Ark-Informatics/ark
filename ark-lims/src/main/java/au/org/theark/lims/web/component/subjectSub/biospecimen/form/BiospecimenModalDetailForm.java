@@ -7,7 +7,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -21,10 +20,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -33,20 +30,19 @@ import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subject.DetailPanel;
-import au.org.theark.lims.web.component.subjectSub.SubjectSubContainerPanel;
+import au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel;
 
 /**
  * @author cellis
  * 
  */
-public class DetailForm extends AbstractModalDetailForm<LimsVO>
+public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 {
 	/**
 	 * 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
-	private static final Logger		log					= LoggerFactory.getLogger(DetailForm.class);
+	private static final Logger		log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
@@ -64,18 +60,7 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 
 	private ModalWindow							modalWindow;
 	private String									subjectUIDInContext;
-
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param arkCrudContainerVo
-	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, Form<LimsVO> containerForm)
-	{
-		super(id, feedBackPanel, arkCrudContainerVo, containerForm);
-	}
+	private ListDetailPanel listDetailPanel;
 
 	/**
 	 * Constructor
@@ -84,11 +69,14 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVo
 	 * @param modalWindow
+	 * @param listDetailPanel 
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, Form<LimsVO> containerForm)
+	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, Form<LimsVO> containerForm, ListDetailPanel listDetailPanel)
 	{
 		super(id, feedBackPanel, arkCrudContainerVo, containerForm);
+
 		this.modalWindow = modalWindow;
+		this.listDetailPanel = listDetailPanel;
 	}
 
 	public void initialiseDetailForm()
@@ -123,45 +111,53 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
+		Study study = null;
 		if (sessionStudyId != null && sessionStudyId > 0)
 		{
-			Study study = iArkCommonService.getStudy(sessionStudyId);
+			study = iArkCommonService.getStudy(sessionStudyId);
 			containerForm.getModelObject().getBioCollection().setStudy(study);
-		}
-		
-		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		
-		// Subject in context
-		if(subjectUIDInContext != null && !subjectUIDInContext.isEmpty())
-		{
+
+			BioCollection criteria = new BioCollection();
+			criteria.setLinkSubjectStudy(containerForm.getModelObject().getBiospecimen().getLinkSubjectStudy());
+			criteria.setStudy(study);
 			try
 			{
-				// Subject in context
-				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
-				containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);	
+//				bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
+				bioCollectionList = iLimsService.searchBioCollection(criteria);
+
+				ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+				bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", (List<BioCollection>) bioCollectionList, bioCollectionRenderer);
 			}
-			catch (EntityNotFoundException e)
+			catch (ArkSystemException e)
 			{
 				log.error(e.getMessage());
-			}
-			catch(NullPointerException e)
-			{
-				log.error(e.getMessage());
+				this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
 			}
 		}
+//		
 		
-		try
-		{
-			bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
-		}
-		catch (ArkSystemException e)
-		{
-			log.error(e.getMessage());
-		}
+//		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+//		
+//		// Subject in context
+//		if(subjectUIDInContext != null && !subjectUIDInContext.isEmpty())
+//		{
+//			try
+//			{
+//				// Subject in context
+//				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
+//				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
+//				containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);	
+//			}
+//			catch (EntityNotFoundException e)
+//			{
+//				log.error(e.getMessage());
+//			}
+//			catch(NullPointerException e)
+//			{
+//				log.error(e.getMessage());
+//			}
+//		}
 		
-		ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-		bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", (List<BioCollection>) bioCollectionList, bioCollectionRenderer);
 	}
 	
 
@@ -235,12 +231,14 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 		}
 		containerForm.setModelObject(limsVo);
 		
-		DetailPanel details = (DetailPanel) arkCrudContainerVo.getDetailPanelContainer().get("detailsPanel");
-		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
-		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
-		au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
-			(au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel) subContainerPanel.get("biospecimenListDetailPanel");
-		au.org.theark.lims.web.component.subjectSub.biospecimen.form.ListDetailForm biospecimenListDetailForm = biospecimenListDetailPanel.getListDetailForm();
+//		DetailPanel details = (DetailPanel) arkCrudContainerVo.getDetailPanelContainer().get("detailsPanel");
+//		WebMarkupContainer swmc = (WebMarkupContainer) details.get("subContainerWebMarkupContainer");
+//		SubjectSubContainerPanel subContainerPanel = (SubjectSubContainerPanel) swmc.get("subContainerPanel");
+//		au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel biospecimenListDetailPanel = 
+//			(au.org.theark.lims.web.component.subjectSub.biospecimen.ListDetailPanel) subContainerPanel.get("biospecimenListDetailPanel");
+//		au.org.theark.lims.web.component.subjectSub.biospecimen.form.ListDetailForm biospecimenListDetailForm = biospecimenListDetailPanel.getListDetailForm();
+		ListDetailForm biospecimenListDetailForm = listDetailPanel.getListDetailForm();
+
 		biospecimenListDetailForm.initialiseForm();
 		
 		target.addComponent(feedbackPanel);
@@ -251,15 +249,15 @@ public class DetailForm extends AbstractModalDetailForm<LimsVO>
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form)
 	{
-		try
-		{
+//		try
+//		{
 			iLimsService.deleteBiospecimen(containerForm.getModelObject());
 			this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
-		}
-		catch(org.hibernate.NonUniqueObjectException noe)
-		{
-			this.error(noe.getMessage());
-		}
+//		}
+//		catch(org.hibernate.NonUniqueObjectException noe)
+//		{
+//			this.error(noe.getMessage());
+//		}
 
 		// Display delete confirmation message
 		target.addComponent(feedbackPanel);

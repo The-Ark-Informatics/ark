@@ -64,9 +64,8 @@ public interface ILimsService
 	 * @param id
 	 * @return Biospecimen
 	 * @throws EntityNotFoundException
-	 * @throws ArkSystemException
 	 */
-	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException, ArkSystemException;
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException;
 	
 	/**
 	 * Look up a List of LIMS Biospecimen(s) based on the supplied biospecimen object

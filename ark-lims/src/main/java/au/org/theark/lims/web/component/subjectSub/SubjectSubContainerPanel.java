@@ -25,8 +25,6 @@ public class SubjectSubContainerPanel extends AbstractSubContainerPanel<LimsVO>
 		super(id);
 		this.setArkContextMarkup(arkContextMarkup);
 		
-		initCrudContainerVO();
-
 		add(initialiseFeedBackPanel());
 		
 		this.containerForm = containerForm;

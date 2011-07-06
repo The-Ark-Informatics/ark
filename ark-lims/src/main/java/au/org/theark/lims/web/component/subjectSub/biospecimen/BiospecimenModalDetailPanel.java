@@ -7,9 +7,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.web.component.subjectSub.biospecimen.form.DetailForm;
+import au.org.theark.lims.web.component.subjectSub.biospecimen.form.BiospecimenModalDetailForm;
 
-public class DetailPanel extends Panel
+public class BiospecimenModalDetailPanel extends Panel
 {
 	/**
 	 * 
@@ -17,34 +17,19 @@ public class DetailPanel extends Panel
 	private static final long	serialVersionUID	= 1755709689461138709L;
 	private FeedbackPanel		detailFeedbackPanel;
 	private ModalWindow 			modalWindow;
-	private DetailForm			detailForm;
+	private BiospecimenModalDetailForm			detailForm;
 	private Form<LimsVO> containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVo;
+	private ListDetailPanel		listDetailPanel;
 
-	public DetailPanel(String id)
-	{
-		super(id);
-		this.detailFeedbackPanel = initialiseFeedBackPanel();
-		arkCrudContainerVo = new ArkCrudContainerVO();
-		initialisePanel();
-	}
-
-	public DetailPanel(String id, ModalWindow modalWindow)
-	{
-		super(id);
-		this.detailFeedbackPanel = initialiseFeedBackPanel();
-		this.setModalWindow(modalWindow);
-		this.arkCrudContainerVo = new ArkCrudContainerVO();
-		initialisePanel();
-	}
-	
-	public DetailPanel(String id, ModalWindow modalWindow, Form<LimsVO> containerForm)
+	public BiospecimenModalDetailPanel(String id, ModalWindow modalWindow, Form<LimsVO> containerForm, ListDetailPanel listDetailPanel)
 	{
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
 		this.arkCrudContainerVo = new ArkCrudContainerVO();
 		this.containerForm = containerForm;
+		this.listDetailPanel = listDetailPanel; 
 		initialisePanel();
 	}
 	
@@ -57,7 +42,7 @@ public class DetailPanel extends Panel
 
 	public void initialisePanel()
 	{
-		detailForm = new DetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, containerForm);
+		detailForm = new BiospecimenModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, containerForm, listDetailPanel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
 		add(detailForm);
@@ -82,7 +67,7 @@ public class DetailPanel extends Panel
 	/**
 	 * @return the detailForm
 	 */
-	public DetailForm getDetailForm()
+	public BiospecimenModalDetailForm getDetailForm()
 	{
 		return detailForm;
 	}
@@ -90,7 +75,7 @@ public class DetailPanel extends Panel
 	/**
 	 * @param detailForm the detailForm to set
 	 */
-	public void setDetailForm(DetailForm detailForm)
+	public void setDetailForm(BiospecimenModalDetailForm detailForm)
 	{
 		this.detailForm = detailForm;
 	}
