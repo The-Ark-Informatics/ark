@@ -27,17 +27,16 @@ import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionCon
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
 @SuppressWarnings( { "serial", "unused" })
-public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
+public class PhenotypicSubMenuTab extends AbstractArkTabPanel
 {
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
-	
-	private transient Logger	log					= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
-	private transient Subject	currentUser;
-	private transient Long		studyId;
-	private WebMarkupContainer	arkContextMarkup;
-	private List<ITab>						moduleSubTabsList	= new ArrayList<ITab>();
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
 
+	private transient Logger			log					= LoggerFactory.getLogger(PhenotypicSubMenuTab.class);
+	private transient Subject			currentUser;
+	private transient Long				studyId;
+	private WebMarkupContainer			arkContextMarkup;
+	private List<ITab>					moduleSubTabsList	= new ArrayList<ITab>();
 
 	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
 	{
@@ -45,14 +44,14 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 		this.arkContextMarkup = arkContextMarkup;
 		buildTabs(arkContextMarkup);
 	}
-	
 
 	public void buildTabs(final WebMarkupContainer arkContextMarkup)
 	{
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
-		List<ArkFunction>   arkFunctionList = iArkCommonService.getModuleFunction(arkModule);//Gets a list of ArkFunctions for the given Module
-		for (final ArkFunction menuArkFunction : arkFunctionList) {
-			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(),this, null))
+		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
+		for (final ArkFunction menuArkFunction : arkFunctionList)
+		{
+			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null))
 			{
 				@Override
 				public Panel getPanel(String panelId)
@@ -65,36 +64,39 @@ public class PhenotypicSubMenuTab extends  AbstractArkTabPanel
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
-	
-	protected Panel buildPanels(final ArkFunction arkFunction, String panelId){
-		Panel panelToReturn = null;// Set
-		
-		if(arkFunction.getName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU)){
-			
+
+	protected Panel buildPanels(final ArkFunction arkFunction, String panelId)
+	{
+		Panel panelToReturn = null;
+
+		// Clear cache to determine permissions
+		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);
+
+		if (arkFunction.getName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
+		{
 			panelToReturn = new SummaryContainerPanel(panelId); // Note the constructor
 		}
-		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_SUBMENU)){
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
+		{
 			panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
 		}
-		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_UPLOAD_SUBMENU)){
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_UPLOAD_SUBMENU))
+		{
 			panelToReturn = new FieldUploadContainerPanel(panelId); // Note the constructor
 		}
-		else if(arkFunction.getName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU)){
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
+		{
 			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup); // Note the constructor
 		}
-		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU)){
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU))
+		{
 			panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
 		}
-		else if(arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU)){
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC,arkFunction);
+		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU))
+		{
 			panelToReturn = new FieldDataUploadContainerPanel(panelId); // Note the constructor
 		}
 
-		return panelToReturn; 
+		return panelToReturn;
 	}
-
 }
