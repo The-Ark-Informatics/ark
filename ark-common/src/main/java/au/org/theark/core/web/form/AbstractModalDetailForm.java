@@ -17,7 +17,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.security.ArkSecurity;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AjaxDeleteButton;
@@ -101,7 +101,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return ArkSecurity.isActionPermitted(Constants.SAVE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -166,7 +166,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return ArkSecurity.isActionPermitted(Constants.DELETE);
+				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 		

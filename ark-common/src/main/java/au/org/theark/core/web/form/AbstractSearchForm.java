@@ -14,6 +14,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
@@ -48,17 +49,29 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	protected FeedbackPanel			feedbackPanel;
 
 	/**
+	 * Constructor
 	 * @param id
 	 * @param model
 	 */
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel)
 	{
-
 		super(id, cpmModel);
+		
 		initialiseForm();
-
 	}
 
+	/**
+	 * Constructor
+	 * @param id
+	 * @param cpmModel
+	 * @param detailPanelContainer
+	 * @param detailFormCompContainer
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param searchMarkupContainer
+	 * @param listContainer
+	 * @param feedBackPanel
+	 */
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormCompContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer listContainer, FeedbackPanel feedBackPanel)
 	{
@@ -71,8 +84,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		this.listContainer = listContainer;
 		this.detailFormCompContainer = detailFormCompContainer;
 		this.feedbackPanel = feedBackPanel;
+		
 		initialiseForm();
-
 	}
 
 	/**
@@ -86,47 +99,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		super(id, cpmModel);
 		this.feedbackPanel = feedBackPanel;
 		initialiseForm(arkCrudContainerVO);
-	}
-
-	abstract protected void onSearch(AjaxRequestTarget target);
-
-	abstract protected void onNew(AjaxRequestTarget target);
-
-	protected boolean isActionPermitted(String actionType)
-	{
-		boolean flag = false;
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (actionType.equalsIgnoreCase(Constants.NEW))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-		else if (actionType.equalsIgnoreCase(Constants.SEARCH))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-
-			flag = true;
-		}
-		else
-		{
-			flag = true;
-		}
-		return flag;
 	}
 
 	protected void onReset()
@@ -154,12 +126,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.SEARCH);
-				// return isSecure(Constants.SEARCH);
+				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form)
+			protected void onError(final AjaxRequestTarget target, Form<?> form)
 			{
 				target.addComponent(feedbackPanel);
 			}
@@ -180,7 +151,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return true;
+				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 		};
 
@@ -208,12 +179,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.NEW);
-				// return isSecure(Constants.NEW);
+				return ArkPermissionHelper.isActionPermitted(Constants.NEW);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form)
+			protected void onError(final AjaxRequestTarget target, Form<?> form)
 			{
 				target.addComponent(feedbackPanel);
 			}
@@ -222,6 +192,10 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		addComponentsToForm();
 	}
 
+	/**
+	 * Initialise the form, utilising the common ArkCrudContainerVO object
+	 * @param arkCrudContainerVO
+	 */
 	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO)
 	{
 		searchButton = new AjaxButton(Constants.SEARCH)
@@ -241,11 +215,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.SEARCH);
+				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form)
+			protected void onError(final AjaxRequestTarget target, Form<?> form)
 			{
 				target.addComponent(feedbackPanel);
 			}
@@ -266,7 +240,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return true;
+				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 		};
 
@@ -295,12 +269,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.NEW);
-				// return isSecure(Constants.NEW);
+				return ArkPermissionHelper.isActionPermitted(Constants.NEW);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form form)
+			protected void onError(final AjaxRequestTarget target, Form<?> form)
 			{
 				target.addComponent(feedbackPanel);
 			}
@@ -318,7 +291,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 	protected void preProcessDetailPanel(AjaxRequestTarget target)
 	{
-
 		detailPanelContainer.setVisible(true);
 		listContainer.setVisible(false);
 		editButtonContainer.setVisible(true);
@@ -361,6 +333,11 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
 	}
 
+	/**
+	 * Allow disabling of the search form, based on a session object in context
+	 * @param sessionId
+	 * @param errorMessage
+	 */
 	protected void disableSearchForm(Long sessionId, String errorMessage)
 	{
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
@@ -388,7 +365,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 				searchMarkupContainer.setEnabled(true);
 			}
 		}
-
 	}
 
 	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
@@ -420,4 +396,8 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 		}
 	}
+	
+	abstract protected void onSearch(AjaxRequestTarget target);
+
+	abstract protected void onNew(AjaxRequestTarget target);
 }

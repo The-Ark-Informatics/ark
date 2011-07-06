@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
-import au.org.theark.core.security.ArkSecurity;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 
 /**s
@@ -74,7 +74,7 @@ public abstract class AbstractListDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.NEW);
+				return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
 			}
 
 			@Override
