@@ -20,7 +20,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.security.ArkSecurity;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
@@ -128,7 +128,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					@Override
 					public boolean isVisible()
 					{
-						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.EDIT);
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
 					}
 				};
 				
@@ -195,7 +195,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					@Override
 					public boolean isVisible()
 					{
-						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.DELETE);
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
 					}
 				};
 				item.addOrReplace(deleteButton);

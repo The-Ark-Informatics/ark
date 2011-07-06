@@ -19,7 +19,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.security.ArkSecurity;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 import au.org.theark.core.web.component.listeditor.AjaxListDeleteButton;
@@ -126,7 +126,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 				{
 					hasBioCollections = true;
 				}
-				return (ArkSecurity.isActionPermitted(au.org.theark.core.Constants.NEW) && hasBioCollections);
+				return (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && hasBioCollections);
 			}
 
 			@Override
@@ -182,7 +182,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					@Override
 					public boolean isVisible()
 					{
-						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.EDIT);
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
 					}
 				};
 				
@@ -239,7 +239,7 @@ public class ListDetailForm extends AbstractListDetailForm<LimsVO>
 					@Override
 					public boolean isVisible()
 					{
-						return ArkSecurity.isActionPermitted(au.org.theark.core.Constants.DELETE);
+						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
 					}
 
 				};
