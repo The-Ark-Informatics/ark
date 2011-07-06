@@ -9,6 +9,8 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
@@ -24,6 +26,8 @@ public abstract class AbstractListDetailForm<T> extends Form<T>
 	 */
 	private static final long		serialVersionUID	= -4025065993634203645L;
 
+	protected transient Logger log = LoggerFactory.getLogger(AbstractListDetailForm.class);
+	
 	protected AbstractListEditor<?>	listEditor			= null;
 	protected FeedbackPanel			feedbackPanel;
 	protected Form<T>					containerForm;

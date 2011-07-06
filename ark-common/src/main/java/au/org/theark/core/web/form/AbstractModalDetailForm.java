@@ -74,16 +74,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		initialiseForm();
 	}
 
-	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> compoundPropertyModel)
-	{
-		super(id);
-		this.feedbackPanel = feedbackPanel;
-		this.arkCrudContainerVo = arkCrudContainerVo;
-		setModel(compoundPropertyModel);
-		
-		initialiseForm();
-	}
-
 	/**
 	 * Initialise method that is specific to classes that follow the ArkCrudContainerVO Pattern. The code related to each function has been modularised
 	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
