@@ -3,6 +3,7 @@ package au.org.theark.core.web.component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -21,25 +22,7 @@ public abstract class AbstractDetailModalWindow extends ModalWindow
 	{
 		super(id);
 		this.title = "";
-		this.panel = new Panel("content");
-		initialise();
-		initialiseContentPanel(panel);
-	}
-	
-	public AbstractDetailModalWindow(String id, String title)
-	{
-		super(id);
-		this.title = title;
-		this.panel = new Panel("content");
-		initialise();
-		initialiseContentPanel(panel);
-	}
-
-	public AbstractDetailModalWindow(String id, String title, Panel panel)
-	{
-		super(id);
-		this.title = title;
-		this.panel = panel;
+		this.panel = new EmptyPanel("content");
 		initialise();
 		initialiseContentPanel(panel);
 	}
