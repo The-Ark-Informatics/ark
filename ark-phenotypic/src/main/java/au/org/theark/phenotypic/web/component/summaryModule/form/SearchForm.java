@@ -60,16 +60,14 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel)
-	{
-		super(id, compoundPropertyModel);
-		initialiseFieldForm();
-		addFieldComponents();
+		
+		// Hide buttons
+		searchButton.setVisible(false);
+		resetButton.setVisible(false);
+		newButton.setVisible(false);
+		addOrReplace(searchButton);
+		addOrReplace(resetButton);
+		addOrReplace(newButton);
 	}
 
 	public void initialiseFieldForm()
@@ -156,14 +154,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			addOrReplace(new JFreeChartImage("phenoPhenoCollectionSummaryImage", chart, 0, 0).setVisible(false));
 			addOrReplace(new JFreeChartImage("phenoCollectionBarChartSummaryImage", chart, 800, 400).setVisible(false));
 		}
-	}
-
-	private void addFieldComponents()
-	{
-		// Add the field components
-		// For summary module, disable buttons
-		this.viewButtonContainer.setVisible(false);
-		this.editButtonContainer.setVisible(false);
 	}
 
 	@Override
