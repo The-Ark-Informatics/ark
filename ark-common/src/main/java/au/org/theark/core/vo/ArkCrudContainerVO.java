@@ -14,8 +14,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * @author nivedann
  *
  */
-public class ArkCrudContainerVO implements Serializable{
+public class ArkCrudContainerVO implements Serializable
+{
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -4796975897895746053L;
 	protected WebMarkupContainer searchPanelContainer;
 	protected WebMarkupContainer searchResultPanelContainer;
 	protected WebMarkupContainer detailPanelContainer;
@@ -113,6 +118,22 @@ public class ArkCrudContainerVO implements Serializable{
 	public void setWmcForarkUserAccountPanel(
 			WebMarkupContainer wmcForarkUserAccountPanel) {
 		this.wmcForarkUserAccountPanel = wmcForarkUserAccountPanel;
+	}
+
+	/**
+	 * @return the wizardPanelContainer
+	 */
+	public WebMarkupContainer getWizardPanelContainer()
+	{
+		return wizardPanelContainer;
+	}
+
+	/**
+	 * @param wizardPanelContainer the wizardPanelContainer to set
+	 */
+	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer)
+	{
+		this.wizardPanelContainer = wizardPanelContainer;
 	}
 
 }
