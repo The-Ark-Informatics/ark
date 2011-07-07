@@ -3,8 +3,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
+import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
@@ -28,6 +28,7 @@ import au.org.theark.study.web.Constants;
 	private WebMarkupContainer studyNameMarkup;
 	private WebMarkupContainer studyLogoMarkup;
 	private WebMarkupContainer arkContextMarkup;
+	private TabbedPanel moduleTabbedPanel;
 	
 	public MainTabProviderImpl(String panelId){
 		super(panelId);
@@ -58,6 +59,20 @@ import au.org.theark.study.web.Constants;
 		return moduleTabsList;
 	}
 	
+	public  List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel)
+	{	
+		this.studyNameMarkup = studyNameMarkup;
+		this.studyLogoMarkup = studyLogoMarkup;
+		this.arkContextMarkup = arkContextMarkup;
+		this.setModuleTabbedPanel(moduleTabbedPanel);
+		
+		ITab tab1 = createTab(Constants.STUDY_MAIN_TAB);//Forms the Main Top level Tab
+		ITab tab2 = createSubjectTab(Constants.SUBJECT_MAIN_TAB);
+		moduleTabsList.add(tab1);
+		moduleTabsList.add(tab2);
+		return moduleTabsList;
+	}
+	
 	public ITab createTab(final String tabName) {
 		
 		return new ArkMainTab(new Model<String>(tabName)) {
@@ -71,13 +86,7 @@ import au.org.theark.study.web.Constants;
 			
 			@Override
 			public Panel getPanel(String pid) {
-				Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
-				if(tabName.equals(Constants.STUDY_MAIN_TAB)){
-					panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup);//The sub menus for Study 
-				}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
-					panelToReturn = new SubjectSubMenuTab(pid,arkContextMarkup);
-				}
-				return panelToReturn;
+				return panelToReturn(pid, tabName);
 			}
 			
 			public boolean isAccessible()
@@ -86,6 +95,17 @@ import au.org.theark.study.web.Constants;
 			}
 		};
 		
+	}
+	
+	public Panel panelToReturn(String pid, String tabName)
+	{
+		Panel panelToReturn = null;//Set up a common tab that will be accessible for all users
+		if(tabName.equals(Constants.STUDY_MAIN_TAB)){
+			panelToReturn =  new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup, this);//The sub menus for Study 
+		}else if(tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB)){
+			panelToReturn = new SubjectSubMenuTab(pid,arkContextMarkup);
+		}
+		return panelToReturn;
 	}
 	
 	public ITab createSubjectTab(final String tabName) {
@@ -115,7 +135,7 @@ import au.org.theark.study.web.Constants;
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				if(sessionStudyId == null)
 				{
-					this.getPanel(Constants.SUBJECT_MAIN_TAB).error(au.org.theark.core.Constants.STUDY_IN_CONTEXT_MESSAGE);
+					this.getPanel(Constants.SUBJECT_MAIN_TAB).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
 				else
@@ -123,6 +143,24 @@ import au.org.theark.study.web.Constants;
 			}
 		};
 		
+	}
+
+
+	/**
+	 * @param moduleTabbedPanel the moduleTabbedPanel to set
+	 */
+	public void setModuleTabbedPanel(TabbedPanel moduleTabbedPanel)
+	{
+		this.moduleTabbedPanel = moduleTabbedPanel;
+	}
+
+
+	/**
+	 * @return the moduleTabbedPanel
+	 */
+	public TabbedPanel getModuleTabbedPanel()
+	{
+		return moduleTabbedPanel;
 	}
 
 }
