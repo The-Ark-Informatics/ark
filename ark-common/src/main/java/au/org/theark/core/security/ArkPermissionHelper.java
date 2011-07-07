@@ -2,7 +2,6 @@ package au.org.theark.core.security;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -13,7 +12,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.Study;
 
 /**
  * Global common class that determines permissions of particular action
@@ -46,36 +44,37 @@ public class ArkPermissionHelper
 	}
 	
 	/**
-	 * Determines whether a particular module is accessible by the user in context
+	 * Determines whether a particular module is accessible by the user, for the study in context
 	 * @param study
-	 * @param moduleName
-	 * @return true if module set to be accessed/used within the specified study
+	 * @param arkModule
+	 * @return true if module set to be accessed/used within the specified study adn arkModule
 	 */
 	@SuppressWarnings("unchecked")
-	public static boolean isModuleAccessPermitted(Study study, String moduleName)
+	public static boolean isModuleAccessPermitted(ArkModule arkModule)
 	{
 		boolean modulePermitted = true;
 		
-		log.info(moduleName + " being painted");
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Collection<ArkModule> arkModulesLinkedToStudy = new ArrayList<ArkModule>(0);  
+		arkModulesLinkedToStudy = (Collection<ArkModule>) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY);
 		
-		if(study != null)
+		if(sessionStudyId != null)
 		{
-			// iArkCommonService.getArkModulesLinkedWithStudy(study);
-			Collection<ArkModule> arkModulesLinkedToStudy =  new ArrayList(0);
-			for (Iterator<ArkModule> iterator = arkModulesLinkedToStudy.iterator(); iterator.hasNext();)
+			if(arkModulesLinkedToStudy != null)
 			{
-				ArkModule arkModule = (ArkModule) iterator.next();
-				if(moduleName.equalsIgnoreCase(arkModule.getName()))
+				if(arkModulesLinkedToStudy.contains(arkModule))
 				{
 					modulePermitted = true;
-					break;
 				}
 				else
 				{
-					//modulePermitted = false;
-					log.info("Module " + moduleName + " shouldn't be visible!");
+					modulePermitted = false;
 				}
 			}
+		}
+		else
+		{
+			modulePermitted = false;
 		}
 		return modulePermitted;
 	}
