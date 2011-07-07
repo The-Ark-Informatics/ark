@@ -258,9 +258,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	{
 		try
 		{
-			Session session  = getSession();
-		
-			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent,session)){					
+			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent)){					
 				getSession().save(studyComponent);	
 			}else{
 				throw new EntityExistsException("A Study component already exists for this study.");
@@ -279,9 +277,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 	{
 		try
 		{
-			Session session  = getSession();
-			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent, session)){	
-				session.update(studyComponent);
+			if(isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent)){	
+				getSession().update(studyComponent);
 			}else{
 				throw new EntityExistsException("A Study component already exists for this study.");
 			}
@@ -1876,10 +1873,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 		return isPresent;
 	}
 	
-	public boolean  isStudyCompUnique(String studyComponentName, Study study, StudyComp studyComponentToUpdate,Session session){
+	public boolean  isStudyCompUnique(String studyComponentName, Study study, StudyComp studyComponentToUpdate){
 	
 		boolean isUnique = true;
-		Criteria criteria = session.createCriteria(StudyComp.class);
+		StatelessSession stateLessSession  = getStatelessSession();
+		Criteria criteria = stateLessSession.createCriteria(StudyComp.class);
 		criteria.add(Restrictions.eq("name", studyComponentName));
 		criteria.add(Restrictions.eq("study", study));
 		criteria.setMaxResults(1);
@@ -1896,7 +1894,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao
 				isUnique = false;
 			}
 		}
-		
+		stateLessSession.close();
 		return isUnique;
 		
 	}
