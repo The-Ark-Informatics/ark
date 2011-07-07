@@ -11,10 +11,12 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -30,6 +32,7 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -78,6 +81,28 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		
+		// hide New button for Subject in LIMS
+		newButton = new AjaxButton(au.org.theark.core.Constants.NEW)
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 6539600487179555764L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return false;
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				super.onSubmit();
+			}
+		};
+		addOrReplace(newButton);
 	}
 
 	protected void addSearchComponentsToForm()
