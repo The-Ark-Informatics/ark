@@ -83,13 +83,11 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 			protected Object load() {
 				
 				 try {
-					if(isActionPermitted()){
-						 Long studySessionId  = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-						 if(studySessionId!= null){
-							 Study studyInContext = iArkCommonService.getStudy(studySessionId);
-							 containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
-							 containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent())); 
-						 }
+					 Long studySessionId  = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					if(isActionPermitted() && studySessionId!= null){
+						 Study studyInContext = iArkCommonService.getStudy(studySessionId);
+						 containerForm.getModelObject().getStudyComponent().setStudy(studyInContext);
+						 containerForm.getModelObject().setStudyCompList(studyService.searchStudyComp(containerForm.getModelObject().getStudyComponent())); 
 					 }
 					 
 				} catch (ArkSystemException e) {
