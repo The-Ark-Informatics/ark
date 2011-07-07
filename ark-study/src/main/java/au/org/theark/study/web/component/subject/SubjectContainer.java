@@ -165,7 +165,9 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 			
 			public Iterator<SubjectVO> iterator(int first, int count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-				listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
+				if(isActionPermitted()){
+					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);	
+				}
 				return listSubjects.iterator();
 			}
 		};
