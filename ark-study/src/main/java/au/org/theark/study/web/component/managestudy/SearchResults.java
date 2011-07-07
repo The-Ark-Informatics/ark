@@ -3,7 +3,6 @@ package au.org.theark.study.web.component.managestudy;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -12,6 +11,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.NonCachingImage;
@@ -28,7 +28,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
@@ -45,6 +44,7 @@ public class SearchResults extends Panel{
 	private static final long	serialVersionUID	= 1L;
 	private NonCachingImage studyLogoImage;
 	private transient StudyHelper studyHelper;
+	private TabbedPanel moduleTabbedPanel;
 	
 	@SpringBean( name = "userService")
 	private IUserService userService;
@@ -59,6 +59,13 @@ public class SearchResults extends Panel{
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		studyContainerForm = containerForm;
+	}
+	
+	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO,Container containerForm, TabbedPanel moduleTabbedPanel){
+		super(id);
+		this.studyCrudContainerVO = studyCrudContainerVO;
+		this.studyContainerForm = containerForm;
+		this.moduleTabbedPanel = moduleTabbedPanel;
 	}
 
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
@@ -116,7 +123,9 @@ public class SearchResults extends Panel{
 				
 				SecurityManager securityManager =  ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();		
+				
 				//Place the selected study in session context for the user
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, study);
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
@@ -162,13 +171,18 @@ public class SearchResults extends Panel{
 				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
 				target.addComponent(subjectUidExampleLbl);
 				
-				List<ModuleVO> modules = new ArrayList<ModuleVO>();
-				Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
-				//Get the Source and Linked Modules for the Stuy from Backend
+				//List<ModuleVO> modules = new ArrayList<ModuleVO>();
+				//Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
+				
+				//Get the Source and Linked Modules for the Study from Backend
 				Collection<ArkModule> availableArkModules  = iArkCommonService.getEntityList(ArkModule.class);
 				Collection<ArkModule> arkModulesLinkedToStudy =  iArkCommonService.getArkModulesLinkedWithStudy(study);
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY, arkModulesLinkedToStudy);
+				
+				Collection<ArkModule> arkModulesLinkedToStudySet = new ArrayList<ArkModule>(0);  
+				arkModulesLinkedToStudySet = (Collection<ArkModule>) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY);
 	
 				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
@@ -199,6 +213,11 @@ public class SearchResults extends Panel{
 				
 				// Refresh base container form to remove any feedBack messages
 				target.addComponent(studyContainerForm);
+				
+				// Refresh main tabs based on study selection
+				TabbedPanel moduleTabbedPanelRef = moduleTabbedPanel;
+				
+				target.addComponent(moduleTabbedPanel);
 			}
 			
 		};
