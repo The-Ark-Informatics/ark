@@ -208,7 +208,9 @@ public class DetailForm  extends AbstractDetailForm<ConsentVO>{
 	 */
 	protected void initialiseComponentChoice(){
 		
-		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		List<StudyComp> studyCompList = iArkCommonService.getStudyComponentByStudy(study);
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
 		studyComponentChoice  = new DropDownChoice(Constants.CONSENT_STUDY_COMP, studyCompList,defaultChoiceRenderer);
 		studyComponentChoice.add(new ArkDefaultFormFocusBehavior());
