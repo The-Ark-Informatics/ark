@@ -24,7 +24,7 @@ public class ArkPermissionHelper
 	/**
 	 * Determines whether a particular module function is accessible/permitted by the user in context
 	 * @param actionType
-	 * @return true if action is permitted
+	 * @return true if user in context has any of the CREATE, UPDATE, or READ permissions
 	 */
 	public static boolean isModuleFunctionAccessPermitted()
 	{
@@ -32,14 +32,16 @@ public class ArkPermissionHelper
 		
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
+		
+		boolean hasSearchPermission = hasSearchPermission(securityManager, currentUser); 
+		boolean hasSavePermission = hasSavePermission(securityManager, currentUser);
+		boolean hasEditPermission = hasEditPermission(securityManager, currentUser);
 
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) || 
-			!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) ||
-			!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) || 
-			!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
+		boolean hasPermissions = (hasSearchPermission || hasSavePermission || hasEditPermission);
+		if (!(hasPermissions))
 		{
 			modulePermitted = false;
-		}		
+		}
 		return modulePermitted;
 	}
 	
@@ -198,5 +200,21 @@ public class ArkPermissionHelper
 		}
 	
 		return flag;
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public static void setLog(Logger log)
+	{
+		ArkPermissionHelper.log = log;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog()
+	{
+		return log;
 	}	
 }
