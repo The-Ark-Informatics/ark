@@ -390,6 +390,13 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return criteria.list();
 	}
 	
+	public List<StudyComp> getStudyComponentByStudy(Study study){
+		Criteria criteria = getSession().createCriteria(StudyComp.class);
+		criteria.add(Restrictions.eq("study",study));
+		List<StudyComp> studyCompList = criteria.list();
+		return criteria.list();
+	}
+	
 	public boolean  isSubjectConsentedToComponent(StudyComp studyComponent, Person person, Study study){
 		boolean isConsented = false;
 		Criteria criteria = getSession().createCriteria(Consent.class);

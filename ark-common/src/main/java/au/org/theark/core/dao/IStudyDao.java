@@ -186,10 +186,16 @@ public interface IStudyDao {
 	public List<StudyCompStatus> getStudyComponentStatus();
 
 	/**
-	 * 
-	 * @return
+	 * Get the Study components
+	 * @return A List of Study components
 	 */
 	public List<StudyComp> getStudyComponent();
+	
+	/**
+	 * Get the Study components for the specified Study
+	 * @return A List of Study components for the specified Study
+	 */
+	public List<StudyComp> getStudyComponentByStudy(Study study);
 	
 	/**
 	 * Returns a list of Consent types hardcopy, electronic document etc.
