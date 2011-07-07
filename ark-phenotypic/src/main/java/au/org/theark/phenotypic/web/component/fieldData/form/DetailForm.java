@@ -19,6 +19,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.pheno.entity.Field;
@@ -99,7 +101,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 	protected void attachValidators()
 	{
-		
 	}
 
 	private void addComponents()
@@ -117,7 +118,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	@Override
 	protected void onSave(Form<PhenoCollectionVO> containerForm, AjaxRequestTarget target)
 	{
-
 		if (containerForm.getModelObject().getFieldData().getId() == null)
 		{
 			// Save the Field data
@@ -130,24 +130,18 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		{
 			// Validate field data confirms to data dictionary
 			Collection<String> dataValidation = new ArrayList<String>();
-			//TODO: Implement setPassedQualityControl correctly
-			//Currently : org.hibernate.LazyInitializationException: could not initialize proxy - no Session
 			boolean passedQualityControl = PhenotypicValidator.fieldDataPassesQualityControl(containerForm.getModelObject().getFieldData(), dataValidation);
 			containerForm.getModelObject().getFieldData().setPassedQualityControl(passedQualityControl);
 			
 			if(!passedQualityControl)
 			{
-				StringBuffer stringBuffer = new StringBuffer("");
-				
 				if(dataValidation != null)
 				{
 					for (Iterator<String> iterator = dataValidation.iterator(); iterator.hasNext();) {
-						String string = (String) iterator.next();
-						stringBuffer.append(string);
-						stringBuffer.append("\n");
+						String errorMessage = (String) iterator.next();
+						this.error(errorMessage);
 					}
 				}
-				this.error(stringBuffer.toString());
 			}
 			else
 			{
