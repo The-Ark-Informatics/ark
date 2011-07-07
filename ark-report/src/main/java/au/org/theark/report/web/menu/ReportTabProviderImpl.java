@@ -9,37 +9,46 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
-import au.org.theark.report.web.Constants;
 
 @SuppressWarnings("serial")
-public class ReportTabProviderImpl extends Panel implements
-		IMainTabProvider {
+public class ReportTabProviderImpl extends Panel implements IMainTabProvider
+{
 
-	private static final long serialVersionUID = 1L;
-	private List<ITab> moduleTabsList;
+	private static final long	serialVersionUID	= 1L;
+	private List<ITab>			moduleTabsList;
 
-	public ReportTabProviderImpl(String panelId) {
+	public ReportTabProviderImpl(String panelId)
+	{
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs() {
+	public List<ITab> buildTabs()
+	{
 		// Main tab
-		ITab iTab = createTab(Constants.REPORT_MAIN_TAB);
+		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
 		moduleTabsList.add(iTab);
 
 		return moduleTabsList;
 	}
 
-	public ITab createTab(String tabName) {
-		return new ArkMainTab(new Model<String>(tabName)) {
+	public ITab createTab(String tabName)
+	{
+		return new ArkMainTab(new Model<String>(tabName))
+		{
 			@Override
-			public Panel getPanel(String pid) {
+			public Panel getPanel(String pid)
+			{
 				// The sub menu(s) for Reporting
 				return new ReportSubMenuTab(pid);
 			}
-			
+
 			public boolean isAccessible()
+			{
+				return true;
+			}
+
+			public boolean isVisible()
 			{
 				return true;
 			}
