@@ -1,9 +1,5 @@
 package au.org.theark.core.web.form;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,7 +11,6 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
 
@@ -50,18 +45,20 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param model
 	 */
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel)
 	{
 		super(id, cpmModel);
-		
+
 		initialiseForm();
 	}
 
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param cpmModel
 	 * @param detailPanelContainer
@@ -84,7 +81,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		this.listContainer = listContainer;
 		this.detailFormCompContainer = detailFormCompContainer;
 		this.feedbackPanel = feedBackPanel;
-		
+
 		initialiseForm();
 	}
 
@@ -194,6 +191,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 	/**
 	 * Initialise the form, utilising the common ArkCrudContainerVO object
+	 * 
 	 * @param arkCrudContainerVO
 	 */
 	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO)
@@ -314,7 +312,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 */
 	protected void preProcessDetailPanel(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO)
 	{
-
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
@@ -335,25 +332,13 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 
 	/**
 	 * Allow disabling of the search form, based on a session object in context
+	 * 
 	 * @param sessionId
 	 * @param errorMessage
 	 */
 	protected void disableSearchForm(Long sessionId, String errorMessage)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && 
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) &&
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && 
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-		{
-
-			searchMarkupContainer.setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
-
-		}
-		else
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
 		{
 			if (sessionId == null)
 			{
@@ -365,26 +350,18 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 				searchMarkupContainer.setEnabled(true);
 			}
 		}
+		else
+		{
+			searchMarkupContainer.setEnabled(false);
+			listContainer.setVisible(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
+		}
 	}
 
 	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && 
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) &&
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && 
-				!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
 		{
-
-			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
-
-		}
-		else
-		{
-
 			if (sessionId == null)
 			{
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
@@ -395,8 +372,14 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
 			}
 		}
+		else
+		{
+			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
+		}
 	}
-	
+
 	abstract protected void onSearch(AjaxRequestTarget target);
 
 	abstract protected void onNew(AjaxRequestTarget target);
