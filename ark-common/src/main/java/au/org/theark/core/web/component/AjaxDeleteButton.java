@@ -7,6 +7,8 @@ import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 
+import au.org.theark.core.security.ArkPermissionHelper;
+
 @SuppressWarnings({"unchecked"})
 /**
  * @author cellis
@@ -48,4 +50,10 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);
+	
+	@Override
+	public boolean isVisible()
+	{
+		return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
+	}
 }
