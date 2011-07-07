@@ -258,15 +258,23 @@ public class Constants
 	public static final String	ARK_MODULE_PHENOTYPIC							= "Phenotypic";
 	public static final String	ARK_MODULE_GENOTYPIC								= "Genotypic";
 	public static final String	ARK_MODULE_LIMS									= "LIMS";
+	public static final String	ARK_MODULE_REGISTRY								= "Registry";
+	public static final String	ARK_MODULE_REPORTING								= "Reporting";
 
 	public static final char	DEFAULT_DELIMITER_CHARACTER					= ',';
 	public static final String	DEFAULT_FILE_FORMAT								= "CSV";
 
 	public static final String	STUDY													= "study";
-	public static final String	STUDY_IN_CONTEXT_MESSAGE						= "There is no study in context. Please select a Study.";
+	public static final String	NO_STUDY_IN_CONTEXT_MESSAGE					= "There is no study in context. Please select a Study.";
 	public static final String	MODULE_NOT_ACCESSIBLE_MESSAGE					= "You do not have the required security privileges to work with this function. Please see your Administrator.";
+	
+	/* Session Objects */
+	public static final String	SESSION_STUDY_KEY									= "SESSION_STUDY";
+	public static final String	SESSION_STUDY_MODULES_KEY						= "SESSION_STUDY_MODULES";
+	public static final String	SESSION_SUBJECT_KEY								= "SESSION_SUBJECT";
 
 	/* Ark Function Types */
 	public static final String	ARK_FUNCTION_TYPE_REPORT						= "REPORT";
 	public static final String	ARK_FUNCTION_TYPE_NON_REPORT					= "NON-REPORT";
+	
 }
