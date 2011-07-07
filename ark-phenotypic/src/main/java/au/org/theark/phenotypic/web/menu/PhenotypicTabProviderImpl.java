@@ -17,7 +17,6 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
-import au.org.theark.phenotypic.web.Constants;
 
 @SuppressWarnings("serial")
 public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
