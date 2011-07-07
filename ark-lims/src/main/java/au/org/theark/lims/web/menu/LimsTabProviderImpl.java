@@ -78,7 +78,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				if (sessionStudyId == null)
 				{
-					this.getPanel(Constants.LIMS_MAIN_TAB).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
+					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_LIMS).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
 				else
