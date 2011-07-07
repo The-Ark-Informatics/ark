@@ -214,6 +214,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return studyDao.getStudyComponent();
 	}
 	
+	public List<StudyComp> getStudyComponentByStudy(Study study){
+		return studyDao.getStudyComponentByStudy(study);
+	}
+	
 	public List<ConsentType> getConsentType(){
 		return studyDao.getConsentType();
 	}

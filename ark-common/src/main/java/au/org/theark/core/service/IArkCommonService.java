@@ -118,7 +118,13 @@ public interface IArkCommonService<T> {
 	/**	
 	 * @return a list of Study Components
 	 */
-	public List<StudyComp> getStudyComponent();	
+	public List<StudyComp> getStudyComponent();
+	
+	/**
+	 * Get the Study components for the specified Study
+	 * @return A List of Study components for the specified Study
+	 */
+	public List<StudyComp> getStudyComponentByStudy(Study study);
 	
 	public List<ConsentType> getConsentType();
 	
