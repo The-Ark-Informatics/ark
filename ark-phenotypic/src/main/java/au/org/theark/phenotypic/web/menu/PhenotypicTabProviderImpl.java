@@ -8,46 +8,59 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 import au.org.theark.phenotypic.web.Constants;
 
 @SuppressWarnings("serial")
-public class PhenotypicTabProviderImpl extends Panel implements
-		IMainTabProvider {
+public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
+{
+	private transient static Logger	log	= LoggerFactory.getLogger(PhenotypicTabProviderImpl.class);
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
+	private WebMarkupContainer			arkContextPanelMarkup;
+	private List<ITab>					moduleTabsList;
 
-	private static final long serialVersionUID = 1L;
-	private WebMarkupContainer arkContextPanelMarkup;
-	private List<ITab> moduleTabsList;
-
-	public PhenotypicTabProviderImpl(String panelId) {
+	public PhenotypicTabProviderImpl(String panelId)
+	{
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs() {
-		// Main tab
-		ITab iTab = createTab(Constants.PHENOTYPIC_MAIN_TAB);
+	public List<ITab> buildTabs()
+	{
+		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
+		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);// Forms the Main Top level Tab
 		moduleTabsList.add(iTab);
 
 		return moduleTabsList;
 	}
 
-	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup) {
+	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup)
+	{
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
-		// Main tab
-		ITab iTab = createTab(Constants.PHENOTYPIC_MAIN_TAB);
+		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
+		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);// Forms the Main Top level Tab
 		moduleTabsList.add(iTab);
 
 		return moduleTabsList;
 	}
 
-	public ITab createTab(String tabName) {
-		return new ArkMainTab(new Model<String>(tabName)) {
+	public ITab createTab(final String tabName)
+	{
+		return new ArkMainTab(new Model<String>(tabName))
+		{
 			@Override
-			public Panel getPanel(String pid) {
+			public Panel getPanel(String pid)
+			{
 				// The sub menu(s) for Phenotypic
 				return new PhenotypicSubMenuTab(pid, arkContextPanelMarkup);
 			}
@@ -55,13 +68,19 @@ public class PhenotypicTabProviderImpl extends Panel implements
 			public boolean isAccessible()
 			{
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if(sessionStudyId == null)
+				if (sessionStudyId == null)
 				{
-					this.getPanel(Constants.PHENOTYPIC_MAIN_TAB).error(au.org.theark.core.Constants.STUDY_IN_CONTEXT_MESSAGE);
+					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
 				else
 					return true;
+			}
+
+			public boolean isVisible()
+			{
+				ArkModule arkModule = iArkCommonService.getArkModuleByName(tabName);
+				return ArkPermissionHelper.isModuleAccessPermitted(arkModule);
 			}
 		};
 	}
