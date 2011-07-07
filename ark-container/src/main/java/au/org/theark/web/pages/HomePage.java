@@ -12,10 +12,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
-import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
-import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
