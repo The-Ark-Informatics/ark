@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
@@ -117,6 +118,8 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		initialiseForm();
 		initialiseGridView();
 		addFormComponents();
+		
+		disableWizardForm();
 	}
 
 	protected void initialiseForm()
@@ -627,6 +630,22 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * @param target
 	 */
 	protected abstract void processErrors(AjaxRequestTarget target);
+	
+	/**
+	 * Called to disable entire WizardForm, and display reason.
+	 */
+	protected void disableWizardForm()
+	{
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
+		{
+			this.setEnabled(true);
+		}
+		else
+		{
+			this.setEnabled(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
+		}
+	}
 
 	/**
 	 * Called to disable entire WizardForm, and display reason.
@@ -636,17 +655,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 */
 	protected void disableWizardForm(Long sessionId, String errorMessage)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-		{
-			//arkCrudContainerVO.getSearchPanelContainer()
-			this.setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
-
-		}
-		else
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
 		{
 			if (sessionId == null)
 			{
@@ -657,6 +666,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 			{
 				this.setEnabled(true);
 			}
+		}
+		else
+		{
+			this.setEnabled(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
 	}
 
@@ -669,25 +683,23 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 */
 	protected void disableWizardForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-		{
-			this.setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
-		}
-		else
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
 		{
 			if (sessionId == null)
 			{
-				//arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
+				arkCrudContainerVO.getWizardPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}
 			else
 			{
-				//arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
+				arkCrudContainerVO.getWizardPanelContainer().setEnabled(true);
 			}
+		}
+		else
+		{
+			arkCrudContainerVO.getWizardPanelContainer().setEnabled(false);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
 	}
 }
