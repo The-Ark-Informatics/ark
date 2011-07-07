@@ -52,7 +52,6 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel{
 	public  void buildTabs(){
 		
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
-		//List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 		
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_SUBJECT);
 		List<ArkFunction>   arkFunctionList = iArkCommonService.getModuleFunction(arkModule);//Gets a list of ArkFunctions for the given Module
@@ -99,7 +98,9 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel{
 						
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
-					}else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNTION_KEY_VALUE_SUBJECT_CUSTOM)){
+					}
+					 
+					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNTION_KEY_VALUE_SUBJECT_CUSTOM)){
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
 						panelToReturn = new CustomFieldContainer(panelId);
 					}
