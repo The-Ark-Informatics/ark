@@ -1,7 +1,6 @@
 package au.org.theark.study.web.component.managestudy;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -171,18 +170,12 @@ public class SearchResults extends Panel{
 				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
 				target.addComponent(subjectUidExampleLbl);
 				
-				//List<ModuleVO> modules = new ArrayList<ModuleVO>();
-				//Collection<ModuleVO> modulesLinkedToStudy = new  ArrayList<ModuleVO>();
-				
 				//Get the Source and Linked Modules for the Study from Backend
 				Collection<ArkModule> availableArkModules  = iArkCommonService.getEntityList(ArkModule.class);
 				Collection<ArkModule> arkModulesLinkedToStudy =  iArkCommonService.getArkModulesLinkedWithStudy(study);
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY, arkModulesLinkedToStudy);
-				
-				Collection<ArkModule> arkModulesLinkedToStudySet = new ArrayList<ArkModule>(0);  
-				arkModulesLinkedToStudySet = (Collection<ArkModule>) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY);
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY, arkModulesLinkedToStudy);//Please work around this. Do not store objects in session/instead store Id's in session.
 	
 				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
