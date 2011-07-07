@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -61,12 +63,26 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 		
-		// Hide buttons
-		searchButton.setVisible(false);
-		resetButton.setVisible(false);
-		newButton.setVisible(false);
-		addOrReplace(searchButton);
-		addOrReplace(resetButton);
+		// hide New button for Summear panel
+		newButton = new AjaxButton(au.org.theark.core.Constants.NEW)
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -2796943099381167485L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return false;
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				super.onSubmit();
+			}
+		};
 		addOrReplace(newButton);
 	}
 
