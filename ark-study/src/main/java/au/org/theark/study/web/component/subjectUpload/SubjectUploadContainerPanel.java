@@ -91,16 +91,14 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 			protected Object load()
 			{
 				// Return all Uploads for the Study in context
-				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				java.util.Collection<StudyUpload> studyUploads = new ArrayList<StudyUpload>();
-				
-				if(isActionPermitted())
+				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if(isActionPermitted() && sessionStudyId != null)
 				{
-					if (sessionStudyId != null)
-					{	StudyUpload studyUpload = new StudyUpload();
-						studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
-						studyUploads = studyService.searchUpload(studyUpload);
-					}
+					StudyUpload studyUpload = new StudyUpload();
+					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
+					studyUploads = studyService.searchUpload(studyUpload);
+					
 				}
 				listView.removeAll();
 				return  studyUploads;

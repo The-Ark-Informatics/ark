@@ -151,10 +151,10 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO>{
 			protected Object load() {
 				//Get the PersonId from session and get the phoneList from backend
 				Collection<Phone> personPhoneList = new ArrayList<Phone>();
-				Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				try {
-					if(sessionPersonId != null){
-						personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
+					Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+					if(isActionPermitted() && sessionPersonId != null){
+							personPhoneList = studyService.getPersonPhoneList(sessionPersonId, containerForm.getModelObject().getPhone());	
 					}
 				} catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
