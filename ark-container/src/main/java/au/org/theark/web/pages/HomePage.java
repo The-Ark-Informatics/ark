@@ -70,7 +70,7 @@ public class HomePage extends BasePage
 	protected void buildModuleTabs()
 	{
 		List<ITab> moduleTabsList = new ArrayList<ITab>();
-
+	
 		// Study
 		MainTabProviderImpl studyMainTabProvider = new MainTabProviderImpl("study");
 		// Pass in the Study logo mark up, to allow dynamic logo reference
@@ -113,8 +113,9 @@ public class HomePage extends BasePage
 			moduleTabsList.add(tab);
 		}
 		
-		//moduleTabbedPanel = new TabbedPanel("moduleTabsList", moduleTabsList);
 		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
+		moduleTabbedPanel.setOutputMarkupPlaceholderTag(true);
+		studyMainTabProvider.setModuleTabbedPanel(moduleTabbedPanel);
 		add(moduleTabbedPanel);
 	}
 
