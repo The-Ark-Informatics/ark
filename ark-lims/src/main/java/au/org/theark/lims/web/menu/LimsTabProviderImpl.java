@@ -87,9 +87,8 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 
 			public boolean isVisible()
 			{
-				//ArkModule arkModule = iArkCommonService.getArkModuleByName(tabName);
-				//return ArkPermissionHelper.isModuleAccessPermitted(arkModule);
-				return true;
+				ArkModule arkModule = iArkCommonService.getArkModuleByName(tabName);
+				return ArkPermissionHelper.isModuleAccessPermitted(arkModule);
 			}
 		};
 	}
