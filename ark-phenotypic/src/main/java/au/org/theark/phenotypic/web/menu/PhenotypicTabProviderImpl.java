@@ -30,8 +30,8 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 
 	public List<ITab> buildTabs()
 	{
-		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
-		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);// Forms the Main Top level Tab
+		// Forms the Main Top level Tab
+		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 		moduleTabsList.add(iTab);
 
 		return moduleTabsList;
@@ -41,8 +41,8 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	{
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
-		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
-		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);// Forms the Main Top level Tab
+		// Forms the Main Top level Tab
+		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 		moduleTabsList.add(iTab);
 
 		return moduleTabsList;
@@ -76,5 +76,21 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 			}
 		};
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public static void setLog(Logger log)
+	{
+		PhenotypicTabProviderImpl.log = log;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog()
+	{
+		return log;
 	}
 }

@@ -33,7 +33,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 
 	public List<ITab> buildTabs()
 	{
-		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_LIMS);
+		// Forms the Main Top level Tab
 		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_LIMS);
 		moduleTabsList.add(iTab);
 
@@ -44,7 +44,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 	{
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
-		log.info("Creating main tab: " + au.org.theark.core.Constants.ARK_MODULE_LIMS);
+		// Forms the Main Top level Tab
 		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_LIMS);
 		moduleTabsList.add(iTab);
 
@@ -84,5 +84,21 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_LIMS);
 			}
 		};
+	}
+
+	/**
+	 * @param log the log to set
+	 */
+	public static void setLog(Logger log)
+	{
+		LimsTabProviderImpl.log = log;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog()
+	{
+		return log;
 	}
 }
