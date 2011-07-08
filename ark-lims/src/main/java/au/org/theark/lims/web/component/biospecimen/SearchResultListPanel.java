@@ -140,7 +140,7 @@ public class SearchResultListPanel extends Panel
 				}
 				
 				// TODO when displaying text escape any special characters
-				if (biospecimen.getComments() != null)
+				if (biospecimen.getQuantity() != null)
 				{
 					item.add(new Label("biospecimen.quantity", biospecimen.getQuantity().toString()));// the ID here must match
 					// the ones in mark-up
