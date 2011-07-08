@@ -15,19 +15,41 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
-@SuppressWarnings("serial")
+/**
+ * <p>
+ * The <code>PhenotypicTabProviderImpl</code> class that extends the {@link au.org.theark.core.web.component.menu.AbstractArkTabPanel
+ * AbstractArkTabPanel} class. It provides the implementation of the Phenotypic tab panel (sub-menu).
+ * </p>
+ * 
+ * @author cellis
+ */
 public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 {
-	private transient static Logger	log	= LoggerFactory.getLogger(PhenotypicTabProviderImpl.class);
+	/**
+	 * 
+	 */
+	private static final long			serialVersionUID	= -4820350102328281626L;
+	private transient static Logger	log					= LoggerFactory.getLogger(PhenotypicTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private List<ITab>					moduleTabsList;
 
+	/**
+	 * PhenotypicTabProviderImpl contstructor
+	 * 
+	 * @param panelId
+	 *           The panel indentifier
+	 */
 	public PhenotypicTabProviderImpl(String panelId)
 	{
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
+	/**
+	 * Build the list of tabs (sub-menus)
+	 * 
+	 * @return A {@link java.util.List List} of {@link org.apache.wicket.extensions.markup.html.tabs.ITab ITab}'s that represent the sub-menu
+	 */
 	public List<ITab> buildTabs()
 	{
 		// Forms the Main Top level Tab
@@ -37,6 +59,12 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 		return moduleTabsList;
 	}
 
+	/**
+	 * Build the list of tabs (sub-menus)
+	 * 
+	 * @param arkContextPanelMarkup
+	 * @return A {@link java.util.List List} of {@link org.apache.wicket.extensions.markup.html.tabs.ITab ITab}'s that represent the sub-menu
+	 */
 	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup)
 	{
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
@@ -52,10 +80,15 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	{
 		return new ArkMainTab(new Model<String>(tabName))
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -9077903025658028710L;
+
 			@Override
 			public Panel getPanel(String pid)
 			{
-				// The sub menu(s) for Phenotypic
+				// The sub menu(s)
 				return new PhenotypicSubMenuTab(pid, arkContextPanelMarkup);
 			}
 
@@ -79,7 +112,8 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	}
 
 	/**
-	 * @param log the log to set
+	 * @param log
+	 *           the log to set
 	 */
 	public static void setLog(Logger log)
 	{
