@@ -48,53 +48,54 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel
 	public void buildTabs(final WebMarkupContainer arkContextMarkup)
 	{
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
-		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
+		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);
 		for (final ArkFunction menuArkFunction : arkFunctionList)
 		{
-			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null))
+			AbstractTab tab = new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null))
 			{
 				@Override
-				public Panel getPanel(String panelId)
+				public Panel getPanel(final String panelId)
 				{
-					return buildPanels(menuArkFunction, panelId);
+					return panelToReturn(menuArkFunction, panelId);
 				}
-			});
+			};
+			moduleSubTabsList.add(tab);
 		}
 
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.PHENOTYPIC_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}
 
-	protected Panel buildPanels(final ArkFunction arkFunction, String panelId)
+	protected Panel panelToReturn(final ArkFunction arkFunction, String panelId)
 	{
 		Panel panelToReturn = null;
 
 		// Clear cache to determine permissions
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);
 
-		if (arkFunction.getName().equalsIgnoreCase(Constants.PHENOTYPIC_SUMMARY_SUBMENU))
+		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_SUMMARY))
 		{
-			panelToReturn = new SummaryContainerPanel(panelId); // Note the constructor
+			panelToReturn = new SummaryContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_SUBMENU))
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY))
 		{
-			panelToReturn = new FieldContainerPanel(panelId); // Note the constructor
+			panelToReturn = new FieldContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_UPLOAD_SUBMENU))
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD))
 		{
-			panelToReturn = new FieldUploadContainerPanel(panelId); // Note the constructor
+			panelToReturn = new FieldUploadContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.PHENO_COLLECTION_SUBMENU))
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION))
 		{
-			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup); // Note the constructor
+			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_SUBMENU))
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA))
 		{
-			panelToReturn = new FieldDataContainerPanel(panelId); // Note the constructor
+			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(Constants.FIELD_DATA_UPLOAD_SUBMENU))
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD))
 		{
-			panelToReturn = new FieldDataUploadContainerPanel(panelId); // Note the constructor
+			panelToReturn = new FieldDataUploadContainerPanel(panelId);
 		}
 
 		return panelToReturn;
