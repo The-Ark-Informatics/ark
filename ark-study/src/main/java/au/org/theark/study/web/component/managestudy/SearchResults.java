@@ -1,7 +1,9 @@
 package au.org.theark.study.web.component.managestudy;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
@@ -175,7 +177,13 @@ public class SearchResults extends Panel{
 				Collection<ArkModule> arkModulesLinkedToStudy =  iArkCommonService.getArkModulesLinkedWithStudy(study);
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY, arkModulesLinkedToStudy);//Please work around this. Do not store objects in session/instead store Id's in session.
+				
+				// Store module names linked to study in session
+				for (Iterator iterator = arkModulesLinkedToStudy.iterator(); iterator.hasNext();)
+				{
+					ArkModule arkModule = (ArkModule) iterator.next();
+					SecurityUtils.getSubject().getSession().setAttribute(arkModule.getName(), arkModule.getName());
+				}
 	
 				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);

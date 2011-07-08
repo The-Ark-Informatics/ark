@@ -1,6 +1,5 @@
 package au.org.theark.core.security;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
@@ -11,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.ArkModule;
 
 /**
  * Global common class that determines permissions of particular action
@@ -47,24 +45,21 @@ public class ArkPermissionHelper
 	
 	/**
 	 * Determines whether a particular module is accessible by the user, for the study in context
-	 * @param study
-	 * @param arkModule
-	 * @return true if module set to be accessed/used within the specified study adn arkModule
+	 * @param arkModuleName
+	 * @return true if module set to be accessed/used within the study in context
 	 */
-	@SuppressWarnings("unchecked")
-	public static boolean isModuleAccessPermitted(ArkModule arkModule)
+	public static boolean isModuleAccessPermitted(String arkModuleName)
 	{
 		boolean modulePermitted = true;
 		
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Collection<ArkModule> arkModulesLinkedToStudy = new ArrayList<ArkModule>(0);  
-		arkModulesLinkedToStudy = (Collection<ArkModule>) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SESSION_STUDY_MODULES_KEY);
 		
 		if(sessionStudyId != null)
 		{
-			if(arkModulesLinkedToStudy != null)
+			String arkModule = (String) SecurityUtils.getSubject().getSession().getAttribute(arkModuleName);
+			if(arkModule != null)
 			{
-				if(arkModulesLinkedToStudy.contains(arkModule))
+				if(arkModule.equals(arkModuleName))
 				{
 					modulePermitted = true;
 				}

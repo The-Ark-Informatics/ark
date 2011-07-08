@@ -8,13 +8,10 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
@@ -22,8 +19,6 @@ import au.org.theark.core.web.component.ArkMainTab;
 public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 {
 	private transient static Logger	log	= LoggerFactory.getLogger(PhenotypicTabProviderImpl.class);
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private List<ITab>					moduleTabsList;
 
@@ -78,8 +73,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 
 			public boolean isVisible()
 			{
-				ArkModule arkModule = iArkCommonService.getArkModuleByName(tabName);
-				return ArkPermissionHelper.isModuleAccessPermitted(arkModule);
+				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 			}
 		};
 	}
