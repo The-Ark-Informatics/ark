@@ -30,16 +30,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
-
-	public List<ITab> buildTabs()
-	{
-		// Forms the Main Top level Tab
-		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_LIMS);
-		moduleTabsList.add(iTab);
-
-		return moduleTabsList;
-	}
-
+	
 	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup)
 	{
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
@@ -63,7 +54,7 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 			@Override
 			public Panel getPanel(String pid)
 			{
-				// The sub menu(s) for Phenotypic
+				// The sub menu(s)
 				return new LimsSubMenuTab(pid, arkContextPanelMarkup);
 			}
 
