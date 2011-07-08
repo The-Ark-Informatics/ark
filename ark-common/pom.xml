@@ -189,7 +189,15 @@
             <groupId>jfree</groupId>
             <artifactId>jcommon</artifactId>
             <version>1.0.15</version>
-        </dependency><!--
+        </dependency>
+        
+        <dependency>
+                <groupId>wicket-tree</groupId>
+                <artifactId>wicket-tree</artifactId>
+                <version>0.4.4</version>
+        </dependency>
+
+        <!--
 
 		<dependency>
 		    <groupId>org.wicketstuff</groupId>
@@ -272,5 +280,10 @@
 			<name>visural-wicket</name>
 			<url>http://visural-wicket.googlecode.com/svn/trunk/visural-wicket/maven/</url>
 		</repository>
+		<repository> 
+                <id>wicket-tree</id> 
+                <name>Wicket-tree Repository</name> 
+                <url>http://wicket-tree.googlecode.com/svn/repo</url> 
+        </repository> 
 	</repositories>
 </project>
