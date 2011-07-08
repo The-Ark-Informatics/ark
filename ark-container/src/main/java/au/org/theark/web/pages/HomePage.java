@@ -20,7 +20,13 @@ import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
 /**
- * Index page of The ARK
+ * <p>
+ * The <code>HomePage</code> class that extends the {@link au.org.theark.web.pages.BasePage BasePage} class.
+ * It provides the implementation of the index page of The Ark application.
+ * </p>
+ * 
+ * @author nivedann
+ * @author cellis
  */
 public class HomePage extends BasePage
 {
@@ -49,6 +55,9 @@ public class HomePage extends BasePage
 		}
 	}
 
+	/**
+	 * Builds the ContextPanel that is used to store/show the context items in session, such as Study, SubjectUID etc)
+	 */
 	protected void buildContextPanel()
 	{
 		this.arkContextPanelMarkup = new WebMarkupContainer("contextMarkupContainer");

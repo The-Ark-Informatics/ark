@@ -13,12 +13,21 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
 
 /**
- * This page will be inherited by all wicket pages. Contains basic functionality that all pages will require.e.g add the menu in here so all pages can
- * inherit it by default. Access to each menu item will be determined by the subclass via annotations. e.g if one of the menu item was Admin the class
- * linked or invoked will place the constraints via annotations. Using IStrategyAuthorization the application will determine if the link is accessible
- * to the current logged in user.
- * 
+ * <p>
+ * The <code>BasePage</code> class that extends the {@link org.apache.wicket.markup.html.WebPage WebPage} class.
+ * This page will be inherited by all wicket pages.
+ * Contains basic functionality that all pages will require:
+ * <ul>
+ * 	<li>e.g. add the menu in here so all pages can inherit it by default.</li> 
+ * </ul>
+ * Access to each menu item will be determined by the subclass via annotations:
+ * <ul>
+ * 	<li>e.g if one of the menu item was Admin the class linked or invoked will place the constraints via annotations</li>
+ * </ul>
+ * Using IStrategyAuthorization,  the application will determine if the link is accessible to the current logged in user.
+ * </p>
  * @author nivedann
+ * @author cellis
  * 
  */
 public abstract class BasePage extends WebPage
@@ -30,6 +39,9 @@ public abstract class BasePage extends WebPage
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
 
+	/**
+	 * Default constructor
+	 */
 	public BasePage()
 	{
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
