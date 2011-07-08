@@ -1,7 +1,5 @@
 package au.org.theark.core.security;
 
-import java.util.Collection;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
@@ -12,13 +10,14 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 
 /**
- * Global common class that determines permissions of particular action
+ * Global common class that provide helper methods to determine permissions of particular action/module
  * @author cellis
  *
  */
 public class ArkPermissionHelper
 {
 	private transient static Logger log = LoggerFactory.getLogger(ArkPermissionHelper.class);
+	
 	/**
 	 * Determines whether a particular module function is accessible/permitted by the user in context
 	 * @param actionType
@@ -114,11 +113,10 @@ public class ArkPermissionHelper
 	 * @param currentUser
 	 * @return true if READ permission allowed
 	 */
-	private static boolean hasSearchPermission(SecurityManager securityManager, Subject currentUser)
+	public static boolean hasSearchPermission(SecurityManager securityManager, Subject currentUser)
 	{
 		boolean flag = false;
 		
-		// Search allowed if user has READ permission
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
 		{
 			flag = true;
@@ -140,7 +138,6 @@ public class ArkPermissionHelper
 	{
 		boolean flag = false;
 		
-		// Save allowed if user has CREATE or UPDATE permissions
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) || 
 				securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
 		{
