@@ -3,28 +3,22 @@ package au.org.theark.phenotypic.web.component.fieldData.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
-import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -36,14 +30,19 @@ import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
+@SuppressWarnings("unused")
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 4602216854250133940L;
+
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService									iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService									iArkCommonService;
+	private IArkCommonService<Void>							iArkCommonService;
 
 	private PageableListView<FieldData>						listView;
 	private CompoundPropertyModel<PhenoCollectionVO>	cpmModel;
@@ -76,6 +75,28 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
+		
+		// hide New button for FieldData
+		newButton = new AjaxButton(au.org.theark.core.Constants.NEW)
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 6539600487179555764L;
+
+			@Override
+			public boolean isVisible()
+			{
+				return false;
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
+			{
+				super.onSubmit();
+			}
+		};
+		addOrReplace(newButton);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -138,24 +159,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	@Override
 	protected void onSearch(AjaxRequestTarget target)
 	{
-		FieldData searchFieldData = getModelObject().getFieldData();
-		/*
-		target.addComponent(feedbackPanel);
-		FieldData searchFieldData = getModelObject().getFieldData();
-
-		java.util.Collection<FieldData> fieldDataCollection = phenotypicService.searchFieldData(searchFieldData);
-
-		if (fieldDataCollection != null && fieldDataCollection.size() == 0)
-		{
-			this.info("Field data with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
-		}
-		getModelObject().setFieldDataCollection(fieldDataCollection);
-		listView.removeAll();
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);
-		*/
-		
+		FieldData searchFieldData = getModelObject().getFieldData();		
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId)); 
@@ -165,31 +169,14 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 			this.info("There are no field data records with the specified criteria.");
 			target.addComponent(feedbackPanel);
 		}
-		listContainer.setVisible(true);//Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);//For ajax this is required so
+		listContainer.setVisible(true);
+		target.addComponent(listContainer);
 	}
-
-	// Reset button implemented in AbstractSearcForm
 
 	@Override
 	protected void onNew(AjaxRequestTarget target)
 	{
-		//NB: Should not be possible to get here (not allowed to create a new FieldData via GUI)
-		// Due to ARK-108 :: No longer reset the VO onNew(..)
-		PhenoCollectionVO phenoCollectionVo = getModelObject();
-		phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
-		phenoCollectionVo.getFieldData().setId(null);	//must ensure Id is blank onNew
-		
-		// Set study for the new field of the fieldData
-		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(studyId);
-		Field field = new Field();
-		field.setStudy(study);
-		phenoCollectionVo.setField(field);
-		
-		setModelObject(phenoCollectionVo);
-		preProcessDetailPanel(target);
-		
+		// Should not be possible to get here (not allowed to create a new FieldData via GUI)
 	}
 	
 	protected boolean isSecure(String actionType)
