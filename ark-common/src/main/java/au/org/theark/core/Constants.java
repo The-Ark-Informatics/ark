@@ -237,6 +237,7 @@ public class Constants
 	public static final String	FUNCTION_KEY_VALUE_SUBJECT_UPLOAD			= "SUBJECT_UPLOAD";
 	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE	= "CORRESPONDENCE";
 	public static final String	FUNCTION_KEY_VALUE_REPORT						= "REPORT";
+	public static final String	FUNCTION_KEY_VALUE_PHENO_SUMMARY				= "SUMMARY";
 	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY			= "DATA_DICTIONARY";
 	public static final String	FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD	= "DATA_DICTIONARY_UPLOAD";
 	public static final String	FUNCTION_KEY_VALUE_PHENO_COLLECTION			= "PHENO_COLLECTION";
