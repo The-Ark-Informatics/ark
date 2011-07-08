@@ -12,7 +12,6 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
-import au.org.theark.study.web.Constants;
 
 /**
  * The main class that implements the common service IMainTabProvider.This contributes the Tab menu which forms the entry point into Study module. As
@@ -55,8 +54,8 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 		this.studyLogoMarkup = studyLogoMarkup;
 		
 		// Main Top level Tabs
-		ITab studyTab = createStudyTab(Constants.STUDY_MAIN_TAB);
-		ITab subjectTab = createSubjectTab(Constants.SUBJECT_MAIN_TAB);
+		ITab studyTab = createTab(au.org.theark.core.Constants.ARK_MODULE_STUDY);
+		ITab subjectTab = createTab(au.org.theark.core.Constants.ARK_MODULE_SUBJECT);
 		moduleTabsList.add(studyTab);
 		moduleTabsList.add(subjectTab);
 		return moduleTabsList;
@@ -76,8 +75,8 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 		this.arkContextMarkup = arkContextMarkup;
 
 		// Main Top level Tabs
-		ITab studyTab = createStudyTab(Constants.STUDY_MAIN_TAB);
-		ITab subjectTab = createSubjectTab(Constants.SUBJECT_MAIN_TAB);
+		ITab studyTab = createTab(au.org.theark.core.Constants.ARK_MODULE_STUDY);
+		ITab subjectTab = createTab(au.org.theark.core.Constants.ARK_MODULE_SUBJECT);
 		moduleTabsList.add(studyTab);
 		moduleTabsList.add(subjectTab);
 		return moduleTabsList;
@@ -98,47 +97,85 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 		this.arkContextMarkup = arkContextMarkup;
 		this.setModuleTabbedPanel(moduleTabbedPanel);
 
-		ITab tab1 = createStudyTab(Constants.STUDY_MAIN_TAB);// Forms the Main Top level Tab
-		ITab tab2 = createSubjectTab(Constants.SUBJECT_MAIN_TAB);
-		moduleTabsList.add(tab1);
-		moduleTabsList.add(tab2);
+		// Main Top level Tabs
+		ITab studyTab = createTab(au.org.theark.core.Constants.ARK_MODULE_STUDY);
+		ITab subjectTab = createTab(au.org.theark.core.Constants.ARK_MODULE_SUBJECT);
+		moduleTabsList.add(studyTab);
+		moduleTabsList.add(subjectTab);
 		return moduleTabsList;
 	}
 
-	/**
-	 * Create the main Study tab. This tab is always visible/accessible within the application
-	 * 
-	 * @param tabName
-	 *           The id/name of the tab
-	 * @return the main Study tab
-	 */
-	public ITab createStudyTab(final String tabName)
+	public ITab createTab(final String tabName)
 	{
-		return new ArkMainTab(new Model<String>(tabName))
+		if(tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY))
 		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -8671910074409249398L;
-
-			@Override
-			public Panel getPanel(String pid)
+			return new ArkMainTab(new Model<String>(tabName))
 			{
-				return panelToReturn(pid, tabName);
-			}
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= -8671910074409249398L;
 
-			public boolean isAccessible()
-			{
-				// Study tab is always accessible
-				return true;
-			}
+				@Override
+				public Panel getPanel(String pid)
+				{
+					return panelToReturn(pid, tabName);
+				}
 
-			public boolean isVisible()
+				public boolean isAccessible()
+				{
+					// Study tab is always accessible
+					return true;
+				}
+
+				public boolean isVisible()
+				{
+					// Study tab is always visible
+					return true;
+				}
+			};
+		}
+		else
+		{
+			return new ArkMainTab(new Model<String>(tabName))
 			{
-				// Study tab is always visible
-				return true;
-			}
-		};
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= -6838973454398478802L;
+
+				@Override
+				public Panel getPanel(String pid)
+				{
+					return panelToReturn(pid, tabName);
+				}
+
+				public boolean isAccessible()
+				{
+					// Only accessible when study in session (repainted on Study selection)
+					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					if (sessionStudyId == null)
+					{
+						this.getPanel(au.org.theark.core.Constants.ARK_MODULE_SUBJECT).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
+						return false;
+					}
+					else
+						return true;
+				}
+
+				public boolean isVisible()
+				{
+					// Only visible when study in session (repainted on Study selection)
+					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					if (sessionStudyId == null)
+					{
+						return false;
+					}
+					else
+						return true;
+				}
+			};
+		}
 	}
 
 	/**
@@ -153,73 +190,15 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 	public Panel panelToReturn(String pid, String tabName)
 	{
 		Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
-		if (tabName.equals(Constants.STUDY_MAIN_TAB))
+		if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_STUDY))
 		{
 			panelToReturn = new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup, this);// The sub menus for Study
 		}
-		else if (tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB))
+		else if (tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_SUBJECT))
 		{
 			panelToReturn = new SubjectSubMenuTab(pid, arkContextMarkup);
 		}
 		return panelToReturn;
-	}
-
-	/**
-	 * Create the main Subject tab. This tab is visible/accessible within the application when a Study is set into context
-	 * 
-	 * @param tabName
-	 *           The id/name of the tab
-	 * @return the main Subject tab
-	 */
-	public ITab createSubjectTab(final String tabName)
-	{
-		return new ArkMainTab(new Model<String>(tabName))
-		{
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6838973454398478802L;
-
-			@Override
-			public Panel getPanel(String pid)
-			{
-				Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
-				if (tabName.equals(Constants.STUDY_MAIN_TAB))
-				{
-					panelToReturn = new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup);// The sub menus for Study
-				}
-				else if (tabName.equalsIgnoreCase(Constants.SUBJECT_MAIN_TAB))
-				{
-					panelToReturn = new SubjectSubMenuTab(pid, arkContextMarkup);
-				}
-				return panelToReturn;
-			}
-
-			public boolean isAccessible()
-			{
-				// Only accessible when study in session (repainted on Study selection)
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null)
-				{
-					this.getPanel(Constants.SUBJECT_MAIN_TAB).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
-					return false;
-				}
-				else
-					return true;
-			}
-
-			public boolean isVisible()
-			{
-				// Only visible when study in session (repainted on Study selection)
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null)
-				{
-					return false;
-				}
-				else
-					return true;
-			}
-		};
 	}
 
 	/**
