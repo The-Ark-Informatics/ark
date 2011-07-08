@@ -67,7 +67,7 @@
       <property name="base" value="dc=ldap,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldap,dc=the-ark,dc=org,dc=au" />
       -->
-      <property name="password" value="v@Tym4np[]" />
+      <property name="password" value="type-in-password" />
     </bean>
  	
     <!--  Development:LDAP Data Source 
