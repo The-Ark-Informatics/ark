@@ -50,7 +50,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel
 		}
 	}
 	
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer newLink(final String linkId, final int index)
 	{
 		return new AjaxFallbackLink(linkId)
