@@ -1,0 +1,5 @@
+#surefire
+#Mon Jul 04 19:44:51 WST 2011
+user.dir=/home/arkadmin/workspace/ark-report
+localRepository=/home/arkadmin/.m2/repository
+basedir=/home/arkadmin/workspace/ark-report
