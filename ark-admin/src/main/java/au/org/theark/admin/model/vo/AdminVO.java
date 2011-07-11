@@ -30,7 +30,9 @@ public class AdminVO implements Serializable
 	private ArkRolePolicyTemplate arkRolePolicyTemplate;
 	private Study study;
 	private List<Study> studyList;
+	private List<ArkRolePolicyTemplate> arkRolePolicyTemplateList;
 	private List<ArkModule> arkModuleList;
+	private List<ArkFunction> arkFunctionList;
 
 	public AdminVO() 
 	{
@@ -40,7 +42,9 @@ public class AdminVO implements Serializable
 		this.arkRolePolicyTemplate = new ArkRolePolicyTemplate();
 		this.study = new Study();
 		this.studyList = new ArrayList<Study>(0);
+		this.arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 		this.arkModuleList = new ArrayList<ArkModule>(0);
+		this.arkFunctionList = new ArrayList<ArkFunction>(0);
 	}
 	
 	/**
@@ -138,6 +142,22 @@ public class AdminVO implements Serializable
 	{
 		return studyList;
 	}
+	
+	/**
+	 * @param arkRolePolicyTemplateList the arkRolePolicyTemplateList to set
+	 */
+	public void setArkRolePolicyTemplateList(List<ArkRolePolicyTemplate> arkRolePolicyTemplateList)
+	{
+		this.arkRolePolicyTemplateList = arkRolePolicyTemplateList;
+	}
+
+	/**
+	 * @return the arkRolePolicyTemplateList
+	 */
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList()
+	{
+		return arkRolePolicyTemplateList;
+	}
 
 	/**
 	 * @param arkModuleList the arkModuleList to set
@@ -154,4 +174,22 @@ public class AdminVO implements Serializable
 	{
 		return arkModuleList;
 	}
+
+	/**
+	 * @param arkFunctionList the arkFunctionList to set
+	 */
+	public void setArkFunctionList(List<ArkFunction> arkFunctionList)
+	{
+		this.arkFunctionList = arkFunctionList;
+	}
+
+	/**
+	 * @return the arkFunctionList
+	 */
+	public List<ArkFunction> getArkFunctionList()
+	{
+		return arkFunctionList;
+	}
+
+	
 }
