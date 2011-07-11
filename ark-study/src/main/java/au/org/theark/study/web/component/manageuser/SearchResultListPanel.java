@@ -17,6 +17,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -95,7 +96,8 @@ public class SearchResultListPanel extends Panel{
 						
 						ArkUserVO arkUserVOFromBackend = userService.lookupArkUser(arkUserVo.getUserName(),study);
 						if(!arkUserVOFromBackend.isArkUserPresentInDatabase()){
-							containerForm.info("This User is not yet present in the Ark Database but is present in LDAP.If you wish to continue, please assign the Modules and Roles.");
+							
+							containerForm.info(new StringResourceModel("user.not.linked.to.study",this, null).getString());
 							target.addComponent(feedbackPanel);
 							arkUserVOFromBackend.setChangePassword(true);
 							arkUserVOFromBackend.getArkUserEntity().setLdapUserName(arkUserVo.getUserName());
@@ -134,7 +136,7 @@ public class SearchResultListPanel extends Panel{
 						//Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode 
 						containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 					} catch (ArkSystemException e) {
-						containerForm.error("There was a System error. Please contact the Administator");
+						containerForm.error(new StringResourceModel("ark.system.error",this, null).getString());
 						target.addComponent(feedbackPanel);
 					}
 				}
