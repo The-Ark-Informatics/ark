@@ -247,7 +247,8 @@ public class Constants
 	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION			= "LIMS_COLLECTION";
 	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN				= "BIOSPECIMEN";
 	public static final String	FUNCTION_KEY_VALUE_INVENTORY					= "INVENTORY";
-	public static final String	FUNTION_KEY_VALUE_SUBJECT_CUSTOM				= "SUBJECT_CUSTOM";
+	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CUSTOM			= "SUBJECT_CUSTOM";
+	public static final String	FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE	= "ROLE_POLICY_TEMPLATE";
 
 	/* Ark Module Keys */
 	public static final String	ARK_MODULE_KEY										= "MODULE_KEY";
@@ -261,6 +262,7 @@ public class Constants
 	public static final String	ARK_MODULE_LIMS									= "LIMS";
 	public static final String	ARK_MODULE_REGISTRY								= "Registry";
 	public static final String	ARK_MODULE_REPORTING								= "Reporting";
+	public static final String	ARK_MODULE_ADMIN									= "Admin";
 
 	public static final char	DEFAULT_DELIMITER_CHARACTER					= ',';
 	public static final String	DEFAULT_FILE_FORMAT								= "CSV";
@@ -277,5 +279,4 @@ public class Constants
 	/* Ark Function Types */
 	public static final String	ARK_FUNCTION_TYPE_REPORT						= "REPORT";
 	public static final String	ARK_FUNCTION_TYPE_NON_REPORT					= "NON-REPORT";
-	
 }
