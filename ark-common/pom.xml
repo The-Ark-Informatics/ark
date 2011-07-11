@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.core</groupId>
 	<artifactId>ark-common</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>Ark Common</name>
 	<description>The top level container web application that will contain other sub-modules.</description>
 	<organization>
@@ -190,12 +190,13 @@
             <artifactId>jcommon</artifactId>
             <version>1.0.15</version>
         </dependency>
-        
+        <!-- 
         <dependency>
                 <groupId>wicket-tree</groupId>
                 <artifactId>wicket-tree</artifactId>
                 <version>0.4.4</version>
         </dependency>
+         -->
 
         <!--
 
