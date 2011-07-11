@@ -49,7 +49,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://ark-database:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="v@Tym4np[]"/>
+        <property name="password" value="insert-real-password"/>
     </bean>
     
     <!--  LDAP Data Source -->
@@ -67,7 +67,7 @@
       <property name="base" value="dc=ldap,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldap,dc=the-ark,dc=org,dc=au" />
       -->
-      <property name="password" value="type-in-password" />
+      <property name="password" value=insert-real-password />
     </bean>
  	
     <!--  Development:LDAP Data Source 
@@ -84,7 +84,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://127.0.0.1:3306"/>
         <property name="username" value="arkadmin"/>
-        <property name="password" value="veTum1n"/>
+        <property name="password" value="insert-real-password"/>
     </bean>
     -->
     <!--  Melbourne LDAP data source
@@ -92,7 +92,7 @@
       <property name="url"  value="ldap://127.0.0.1:389"/>
       <property name="base" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au"/>
       <property name="userDn" value="cn=admin,dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
-      <property name="password" value="anarchyx" />
+      <property name="password" value="insert-real-password" />
     </bean>
     -->
     
