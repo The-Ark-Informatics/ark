@@ -33,21 +33,21 @@
 		<dependency>
 			<groupId>au.org.theark.core</groupId>
 			<artifactId>ark-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Ark Study Module -->
 		<dependency>
 			<groupId>au.org.theark.study</groupId>
 			<artifactId>ark-study</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- Ark Phenotypic Module -->
 		<dependency>
 			<groupId>au.org.theark.phenotypic</groupId>
 			<artifactId>ark-phenotypic</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Ark Genotypic Module 
@@ -67,14 +67,14 @@
 		<dependency>
 			<groupId>au.org.theark.lims</groupId>
 			<artifactId>ark-lims</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		
 		<!-- Ark Reporting Module -->		
 		<dependency>
 			<groupId>au.org.theark.report</groupId>
 			<artifactId>ark-report</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 
 		<!--  Spring Stuff -->
