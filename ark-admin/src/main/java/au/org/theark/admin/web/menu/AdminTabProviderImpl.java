@@ -11,13 +11,13 @@ import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
 @SuppressWarnings("serial")
-public class AdministrationTabProviderImpl extends Panel implements IMainTabProvider
+public class AdminTabProviderImpl extends Panel implements IMainTabProvider
 {
 
 	private static final long	serialVersionUID	= 1L;
 	private List<ITab>			moduleTabsList;
 
-	public AdministrationTabProviderImpl(String panelId)
+	public AdminTabProviderImpl(String panelId)
 	{
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();

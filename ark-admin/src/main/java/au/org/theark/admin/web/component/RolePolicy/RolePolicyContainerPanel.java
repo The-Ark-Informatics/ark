@@ -1,5 +1,5 @@
 
-package au.org.theark.admin.web.component;
+package au.org.theark.admin.web.component.RolePolicy;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -14,7 +14,7 @@ import au.org.theark.core.service.IArkCommonService;
  * @author cellis
  *
  */
-public class AdminContainerPanel extends Panel {
+public class RolePolicyContainerPanel extends Panel {
 	
 	/**
 	 * 
@@ -29,7 +29,7 @@ public class AdminContainerPanel extends Panel {
 	/**
 	 * @param id
 	 */
-	public AdminContainerPanel(String id) {
+	public RolePolicyContainerPanel(String id) {
 		super(id);
 		compoundPropertyModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
 	}

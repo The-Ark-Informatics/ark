@@ -10,7 +10,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.admin.web.component.AdminContainerPanel;
+import au.org.theark.admin.web.component.RolePolicy.RolePolicyContainerPanel;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.MenuModule;
@@ -85,7 +85,7 @@ public class AdminSubMenuTab extends Panel
 
 					if (moduleName.getModuleName().equalsIgnoreCase("Role Policy"))
 					{
-						AdminContainerPanel adminContainerPanel = new AdminContainerPanel(panelId);
+						RolePolicyContainerPanel adminContainerPanel = new RolePolicyContainerPanel(panelId);
 						adminContainerPanel.initialisePanel();
 						panelToReturn = adminContainerPanel;
 					}
