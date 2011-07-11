@@ -10,7 +10,7 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.admin.web.component.RolePolicy.RolePolicyContainerPanel;
+import au.org.theark.admin.web.component.rolePolicy.RolePolicyContainerPanel;
 import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.MenuModule;
@@ -23,18 +23,17 @@ public class AdminSubMenuTab extends Panel
 	 * 
 	 */
 	private static final long serialVersionUID = 2808674930679468072L;
-	List<ITab> tabList;
+	private List<ITab> tabList;
 
 	public AdminSubMenuTab(String id)
 	{
 		super(id);
-		tabList = new ArrayList<ITab>();
+		setTabList(new ArrayList<ITab>());
 		buildTabs();
 	}
 
 	public void buildTabs()
 	{
-
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
 		List<MenuModule> moduleTabs = new ArrayList<MenuModule>();
 
@@ -97,5 +96,21 @@ public class AdminSubMenuTab extends Panel
 
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel("adminSubMenus", moduleSubTabsList);
 		add(moduleTabbedPanel);
+	}
+
+	/**
+	 * @param tabList the tabList to set
+	 */
+	public void setTabList(List<ITab> tabList)
+	{
+		this.tabList = tabList;
+	}
+
+	/**
+	 * @return the tabList
+	 */
+	public List<ITab> getTabList()
+	{
+		return tabList;
 	}
 }
