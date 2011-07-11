@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.study</groupId>
 	<artifactId>ark-study</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>Ark Study</name>
 	<description>Module that contains all Study related functionality.</description>
 	<organization>
