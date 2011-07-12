@@ -63,10 +63,10 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	private DropDownChoice		arkRoleDropDown;
 	private DropDownChoice		arkModuleDropDown;
 	private DropDownChoice		arkFunctionDropDown;
-	private CheckBox				arkPermissionCreateChkBox;
-	private CheckBox				arkPermissionReadChkBox;
-	private CheckBox				arkPermissionUpdateChkBox;
-	private CheckBox				arkPermissionDeleteChkBox;
+	private CheckBox				arkCreatePermissionChkBox;
+	private CheckBox				arkReadPermissionChkBox;
+	private CheckBox				arkUpdatePermissionChkBox;
+	private CheckBox				arkDeletePermissionChkBox;
 
 	/*
 	 * ID int(11) PK ARK_ROLE_ID int(11) ARK_MODULE_ID int(11) ARK_FUNCTION_ID int(11) ARK_PERMISSION_ID int(11)
@@ -99,7 +99,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 	public void initialiseDetailForm()
 	{
-		idTxtFld = new TextField<String>("id");
+		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
 		idTxtFld.setEnabled(false);
 
 		// Role selection
@@ -111,9 +111,21 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		// Function selection
 		initArkFunctionDropDown();
 
-		arkPermissionCreateChkBox = new CheckBox("ark_permission");
-		arkPermissionCreateChkBox.setVisible(true);
-		arkPermissionCreateChkBox.setOutputMarkupId(true);
+		arkCreatePermissionChkBox = new CheckBox("arkCreatePermission");
+		arkCreatePermissionChkBox.setVisible(true);
+		arkCreatePermissionChkBox.setOutputMarkupId(true);
+		
+		arkReadPermissionChkBox = new CheckBox("arkReadPermission");
+		arkReadPermissionChkBox.setVisible(true);
+		arkReadPermissionChkBox.setOutputMarkupId(true);
+		
+		arkUpdatePermissionChkBox = new CheckBox("arkUpdatePermission");
+		arkUpdatePermissionChkBox.setVisible(true);
+		arkUpdatePermissionChkBox.setOutputMarkupId(true);
+		
+		arkDeletePermissionChkBox = new CheckBox("arkDeletePermission");
+		arkDeletePermissionChkBox.setVisible(true);
+		arkDeletePermissionChkBox.setOutputMarkupId(true);
 
 		attachValidators();
 		addComponents();
@@ -123,7 +135,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	{
 		List<ArkRole> arkRoleList = iArkCommonService.getArkRoleList();
 		ChoiceRenderer<StudyStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyStatus>("name", "id");
-		arkRoleDropDown = new DropDownChoice("ark_role", arkRoleList, defaultChoiceRenderer);
+		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
 			@Override
@@ -138,7 +150,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	{
 		List<ArkModule> arkModuleList = iArkCommonService.getArkModuleList();
 		ChoiceRenderer<SubjectUidToken> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidToken>("name", "id");
-		arkModuleDropDown = new DropDownChoice("ark_module", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
 			@Override
@@ -153,7 +165,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	{
 		List<ArkFunction> arkFunctionList = iArkCommonService.getArkFunctionList();
 		ChoiceRenderer<SubjectUidPadChar> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidPadChar>("name", "id");
-		arkFunctionDropDown = new DropDownChoice("ark_function", arkFunctionList, defaultChoiceRenderer);
+		arkFunctionDropDown = new DropDownChoice("arkRolePolicyTemplate.arkFunction", arkFunctionList, defaultChoiceRenderer);
 		arkFunctionDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
 			@Override
@@ -170,10 +182,10 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkRoleDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkFunctionDropDown);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkPermissionCreateChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkPermissionReadChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkPermissionUpdateChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkPermissionDeleteChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkCreatePermissionChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkReadPermissionChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkUpdatePermissionChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(arkDeletePermissionChkBox);
 		
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}

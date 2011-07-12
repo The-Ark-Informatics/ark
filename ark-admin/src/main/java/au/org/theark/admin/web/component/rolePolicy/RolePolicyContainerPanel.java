@@ -1,27 +1,37 @@
 
 package au.org.theark.admin.web.component.rolePolicy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.AbstractContainerPanel;
 
 /**
  * @author cellis
  *
  */
-public class RolePolicyContainerPanel extends Panel {
-	
+public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> 
+{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 442185554812824590L;
-	protected CompoundPropertyModel<AdminVO> compoundPropertyModel;
-	private FeedbackPanel feedbackPanel;
+	private ContainerForm containerForm;
+	private SearchPanel searchPanel;
+	private DetailPanel detailPanel;
+	private SearchResultsPanel searchResultsPanel;
+	private PageableListView<ArkRolePolicyTemplate>			listView;
 	
 	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void> iArkCommonService;
@@ -29,39 +39,66 @@ public class RolePolicyContainerPanel extends Panel {
 	/**
 	 * @param id
 	 */
-	public RolePolicyContainerPanel(String id) {
+	public RolePolicyContainerPanel(String id) 
+	{
 		super(id);
-		compoundPropertyModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
-	}
-	
-	public void initialisePanel() {
-		add(initialiseFeedBackPanel());
-	}
-	
-	protected WebMarkupContainer initialiseFeedBackPanel(){
-		/* Feedback Panel */
-		setFeedbackPanel(new FeedbackPanel("feedbackMessage"));
-		getFeedbackPanel().setOutputMarkupId(true);
-		return getFeedbackPanel();
+		/* Initialise the CPM */
+		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
+		initCrudContainerVO();
+		initialiseMarkupContainers();
+
+		/* Bind the CPM to the Form */
+		containerForm = new ContainerForm("containerForm", cpModel);
+		containerForm.add(initialiseFeedBackPanel());
+		containerForm.add(initialiseDetailPanel());
+		containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchPanel());
+
+		add(containerForm);
 	}
 
-	protected void prerenderContextCheck() 
-	{		
+	@Override
+	protected WebMarkupContainer initialiseDetailPanel()
+	{
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
+		detailPanel.initialisePanel();
+		detailPanelContainer.add(detailPanel);
+		return detailPanelContainer;
 	}
 
-	public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
-		this.feedbackPanel = feedbackPanel;
+	@Override
+	protected WebMarkupContainer initialiseSearchPanel()
+	{
+		searchPanel = new SearchPanel("searchPanel", feedBackPanel, containerForm, cpModel, arkCrudContainerVO);
+		searchPanel.initialisePanel();
+		searchPanelContainer.add(searchPanel);
+		return searchPanelContainer;
 	}
 
-	public FeedbackPanel getFeedbackPanel() {
-		return feedbackPanel;
-	}
+	@Override
+	protected WebMarkupContainer initialiseSearchResults()
+	{
+		searchResultsPanel = new SearchResultsPanel("searchResults", containerForm, arkCrudContainerVO);
+		iModel = new LoadableDetachableModel<Object>()
+		{
+			private static final long	serialVersionUID	= 1L;
 
-	public IArkCommonService<Void> getiArkCommonService() {
-		return iArkCommonService;
-	}
+			@Override
+			protected Object load()
+			{
+				List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
+				arkRolePolicyTemplateList = iArkCommonService.getArkRolePolicyTemplateList();
+				listView.removeAll();
+				return arkRolePolicyTemplateList;
+			}
+		};
 
-	public void setiArkCommonService(IArkCommonService<Void> iArkCommonService) {
-		this.iArkCommonService = iArkCommonService;
+		listView = searchResultsPanel.buildPageableListView(iModel, searchResultPanelContainer);
+		listView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		searchResultsPanel.add(pageNavigator);
+		searchResultsPanel.add(listView);
+		searchResultPanelContainer.add(searchResultsPanel);
+		return searchResultPanelContainer;
 	}
 }

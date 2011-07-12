@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -20,6 +19,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 
 public class SearchResultsPanel extends Panel
@@ -38,24 +38,20 @@ public class SearchResultsPanel extends Panel
 	private ArkLdapRealm realm;
 	
 	private ContainerForm containerForm;
-	@SuppressWarnings("unused")
-	private TabbedPanel moduleTabbedPanel;
 	
-	public SearchResultsPanel(String id, ContainerForm containerForm){
+	private ArkCrudContainerVO arkCrudContainerVo;
+	
+	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
+	{
 		super(id);
 		this.containerForm = containerForm;
-	}
-	
-	public SearchResultsPanel(String id, ContainerForm containerForm, TabbedPanel moduleTabbedPanel){
-		super(id);
-		this.containerForm = containerForm;
-		this.moduleTabbedPanel = moduleTabbedPanel;
+		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
 
 	@SuppressWarnings("unchecked")
 	public PageableListView<ArkRolePolicyTemplate> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer)
 	{	
-		PageableListView<ArkRolePolicyTemplate> studyPageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRoleTemplatePolicyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) 
+		PageableListView<ArkRolePolicyTemplate> pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplateList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) 
 		{
 			/**
 			 * 
@@ -72,31 +68,31 @@ public class SearchResultsPanel extends Panel
 				if(arkRolePolicyTemplate.getArkRole() != null)
 				{
 					//the ID here must match the ones in mark-up
-					item.add(new Label("arkRoleTemplatePolicy.arkRole", arkRolePolicyTemplate.getArkRole().getName()));	
+					item.add(new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName()));	
 				}
 				else
 				{
-					item.add(new Label("arkRoleTemplatePolicy.arkRole", ""));
+					item.add(new Label("arkRolePolicyTemplate.arkRole", ""));
 				}
 				
 				if(arkRolePolicyTemplate.getArkModule() != null)
 				{
 					//the ID here must match the ones in mark-up
-					item.add(new Label("arkRoleTemplatePolicy.arkModule", arkRolePolicyTemplate.getArkModule().getName()));	
+					item.add(new Label("arkRolePolicyTemplate.arkModule", arkRolePolicyTemplate.getArkModule().getName()));	
 				}
 				else
 				{
-					item.add(new Label("arkRoleTemplatePolicy.arkModule", ""));
+					item.add(new Label("arkRolePolicyTemplate.arkModule", ""));
 				}
 				
 				if(arkRolePolicyTemplate.getArkFunction() != null)
 				{
 					//the ID here must match the ones in mark-up
-					item.add(new Label("arkRoleTemplatePolicy.arkFunction", arkRolePolicyTemplate.getArkFunction().getName()));	
+					item.add(new Label("arkRolePolicyTemplate.arkFunction", arkRolePolicyTemplate.getArkFunction().getName()));	
 				}
 				else
 				{
-					item.add(new Label("arkRoleTemplatePolicy.arkRole", ""));
+					item.add(new Label("arkRolePolicyTemplate.arkFunction", ""));
 				}
 				
 				if(arkRolePolicyTemplate.getArkPermission() != null)
@@ -106,41 +102,41 @@ public class SearchResultsPanel extends Panel
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("CREATE"))
 					{
-						item.add(new Label("arkRoleTemplatePolicy.createPermission", permissionString));
+						item.add(new Label("arkCreatePermission", permissionString));
 					}
 					else
 					{
-						item.add(new Label("arkRoleTemplatePolicy.createPermission", ""));
+						item.add(new Label("arkCreatePermission", ""));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("READ"))
 					{
-						item.add(new Label("arkRoleTemplatePolicy.readPermission", permissionString));
+						item.add(new Label("arkReadPermission", permissionString));
 					}
 					else
 					{
-						item.add(new Label("arkRoleTemplatePolicy.readPermission", ""));
+						item.add(new Label("arkReadPermission", ""));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("UPDATE"))
 					{
-						item.add(new Label("arkRoleTemplatePolicy.updatePermission", permissionString));
+						item.add(new Label("arkUpdatePermission", permissionString));
 					}
 					else
 					{
-						item.add(new Label("arkRoleTemplatePolicy.updatePermission", ""));
+						item.add(new Label("arkUpdatePermission", ""));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("DELETE"))
 					{
-						item.add(new Label("arkRoleTemplatePolicy.deletePermission", permissionString));
+						item.add(new Label("arkDeletePermission", permissionString));
 					}
 					else
 					{
-						item.add(new Label("arkRoleTemplatePolicy.deletePermission", ""));
+						item.add(new Label("arkDeletePermission", ""));
 					}
 				}
 				
@@ -159,13 +155,13 @@ public class SearchResultsPanel extends Panel
 				
 			}
 		};
-		return studyPageableListView;
+		return pageableListView;
 	}
 	
 	
 	@SuppressWarnings({ "unchecked", "serial" })
-	private AjaxLink buildLink(final ArkRolePolicyTemplate arkRolePolicyTemplate, final WebMarkupContainer searchResultsContainer) {
-		
+	private AjaxLink buildLink(final ArkRolePolicyTemplate arkRolePolicyTemplate, final WebMarkupContainer searchResultsContainer)
+	{	
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") 
 		{
 			@Override
@@ -178,13 +174,29 @@ public class SearchResultsPanel extends Panel
 				List<ArkModule> arkModuleList =  iArkCommonService.getArkModuleList();
 				containerForm.getModelObject().setArkModuleList(arkModuleList);
 				
+				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
+				arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVo.getViewButtonContainer().setVisible(true);
+				arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
+				
+				// Refresh the markup containers
+				target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
+				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
+				target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
+				target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
+				target.addComponent(arkCrudContainerVo.getViewButtonContainer());
+				target.addComponent(arkCrudContainerVo.getEditButtonContainer());
+				
 				// Refresh base container form to remove any feedBack messages
 				target.addComponent(containerForm);
 			}
 		};
 		
 		//Add the label for the link
-		Label linkLabel = new Label("arkRoleTemplatePolicy.id", arkRolePolicyTemplate.getId().toString());
+		Label linkLabel = new Label("arkRolePolicyTemplate.id", arkRolePolicyTemplate.getId().toString());
 		link.add(linkLabel);
 		return link;
 	}

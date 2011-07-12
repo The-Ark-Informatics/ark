@@ -1,22 +1,20 @@
 package au.org.theark.admin.web.component.rolePolicy.form;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
 public class SearchForm extends AbstractSearchForm<AdminVO>
@@ -31,13 +29,15 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	private IArkCommonService					iArkCommonService;
 
 	/* The Input Components that will be part of the Search Form */
+	@SuppressWarnings("unused")
 	private DropDownChoice<Study>				studyDpChoices;
+	private TextField<String>					idTxtFld;
 	private CompoundPropertyModel<AdminVO>	cpmModel;
 	private ArkCrudContainerVO					arkCrudContainerVO;
-	private ContainerForm								containerForm;
+	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
 
-	private List<StudyStatus>	studyList;
+	private List<StudyStatus>					studyList;
 
 	/**
 	 * Constructor
@@ -57,7 +57,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		setMultiPart(true);
 
 		this.setCpmModel(cpmModel);
-		
+
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 	}
@@ -66,41 +66,41 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	protected void initialiseSearchForm()
 	{
 		this.setStudyList(iArkCommonService.getStudy(containerForm.getModelObject().getStudy()));
+		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void onSearch(AjaxRequestTarget target)
 	{
-		List<Study> studyResultList = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
-		if (studyResultList != null && studyResultList.size() == 0)
+		ArkRolePolicyTemplate arkRolePolicyTemplate = containerForm.getModelObject().getArkRolePolicyTemplate();
+		List<ArkRolePolicyTemplate> resultList = iArkCommonService.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
+		if (resultList != null && resultList.size() == 0)
 		{
-			containerForm.getModelObject().setStudyList(studyResultList);
+			containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.addComponent(feedbackPanel);
 		}
 
-		containerForm.getModelObject().setStudyList(studyResultList);
+		containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	private void addSearchComponentsToForm()
 	{
-		add(studyDpChoices);
+		// add(studyDpChoices);
+		add(idTxtFld);
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void onNew(AjaxRequestTarget target)
 	{
 		containerForm.setModelObject(new AdminVO());
-		Collection arkModuleList = new ArrayList<ModuleVO>();
-		arkModuleList = iArkCommonService.getEntityList(ArkModule.class);
-		containerForm.getModelObject().setArkModuleList((List) arkModuleList);
 		preProcessDetailPanel(target, arkCrudContainerVO);
 	}
 
 	/**
-	 * @param studyList the studyList to set
+	 * @param studyList
+	 *           the studyList to set
 	 */
 	public void setStudyList(List<StudyStatus> studyList)
 	{
@@ -116,7 +116,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	}
 
 	/**
-	 * @param cpmModel the cpmModel to set
+	 * @param cpmModel
+	 *           the cpmModel to set
 	 */
 	public void setCpmModel(CompoundPropertyModel<AdminVO> cpmModel)
 	{

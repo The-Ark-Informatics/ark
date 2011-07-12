@@ -15,26 +15,30 @@ import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author cellis
- *
+ * 
  */
-public class AdminVO implements Serializable 
-{	
+public class AdminVO implements Serializable
+{
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3939245546324873647L;
-	
-	private ArkRole arkRole;
-	private ArkModule arkModule;
-	private ArkFunction arkFunction;
-	private ArkRolePolicyTemplate arkRolePolicyTemplate;
-	private Study study;
-	private List<Study> studyList;
-	private List<ArkRolePolicyTemplate> arkRolePolicyTemplateList;
-	private List<ArkModule> arkModuleList;
-	private List<ArkFunction> arkFunctionList;
+	private static final long				serialVersionUID	= -3939245546324873647L;
 
-	public AdminVO() 
+	private ArkRole							arkRole;
+	private ArkModule							arkModule;
+	private ArkFunction						arkFunction;
+	private ArkRolePolicyTemplate			arkRolePolicyTemplate;
+	private Study								study;
+	private List<Study>						studyList;
+	private List<ArkRolePolicyTemplate>	arkRolePolicyTemplateList;
+	private List<ArkModule>					arkModuleList;
+	private List<ArkFunction>				arkFunctionList;
+	private Boolean							arkCreatePermission;
+	private Boolean							arkReadPermission;
+	private Boolean							arkUpdatePermission;
+	private Boolean							arkDeletePermission;
+
+	public AdminVO()
 	{
 		this.arkRole = new ArkRole();
 		this.arkModule = new ArkModule();
@@ -45,8 +49,12 @@ public class AdminVO implements Serializable
 		this.arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 		this.arkModuleList = new ArrayList<ArkModule>(0);
 		this.arkFunctionList = new ArrayList<ArkFunction>(0);
+		this.arkCreatePermission = new Boolean("False");
+		this.arkReadPermission = new Boolean("False");
+		this.arkUpdatePermission = new Boolean("False");
+		this.arkDeletePermission = new Boolean("False");
 	}
-	
+
 	/**
 	 * @return the arkRole
 	 */
@@ -56,7 +64,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkRole the arkRole to set
+	 * @param arkRole
+	 *           the arkRole to set
 	 */
 	public void setArkRole(ArkRole arkRole)
 	{
@@ -72,7 +81,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkModule the arkModule to set
+	 * @param arkModule
+	 *           the arkModule to set
 	 */
 	public void setArkModule(ArkModule arkModule)
 	{
@@ -88,7 +98,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkFunction the arkFunction to set
+	 * @param arkFunction
+	 *           the arkFunction to set
 	 */
 	public void setArkFunction(ArkFunction arkFunction)
 	{
@@ -96,7 +107,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkRolePolicyTemplate the arkRolePolicyTemplate to set
+	 * @param arkRolePolicyTemplate
+	 *           the arkRolePolicyTemplate to set
 	 */
 	public void setArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate)
 	{
@@ -112,7 +124,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param study the study to set
+	 * @param study
+	 *           the study to set
 	 */
 	public void setStudy(Study study)
 	{
@@ -128,7 +141,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param studyList the studyList to set
+	 * @param studyList
+	 *           the studyList to set
 	 */
 	public void setStudyList(List<Study> studyList)
 	{
@@ -142,9 +156,10 @@ public class AdminVO implements Serializable
 	{
 		return studyList;
 	}
-	
+
 	/**
-	 * @param arkRolePolicyTemplateList the arkRolePolicyTemplateList to set
+	 * @param arkRolePolicyTemplateList
+	 *           the arkRolePolicyTemplateList to set
 	 */
 	public void setArkRolePolicyTemplateList(List<ArkRolePolicyTemplate> arkRolePolicyTemplateList)
 	{
@@ -160,7 +175,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkModuleList the arkModuleList to set
+	 * @param arkModuleList
+	 *           the arkModuleList to set
 	 */
 	public void setArkModuleList(List<ArkModule> arkModuleList)
 	{
@@ -176,7 +192,8 @@ public class AdminVO implements Serializable
 	}
 
 	/**
-	 * @param arkFunctionList the arkFunctionList to set
+	 * @param arkFunctionList
+	 *           the arkFunctionList to set
 	 */
 	public void setArkFunctionList(List<ArkFunction> arkFunctionList)
 	{
@@ -191,5 +208,71 @@ public class AdminVO implements Serializable
 		return arkFunctionList;
 	}
 
-	
+	/**
+	 * @return the arkCreatePermission
+	 */
+	public Boolean getArkCreatePermission()
+	{
+		return arkCreatePermission;
+	}
+
+	/**
+	 * @param arkCreatePermission
+	 *           the arkCreatePermission to set
+	 */
+	public void setArkCreatePermission(Boolean arkCreatePermission)
+	{
+		this.arkCreatePermission = arkCreatePermission;
+	}
+
+	/**
+	 * @return the arkReadPermission
+	 */
+	public Boolean getArkReadPermission()
+	{
+		return arkReadPermission;
+	}
+
+	/**
+	 * @param arkReadPermission
+	 *           the arkReadPermission to set
+	 */
+	public void setArkReadPermission(Boolean arkReadPermission)
+	{
+		this.arkReadPermission = arkReadPermission;
+	}
+
+	/**
+	 * @return the arkUpdatePermission
+	 */
+	public Boolean getArkUpdatePermission()
+	{
+		return this.arkUpdatePermission;
+	}
+
+	/**
+	 * @param arkUpdatePermission
+	 *           the arkUpdatePermission to set
+	 */
+	public void setArkUpdatePermission(Boolean arkUpdatePermission)
+	{
+		this.arkUpdatePermission = arkUpdatePermission;
+	}
+
+	/**
+	 * @return the arkDeletePermission
+	 */
+	public Boolean getArkDeletePermission()
+	{
+		return this.arkDeletePermission;
+	}
+
+	/**
+	 * @param arkDeletePermission
+	 *           the arkDeletePermission to set
+	 */
+	public void setArkDeletePermission(Boolean arkDeletePermission)
+	{
+		this.arkDeletePermission = arkDeletePermission;
+	}
 }
