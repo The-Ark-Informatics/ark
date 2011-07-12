@@ -100,13 +100,22 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		initialiseForm(true);
 	}
 	
-	protected void editCancelProcessForUpdate(AjaxRequestTarget target){
+	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, Form<T> containerForm, ArkCrudContainerVO arkCrudContainerVO){
+		super(id);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
+		this.feedBackPanel = feedBackPanel;
+		
+		initialiseForm(true);
+	}
+	
+	protected void editCancelProcessForUpdate(AjaxRequestTarget target)
+	{
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
 		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-		onCancelPostProcess(target,true);
-		
+		onCancelPostProcess(target,true);	
 	}
 	
 	protected void saveOnErrorProcess(AjaxRequestTarget target){
@@ -135,8 +144,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		processErrors(target);
 	}
 	
-	protected void editButtonProcess(AjaxRequestTarget target){
-		
+	protected void editButtonProcess(AjaxRequestTarget target)
+	{
 		deleteButton.setEnabled(true);
 		// The visibility of the delete button should not be changed from 
 		// any of the abstract classes.  This allows the implementation
@@ -149,7 +158,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
 		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-		
 	}
 	
 	/**
@@ -199,10 +207,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
-			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
-				
+			{				
 				saveOnErrorProcess(target);
 			}
 		};
