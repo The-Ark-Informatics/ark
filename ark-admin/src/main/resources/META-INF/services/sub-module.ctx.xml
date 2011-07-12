@@ -10,11 +10,6 @@
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="au.org.theark.report.model.dao"/>
-    <context:component-scan base-package="au.org.theark.report.service"/>
-    <!--
-    <context:component-scan base-package="au.org.theark.geno.web.component.genoCollection"/>
-    context:component-scan base-package="au.org.theark.geno.web.component.test.servlet"/>
-    -->  
-	
+    <context:component-scan base-package="au.org.theark.admin.model.dao"/>
+    <context:component-scan base-package="au.org.theark.admin.service"/>
 </beans>
