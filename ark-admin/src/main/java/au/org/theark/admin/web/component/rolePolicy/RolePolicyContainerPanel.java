@@ -50,8 +50,8 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
+		containerForm.add(initialiseSearchResults());
 
 		add(containerForm);
 	}
@@ -77,7 +77,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	@Override
 	protected WebMarkupContainer initialiseSearchResults()
 	{
-		searchResultsPanel = new SearchResultsPanel("searchResults", containerForm, arkCrudContainerVO);
+		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
 		iModel = new LoadableDetachableModel<Object>()
 		{
 			private static final long	serialVersionUID	= 1L;
