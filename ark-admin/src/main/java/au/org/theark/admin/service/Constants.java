@@ -7,5 +7,5 @@ package au.org.theark.admin.service;
  */
 public class Constants 
 {
-
+	public static final String ARK_ADMIN_SERVICE = "adminService";
 }

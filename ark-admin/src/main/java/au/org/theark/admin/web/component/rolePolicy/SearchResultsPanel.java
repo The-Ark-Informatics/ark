@@ -1,5 +1,6 @@
 package au.org.theark.admin.web.component.rolePolicy;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
@@ -7,14 +8,19 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.security.ArkLdapRealm;
@@ -28,6 +34,7 @@ public class SearchResultsPanel extends Panel
 	 * 
 	 */
 	private static final long	serialVersionUID	= 5237384531161620862L;
+	protected transient Logger log = LoggerFactory.getLogger(SearchResultsPanel.class);
 
 	@SuppressWarnings("unchecked")
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -97,46 +104,44 @@ public class SearchResultsPanel extends Panel
 				
 				if(arkRolePolicyTemplate.getArkPermission() != null)
 				{
-					String permissionString = arkRolePolicyTemplate.getArkPermission().getName();
-					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("CREATE"))
 					{
-						item.add(new Label("arkCreatePermission", permissionString));
+						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else
 					{
-						item.add(new Label("arkCreatePermission", ""));
+						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("READ"))
 					{
-						item.add(new Label("arkReadPermission", permissionString));
+						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
 					}
 					else
 					{
-						item.add(new Label("arkReadPermission", ""));
+						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("UPDATE"))
 					{
-						item.add(new Label("arkUpdatePermission", permissionString));
+						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else
 					{
-						item.add(new Label("arkUpdatePermission", ""));
+						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
 					}
 					
 					//the ID here must match the ones in mark-up
 					if(arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("DELETE"))
 					{
-						item.add(new Label("arkDeletePermission", permissionString));
+						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else
 					{
-						item.add(new Label("arkDeletePermission", ""));
+						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
 					}
 				}
 				
@@ -181,6 +186,23 @@ public class SearchResultsPanel extends Panel
 				arkCrudContainerVo.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
 				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
+				
+				// Get all permission rows, and assign to VO accordingly
+				try
+				{
+					Collection<String> arkPermissions = iArkCommonService.getArkRolePermission(arkRolePolicyTemplate.getArkFunction(), 
+																														arkRolePolicyTemplate.getArkRole().getName(), 
+																														arkRolePolicyTemplate.getArkModule());
+					// Set up boolean references in VO
+					containerForm.getModelObject().setArkCreatePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.CREATE));
+					containerForm.getModelObject().setArkReadPermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.READ));
+					containerForm.getModelObject().setArkUpdatePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.UPDATE));
+					containerForm.getModelObject().setArkDeletePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.DELETE));
+				}
+				catch (EntityNotFoundException e)
+				{
+					log.error(e.getMessage());
+				}
 				
 				// Refresh the markup containers
 				target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());

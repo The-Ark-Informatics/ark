@@ -12,11 +12,16 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.service.IAdminService;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -27,9 +32,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * 
 	 */
 	private static final long				serialVersionUID	= 5096967681735723818L;
+	protected transient Logger log = LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>		iArkCommonService;
+	
+	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
+	private IAdminService<Void>		iAdminService;
 
 	private int									mode;
 	private TextField<String>				idTxtFld;
@@ -54,10 +63,6 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
-		detailPanelContainer = arkCrudContainerVo.getDetailPanelContainer();
-		detailPanelFormContainer = arkCrudContainerVo.getDetailPanelFormContainer();
-		viewButtonContainer = arkCrudContainerVo.getViewButtonContainer();
-		editButtonContainer = arkCrudContainerVo.getEditButtonContainer();
 		setMultiPart(true);
 	}
 
@@ -114,6 +119,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 			}
 		});
+		arkRoleDropDown.setEnabled(isNew());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -135,6 +141,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 			}
 		});
+		arkModuleDropDown.setEnabled(isNew());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -156,6 +163,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 			}
 		});
+		arkFunctionDropDown.setEnabled(isNew());
 	}
 
 	private void addDetailFormComponents()
@@ -180,17 +188,66 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target)
 	{
-		if (containerForm.getModelObject().getArkRolePolicyTemplate().getId() == null)
+		// Save each object/permission
+		ArkRolePolicyTemplate arkRolePolicyTemplate = containerForm.getModelObject().getArkRolePolicyTemplate();
+		ArkRole arkRole = containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole();
+		ArkModule arkModule = containerForm.getModelObject().getArkRolePolicyTemplate().getArkModule();
+		ArkFunction arkFunction = containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction();
+		ArkPermission arkPermission = new ArkPermission();
+		
+		// Create permission
+		if(containerForm.getModelObject().getArkCreatePermission())
 		{
-			// Save
-			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + " was created successfully.");
+			AdminVO adminVo = new AdminVO();
+			adminVo.setArkRole(arkRole);
+			adminVo.setArkModule(arkModule);
+			adminVo.setArkFunction(arkFunction);
+			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.CREATE);
+			arkRolePolicyTemplate.setArkPermission(arkPermission);
+			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
-		else
+		
+		// Read permission
+		if(containerForm.getModelObject().getArkReadPermission())
+		{	
+			AdminVO adminVo = new AdminVO();
+			adminVo.setArkRole(arkRole);
+			adminVo.setArkModule(arkModule);
+			adminVo.setArkFunction(arkFunction);
+			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.READ);
+			arkRolePolicyTemplate.setArkPermission(arkPermission);
+			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
+		}
+		
+		// Update permission
+		if(containerForm.getModelObject().getArkUpdatePermission())
 		{
-			// Update
-			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + " was updated successfully.");
+			AdminVO adminVo = new AdminVO();
+			adminVo.setArkRole(arkRole);
+			adminVo.setArkModule(arkModule);
+			adminVo.setArkFunction(arkFunction);
+			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.UPDATE);
+			arkRolePolicyTemplate.setArkPermission(arkPermission);
+			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
-
+		
+		// Delete permission
+		if(containerForm.getModelObject().getArkDeletePermission())
+		{
+			AdminVO adminVo = new AdminVO();
+			adminVo.setArkRole(arkRole);
+			adminVo.setArkModule(arkModule);
+			adminVo.setArkFunction(arkFunction);
+			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.DELETE);
+			arkRolePolicyTemplate.setArkPermission(arkPermission);
+			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
+		}
+		
+		this.info("Ark Role Policy Template for Role: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole().getName() + " was created/updated successfully.");
 		target.addComponent(feedBackPanel);
 	}
 
@@ -202,7 +259,9 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		// Delete
-		this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + "was deleted successfully.");
+		iAdminService.deleteArkRolePolicyTemplate(containerForm.getModelObject());
+		
+		this.info("Ark Role Policy Template for Role: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole().getName() + " was deleted successfully.");
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
