@@ -32,10 +32,6 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	private DetailPanel										detailPanel;
 	private SearchResultsPanel								searchResultsPanel;
 	private PageableListView<ArkRolePolicyTemplate>	pageableListView;
-
-	@SuppressWarnings("unused")
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>						iArkCommonService;
 	
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>		iAdminService;
@@ -91,7 +87,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 			protected Object load()
 			{
 				List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
-				arkRolePolicyTemplateList = iArkCommonService.getArkRolePolicyTemplateList();
+				arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList();
 				
 				//TODO: Implement grouped method to return list of roles (rather then every arkRolePolicyTemplate)
 				//arkRolePolicyTemplateList = iAdminService.getGroupedArkRolePolicyTemplates();
