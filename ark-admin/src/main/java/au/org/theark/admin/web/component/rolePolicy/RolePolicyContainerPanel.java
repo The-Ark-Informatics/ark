@@ -1,4 +1,3 @@
-
 package au.org.theark.admin.web.component.rolePolicy;
 
 import java.util.ArrayList;
@@ -19,27 +18,27 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 
 /**
  * @author cellis
- *
+ * 
  */
-public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> 
+public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 442185554812824590L;
-	private ContainerForm containerForm;
-	private SearchPanel searchPanel;
-	private DetailPanel detailPanel;
-	private SearchResultsPanel searchResultsPanel;
-	private PageableListView<ArkRolePolicyTemplate>			listView;
-	
-	@SpringBean( name =  au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
-	
+	private static final long								serialVersionUID	= 442185554812824590L;
+	private ContainerForm									containerForm;
+	private SearchPanel										searchPanel;
+	private DetailPanel										detailPanel;
+	private SearchResultsPanel								searchResultsPanel;
+	private PageableListView<ArkRolePolicyTemplate>	pageableListView;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>						iArkCommonService;
+
 	/**
 	 * @param id
 	 */
-	public RolePolicyContainerPanel(String id) 
+	public RolePolicyContainerPanel(String id)
 	{
 		super(id);
 		/* Initialise the CPM */
@@ -88,16 +87,16 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 			{
 				List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 				arkRolePolicyTemplateList = iArkCommonService.getArkRolePolicyTemplateList();
-				listView.removeAll();
+				pageableListView.removeAll();
 				return arkRolePolicyTemplateList;
 			}
 		};
 
-		listView = searchResultsPanel.buildPageableListView(iModel, searchResultPanelContainer);
-		listView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		pageableListView = searchResultsPanel.buildPageableListView(iModel, searchResultPanelContainer);
+		pageableListView.setReuseItems(true);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(listView);
+		searchResultsPanel.add(pageableListView);
 		searchResultPanelContainer.add(searchResultsPanel);
 		return searchResultPanelContainer;
 	}

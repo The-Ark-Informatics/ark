@@ -33,7 +33,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	private DropDownChoice<Study>				studyDpChoices;
 	private TextField<String>					idTxtFld;
 	private CompoundPropertyModel<AdminVO>	cpmModel;
-	private ArkCrudContainerVO					arkCrudContainerVO;
+	private ArkCrudContainerVO					arkCrudContainerVo;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
 
@@ -47,12 +47,12 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	 * @param ArkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchForm(String id, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedbackPanel, ContainerForm containerForm)
+	public SearchForm(String id, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo, FeedbackPanel feedbackPanel, ContainerForm containerForm)
 	{
-		super(id, cpmModel, feedbackPanel, arkCrudContainerVO);
+		super(id, cpmModel, feedbackPanel, arkCrudContainerVo);
 
 		this.containerForm = containerForm;
-		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.feedbackPanel = feedbackPanel;
 		setMultiPart(true);
 
@@ -82,8 +82,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		}
 
 		containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
-		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(true);
+		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 	}
 
 	private void addSearchComponentsToForm()
@@ -94,8 +94,10 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 
 	protected void onNew(AjaxRequestTarget target)
 	{
+		this.info("New button pressed!");
+		target.addComponent(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
-		preProcessDetailPanel(target, arkCrudContainerVO);
+		preProcessDetailPanel(target, arkCrudContainerVo);
 	}
 
 	/**

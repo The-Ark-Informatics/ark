@@ -19,25 +19,25 @@ public class SearchPanel extends Panel
 	private ContainerForm containerForm;
 	private FeedbackPanel feedBackPanel;
 	private CompoundPropertyModel<AdminVO> cpmModel;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private ArkCrudContainerVO arkCrudContainerVo;
 	
 	/**
 	 * Constructor That uses the VO
 	 * @param id
 	 * @param studyCrudContainerVO
 	 */
-	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO){
+	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo){
 		
 		super(id);
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedbackPanel;
 		this.cpmModel = cpmModel;
-		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
 	
 	public void initialisePanel()
 	{
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, cpmModel, arkCrudContainerVO, feedBackPanel, containerForm);
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, cpmModel, arkCrudContainerVo, feedBackPanel, containerForm);
 		add(searchForm);
 	}
 }

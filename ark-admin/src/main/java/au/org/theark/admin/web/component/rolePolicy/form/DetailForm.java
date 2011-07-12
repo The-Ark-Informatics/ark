@@ -87,16 +87,6 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		setMultiPart(true);
 	}
 
-	public int getMode()
-	{
-		return mode;
-	}
-
-	public void setMode(int mode)
-	{
-		this.mode = mode;
-	}
-
 	public void initialiseDetailForm()
 	{
 		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
@@ -128,7 +118,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		arkDeletePermissionChkBox.setOutputMarkupId(true);
 
 		attachValidators();
-		addComponents();
+		addDetailFormComponents();
 	}
 
 	private void initArkRoleDropDown()
@@ -176,7 +166,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		});
 	}
 
-	private void addComponents()
+	private void addDetailFormComponents()
 	{
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkRoleDropDown);
@@ -193,7 +183,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	@Override
 	protected void attachValidators()
 	{
-		
+		// Set required field here
 	}
 
 	@Override
@@ -202,12 +192,12 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		if (containerForm.getModelObject().getArkRolePolicyTemplate().getId() == null)
 		{
 			// Save
-			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + "created successfully.");
+			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + " was created successfully.");
 		}
 		else
 		{
 			// Update
-			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + "updated successfully.");
+			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + " was updated successfully.");
 		}
 		
 		target.addComponent(feedBackPanel);
@@ -216,6 +206,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	protected void onCancel(AjaxRequestTarget target)
 	{
 		containerForm.setModelObject(new AdminVO());
+	}
+	
+	@Override
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	{
+		// Delete
+		this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + "was deleted successfully.");
 	}
 
 	@Override
@@ -243,9 +240,19 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 	}
 
-	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
+	/**
+	 * @return the mode
+	 */
+	public int getMode()
 	{
-		// TODO Auto-generated method stub
+		return mode;
+	}
+
+	/**
+	 * @param mode the mode to set
+	 */
+	public void setMode(int mode)
+	{
+		this.mode = mode;
 	}
 }
