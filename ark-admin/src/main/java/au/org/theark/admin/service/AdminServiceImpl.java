@@ -8,6 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.admin.model.dao.IAdminDao;
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 
 /**
@@ -57,5 +61,40 @@ public class AdminServiceImpl<T> implements IAdminService<T>
 	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates()
 	{
 		return adminDao.getGroupedArkRolePolicyTemplates();
+	}
+
+	public List<ArkFunction> getArkFunctionList()
+	{
+		return adminDao.getArkFunctionList();
+	}
+
+	public List<ArkModule> getArkModuleList()
+	{
+		return adminDao.getArkModuleList();
+	}
+
+	public ArkPermission getArkPermissionByName(String name)
+	{
+		return adminDao.getArkPermissionByName(name);
+	}
+
+	public List<ArkRole> getArkRoleList()
+	{
+		return adminDao.getArkRoleList();
+	}
+
+	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id)
+	{
+		return adminDao.getArkRolePolicyTemplate(id);
+	}
+
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList()
+	{
+		return adminDao.getArkRolePolicyTemplateList();
+	}
+
+	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate)
+	{
+		return adminDao.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
 	}
 }

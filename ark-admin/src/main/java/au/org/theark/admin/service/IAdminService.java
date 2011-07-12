@@ -3,6 +3,10 @@ package au.org.theark.admin.service;
 import java.util.List;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkPermission;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 
 public interface IAdminService<T>
@@ -36,4 +40,18 @@ public interface IAdminService<T>
 	 * @return
 	 */
 	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates();
+	
+	public List<ArkRole> getArkRoleList();
+	
+	public List<ArkModule> getArkModuleList();
+
+	public List<ArkFunction> getArkFunctionList();
+
+	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id);
+
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList();
+
+	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate);
+
+	public ArkPermission getArkPermissionByName(String name);
 }
