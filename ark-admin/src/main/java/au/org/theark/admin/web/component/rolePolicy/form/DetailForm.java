@@ -1,16 +1,7 @@
 package au.org.theark.admin.web.component.rolePolicy.form;
 
-import java.io.IOException;
-import java.sql.Blob;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
@@ -18,59 +9,37 @@ import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
-import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.RangeValidator;
-import org.apache.wicket.validation.validator.StringValidator;
-import org.hibernate.Hibernate;
 
 import au.org.theark.admin.model.vo.AdminVO;
-import au.org.theark.admin.web.Constants;
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.CannotRemoveArkModuleException;
-import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.exception.EntityExistsException;
-import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.model.study.entity.SubjectUidPadChar;
-import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.vo.ModuleVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
-@SuppressWarnings( { "unchecked", "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<AdminVO>
 {
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
-
-	private int						mode;
-	private TextField<String>	idTxtFld;
-	private DropDownChoice		arkRoleDropDown;
-	private DropDownChoice		arkModuleDropDown;
-	private DropDownChoice		arkFunctionDropDown;
-	private CheckBox				arkCreatePermissionChkBox;
-	private CheckBox				arkReadPermissionChkBox;
-	private CheckBox				arkUpdatePermissionChkBox;
-	private CheckBox				arkDeletePermissionChkBox;
-
-	/*
-	 * ID int(11) PK ARK_ROLE_ID int(11) ARK_MODULE_ID int(11) ARK_FUNCTION_ID int(11) ARK_PERMISSION_ID int(11)
+	/**
+	 * 
 	 */
+	private static final long				serialVersionUID	= 5096967681735723818L;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>		iArkCommonService;
+
+	private int									mode;
+	private TextField<String>				idTxtFld;
+	private DropDownChoice<ArkRole>		arkRoleDropDown;
+	private DropDownChoice<ArkModule>	arkModuleDropDown;
+	private DropDownChoice<ArkFunction>	arkFunctionDropDown;
+	private CheckBox							arkCreatePermissionChkBox;
+	private CheckBox							arkReadPermissionChkBox;
+	private CheckBox							arkUpdatePermissionChkBox;
+	private CheckBox							arkDeletePermissionChkBox;
 
 	/**
 	 * Constructor
@@ -80,10 +49,15 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * @param feedbackPanel
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO)
+	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
 	{
-		super(id, feedbackPanel, containerForm, arkCrudContainerVO);
+		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
 		this.containerForm = containerForm;
+		arkCrudContainerVO = arkCrudContainerVo;
+		detailPanelContainer = arkCrudContainerVo.getDetailPanelContainer();
+		detailPanelFormContainer = arkCrudContainerVo.getDetailPanelFormContainer();
+		viewButtonContainer = arkCrudContainerVo.getViewButtonContainer();
+		editButtonContainer = arkCrudContainerVo.getEditButtonContainer();
 		setMultiPart(true);
 	}
 
@@ -104,15 +78,15 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		arkCreatePermissionChkBox = new CheckBox("arkCreatePermission");
 		arkCreatePermissionChkBox.setVisible(true);
 		arkCreatePermissionChkBox.setOutputMarkupId(true);
-		
+
 		arkReadPermissionChkBox = new CheckBox("arkReadPermission");
 		arkReadPermissionChkBox.setVisible(true);
 		arkReadPermissionChkBox.setOutputMarkupId(true);
-		
+
 		arkUpdatePermissionChkBox = new CheckBox("arkUpdatePermission");
 		arkUpdatePermissionChkBox.setVisible(true);
 		arkUpdatePermissionChkBox.setOutputMarkupId(true);
-		
+
 		arkDeletePermissionChkBox = new CheckBox("arkDeletePermission");
 		arkDeletePermissionChkBox.setVisible(true);
 		arkDeletePermissionChkBox.setOutputMarkupId(true);
@@ -121,13 +95,19 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		addDetailFormComponents();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initArkRoleDropDown()
 	{
 		List<ArkRole> arkRoleList = iArkCommonService.getArkRoleList();
-		ChoiceRenderer<StudyStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyStatus>("name", "id");
+		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
 		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5591846326218931210L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
@@ -136,13 +116,19 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown()
 	{
 		List<ArkModule> arkModuleList = iArkCommonService.getArkModuleList();
-		ChoiceRenderer<SubjectUidToken> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidToken>("name", "id");
+		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
 		arkModuleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -1917750577626157879L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
@@ -151,13 +137,19 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initArkFunctionDropDown()
 	{
 		List<ArkFunction> arkFunctionList = iArkCommonService.getArkFunctionList();
-		ChoiceRenderer<SubjectUidPadChar> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidPadChar>("name", "id");
+		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
 		arkFunctionDropDown = new DropDownChoice("arkRolePolicyTemplate.arkFunction", arkFunctionList, defaultChoiceRenderer);
 		arkFunctionDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
 		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1007263623823525412L;
+
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
@@ -176,7 +168,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkReadPermissionChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkUpdatePermissionChkBox);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkDeletePermissionChkBox);
-		
+
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
@@ -185,8 +177,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	{
 		// Set required field here
 	}
-
-	@Override
+	
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target)
 	{
 		if (containerForm.getModelObject().getArkRolePolicyTemplate().getId() == null)
@@ -199,7 +190,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			// Update
 			this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + " was updated successfully.");
 		}
-		
+
 		target.addComponent(feedBackPanel);
 	}
 
@@ -207,26 +198,18 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	{
 		containerForm.setModelObject(new AdminVO());
 	}
-	
-	@Override
+
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
 	{
 		// Delete
 		this.info("Ark Role Policy Template " + containerForm.getModelObject().getArkRolePolicyTemplate().getId() + "was deleted successfully.");
 	}
 
-	@Override
 	protected void processErrors(AjaxRequestTarget target)
 	{
 		target.addComponent(feedBackPanel);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see au.org.theark.core.web.form.AbstractArchiveDetailForm#isNew()
-	 */
-	@Override
 	protected boolean isNew()
 	{
 		if (containerForm.getModelObject().getArkRolePolicyTemplate().getId() == null)
@@ -237,7 +220,6 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		{
 			return false;
 		}
-
 	}
 
 	/**
@@ -249,7 +231,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	}
 
 	/**
-	 * @param mode the mode to set
+	 * @param mode
+	 *           the mode to set
 	 */
 	public void setMode(int mode)
 	{

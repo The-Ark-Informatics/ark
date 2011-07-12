@@ -40,12 +40,12 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	 */
 	public RolePolicyContainerPanel(String id)
 	{
-		super(id);
+		super(id, true);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
+		
 		initCrudContainerVO();
-		initialiseMarkupContainers();
-
+		
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -61,8 +61,8 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	{
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	@Override
@@ -70,8 +70,8 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	{
 		searchPanel = new SearchPanel("searchPanel", feedBackPanel, containerForm, cpModel, arkCrudContainerVO);
 		searchPanel.initialisePanel();
-		searchPanelContainer.add(searchPanel);
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultsPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 }
