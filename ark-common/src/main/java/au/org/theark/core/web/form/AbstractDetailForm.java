@@ -2,10 +2,6 @@ package au.org.theark.core.web.form;
 
 import java.util.Iterator;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -17,7 +13,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.core.web.component.ArkBusyAjaxButton;
@@ -155,7 +151,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.SAVE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -208,8 +204,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.DELETE);
-
+				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
@@ -239,7 +234,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.EDIT);
+				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
 			}
 		};
 
@@ -275,10 +270,8 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	 */
 	protected void initialiseForm(Boolean isArkCrudContainerVOPattern)
 	{
-
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
 		{
-
 			/**
 			 * 
 			 */
@@ -308,7 +301,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.SAVE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -339,8 +332,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.DELETE);
-
+				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
@@ -364,7 +356,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.EDIT);
+				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
 			}
 		};
 
@@ -445,53 +437,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	{
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
-	}
-
-	protected boolean isActionPermitted(String actionType)
-	{
-		boolean flag = false;
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (actionType.equalsIgnoreCase(Constants.SAVE))
-		{
-
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-			{
-
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-
-		}
-		else if (actionType.equalsIgnoreCase(Constants.EDIT))
-		{
-
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-		else if (actionType.equalsIgnoreCase(Constants.DELETE))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-			{
-				flag = true;
-			}
-			else
-			{
-				flag = false;
-			}
-		}
-
-		return flag;
 	}
 
 	protected void editCancelProcessForUpdate(AjaxRequestTarget target)
@@ -602,7 +547,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 
 		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-
 	}
 
 	/**
@@ -725,7 +669,6 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		// The ModalWindow, showing some choices for the user to select.
 		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow")
 		{
-
 			/**
 			 * 
 			 */
@@ -752,16 +695,23 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	 */
 	protected void disableDetailForm(Long sessionId, String errorMessage)
 	{
-		if (sessionId == null)
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
 		{
-			detailPanelContainer.setEnabled(false);
-			this.error(errorMessage);
+			if (sessionId == null)
+			{
+				detailPanelContainer.setEnabled(false);
+				this.error(errorMessage);
+			}
+			else
+			{
+				detailPanelContainer.setEnabled(true);
+			}
 		}
 		else
 		{
-			detailPanelContainer.setEnabled(true);
+			detailPanelContainer.setEnabled(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
-
 	}
 
 	/**
@@ -773,18 +723,7 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 	 */
 	protected void disableDetailForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
 	{
-		SecurityManager securityManager = ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();
-
-		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) 
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) 
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-		{
-			arkCrudContainerVO.getDetailPanelContainer().setEnabled(false);
-			this.error("You do not have the required security privileges to work with this function.Please see your Administrator.");
-		}
-		else
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
 		{
 			if (sessionId == null)
 			{
@@ -795,6 +734,11 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 			{
 				arkCrudContainerVO.getDetailPanelContainer().setEnabled(true);
 			}
+		}
+		else
+		{
+			arkCrudContainerVO.getDetailPanelContainer().setEnabled(false);
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
 	}
 

@@ -7,33 +7,37 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
+ * Abstract class that extends AbstractDetailForm, for specific implementation for the UserDetailForm
  * @author nivedann
  * @param <T>
- *
+ * 
  */
-public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
-	
+public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T>
+{
 	/**
-	 * Abstract method that allows sub-classes to implement specific functionality for onEditButtonClick event.
+	 * 
 	 */
-	public abstract void onEditButtonClick();
-	
-	/* 
+	private static final long	serialVersionUID	= -1768344112045735740L;
+
+	/**
+	 * Default constructor
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,Form<T> containerForm){
-		super(id,feedBackPanel,arkCrudContainerVO,containerForm);
+	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm)
+	{
+		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
 	}
-	
-	protected void initialiseForm(Boolean isArkCrudContainerVOPattern){
-		
-		
+
+	protected void initialiseForm(Boolean isArkCrudContainerVOPattern)
+	{
+
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
 		{
 			private static final long	serialVersionUID	= 1684005199059571017L;
@@ -41,15 +45,17 @@ public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				if(isNew()){
-					editCancelProcess(target,true);
-				}else{
+				if (isNew())
+				{
+					editCancelProcess(target, true);
+				}
+				else
+				{
 					editCancelProcessForUpdate(target);
 				}
 			}
-		
 		};
-		
+
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
 		{
 			/**
@@ -60,18 +66,17 @@ public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.SAVE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
+
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				onSave(containerForm, target);
 				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
-			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
-			
 				saveOnErrorProcess(target);
 			}
 		};
@@ -88,15 +93,15 @@ public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
 			{
 				// target.addComponent(detailPanelContainer);
 				onDelete(containerForm, target);
-
 			}
+
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.DELETE);
+				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
-		
+
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
 		{
 			/**
@@ -107,23 +112,22 @@ public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
 				editButtonProcess(target);
-				//Add the sub-class functionality
+				// Add the sub-class functionality
 				onEditButtonClick();
-				
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
 				processErrors(target);
 			}
-			
+
 			@Override
 			public boolean isVisible()
 			{
-				return isActionPermitted(Constants.EDIT);
+				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
-		
+
 		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
 		{
 			/**
@@ -133,22 +137,22 @@ public abstract class AbstractUserDetailForm<T>  extends AbstractDetailForm<T>{
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				editCancelProcess(target,true);
+				editCancelProcess(target, true);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
 				processErrors(target);
 			}
-			
-			
 		};
-		
+
 		selectModalWindow = initialiseModalWindow();
 
 		addComponentsToForm(true);
-		
 	}
 	
-
+	/**
+	 * Abstract method that allows sub-classes to implement specific functionality for onEditButtonClick event.
+	 */
+	public abstract void onEditButtonClick();
 }
