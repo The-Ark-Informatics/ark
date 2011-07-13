@@ -39,6 +39,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	private TextField<String>				nameTxtFld;
 	private TextArea<String>				descriptionTxtAreaFld;
 	private DropDownChoice<ArkFunction>	arkFunctionTypeDropDown;
+	private TextField<String>				resourceKeyTxtFld;
 
 	/**
 	 * Constructor
@@ -66,6 +67,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 		// FunctionType selection
 		initArkFunctionTypeDropDown();
+		
+		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
 
 		attachValidators();
 		addDetailFormComponents();
@@ -104,6 +107,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkFunctionTypeDropDown);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(resourceKeyTxtFld);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
