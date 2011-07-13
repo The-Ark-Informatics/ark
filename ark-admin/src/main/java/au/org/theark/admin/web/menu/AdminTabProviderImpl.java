@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.security.ArkSecurityManager;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
@@ -47,7 +50,7 @@ public class AdminTabProviderImpl extends Panel implements IMainTabProvider
 			@Override
 			public Panel getPanel(String pid)
 			{
-				// The sub menu(s) for Reporting
+				// The sub menu(s) for Admin
 				return new AdminSubMenuTab(pid);
 			}
 
@@ -59,20 +62,17 @@ public class AdminTabProviderImpl extends Panel implements IMainTabProvider
 			public boolean isVisible()
 			{
 				boolean flag = false;
-				ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();
-				
-				// Only Super Users can see the Admin tab
-				if (
-						(arkSecurityManager.subjectHasRole(RoleConstants.SUPER_ADMIN)) || (arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN))
-					)
+
+				// Only a Super Administrator can see the Admin tab/menu
+				if (securityManager.hasRole(currentUser.getPrincipals(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR))
 				{
 					flag = currentUser.isAuthenticated();
 				}
 				else
 				{
-					//TODO: Implement restricted view of Admin tab
-					flag = true;
+					flag = false;
 				}
 				return flag;
 			}
