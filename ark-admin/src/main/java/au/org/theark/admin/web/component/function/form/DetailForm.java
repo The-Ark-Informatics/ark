@@ -132,7 +132,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		iAdminService.deleteArkFunction(containerForm.getModelObject());
 		
 		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was deleted successfully.");
-		target.addComponent(feedBackPanel);
+		editCancelProcess(target, true);
 	}
 
 	protected void processErrors(AjaxRequestTarget target)

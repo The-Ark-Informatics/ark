@@ -95,7 +95,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 		iAdminService.deleteArkModule(containerForm.getModelObject());
 		
 		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was deleted successfully.");
-		target.addComponent(feedBackPanel);
+		editCancelProcess(target, true);
 	}
 
 	protected void processErrors(AjaxRequestTarget target)
