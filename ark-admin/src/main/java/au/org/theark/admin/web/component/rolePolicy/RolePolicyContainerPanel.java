@@ -14,7 +14,6 @@ import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 
 /**
@@ -88,6 +87,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 			{
 				List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 				arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList();
+				containerForm.getModelObject().setArkRolePolicyTemplateList(arkRolePolicyTemplateList);
 				
 				//TODO: Implement grouped method to return list of roles (rather then every arkRolePolicyTemplate)
 				//arkRolePolicyTemplateList = iAdminService.getGroupedArkRolePolicyTemplates();
@@ -102,6 +102,23 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		arkCrudContainerVO.setMyListView(pageableListView);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
+	}
+	
+	/**
+	 * @return the pageableListView
+	 */
+	public PageableListView<ArkRolePolicyTemplate> getPageableListView()
+	{
+		return pageableListView;
+	}
+
+	/**
+	 * @param pageableListView the pageableListView to set
+	 */
+	public void setPageableListView(PageableListView<ArkRolePolicyTemplate> pageableListView)
+	{
+		this.pageableListView = pageableListView;
 	}
 }

@@ -22,7 +22,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
@@ -33,9 +32,6 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 */
 	private static final long				serialVersionUID	= 5096967681735723818L;
 	protected transient Logger log = LoggerFactory.getLogger(DetailForm.class);
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>		iArkCommonService;
 	
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>		iAdminService;
@@ -103,7 +99,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	@SuppressWarnings("unchecked")
 	private void initArkRoleDropDown()
 	{
-		List<ArkRole> arkRoleList = iArkCommonService.getArkRoleList();
+		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
 		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
@@ -125,7 +121,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	@SuppressWarnings("unchecked")
 	private void initArkModuleDropDown()
 	{
-		List<ArkModule> arkModuleList = iArkCommonService.getArkModuleList();
+		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
 		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
 		arkModuleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkModule", arkModuleList, defaultChoiceRenderer);
 		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
@@ -147,7 +143,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	@SuppressWarnings("unchecked")
 	private void initArkFunctionDropDown()
 	{
-		List<ArkFunction> arkFunctionList = iArkCommonService.getArkFunctionList();
+		List<ArkFunction> arkFunctionList = iAdminService.getArkFunctionList();
 		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
 		arkFunctionDropDown = new DropDownChoice("arkRolePolicyTemplate.arkFunction", arkFunctionList, defaultChoiceRenderer);
 		arkFunctionDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
@@ -203,7 +199,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			adminVo.setArkModule(arkModule);
 			adminVo.setArkFunction(arkFunction);
 			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
-			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.CREATE);
+			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.CREATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
@@ -216,7 +212,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			adminVo.setArkModule(arkModule);
 			adminVo.setArkFunction(arkFunction);
 			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
-			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.READ);
+			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.READ);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
@@ -229,7 +225,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			adminVo.setArkModule(arkModule);
 			adminVo.setArkFunction(arkFunction);
 			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
-			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.UPDATE);
+			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.UPDATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
@@ -242,7 +238,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			adminVo.setArkModule(arkModule);
 			adminVo.setArkFunction(arkFunction);
 			adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
-			arkPermission = iArkCommonService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.DELETE);
+			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.DELETE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}

@@ -3,6 +3,8 @@ package au.org.theark.admin.web.component.rolePolicy.form;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -10,10 +12,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyStatus;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
@@ -23,21 +24,16 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	 * 
 	 */
 	private static final long					serialVersionUID	= -204010204180506704L;
+	
+	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
+	private IAdminService<Void>		iAdminService;
 
-	@SuppressWarnings("unchecked")
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
-
-	/* The Input Components that will be part of the Search Form */
-	@SuppressWarnings("unused")
-	private DropDownChoice<Study>				studyDpChoices;
-	private TextField<String>					idTxtFld;
 	private CompoundPropertyModel<AdminVO>	cpmModel;
 	private ArkCrudContainerVO					arkCrudContainerVo;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
-
-	private List<StudyStatus>					studyList;
+	private TextField<String>					idTxtFld;
+	private DropDownChoice<ArkRole>			arkRoleDropDown;
 
 	/**
 	 * Constructor
@@ -62,18 +58,39 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		addSearchComponentsToForm();
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void initialiseSearchForm()
 	{
-		this.setStudyList(iArkCommonService.getStudy(containerForm.getModelObject().getStudy()));
 		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
+		
+		// Role selection
+		initArkRoleDropDown();
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initArkRoleDropDown()
+	{
+		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
+		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
+		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
+		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
+		{
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5591846326218931210L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target)
+			{
+
+			}
+		});
 	}
 
-	@SuppressWarnings("unchecked")
 	protected void onSearch(AjaxRequestTarget target)
 	{
 		ArkRolePolicyTemplate arkRolePolicyTemplate = containerForm.getModelObject().getArkRolePolicyTemplate();
-		List<ArkRolePolicyTemplate> resultList = iArkCommonService.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
+		List<ArkRolePolicyTemplate> resultList = iAdminService.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
 		if (resultList != null && resultList.size() == 0)
 		{
 			containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
@@ -81,6 +98,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 			target.addComponent(feedbackPanel);
 		}
 
+		arkCrudContainerVo.getMyListView().removeAll();
 		containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(true);
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
@@ -88,19 +106,17 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 
 	private void addSearchComponentsToForm()
 	{
-		// add(studyDpChoices);
 		add(idTxtFld);
 	}
 
 	protected void onNew(AjaxRequestTarget target)
 	{
-		this.info("New button pressed!");
 		target.addComponent(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
+		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 		arkCrudContainerVo.getViewButtonContainer().setVisible(true);
 		arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
 		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
@@ -115,23 +131,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		
 		// Refresh base container form to remove any feedBack messages
 		target.addComponent(containerForm);
-	}
-
-	/**
-	 * @param studyList
-	 *           the studyList to set
-	 */
-	public void setStudyList(List<StudyStatus> studyList)
-	{
-		this.studyList = studyList;
-	}
-
-	/**
-	 * @return the studyList
-	 */
-	public List<StudyStatus> getStudyList()
-	{
-		return studyList;
 	}
 
 	/**
