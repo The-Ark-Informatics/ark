@@ -11,9 +11,6 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
-import au.org.theark.core.security.ArkSecurityManager;
-import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
