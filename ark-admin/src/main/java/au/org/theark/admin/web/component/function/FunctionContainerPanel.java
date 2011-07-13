@@ -98,6 +98,7 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
+		arkCrudContainerVO.setMyListView(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}

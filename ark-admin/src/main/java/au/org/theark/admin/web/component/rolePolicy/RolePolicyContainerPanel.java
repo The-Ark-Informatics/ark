@@ -101,8 +101,8 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(pageableListView);
-		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		arkCrudContainerVO.setMyListView(pageableListView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	

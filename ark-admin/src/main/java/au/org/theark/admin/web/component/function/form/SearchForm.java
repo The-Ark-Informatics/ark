@@ -99,6 +99,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		}
 
 		containerForm.getModelObject().setArkFunctionList(resultList);
+		arkCrudContainerVo.getMyListView().removeAll();
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(true);
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 	}
