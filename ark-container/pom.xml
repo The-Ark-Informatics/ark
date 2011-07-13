@@ -56,13 +56,16 @@
 			<artifactId>ark-geno</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
+		-->
 		
+		<!-- Ark Registry Module
 		<dependency>
 			<groupId>au.org.theark.registry</groupId>
 			<artifactId>ark-registry</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 		-->
+		
 		<!-- Ark LIMS Module -->
 		<dependency>
 			<groupId>au.org.theark.lims</groupId>
@@ -74,6 +77,13 @@
 		<dependency>
 			<groupId>au.org.theark.report</groupId>
 			<artifactId>ark-report</artifactId>
+			<version>0.1.3-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- Ark Admin Module -->		
+		<dependency>
+			<groupId>au.org.theark.admin</groupId>
+			<artifactId>ark-admin</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 
@@ -119,8 +129,6 @@
 			<artifactId>wicket-extensions</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
-
-
 
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 		<dependency>
