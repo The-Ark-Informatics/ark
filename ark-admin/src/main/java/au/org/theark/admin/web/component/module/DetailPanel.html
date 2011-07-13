@@ -11,7 +11,7 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="id">
-							<wicket:message key="arkFunction.id">
+							<wicket:message key="arkModule.id">
 								ID
 							</wicket:message>
 						</label>
@@ -19,7 +19,7 @@
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="arkFunction.id" type="text" />
+						<input wicket:id="arkModule.id" type="text" />
 					</div>
 				</div>
 				
@@ -28,7 +28,7 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="name">
-							<wicket:message key="arkFunction.name">
+							<wicket:message key="arkModule.name">
 								Name
 							</wicket:message>
 						</label>
@@ -36,7 +36,7 @@
 				</div>
 				<div id="fldControl">
 					<div class="label">
-						<input wicket:id="arkFunction.Name" type="text" />
+						<input wicket:id="arkModule.name" type="text" />
 					</div>
 				</div>
 				
@@ -47,7 +47,7 @@
 				<div id="fldLabel">
 					<div class="label">
 						<label for="description">
-							<wicket:message key="arkFunction.description">
+							<wicket:message key="arkModule.description">
 								Description
 							</wicket:message>
 						</label>
@@ -56,65 +56,15 @@
 				
 				<div id="fldControl">
 					<div class="label">
-						<textarea wicket:id="arkFunction.description" maxlength="255" cols="25"></textarea>
-					</div>
-				</div>
-				
-				<div id="panelMargin">&nbsp;</div>
-				
-				<div id="fldLabel">
-					<div class="label">
-						<label for="function">
-							<wicket:message key="arkFunction.arkFunction">
-								Function
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				
-				<div id="fldControl">
-					<div class="label">
-						<select wicket:id="arkFunction.arkFunction">
-							<option>
-								1
-							</option>
-							<option>
-								2
-							</option>
-						</select>
-					</div>
-				</div>
-				
-				<div id="detailPanelBreaker">&nbsp;</div>
-				
-				<div id="panelContentLeft">&nbsp;</div>
-				
-				<div id="fldLabel">
-					<div class="label">
-						<label for="resourceKey">
-							<wicket:message key="arkFunction.resourceKey">
-								ResourceKey
-							</wicket:message>
-						</label>
-					</div>
-				</div>
-				
-				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="arkFunction.resourceKey" type="text" />
+						<textarea wicket:id="arkModule.description" maxlength="255" cols="25"></textarea>
 					</div>
 				</div>
 				
 				<div id="panelMargin">&nbsp;</div>
 				
 				<!-- Empty -->
-
-				<div id="detailPanelContentRight">
-					&nbsp;
-				</div>
-				<div id="detailPanelBreaker">
-					&nbsp;
-				</div>
+				
+				<div id="detailPanelBreaker">&nbsp;</div>
 				
 				<!-- ModalWindow for confirm Delete window -->
 				<div wicket:id="modalwindow"></div>
