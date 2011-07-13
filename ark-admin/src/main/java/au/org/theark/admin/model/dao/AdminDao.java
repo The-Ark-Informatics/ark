@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -114,5 +115,67 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao
 		Criteria criteria = getSession().createCriteria(ArkPermission.class);
 		criteria.add(Restrictions.eq("name", name));
 		return (ArkPermission) criteria.list().get(0);
+	}
+
+	public ArkFunction getArkFunction(Long id)
+	{
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (ArkFunction) criteria.list().get(0);
+	}
+
+	public ArkModule getArkModule(Long id)
+	{
+		Criteria criteria = getSession().createCriteria(ArkModule.class);
+		criteria.add(Restrictions.eq("id", id));
+		return (ArkModule) criteria.list().get(0);
+	}
+
+	public void creatOrUpdateArkFunction(ArkFunction arkFunction)
+	{
+		getSession().saveOrUpdate(arkFunction);
+	}
+
+	public void creatOrUpdateArkModule(ArkModule arkModule)
+	{
+		getSession().saveOrUpdate(arkModule);
+	}
+
+	public void deleteArkFunction(ArkFunction arkFunction)
+	{
+		getSession().delete(arkFunction);
+	}
+
+	public void deleteArkModule(ArkModule arkModule)
+	{
+		getSession().delete(arkModule);		
+	}
+
+	public List<ArkFunctionType> getArkFunctionTypeList()
+	{
+		Criteria criteria = getSession().createCriteria(ArkFunctionType.class);
+		return criteria.list();
+	}
+
+	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction)
+	{
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		if(arkFunction.getId() != null)
+			criteria.add(Restrictions.eq("id", arkFunction.getId()));
+		
+		if(arkFunction.getName() != null)
+			criteria.add(Restrictions.eq("name", arkFunction.getName()));
+		return criteria.list();
+	}
+
+	public List<ArkModule> searchArkModule(ArkModule arkModule)
+	{
+		Criteria criteria = getSession().createCriteria(ArkFunction.class);
+		if(arkModule.getId() != null)
+			criteria.add(Restrictions.eq("id", arkModule.getId()));
+		
+		if(arkModule.getName() != null)
+			criteria.add(Restrictions.eq("name", arkModule.getName()));
+		return criteria.list();
 	}
 }

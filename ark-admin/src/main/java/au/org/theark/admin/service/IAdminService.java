@@ -4,6 +4,7 @@ import java.util.List;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -54,4 +55,22 @@ public interface IAdminService<T>
 	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate);
 
 	public ArkPermission getArkPermissionByName(String name);
+
+	public ArkModule getArkModule(Long id);
+	
+	public ArkFunction getArkFunction(Long id);
+
+	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction);
+
+	public List<ArkFunctionType> getArkFunctionTypeList();
+
+	public void creatOrUpdateArkFunction(AdminVO adminVo);
+	
+	public void deleteArkFunction(AdminVO adminVo);
+	
+	public void creatOrUpdateArkModule(AdminVO adminVo);
+	
+	public void deleteArkModule(AdminVO adminVo);
+
+	public List<ArkModule> searchArkModule(ArkModule arkModule);
 }

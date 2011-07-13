@@ -3,6 +3,7 @@ package au.org.theark.admin.model.dao;
 import java.util.List;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -53,4 +54,22 @@ public interface IAdminDao
 	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate);
 
 	public ArkPermission getArkPermissionByName(String name);
+
+	public ArkFunction getArkFunction(Long id);
+
+	public ArkModule getArkModule(Long id);
+
+	public void creatOrUpdateArkFunction(ArkFunction arkFunction);
+
+	public void creatOrUpdateArkModule(ArkModule arkModule);
+
+	public void deleteArkFunction(ArkFunction arkFunction);
+
+	public void deleteArkModule(ArkModule arkModule);
+
+	public List<ArkFunctionType> getArkFunctionTypeList();
+
+	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction);
+
+	public List<ArkModule> searchArkModule(ArkModule arkModule);
 }

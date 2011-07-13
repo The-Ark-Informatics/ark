@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.admin.model.dao.IAdminDao;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
@@ -96,5 +97,50 @@ public class AdminServiceImpl<T> implements IAdminService<T>
 	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate)
 	{
 		return adminDao.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
+	}
+
+	public ArkFunction getArkFunction(Long id)
+	{
+		return adminDao.getArkFunction(id);
+	}
+
+	public ArkModule getArkModule(Long id)
+	{
+		return adminDao.getArkModule(id);
+	}
+
+	public void creatOrUpdateArkFunction(AdminVO adminVo)
+	{
+		adminDao.creatOrUpdateArkFunction(adminVo.getArkFunction());
+	}
+
+	public void creatOrUpdateArkModule(AdminVO adminVo)
+	{
+		adminDao.creatOrUpdateArkModule(adminVo.getArkModule());
+	}
+
+	public void deleteArkFunction(AdminVO adminVo)
+	{
+		adminDao.deleteArkFunction(adminVo.getArkFunction());
+	}
+
+	public void deleteArkModule(AdminVO adminVo)
+	{
+		adminDao.deleteArkModule(adminVo.getArkModule());
+	}
+
+	public List<ArkFunctionType> getArkFunctionTypeList()
+	{
+		return adminDao.getArkFunctionTypeList();
+	}
+
+	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction)
+	{
+		return adminDao.searchArkFunction(arkFunction);
+	}
+
+	public List<ArkModule> searchArkModule(ArkModule arkModule)
+	{
+		return adminDao.searchArkModule(arkModule);
 	}
 }
