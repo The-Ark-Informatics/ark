@@ -180,6 +180,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	protected void attachValidators()
 	{
 		// Set required field here
+		arkRoleDropDown.setRequired(true);
 	}
 	
 	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target)

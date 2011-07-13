@@ -64,6 +64,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	protected void attachValidators()
 	{
 		// Set required field here
+		nameTxtFld.setRequired(true);
 	}
 	
 	private void addDetailFormComponents()

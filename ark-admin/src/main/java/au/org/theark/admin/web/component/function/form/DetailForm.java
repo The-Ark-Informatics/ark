@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
+import au.org.theark.admin.web.component.rolePolicy.DetailPanel;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.vo.ArkCrudContainerVO;
@@ -90,7 +91,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 			@Override
 			protected void onUpdate(AjaxRequestTarget target)
 			{
-
+				
 			}
 		});
 	}
@@ -99,6 +100,8 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	protected void attachValidators()
 	{
 		// Set required field here
+		nameTxtFld.setRequired(true);
+		arkFunctionTypeDropDown.setRequired(true);
 	}
 	
 	private void addDetailFormComponents()
