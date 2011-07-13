@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.admin.web.menu.AdminTabProviderImpl;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
@@ -79,8 +80,6 @@ public class HomePage extends BasePage
 	@Override
 	protected void buildModuleTabs()
 	{
-		log.info("Called buildModuleTabs()");
-		
 		List<ITab> moduleTabsList = new ArrayList<ITab>();
 
 		// Study
@@ -91,31 +90,30 @@ public class HomePage extends BasePage
 		// Pheno
 		PhenotypicTabProviderImpl phenotypicTabProvidor = new PhenotypicTabProviderImpl("phenotypic");
 		List<ITab> phenotypicTabsList = phenotypicTabProvidor.buildTabs(this.arkContextPanelMarkup);
-		log.info("Called phenotypicTabProvidor.buildTabs");
 		for (ITab itab : phenotypicTabsList)
 		{
 			moduleTabsList.add(itab);
 		}
 
-		// Geno & Registry not to be deployed as yet into Test
+		//TODO: Geno & Registry not to be deployed as yet into Test
 		// GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
 		// List<ITab> genoTabsList = genoTabs.buildTabs();
 		// for (ITab itab : genoTabsList)
 		// {
-		// moduleTabsList.add(itab);
+		// 	moduleTabsList.add(itab);
 		// }
 
 		// Registry
 		// RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
 		// List<ITab> registryTabList = registryTabProvider.buildTabs();
-		// for(ITab tab : registryTabList){
-		// moduleTabsList.add(tab);
+		// for(ITab tab : registryTabList)
+		// {
+		// 	moduleTabsList.add(tab);
 		// }
-		//		
+
 		// LIMS
 		LimsTabProviderImpl limsTabProvider = new LimsTabProviderImpl("lims");
 		List<ITab> limsTabList = limsTabProvider.buildTabs(this.arkContextPanelMarkup);
-		log.info("Called limsTabProvider.buildTabs");
 		for (ITab tab : limsTabList)
 		{
 			moduleTabsList.add(tab);
@@ -124,21 +122,23 @@ public class HomePage extends BasePage
 		// Report
 		ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl("report");
 		List<ITab> reportTabList = reportTabProvider.buildTabs();
-		log.info("Called reportTabProvider.buildTabs");
 		for (ITab tab : reportTabList)
 		{
 			moduleTabsList.add(tab);
 		}
-
+		
+		// Admin
+		AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl("admin");
+		List<ITab> adminTabList = adminTabProvider.buildTabs();
+		for (ITab tab : adminTabList)
+		{
+			moduleTabsList.add(tab);
+		}
+		
 		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
 		moduleTabbedPanel.setOutputMarkupPlaceholderTag(true);
 		studyMainTabProvider.setModuleTabbedPanel(moduleTabbedPanel);
 		add(moduleTabbedPanel);
-	}
-
-	@Override
-	protected void buildTabMenu()
-	{
 	}
 
 	@Override

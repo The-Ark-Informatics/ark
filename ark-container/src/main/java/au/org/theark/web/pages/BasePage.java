@@ -115,14 +115,9 @@ public abstract class BasePage extends WebPage
 	}
 
 	/**
-	 * Build module tabs
+	 * Build module tabs. All sub classes must implement this method
 	 */
 	protected abstract void buildModuleTabs();
-
-	/**
-	 * Implement method to add tab menus based on the module
-	 */
-	protected abstract void buildTabMenu();
 
 	abstract String getTitle();
 }
