@@ -4,9 +4,9 @@
 	<groupId>au.org.theark.admin</groupId>
 	<artifactId>ark-admin</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<!-- TODO project name  -->
-	<name>quickstart</name>
+	<name>ark-admin</name>
 	<description></description>
 	<!--
 		TODO <organization> <name>company name</name> <url>company url</url>
@@ -24,7 +24,7 @@
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
-		  <version>1.0-SNAPSHOT</version>
+		  <version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		
 		<!--  WICKET DEPENDENCIES -->
