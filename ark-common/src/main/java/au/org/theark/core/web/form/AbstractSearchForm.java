@@ -211,12 +211,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 
 			@Override
-			public boolean isVisible()
-			{
-				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
-			}
-
-			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form)
 			{
 				target.addComponent(feedbackPanel);
@@ -233,12 +227,6 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			public void onSubmit()
 			{
 				onReset();
-			}
-
-			@Override
-			public boolean isVisible()
-			{
-				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 		};
 
