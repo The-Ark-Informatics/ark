@@ -1,6 +1,5 @@
 package au.org.theark.study.web.component.subjectUpload.form;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -52,9 +51,6 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 			WebMarkupContainer wizardButtonContainer, WebMarkupContainer wizardFormContainer, WebMarkupContainer searchPanelContainer)
 	{
 		super(id, feedBackPanel, listContainer, wizardContainer, wizardFormContainer, searchPanelContainer, containerForm);
-		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableWizardForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	public void initialiseDetailForm()
