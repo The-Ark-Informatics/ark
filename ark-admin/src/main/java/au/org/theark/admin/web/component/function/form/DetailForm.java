@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
-import au.org.theark.admin.web.component.rolePolicy.DetailPanel;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.vo.ArkCrudContainerVO;
