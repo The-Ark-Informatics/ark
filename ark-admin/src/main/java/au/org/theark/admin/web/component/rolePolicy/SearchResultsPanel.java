@@ -19,11 +19,11 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
@@ -36,13 +36,11 @@ public class SearchResultsPanel extends Panel
 	private static final long	serialVersionUID	= 5237384531161620862L;
 	protected transient Logger log = LoggerFactory.getLogger(SearchResultsPanel.class);
 
-	@SuppressWarnings("unchecked")
 	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-
-	@SuppressWarnings("unused")
-	@SpringBean( name="arkLdapRealm")
-	private ArkLdapRealm realm;
+	private IArkCommonService<Void> iArkCommonService;
+	
+	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
+	private IAdminService<Void>		iAdminService;
 	
 	private ContainerForm containerForm;
 	
@@ -173,10 +171,10 @@ public class SearchResultsPanel extends Panel
 			public void onClick(AjaxRequestTarget target) 
 			{				
 				Long id = arkRolePolicyTemplate.getId();
-				ArkRolePolicyTemplate arkRolePolicyTemplate = iArkCommonService.getArkRolePolicyTemplate(id); 
+				ArkRolePolicyTemplate arkRolePolicyTemplate = iAdminService.getArkRolePolicyTemplate(id); 
 				containerForm.getModelObject().setArkRolePolicyTemplate(arkRolePolicyTemplate);
 				
-				List<ArkModule> arkModuleList =  iArkCommonService.getArkModuleList();
+				List<ArkModule> arkModuleList =  iAdminService.getArkModuleList();
 				containerForm.getModelObject().setArkModuleList(arkModuleList);
 				
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
