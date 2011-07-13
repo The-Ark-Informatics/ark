@@ -116,9 +116,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getViewButtonContainer().setVisible(true);
-		arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
+		arkCrudContainerVo.getViewButtonContainer().setVisible(false);
+		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
 
 		// Refresh the markup containers
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
