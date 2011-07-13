@@ -249,6 +249,8 @@ public class Constants
 	public static final String	FUNCTION_KEY_VALUE_INVENTORY					= "INVENTORY";
 	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CUSTOM			= "SUBJECT_CUSTOM";
 	public static final String	FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE	= "ROLE_POLICY_TEMPLATE";
+	public static final String	FUNCTION_KEY_VALUE_MODULE						= "MODULE";
+	public static final String	FUNCTION_KEY_VALUE_FUNCTION					= "FUNCTION";
 
 	/* Ark Module Keys */
 	public static final String	ARK_MODULE_KEY										= "MODULE_KEY";
