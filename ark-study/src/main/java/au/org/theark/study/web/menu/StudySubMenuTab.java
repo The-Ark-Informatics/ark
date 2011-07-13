@@ -98,8 +98,6 @@ public class StudySubMenuTab extends AbstractArkTabPanel
 	 */
 	public void buildTabs()
 	{
-		log.info("Called buildTabs()");
-
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_STUDY);
 		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
 
