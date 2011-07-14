@@ -1,0 +1,47 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="20%">
+				<label for="reportModuleName">
+					<wicket:message	key="report.module.name">Module:</wicket:message>
+				</label>
+			</th>
+			<th width="26%">
+				<label for="reportName">
+					<wicket:message	key="report.name">Name:</wicket:message>
+				</label>
+			</th>
+			<th width="50%">
+				<label for="reportDescription">
+					<wicket:message	key="report.description">Description:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>			
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="reportList">
+			<td width="2%">&nbsp;</td>
+			<td width="20%">
+			  	<span wicket:id="reportTemplate.module.name">Module</span>
+			</td>
+			<td width="26%">
+			  <a href="#"wicket:id="reportTemplate.link">
+				<span wicket:id="reportTemplate.name">Report Name</span>
+			  </a>
+			</td>
+			<td width="50%">
+				<span wicket:id="reportTemplate.description">Description</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td colspan="3"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>
