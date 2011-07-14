@@ -38,6 +38,7 @@ public class GeneratePassword
         if(context != null && arkUserDAO != null){
   	      	try {
   	      		arkUserDAO.createArkUser(arkUserVO);
+  	      		System.out.println("\n -- The ark user was successfully created in LDAP. ");
   	  		}catch (InvalidNameException e) {
   	  				e.printStackTrace();
   	  		}
