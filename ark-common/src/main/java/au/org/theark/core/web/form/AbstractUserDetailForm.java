@@ -32,7 +32,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T>
 	 */
 	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm)
 	{
-		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
 	protected void initialiseForm(Boolean isArkCrudContainerVOPattern)
