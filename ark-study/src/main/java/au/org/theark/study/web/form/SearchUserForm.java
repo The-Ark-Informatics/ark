@@ -63,22 +63,6 @@ public class SearchUserForm extends Form<ArkUserVO>{
 			{
 				onNew(target);
 			}
-			@Override
-			public boolean isVisible(){
-				
-				SecurityManager securityManager =  ThreadContext.getSecurityManager();
-				Subject currentUser = SecurityUtils.getSubject();		
-				boolean flag = false;
-				if(		
-						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
-						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-						securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-					flag = true;
-				}
-				//if it is a Super or Study admin then make the new available
-				return flag;
-			}
-		
 		};
 		
 		/* Secure the Action buttons if there is no study in context */
