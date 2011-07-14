@@ -187,24 +187,4 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		target.addComponent(wizardContainer);
 	}
 
-	protected boolean isSecure(String actionType)
-	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
-
-			SecurityManager securityManager = ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();
-			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
-			{
-				flag = true;
-			}
-		}
-		else
-		{
-			flag = true;
-		}
-
-		return flag;
-	}
 }

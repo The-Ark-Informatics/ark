@@ -177,24 +177,6 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		target.addComponent(listContainer);// For ajax this is required so
 	}
 	
-	protected boolean isSecure(String actionType)
-	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
-			SecurityManager securityManager =  ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();		
-			if(		securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-				flag = true;
-			};
-		}
-		else{
-			flag = true;
-		}
-		return flag;
-	}
-
 	/**
 	 * @param arkContextMarkup the arkContextMarkup to set
 	 */

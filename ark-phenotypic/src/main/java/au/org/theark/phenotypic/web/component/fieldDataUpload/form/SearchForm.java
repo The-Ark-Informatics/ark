@@ -3,9 +3,6 @@ package au.org.theark.phenotypic.web.component.fieldDataUpload.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -18,10 +15,8 @@ import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.pheno.entity.FileFormat;
-import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.UploadVO;
@@ -186,24 +181,4 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		target.addComponent(wizardContainer);
 	}
 
-	protected boolean isSecure(String actionType)
-	{
-		boolean flag = false;
-		if (actionType.equalsIgnoreCase(au.org.theark.core.Constants.NEW))
-		{
-
-			SecurityManager securityManager = ThreadContext.getSecurityManager();
-			Subject currentUser = SecurityUtils.getSubject();
-			if (securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) || securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN))
-			{
-				flag = true;
-			}
-		}
-		else
-		{
-			flag = true;
-		}
-
-		return flag;
-	}
 }
