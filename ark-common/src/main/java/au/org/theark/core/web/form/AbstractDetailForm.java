@@ -87,25 +87,22 @@ public abstract class AbstractDetailForm<T> extends Form<T>
 		initialiseForm();
 	}
 
-	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm)
-	{
-		super(id);
-		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.containerForm = containerForm;
-		this.feedBackPanel = feedBackPanel;
-
-		initialiseForm(true);
-	}
-
+	/**
+	 * 
+	 * @param id
+	 * @param feedBackPanel
+	 * @param containerForm
+	 * @param arkCrudContainerVO
+	 */
 	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, Form<T> containerForm, ArkCrudContainerVO arkCrudContainerVO)
 	{
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedBackPanel;
-		setMultiPart(true);
+		setMultiPart(true);//Make sure this is required.
 
-		initialiseForm(true);
+		initialiseForm(true);//For CRUD VO Pattern
 	}
 
 	/**
