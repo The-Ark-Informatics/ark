@@ -1,0 +1,131 @@
+<wicket:panel>&nbsp;
+	<form wicket:id="userDetailsForm">
+		<div id="detailsPanelBorder">
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			<div id="fldLabel">
+				<div class="label">
+					<label for="userName">
+						<wicket:message key="userNameKey">
+							User Name:
+						</wicket:message>
+						<div id="note">
+							<wicket:message	key="userNameKey.note">[Note replaced from properties]</wicket:message>
+						</div>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="userName"	type="text" size="30"/>
+				</div>
+			</div>
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="email">
+						<wicket:message key="emailKey">
+							Email:
+						</wicket:message>
+						<div id="note">
+							<wicket:message	key="emailKey.note">[Note replaced from properties]</wicket:message>
+						</div>
+					</label>
+				</div>
+			</div>
+			<div id="fldLabel">
+				<div class="email">
+					<input wicket:id="email" type="text" size="30" />
+				</div>
+			</div>
+			
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="firstName">
+						<wicket:message key="firstNameKey">
+							First Name:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="firstName" type="text" />
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="lastName">
+						<wicket:message key="lastNameKey">
+							Last Name:
+						</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="lastName"	type="text" />
+				</div>
+			</div>
+			
+			<div id="detailPanelContentRight">&nbsp;</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div wicket:id="groupPasswordContainer">
+				<div id="fldLabel">
+					<div class="label">
+						<label for="password">
+							<wicket:message key="passwordKey">
+								New Password:
+							</wicket:message>
+							<div id="note">
+								<wicket:message	key="passwordKey.note">[Note replaced from properties]</wicket:message>
+							</div>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="password"	type="password" maxlength="20"/>
+					</div>
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="confirmPassword">
+							<wicket:message key="confirmPasswordKey">
+								Confirm New Password:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="confirmPassword"	type="password" maxlength="20"/>
+					</div>
+				</div>
+			</div>
+
+			<div id="detailPanelBreaker">&nbsp;</div>
+
+			<div id="actionButtons">
+				<div id="panelMargin">&nbsp;</div>
+				<div class="label">
+					<input wicket:id="save" type="submit" wicket:message="value:page.save" />
+				</div>
+			</div>
+			<div id="detailPanelBreaker">&nbsp;</div>
+		</div>
+	</form>
+</wicket:panel>

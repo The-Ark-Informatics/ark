@@ -1,0 +1,87 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+		
+			<div id="searchPanelContent">
+				<div id="searchPanelBreaker">&nbsp;</div>				
+				
+				<div id="panelContentLeft">&nbsp;</div>
+					
+				<div id="fldLabel">
+		 			<div class="label">
+						<wicket:message	key="subjectFile.id">Subject File ID:</wicket:message>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label">
+        				<input wicket:id="subjectFile.id" type="text" />
+		 			</div> 
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<wicket:message	key="subjectFile.filename">Filename</wicket:message>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="subjectFile.filename"  type="text" />
+		 			</div> 
+				</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="studyComponent">
+							<label for="studyComponent"><wicket:message	key="subjectFile.studyComp">Study Component:</wicket:message></label>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="subjectFile.studyComp">
+			       		  	<option>Blood</option>
+							<option>Saliva</option>
+			       		</select>
+					</div>
+				</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+			        	&nbsp;
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="searchPanelBreaker">&nbsp;</div>	
+						
+				<!--  Defines the location for buttons -->
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>
