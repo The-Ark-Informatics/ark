@@ -1,0 +1,125 @@
+<wicket:panel>
+	<form wicket:id="filterForm">
+		<div id="searchPanelContent">
+
+			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+
+			<div id="fldLabel">
+				<div class="label">
+					<label for="linkSubjectStudy.subjectUID">
+						<wicket:message key="subjectUID">Subject UID:</wicket:message>
+					</label>
+				</div>
+			</div>
+	
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="linkSubjectStudy.subjectUID" type="text" />
+				</div>
+			</div>
+		
+			<div id="panelMargin">&nbsp;</div>
+		
+			<div id="fldLabel">
+				<div class="label">
+					<label for="linkSubjectStudy.subjectStatus">
+						<wicket:message key="subjectStatus">Status:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<select wicket:id="linkSubjectStudy.subjectStatus">
+	       				<option>Prospect</option>
+						<option>Subject</option>
+	       		</select>
+			</div>
+		
+			<div id="searchPanelContentRight">&nbsp;</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+			<div id="panelContentLeft">&nbsp;</div>
+		
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="consentStatus"><wicket:message key="consentStatus">Consent Status:</wicket:message></label>		
+	 			</div> 
+	 		</div> 			       			
+			
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="consentStatus">
+	       				<option>Completed</option>
+						<option>Not Completed</option>
+	       			</select>
+				</div>
+			</div>
+
+			<div  id="panelMargin">&nbsp;</div>
+			
+			<div id="fldLabel">
+				<div class="label">
+					<label for="consentDate">
+						<wicket:message key="consentDate">Consent Date:</wicket:message>
+					</label>
+				</div>
+			</div>
+			<div id="fldControl">
+				<div class="label">
+					<input wicket:id="consentDate" type="text" maxLength="10"/>
+				</div>
+			</div>
+		     
+			<div id="searchPanelContentRight">&nbsp;</div>
+			<div id="searchPanelBreaker">&nbsp;</div>
+	       	<div id="panelContentLeft">&nbsp;</div>
+	       	<!-- DISABLED - not required for study-level consent
+			
+			<div id="fldLabel">
+	 			<div class="label">
+	 				<label for="studyComp"><wicket:message key="studyComp">Consent Component:</wicket:message></label>		
+	 			</div> 
+	 		</div>
+	 		
+			<div id="fldControl">
+				<div class="label">   Drop Down Choice for Study Component 
+					<select wicket:id="studyComp">
+	       				<option>Blood</option>
+						<option>Saliva</option>
+	       			</select>
+				</div>
+			</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+
+			-->
+			<div id="fldLabel">
+	 			<div class="label">
+					<label for="report.outputFormatChoice"><wicket:message key="report.outputFormatChoice">Output Format:</wicket:message></label>
+	 			</div> 
+	 		</div>
+	 		
+			<div id="fldControl">
+				<div class="label">
+					<select wicket:id="report.outputFormatChoice">
+	       				<option>PDF</option>
+	       			</select>
+	       		</div>
+			</div>
+					
+			<div id="searchPanelBreaker">&nbsp;</div>		
+			<!--  Defines the location for buttons -->			
+			
+			<div id="panelContentLeft">&nbsp;</div>
+			
+			<div id="panelMargin">&nbsp;</div>
+			
+			<div id="actionButtons">&nbsp;
+				<div>
+					<input wicket:id="generate" type="submit" wicket:message="value:button.generate" />
+				</div>
+			</div>
+			
+			<div id="searchPanelBreaker">&nbsp;</div>
+		</div>
+	</form>
+</wicket:panel>
