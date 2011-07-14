@@ -5,7 +5,7 @@ a java environment is required.
 A.Configure and Package
 
  1. Make sure you provide the correct LDAP details in applicationContext.xml found in src/main/resources folder and also type in the right password for your environment 
- 2. Once the configuration is complete within the project directory type in the command  maven assembly:assembly [ this will package the application and its dependencies into a jar file refer to maven documentation for more details]
+ 2. Once the configuration is complete within the project directory type in the command  mvn assembly:assembly [ this will package the application and its dependencies into a jar file refer to maven documentation for more details]
  3. Once it reports that it has built/packaged without errors navigate into your target folder
  4. You will see two jar files, the one we are going to use is "ark-user-account-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
  5. You can either rename this ark-user-account-0.0.1-SNAPSHOT-jar-with-dependencies.jar to something like createaccount.jar for your convenience.
