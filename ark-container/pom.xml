@@ -80,13 +80,14 @@
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 		
-		<!-- Ark Admin Module -->		
+		<!-- Ark Admin Module 		
 		<dependency>
 			<groupId>au.org.theark.admin</groupId>
 			<artifactId>ark-admin</artifactId>
 			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
-
+		-->
+		
 		<!--  Spring Stuff -->
 		<dependency>
 			<groupId>org.springframework.ldap</groupId>
