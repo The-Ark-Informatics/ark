@@ -23,9 +23,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 @SuppressWarnings("serial")
 public abstract class AbstractContainerForm<T>  extends Form<T>
 {
-	private transient Logger log = LoggerFactory.getLogger(AbstractContainerForm.class);
-	protected ArkCrudContainerVO arkCrudContainerVO;
-
 	/**
 	 * Constructor
 	 * @param id

@@ -4,6 +4,14 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
+/*
+* The ArkDataProvider is designed for use with Hibernate as the underlying data source
+* Due to Hibernate's ability to lazy-load, it is unnecessary to:
+* - (re-)load() the object from the backend
+* - do anything on detach()
+*
+* @author elam
+*/
 public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 
 	/**
@@ -12,7 +20,7 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 	private static final long serialVersionUID = 1L;
 	
 	protected IModel<T> model;
-	protected U service;
+	protected transient U service;
 	
 	public ArkDataProvider(U service) {
 		super();

@@ -35,23 +35,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	private static final long		serialVersionUID	= -4135522738458228329L;
 
 	protected FeedbackPanel			feedbackPanel;
-	protected Form<T>					containerForm;
-
-	/**
-	 * @return the containerForm
-	 */
-	public Form<T> getContainerForm()
-	{
-		return containerForm;
-	}
-
-	/**
-	 * @param containerForm the containerForm to set
-	 */
-	public void setContainerForm(Form<T> containerForm)
-	{
-		this.containerForm = containerForm;
-	}
+	protected CompoundPropertyModel<T>	cpModel;
 
 	protected AjaxButton				saveButton;
 	protected AjaxButton				doneButton;
@@ -64,12 +48,12 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	// Use this for the model where WebMarkupContainers are set inside this VO
 	protected ArkCrudContainerVO	arkCrudContainerVo;									
 
-	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, Form<T> containerForm)
+	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> cpModel)
 	{
-		super(id);
+		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
-		this.containerForm = containerForm;
+		this.cpModel = cpModel;
 		
 		initialiseForm();
 	}
