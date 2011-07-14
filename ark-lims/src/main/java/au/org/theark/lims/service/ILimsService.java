@@ -147,5 +147,33 @@ public interface ILimsService
 	 * @return true if provided bioCollection has one or more Biospecimens
 	 */
 	public Boolean hasBiospecimens(BioCollection bioCollection);
+	
+	/**
+	 * Get count of the BioCollections given the criteria
+	 * @param BioCollection criteria
+	 * @return counts
+	 */
+	public int getBioCollectionCount(BioCollection bioCollectionCriteria);
+	
+	/**
+	 * A generic interface that will return a list BioCollections specified by a particular criteria, and a paginated reference point
+	 * @param BioCollection criteria
+	 * @return Collection of BioCollection
+	 */
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
+
+	/**
+	 * Get count of the Biospecimens given the criteria
+	 * @param Biospecimens criteria
+	 * @return counts
+	 */
+	public int getBiospecimenCount(Biospecimen biospecimenCriteria);
+	
+	/**
+	 * A generic interface that will return a list Biospecimens specified by a particular criteria, and a paginated reference point
+	 * @param Biospecimens criteria
+	 * @return Collection of Biospecimen
+	 */
+	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count);
 
 }

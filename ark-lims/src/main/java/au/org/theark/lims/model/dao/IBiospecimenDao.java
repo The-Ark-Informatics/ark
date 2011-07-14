@@ -43,4 +43,19 @@ public interface IBiospecimenDao
 	 */
 	public void deleteBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen);
 
+	/**
+	 * Get count of the Biospecimens given the criteria
+	 * @param Biospecimens criteria
+	 * @return counts
+	 */
+	public int getBiospecimenCount(Biospecimen biospecimenCriteria);
+
+	/**
+	 * A generic interface that will return a list Biospecimens specified by a particular criteria, and a paginated reference point
+	 * @param Biospecimens criteria
+	 * @return Collection of Biospecimen
+	 */
+	public List<Biospecimen> searchPageableBiospecimens(
+			Biospecimen biospecimenCriteria, int first, int count);
+	
 }

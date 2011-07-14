@@ -3,9 +3,10 @@ package au.org.theark.lims.web.component.biospecimen;
 import java.util.ArrayList;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -13,10 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
@@ -132,7 +131,12 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 
 		listView = searchResultPanel.buildPageableListView(iModel);
 		listView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", listView) {
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.addComponent(searchResultPanelContainer);
+			}
+		};
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(listView);
 		searchResultPanelContainer.add(searchResultPanel);

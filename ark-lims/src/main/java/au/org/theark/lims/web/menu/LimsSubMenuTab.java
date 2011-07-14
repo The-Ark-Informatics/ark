@@ -18,7 +18,7 @@ import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.bioCollection.BioCollectionContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
-import au.org.theark.lims.web.component.subject.SubjectContainerPanel;
+import au.org.theark.lims.web.component.subjectLims.SubjectLimsContainerPanel;
 
 @SuppressWarnings("serial")
 public class LimsSubMenuTab extends AbstractArkTabPanel
@@ -62,7 +62,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel
 		
 		if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS,arkFunction);
-			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);//Note the constructor
+			panelToReturn = new SubjectLimsContainerPanel(panelId, arkContextMarkup);//Note the constructor
 		}
 		else if(arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)){
 			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS,arkFunction);

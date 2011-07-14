@@ -15,7 +15,6 @@ public class LimsVO implements Serializable
 	 * 
 	 */
 	private static final long	serialVersionUID	= 3823264588506863044L;
-	protected SubjectVO subjectVo;
 	protected LinkSubjectStudy LinkSubjectStudy;  
 	protected BioCollection bioCollection;
 	protected Biospecimen biospecimen;
@@ -34,29 +33,12 @@ public class LimsVO implements Serializable
 	
 	public LimsVO()
 	{
-		this.subjectVo = new SubjectVO();
 		this.LinkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
 		this.bioCollectionList = new ArrayList<BioCollection>();
 		this.biospecimenList = new ArrayList<Biospecimen>();
 		this.bioTransactionList = new ArrayList<BioTransaction>();
-	}
-
-	/**
-	 * @return the subjectVo
-	 */
-	public SubjectVO getSubjectVo()
-	{
-		return subjectVo;
-	}
-
-	/**
-	 * @param subjectVo the subjectVo to set
-	 */
-	public void setSubjectVo(SubjectVO subjectVo)
-	{
-		this.subjectVo = subjectVo;
 	}
 
 	/**
