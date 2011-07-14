@@ -9,9 +9,6 @@ package au.org.theark.study.web.component.studycomponent.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -23,7 +20,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
@@ -128,32 +124,6 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo>{
 			this.error("A system error has occured. Please try after sometime.");
 		}
 		
-	}
-
-	/* (non-Javadoc)
-	 * @see au.org.theark.core.web.form.AbstractSearchForm#isSecure(java.lang.String)
-	 */
-	
-	protected boolean isSecure(String actionType) {
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
-		Subject currentUser = SecurityUtils.getSubject();		
-		boolean flag = false;
-		
-		if(actionType.equalsIgnoreCase(Constants.NEW)){
-			if(		
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-					securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-				flag = true;
-			}
-			
-		}else if (actionType.equalsIgnoreCase(Constants.SEARCH)){
-			flag = true;
-		}else{
-			flag = true;
-		}
-		return flag;
-	
 	}
 
 }
