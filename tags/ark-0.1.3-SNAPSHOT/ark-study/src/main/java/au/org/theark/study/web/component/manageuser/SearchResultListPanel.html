@@ -1,0 +1,32 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+	<table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="15%"><label for="userId"><wicket:message key="user.id.key">User ID:</wicket:message></label></th>
+			<th width="10%"><label for="lastName"><wicket:message key="user.last.name.key">Last Name:</wicket:message></label></th>
+			<th width="10%"><label for="firstName"><wicket:message key="user.first.name.key">FirstName:</wicket:message></label></th>
+			<th width="25%"><label for="email"><wicket:message key="user.email.key">Email:</wicket:message></label></th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+
+		<tr wicket:id="userList">
+			<td width="2%">&nbsp;</td>
+			<td width="15%">
+				<a href="#" wicket:id="userName"><span wicket:id="userNameLink"></span></a>
+			</td>
+			<td width="10%"><span wicket:id="lastName">Last Name</span></td>
+			<td width="10%"><span wicket:id="firstName">First Name</span></td>
+		
+			<td width="25%"><span wicket:id="email">Email</span></td> 
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="96%" colspan="4"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

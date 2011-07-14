@@ -1,0 +1,21 @@
+<wicket:panel>
+	<div id="wizardStepBorder">
+		<div wicket:id="header" />
+		<div id="wizardStepContent">
+			<div id="wizardPanelBreaker">Validation Messages:</div>
+			<div id="wizardErrorMessages">
+				<span wicket:id="multiLineLabel" class="mark">
+					this text will be replaced
+				</span>
+			</div>
+			<input wicket:id="downloadValMsg" type="submit" value="Download Validation Messages" />&nbsp;
+			<div id="wizardPanelBreaker">&nbsp;</div>
+			<div wicket:id="updateExistingDataContainer">
+				<wicket:message	key="updateExistingData">
+					Update existing data:
+				</wicket:message>
+				<input type="checkbox" wicket:id="updateChkBox"/>
+			</div>
+		</div>
+	</div>
+</wicket:panel>
