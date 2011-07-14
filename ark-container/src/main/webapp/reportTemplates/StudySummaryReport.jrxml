@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudySummaryReport" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<style name="Sans_Bold" fontName="DejaVu Sans" fontSize="12" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+	<style name="Sans_Italic" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
+	<style name="pageHeader" style="Sans_Bold" forecolor="#FFFFFF" backcolor="#333333"/>
+	<parameter name="ReportTitle" class="java.lang.String"/>
+	<parameter name="BaseDir" class="java.io.File"/>
+	<parameter name="UserName" class="java.lang.String"/>
+	<field name="Section" class="java.lang.String"/>
+	<field name="Status" class="java.lang.String"/>
+	<field name="Subjects" class="java.lang.Number"/>
+	<variable name="SectionNumber" class="java.lang.Integer" resetType="Group" resetGroup="SectionGroup" calculation="System">
+		<initialValueExpression><![CDATA[($V{SectionNumber} != null)?(new Integer($V{SectionNumber}.intValue() + 1)):(new Integer(1))]]></initialValueExpression>
+	</variable>
+	<group name="SectionGroup" minHeightToStartNewPage="60">
+		<groupExpression><![CDATA[$F{Section}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField>
+					<reportElement style="Sans_Bold" mode="Opaque" x="0" y="4" width="515" height="15" backcolor="#C0C0C0"/>
+					<box>
+						<bottomPen lineWidth="1.0"/>
+					</box>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{SectionNumber}) + ". " + $F{Section}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<title>
+		<band height="60">
+			<frame>
+				<reportElement x="0" y="0" width="515" height="60" backcolor="#E0E0E0"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<image scaleImage="RetainShape">
+					<reportElement x="8" y="5" width="110" height="50"/>
+					<imageExpression class="java.io.File"><![CDATA[new File($P{BaseDir}, "product_image.gif")]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement x="118" y="5" width="392" height="50"/>
+					<textElement textAlignment="Right">
+						<font size="22"/>
+					</textElement>
+					<textFieldExpression class="java.lang.String"><![CDATA[$P{ReportTitle}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="20">
+			<staticText>
+				<reportElement style="pageHeader" mode="Opaque" x="0" y="5" width="256" height="15"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Section]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="pageHeader" mode="Opaque" x="256" y="5" width="130" height="15"/>
+				<textElement/>
+				<text><![CDATA[Status]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="pageHeader" mode="Opaque" x="386" y="5" width="129" height="15"/>
+				<textElement/>
+				<text><![CDATA[Total Subjects]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="24">
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="256" y="5" width="130" height="15"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Status}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true">
+				<reportElement positionType="Float" x="386" y="5" width="129" height="15"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression class="java.lang.Number"><![CDATA[$F{Subjects}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement positionType="FixRelativeToBottom" x="0" y="19" width="515" height="1" forecolor="#808080"/>
+			</line>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="40">
+			<line>
+				<reportElement x="0" y="10" width="515" height="1"/>
+			</line>
+			<textField evaluationTime="Report" pattern="dd MMMMM yyyy h.mm a">
+				<reportElement x="0" y="20" width="169" height="15"/>
+				<textElement textAlignment="Left">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[new Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="346" y="20" width="169" height="15"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{UserName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="20" width="80" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression class="java.lang.String"><![CDATA["Page " + String.valueOf($V{PAGE_NUMBER}) + " of"]]></textFieldExpression>
+			</textField>
+			<elementGroup>
+				<textField evaluationTime="Report">
+					<reportElement x="260" y="20" width="75" height="15"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[" " + String.valueOf($V{PAGE_NUMBER})]]></textFieldExpression>
+				</textField>
+			</elementGroup>
+		</band>
+	</pageFooter>
+</jasperReport>
