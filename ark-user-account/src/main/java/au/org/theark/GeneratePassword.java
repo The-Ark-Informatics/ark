@@ -14,7 +14,6 @@ import au.org.theark.vo.ArkUserVO;
  * It does not create the user in the database(Ark_User and Ark_User_Role), after running this the administrator
  * should create the entries manually. It can be further enhanced to connect to the back end and automate however keeping the scope very 
  * limited. 
- *
  * 
  * @author nivedann
  *
