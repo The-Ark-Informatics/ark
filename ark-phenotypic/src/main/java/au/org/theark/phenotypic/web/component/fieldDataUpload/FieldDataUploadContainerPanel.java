@@ -18,9 +18,8 @@ import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 
-@SuppressWarnings( { "unused" })
-public class FieldDataUploadContainerPanel extends AbstractContainerPanel<UploadVO>
-{
+@SuppressWarnings({ "unused" })
+public class FieldDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 	private static final long					serialVersionUID				= 1L;
 
 	// Panels
@@ -33,15 +32,14 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 
 	@SpringBean(name = "phenotypicService")
 	private IPhenotypicService					iPhenotypicService;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
+	private IArkCommonService<Void>			iArkCommonService;
 
 	private transient Logger					log								= LoggerFactory.getLogger(FieldDataUploadContainerPanel.class);
 	private boolean								phenoCollectionInContext	= false;
 
-	public FieldDataUploadContainerPanel(String id)
-	{
+	public FieldDataUploadContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -52,68 +50,48 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		//containerForm.add(initialiseDetailPanel());
+		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());
-		//containerForm.add(initialiseSearchPanel());
+		// containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
 
-	private WebMarkupContainer initialiseWizardPanel()
-	{
-		wizardPanel = new WizardPanel("wizardPanel", 
-												searchResultPanelContainer, 
-												feedBackPanel, 
-												wizardPanelContainer, 
-												searchPanelContainer, 
-												wizardPanelFormContainer,
-												containerForm);
+	private WebMarkupContainer initialiseWizardPanel() {
+		wizardPanel = new WizardPanel("wizardPanel", searchResultPanelContainer, feedBackPanel, wizardPanelContainer, searchPanelContainer, wizardPanelFormContainer, containerForm);
 		wizardPanel.initialisePanel();
 		wizardPanelContainer.setVisible(true);
 		wizardPanelContainer.add(wizardPanel);
 		return wizardPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchResults()
-	{
-		searchResultPanel = new SearchResultListPanel("searchResults",
-												feedBackPanel,
-												detailPanelContainer,
-												searchPanelContainer, 
-												containerForm, 
-												searchResultPanelContainer, 
-												detailPanel, 
-												viewButtonContainer,
-												editButtonContainer, 
-												detailPanelFormContainer);
+	protected WebMarkupContainer initialiseSearchResults() {
+		searchResultPanel = new SearchResultListPanel("searchResults", feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Set study in context
 				Study study = new Study();
 				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				
+
 				listView.removeAll();
-				
-				if(studyId != null)
-				{
+
+				if (studyId != null) {
 					study = iArkCommonService.getStudy(studyId);
 					PhenoUpload phenoUpload = new PhenoUpload();
 					phenoUpload.setStudy(study);
 
 					// Only show data uploads, not data dictionary uploads "FIELD"
 					phenoUpload.setUploadType("FIELD_DATA");
-				
-					java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload); 
-					return  phenoUploads;
+
+					java.util.Collection<PhenoUpload> phenoUploads = iPhenotypicService.searchUpload(phenoUpload);
+					return phenoUploads;
 				}
-				else
-				{
+				else {
 					return null;
 				}
 			}
@@ -130,8 +108,7 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 		return searchResultPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
 				detailPanelFormContainer);
 		detailPanel.initialisePanel();
@@ -139,8 +116,7 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 		return detailPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, wizardPanelContainer, wizardPanel, containerForm,
 				viewButtonContainer, editButtonContainer, wizardPanelFormContainer);
 		searchComponentPanel.initialisePanel();

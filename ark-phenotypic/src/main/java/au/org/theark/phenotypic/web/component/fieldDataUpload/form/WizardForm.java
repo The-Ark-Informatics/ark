@@ -26,17 +26,16 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.WizardPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial" })
-public class WizardForm extends AbstractWizardForm<UploadVO>
-{
+@SuppressWarnings({ "serial" })
+public class WizardForm extends AbstractWizardForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>					iArkCommonService;
+	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService iPhenotypicService;
-	
-	private File file;
-	private String fileName;
+	private IPhenotypicService			iPhenotypicService;
+
+	private File							file;
+	private String							fileName;
 
 	/**
 	 * Constructor
@@ -52,69 +51,61 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	 * @param searchPanelContainer
 	 */
 	public WizardForm(String id, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer, WebMarkupContainer wizardContainer, Form<UploadVO> containerForm,
-			WebMarkupContainer wizardButtonContainer, WebMarkupContainer wizardFormContainer, WebMarkupContainer searchPanelContainer)
-	{
+			WebMarkupContainer wizardButtonContainer, WebMarkupContainer wizardFormContainer, WebMarkupContainer searchPanelContainer) {
 		super(id, feedBackPanel, listContainer, wizardContainer, wizardFormContainer, searchPanelContainer, containerForm);
-		
+
 		// Set study in context
 		Study study = new Study();
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		if(studyId != null)
-		{
+
+		if (studyId != null) {
 			study = iArkCommonService.getStudy(studyId);
 			PhenoCollection phenoCollection = new PhenoCollection();
 			phenoCollection.setStudy(study);
-		
+
 			java.util.Collection<PhenoCollection> phenoCollections = iPhenotypicService.searchPhenotypicCollection(phenoCollection);
-			
-			if(phenoCollections.size() == 0)
-			{
+
+			if (phenoCollections.size() == 0) {
 				disableWizardForm(null, "There is no Phenotypic Collections defined for this study. Please create a Phenotypic Collection");
 			}
 		}
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		initialiseSteps();
 		addComponents();
 	}
-	
-	public void initialiseSteps()
-	{
+
+	public void initialiseSteps() {
 		FieldDataUploadStep1 step1 = new FieldDataUploadStep1("step", containerForm, this);
 		FieldDataUploadStep2 step2 = new FieldDataUploadStep2("step", containerForm, this);
 		FieldDataUploadStep3 step3 = new FieldDataUploadStep3("step", containerForm, this);
 		FieldDataUploadStep4 step4 = new FieldDataUploadStep4("step", containerForm, this);
 		FieldDataUploadStep5 step5 = new FieldDataUploadStep5("step", containerForm);
-		
+
 		step1.setNextStep(step2);
 		step2.setNextStep(step3);
 		step3.setPreviousStep(step2);
 		step3.setNextStep(step4);
 		step4.setPreviousStep(step3);
 		step4.setNextStep(step5);
-		
+
 		wizardPanelFormContainer.addOrReplace(step1);
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		add(wizardPanelFormContainer);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void onFinish(AjaxRequestTarget target, Form form)
-	{
+	public void onFinish(AjaxRequestTarget target, Form form) {
 		this.info("Data upload of file: " + containerForm.getModelObject().getUpload().getFilename() + " was uploaded successfully");
 		onCancel(target);
 	}
 
 	@Override
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
 		UploadVO uploadVO = new UploadVO();
 		containerForm.setModelObject(uploadVO);
@@ -123,18 +114,16 @@ public class WizardForm extends AbstractWizardForm<UploadVO>
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
-	public void onError(AjaxRequestTarget target, Form form)
-	{
-		processErrors(target);	
-	}	
-	
+	public void onError(AjaxRequestTarget target, Form form) {
+		processErrors(target);
+	}
+
 	public File getFile() {
 		return file;
 	}

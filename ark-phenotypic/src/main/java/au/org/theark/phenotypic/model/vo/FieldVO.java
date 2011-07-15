@@ -13,14 +13,12 @@ import au.org.theark.core.model.pheno.entity.Field;
  * 
  */
 @SuppressWarnings("serial")
-public class FieldVO implements Serializable
-{
+public class FieldVO implements Serializable {
 	private Field								field;
 	private java.util.Collection<Field>	fieldCollection;
 	private int									mode;
 
-	public FieldVO()
-	{
+	public FieldVO() {
 		field = new Field();
 		setFieldCollection(new ArrayList<Field>());
 	}
@@ -28,8 +26,7 @@ public class FieldVO implements Serializable
 	/**
 	 * @return the field
 	 */
-	public Field getField()
-	{
+	public Field getField() {
 		return field;
 	}
 
@@ -37,8 +34,7 @@ public class FieldVO implements Serializable
 	 * @param field
 	 *           the field to set
 	 */
-	public void setField(Field field)
-	{
+	public void setField(Field field) {
 		this.field = field;
 	}
 
@@ -46,16 +42,14 @@ public class FieldVO implements Serializable
 	 * @param fieldCollection
 	 *           the fieldCollection to set
 	 */
-	public void setFieldCollection(java.util.Collection<Field> fieldCollection)
-	{
+	public void setFieldCollection(java.util.Collection<Field> fieldCollection) {
 		this.fieldCollection = fieldCollection;
 	}
 
 	/**
 	 * @return the fieldCollection
 	 */
-	public java.util.Collection<Field> getFieldCollection()
-	{
+	public java.util.Collection<Field> getFieldCollection() {
 		return fieldCollection;
 	}
 
@@ -63,16 +57,14 @@ public class FieldVO implements Serializable
 	 * @param mode
 	 *           the mode to set
 	 */
-	public void setMode(int mode)
-	{
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 
 	/**
 	 * @return the mode
 	 */
-	public int getMode()
-	{
+	public int getMode() {
 		return mode;
 	}
 }

@@ -34,8 +34,7 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
 /**
  * The first step of this wizard.
  */
-public class FieldDataUploadStep1 extends AbstractWizardStepPanel
-{
+public class FieldDataUploadStep1 extends AbstractWizardStepPanel {
 	/**
 	 * 
 	 */
@@ -59,14 +58,12 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 	private DropDownChoice<DelimiterType>		delimiterTypeDdc;
 	private WizardForm								wizardForm;
 
-	public FieldDataUploadStep1(String id)
-	{
+	public FieldDataUploadStep1(String id) {
 		super(id);
 		initialiseDetailForm();
 	}
 
-	public FieldDataUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
-	{
+	public FieldDataUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
@@ -74,9 +71,8 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings( { "unchecked" })
-	private void initialiseDropDownChoices()
-	{
+	@SuppressWarnings({ "unchecked" })
+	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iPhenotypicService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.phenotypic.web.Constants.DELIMITER_TYPE_ID);
@@ -88,8 +84,7 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initPhenoCollectionDdc()
-	{
+	private void initPhenoCollectionDdc() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 
@@ -97,18 +92,15 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 		java.util.Collection<PhenoCollection> phenoCollection = null;
 		PhenoCollection phenotypicCollection = new PhenoCollection();
 
-		if (sessionPhenoCollectionId != null)
-		{
+		if (sessionPhenoCollectionId != null) {
 			phenotypicCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
 		}
 
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			study = iArkCommonService.getStudy(sessionStudyId);
 			phenoCollection = iPhenotypicService.getPhenoCollectionByStudy(study);
 		}
-		else
-		{
+		else {
 			phenoCollection = iPhenotypicService.searchPhenotypicCollection(phenotypicCollection);
 		}
 
@@ -116,8 +108,7 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 		phenoCollectionDdc = new DropDownChoice<PhenoCollection>(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, (List) phenoCollection, fieldDataCollRenderer);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		// Set up field on form here
 
 		// progress bar for upload
@@ -134,16 +125,14 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Field validation here
 		phenoCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.collection.required", this, new Model<String>("Collection")));
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Add components here
 		add(phenoCollectionDdc);
 		add(fileUploadField);
@@ -151,28 +140,23 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 	}
 
 	@Override
-	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		saveFileInMemory();
 	}
 
-	public void setWizardForm(WizardForm wizardForm)
-	{
+	public void setWizardForm(WizardForm wizardForm) {
 		this.wizardForm = wizardForm;
 	}
 
-	public WizardForm getWizardForm()
-	{
+	public WizardForm getWizardForm() {
 		return wizardForm;
 	}
 
-	private void saveFileInMemory()
-	{
+	private void saveFileInMemory() {
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
@@ -182,21 +166,19 @@ public class FieldDataUploadStep1 extends AbstractWizardStepPanel
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
 
-		try
-		{
+		try {
 			// Copy file to BLOB object
 			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
-		catch (IOException ioe)
-		{
+		catch (IOException ioe) {
 			System.out.println("Failed to save the uploaded file: " + ioe);
 		}
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(study);
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
-		String fileFormatName = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		FileFormat fileFormat = new FileFormat();
 		fileFormat = iPhenotypicService.getFileFormatByName(fileFormatName);
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);

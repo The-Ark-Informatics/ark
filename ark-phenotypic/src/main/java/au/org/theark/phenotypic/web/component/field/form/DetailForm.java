@@ -43,9 +43,8 @@ import au.org.theark.phenotypic.web.component.field.DetailPanel;
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unchecked", "unused" })
-public class DetailForm extends AbstractDetailForm<FieldVO>
-{
+@SuppressWarnings({ "serial", "unchecked", "unused" })
+public class DetailForm extends AbstractDetailForm<FieldVO> {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
 
@@ -56,7 +55,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	private TextField<String>				fieldIdTxtFld;
 	private TextField<String>				fieldNameTxtFld;
 	private DropDownChoice<FieldType>	fieldTypeDdc;
-	
 
 	private TextArea<String>				fieldDescriptionTxtAreaFld;
 	private TextField<String>				fieldUnitsTxtFld;
@@ -80,21 +78,18 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	 * @param searchPanelContainer
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
-	{
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer) {
 
 		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 	}
 
-	private void initFieldTypeDdc()
-	{
+	private void initFieldTypeDdc() {
 		java.util.Collection<FieldType> fieldTypeCollection = iPhenotypicService.getFieldTypes();
 		ChoiceRenderer fieldTypeRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.FIELD_TYPE_NAME, au.org.theark.phenotypic.web.Constants.FIELD_TYPE_ID);
 		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_FIELD_TYPE, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_NAME);
 		fieldNameTxtFld.add(new ArkDefaultFormFocusBehavior());
@@ -105,7 +100,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		fieldEncodedValuesTxtFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ENCODED_VALUES);
 		PropertyModel<Field> pm = new PropertyModel<Field>((CompoundPropertyModel<FieldVO>) containerForm.getModel(), "field");
 		fieldMissingValueTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MISSING_VALUE);
-		
+
 		// Initialise Drop Down Choices
 		initFieldTypeDdc();
 
@@ -121,30 +116,25 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	 * @param radioChoiceId
 	 * @return
 	 */
-	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Field> pm, String propertyModelExpr, String radioChoiceId)
-	{
+	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Field> pm, String propertyModelExpr, String radioChoiceId) {
 
 		List<Boolean> list = new ArrayList<Boolean>();
 		list.add(Boolean.TRUE);
 		list.add(Boolean.FALSE);
 		/* Implement the IChoiceRenderer */
 
-		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>()
-		{
-			public Object getDisplayValue(final Boolean choice)
-			{
+		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>() {
+			public Object getDisplayValue(final Boolean choice) {
 
 				String displayValue = au.org.theark.core.Constants.NO;
 
-				if (choice != null && choice.booleanValue())
-				{
+				if (choice != null && choice.booleanValue()) {
 					displayValue = au.org.theark.core.Constants.YES;
 				}
 				return displayValue;
 			}
 
-			public String getIdValue(final Boolean object, final int index)
-			{
+			public String getIdValue(final Boolean object, final int index) {
 				return object.toString();
 			}
 		};
@@ -153,16 +143,15 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		return new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		fieldNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.name.required", this, new Model<String>("Name")));
 		fieldTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.phenotypic.fieldType.required", this, new Model<String>("Field Type")));
-		// TODO: Add correct validator, possibly custom with better validation message 
-		//fieldEncodedValuesTxtFld.add(new PatternValidator("\\b[\\w]=[\\w];\\b*")).setLabel(new StringResourceModel("error.phenotypic.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
+		// TODO: Add correct validator, possibly custom with better validation message
+		// fieldEncodedValuesTxtFld.add(new PatternValidator("\\b[\\w]=[\\w];\\b*")).setLabel(new
+		// StringResourceModel("error.phenotypic.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Disable ID field editing
 		detailPanelFormContainer.add(fieldIdTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(fieldNameTxtFld);
@@ -178,18 +167,15 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 	}
 
 	@Override
-	protected void onSave(Form<FieldVO> containerForm, AjaxRequestTarget target)
-	{
+	protected void onSave(Form<FieldVO> containerForm, AjaxRequestTarget target) {
 
-		if (containerForm.getModelObject().getField().getId() == null)
-		{
+		if (containerForm.getModelObject().getField().getId() == null) {
 			// Save the Field
 			iPhenotypicService.createField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was created successfully");
 			processErrors(target);
 		}
-		else
-		{
+		else {
 			// Update the Field
 			iPhenotypicService.updateField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was updated successfully");
@@ -200,58 +186,48 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		// TODO:(CE) To handle Business and System Exceptions here
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		FieldVO fieldVo = new FieldVO();
 		containerForm.setModelObject(fieldVo);
-		//onCancelPostProcess(target);
+		// onCancelPostProcess(target);
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
-	
-	public DropDownChoice<FieldType> getFieldTypeDdc()
-	{
+
+	public DropDownChoice<FieldType> getFieldTypeDdc() {
 		return fieldTypeDdc;
 	}
 
-	public void setFieldTypeDdc(DropDownChoice<FieldType> fieldTypeDdc)
-	{
+	public void setFieldTypeDdc(DropDownChoice<FieldType> fieldTypeDdc) {
 		this.fieldTypeDdc = fieldTypeDdc;
 	}
 
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
-		try
-		{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+		try {
 			iPhenotypicService.deleteField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
 		}
-		catch (ArkSystemException e)
-		{
+		catch (ArkSystemException e) {
 			this.error(e.getMessage());
 		}
-		catch (EntityCannotBeRemoved e)
-		{
+		catch (EntityCannotBeRemoved e) {
 			this.error(e.getMessage());
 		}
-		
+
 		// Display delete confirmation message
 		target.addComponent(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
@@ -267,16 +243,19 @@ public class DetailForm extends AbstractDetailForm<FieldVO>
 		editCancelProcess(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getField().getId() == null){
+		if (containerForm.getModelObject().getField().getId() == null) {
 			return true;
-		}else{
+		}
+		else {
 			return false;
 		}
-		
+
 	}
 }

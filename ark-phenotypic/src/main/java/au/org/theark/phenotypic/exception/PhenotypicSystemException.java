@@ -4,11 +4,12 @@ import au.org.theark.core.exception.ArkSystemException;
 
 @SuppressWarnings("serial")
 public class PhenotypicSystemException extends ArkSystemException {
-	
-	public PhenotypicSystemException(){
+
+	public PhenotypicSystemException() {
 		super();
 	}
-	public PhenotypicSystemException(String message){ 
+
+	public PhenotypicSystemException(String message) {
 		super(message);
 	}
 }

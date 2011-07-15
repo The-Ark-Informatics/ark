@@ -23,9 +23,8 @@ import au.org.theark.phenotypic.web.component.summaryModule.DetailPanel;
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends Form<PhenoCollectionVO>
-{
+@SuppressWarnings({ "serial", "unused" })
+public class DetailForm extends Form<PhenoCollectionVO> {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	phenotypicService;
 
@@ -37,7 +36,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	private ContainerForm		phenoCollectionContainerForm;
 
 	private int						mode;
-	
+
 	private AjaxButton			editButton;
 	private AjaxButton			editCancelButton;
 	private AjaxButton			deleteButton;
@@ -49,8 +48,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	 * 
 	 * @param id
 	 */
-	public DetailForm(String id)
-	{
+	public DetailForm(String id) {
 		super(id);
 	}
 
@@ -60,8 +58,7 @@ public class DetailForm extends Form<PhenoCollectionVO>
 	 * @param id
 	 */
 	public DetailForm(String id, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer)
-	{
+			WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer) {
 		super(id);
 		this.phenoCollectionContainerForm = containerForm;
 		this.resultListContainer = listContainer;
@@ -70,82 +67,66 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailFormContainer;
 
-		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null))
-		{
+		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null)) {
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onEdit(phenoCollectionContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
 
-		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null))
-		{
+		editCancelButton = new AjaxButton(au.org.theark.core.Constants.EDIT_CANCEL, new StringResourceModel("editCancelKey", this, null)) {
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onCancel(target);
 			}
 		};
 
-		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
+		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onCancel(target);
 			}
 		};
 
-		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
+		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(phenoCollectionContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
 
-		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null)) {
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onDelete(phenoCollectionContainerForm.getModelObject(), target);
 				target.addComponent(detailPanelContainer);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
 	}
 
-	public void initialiseForm()
-	{
+	public void initialiseForm() {
 		attachValidators();
 		addComponents();
 	}
 
-	private void attachValidators()
-	{
+	private void attachValidators() {
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		add(detailFormContainer);
 
 		// View has Edit and Cancel
@@ -162,78 +143,63 @@ public class DetailForm extends Form<PhenoCollectionVO>
 		add(editButtonContainer);
 	}
 
-	protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-	{
+	protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 
 	}
 
-	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-	{
+	protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 
 	}
 
-	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-	{
+	protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 
 	}
 
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 
 	}
 
-	public AjaxButton getEditButton()
-	{
+	public AjaxButton getEditButton() {
 		return editButton;
 	}
 
-	public void setEditButton(AjaxButton editButton)
-	{
+	public void setEditButton(AjaxButton editButton) {
 		this.editButton = editButton;
 	}
 
-	public AjaxButton getEditCancelButton()
-	{
+	public AjaxButton getEditCancelButton() {
 		return editCancelButton;
 	}
 
-	public void setEditCancelButton(AjaxButton editCancelButton)
-	{
+	public void setEditCancelButton(AjaxButton editCancelButton) {
 		this.editCancelButton = editCancelButton;
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
-	public AjaxButton getSaveButton()
-	{
+	public AjaxButton getSaveButton() {
 		return saveButton;
 	}
 
-	public void setSaveButton(AjaxButton saveButton)
-	{
+	public void setSaveButton(AjaxButton saveButton) {
 		this.saveButton = saveButton;
 	}
 
-	public AjaxButton getCancelButton()
-	{
+	public AjaxButton getCancelButton() {
 		return cancelButton;
 	}
 
-	public void setCancelButton(AjaxButton cancelButton)
-	{
+	public void setCancelButton(AjaxButton cancelButton) {
 		this.cancelButton = cancelButton;
 	}
 }

@@ -23,8 +23,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * 
  * @author cellis
  */
-public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
-{
+public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider {
 	/**
 	 * 
 	 */
@@ -39,8 +38,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	 * @param panelId
 	 *           The panel indentifier
 	 */
-	public PhenotypicTabProviderImpl(String panelId)
-	{
+	public PhenotypicTabProviderImpl(String panelId) {
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
@@ -50,8 +48,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	 * 
 	 * @return A {@link java.util.List List} of {@link org.apache.wicket.extensions.markup.html.tabs.ITab ITab}'s that represent the sub-menu
 	 */
-	public List<ITab> buildTabs()
-	{
+	public List<ITab> buildTabs() {
 		// Forms the Main Top level Tab
 		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 		moduleTabsList.add(iTab);
@@ -65,8 +62,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	 * @param arkContextPanelMarkup
 	 * @return A {@link java.util.List List} of {@link org.apache.wicket.extensions.markup.html.tabs.ITab ITab}'s that represent the sub-menu
 	 */
-	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup)
-	{
+	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup) {
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
 		// Forms the Main Top level Tab
@@ -76,27 +72,22 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 		return moduleTabsList;
 	}
 
-	public ITab createTab(final String tabName)
-	{
-		return new ArkMainTab(new Model<String>(tabName))
-		{
+	public ITab createTab(final String tabName) {
+		return new ArkMainTab(new Model<String>(tabName)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -9077903025658028710L;
 
 			@Override
-			public Panel getPanel(String pid)
-			{
+			public Panel getPanel(String pid) {
 				// The sub menu(s)
 				return new PhenotypicSubMenuTab(pid, arkContextPanelMarkup);
 			}
 
-			public boolean isAccessible()
-			{
+			public boolean isAccessible() {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null)
-				{
+				if (sessionStudyId == null) {
 					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
@@ -104,8 +95,7 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 					return true;
 			}
 
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 			}
 		};
@@ -115,16 +105,14 @@ public class PhenotypicTabProviderImpl extends Panel implements IMainTabProvider
 	 * @param log
 	 *           the log to set
 	 */
-	public static void setLog(Logger log)
-	{
+	public static void setLog(Logger log) {
 		PhenotypicTabProviderImpl.log = log;
 	}
 
 	/**
 	 * @return the log
 	 */
-	public static Logger getLog()
-	{
+	public static Logger getLog() {
 		return log;
 	}
 }

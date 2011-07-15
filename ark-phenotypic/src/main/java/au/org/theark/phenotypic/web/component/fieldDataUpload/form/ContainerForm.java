@@ -7,13 +7,13 @@ import au.org.theark.phenotypic.model.vo.UploadVO;
 
 /**
  * @author cellis
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<UploadVO>{
-	
-	public ContainerForm(String id, CompoundPropertyModel<UploadVO> model){
-		super(id,model);
+public class ContainerForm extends AbstractContainerForm<UploadVO> {
+
+	public ContainerForm(String id, CompoundPropertyModel<UploadVO> model) {
+		super(id, model);
 	}
 
 }

@@ -28,9 +28,8 @@ import au.org.theark.phenotypic.web.component.field.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unchecked" })
-public class SearchForm extends AbstractSearchForm<FieldVO>
-{
+@SuppressWarnings({ "serial", "unchecked" })
+public class SearchForm extends AbstractSearchForm<FieldVO> {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService					phenotypicService;
 
@@ -53,8 +52,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	 */
 	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, PageableListView<Field> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer)
-	{
+			WebMarkupContainer editButtonContainer) {
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -67,8 +65,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
-	private void initFieldTypeDdc()
-	{
+	private void initFieldTypeDdc() {
 		java.util.Collection<FieldType> fieldTypeCollection = phenotypicService.getFieldTypes();
 		CompoundPropertyModel<FieldVO> fieldCpm = cpmModel;
 		PropertyModel<Field> fieldPm = new PropertyModel<Field>(fieldCpm, au.org.theark.phenotypic.web.Constants.FIELD);
@@ -77,8 +74,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		fieldTypeDdc = new DropDownChoice<FieldType>(au.org.theark.phenotypic.web.Constants.FIELD_TYPE, fieldTypePm, (List) fieldTypeCollection, fieldTypeRenderer);
 	}
 
-	public void initialiseFieldForm()
-	{
+	public void initialiseFieldForm() {
 		fieldIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_ID);
 		fieldNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_NAME);
 		fieldDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_DESCRIPTION);
@@ -89,8 +85,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 		addFieldComponents();
 	}
 
-	private void addFieldComponents()
-	{
+	private void addFieldComponents() {
 		add(fieldIdTxtFld);
 		add(fieldNameTxtFld);
 		add(fieldTypeDdc);
@@ -101,8 +96,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	}
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
@@ -112,8 +106,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 
 		java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
 
-		if (fieldCollection != null && fieldCollection.size() == 0)
-		{
+		if (fieldCollection != null && fieldCollection.size() == 0) {
 			this.info("Fields with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
@@ -126,12 +119,11 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	// Reset button implemented in AbstractSearchForm
 
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// Due to ARK-108 :: No longer reset the VO onNew(..)
 		FieldVO fieldVo = getModelObject();
 		fieldVo.setMode(au.org.theark.core.Constants.MODE_NEW);
-		fieldVo.getField().setId(null);	//must ensure Id is blank onNew
+		fieldVo.getField().setId(null); // must ensure Id is blank onNew
 
 		// Set study for the new field
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -143,18 +135,17 @@ public class SearchForm extends AbstractSearchForm<FieldVO>
 	}
 
 	/**
-	 * @param detailPanel the detailPanel to set
+	 * @param detailPanel
+	 *           the detailPanel to set
 	 */
-	public void setDetailPanel(DetailPanel detailPanel)
-	{
+	public void setDetailPanel(DetailPanel detailPanel) {
 		this.detailPanel = detailPanel;
 	}
 
 	/**
 	 * @return the detailPanel
 	 */
-	public DetailPanel getDetailPanel()
-	{
+	public DetailPanel getDetailPanel() {
 		return detailPanel;
 	}
 }

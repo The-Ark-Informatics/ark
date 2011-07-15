@@ -20,27 +20,25 @@ import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
-public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoCollectionVO>
-{
-	private static final long					serialVersionUID	= 1L;
+public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoCollectionVO> {
+	private static final long						serialVersionUID	= 1L;
 
 	// Panels
-	private SearchPanel									searchComponentPanel;
+	private SearchPanel								searchComponentPanel;
 	private SearchResultListPanel					searchResultPanel;
-	private DetailPanel									detailPanel;
-	private PageableListView<PhenoCollection>			listView;
-	private WebMarkupContainer arkContextMarkup;
+	private DetailPanel								detailPanel;
+	private PageableListView<PhenoCollection>	listView;
+	private WebMarkupContainer						arkContextMarkup;
 
-	private ContainerForm						containerForm;
+	private ContainerForm							containerForm;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					iPhenotypicService;
+	private IPhenotypicService						iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService						iArkCommonService;
 
-	public PhenoCollectionContainerPanel(String id)
-	{
+	public PhenoCollectionContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -57,9 +55,8 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 		add(containerForm);
 	}
-	
-	public PhenoCollectionContainerPanel(String id, WebMarkupContainer arkContextMarkup)
-	{
+
+	public PhenoCollectionContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -78,33 +75,26 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 		add(containerForm);
 	}
 
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
-				viewButtonContainer,
-				editButtonContainer,
-				detailPanelFormContainer,
-				arkContextMarkup);
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
+				editButtonContainer, detailPanelFormContainer, arkContextMarkup);
 
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Get a collection of collections for the study in context by default
 				Collection<PhenoCollection> phenoCollectionCol = new ArrayList<PhenoCollection>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-				if (sessionStudyId != null && sessionStudyId > 0)
-				{
+				if (sessionStudyId != null && sessionStudyId > 0) {
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					containerForm.getModelObject().getPhenoCollection().setStudy(study);
 					phenoCollectionCol = iPhenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
 				}
-				
+
 				listView.removeAll();
 				containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 				return containerForm.getModelObject().getPhenoCollectionCollection();
@@ -120,31 +110,20 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 		return searchResultPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
-		detailPanel = new DetailPanel("detailPanel", 
-												searchResultPanelContainer, 
-												feedBackPanel, 
-												detailPanelContainer, 
-												searchPanelContainer, 
-												containerForm,
-												viewButtonContainer,
-												editButtonContainer,
-												detailPanelFormContainer,
-												arkContextMarkup);
+	protected WebMarkupContainer initialiseDetailPanel() {
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
+				detailPanelFormContainer, arkContextMarkup);
 		detailPanel.initialisePanel();
 		detailPanelContainer.add(detailPanel);
 		return detailPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get a collection of collections for the study in context by default
 		Collection<PhenoCollection> phenoCollectionCol = new ArrayList<PhenoCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			containerForm.getModelObject().getPhenoCollection().setStudy(study);
 			phenoCollectionCol = iPhenotypicService.searchPhenotypicCollection(containerForm.getModelObject().getPhenoCollection());
@@ -152,20 +131,10 @@ public class PhenoCollectionContainerPanel extends AbstractContainerPanel<PhenoC
 
 		containerForm.getModelObject().setPhenoCollectionCollection(phenoCollectionCol);
 
-		searchComponentPanel = new SearchPanel("searchPanel", 
-															feedBackPanel, 
-															searchPanelContainer, 
-															listView, 
-															searchResultPanelContainer, 
-															detailPanelContainer, 
-															detailPanel, 
-															containerForm, 
-															viewButtonContainer, 
-															editButtonContainer, 
-															detailPanelFormContainer,
-															arkContextMarkup);
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer, arkContextMarkup);
 		searchComponentPanel.initialisePanel();
-		
+
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
 	}

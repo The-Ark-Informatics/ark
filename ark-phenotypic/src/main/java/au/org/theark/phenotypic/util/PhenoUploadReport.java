@@ -8,64 +8,50 @@ import org.hibernate.Hibernate;
 
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 
-public class PhenoUploadReport
-{
-	private StringBuffer report = new StringBuffer();
-	private Date		dateNow;
+public class PhenoUploadReport {
+	private StringBuffer	report	= new StringBuffer();
+	private Date			dateNow;
 
-	public PhenoUploadReport(){
+	public PhenoUploadReport() {
 		/*
 		 * Example report:
 		 * 
-		 * **********************************************
-			the-ark.org.au Upload Report
-			2011-01-14 13:52:01
-			**********************************************
-			UploadID: 15
-			Study: ATR-1
-			UserID: arksadmin@uwa.edu.au
-			Filename: test.csv
-			File Format: CSV
-			Delimiter Type: COMMA
-		 * 
+		 * ********************************************** the-ark.org.au Upload Report 2011-01-14 13:52:01*********************************************
+		 * UploadID: 15 Study: ATR-1 UserID: arksadmin@uwa.edu.au Filename: test.csv File Format: CSV Delimiter Type: COMMA
 		 */
-		
+
 		dateNow = new Date(System.currentTimeMillis());
 		this.appendAndNewLine("************************************************************");
 		this.appendAndNewLine("the-ark.org.au Upload Report");
 		this.appendAndNewLine(dateNow.toString());
 		this.appendAndNewLine("************************************************************");
 	}
-	
+
 	/**
-	 * @param report the report to set
+	 * @param report
+	 *           the report to set
 	 */
-	public void setReport(StringBuffer report)
-	{
+	public void setReport(StringBuffer report) {
 		this.report = report;
 	}
 
 	/**
 	 * @return the report
 	 */
-	public StringBuffer getReport()
-	{
+	public StringBuffer getReport() {
 		return report;
 	}
-	
-	public void append(String string)
-	{
+
+	public void append(String string) {
 		report.append(string);
 	}
-	
-	public void appendAndNewLine(String string)
-	{
+
+	public void appendAndNewLine(String string) {
 		report.append(string);
 		report.append("\n");
 	}
-	
-	public void appendDetails(PhenoUpload phenoUpload)
-	{
+
+	public void appendDetails(PhenoUpload phenoUpload) {
 		append("Study: ");
 		appendAndNewLine(phenoUpload.getStudy().getName());
 		append("UserID: ");
@@ -77,15 +63,13 @@ public class PhenoUploadReport
 		append("Delimiter Type: ");
 		appendAndNewLine(phenoUpload.getDelimiterType().getName());
 	}
-	
-	public Blob getReportAsBlob()
-	{
+
+	public Blob getReportAsBlob() {
 		Blob reportAsBlob = Hibernate.createBlob(this.getInputStream());
 		return reportAsBlob;
 	}
 
-	private byte[] getInputStream()
-	{
+	private byte[] getInputStream() {
 		return report.toString().getBytes();
 	};
 }

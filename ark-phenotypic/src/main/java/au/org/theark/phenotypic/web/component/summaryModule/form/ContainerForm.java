@@ -7,13 +7,13 @@ import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<PhenoCollectionVO>{
-	
-	public ContainerForm(String id, CompoundPropertyModel<PhenoCollectionVO> model){
-		super(id,model);
+public class ContainerForm extends AbstractContainerForm<PhenoCollectionVO> {
+
+	public ContainerForm(String id, CompoundPropertyModel<PhenoCollectionVO> model) {
+		super(id, model);
 	}
 
 }

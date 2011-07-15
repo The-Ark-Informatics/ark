@@ -16,28 +16,23 @@ import au.org.theark.phenotypic.web.component.summaryModule.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.summaryModule.form.DetailForm;
 
 @SuppressWarnings("serial")
-public class DetailPanel extends Panel
-{
+public class DetailPanel extends Panel {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					iPhenotypicService;
+	private IPhenotypicService	iPhenotypicService;
 
-	private DetailForm							detailForm;
-	private FeedbackPanel						feedBackPanel;
-	private WebMarkupContainer					listContainer;
-	private WebMarkupContainer					detailsContainer;
-	private WebMarkupContainer					searchPanelContainer;
-	private ContainerForm						containerForm;
-	private WebMarkupContainer 				detailPanelFormContainer;
-	private WebMarkupContainer 				viewButtonContainer;
-	private WebMarkupContainer 				editButtonContainer;
-	private ModalWindow 					selectModalWindow;
+	private DetailForm			detailForm;
+	private FeedbackPanel		feedBackPanel;
+	private WebMarkupContainer	listContainer;
+	private WebMarkupContainer	detailsContainer;
+	private WebMarkupContainer	searchPanelContainer;
+	private ContainerForm		containerForm;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private ModalWindow			selectModalWindow;
 
 	public DetailPanel(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, WebMarkupContainer searchPanelContainer,
-			ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailPanelFormContainer)
-	{
+			ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.listContainer = listContainer;
@@ -49,39 +44,33 @@ public class DetailPanel extends Panel
 		this.detailPanelFormContainer = detailPanelFormContainer;
 	}
 
-	public void initialisePanel()
-	{
-		detailForm = new DetailForm("detailForm", this, listContainer, detailsContainer, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer)
-		{
-			protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-			{
-				//TODO Implement try catch for exception handling
+	public void initialisePanel() {
+		detailForm = new DetailForm("detailForm", this, listContainer, detailsContainer, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer) {
+			protected void onSave(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
+				// TODO Implement try catch for exception handling
 				// try {
-				if (collectionVo.getPhenoCollection().getId() == null)
-				{
+				if (collectionVo.getPhenoCollection().getId() == null) {
 					// Save the Collection
 					iPhenotypicService.createCollection(collectionVo.getPhenoCollection());
 					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was created successfully");
 					processFeedback(target);
 				}
-				else
-				{
+				else {
 					// Update the Collection
 					iPhenotypicService.updateCollection(collectionVo.getPhenoCollection());
 					this.info("Collection " + collectionVo.getPhenoCollection().getName() + " was updated successfully");
 					processFeedback(target);
 				}
-				
+
 				postSaveUpdate(target);
 
-				//TODO Implement Exceptions in PhentoypicService
-				//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-				//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-				//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+				// TODO Implement Exceptions in PhentoypicService
+				// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+				// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+				// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
 			}
 
-			protected void onCancel(AjaxRequestTarget target)
-			{
+			protected void onCancel(AjaxRequestTarget target) {
 				PhenoCollectionVO collectionVo = new PhenoCollectionVO();
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
@@ -90,35 +79,31 @@ public class DetailPanel extends Panel
 				target.addComponent(feedBackPanel);
 				target.addComponent(detailsContainer);
 			}
-			
-			protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-			{
+
+			protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 				selectModalWindow.show(target);
 				target.addComponent(selectModalWindow);
 			}
-			
+
 			// On click of Edit button, allow form to be editable
-			protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target)
-			{
+			protected void onEdit(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 				detailPanelFormContainer.setEnabled(true);
 				editButtonContainer.setVisible(true);
 				viewButtonContainer.setVisible(false);
 				detailForm.getDeleteButton().setEnabled(true);
 				detailForm.getDeleteButton().setVisible(true);
-				
+
 				target.addComponent(feedBackPanel);
 				target.addComponent(detailPanelFormContainer);
 				target.addComponent(viewButtonContainer);
 				target.addComponent(editButtonContainer);
 			}
 
-			protected void processFeedback(AjaxRequestTarget target)
-			{
+			protected void processFeedback(AjaxRequestTarget target) {
 				target.addComponent(feedBackPanel);
 			}
-			
-			protected void processErrors(AjaxRequestTarget target)
-			{
+
+			protected void processErrors(AjaxRequestTarget target) {
 				target.addComponent(feedBackPanel);
 			}
 		};
@@ -127,85 +112,80 @@ public class DetailPanel extends Panel
 		detailPanelFormContainer.add(initialiseModalWindow());
 		add(detailForm);
 	}
-	
-	private void postSaveUpdate(AjaxRequestTarget target){
+
+	private void postSaveUpdate(AjaxRequestTarget target) {
 		// Button containers
 		// View Collection, thus view container visible
 		viewButtonContainer.setVisible(true);
 		editButtonContainer.setVisible(false);
 		detailPanelFormContainer.setEnabled(false);
-		
+
 		target.addComponent(feedBackPanel);
 		target.addComponent(viewButtonContainer);
 		target.addComponent(editButtonContainer);
 	}
-	
-	private ModalWindow initialiseModalWindow(){
-	   // The ModalWindow, showing some choices for the user to select.
-		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow"){
 
-	      protected void onSelect(AjaxRequestTarget target, String selection) {
-	      	try
-				{
+	private ModalWindow initialiseModalWindow() {
+		// The ModalWindow, showing some choices for the user to select.
+		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow") {
+
+			protected void onSelect(AjaxRequestTarget target, String selection) {
+				try {
 					iPhenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
 					this.info("Collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
 				}
-				catch (ArkSystemException e)
-				{
+				catch (ArkSystemException e) {
 					this.error(e.getMessage());
 				}
-				catch (EntityCannotBeRemoved e)
-				{
+				catch (EntityCannotBeRemoved e) {
 					this.error(e.getMessage());
 				}
-	   		
-	   		// Display delete confirmation message
-	   		target.addComponent(feedBackPanel);
-	   		
-	   		//TODO Implement Exceptions in PhentoypicService
-				//  } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-				//  study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-				//  this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-	         
-	   		// Close the confirm modal window
-	   		close(target);
-	         
+
+				// Display delete confirmation message
+				target.addComponent(feedBackPanel);
+
+				// TODO Implement Exceptions in PhentoypicService
+				// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
+				// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
+				// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
+
+				// Close the confirm modal window
+				close(target);
+
 				// Move focus back to Search form
-	   		PhenoCollectionVO collectionVo = new PhenoCollectionVO();
+				PhenoCollectionVO collectionVo = new PhenoCollectionVO();
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);
 				target.addComponent(searchPanelContainer);
 				target.addComponent(detailsContainer);
-	      }
+			}
 
-	      protected void onCancel(AjaxRequestTarget target) {
-	         // Handle Cancel action
-	      	// Close the confirm modal window
-	         close(target);
-	         
-	         // Go back into Edit mode (and remove feedback, if straight after "New")
-	         detailPanelFormContainer.setEnabled(true);
+			protected void onCancel(AjaxRequestTarget target) {
+				// Handle Cancel action
+				// Close the confirm modal window
+				close(target);
+
+				// Go back into Edit mode (and remove feedback, if straight after "New")
+				detailPanelFormContainer.setEnabled(true);
 				editButtonContainer.setVisible(true);
 				viewButtonContainer.setVisible(false);
 				detailForm.getDeleteButton().setEnabled(true);
 				detailForm.getDeleteButton().setVisible(true);
-				
+
 				target.addComponent(detailPanelFormContainer);
 				target.addComponent(viewButtonContainer);
 				target.addComponent(editButtonContainer);
-	      }
-	  };
-	  return selectModalWindow;
+			}
+		};
+		return selectModalWindow;
 	}
-	
-	public DetailForm getDetailForm()
-	{
+
+	public DetailForm getDetailForm() {
 		return detailForm;
 	}
 
-	public void setDetailForm(DetailForm detailsForm)
-	{
+	public void setDetailForm(DetailForm detailsForm) {
 		this.detailForm = detailsForm;
 	}
 }

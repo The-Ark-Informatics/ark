@@ -19,65 +19,58 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
 /**
  * The 4th step of this wizard.
  */
-public class FieldDataUploadStep4 extends AbstractWizardStepPanel
-{
+public class FieldDataUploadStep4 extends AbstractWizardStepPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2788948560672351760L;
-	private Form<UploadVO>						containerForm;
-	private WizardForm wizardForm;
+	private static final long	serialVersionUID	= -2788948560672351760L;
+	private Form<UploadVO>		containerForm;
+	private WizardForm			wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService iPhenotypicService;
-	
+	private IPhenotypicService	iPhenotypicService;
+
 	/**
 	 * Construct.
 	 */
-	public FieldDataUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
-	{
+	public FieldDataUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
 		initialiseDetailForm();
 	}
-	
-	private void initialiseDetailForm() 
-	{
+
+	private void initialiseDetailForm() {
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 	}
-	
+
 	@Override
-	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
-	
+
 	@Override
-	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		// Filename seems to be lost from model when moving between steps in wizard
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-		
+
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
 		StringBuffer uploadReport = null;
-		
+
 		// Perform actual upload of data
 		uploadReport = iPhenotypicService.uploadAndReportPhenotypicDataFile(containerForm.getModelObject());
-		
+
 		// Update the report
 		updateUploadReport(uploadReport.toString());
-		
+
 		// Save all objects to the database
 		save();
 	}
-	
-	public void updateUploadReport(String uploadReport)
-	{
+
+	public void updateUploadReport(String uploadReport) {
 		// Set Upload report
 		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
@@ -87,9 +80,8 @@ public class FieldDataUploadStep4 extends AbstractWizardStepPanel
 		Blob uploadReportBlob = Hibernate.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 	}
-	
-	private void save()
-	{
+
+	private void save() {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setUploadType("FIELD_DATA");
 		iPhenotypicService.createUpload(containerForm.getModelObject());

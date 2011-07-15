@@ -26,9 +26,8 @@ import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPa
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
 import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
 
-@SuppressWarnings( { "serial", "unused" })
-public class PhenotypicSubMenuTab extends AbstractArkTabPanel
-{
+@SuppressWarnings({ "serial", "unused" })
+public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -38,24 +37,19 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel
 	private WebMarkupContainer			arkContextMarkup;
 	private List<ITab>					moduleSubTabsList	= new ArrayList<ITab>();
 
-	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup)
-	{
+	public PhenotypicSubMenuTab(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		buildTabs(arkContextMarkup);
 	}
 
-	public void buildTabs(final WebMarkupContainer arkContextMarkup)
-	{
+	public void buildTabs(final WebMarkupContainer arkContextMarkup) {
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC);
 		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);
-		for (final ArkFunction menuArkFunction : arkFunctionList)
-		{
-			AbstractTab tab = new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null))
-			{
+		for (final ArkFunction menuArkFunction : arkFunctionList) {
+			AbstractTab tab = new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null)) {
 				@Override
-				public Panel getPanel(final String panelId)
-				{
+				public Panel getPanel(final String panelId) {
 					return panelToReturn(menuArkFunction, panelId);
 				}
 			};
@@ -66,35 +60,28 @@ public class PhenotypicSubMenuTab extends AbstractArkTabPanel
 		add(moduleTabbedPanel);
 	}
 
-	protected Panel panelToReturn(final ArkFunction arkFunction, String panelId)
-	{
+	protected Panel panelToReturn(final ArkFunction arkFunction, String panelId) {
 		Panel panelToReturn = null;
 
 		// Clear cache to determine permissions
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_PHENOTYPIC, arkFunction);
 
-		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_SUMMARY))
-		{
+		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_SUMMARY)) {
 			panelToReturn = new SummaryContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY))
-		{
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY)) {
 			panelToReturn = new FieldContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD))
-		{
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_DATA_DICTIONARY_UPLOAD)) {
 			panelToReturn = new FieldUploadContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION))
-		{
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHENO_COLLECTION)) {
 			panelToReturn = new PhenoCollectionContainerPanel(panelId, arkContextMarkup);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA))
-		{
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA)) {
 			panelToReturn = new FieldDataContainerPanel(panelId);
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD))
-		{
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_FIELD_DATA_UPLOAD)) {
 			panelToReturn = new FieldDataUploadContainerPanel(panelId);
 		}
 

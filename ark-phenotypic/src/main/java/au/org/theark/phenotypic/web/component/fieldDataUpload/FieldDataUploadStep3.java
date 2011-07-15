@@ -29,101 +29,89 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
 /**
  * The first step of this wizard.
  */
-public class FieldDataUploadStep3 extends AbstractWizardStepPanel
-{
+public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 5099768179441679542L;
-	static Logger	log	= LoggerFactory.getLogger(FieldDataUploadStep3.class);
-	private Form<UploadVO>						containerForm;
-	private String	validationMessage;
-	public java.util.Collection<String> validationMessages = null;
-	private WizardForm wizardForm;
+	private static final long				serialVersionUID		= 5099768179441679542L;
+	static Logger								log						= LoggerFactory.getLogger(FieldDataUploadStep3.class);
+	private Form<UploadVO>					containerForm;
+	private String								validationMessage;
+	public java.util.Collection<String>	validationMessages	= null;
+	private WizardForm						wizardForm;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService				iArkCommonService;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService iPhenotypicService;
-	private WebMarkupContainer 			overrideDataValidationContainer;
+	private IPhenotypicService				iPhenotypicService;
+	private WebMarkupContainer				overrideDataValidationContainer;
 	private CheckBox							overrideDataValidationChkBox;
-	private WebMarkupContainer 			updateExistingDataContainer;
+	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
-	private ArkDownloadAjaxButton downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
-	
+	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
+
 	/**
 	 * Construct.
 	 */
-	public FieldDataUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
-	{
-		super(id, "Step 3/5: Data Validation", 
-				"The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.<br>" +
-				"If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control<br>" +
-				"If new fields in the file are not in the current collection, they will be added accordingly");
+	public FieldDataUploadStep3(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
+		super(id, "Step 3/5: Data Validation", "The data in the file is now validated, correct any errors and try again, otherwise, click Next to continue.<br>"
+				+ "If data fails validation, but you still wish to import, you may override the validation. This data will be flagged as failed quality control<br>"
+				+ "If new fields in the file are not in the current collection, they will be added accordingly");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
 		initialiseDetailForm();
 	}
-	
+
 	@SuppressWarnings("serial")
-	private void initialiseDetailForm() 
-	{
+	private void initialiseDetailForm() {
 		setValidationMessage(containerForm.getModelObject().getValidationMessagesAsString());
 		addOrReplace(new MultiLineLabel("multiLineLabel", getValidationMessage()));
 		add(downloadValMsgButton);
-		
+
 		updateExistingDataContainer = new WebMarkupContainer("updateExistingDataContainer");
 		updateExistingDataContainer.setOutputMarkupId(true);
 		updateChkBox = new CheckBox("updateChkBox");
 		updateChkBox.setVisible(true);
-		
+
 		overrideDataValidationContainer = new WebMarkupContainer("overrideDataValidationContainer");
 		overrideDataValidationContainer.setOutputMarkupId(true);
 		overrideDataValidationChkBox = new CheckBox("overrideDataValidationChkBox");
 		overrideDataValidationChkBox.setOutputMarkupId(false);
 		overrideDataValidationChkBox.setVisible(true);
-		
+
 		containerForm.getModelObject().setOverrideDataValidationChkBox(false);
 		containerForm.getModelObject().setUpdateChkBox(false);
 
-		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		updateChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -4514605801401294450L;
 
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox())
-				{
+			protected void onUpdate(AjaxRequestTarget target) {
+				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox()) {
 					wizardForm.getNextButton().setEnabled(true);
 				}
-				else
-				{
+				else {
 					wizardForm.getNextButton().setEnabled(false);
 				}
 				target.addComponent(wizardForm.getWizardButtonContainer());
 			}
 		});
-		
-		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+
+		overrideDataValidationChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox())
-				{
+			protected void onUpdate(AjaxRequestTarget target) {
+				if (containerForm.getModelObject().getOverrideDataValidationChkBox() && containerForm.getModelObject().getUpdateChkBox()) {
 					wizardForm.getNextButton().setEnabled(true);
 				}
-				else
-				{
+				else {
 					wizardForm.getNextButton().setEnabled(false);
 				}
 				target.addComponent(wizardForm.getWizardButtonContainer());
 			}
 		});
-		
+
 		overrideDataValidationContainer.add(overrideDataValidationChkBox);
 		add(overrideDataValidationContainer);
 
@@ -132,64 +120,57 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel
 	}
 
 	/**
-	 * @param validationMessages the validationMessages to set
+	 * @param validationMessages
+	 *           the validationMessages to set
 	 */
-	public void setValidationMessage(String validationMessage)
-	{
+	public void setValidationMessage(String validationMessage) {
 		this.validationMessage = validationMessage;
 	}
 
 	/**
 	 * @return the validationMessages
 	 */
-	public String getValidationMessage()
-	{
+	public String getValidationMessage() {
 		return validationMessage;
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) 
-	{
-		
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
+
 	}
-	
+
 	@Override
-	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		if (containerForm.getModelObject().getOverrideDataValidationChkBox())
 			containerForm.getModelObject().setValidationMessages(null);
 	}
-	
+
 	@Override
-	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 		addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-		
-		if(validationMessage != null && validationMessage.length() > 0)
-		{
+
+		if (validationMessage != null && validationMessage.length() > 0) {
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
 		}
-		else
-		{
+		else {
 			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
-			String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+			String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 			char delimChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
 			InputStream inputStream;
-			try
-			{
+			try {
 				PhenotypicValidator phenotypicValidator = new PhenotypicValidator(iArkCommonService, iPhenotypicService, containerForm.getModelObject());
 				inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 				validationMessages = phenotypicValidator.validateMatrixPhenoFileData(inputStream, fileFormat, delimChar);
-			
+
 				HashSet<Integer> insertRows = new HashSet<Integer>();
 				HashSet<Integer> updateRows = new HashSet<Integer>();
 				HashSet<ArkGridCell> insertCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> updateCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> warningCells = new HashSet<ArkGridCell>();
 				HashSet<ArkGridCell> errorCells = new HashSet<ArkGridCell>();
-				
+
 				insertRows = phenotypicValidator.getInsertRows();
 				updateRows = phenotypicValidator.getUpdateRows();
 				insertCells = phenotypicValidator.getInsertCells();
@@ -197,34 +178,32 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel
 				warningCells = phenotypicValidator.getWarningCells();
 				errorCells = phenotypicValidator.getErrorCells();
 				inputStream.reset();
-				
+
 				// Show file data (and key reference)
-				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows, updateRows, insertCells, updateCells, warningCells, errorCells);
+				ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, containerForm.getModelObject().getFileUpload(), insertRows,
+						updateRows, insertCells, updateCells, warningCells, errorCells);
 				arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 				arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer().setVisible(true);
 				form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-				
+
 				// Repaint
 				target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
 				target.addComponent(form.getWizardPanelFormContainer());
-				
-				if(updateCells.isEmpty())
-				{
+
+				if (updateCells.isEmpty()) {
 					containerForm.getModelObject().setUpdateChkBox(true);
 					updateExistingDataContainer.setVisible(false);
 					target.addComponent(updateExistingDataContainer);
 				}
-				
-				if(warningCells.isEmpty())
-				{
+
+				if (warningCells.isEmpty()) {
 					containerForm.getModelObject().setOverrideDataValidationChkBox(true);
 					overrideDataValidationContainer.setVisible(false);
 					target.addComponent(overrideDataValidationContainer);
 				}
-				
-				if(!errorCells.isEmpty())
-				{
+
+				if (!errorCells.isEmpty()) {
 					overrideDataValidationContainer.setVisible(false);
 					target.addComponent(overrideDataValidationContainer);
 					updateExistingDataContainer.setVisible(false);
@@ -232,17 +211,17 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel
 					form.getNextButton().setEnabled(false);
 					target.addComponent(form.getWizardButtonContainer());
 				}
-			} catch (IOException e1){
+			}
+			catch (IOException e1) {
 				validationMessage = "Error attempting to display the file. Please check the file and try again.";
 				addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			}
-			
+
 			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
-			
-			if(validationMessage != null && validationMessage.length() > 0)
-			{
+
+			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.addComponent(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
@@ -253,44 +232,40 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel
 	}
 
 	/**
-	 * @param updateChkBox the updateChkBox to set
+	 * @param updateChkBox
+	 *           the updateChkBox to set
 	 */
-	public void setUpdateChkBox(CheckBox updateChkBox)
-	{
+	public void setUpdateChkBox(CheckBox updateChkBox) {
 		this.updateChkBox = updateChkBox;
 	}
 
 	/**
 	 * @return the updateChkBox
 	 */
-	public CheckBox getUpdateChkBox()
-	{
+	public CheckBox getUpdateChkBox() {
 		return updateChkBox;
 	}
 
-	public WebMarkupContainer getUpdateExistingDataContainer()
-	{
+	public WebMarkupContainer getUpdateExistingDataContainer() {
 		return updateExistingDataContainer;
 	}
 
-	public void setUpdateExistingDataContainer(WebMarkupContainer updateExistingDataContainer)
-	{
+	public void setUpdateExistingDataContainer(WebMarkupContainer updateExistingDataContainer) {
 		this.updateExistingDataContainer = updateExistingDataContainer;
 	}
 
 	/**
-	 * @param overrideDataValidationContainer the overrideDataValidationContainer to set
+	 * @param overrideDataValidationContainer
+	 *           the overrideDataValidationContainer to set
 	 */
-	public void setOverrideDataValidationContainer(WebMarkupContainer overrideDataValidationContainer)
-	{
+	public void setOverrideDataValidationContainer(WebMarkupContainer overrideDataValidationContainer) {
 		this.overrideDataValidationContainer = overrideDataValidationContainer;
 	}
 
 	/**
 	 * @return the overrideDataValidationContainer
 	 */
-	public WebMarkupContainer getOverrideDataValidationContainer()
-	{
+	public WebMarkupContainer getOverrideDataValidationContainer() {
 		return overrideDataValidationContainer;
 	}
 }

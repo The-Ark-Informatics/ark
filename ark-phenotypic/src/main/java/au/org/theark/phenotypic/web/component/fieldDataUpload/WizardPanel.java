@@ -8,8 +8,7 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm
 import au.org.theark.phenotypic.web.component.fieldDataUpload.form.WizardForm;
 
 @SuppressWarnings("serial")
-public class WizardPanel extends Panel
-{
+public class WizardPanel extends Panel {
 	private WizardForm				wizardForm;
 	private FeedbackPanel			feedBackPanel;
 	private WebMarkupContainer		listContainer;
@@ -20,14 +19,8 @@ public class WizardPanel extends Panel
 	private WebMarkupContainer		wizardButtonContainer;
 	private ContainerForm			containerForm;
 
-	public WizardPanel(String id, 
-							final WebMarkupContainer listContainer, 
-							FeedbackPanel feedBackPanel, 
-							WebMarkupContainer wizardPanelContainer, 
-							WebMarkupContainer searchPanelContainer,
-							WebMarkupContainer wizardPanelFormContainer,
-							ContainerForm containerForm)
-	{
+	public WizardPanel(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer wizardPanelContainer, WebMarkupContainer searchPanelContainer,
+			WebMarkupContainer wizardPanelFormContainer, ContainerForm containerForm) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.listContainer = listContainer;
@@ -38,30 +31,19 @@ public class WizardPanel extends Panel
 		this.containerForm = containerForm;
 	}
 
-	public void initialisePanel()
-	{
-		wizardForm = new WizardForm("wizardForm", 
-											feedBackPanel, 
-											this, 
-											listContainer, 
-											wizardPanelContainer, 
-											containerForm, 
-											wizardButtonContainer, 
-											wizardPanelFormContainer,
-											searchPanelContainer);
+	public void initialisePanel() {
+		wizardForm = new WizardForm("wizardForm", feedBackPanel, this, listContainer, wizardPanelContainer, containerForm, wizardButtonContainer, wizardPanelFormContainer, searchPanelContainer);
 		wizardForm.initialiseDetailForm();
 		add(wizardForm);
 
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public WizardForm getWizardForm()
-	{
+	public WizardForm getWizardForm() {
 		return wizardForm;
 	}
 
-	public void setWizardForm(WizardForm wizardForm)
-	{
+	public void setWizardForm(WizardForm wizardForm) {
 		this.wizardForm = wizardForm;
 	}
 }

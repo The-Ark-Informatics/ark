@@ -19,32 +19,22 @@ import au.org.theark.phenotypic.web.component.field.form.SearchForm;
  * 
  */
 @SuppressWarnings("serial")
-public class SearchPanel extends Panel
-{
+public class SearchPanel extends Panel {
 	private FeedbackPanel				feedBackPanel;
 	private WebMarkupContainer			searchMarkupContainer;
 	private WebMarkupContainer			listContainer;
 	private WebMarkupContainer			detailContainer;
 	private PageableListView<Field>	listView;
 	private ContainerForm				containerForm;
-	private DetailPanel							detailPanel;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailPanelFormContainer;
+	private DetailPanel					detailPanel;
+	private WebMarkupContainer			viewButtonContainer;
+	private WebMarkupContainer			editButtonContainer;
+	private WebMarkupContainer			detailPanelFormContainer;
 
 	/* Constructor */
-	public SearchPanel(	String id, 
-					FeedbackPanel feedBackPanel, 
-					WebMarkupContainer searchMarkupContainer, 
-					PageableListView<Field> listView, 
-					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailPanelContainer, 
-					DetailPanel detail, 
-					ContainerForm containerForm,
-					WebMarkupContainer viewButtonContainer,
-					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer)
-	{
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<Field> listView, WebMarkupContainer resultListContainer,
+			WebMarkupContainer detailPanelContainer, DetailPanel detail, ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
+			WebMarkupContainer detailPanelFormContainer) {
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
@@ -58,23 +48,11 @@ public class SearchPanel extends Panel
 		listContainer = resultListContainer;
 	}
 
+	public void initialisePanel() {
 
-	public void initialisePanel()
-	{
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<FieldVO>) containerForm.getModel(), listView, feedBackPanel, detailPanel, listContainer,
+				searchMarkupContainer, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer);
 
-		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
-												(CompoundPropertyModel<FieldVO>) containerForm.getModel(),
-												listView,
-												feedBackPanel,
-												detailPanel,
-												listContainer,
-												searchMarkupContainer,
-												detailContainer,
-												detailPanelFormContainer,
-												viewButtonContainer,
-												editButtonContainer
-												);
-		
 		add(searchForm);
 	}
 }

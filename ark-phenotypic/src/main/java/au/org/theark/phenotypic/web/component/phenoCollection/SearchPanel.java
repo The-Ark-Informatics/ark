@@ -16,34 +16,23 @@ import au.org.theark.phenotypic.web.component.phenoCollection.form.SearchForm;
  * 
  */
 @SuppressWarnings("serial")
-public class SearchPanel extends Panel
-{
-	private FeedbackPanel				feedBackPanel;
-	private WebMarkupContainer			searchMarkupContainer;
-	private WebMarkupContainer			listContainer;
-	private WebMarkupContainer			detailContainer;
+public class SearchPanel extends Panel {
+	private FeedbackPanel							feedBackPanel;
+	private WebMarkupContainer						searchMarkupContainer;
+	private WebMarkupContainer						listContainer;
+	private WebMarkupContainer						detailContainer;
 	private PageableListView<PhenoCollection>	listView;
-	private ContainerForm				containerForm;
-	private DetailPanel							detailPanel;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailPanelFormContainer;
-	private WebMarkupContainer arkContextMarkup;
+	private ContainerForm							containerForm;
+	private DetailPanel								detailPanel;
+	private WebMarkupContainer						viewButtonContainer;
+	private WebMarkupContainer						editButtonContainer;
+	private WebMarkupContainer						detailPanelFormContainer;
+	private WebMarkupContainer						arkContextMarkup;
 
 	/* Constructor */
-	public SearchPanel(	String id, 
-					FeedbackPanel feedBackPanel, 
-					WebMarkupContainer searchMarkupContainer, 
-					PageableListView<PhenoCollection> listView, 
-					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailPanelContainer, 
-					DetailPanel detail, 
-					ContainerForm containerForm,
-					WebMarkupContainer viewButtonContainer,
-					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer,
-					WebMarkupContainer arkContextMarkup)
-	{
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<PhenoCollection> listView, WebMarkupContainer resultListContainer,
+			WebMarkupContainer detailPanelContainer, DetailPanel detail, ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
+			WebMarkupContainer detailPanelFormContainer, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
@@ -58,23 +47,10 @@ public class SearchPanel extends Panel
 		listContainer = resultListContainer;
 	}
 
+	public void initialisePanel() {
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<PhenoCollectionVO>) containerForm.getModel(), listView, feedBackPanel, detailPanel,
+				listContainer, searchMarkupContainer, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, arkContextMarkup);
 
-	public void initialisePanel()
-	{
-		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
-												(CompoundPropertyModel<PhenoCollectionVO>) containerForm.getModel(),
-												listView,
-												feedBackPanel,
-												detailPanel,
-												listContainer,
-												searchMarkupContainer,
-												detailContainer,
-												detailPanelFormContainer,
-												viewButtonContainer,
-												editButtonContainer,
-												arkContextMarkup
-												);
-		
 		add(searchForm);
 	}
 }

@@ -20,26 +20,24 @@ import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
-public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
-{
-	private static final long					serialVersionUID	= 1L;
+public class FieldContainerPanel extends AbstractContainerPanel<FieldVO> {
+	private static final long			serialVersionUID	= 1L;
 
 	// Panels
-	private SearchPanel									searchComponentPanel;
-	private SearchResultListPanel					searchResultPanel;
-	private DetailPanel									detailPanel;
-	private PageableListView<Field>			listView;
+	private SearchPanel					searchComponentPanel;
+	private SearchResultListPanel		searchResultPanel;
+	private DetailPanel					detailPanel;
+	private PageableListView<Field>	listView;
 
-	private ContainerForm						containerForm;
+	private ContainerForm				containerForm;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService					phenotypicService;
+	private IPhenotypicService			phenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService			iArkCommonService;
 
-	public FieldContainerPanel(String id)
-	{
+	public FieldContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -57,29 +55,21 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 		add(containerForm);
 	}
 
+	protected WebMarkupContainer initialiseSearchResults() {
 
+		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
+				editButtonContainer, detailPanelFormContainer);
 
-	protected WebMarkupContainer initialiseSearchResults()
-	{
-
-		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
-				viewButtonContainer,
-				editButtonContainer,
-				detailPanelFormContainer);
-
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Get a collection of fields for the study in context by default
 				Collection<Field> fieldCollection = new ArrayList<Field>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-				if (sessionStudyId != null && sessionStudyId > 0)
-				{
+				if (sessionStudyId != null && sessionStudyId > 0) {
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					containerForm.getModelObject().getField().setStudy(study);
 					fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
@@ -100,12 +90,9 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 		return searchResultPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm,
-				viewButtonContainer,
-				editButtonContainer,
+		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
 				detailPanelFormContainer);
 		detailPanel.initialisePanel();
 		detailPanelContainer.add(detailPanel);
@@ -113,14 +100,12 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get a collection of fields for the study in context by default
 		Collection<Field> fieldCollection = new ArrayList<Field>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			containerForm.getModelObject().getField().setStudy(study);
 			fieldCollection = phenotypicService.searchField(containerForm.getModelObject().getField());
@@ -128,7 +113,8 @@ public class FieldContainerPanel extends AbstractContainerPanel<FieldVO>
 
 		containerForm.getModelObject().setFieldCollection(fieldCollection);
 
-		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 
 		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);

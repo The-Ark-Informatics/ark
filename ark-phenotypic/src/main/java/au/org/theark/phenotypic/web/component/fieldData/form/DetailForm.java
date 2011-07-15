@@ -37,25 +37,24 @@ import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
-{
+@SuppressWarnings({ "serial", "unused" })
+public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService				iPhenotypicService;
+	private IPhenotypicService			iPhenotypicService;
 
-	private ContainerForm					fieldContainerForm;
+	private ContainerForm				fieldContainerForm;
 
-	private int									mode;
+	private int								mode;
 
-	private TextField<String>				fieldDataIdTxtFld;
-	private TextField<String>				fieldDataCollectionTxtFld;
-	private TextField<String>				fieldDataSubjectUidTxtFld;
-	private DateTextField					fieldDataDateCollectedDteFld;
-	private TextField<String>				fieldDataFieldTxtFld;
-	private TextField<String>				fieldDataValueTxtFld;
-	
+	private TextField<String>			fieldDataIdTxtFld;
+	private TextField<String>			fieldDataCollectionTxtFld;
+	private TextField<String>			fieldDataSubjectUidTxtFld;
+	private DateTextField				fieldDataDateCollectedDteFld;
+	private TextField<String>			fieldDataFieldTxtFld;
+	private TextField<String>			fieldDataValueTxtFld;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>				iArkCommonService;
+	private IArkCommonService<Void>	iArkCommonService;
 
 	/**
 	 * Constructor
@@ -72,14 +71,12 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	 * @param searchPanelContainer
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
-	{
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer) {
 
 		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		fieldDataIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_ID);
 		fieldDataCollectionTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_COLLECTION_NAME);
 		fieldDataSubjectUidTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.FIELD_DATAVO_FIELD_DATA_SUBJECTUID);
@@ -96,12 +93,10 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		detailPanelFormContainer.add(fieldDataIdTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(fieldDataCollectionTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(fieldDataSubjectUidTxtFld.setEnabled(false));
@@ -113,35 +108,29 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	}
 
 	@Override
-	protected void onSave(Form<PhenoCollectionVO> containerForm, AjaxRequestTarget target)
-	{
-		if (containerForm.getModelObject().getFieldData().getId() == null)
-		{
+	protected void onSave(Form<PhenoCollectionVO> containerForm, AjaxRequestTarget target) {
+		if (containerForm.getModelObject().getFieldData().getId() == null) {
 			// Save the Field data
 			iPhenotypicService.createFieldData(containerForm.getModelObject().getFieldData());
 			this.info("Field Data " + containerForm.getModelObject().getFieldData().getId() + " was created successfully");
-			
+
 			onSavePostProcess(target);
 		}
-		else
-		{
+		else {
 			// Validate field data confirms to data dictionary
 			Collection<String> dataValidation = new ArrayList<String>();
 			boolean passedQualityControl = PhenotypicValidator.fieldDataPassesQualityControl(containerForm.getModelObject().getFieldData(), dataValidation);
 			containerForm.getModelObject().getFieldData().setPassedQualityControl(passedQualityControl);
-			
-			if(!passedQualityControl)
-			{
-				if(dataValidation != null)
-				{
+
+			if (!passedQualityControl) {
+				if (dataValidation != null) {
 					for (Iterator<String> iterator = dataValidation.iterator(); iterator.hasNext();) {
 						String errorMessage = (String) iterator.next();
 						this.error(errorMessage);
 					}
 				}
 			}
-			else
-			{
+			else {
 				// Update the Field data
 				iPhenotypicService.updateFieldData(containerForm.getModelObject().getFieldData());
 				this.info("Field Data " + containerForm.getModelObject().getFieldData().getId() + " was updated successfully");
@@ -151,8 +140,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 		processErrors(target);
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -164,26 +152,22 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		// TODO:(CE) To handle Business and System Exceptions here
 		iPhenotypicService.deleteFieldData(containerForm.getModelObject().getFieldData());
 		this.info("Field data " + containerForm.getModelObject().getFieldData().getId() + " was deleted successfully");
@@ -197,30 +181,33 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO>
 
 		// Close the confirm modal window
 		selectModalWindow.close(target);
-		
+
 		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		FieldData fieldData = new FieldData();
-		
+
 		containerForm.getModelObject().setStudy(study);
 		containerForm.getModelObject().setFieldData(fieldData);
 		containerForm.setModelObject(phenoCollectionVo);
-		
+
 		editCancelProcess(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getFieldData().getId() == null){
+		if (containerForm.getModelObject().getFieldData().getId() == null) {
 			return true;
-		}else{
-			return false;	
 		}
-		
+		else {
+			return false;
+		}
+
 	}
 }

@@ -35,9 +35,8 @@ import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unchecked" })
-public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
-{
+@SuppressWarnings({ "serial", "unchecked" })
+public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService									phenotypicService;
 
@@ -50,20 +49,18 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	private TextField<String>									phenoCollectionNameTxtFld;
 	private TextArea<String>									phenoCollectionDescriptionTxtAreaFld;
 	private DropDownChoice<Status>							statusDdc;
-	private DateTextField									phenoCollectionStartDateFld;
-	private DateTextField									phenoCollectionEndDateFld;
+	private DateTextField										phenoCollectionStartDateFld;
+	private DateTextField										phenoCollectionEndDateFld;
 	private DetailPanel											detailPanel;
-	private Long 													sessionStudyId;
-	private WebMarkupContainer arkContextMarkup;
+	private Long													sessionStudyId;
+	private WebMarkupContainer									arkContextMarkup;
 
 	/**
 	 * @param id
 	 */
 	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
 			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
-			WebMarkupContainer arkContextMarkup)
-	{
+			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup) {
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -72,23 +69,21 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		this.detailPanel = detailPanel;
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
-		
-		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
+
+		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel)
-	{
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel) {
 		super(id, compoundPropertyModel);
 		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
 	}
 
-	private void initStatusDdc()
-	{
+	private void initStatusDdc() {
 		java.util.Collection<Status> statusCollection = phenotypicService.getStatus();
 		CompoundPropertyModel<PhenoCollectionVO> phenoCollectionCpm = cpmModel;
 		PropertyModel<PhenoCollection> phenoCollectionPm = new PropertyModel<PhenoCollection>(phenoCollectionCpm, au.org.theark.phenotypic.web.Constants.PHENO_COLLECTION);
@@ -97,28 +92,26 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.STATUS, statusPm, (List) statusCollection, fieldTypeRenderer);
 	}
 
-	public void initialiseFieldForm()
-	{
+	public void initialiseFieldForm() {
 		phenoCollectionIdTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_ID);
 		phenoCollectionNameTxtFld = new TextField<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_NAME);
 		phenoCollectionDescriptionTxtAreaFld = new TextArea<String>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_DESCRIPTION);
 		phenoCollectionStartDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_START_DATE, Constants.DD_MM_YYYY);
 		phenoCollectionEndDateFld = new DateTextField(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_END_DATE, Constants.DD_MM_YYYY);
-		 
-		ArkDatePicker startDatePicker = new ArkDatePicker(); 
+
+		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(phenoCollectionStartDateFld);
 		phenoCollectionStartDateFld.add(startDatePicker);
-		
-		ArkDatePicker endDatePicker = new ArkDatePicker(); 
+
+		ArkDatePicker endDatePicker = new ArkDatePicker();
 		endDatePicker.bind(phenoCollectionEndDateFld);
 		phenoCollectionEndDateFld.add(endDatePicker);
-		
+
 		initStatusDdc();
 		addFieldComponents();
 	}
 
-	private void addFieldComponents()
-	{
+	private void addFieldComponents() {
 		add(phenoCollectionIdTxtFld);
 		add(phenoCollectionNameTxtFld);
 		add(statusDdc);
@@ -128,31 +121,28 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 	}
 
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// Due to ARK-108 :: No longer reset the VO onNew(..)
 		// Show the details panel name and description
 		PhenoCollectionVO phenoCollectionVo = getModelObject();
 		phenoCollectionVo.setMode(au.org.theark.core.Constants.MODE_NEW);
-		phenoCollectionVo.getPhenoCollection().setId(null);	//must ensure Id is blank onNew
+		phenoCollectionVo.getPhenoCollection().setId(null); // must ensure Id is blank onNew
 
 		// Set study for the new collection and fields available
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		phenoCollectionVo.getPhenoCollection().setStudy(study);
 		phenoCollectionVo.getField().setStudy(study);
-		
+
 		phenoCollectionVo.setFieldsAvailable(phenotypicService.searchField(phenoCollectionVo.getField()));
 
 		setModelObject(phenoCollectionVo);
 		preProcessDetailPanel(target);
-		
-		
+
 	}
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.addComponent(feedbackPanel);
 
@@ -166,8 +156,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 
 		java.util.Collection<PhenoCollection> phenoCollectionCollection = phenotypicService.searchPhenotypicCollection(phenoCollection);
 
-		if (phenoCollectionCollection != null && phenoCollectionCollection.size() == 0)
-		{
+		if (phenoCollectionCollection != null && phenoCollectionCollection.size() == 0) {
 			this.info("Phenotypic Collections with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
@@ -176,20 +165,19 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO>
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);// For ajax this is required so
 	}
-	
+
 	/**
-	 * @param arkContextMarkup the arkContextMarkup to set
+	 * @param arkContextMarkup
+	 *           the arkContextMarkup to set
 	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
-	{
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
 		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	/**
 	 * @return the arkContextMarkup
 	 */
-	public WebMarkupContainer getArkContextMarkup()
-	{
+	public WebMarkupContainer getArkContextMarkup() {
 		return arkContextMarkup;
 	}
 }

@@ -35,120 +35,106 @@ import au.org.theark.phenotypic.web.component.fieldUpload.form.WizardForm;
 /**
  * The 4th step of this wizard.
  */
-public class FieldUploadStep4 extends AbstractWizardStepPanel
-{
+public class FieldUploadStep4 extends AbstractWizardStepPanel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2788948560672351760L;
-	static Logger	log	= LoggerFactory.getLogger(FieldUploadStep4.class);
-	private Form<UploadVO>						containerForm;
-	private WizardForm wizardForm;
+	private static final long			serialVersionUID	= -2788948560672351760L;
+	static Logger							log					= LoggerFactory.getLogger(FieldUploadStep4.class);
+	private Form<UploadVO>				containerForm;
+	private WizardForm					wizardForm;
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
-	private IPhenotypicService iPhenotypicService;
+	private IPhenotypicService			iPhenotypicService;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
-	
+	private IArkCommonService<Void>	iArkCommonService;
+
 	/**
 	 * Construct.
 	 */
-	public FieldUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
-	{
+	public FieldUploadStep4(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 4/5: Confirm Upload", "Data will now be written to the database, click Next to continue, otherwise click Cancel.");
 		this.containerForm = containerForm;
 		this.wizardForm = wizardForm;
 		initialiseDetailForm();
 	}
-	
-	private void initialiseDetailForm() 
-	{
+
+	private void initialiseDetailForm() {
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 	}
-	
+
 	@Override
-	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		initialiseDetailForm();
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
 		target.addComponent(form.getArkExcelWorkSheetAsGrid());
 	}
-	
+
 	@Override
-	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		// Filename seems to be lost from model when moving between steps in wizard
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());
-		
+
 		// Perform actual upload of data
 		containerForm.getModelObject().getUpload().setStartTime(new Date(System.currentTimeMillis()));
-		StringBuffer uploadReport = null;String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
-		String fileFormat = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		StringBuffer uploadReport = null;
+		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
+		String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		FileFormat fileFormatObj = new FileFormat();
 		fileFormatObj = iPhenotypicService.getFileFormatByName(fileFormat);
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormatObj);
-		
+
 		char delimiterChar = containerForm.getModelObject().getUpload().getDelimiterType().getDelimiterCharacter();
-		
+
 		Subject currentUser = SecurityUtils.getSubject();
 		Long studyId = (Long) currentUser.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
 		PhenoDataUploader phenoUploader = new PhenoDataUploader(iPhenotypicService, study, null, iArkCommonService, fileFormat, delimiterChar);
-		
-		try
-		{
+
+		try {
 			log.info("Uploading data dictionary file");
 			InputStream inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
-			
-			if(fileFormat.equalsIgnoreCase("XLS"))
-			{
+
+			if (fileFormat.equalsIgnoreCase("XLS")) {
 				Workbook w;
-				try
-				{
+				try {
 					w = Workbook.getWorkbook(inputStream);
 					inputStream = phenoUploader.convertXlsToCsv(w);
 					inputStream.reset();
 				}
-				catch (BiffException e)
-				{
+				catch (BiffException e) {
 					log.error(e.getMessage());
 				}
-				catch (IOException e)
-				{
+				catch (IOException e) {
 					log.error(e.getMessage());
 				}
 			}
-			
+
 			uploadReport = phenoUploader.uploadAndReportMatrixDataDictionaryFile(inputStream, containerForm.getModelObject().getFileUpload().getSize());
-			
+
 			// Determined FieldUpload entities
 			containerForm.getModelObject().setFieldUploadCollection(phenoUploader.getFieldUploadCollection());
 		}
-		catch (FileFormatException ffe)
-		{
+		catch (FileFormatException ffe) {
 			log.error(Constants.FILE_FORMAT_EXCEPTION + ffe);
 		}
-		catch (PhenotypicSystemException pse)
-		{
+		catch (PhenotypicSystemException pse) {
 			log.error(Constants.PHENOTYPIC_SYSTEM_EXCEPTION + pse);
 		}
-		catch (IOException e1)
-		{
+		catch (IOException e1) {
 			log.error(e1.getMessage());
 		}
-		
+
 		// Update the report
 		updateUploadReport(uploadReport.toString());
-		
+
 		// Save all objects to the database
 		save();
 	}
-	
-	public void updateUploadReport(String importReport)
-	{
+
+	public void updateUploadReport(String importReport) {
 		// Set Upload report
 		PhenoUploadReport phenoUploadReport = new PhenoUploadReport();
 		phenoUploadReport.appendDetails(containerForm.getModelObject().getUpload());
@@ -157,9 +143,8 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel
 		Blob uploadReportBlob = Hibernate.createBlob(bytes);
 		containerForm.getModelObject().getUpload().setUploadReport(uploadReportBlob);
 	}
-	
-	private void save()
-	{
+
+	private void save() {
 		containerForm.getModelObject().getUpload().setFinishTime(new Date(System.currentTimeMillis()));
 		containerForm.getModelObject().getUpload().setUploadType("FIELD");
 		iPhenotypicService.createUpload(containerForm.getModelObject());
