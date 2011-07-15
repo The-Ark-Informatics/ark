@@ -6,22 +6,19 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 
-public class DetailModalWindow extends AbstractDetailModalWindow
-{
+public class DetailModalWindow extends AbstractDetailModalWindow {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 4739679880093551297L;
-	private Panel listDetailPanel;
-	private Form<?> listDetailForm;
-	
-	public DetailModalWindow(String id)
-	{
+	private Panel					listDetailPanel;
+	private Form<?>				listDetailForm;
+
+	public DetailModalWindow(String id) {
 		super(id);
 	}
-	
-	protected void onCloseModalWindow(AjaxRequestTarget target)
-	{
+
+	protected void onCloseModalWindow(AjaxRequestTarget target) {
 		target.addComponent(listDetailForm);
 		target.addComponent(listDetailPanel);
 	}
@@ -29,32 +26,30 @@ public class DetailModalWindow extends AbstractDetailModalWindow
 	/**
 	 * @return the listDetailForm
 	 */
-	public Form<?> getListDetailForm()
-	{
+	public Form<?> getListDetailForm() {
 		return listDetailForm;
 	}
 
 	/**
-	 * @param listDetailForm the listDetailForm to set
+	 * @param listDetailForm
+	 *           the listDetailForm to set
 	 */
-	public void setListDetailForm(Form<?> listDetailForm)
-	{
+	public void setListDetailForm(Form<?> listDetailForm) {
 		this.listDetailForm = listDetailForm;
 	}
 
 	/**
-	 * @param listDetailPanel the listDetailPanel to set
+	 * @param listDetailPanel
+	 *           the listDetailPanel to set
 	 */
-	public void setListDetailPanel(Panel listDetailPanel)
-	{
+	public void setListDetailPanel(Panel listDetailPanel) {
 		this.listDetailPanel = listDetailPanel;
 	}
 
 	/**
 	 * @return the listDetailPanel
 	 */
-	public Panel getListDetailPanel()
-	{
+	public Panel getListDetailPanel() {
 		return listDetailPanel;
 	}
 }

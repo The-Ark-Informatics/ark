@@ -23,121 +23,108 @@ import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
-public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao
-{
-	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException
-	{
+public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
+	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException {
 		au.org.theark.core.model.lims.entity.BioCollection limsCollection = null;
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("id", id));
-		
+
 		List<BioCollection> list = criteria.list();
-		if (list != null && list.size() > 0)
-		{
+		if (list != null && list.size() > 0) {
 			limsCollection = list.get(0);
 		}
-		else
-		{
+		else {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
-		
+
 		return limsCollection;
 	}
 
-	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException
-	{
+	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
-		
-		if(bioCollection.getId() != null)
+
+		if (bioCollection.getId() != null)
 			criteria.add(Restrictions.eq("id", bioCollection.getId()));
-		
-		if(bioCollection.getName() != null)
+
+		if (bioCollection.getName() != null)
 			criteria.add(Restrictions.eq("name", bioCollection.getName()));
-		
-		if(bioCollection.getLinkSubjectStudy() != null)
+
+		if (bioCollection.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollection.getLinkSubjectStudy()));
-		
-		if(bioCollection.getStudy() != null)
+
+		if (bioCollection.getStudy() != null)
 			criteria.add(Restrictions.eq("study", bioCollection.getStudy()));
-		
-		if(bioCollection.getCollectionDate() != null)
+
+		if (bioCollection.getCollectionDate() != null)
 			criteria.add(Restrictions.eq("collectionDate", bioCollection.getCollectionDate()));
-		
-		if(bioCollection.getSurgeryDate() != null)
+
+		if (bioCollection.getSurgeryDate() != null)
 			criteria.add(Restrictions.eq("surgeryDate", bioCollection.getSurgeryDate()));
-		
+
 		List<BioCollection> list = criteria.list();
 		return list;
 	}
 
-	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
-	{
+	public void createBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
 		getSession().save(bioCollection);
 	}
 
-	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
-	{
+	public void deleteBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
 		getSession().delete(bioCollection);
 	}
-	
-	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection)
-	{
+
+	public void updateBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) {
 		getSession().update(bioCollection);
 	}
 
-	public List<BioSampletype> getSampleTypes()
-	{
+	public List<BioSampletype> getSampleTypes() {
 		Criteria criteria = getStatelessSession().createCriteria(BioSampletype.class);
 		List<BioSampletype> list = criteria.list();
 		return list;
 	}
 
-	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
-	{
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy) {
 		// Use WHERE EXIST to optimise query even further
 		StatelessSession session = getStatelessSession();
-		Criteria criteria = session.createCriteria(LinkSubjectStudy.class,"lss");
-		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(BioCollection.class,"bc");
+		Criteria criteria = session.createCriteria(LinkSubjectStudy.class, "lss");
+		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(BioCollection.class, "bc");
 		criteria.add(Restrictions.eq("lss.id", linkSubjectStudy.getId()));
 		sizeCriteria.add(Property.forName("lss.id").eqProperty("bc.linkSubjectStudy.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("bc.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Integer)criteria.uniqueResult()) > 0;
+		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
 		session.close();
-		
+
 		return result;
 	}
 
-	public Boolean hasBiospecimens(BioCollection bioCollection)
-	{
+	public Boolean hasBiospecimens(BioCollection bioCollection) {
 		// Use WHERE EXIST to optimise query even further
 		StatelessSession session = getStatelessSession();
-		Criteria criteria = session.createCriteria(BioCollection.class,"bc");
-		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(Biospecimen.class,"b");
+		Criteria criteria = session.createCriteria(BioCollection.class, "bc");
+		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(Biospecimen.class, "b");
 		criteria.add(Restrictions.eq("bc.id", bioCollection.getId()));
 		sizeCriteria.add(Property.forName("bc.id").eqProperty("b.bioCollection.id"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("b.id"))));
 		criteria.setProjection(Projections.rowCount());
-		Boolean result = ((Integer)criteria.uniqueResult()) > 0;
+		Boolean result = ((Integer) criteria.uniqueResult()) > 0;
 		session.close();
-		
+
 		return result;
 	}
 
 	public int getBioCollectionCount(BioCollection bioCollectionCriteria) {
 		// Handle for study not in context
-		if(bioCollectionCriteria.getStudy() == null)
-		{
+		if (bioCollectionCriteria.getStudy() == null) {
 			return 0;
 		}
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
 		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer)criteria.uniqueResult();
+		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
 	}
 
-	public List<BioCollection> searchPageableBioCollections(
-			BioCollection bioCollectionCriteria, int first, int count) {
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
 		Criteria criteria = buildBioCollectionCriteria(bioCollectionCriteria);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
@@ -145,28 +132,28 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 		return list;
 	}
-	
+
 	protected Criteria buildBioCollectionCriteria(BioCollection bioCollectionCriteria) {
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
-		
-		if(bioCollectionCriteria.getId() != null)
+
+		if (bioCollectionCriteria.getId() != null)
 			criteria.add(Restrictions.eq("id", bioCollectionCriteria.getId()));
-		
-		if(bioCollectionCriteria.getName() != null)
+
+		if (bioCollectionCriteria.getName() != null)
 			criteria.add(Restrictions.eq("name", bioCollectionCriteria.getName()));
-		
-		if(bioCollectionCriteria.getLinkSubjectStudy() != null)
+
+		if (bioCollectionCriteria.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", bioCollectionCriteria.getLinkSubjectStudy()));
-		
-		if(bioCollectionCriteria.getStudy() != null)
+
+		if (bioCollectionCriteria.getStudy() != null)
 			criteria.add(Restrictions.eq("study", bioCollectionCriteria.getStudy()));
-		
-		if(bioCollectionCriteria.getCollectionDate() != null)
+
+		if (bioCollectionCriteria.getCollectionDate() != null)
 			criteria.add(Restrictions.eq("collectionDate", bioCollectionCriteria.getCollectionDate()));
-		
-		if(bioCollectionCriteria.getSurgeryDate() != null)
+
+		if (bioCollectionCriteria.getSurgeryDate() != null)
 			criteria.add(Restrictions.eq("surgeryDate", bioCollectionCriteria.getSurgeryDate()));
-		
+
 		return criteria;
 	}
 }

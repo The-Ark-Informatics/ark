@@ -27,224 +27,245 @@ import au.org.theark.lims.model.vo.LimsVO;
 
 /**
  * @author cellis
- *
+ * 
  */
 @Transactional
 @Service(au.org.theark.lims.web.Constants.LIMS_SERVICE)
-public class LimsServiceImpl implements ILimsService
-{
-	private static Logger log = LoggerFactory.getLogger(LimsServiceImpl.class);
-	
-	private IStudyDao iStudyDao;
-	private IBioCollectionDao iBioCollectionDao;
-	private IBiospecimenDao iBiospecimenDao;
-	private IBioTransactionDao iBioTransactionDao;
+public class LimsServiceImpl implements ILimsService {
+	private static Logger		log	= LoggerFactory.getLogger(LimsServiceImpl.class);
+
+	private IStudyDao				iStudyDao;
+	private IBioCollectionDao	iBioCollectionDao;
+	private IBiospecimenDao		iBiospecimenDao;
+	private IBioTransactionDao	iBioTransactionDao;
 
 	/**
-	 * @param iStudyDao the iStudyDao to set
+	 * @param iStudyDao
+	 *           the iStudyDao to set
 	 */
 	@Autowired
-	public void setiStudyDao(IStudyDao iStudyDao)
-	{
+	public void setiStudyDao(IStudyDao iStudyDao) {
 		this.iStudyDao = iStudyDao;
 	}
-	
+
 	/**
-	 * @param iBioCollectionDao the iBioCollectionDao to set
+	 * @param iBioCollectionDao
+	 *           the iBioCollectionDao to set
 	 */
 	@Autowired
-	public void setiBioCollectionDao(IBioCollectionDao iBioCollectionDao)
-	{
+	public void setiBioCollectionDao(IBioCollectionDao iBioCollectionDao) {
 		this.iBioCollectionDao = iBioCollectionDao;
 	}
 
 	/**
-	 * @param iBiospeciemenDao the iBiospeciemenDao to set
+	 * @param iBiospeciemenDao
+	 *           the iBiospeciemenDao to set
 	 */
 	@Autowired
-	public void setiBiospeciemenDao(IBiospecimenDao iBiospecimenDao)
-	{
+	public void setiBiospeciemenDao(IBiospecimenDao iBiospecimenDao) {
 		this.iBiospecimenDao = iBiospecimenDao;
 	}
 
 	/**
-	 * @param iBioTransactionDao the iBioTransactionDao to set
+	 * @param iBioTransactionDao
+	 *           the iBioTransactionDao to set
 	 */
 	@Autowired
-	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao)
-	{
+	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao) {
 		this.iBioTransactionDao = iBioTransactionDao;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#createCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void createBioCollection(LimsVO modelObject)
-	{
+	public void createBioCollection(LimsVO modelObject) {
 		log.debug("Creating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.createBioCollection(modelObject.getBioCollection());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#deleteBioCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void deleteBioCollection(LimsVO modelObject)
-	{
+	public void deleteBioCollection(LimsVO modelObject) {
 		log.debug("Deleting bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.deleteBioCollection(modelObject.getBioCollection());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioCollection(au.org.theark.core.model.lims.entity.Collection)
 	 */
-	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException
-	{
+	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException {
 		log.debug("Getting bioCollection: " + id.intValue());
 		return iBioCollectionDao.getBioCollection(id);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getPerson(java.lang.Long)
 	 */
-	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException
-	{
+	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException {
 		log.debug("Getting Person: " + id.intValue());
 		return iStudyDao.getPerson(id);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchLimsCollection(au.org.theark.core.model.lims.entity.Collection)
 	 */
-	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException
-	{
+	public java.util.List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException {
 		return iBioCollectionDao.searchBioCollection(bioCollection);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#updateCollection(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void updateBioCollection(LimsVO modelObject)
-	{
+	public void updateBioCollection(LimsVO modelObject) {
 		log.debug("Updating bioCollection: " + modelObject.getBioCollection().getName());
 		iBioCollectionDao.updateBioCollection(modelObject.getBioCollection());
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBiospecimen(Long)
 	 */
-	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException
-	{
+	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException {
 		return iBiospecimenDao.getBiospecimen(id);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchBiospecimen(Biospecimen)
 	 */
-	public List<Biospecimen> searchBiospecimen(Biospecimen biospecimen) throws ArkSystemException
-	{
+	public List<Biospecimen> searchBiospecimen(Biospecimen biospecimen) throws ArkSystemException {
 		return iBiospecimenDao.searchBiospecimen(biospecimen);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#createBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void createBiospecimen(LimsVO modelObject)
-	{
+	public void createBiospecimen(LimsVO modelObject) {
 		iBiospecimenDao.createBiospecimen(modelObject.getBiospecimen());
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#updateBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void updateBiospecimen(LimsVO modelObject)
-	{
+	public void updateBiospecimen(LimsVO modelObject) {
 		iBiospecimenDao.updateBiospecimen(modelObject.getBiospecimen());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#deleteBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void deleteBiospecimen(LimsVO modelObject)
-	{
+	public void deleteBiospecimen(LimsVO modelObject) {
 		iBiospecimenDao.deleteBiospecimen(modelObject.getBiospecimen());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioTransaction(Long)
 	 */
-	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException
-	{
+	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException {
 		return iBioTransactionDao.getBioTransaction(id);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchBioTransaction(BioTransaction)
 	 */
-	public List<BioTransaction> searchBioTransaction(BioTransaction bioTransaction) throws ArkSystemException
-	{
+	public List<BioTransaction> searchBioTransaction(BioTransaction bioTransaction) throws ArkSystemException {
 		return iBioTransactionDao.searchBioTransaction(bioTransaction);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#createBioTransaction(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void createBioTransaction(LimsVO modelObject)
-	{
+	public void createBioTransaction(LimsVO modelObject) {
 		iBioTransactionDao.createBioTransaction(modelObject.getBioTransaction());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#deleteBioTransaction(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void deleteBioTransaction(LimsVO modelObject)
-	{
+	public void deleteBioTransaction(LimsVO modelObject) {
 		iBioTransactionDao.deleteBioTransaction(modelObject.getBioTransaction());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#updateBioTransaction(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void updateBioTransaction(LimsVO modelObject)
-	{
+	public void updateBioTransaction(LimsVO modelObject) {
 		iBioTransactionDao.updateBioTransaction(modelObject.getBioTransaction());
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getSampleTypes()
 	 */
-	public List<BioSampletype> getBioSampleTypes()
-	{
+	public List<BioSampletype> getBioSampleTypes() {
 		return iBioCollectionDao.getSampleTypes();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#hasBioCollections()
 	 */
-	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
-	{
+	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy) {
 		return iBioCollectionDao.hasBioCollections(linkSubjectStudy);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#hasBiospecimens(BioCollection bioCollection)
 	 */
-	public Boolean hasBiospecimens(BioCollection bioCollection)
-	{
+	public Boolean hasBiospecimens(BioCollection bioCollection) {
 		return iBioCollectionDao.hasBiospecimens(bioCollection);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioCollectionCount(BioCollection bioCollection)
 	 */
 	public int getBioCollectionCount(BioCollection bioCollectionCriteria) {
 		return iBioCollectionDao.getBioCollectionCount(bioCollectionCriteria);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchPageableBioCollections()
 	 */
-	public List<BioCollection> searchPageableBioCollections(
-			BioCollection bioCollectionCriteria, int first, int count) {
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count) {
 		return iBioCollectionDao.searchPageableBioCollections(bioCollectionCriteria, first, count);
 	}
 
@@ -252,8 +273,7 @@ public class LimsServiceImpl implements ILimsService
 		return iBiospecimenDao.getBiospecimenCount(biospecimenCriteria);
 	}
 
-	public List<Biospecimen> searchPageableBiospecimens(
-			Biospecimen biospecimenCriteria, int first, int count) {
+	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count) {
 		return iBiospecimenDao.searchPageableBiospecimens(biospecimenCriteria, first, count);
 	}
 }

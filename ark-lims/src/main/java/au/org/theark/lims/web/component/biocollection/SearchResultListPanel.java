@@ -19,26 +19,21 @@ import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biocollection.form.ContainerForm;
 
-@SuppressWarnings( { "serial", "unchecked" })
-public class SearchResultListPanel extends Panel
-{
+@SuppressWarnings({ "serial", "unchecked" })
+public class SearchResultListPanel extends Panel {
 	private WebMarkupContainer	detailsPanelContainer;
 	private WebMarkupContainer	searchPanelContainer;
 	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
 	private DetailPanel			detailPanel;
-	private WebMarkupContainer detailPanelFormContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer arkContextMarkup;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private WebMarkupContainer	arkContextMarkup;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm, WebMarkupContainer searchResultContainer,
-			DetailPanel detail,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer arkContextMarkup)
-	{
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
+			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.detailsPanelContainer = detailPanelContainer;
 		this.containerForm = studyCompContainerForm;
@@ -49,7 +44,7 @@ public class SearchResultListPanel extends Panel
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setArkContextMarkup(arkContextMarkup);
 		this.setDetailPanel(detail);
-		
+
 	}
 
 	/**
@@ -57,24 +52,19 @@ public class SearchResultListPanel extends Panel
 	 * @param iModel
 	 * @return the pageableListView of BioCollection
 	 */
-	public PageableListView<BioCollection> buildPageableListView(IModel iModel)
-	{
-		PageableListView<BioCollection> sitePageableListView = new PageableListView<BioCollection>("collectionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
-		{
+	public PageableListView<BioCollection> buildPageableListView(IModel iModel) {
+		PageableListView<BioCollection> sitePageableListView = new PageableListView<BioCollection>("collectionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
-			protected void populateItem(final ListItem<BioCollection> item)
-			{
+			protected void populateItem(final ListItem<BioCollection> item) {
 				BioCollection bioCollection = item.getModelObject();
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
 				/* The ID */
-				if (bioCollection.getId() != null)
-				{
+				if (bioCollection.getId() != null) {
 					// Add the id component here
 					item.add(new Label("bioCollection.id", bioCollection.getId().toString()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("bioCollection.id", ""));
 				}
 
@@ -82,57 +72,48 @@ public class SearchResultListPanel extends Panel
 				item.add(buildLink(bioCollection));
 
 				// TODO when displaying text escape any special characters
-				if (bioCollection.getLinkSubjectStudy() != null)
-				{
+				if (bioCollection.getLinkSubjectStudy() != null) {
 					item.add(new Label("bioCollection.linkSubjectStudy", bioCollection.getLinkSubjectStudy().getSubjectUID()));// the ID here must match
 					// the ones in mark-up
 				}
-				else
-				{
+				else {
 					item.add(new Label("bioCollection.linkSubjectStudy", ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
 				// Start Date
-				if (bioCollection.getCollectionDate() != null)
-				{
-					item.add(new Label("bioCollection.collectionDate", simpleDateFormat.format(bioCollection.getCollectionDate())));// the ID here must match
+				if (bioCollection.getCollectionDate() != null) {
+					item.add(new Label("bioCollection.collectionDate", simpleDateFormat.format(bioCollection.getCollectionDate())));// the ID here must
+																																											// match
 					// the ones in mark-up
 				}
-				else
-				{
+				else {
 					item.add(new Label("bioCollection.collectionDate", ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
 				// Expiry Date
-				if (bioCollection.getSurgeryDate() != null)
-				{
+				if (bioCollection.getSurgeryDate() != null) {
 					item.add(new Label("bioCollection.surgeryDate", simpleDateFormat.format(bioCollection.getSurgeryDate())));// the ID here must match
 					// the ones in mark-up
 				}
-				else
-				{
+				else {
 					item.add(new Label("bioCollection.surgeryDate", ""));// the ID here must match the ones in mark-up
 				}
-				
+
 				// TODO when displaying text escape any special characters
-				if (bioCollection.getComments() != null)
-				{
+				if (bioCollection.getComments() != null) {
 					item.add(new Label("bioCollection.comments", bioCollection.getComments()));// the ID here must match
 					// the ones in mark-up
 				}
-				else
-				{
+				else {
 					item.add(new Label("bioCollection.comments", ""));// the ID here must match the ones in mark-up
 				}
 
 				/* For the alternative stripes */
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
-				{
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					@Override
-					public String getObject()
-					{
+					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
@@ -142,26 +123,23 @@ public class SearchResultListPanel extends Panel
 		return sitePageableListView;
 	}
 
-	private AjaxLink buildLink(final BioCollection bioCollection)
-	{
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("bioCollection.name")
-		{
+	private AjaxLink buildLink(final BioCollection bioCollection) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("bioCollection.name") {
 			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
+			public void onClick(AjaxRequestTarget target) {
 				// Sets the selected object into the model
 				LimsVO limsVo = containerForm.getModelObject();
 				limsVo.setBioCollection(bioCollection);
 				containerForm.setModelObject(limsVo);
-				
+
 				// Place the selected collection in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.lims.web.Constants.BIO_COLLECTION, bioCollection.getId());
-		
+
 				detailsPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
-				
+
 				// Button containers
 				// View Field, thus view container visible
 				viewButtonContainer.setVisible(true);
@@ -187,32 +165,29 @@ public class SearchResultListPanel extends Panel
 	 * @param detailPanel
 	 *           the detailPanel to set
 	 */
-	public void setDetailPanel(DetailPanel detailPanel)
-	{
+	public void setDetailPanel(DetailPanel detailPanel) {
 		this.detailPanel = detailPanel;
 	}
 
 	/**
 	 * @return the detailPanel
 	 */
-	public DetailPanel getDetailPanel()
-	{
+	public DetailPanel getDetailPanel() {
 		return detailPanel;
 	}
 
 	/**
-	 * @param arkContextMarkup the arkContextMarkup to set
+	 * @param arkContextMarkup
+	 *           the arkContextMarkup to set
 	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
-	{
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
 		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	/**
 	 * @return the arkContextMarkup
 	 */
-	public WebMarkupContainer getArkContextMarkup()
-	{
+	public WebMarkupContainer getArkContextMarkup() {
 		return arkContextMarkup;
 	}
 }

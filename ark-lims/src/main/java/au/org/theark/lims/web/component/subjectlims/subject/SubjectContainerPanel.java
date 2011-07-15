@@ -33,35 +33,33 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
  * 
  */
 @SuppressWarnings("unchecked")
-public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
-{
+public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO> {
 	/**
 	 * 
 	 */
-	private static final long								serialVersionUID = -2956968644138345497L;
-	private static final Logger								log	= LoggerFactory.getLogger(SubjectContainerPanel.class);
-	private SearchPanel										searchPanel;
-	private SearchResultListPanel							searchResultsPanel;
-	private DetailPanel										detailsPanel;
-	private PageableListView<SubjectVO>						pageableListView;
-	private ContainerForm									containerForm;
+	private static final long										serialVersionUID	= -2956968644138345497L;
+	private static final Logger									log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
+	private SearchPanel												searchPanel;
+	private SearchResultListPanel									searchResultsPanel;
+	private DetailPanel												detailsPanel;
+	private PageableListView<SubjectVO>							pageableListView;
+	private ContainerForm											containerForm;
 
-	private WebMarkupContainer								arkContextMarkup;
+	private WebMarkupContainer										arkContextMarkup;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService								iArkCommonService;
+	private IArkCommonService										iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService									iLimsService;
+	private ILimsService												iLimsService;
 
-	private DataView<SubjectVO>								dataView;
+	private DataView<SubjectVO>									dataView;
 	private ArkDataProvider<SubjectVO, IArkCommonService>	subjectProvider;
-	
+
 	/**
 	 * @param id
 	 */
-	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup)
-	{
+	public SubjectContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
@@ -74,37 +72,38 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		containerForm.add(initialiseSearchPanel());
 
 		prerenderContextCheck();
-		
+
 		add(containerForm);
 	}
 
-	protected void prerenderContextCheck() {		
-		//Get the Person in Context and determine the Person Type
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+	protected void prerenderContextCheck() {
+		// Get the Person in Context and determine the Person Type
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
 		if ((sessionStudyId != null) && (sessionPersonId != null)) {
-			String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT))
-			{
+			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
 				Person person;
 				boolean contextLoaded = false;
 				try {
 					person = iLimsService.getPerson(sessionPersonId);
 					SubjectVO subjectVO = new SubjectVO();
-					subjectVO.getLinkSubjectStudy().setPerson(person);	//must have Person id
-					subjectVO.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));	//must have Study id
+					subjectVO.getLinkSubjectStudy().setPerson(person); // must have Person id
+					subjectVO.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId)); // must have Study id
 					List<SubjectVO> subjectList = (List<SubjectVO>) iArkCommonService.getSubject(subjectVO);
 					containerForm.setModelObject(subjectList.get(0));
 					contextLoaded = true;
-				} catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ArkSystemException e) {
+				}
+				catch (EntityNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+				catch (ArkSystemException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				if (contextLoaded) {
 					// Put into Detail View mode
 					searchPanelContainer.setVisible(false);
@@ -114,15 +113,13 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 					viewButtonContainer.setVisible(true);
 					editButtonContainer.setVisible(false);
 				}
-			}			
+			}
 		}
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
@@ -134,8 +131,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		return searchPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 
 		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
 				editButtonContainer, arkContextMarkup, containerForm);
@@ -144,30 +140,31 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		return detailPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchResults(){
-		
-		searchResultsPanel = new SearchResultListPanel("searchResults",detailPanelContainer,detailPanelFormContainer,searchPanelContainer,searchResultPanelContainer,viewButtonContainer,editButtonContainer,arkContextMarkup,containerForm);
-		
+	protected WebMarkupContainer initialiseSearchResults() {
+
+		searchResultsPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
+				editButtonContainer, arkContextMarkup, containerForm);
+
 		// Restrict to subjects in current study in session
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);		
-		if(sessionStudyId != null){
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		if (sessionStudyId != null) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 			linkSubjectStudy.setStudy(study);
 			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
 		}
-		
+
 		// Data providor to paginate resultList
 		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
-			
+
 			public int size() {
 				return service.getStudySubjectCount(model.getObject());
 			}
-			
+
 			public Iterator<SubjectVO> iterator(int first, int count) {
 				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-				if(isActionPermitted()){
-					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);	
+				if (isActionPermitted()) {
+					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
 				}
 				return listSubjects.iterator();
 			}
@@ -176,7 +173,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 
 		dataView = searchResultsPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
-				
+
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
@@ -188,9 +185,8 @@ public class SubjectContainerPanel extends AbstractContainerPanel<SubjectVO>
 		searchResultPanelContainer.add(searchResultsPanel);
 		return searchResultPanelContainer;
 	}
-	
-	public void resetDataProvider()
-	{
+
+	public void resetDataProvider() {
 	}
 
 	public void setContextUpdateLimsWMC(WebMarkupContainer limsContainerWMC) {

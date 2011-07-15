@@ -19,23 +19,22 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class SearchPanel extends Panel{
+public class SearchPanel extends Panel {
 
-	
-	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer searchMarkupContainer;
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer detailsContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailFormContainer;
-	private PageableListView<SubjectVO> listView;
-	
-	
+	private FeedbackPanel					feedBackPanel;
+	private WebMarkupContainer				searchMarkupContainer;
+	private WebMarkupContainer				listContainer;
+	private WebMarkupContainer				detailsContainer;
+	private WebMarkupContainer				viewButtonContainer;
+	private WebMarkupContainer				editButtonContainer;
+	private WebMarkupContainer				detailFormContainer;
+	private PageableListView<SubjectVO>	listView;
+
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param searchMarkupContainer
@@ -48,20 +47,12 @@ public class SearchPanel extends Panel{
 	 * @param detailPanel
 	 * @param containerForm
 	 */
-	public SearchPanel(	String id, 
-					FeedbackPanel feedBackPanel, 
-					WebMarkupContainer searchMarkupContainer,
-					PageableListView<SubjectVO> listView,  
-					WebMarkupContainer resultListContainer, 
-					WebMarkupContainer detailPanelContainer,
-					WebMarkupContainer detailFormContainer,
-					WebMarkupContainer viewButtonContainer,
-					WebMarkupContainer editButtonContainer,	
-					DetailPanel detailPanel,
-					ContainerForm containerForm) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<SubjectVO> listView, WebMarkupContainer resultListContainer,
+			WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, DetailPanel detailPanel,
+			ContainerForm containerForm) {
 
 		super(id);
-		this.searchMarkupContainer =  searchMarkupContainer;
+		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
 		this.listContainer = resultListContainer;
@@ -69,24 +60,15 @@ public class SearchPanel extends Panel{
 		this.viewButtonContainer = viewButtonContainer;
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailFormContainer;
-		
+
 	}
-	
-	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm){
-		
-		
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, 
-														subjectVoCpm, 
-														listView,
-														feedBackPanel,
-														listContainer,
-														searchMarkupContainer,
-														detailsContainer,
-														detailFormContainer,
-														viewButtonContainer,
-														editButtonContainer);
+
+	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm) {
+
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer, detailFormContainer,
+				viewButtonContainer, editButtonContainer);
 		add(searchStudyCompForm);
-		
+
 	}
-	
+
 }

@@ -12,11 +12,11 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.lims.model.vo.LimsVO;
 
-public interface ILimsService
-{
+public interface ILimsService {
 	/**
-	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can represent
-	 * a subject or contact.
+	 * Look up a Person based on the supplied Long ID that represents a Person primary key. This id is the primary key of the Person table that can
+	 * represent a subject or contact.
+	 * 
 	 * @param personId
 	 * @return
 	 * @throws EntityNotFoundException
@@ -26,25 +26,33 @@ public interface ILimsService
 
 	/**
 	 * Delete a LIMS collection based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void deleteBioCollection(LimsVO modelObject);
 
 	/**
 	 * Update a LIMS collection based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void updateBioCollection(LimsVO modelObject);
 
 	/**
 	 * Create a LIMS collection based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void createBioCollection(LimsVO modelObject);
 
 	/**
 	 * Search the database for a list of BioCollections based on the supplied BioCollection
-	 * @param bioCollection the bioCollection object to be matched against
+	 * 
+	 * @param bioCollection
+	 *           the bioCollection object to be matched against
 	 * @return List of BioCollections
 	 * @throws ArkSystemException
 	 */
@@ -52,126 +60,155 @@ public interface ILimsService
 
 	/**
 	 * Search the database for a BioCollection based on the supplied id
-	 * @param id the unique id of the BioCollection
+	 * 
+	 * @param id
+	 *           the unique id of the BioCollection
 	 * @return BioCollection
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
 	public au.org.theark.core.model.lims.entity.BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException;
-	
+
 	/**
 	 * Look up a LIMS biospecimen based on the supplied Long id that represents the primary key
+	 * 
 	 * @param id
 	 * @return Biospecimen
 	 * @throws EntityNotFoundException
 	 */
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException;
-	
+
 	/**
 	 * Look up a List of LIMS Biospecimen(s) based on the supplied biospecimen object
+	 * 
 	 * @param biospecimen
 	 * @return List<au.org.theark.core.model.lims.entity.Biospecimen>
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
 	public List<au.org.theark.core.model.lims.entity.Biospecimen> searchBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException;
-	
+
 	/**
 	 * Create a LIMS biospecimen based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void createBiospecimen(LimsVO modelObject);
-	
+
 	/**
 	 * Update a LIMS biospecimen based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void updateBiospecimen(LimsVO modelObject);
-	
+
 	/**
 	 * Delete a LIMS biospecimen based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void deleteBiospecimen(LimsVO modelObject);
-	
+
 	/**
 	 * Look up a LIMS bioTransaction based on the supplied Long id that represents the primary key
+	 * 
 	 * @param id
 	 * @return BioTransaction
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
 	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException;
-	
+
 	/**
 	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction object
+	 * 
 	 * @param bioTransaction
 	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
 	public List<au.org.theark.core.model.lims.entity.BioTransaction> searchBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction) throws ArkSystemException;
-	
+
 	/**
 	 * Create a LIMS bioTransaction based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void createBioTransaction(LimsVO modelObject);
-	
+
 	/**
 	 * Update a LIMS bioTransaction based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void updateBioTransaction(LimsVO modelObject);
-	
+
 	/**
 	 * Delete a LIMS bioTransaction based on the supplied LimsVO
-	 * @param modelObject the LimsVO object
+	 * 
+	 * @param modelObject
+	 *           the LimsVO object
 	 */
 	public void deleteBioTransaction(LimsVO modelObject);
 
 	/**
 	 * Get a list of all sampleTypes
+	 * 
 	 * @return List
 	 */
 	public List<BioSampletype> getBioSampleTypes();
 
 	/**
 	 * Determine if provided linkSubjectStudy has any BioCollections associated
+	 * 
 	 * @return true if provided linkSubjectStudy has one or more BioCollections
 	 */
 	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy);
-	
+
 	/**
 	 * Determine if provided bioCollection has any biospecimens associated
+	 * 
 	 * @return true if provided bioCollection has one or more Biospecimens
 	 */
 	public Boolean hasBiospecimens(BioCollection bioCollection);
-	
+
 	/**
 	 * Get count of the BioCollections given the criteria
-	 * @param BioCollection criteria
+	 * 
+	 * @param BioCollection
+	 *           criteria
 	 * @return counts
 	 */
 	public int getBioCollectionCount(BioCollection bioCollectionCriteria);
-	
+
 	/**
 	 * A generic interface that will return a list BioCollections specified by a particular criteria, and a paginated reference point
-	 * @param BioCollection criteria
+	 * 
+	 * @param BioCollection
+	 *           criteria
 	 * @return Collection of BioCollection
 	 */
 	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
 
 	/**
 	 * Get count of the Biospecimens given the criteria
-	 * @param Biospecimens criteria
+	 * 
+	 * @param Biospecimens
+	 *           criteria
 	 * @return counts
 	 */
 	public int getBiospecimenCount(Biospecimen biospecimenCriteria);
-	
+
 	/**
 	 * A generic interface that will return a list Biospecimens specified by a particular criteria, and a paginated reference point
-	 * @param Biospecimens criteria
+	 * 
+	 * @param Biospecimens
+	 *           criteria
 	 * @return Collection of Biospecimen
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count);

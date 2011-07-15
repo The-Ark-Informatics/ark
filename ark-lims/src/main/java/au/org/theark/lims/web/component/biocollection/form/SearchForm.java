@@ -30,18 +30,17 @@ import au.org.theark.lims.web.component.biocollection.DetailPanel;
  * @author cellis
  * 
  */
-public class SearchForm extends AbstractSearchForm<LimsVO>
-{
+public class SearchForm extends AbstractSearchForm<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 3935670037697869845L;
+	private static final long						serialVersionUID	= 3935670037697869845L;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService								iLimsService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>						iArkCommonService;
+	private IArkCommonService<Void>				iArkCommonService;
 
 	private PageableListView<BioCollection>	listView;
 	private CompoundPropertyModel<LimsVO>		cpmModel;
@@ -52,15 +51,14 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	private DetailPanel								detailPanel;
 	private Long										sessionStudyId;
 	private WebMarkupContainer						arkContextMarkup;
-	private String subjectUIDInContext;
+	private String										subjectUIDInContext;
 
 	/**
 	 * @param id
 	 */
 	public SearchForm(String id, CompoundPropertyModel<LimsVO> model, PageableListView<BioCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup)
-	{
+			WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup) {
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -69,10 +67,9 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		this.setDetailPanel(detailPanel);
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
-		
+
 		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		if(subjectUIDInContext == null || subjectUIDInContext.isEmpty())
-		{
+		if (subjectUIDInContext == null || subjectUIDInContext.isEmpty()) {
 			// Cannot create new BioCollection without a subject
 			newButton.setVisible(false);
 		}
@@ -81,15 +78,13 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel)
-	{
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel) {
 		super(id, compoundPropertyModel);
 		this.setCpmModel(compoundPropertyModel);
 		initialiseFieldForm();
 	}
 
-	public void initialiseFieldForm()
-	{
+	public void initialiseFieldForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
 		nameTxtFld = new TextField<String>("bioCollection.name");
 		new TextArea<String>("bioCollection.comments");
@@ -107,8 +102,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		addFieldComponents();
 	}
 
-	private void addFieldComponents()
-	{
+	private void addFieldComponents() {
 		add(idTxtFld);
 		add(nameTxtFld);
 		add(collectionDateTxtFld);
@@ -116,8 +110,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	}
 
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		LimsVO limsVo = getModelObject();
 		limsVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 		limsVo.getBioCollection().setId(null); // must ensure Id is blank onNew
@@ -132,8 +125,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	}
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.addComponent(feedbackPanel);
 
@@ -141,24 +133,20 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			BioCollection bioCollection = new BioCollection();
 			bioCollection.setStudy(study);
-			
-			try
-			{
+
+			try {
 				bioCollectionList = iLimsService.searchBioCollection(getModelObject().getBioCollection());
 			}
-			catch (ArkSystemException e)
-			{
+			catch (ArkSystemException e) {
 				this.error(e.getMessage());
 			}
 		}
 
-		if (bioCollectionList != null && bioCollectionList.size() == 0)
-		{
+		if (bioCollectionList != null && bioCollectionList.size() == 0) {
 			this.info("Collections with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
@@ -172,48 +160,44 @@ public class SearchForm extends AbstractSearchForm<LimsVO>
 	 * @param arkContextMarkup
 	 *           the arkContextMarkup to set
 	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
-	{
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
 		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	/**
 	 * @return the arkContextMarkup
 	 */
-	public WebMarkupContainer getArkContextMarkup()
-	{
+	public WebMarkupContainer getArkContextMarkup() {
 		return arkContextMarkup;
 	}
 
 	/**
-	 * @param detailPanel the detailPanel to set
+	 * @param detailPanel
+	 *           the detailPanel to set
 	 */
-	public void setDetailPanel(DetailPanel detailPanel)
-	{
+	public void setDetailPanel(DetailPanel detailPanel) {
 		this.detailPanel = detailPanel;
 	}
 
 	/**
 	 * @return the detailPanel
 	 */
-	public DetailPanel getDetailPanel()
-	{
+	public DetailPanel getDetailPanel() {
 		return detailPanel;
 	}
 
 	/**
-	 * @param cpmModel the cpmModel to set
+	 * @param cpmModel
+	 *           the cpmModel to set
 	 */
-	public void setCpmModel(CompoundPropertyModel<LimsVO> cpmModel)
-	{
+	public void setCpmModel(CompoundPropertyModel<LimsVO> cpmModel) {
 		this.cpmModel = cpmModel;
 	}
 
 	/**
 	 * @return the cpmModel
 	 */
-	public CompoundPropertyModel<LimsVO> getCpmModel()
-	{
+	public CompoundPropertyModel<LimsVO> getCpmModel() {
 		return cpmModel;
 	}
 }

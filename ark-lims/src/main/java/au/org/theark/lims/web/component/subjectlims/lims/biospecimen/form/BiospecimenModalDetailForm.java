@@ -38,13 +38,12 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
-{
+public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
-	private static final Logger		log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
+	private static final Logger				log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
@@ -70,16 +69,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVo
 	 * @param modalWindow
-	 * @param listDetailPanel 
+	 * @param listDetailPanel
 	 */
-	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel)
-	{
+	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenId");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
@@ -92,60 +89,52 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 
 		initSampleTypeDdc();
 		initBioCollectionDdc();
-		
+
 		attachValidators();
 		addComponents();
 	}
 
-	private void initSampleTypeDdc()
-	{
+	private void initSampleTypeDdc() {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
 		ChoiceRenderer<BioSampletype> sampleTypeRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
 		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", (List<BioSampletype>) sampleTypeList, sampleTypeRenderer);
 	}
-	
-	private void initBioCollectionDdc()
-	{
+
+	private void initBioCollectionDdc() {
 		// Get a list of collections for the study/subject in context by default
 		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
+
 		Study study = null;
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			study = iArkCommonService.getStudy(sessionStudyId);
-//			cpModel.getObject().getBioCollection().setStudy(study);
+			// cpModel.getObject().getBioCollection().setStudy(study);
 
 			BioCollection criteria = new BioCollection();
 			criteria.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
 			criteria.setStudy(study);
-			try
-			{
-//				bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
+			try {
+				// bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
 				cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(criteria));
 
 				ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
 				bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
 			}
-			catch (ArkSystemException e)
-			{
+			catch (ArkSystemException e) {
 				log.error(e.getMessage());
 				this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
 			}
 		}
-		
-	}
-	
 
-	protected void attachValidators()
-	{
+	}
+
+	protected void attachValidators() {
 		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenIdTxtFld.setEnabled(false));
 		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
@@ -157,17 +146,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onSave(AjaxRequestTarget target)
-	{
-		if (cpModel.getObject().getBiospecimen().getId() == null)
-		{
+	protected void onSave(AjaxRequestTarget target) {
+		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			// Save
 			iLimsService.createBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was created successfully");
 			processErrors(target);
 		}
-		else
-		{
+		else {
 			// Update
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
@@ -178,15 +164,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onClose(AjaxRequestTarget target)
-	{		
+	protected void onClose(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 		modalWindow.close(target);
 	}
-	
+
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
 		iLimsService.deleteBiospecimen(cpModel.getObject());
 		this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
 
@@ -194,8 +178,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 	}
 
@@ -205,19 +188,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
-	protected boolean isNew()
-	{
-		 if (cpModel.getObject().getBiospecimen().getId() == null) 
-		 { 
-			 return true; 
-		 } 
-		 else 
-		 { 
-			 return false; 
-		 }
+	protected boolean isNew() {
+		if (cpModel.getObject().getBiospecimen().getId() == null) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
-	
 	@Override
 	public void onBeforeRender() {
 		// Get fresh from backend
@@ -225,7 +204,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO>
 		if (b.getId() != null) {
 			try {
 				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(b.getId()));
-			} catch (EntityNotFoundException e) {
+			}
+			catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
 				e.printStackTrace();

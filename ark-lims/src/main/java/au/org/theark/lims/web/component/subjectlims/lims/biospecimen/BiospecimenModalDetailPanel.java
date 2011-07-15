@@ -14,25 +14,23 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
-public class BiospecimenModalDetailPanel extends Panel
-{
+public class BiospecimenModalDetailPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1755709689461138709L;
-	
+	private static final long						serialVersionUID	= 1755709689461138709L;
+
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService iLimsService;
-	
-	private FeedbackPanel		detailFeedbackPanel;
-	private ModalWindow 			modalWindow;
+	private ILimsService								iLimsService;
+
+	private FeedbackPanel							detailFeedbackPanel;
+	private ModalWindow								modalWindow;
 	private BiospecimenModalDetailForm			detailForm;
-	private ArkCrudContainerVO	arkCrudContainerVo;
+	private ArkCrudContainerVO						arkCrudContainerVo;
 
-	protected CompoundPropertyModel<LimsVO> cpModel;
+	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-	public BiospecimenModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel)
-	{
+	public BiospecimenModalDetailPanel(String id, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.detailFeedbackPanel = initialiseFeedBackPanel();
 		this.setModalWindow(modalWindow);
@@ -40,25 +38,24 @@ public class BiospecimenModalDetailPanel extends Panel
 		this.cpModel = cpModel;
 		initialisePanel();
 	}
-	
-	protected FeedbackPanel initialiseFeedBackPanel(){
+
+	protected FeedbackPanel initialiseFeedBackPanel() {
 		/* Feedback Panel */
-		detailFeedbackPanel= new FeedbackPanel("detailFeedback");
+		detailFeedbackPanel = new FeedbackPanel("detailFeedback");
 		detailFeedbackPanel.setOutputMarkupId(true);
 		return detailFeedbackPanel;
 	}
 
-	public void initialisePanel()
-	{
-//		CompoundPropertyModel<LimsVO> cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-//		Biospecimen biospecimenBackend;
-//		try {
-//			biospecimenBackend = iLimsService.getBiospecimen(biospecimen.getId());
-//			cpModel.getObject().setBiospecimen(biospecimenBackend);
-//		} catch (EntityNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+	public void initialisePanel() {
+		// CompoundPropertyModel<LimsVO> cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+		// Biospecimen biospecimenBackend;
+		// try {
+		// biospecimenBackend = iLimsService.getBiospecimen(biospecimen.getId());
+		// cpModel.getObject().setBiospecimen(biospecimenBackend);
+		// } catch (EntityNotFoundException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
 		detailForm = new BiospecimenModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);
@@ -68,16 +65,15 @@ public class BiospecimenModalDetailPanel extends Panel
 	/**
 	 * @return the modalWindow
 	 */
-	public ModalWindow getModalWindow()
-	{
+	public ModalWindow getModalWindow() {
 		return modalWindow;
 	}
-	
+
 	/**
-	 * @param modalWindow the modalWindow to set
+	 * @param modalWindow
+	 *           the modalWindow to set
 	 */
-	public void setModalWindow(ModalWindow modalWindow)
-	{
+	public void setModalWindow(ModalWindow modalWindow) {
 		this.modalWindow = modalWindow;
 	}
 

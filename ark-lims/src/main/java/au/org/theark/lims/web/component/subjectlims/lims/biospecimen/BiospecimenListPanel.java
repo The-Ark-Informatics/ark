@@ -19,32 +19,29 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenListForm;
 
-public class BiospecimenListPanel extends Panel
-{
+public class BiospecimenListPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 7224168117680252835L;
+	private static final long						serialVersionUID	= 7224168117680252835L;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService iLimsService;
-	
-	protected CompoundPropertyModel<LimsVO> cpModel;
+	private ILimsService								iLimsService;
 
-	protected FeedbackPanel feedbackPanel;
-	private BiospecimenListForm listDetailForm;
-	
-	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, /*AbstractDetailModalWindow modalWindow, */CompoundPropertyModel<LimsVO> cpModel)
-	{
+	protected CompoundPropertyModel<LimsVO>	cpModel;
+
+	protected FeedbackPanel							feedbackPanel;
+	private BiospecimenListForm					listDetailForm;
+
+	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, /* AbstractDetailModalWindow modalWindow, */CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		initialisePanel();
 		setOutputMarkupPlaceholderTag(true);
 	}
-	
-	public void initialisePanel()
-	{
+
+	public void initialisePanel() {
 		final BiospecimenListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
@@ -52,8 +49,8 @@ public class BiospecimenListPanel extends Panel
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				target.addComponent(panelToRepaint);
 			}
-		
-		};		
+
+		};
 		listDetailForm = new BiospecimenListForm("biospecimenListForm", feedbackPanel, modalWindow, cpModel);
 		listDetailForm.initialiseForm();
 		add(listDetailForm);

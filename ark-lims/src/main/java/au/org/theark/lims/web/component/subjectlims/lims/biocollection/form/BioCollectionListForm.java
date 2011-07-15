@@ -45,39 +45,38 @@ import au.org.theark.lims.web.component.subjectlims.lims.biocollection.Collectio
  * @author cellis
  * 
  */
-@SuppressWarnings( { "unchecked", "rawtypes" })
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class BioCollectionListForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long										serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
+	private IArkCommonService<Void>								iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService iLimsService;
+	private ILimsService												iLimsService;
 
-	protected CompoundPropertyModel<LimsVO> cpModel;
-	protected FeedbackPanel feedbackPanel;
-	protected AbstractDetailModalWindow modalWindow;
+	protected CompoundPropertyModel<LimsVO>					cpModel;
+	protected FeedbackPanel											feedbackPanel;
+	protected AbstractDetailModalWindow							modalWindow;
 
-	protected WebMarkupContainer dataviewWMC;
-	private Label idLblFld;
-	private Label nameLblFld;
-	private Label commentsLblFld;
-	private Label collectionDateLblFld;
-	private Label surgeryDateLblFld;
+	protected WebMarkupContainer									dataviewWMC;
+	private Label														idLblFld;
+	private Label														nameLblFld;
+	private Label														commentsLblFld;
+	private Label														collectionDateLblFld;
+	private Label														surgeryDateLblFld;
 	// private BioCollectionListPanel bioCollectionListPanel;
-	private Panel modalContentPanel;
-	protected AjaxButton newButton;
+	private Panel														modalContentPanel;
+	protected AjaxButton												newButton;
 
-	protected WebMarkupContainer dataViewListWMC;
-	private DataView<BioCollection> dataView;
-	private ArkDataProvider<BioCollection, ILimsService> bioColectionProvider;
+	protected WebMarkupContainer									dataViewListWMC;
+	private DataView<BioCollection>								dataView;
+	private ArkDataProvider<BioCollection, ILimsService>	bioColectionProvider;
 
-	public BioCollectionListForm(String id, FeedbackPanel feedbackPanel,
-			AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, cpModel);
 		this.cpModel = cpModel;
 		this.feedbackPanel = feedbackPanel;
@@ -86,21 +85,21 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 	public void initialiseForm() {
 		modalContentPanel = new EmptyPanel("content");
-		
+
 		initialiseDataView();
 		initialiseNewButton();
 
 		add(modalWindow);
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		// Reset the BioCollection (for criteria) in LimsVO
 		// This prevents the manual modal "X" close button from not reseting the criteria
 		cpModel.getObject().setBioCollection(new BioCollection());
-		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		String sessionSubjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy linkSubjectStudy = null;
@@ -112,11 +111,12 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				if (study != null && linkSubjectStudy != null) {
 					contextLoaded = true;
 				}
-			} catch (EntityNotFoundException e) {
+			}
+			catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			if (contextLoaded) {
 				// Successfully loaded from backend
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
@@ -140,10 +140,8 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 			public Iterator<BioCollection> iterator(int first, int count) {
 				List<BioCollection> listCollection = new ArrayList<BioCollection>();
-				if (ArkPermissionHelper
-						.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					listCollection = service.searchPageableBioCollections(model
-							.getObject(), first, count);
+				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
+					listCollection = service.searchPageableBioCollections(model.getObject(), first, count);
 				}
 				return listCollection.iterator();
 			}
@@ -155,7 +153,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				return cpModel.getObject().getBioCollection();
 			}
 		});
-		
+
 		dataView = buildDataView(bioColectionProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
@@ -172,8 +170,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	}
 
 	private void initialiseNewButton() {
-		newButton = new AjaxButton("listNewButton", new StringResourceModel(
-				"listNewKey", this, null)) {
+		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
 			@Override
 			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
@@ -202,11 +199,9 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	 * @param iModel
 	 * @return the pageableListView of BioCollection
 	 */
-	public DataView<BioCollection> buildDataView(
-			ArkDataProvider<BioCollection, ILimsService> bioCollectionProvider) {
+	public DataView<BioCollection> buildDataView(ArkDataProvider<BioCollection, ILimsService> bioCollectionProvider) {
 
-		DataView<BioCollection> bioCollectionDataView = new DataView<BioCollection>(
-				"collectionList", bioCollectionProvider) {
+		DataView<BioCollection> bioCollectionDataView = new DataView<BioCollection>("collectionList", bioCollectionProvider) {
 			@Override
 			protected void populateItem(final Item<BioCollection> item) {
 				item.setOutputMarkupId(true);
@@ -215,61 +210,59 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
 				/*
-				 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged().
-				 * This then goes through all its children to check/call isVisible() and isEnabled().
-				 * By avoiding the use of AjaxButtons when not required, no form submit is caused and thus
-				 * less processing is required.
+				 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
+				 * check/call isVisible() and isEnabled(). By avoiding the use of AjaxButtons when not required, no form submit is caused and thus less
+				 * processing is required.
 				 */
-//				AjaxButton listEditButton = new AjaxButton("listEditButton", new StringResourceModel("editKey", this, null)) {
-//					/**
-//					 * 
-//					 */
-//					private static final long serialVersionUID = -6032731528995858376L;
-//
-//					@Override
-//					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-//						// Refresh any feedback
-////						target.addComponent(feedbackPanel);
-//
-//						// // Set selected item into model.context, then show
-//						// modalWindow for editing
-//						// Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
-//						//						
-//						BioCollection bc = (BioCollection)(getParent().getDefaultModelObject());
-//						cpModel.getObject().setBioCollection(bc);
-//						showModalWindow(target, cpModel);
-//					}
-//
-//					@Override
-//					public boolean isVisible() {
-//						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
-//					}
-//				};
+				// AjaxButton listEditButton = new AjaxButton("listEditButton", new StringResourceModel("editKey", this, null)) {
+				// /**
+				// *
+				// */
+				// private static final long serialVersionUID = -6032731528995858376L;
+				//
+				// @Override
+				// protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// // Refresh any feedback
+				// // target.addComponent(feedbackPanel);
+				//
+				// // // Set selected item into model.context, then show
+				// // modalWindow for editing
+				// // Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
+				// //
+				// BioCollection bc = (BioCollection)(getParent().getDefaultModelObject());
+				// cpModel.getObject().setBioCollection(bc);
+				// showModalWindow(target, cpModel);
+				// }
+				//
+				// @Override
+				// public boolean isVisible() {
+				// return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
+				// }
+				// };
 				AjaxLink listEditLink = new AjaxLink("listEditLink") {
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						BioCollection bc = (BioCollection)(getParent().getDefaultModelObject());
+						BioCollection bc = (BioCollection) (getParent().getDefaultModelObject());
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 						newModel.getObject().getBioCollection().setId(bc.getId());
 						showModalWindow(target, newModel);
 					}
-					
+
 					@Override
 					public boolean isVisible() {
 						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
 					}
 				};
-				
-//				listEditButton.setDefaultFormProcessing(false);
+
+				// listEditButton.setDefaultFormProcessing(false);
 				Label nameLinkLabel = new Label("lblEditLink", "Edit");
 				listEditLink.add(nameLinkLabel);
 				rowEditWMC.add(listEditLink);
-//				rowEditWMC.add(listEditButton);
+				// rowEditWMC.add(listEditButton);
 				item.add(rowEditWMC);
 
-				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-						au.org.theark.core.Constants.DD_MM_YYYY);
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 
 				idLblFld = new Label("bioCollection.id", String.valueOf(bioCollection.getId()));
 				nameLblFld = new Label("bioCollection.name", bioCollection.getName());
@@ -298,23 +291,22 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 				WebMarkupContainer rowDeleteWMC = new WebMarkupContainer("rowDeleteWMC", item.getModel());
 				AjaxButton deleteButton = new AjaxButton("listDeleteButton", new StringResourceModel(Constants.DELETE, this, null)) {
-					IModel confirm = new StringResourceModel("confirmDelete", this, null);
+					IModel							confirm				= new StringResourceModel("confirmDelete", this, null);
 					/**
 					 * 
 					 */
-					private static final long serialVersionUID = -585048033031888283L;
+					private static final long	serialVersionUID	= -585048033031888283L;
 
 					/*
-					 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged().
-					 * This then goes through all its children to check/call isVisible() and isEnabled().
-					 * Thus, it is best to keep the isVisible() and isEnabled() very light-weight
-					 * (e.g. avoid hitting the database to work this out)
-					 */ 
-//					@Override
-//					public boolean isEnabled() {
-//						final BioCollection bioCollectionSelected = (BioCollection)(getParent().getDefaultModelObject());
-//						return (!iLimsService.hasBiospecimens(bioCollectionSelected));
-//					}
+					 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
+					 * check/call isVisible() and isEnabled(). Thus, it is best to keep the isVisible() and isEnabled() very light-weight (e.g. avoid
+					 * hitting the database to work this out)
+					 */
+					// @Override
+					// public boolean isEnabled() {
+					// final BioCollection bioCollectionSelected = (BioCollection)(getParent().getDefaultModelObject());
+					// return (!iLimsService.hasBiospecimens(bioCollectionSelected));
+					// }
 
 					@Override
 					public boolean isVisible() {
@@ -323,13 +315,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 					@Override
 					protected IAjaxCallDecorator getAjaxCallDecorator() {
-						return new AjaxPreprocessingCallDecorator(super
-								.getAjaxCallDecorator()) {
-							private static final long serialVersionUID = 7495281332320552876L;
+						return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
+							private static final long	serialVersionUID	= 7495281332320552876L;
 
 							@Override
-							public CharSequence preDecorateScript(
-									CharSequence script) {
+							public CharSequence preDecorateScript(CharSequence script) {
 								StringBuffer sb = new StringBuffer();
 								sb.append("if(!confirm('");
 								sb.append(confirm.getObject());
@@ -337,7 +327,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 								sb.append("{ ");
 								sb.append("	return false ");
 								sb.append("} else { ");
-								sb.append("	this.disabled = true;" );
+								sb.append("	this.disabled = true;");
 								sb.append("};");
 								sb.append(script);
 								return sb;
@@ -352,7 +342,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 					}
 
 					protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-						final BioCollection bioCollectionSelected = (BioCollection)(getParent().getDefaultModelObject());
+						final BioCollection bioCollectionSelected = (BioCollection) (getParent().getDefaultModelObject());
 						if (!iLimsService.hasBiospecimens(bioCollectionSelected)) {
 							// Leave the cpModel's BioCollection as-is
 							LimsVO bioCollectionSelectdLimsVO = new LimsVO();
@@ -360,10 +350,10 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 							iLimsService.deleteBioCollection(bioCollectionSelectdLimsVO);
 							this.info("Biospecimen collection " + bioCollectionSelected.getName() + " was deleted successfully");
-					
+
 							// Display delete confirmation message
 							target.addComponent(feedbackPanel);
-							target.addComponent(form);			
+							target.addComponent(form);
 						}
 						else {
 							this.error("Biospecimen collection " + bioCollectionSelected.getName() + " can not be deleted because there are biospecimens attached");
@@ -376,14 +366,13 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				rowDeleteWMC.add(deleteButton);
 				item.add(rowDeleteWMC);
 
-				item.add(new AttributeModifier(Constants.CLASS, true,
-						new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 
-							@Override
-							public String getObject() {
-								return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
-							}
-						}));
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
+					}
+				}));
 			}
 
 		};
@@ -397,7 +386,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 		// Set new BioCollection into model, then show modalWindow to save
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-//		newModel.getObject().setBioCollection(new BioCollection());
+		// newModel.getObject().setBioCollection(new BioCollection());
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 		newModel.getObject().getBioCollection().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 

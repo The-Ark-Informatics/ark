@@ -24,8 +24,7 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
 
-public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
-{
+public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO> {
 	/**
 	 * 
 	 */
@@ -48,8 +47,7 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	public BiospecimenContainerPanel(String id)
-	{
+	public BiospecimenContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -67,8 +65,7 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 		add(containerForm);
 	}
 
-	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup)
-	{
+	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -87,39 +84,33 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 		add(containerForm);
 	}
 
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
 				editButtonContainer, detailPanelFormContainer, arkContextMarkup);
 
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Get a list of biospecimens for the study/subject in context by default
 				java.util.List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>();
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				
-				if (sessionStudyId != null && sessionStudyId > 0)
-				{
+
+				if (sessionStudyId != null && sessionStudyId > 0) {
 					// Study in context
 					Study study = iArkCommonService.getStudy(sessionStudyId);
 					containerForm.getModelObject().getBiospecimen().setStudy(study);
-										
-					try
-					{
+
+					try {
 						biospecimenList = iLimsService.searchBiospecimen(containerForm.getModelObject().getBiospecimen());
 					}
-					catch (ArkSystemException e)
-					{
+					catch (ArkSystemException e) {
 						log.error(e.getMessage());
 					}
 				}
-				
+
 				listView.removeAll();
 
 				// Set results into model
@@ -143,8 +134,7 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 		return searchResultPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
 				detailPanelFormContainer, arkContextMarkup);
 		detailPanel.initialisePanel();
@@ -152,12 +142,10 @@ public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO>
 		return detailPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			BioCollection bioCollection = new BioCollection();
 			bioCollection.setStudy(study);

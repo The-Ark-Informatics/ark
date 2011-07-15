@@ -46,33 +46,31 @@ import au.org.theark.lims.web.component.biospecimen.SearchPanel;
  * @author cellis
  * 
  */
-public class DetailForm extends AbstractDetailForm<LimsVO>
-{
+public class DetailForm extends AbstractDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID	= 5940802332582675794L;
-	private static final Logger		log					= LoggerFactory.getLogger(DetailForm.class);
-
+	private static final long					serialVersionUID	= 5940802332582675794L;
+	private static final Logger				log					= LoggerFactory.getLogger(DetailForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
+	private IArkCommonService<Void>			iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService					iLimsService;
+	private ILimsService							iLimsService;
 
-	private int								mode;
+	private int										mode;
 
-	private TextField<String>			idTxtFld;
-	private TextField<String>			biospecimenIdTxtFld;
-	private TextArea<String>			commentsTxtAreaFld;
-	private DateTextField				sampleDateTxtFld;
-	private DropDownChoice<BioSampletype>			sampleTypeDdc;
-	private DropDownChoice<BioCollection>			bioCollectionDdc;
-	private TextField<String>			quantityTxtFld;
+	private TextField<String>					idTxtFld;
+	private TextField<String>					biospecimenIdTxtFld;
+	private TextArea<String>					commentsTxtAreaFld;
+	private DateTextField						sampleDateTxtFld;
+	private DropDownChoice<BioSampletype>	sampleTypeDdc;
+	private DropDownChoice<BioCollection>	bioCollectionDdc;
+	private TextField<String>					quantityTxtFld;
 
-	private WebMarkupContainer			arkContextMarkup;
-	private String subjectUIDInContext;
+	private WebMarkupContainer					arkContextMarkup;
+	private String									subjectUIDInContext;
 
 	/**
 	 * Constructor
@@ -90,16 +88,14 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer,
 			AbstractContainerForm<LimsVO> containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer arkContextMarkup)
-	{
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer arkContextMarkup) {
 
 		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 
 		this.setArkContextMarkup(arkContextMarkup);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenId");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
@@ -112,75 +108,63 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 
 		initSampleTypeDdc();
 		initBioCollectionDdc();
-		
+
 		attachValidators();
 		addComponents();
 	}
-	
-	private void initSampleTypeDdc()
-	{
+
+	private void initSampleTypeDdc() {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
 		ChoiceRenderer<BioSampletype> sampleTypeRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
 		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", (List<BioSampletype>) sampleTypeList, sampleTypeRenderer);
 	}
-	
-	private void initBioCollectionDdc()
-	{
+
+	private void initBioCollectionDdc() {
 		// Get a list of collections for the study/subject in context by default
 		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		if (sessionStudyId != null && sessionStudyId > 0)
-		{
+
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			Study study = iArkCommonService.getStudy(sessionStudyId);
 			containerForm.getModelObject().getBioCollection().setStudy(study);
 		}
-		
+
 		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		
+
 		// Subject in context
-		if(subjectUIDInContext != null && !subjectUIDInContext.isEmpty())
-		{
-			try
-			{
+		if (subjectUIDInContext != null && !subjectUIDInContext.isEmpty()) {
+			try {
 				// Subject in context
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
-				containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);	
+				containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);
 			}
-			catch (EntityNotFoundException e)
-			{
+			catch (EntityNotFoundException e) {
 				log.error(e.getMessage());
 			}
-			catch(NullPointerException e)
-			{
+			catch (NullPointerException e) {
 				log.error(e.getMessage());
 			}
 		}
-		
-		try
-		{
+
+		try {
 			bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
 		}
-		catch (ArkSystemException e)
-		{
+		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		
+
 		ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
 		bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", (List<BioCollection>) bioCollectionList, bioCollectionRenderer);
 	}
-	
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		detailPanelFormContainer.add(idTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(biospecimenIdTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(commentsTxtAreaFld);
@@ -192,26 +176,22 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	}
 
 	@Override
-	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target)
-	{
+	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
 		// Subject in context
 		LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		
-		try
-		{
+
+		try {
 			linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
 			containerForm.getModelObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
 
-			if (containerForm.getModelObject().getBiospecimen().getId() == null)
-			{
+			if (containerForm.getModelObject().getBiospecimen().getId() == null) {
 				// Save
 				iLimsService.createBiospecimen(containerForm.getModelObject());
 				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was created successfully");
 				processErrors(target);
 			}
-			else
-			{
+			else {
 				// Update
 				iLimsService.updateBiospecimen(containerForm.getModelObject());
 				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
@@ -220,49 +200,42 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 
 			onSavePostProcess(target);
 		}
-		catch (EntityNotFoundException e)
-		{
+		catch (EntityNotFoundException e) {
 			this.error(e.getMessage());
 		}
-		catch(NullPointerException e)
-		{
+		catch (NullPointerException e) {
 			this.error("Cannot save a Biospecimen without a Subject in context");
 		}
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		LimsVO limsVo = new LimsVO();
 		containerForm.setModelObject(limsVo);
-		
+
 		java.util.List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>(0);
-		try
-		{
+		try {
 			biospecimenList = iLimsService.searchBiospecimen(limsVo.getBiospecimen());
 		}
-		catch (ArkSystemException e)
-		{
+		catch (ArkSystemException e) {
 			this.error(e.getMessage());
 		}
 		containerForm.getModelObject().setBiospecimenList(biospecimenList);
-		
+
 		// Enable New button now SubjectUID in context (from biospecimen selection)
 		WebMarkupContainer wmc = searchPanelContainer;
 		SearchPanel searchPanel = (SearchPanel) wmc.get("searchPanel");
 		SearchForm searchForm = (SearchForm) searchPanel.get("searchForm");
 		AjaxButton newButton = searchForm.getNewButton();
 		newButton.setEnabled(true);
-		//target.addComponent(newButton);
+		// target.addComponent(newButton);
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		iLimsService.deleteBiospecimen(containerForm.getModelObject());
 		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
 
@@ -281,23 +254,19 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
-	protected boolean isNew()
-	{
-		if (containerForm.getModelObject().getBiospecimen().getId() == null)
-		{
+	protected boolean isNew() {
+		if (containerForm.getModelObject().getBiospecimen().getId() == null) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
-	
+
 	/**
-	 *  @return the deleteButton
+	 * @return the deleteButton
 	 */
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
@@ -305,8 +274,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	 * @param deleteButton
 	 *           the deleteButton to set
 	 */
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
@@ -314,16 +282,14 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	 * @param arkContextMarkup
 	 *           the arkContextMarkup to set
 	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup)
-	{
+	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
 		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	/**
 	 * @return the arkContextMarkup
 	 */
-	public WebMarkupContainer getArkContextMarkup()
-	{
+	public WebMarkupContainer getArkContextMarkup() {
 		return arkContextMarkup;
 	}
 
@@ -331,16 +297,14 @@ public class DetailForm extends AbstractDetailForm<LimsVO>
 	 * @param mode
 	 *           the mode to set
 	 */
-	public void setMode(int mode)
-	{
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 
 	/**
 	 * @return the mode
 	 */
-	public int getMode()
-	{
+	public int getMode() {
 		return mode;
 	}
 }

@@ -1,22 +1,21 @@
 package au.org.theark.lims.web;
 
-public class Constants
-{
+public class Constants {
 	public static final String	LIMS_MAIN_TAB								= "LIMS";
-	
+
 	/* Tab names */
 	public static final String	MENU_LIMS_SUBMENU							= "limsSubMenus";
 	public static final String	TAB_BIO_COLLECTION						= "Collection";
 	public static final String	TAB_BIOSPECIMEN							= "Biospecimen";
 	public static final String	TAB_INVENTORY								= "Inventory";
-	
+
 	/* Resource Keys */
 	public static final String	TAB_MODULE_LIMS							= "tab.module.lims";
-	public static final String TAB_MODULE_LIMS_COLLECTION = "tab.module.lims.collection";
-	public static final String	TAB_MODULE_BIOSPECIMEN	= "tab.module.lims.biospecimen";
-	
+	public static final String	TAB_MODULE_LIMS_COLLECTION				= "tab.module.lims.collection";
+	public static final String	TAB_MODULE_BIOSPECIMEN					= "tab.module.lims.biospecimen";
+
 	/* Session items */
-	public static final String	BIO_COLLECTION	= "BIO_COLLECTION";
+	public static final String	BIO_COLLECTION								= "BIO_COLLECTION";
 
 	public static final String	LIMS_SERVICE								= "limsService";
 
@@ -116,5 +115,5 @@ public class Constants
 	public static final String	SUBJECT_CONSENT_TO_USEDATA				= "linkSubjectStudy.consentToUseData";
 	public static final String	SUBJECT_CONSENT_PASSIVE_DATA_GATHER	= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String	SUBJECT_AUTO_GENERATED					= "Auto-generated";
-	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";	
+	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";
 }

@@ -13,19 +13,15 @@ import au.org.theark.core.model.study.entity.Person;
 
 @SuppressWarnings("unchecked")
 @Repository("bioPersonDao")
-public class BioPersonDao extends HibernateSessionDao implements IBioPersonDao
-{
-	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException
-	{
+public class BioPersonDao extends HibernateSessionDao implements IBioPersonDao {
+	public Person getPerson(Long id) throws EntityNotFoundException, ArkSystemException {
 		Criteria criteria = getSession().createCriteria(Person.class);
 		criteria.add(Restrictions.eq("id", id));
 		List<Person> listOfPerson = criteria.list();
-		if (listOfPerson != null && listOfPerson.size() > 0)
-		{
+		if (listOfPerson != null && listOfPerson.size() > 0) {
 			return listOfPerson.get(0);
 		}
-		else
-		{
+		else {
 			throw new EntityNotFoundException("The entity with id" + id.toString() + " cannot be found.");
 		}
 	}

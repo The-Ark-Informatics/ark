@@ -9,30 +9,27 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.form.BioCollectionListForm;
 
-public class BioCollectionListPanel extends Panel
-{	
+public class BioCollectionListPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID	= -2329695170775963267L;
+	private static final long						serialVersionUID	= -2329695170775963267L;
 
-	protected CompoundPropertyModel<LimsVO> cpModel;
-	
-	protected FeedbackPanel feedbackPanel;
-	protected BioCollectionListForm bioCollectionListForm;
+	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-	public BioCollectionListPanel(String id, FeedbackPanel feedbackPanel, /*AbstractDetailModalWindow modalWindow, */CompoundPropertyModel<LimsVO> cpModel)
-	{
+	protected FeedbackPanel							feedbackPanel;
+	protected BioCollectionListForm				bioCollectionListForm;
+
+	public BioCollectionListPanel(String id, FeedbackPanel feedbackPanel, /* AbstractDetailModalWindow modalWindow, */CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-	
+
 		initialisePanel();
 		setOutputMarkupPlaceholderTag(true);
 	}
-	
-	public void initialisePanel()
-	{
+
+	public void initialisePanel() {
 		final BioCollectionListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
@@ -40,9 +37,9 @@ public class BioCollectionListPanel extends Panel
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				target.addComponent(panelToRepaint);
 			}
-		
-		};		
-		
+
+		};
+
 		bioCollectionListForm = new BioCollectionListForm("collectionListForm", feedbackPanel, modalWindow, cpModel);
 		bioCollectionListForm.initialiseForm();
 

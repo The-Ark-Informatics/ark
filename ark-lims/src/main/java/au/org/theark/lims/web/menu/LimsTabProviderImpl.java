@@ -15,24 +15,21 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
-public class LimsTabProviderImpl extends Panel implements IMainTabProvider
-{
+public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -2064073261192985087L;
-	private transient static Logger	log	= LoggerFactory.getLogger(LimsTabProviderImpl.class);
+	private static final long			serialVersionUID	= -2064073261192985087L;
+	private transient static Logger	log					= LoggerFactory.getLogger(LimsTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private List<ITab>					moduleTabsList;
 
-	public LimsTabProviderImpl(String panelId)
-	{
+	public LimsTabProviderImpl(String panelId) {
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
-	
-	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup)
-	{
+
+	public List<ITab> buildTabs(WebMarkupContainer arkContextPanelMarkup) {
 		this.arkContextPanelMarkup = arkContextPanelMarkup;
 
 		// Forms the Main Top level Tab
@@ -42,27 +39,22 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 		return moduleTabsList;
 	}
 
-	public ITab createTab(final String tabName)
-	{
-		return new ArkMainTab(new Model<String>(tabName))
-		{
+	public ITab createTab(final String tabName) {
+		return new ArkMainTab(new Model<String>(tabName)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 4461043265879777714L;
 
 			@Override
-			public Panel getPanel(String pid)
-			{
+			public Panel getPanel(String pid) {
 				// The sub menu(s)
 				return new LimsSubMenuTab(pid, arkContextPanelMarkup);
 			}
 
-			public boolean isAccessible()
-			{
+			public boolean isAccessible() {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null)
-				{
+				if (sessionStudyId == null) {
 					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_LIMS).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
@@ -70,26 +62,24 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider
 					return true;
 			}
 
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_LIMS);
 			}
 		};
 	}
 
 	/**
-	 * @param log the log to set
+	 * @param log
+	 *           the log to set
 	 */
-	public static void setLog(Logger log)
-	{
+	public static void setLog(Logger log) {
 		LimsTabProviderImpl.log = log;
 	}
 
 	/**
 	 * @return the log
 	 */
-	public static Logger getLog()
-	{
+	public static Logger getLog() {
 		return log;
 	}
 }

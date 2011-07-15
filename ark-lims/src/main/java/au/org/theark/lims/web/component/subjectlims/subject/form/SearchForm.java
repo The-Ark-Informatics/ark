@@ -41,14 +41,13 @@ import au.org.theark.lims.web.Constants;
  * @author nivedann
  * 
  */
-public class SearchForm extends AbstractSearchForm<SubjectVO>
-{
+public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	/**
 	 * 
 	 */
 	private static final long						serialVersionUID	= 5853988156214275754L;
-	protected static final Logger		log					= LoggerFactory.getLogger(AbstractSearchForm.class);
+	protected static final Logger					log					= LoggerFactory.getLogger(AbstractSearchForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>				iArkCommonService;
@@ -69,8 +68,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 	 */
 	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailsContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer)
-	{
+			WebMarkupContainer editButtonContainer) {
 
 		// super(id, cpmModel);
 		super(id, cpmModel, detailsContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
@@ -80,32 +78,28 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-		
+
 		// hide New button for Subject in LIMS
-		newButton = new AjaxButton(au.org.theark.core.Constants.NEW)
-		{
+		newButton = new AjaxButton(au.org.theark.core.Constants.NEW) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 6539600487179555764L;
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return false;
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				super.onSubmit();
 			}
 		};
 		addOrReplace(newButton);
 	}
 
-	protected void addSearchComponentsToForm()
-	{
+	protected void addSearchComponentsToForm() {
 		add(subjectUIDTxtFld);
 		add(firstNameTxtFld);
 		add(middleNameTxtFld);
@@ -116,8 +110,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		add(dateOfBirthTxtFld);
 	}
 
-	protected void initialiseSearchForm()
-	{
+	protected void initialiseSearchForm() {
 		subjectUIDTxtFld = new TextField<String>(Constants.SUBJECT_UID);
 		firstNameTxtFld = new TextField<String>(Constants.PERSON_FIRST_NAME);
 		middleNameTxtFld = new TextField<String>(Constants.PERSON_MIDDLE_NAME);
@@ -132,8 +125,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		dateOfBirthTxtFld.add(dobDatePicker);
 	}
 
-	private void initVitalStatusDdc()
-	{
+	private void initVitalStatusDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, "person");
@@ -143,8 +135,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS, vitalStatusPm, (List) vitalStatusList, vitalStatusRenderer);
 	}
 
-	private void initSubjectStatusDdc()
-	{
+	private void initSubjectStatusDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm, "subjectStatus");
@@ -153,8 +144,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusPm, subjectStatusList, subjectStatusRenderer);
 	}
 
-	private void initGenderTypeDdc()
-	{
+	private void initGenderTypeDdc() {
 		CompoundPropertyModel<SubjectVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, Constants.PERSON);
@@ -165,22 +155,19 @@ public class SearchForm extends AbstractSearchForm<SubjectVO>
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// Should never get here since new should never be enabled for Subject Details via LIMS
 		log.error("Incorrect application workflow - tried to create a new Subject via LIMS");
 	}
 
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 		int count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
-		if (count == 0)
-		{
+		if (count == 0) {
 			this.info("There are no subjects with the specified criteria.");
 			target.addComponent(feedbackPanel);
 		}

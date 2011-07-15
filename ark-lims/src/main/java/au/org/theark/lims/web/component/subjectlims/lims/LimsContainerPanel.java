@@ -26,51 +26,51 @@ import au.org.theark.lims.web.component.subjectlims.lims.form.ContainerForm;
  * 
  */
 @SuppressWarnings("unchecked")
-public class LimsContainerPanel extends Panel
-{
+public class LimsContainerPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= -1L;
-	private static final Logger				log	= LoggerFactory.getLogger(LimsContainerPanel.class);
+	private static final long						serialVersionUID	= -1L;
+	private static final Logger					log					= LoggerFactory.getLogger(LimsContainerPanel.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
+	private IArkCommonService						iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService					iLimsService;
-	
-	protected LimsVO 						limsVO = new LimsVO();
-	protected CompoundPropertyModel<LimsVO> cpModel;
+	private ILimsService								iLimsService;
 
-	protected FeedbackPanel					feedbackPanel;
-	protected WebMarkupContainer			arkContextMarkup;
-	protected ContainerForm					containerForm;
-//	protected WebMarkupContainer			resultsListWMC;
-	protected Panel							collectionListPanel;
-	protected Panel 						biospecimenListPanel;
-//	protected AbstractDetailModalWindow		modalWindow;
+	protected LimsVO									limsVO				= new LimsVO();
+	protected CompoundPropertyModel<LimsVO>	cpModel;
+
+	protected FeedbackPanel							feedbackPanel;
+	protected WebMarkupContainer					arkContextMarkup;
+	protected ContainerForm							containerForm;
+	// protected WebMarkupContainer resultsListWMC;
+	protected Panel									collectionListPanel;
+	protected Panel									biospecimenListPanel;
+
+	// protected AbstractDetailModalWindow modalWindow;
 
 	public LimsContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
-		this.arkContextMarkup = arkContextMarkup; 
+		this.arkContextMarkup = arkContextMarkup;
 		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
 		initialisePanel();
 	}
-	
+
 	public void initialisePanel() {
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		
+
 		prerenderContextCheck();
 
 		this.add(containerForm);
 	}
 
-	protected void prerenderContextCheck() {		
-		//Get the Study and SubjectUID in Context
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		String sessionSubjectUID = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+	protected void prerenderContextCheck() {
+		// Get the Study and SubjectUID in Context
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
 			LinkSubjectStudy linkSubjectStudy = null;
@@ -82,41 +82,41 @@ public class LimsContainerPanel extends Panel
 				if (study != null && linkSubjectStudy != null) {
 					contextLoaded = true;
 				}
-			} catch (EntityNotFoundException e) {
+			}
+			catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			if (contextLoaded) {
 				BioCollectionListPanel biocollectionListPanel = new BioCollectionListPanel("biocollectionListPanel", feedbackPanel, cpModel);
 				collectionListPanel = biocollectionListPanel;
-//				collectionListPanel = new BioCollectionContainerPanel("biocollectionListPanel", arkContextMarkup);
-//					resultsListWMC.addOrReplace(collectionListPanel);
+				// collectionListPanel = new BioCollectionContainerPanel("biocollectionListPanel", arkContextMarkup);
+				// resultsListWMC.addOrReplace(collectionListPanel);
 				containerForm.add(collectionListPanel);
-				
+
 				BiospecimenListPanel bioSpecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
 				biospecimenListPanel = bioSpecimenListPanel;
-//				biospecimenListPanel = new BiospecimenContainerPanel("biospecimenListPanel", arkContextMarkup);
-//					resultsListWMC.addOrReplace(biospecimenListPanel);
+				// biospecimenListPanel = new BiospecimenContainerPanel("biospecimenListPanel", arkContextMarkup);
+				// resultsListWMC.addOrReplace(biospecimenListPanel);
 				containerForm.add(biospecimenListPanel);
 			}
 			else {
 				containerForm.info("Could not load subject in context - record is invalid (e.g. deleted)");
 				collectionListPanel = new EmptyPanel("biocollectionListPanel");
 				collectionListPanel.setOutputMarkupId(true);
-//					resultsListWMC.addOrReplace(collectionListPanel);
+				// resultsListWMC.addOrReplace(collectionListPanel);
 				containerForm.add(collectionListPanel);
-				
+
 				biospecimenListPanel = new EmptyPanel("biospecimenListPanel");
 				biospecimenListPanel.setOutputMarkupId(true);
-//					resultsListWMC.addOrReplace(biospecimenListPanel);
+				// resultsListWMC.addOrReplace(biospecimenListPanel);
 				containerForm.add(biospecimenListPanel);
 			}
 		}
 	}
 
-	protected WebMarkupContainer initialiseFeedBackPanel()
-	{
+	protected WebMarkupContainer initialiseFeedBackPanel() {
 		/* Feedback Panel */
 		feedbackPanel = new FeedbackPanel("feedbackMessage");
 		feedbackPanel.setOutputMarkupId(true);
