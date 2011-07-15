@@ -16,9 +16,9 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.biocollection.BioCollectionContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
-import au.org.theark.lims.web.component.collection.BioCollectionContainerPanel;
-import au.org.theark.lims.web.component.subject.SubjectLimsContainerPanel;
+import au.org.theark.lims.web.component.subjectlims.SubjectLimsContainerPanel;
 
 @SuppressWarnings("serial")
 public class LimsSubMenuTab extends AbstractArkTabPanel
