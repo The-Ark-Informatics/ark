@@ -8,7 +8,7 @@ package au.org.theark.registry.model.dao;
 
 /**
  * @author nivedann
- *
+ * 
  */
 public interface IRegistryDao {
 

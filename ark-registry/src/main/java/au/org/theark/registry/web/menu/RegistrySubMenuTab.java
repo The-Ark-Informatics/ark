@@ -23,8 +23,7 @@ import au.org.theark.registry.web.component.invoice.InvoiceContainerPanel;
  * @author nivedann
  * 
  */
-public class RegistrySubMenuTab extends Panel
-{
+public class RegistrySubMenuTab extends Panel {
 
 	/**
 	 * 
@@ -36,42 +35,35 @@ public class RegistrySubMenuTab extends Panel
 	/**
 	 * @param id
 	 */
-	public RegistrySubMenuTab(String id)
-	{
+	public RegistrySubMenuTab(String id) {
 		super(id);
 		buildTabs();
 	}
 
-	public void buildTabs()
-	{
+	public void buildTabs() {
 		// This way we can get the menus from the back-end. We should source this data from a table in the backend and wrap it up in a class like this
 		MenuModule menuModule = new MenuModule();
 		menuModule.setModuleName(Constants.INVOICE_SUBMENU);
 		menuModule.setResourceKey(Constants.INVOICE_RESOURCEKEY);
 		moduleTabs.add(menuModule);
 
-		for (final MenuModule moduleName : moduleTabs)
-		{
-			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), RegistrySubMenuTab.this, moduleName.getModuleName())))
-			{
+		for (final MenuModule moduleName : moduleTabs) {
+			moduleSubTabsList.add(new AbstractTab(new Model<String>(getLocalizer().getString(moduleName.getResourceKey(), RegistrySubMenuTab.this, moduleName.getModuleName()))) {
 
 				/**
 				 * 
 				 */
 				private static final long	serialVersionUID	= -2024579153180131167L;
 
-				public boolean isVisible()
-				{
+				public boolean isVisible() {
 					return true;
 				}
 
 				@Override
-				public Panel getPanel(String panelId)
-				{
+				public Panel getPanel(String panelId) {
 					Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
 
-					if (moduleName.getModuleName().equalsIgnoreCase(Constants.INVOICE_SUBMENU))
-					{
+					if (moduleName.getModuleName().equalsIgnoreCase(Constants.INVOICE_SUBMENU)) {
 						panelToReturn = new InvoiceContainerPanel(panelId);
 					}
 					return panelToReturn;

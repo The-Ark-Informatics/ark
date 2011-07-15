@@ -11,11 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Transactional
 @Service("registryService")
-public class RegistryServiceImpl implements IRegistryService{
+public class RegistryServiceImpl implements IRegistryService {
 
 }

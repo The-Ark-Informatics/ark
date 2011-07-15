@@ -21,8 +21,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * @author nivedann
  * 
  */
-public class RegistryTabProviderImpl extends Panel implements IMainTabProvider
-{
+public class RegistryTabProviderImpl extends Panel implements IMainTabProvider {
 	/**
 	 * 
 	 */
@@ -32,55 +31,46 @@ public class RegistryTabProviderImpl extends Panel implements IMainTabProvider
 	/**
 	 * @param id
 	 */
-	public RegistryTabProviderImpl(String id)
-	{
+	public RegistryTabProviderImpl(String id) {
 		super(id);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs()
-	{
+	public List<ITab> buildTabs() {
 		ITab tab1 = createTab(au.org.theark.core.Constants.ARK_MODULE_REGISTRY);
 		moduleTabsList.add(tab1);
 		return moduleTabsList;
 	}
 
-	public ITab createTab(final String tabName)
-	{
+	public ITab createTab(final String tabName) {
 
-		return new ArkMainTab(new Model<String>(tabName))
-		{
+		return new ArkMainTab(new Model<String>(tabName)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -4616700064526881402L;
 
 			@Override
-			public Panel getPanel(String panelId)
-			{
+			public Panel getPanel(String panelId) {
 				Panel panelToReturn = null;
 				// TODO Auto-generated method stub
-				if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_REGISTRY))
-				{
+				if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)) {
 					return new RegistrySubMenuTab(panelId);
 				}
 				return panelToReturn;
 			}
 
-			public boolean isAccessible()
-			{
+			public boolean isAccessible() {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null)
-				{
+				if (sessionStudyId == null) {
 					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_REGISTRY).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 					return false;
 				}
 				else
 					return true;
 			}
-			
-			public boolean isVisible()
-			{
+
+			public boolean isVisible() {
 				return true;
 			}
 		};

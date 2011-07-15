@@ -8,7 +8,7 @@ package au.org.theark.registry.service;
 
 /**
  * @author nivedann
- *
+ * 
  */
 public interface IRegistryService {
 
