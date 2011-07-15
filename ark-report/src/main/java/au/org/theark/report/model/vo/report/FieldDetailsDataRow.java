@@ -7,25 +7,23 @@ public class FieldDetailsDataRow implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	protected String collection;
-	protected String fieldName;
-	protected String description;
-	protected String minValue;
-	protected String maxValue;
-	protected String encodedValues;
-	protected String missingValue;
-	protected String units;
-	protected String type;
-	
+	private static final long	serialVersionUID	= 1L;
+
+	protected String				collection;
+	protected String				fieldName;
+	protected String				description;
+	protected String				minValue;
+	protected String				maxValue;
+	protected String				encodedValues;
+	protected String				missingValue;
+	protected String				units;
+	protected String				type;
+
 	public FieldDetailsDataRow() {
-		
+
 	}
-	
-	public FieldDetailsDataRow(String collection, String fieldName,
-			String description, String minValue, String maxValue,
-			String encodedValues, String missingValue, String units, String type) {
+
+	public FieldDetailsDataRow(String collection, String fieldName, String description, String minValue, String maxValue, String encodedValues, String missingValue, String units, String type) {
 		super();
 		this.collection = collection;
 		this.fieldName = fieldName;

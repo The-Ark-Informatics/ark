@@ -15,6 +15,7 @@ import au.org.theark.report.service.IReportService;
 
 /**
  * Based on ...
+ * 
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id: WebappDataSource.java 2692 2009-03-24 17:17:32Z teodord $
  * 
@@ -24,11 +25,11 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long				serialVersionUID	= 1L;
 
-	private List<StudySummaryDataRow> data = null;
+	private List<StudySummaryDataRow>	data					= null;
 
-	private int index = -1;
+	private int									index					= -1;
 
 	/**
 	 *
@@ -37,16 +38,16 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 		data = new ArrayList<StudySummaryDataRow>();
 		data.add(new StudySummaryDataRow("Total Subjects", "", reportService.getTotalSubjectCount(study)));
 		Map<String, Integer> tmpStatusCounts = reportService.getSubjectStatusCounts(study);
-		for(String statusKey: tmpStatusCounts.keySet()) {
+		for (String statusKey : tmpStatusCounts.keySet()) {
 			data.add(new StudySummaryDataRow("Subject Status", statusKey, tmpStatusCounts.get(statusKey)));
 		}
 		tmpStatusCounts = reportService.getStudyConsentCounts(study);
-		for(String statusKey: tmpStatusCounts.keySet()) {
+		for (String statusKey : tmpStatusCounts.keySet()) {
 			data.add(new StudySummaryDataRow("Study Consent Status", statusKey, tmpStatusCounts.get(statusKey)));
 		}
-		for (StudyComp studyComp: study.getStudyComps()) {
+		for (StudyComp studyComp : study.getStudyComps()) {
 			tmpStatusCounts = reportService.getStudyCompConsentCounts(study, studyComp);
-			for(String statusKey: tmpStatusCounts.keySet()) {
+			for (String statusKey : tmpStatusCounts.keySet()) {
 				data.add(new StudySummaryDataRow("Study Component - " + studyComp.getName(), statusKey, tmpStatusCounts.get(statusKey)));
 			}
 		}
@@ -58,9 +59,9 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 	 */
 	public boolean next() throws JRException {
 		index++;
-		// Need to return false for when (index == data.size()) 
+		// Need to return false for when (index == data.size())
 		// so as to stop the current report from consuming any more data.
-		// However, when another report attempts to consume data it will 
+		// However, when another report attempts to consume data it will
 		// have advanced the index and thus we can reset it automatically
 		if (index > data.size()) {
 			index = 0;
@@ -78,9 +79,11 @@ public class StudySummaryReportDataSource implements Serializable, JRDataSource 
 
 		if ("Section".equals(fieldName)) {
 			value = data.get(index).getSection();
-		} else if ("Status".equals(fieldName)) {
+		}
+		else if ("Status".equals(fieldName)) {
 			value = data.get(index).getStatus();
-		} else if ("Subjects".equals(fieldName)) {
+		}
+		else if ("Subjects".equals(fieldName)) {
 			value = data.get(index).getSubjectCount();
 		}
 

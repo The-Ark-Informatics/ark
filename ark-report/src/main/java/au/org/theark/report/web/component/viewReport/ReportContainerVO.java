@@ -8,16 +8,16 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import au.org.theark.report.web.component.viewReport.studySummary.filterForm.StudySummaryFilterForm;
 
 public class ReportContainerVO implements Serializable {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private FeedbackPanel feedbackPanel;
-	private ReportSelectPanel reportSelectPanel;
-	private WebMarkupContainer selectedReportContainerWMC;
-	private AbstractSelectedReportContainer selectedReportPanel;
+	private static final long						serialVersionUID	= 1L;
+
+	private FeedbackPanel							feedbackPanel;
+	private ReportSelectPanel						reportSelectPanel;
+	private WebMarkupContainer						selectedReportContainerWMC;
+	private AbstractSelectedReportContainer	selectedReportPanel;
 
 	public ReportContainerVO() {
 
@@ -47,8 +47,7 @@ public class ReportContainerVO implements Serializable {
 		return selectedReportContainerWMC;
 	}
 
-	public void setSelectedReportContainerWMC(
-			WebMarkupContainer selectedReportContainerWMC) {
+	public void setSelectedReportContainerWMC(WebMarkupContainer selectedReportContainerWMC) {
 		this.selectedReportContainerWMC = selectedReportContainerWMC;
 	}
 
@@ -56,8 +55,7 @@ public class ReportContainerVO implements Serializable {
 		return selectedReportPanel;
 	}
 
-	public void setSelectedReportPanel(
-			AbstractSelectedReportContainer selectedReportPanel) {
+	public void setSelectedReportPanel(AbstractSelectedReportContainer selectedReportPanel) {
 		this.selectedReportPanel = selectedReportPanel;
 	}
 

@@ -13,13 +13,13 @@ public class StudySummaryReportContainer extends AbstractSelectedReportContainer
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-		
+	private static final long	serialVersionUID	= 1L;
+
 	public StudySummaryReportContainer(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	protected void initialiseCPModel() {
 		GenericReportViewVO grvVO = new GenericReportViewVO();
@@ -33,7 +33,7 @@ public class StudySummaryReportContainer extends AbstractSelectedReportContainer
 		ReportOutputPanel reportOutputPanel = new ReportOutputPanel("reportOutputPanel");
 		reportOutputPanel.initialisePanel();
 		reportOutputPanel.setOutputMarkupPlaceholderTag(true);
-		
+
 		rfp.initialisePanel(cpModel, feedbackPanel, reportOutputPanel);
 		add(rfp);
 		add(reportOutputPanel);

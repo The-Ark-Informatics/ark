@@ -11,20 +11,17 @@ import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
 @SuppressWarnings("serial")
-public class ReportTabProviderImpl extends Panel implements IMainTabProvider
-{
+public class ReportTabProviderImpl extends Panel implements IMainTabProvider {
 
 	private static final long	serialVersionUID	= 1L;
 	private List<ITab>			moduleTabsList;
 
-	public ReportTabProviderImpl(String panelId)
-	{
+	public ReportTabProviderImpl(String panelId) {
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
-	public List<ITab> buildTabs()
-	{
+	public List<ITab> buildTabs() {
 		// Main tab
 		ITab iTab = createTab(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
 		moduleTabsList.add(iTab);
@@ -32,24 +29,19 @@ public class ReportTabProviderImpl extends Panel implements IMainTabProvider
 		return moduleTabsList;
 	}
 
-	public ITab createTab(String tabName)
-	{
-		return new ArkMainTab(new Model<String>(tabName))
-		{
+	public ITab createTab(String tabName) {
+		return new ArkMainTab(new Model<String>(tabName)) {
 			@Override
-			public Panel getPanel(String pid)
-			{
+			public Panel getPanel(String pid) {
 				// The sub menu(s) for Reporting
 				return new ReportSubMenuTab(pid);
 			}
 
-			public boolean isAccessible()
-			{
+			public boolean isAccessible() {
 				return true;
 			}
 
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return true;
 			}
 		};

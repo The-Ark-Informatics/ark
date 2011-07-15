@@ -33,17 +33,16 @@ import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 
-
 @Transactional
 @Service(Constants.REPORT_SERVICE)
 public class ReportServiceImpl implements IReportService {
-	
-	private static Logger log = LoggerFactory.getLogger(ReportServiceImpl.class);
-	
-	private IArkCommonService arkCommonService;
-	private IStudyDao studyDao;
-	private IReportDao reportDao;
-	
+
+	private static Logger		log	= LoggerFactory.getLogger(ReportServiceImpl.class);
+
+	private IArkCommonService	arkCommonService;
+	private IStudyDao				studyDao;
+	private IReportDao			reportDao;
+
 	public IReportDao getReportDao() {
 		return reportDao;
 	}
@@ -53,7 +52,7 @@ public class ReportServiceImpl implements IReportService {
 		this.reportDao = reportDao;
 	}
 
-	/*To access Hibernate Study Dao */
+	/* To access Hibernate Study Dao */
 	public IStudyDao getStudyDao() {
 		return studyDao;
 	}
@@ -77,11 +76,11 @@ public class ReportServiceImpl implements IReportService {
 		List<ReportTemplate> result = reportDao.getReportsForUser(arkUser, study);
 		return result;
 	}
-	
+
 	public Integer getTotalSubjectCount(Study study) {
 		return reportDao.getTotalSubjectCount(study);
 	}
-	
+
 	public Map<String, Integer> getSubjectStatusCounts(Study study) {
 		return reportDao.getSubjectStatusCounts(study);
 	}
@@ -90,11 +89,10 @@ public class ReportServiceImpl implements IReportService {
 		return reportDao.getStudyConsentCounts(study);
 	}
 
-	public Map<String, Integer> getStudyCompConsentCounts(Study study,
-			StudyComp studyComp) {
+	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
 		return reportDao.getStudyCompConsentCounts(study, studyComp);
 	}
-	
+
 	public Long getWithoutStudyCompCount(Study study) {
 		return reportDao.getWithoutStudyCompCount(study);
 	}
@@ -103,11 +101,10 @@ public class ReportServiceImpl implements IReportService {
 		return reportDao.getOutputFormats();
 	}
 
-	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(
-			ConsentDetailsReportVO cdrVO) {
-		
+	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(ConsentDetailsReportVO cdrVO) {
+
 		List<ConsentDetailsDataRow> consentDetailsList = new ArrayList<ConsentDetailsDataRow>();
-		
+
 		// Perform translation to report data source here...
 		List<LinkSubjectStudy> tmpResults = reportDao.getStudyLevelConsentDetailsList(cdrVO);
 		for (LinkSubjectStudy subject : tmpResults) {
@@ -136,7 +133,7 @@ public class ReportServiceImpl implements IReportService {
 				}
 				else if (a.getCountryState() != null) {
 					state = a.getCountryState().getState();
-				} 
+				}
 				postcode = a.getPostCode();
 				country = a.getCountry().getCountryCode();
 			}
@@ -156,23 +153,19 @@ public class ReportServiceImpl implements IReportService {
 			}
 			String sex = p.getGenderType().getName().substring(0, 1);
 			Date consentDate = subject.getConsentDate();
-			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, 
-																title, firstName, lastName, 
-																streetAddress, suburb, state, postcode, country, 
-																workPhone, homePhone, email, 
-																sex, consentDate));
+			consentDetailsList.add(new ConsentDetailsDataRow(subjectUID, consentStatus, subjectStatus, title, firstName, lastName, streetAddress, suburb, state, postcode, country, workPhone, homePhone,
+					email, sex, consentDate));
 		}
 
 		return consentDetailsList;
 	}
-		
-	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(
-												ConsentDetailsReportVO cdrVO) {
+
+	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO) {
 		// LinkedHashMap maintains insertion order
 		HashMap<Long, List<ConsentDetailsDataRow>> consentDetailsMap;
 		List<ConsentDetailsDataRow> results = new ArrayList<ConsentDetailsDataRow>();
 
-		//override the default initial capacity and make the loadFactor 1.0
+		// override the default initial capacity and make the loadFactor 1.0
 		consentDetailsMap = new HashMap<Long, List<ConsentDetailsDataRow>>(studyDao.getConsentStatus().size(), (float) 1.0);
 
 		boolean noConsentDateCriteria = (cdrVO.getConsentDate() == null);
@@ -198,7 +191,7 @@ public class ReportServiceImpl implements IReportService {
 					populateConsentDetailsDataRow(cddr, subject, null);
 					Long key = null;
 					if (!consentDetailsMap.containsKey(key)) {
-						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());		
+						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());
 					}
 					consentDetailsMap.get(key).add(cddr);
 				}
@@ -206,7 +199,7 @@ public class ReportServiceImpl implements IReportService {
 					populateConsentDetailsDataRow(cddr, subject, consentResult);
 					Long key = consentResult.getConsentStatus().getId();
 					if (!consentDetailsMap.containsKey(key)) {
-						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());		
+						consentDetailsMap.put(key, new ArrayList<ConsentDetailsDataRow>());
 					}
 					consentDetailsMap.get(key).add(cddr);
 				}
@@ -228,21 +221,21 @@ public class ReportServiceImpl implements IReportService {
 				}
 			}
 		}
-		
+
 		return results;
 	}
-	
+
 	protected void populateConsentDetailsDataRow(ConsentDetailsDataRow consentRow, LinkSubjectStudy subject, Consent consent) {
 		String consentStatus = Constants.NOT_CONSENTED;
 		if (consent != null && consent.getConsentStatus() != null) {
 			consentStatus = consent.getConsentStatus().getName();
-			consentRow.setConsentStatus(consentStatus);	//set ConsentStatus with override from Consent arg
-			consentRow.setConsentDate(consent.getConsentDate());	//set ConsentDate with override from Consent arg
+			consentRow.setConsentStatus(consentStatus); // set ConsentStatus with override from Consent arg
+			consentRow.setConsentDate(consent.getConsentDate()); // set ConsentDate with override from Consent arg
 		}
 		else if (consentRow.getConsentStatus() == null || consentRow.getConsentStatus().isEmpty()) {
-			consentRow.setConsentStatus(consentStatus);	//set ConsentStatus to Not Consented if not set
+			consentRow.setConsentStatus(consentStatus); // set ConsentStatus to Not Consented if not set
 		}
-		
+
 		String streetAddress = "-NA-";
 		String suburb = "-NA-";
 		String state = "-NA-";
@@ -262,22 +255,22 @@ public class ReportServiceImpl implements IReportService {
 				consentRow.setSubjectUID(subject.getSubjectUID());
 			}
 			String subjectStatus = subject.getSubjectStatus().getName();
-			consentRow.setSubjectStatus(subjectStatus);	//set SubjectStatus
+			consentRow.setSubjectStatus(subjectStatus); // set SubjectStatus
 			Person p = subject.getPerson();
 			String title = p.getTitleType().getName();
-			consentRow.setTitle(title);	//set Title
+			consentRow.setTitle(title); // set Title
 			String firstName = p.getFirstName();
-			consentRow.setFirstName(firstName);	//set FirstName
+			consentRow.setFirstName(firstName); // set FirstName
 			String lastName = p.getLastName();
-			consentRow.setLastName(lastName);	//set LastName
+			consentRow.setLastName(lastName); // set LastName
 			Address a = reportDao.getBestAddress(subject);
 
 			if (p.getPreferredEmail() != null) {
 				email = p.getPreferredEmail();
 			}
 			String sex = p.getGenderType().getName().substring(0, 1);
-			consentRow.setSex(sex);	//set Sex
-			
+			consentRow.setSex(sex); // set Sex
+
 			if (a != null) {
 				streetAddress = a.getStreetAddress();
 				suburb = a.getCity();
@@ -316,8 +309,7 @@ public class ReportServiceImpl implements IReportService {
 		}
 	}
 
-	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
-			FieldDetailsReportVO fdrVO) {
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO) {
 		return reportDao.getPhenoFieldDetailsList(fdrVO);
 	}
 

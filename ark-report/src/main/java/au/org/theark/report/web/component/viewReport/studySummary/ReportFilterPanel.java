@@ -14,18 +14,16 @@ public class ReportFilterPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	AjaxButton generateButton;
-	
+	private static final long	serialVersionUID	= 1L;
+
+	AjaxButton						generateButton;
+
 	public ReportFilterPanel(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
 
-	public void initialisePanel(CompoundPropertyModel<GenericReportViewVO> cpModel, 
-								FeedbackPanel feedbackPanel, 
-								ReportOutputPanel reportOutputPanel) {
+	public void initialisePanel(CompoundPropertyModel<GenericReportViewVO> cpModel, FeedbackPanel feedbackPanel, ReportOutputPanel reportOutputPanel) {
 		StudySummaryFilterForm studySummaryFilterForm = new StudySummaryFilterForm("filterForm", cpModel);
 		studySummaryFilterForm.initialiseFilterForm(feedbackPanel, reportOutputPanel);
 		add(studySummaryFilterForm);

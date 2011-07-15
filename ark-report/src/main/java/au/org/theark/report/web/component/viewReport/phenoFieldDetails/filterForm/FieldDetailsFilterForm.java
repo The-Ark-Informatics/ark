@@ -44,14 +44,14 @@ import au.org.theark.report.web.component.viewReport.phenoFieldDetails.FieldDeta
 
 /**
  * @author elam
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetailsReportVO>{
-	
-	protected DropDownChoice<PhenoCollection> ddcPhenoCollection;
-	protected CheckBox chkboxFieldDataAvailable;
-	
+public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetailsReportVO> {
+
+	protected DropDownChoice<PhenoCollection>	ddcPhenoCollection;
+	protected CheckBox								chkboxFieldDataAvailable;
+
 	public FieldDetailsFilterForm(String id, CompoundPropertyModel<FieldDetailsReportVO> model) {
 		super(id, model);
 		this.cpModel = model;
@@ -64,12 +64,12 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 			String phenoCollection = cpModel.getObject().getPhenoCollection().getName();
 			reportTitle += " - " + phenoCollection;
 		}
-		
+
 		ReportTemplate reportTemplate = cpModel.getObject().getSelectedReportTemplate();
 		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
 
 		// show report
-		ServletContext context = ((WebApplication)getApplication()).getServletContext();
+		ServletContext context = ((WebApplication) getApplication()).getServletContext();
 		File reportFile = null;
 
 		reportFile = new File(context.getRealPath("/reportTemplates/" + reportTemplate.getTemplatePath()));
@@ -77,65 +77,65 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 		JasperReport report = null;
 		try {
 			design = JRXmlLoader.load(reportFile);
-//			System.out.println(" design -- created " );
+			// System.out.println(" design -- created " );
 			if (design != null) {
-				design.setName(reportTitle);	//set the output file name to match report title
+				design.setName(reportTitle); // set the output file name to match report title
 				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
-					design.setIgnorePagination(true);	//don't paginate CSVs
+					design.setIgnorePagination(true); // don't paginate CSVs
 				}
 				report = JasperCompileManager.compileReport(design);
-//				System.out.println(" design -- compiled " );
+				// System.out.println(" design -- compiled " );
 			}
-		} catch (JRException e) {
+		}
+		catch (JRException e) {
 			reportFile = null;
 			e.printStackTrace();
 		}
-//		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
+		// templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
 		Subject currentUser = SecurityUtils.getSubject();
 		String userName = "(unknown)";
-		if(currentUser.getPrincipal() != null)
-		{
+		if (currentUser.getPrincipal() != null) {
 			userName = (String) currentUser.getPrincipal();
 		}
 		parameters.put("UserName", userName);
 		FieldDetailsReportDataSource reportDS = new FieldDetailsReportDataSource(reportService, cpModel.getObject());
-		
+
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
 			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
 			pdfResource.setJasperReport(report);
 			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
+			// This code would emulate a file download as if clicked the user
+			// clicked on the download link, but unfortunately it seems to
 			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//					protected Resource newResource() {
-//						return pdfResource;
-//					}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToPdf", pdfResource));		
+			// ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
+			// protected Resource newResource() {
+			// return pdfResource;
+			// }
+			// };
+			// String url = getRequestCycle().urlFor(ref).toString();
+			// getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+			// add(new ResourceLink<Void>("linkToPdf", pdfResource));
 			reportResource = pdfResource;
 		}
 		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 			final JRResource csvResource = new JRConcreteResource<CsvResourceHandler>(new CsvResourceHandler());
 			csvResource.setJasperReport(report);
 			csvResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
+			// This code would emulate a file download as if clicked the user
+			// clicked on the download link, but unfortunately it seems to
 			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//				protected Resource newResource() {
-//					return csvResource;
-//				}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToCsv", csvResource));
+			// ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
+			// protected Resource newResource() {
+			// return csvResource;
+			// }
+			// };
+			// String url = getRequestCycle().urlFor(ref).toString();
+			// getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+			// add(new ResourceLink<Void>("linkToCsv", csvResource));
 			reportResource = csvResource;
 		}
 		if (reportResource != null) {
@@ -147,21 +147,21 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 
 	@Override
 	protected void initialiseCustomFilterComponents() {
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		cpModel.getObject().setStudy(study);
 
 		initialisePhenoCollectionDropDown();
 		initialiseFieldDataAvailableCheckBox();
 	}
-	
+
 	protected void initialisePhenoCollectionDropDown() {
 		List<PhenoCollection> collectionList = reportService.getPhenoCollectionList(cpModel.getObject().getStudy());
 		ChoiceRenderer<PhenoCollection> defaultChoiceRenderer = new ChoiceRenderer<PhenoCollection>("name", "id");
-		ddcPhenoCollection  = new DropDownChoice<PhenoCollection>(Constants.PHENO_COLLECTION, collectionList, defaultChoiceRenderer);
+		ddcPhenoCollection = new DropDownChoice<PhenoCollection>(Constants.PHENO_COLLECTION, collectionList, defaultChoiceRenderer);
 		add(ddcPhenoCollection);
 	}
-	
+
 	protected void initialiseFieldDataAvailableCheckBox() {
 		chkboxFieldDataAvailable = new CheckBox(Constants.FIELD_DATA_AVAILABLE);
 		add(chkboxFieldDataAvailable);

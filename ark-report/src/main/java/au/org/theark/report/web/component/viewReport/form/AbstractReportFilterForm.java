@@ -25,32 +25,32 @@ import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
 /**
  * @author elam
- *
+ * 
  */
 @SuppressWarnings("serial")
 public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> extends AbstractContainerForm<T> {
-	
+
 	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
-	protected IReportService reportService;
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService iArkCommonService;
-	
+	protected IReportService							reportService;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	protected IArkCommonService						iArkCommonService;
+
 	protected DropDownChoice<ReportOutputFormat>	outputFormatChoices;
-	protected AjaxButton generateButton;
-	
-	protected CompoundPropertyModel<T> cpModel;
-	protected ReportOutputPanel reportOutputPanel;
-	protected FeedbackPanel feedbackPanel;
-	
+	protected AjaxButton									generateButton;
+
+	protected CompoundPropertyModel<T>				cpModel;
+	protected ReportOutputPanel						reportOutputPanel;
+	protected FeedbackPanel								feedbackPanel;
+
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor formVisitor = new ArkFormVisitor();
-	public void onBeforeRender()
-	{
+	ArkFormVisitor											formVisitor	= new ArkFormVisitor();
+
+	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
-	
+
 	public AbstractReportFilterForm(String id, CompoundPropertyModel<T> model) {
 		super(id, model);
 		this.cpModel = model;
@@ -61,63 +61,59 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 		this.feedbackPanel = feedbackPanel;
 		initialiseComponents();
 	}
-	
+
 	private void initialiseComponents() {
 		generateButton = new ArkBusyAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(feedbackPanel);
 				onGenerateProcess(target);
 			}
-			
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				onErrorProcess(target);
 			}
-			
-		    @Override
-		    protected IAjaxCallDecorator getAjaxCallDecorator() {
-		        return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
-		            private static final long serialVersionUID = 1L;
-		 
-		            @Override
-		            public CharSequence postDecorateScript(CharSequence script) {
-		                return script + "wicketHide('" + reportOutputPanel.getMarkupId() + "');";
-		            }
-		        };
-		    }
+
+			@Override
+			protected IAjaxCallDecorator getAjaxCallDecorator() {
+				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
+					private static final long	serialVersionUID	= 1L;
+
+					@Override
+					public CharSequence postDecorateScript(CharSequence script) {
+						return script + "wicketHide('" + reportOutputPanel.getMarkupId() + "');";
+					}
+				};
+			}
 		};
-		
+
 		initialiseOutputFormatChoice();
 		initialiseCustomFilterComponents();
 		this.add(outputFormatChoices);
 		this.add(generateButton);
 	}
-	
+
 	private void initialiseOutputFormatChoice() {
-		
+
 		T grvVO = cpModel.getObject();
 		grvVO.setListReportOutputFormats(reportService.getOutputFormats());
 
 		PropertyModel<ReportOutputFormat> outputChoicePM = new PropertyModel<ReportOutputFormat>(cpModel, "selectedOutputFormat");
 		ChoiceRenderer<ReportOutputFormat> defaultChoiceRenderer = new ChoiceRenderer<ReportOutputFormat>(Constants.REPORT_OUTPUT_NAME);
-		outputFormatChoices = new DropDownChoice<ReportOutputFormat>(Constants.REPORT_OUTPUT_DROP_DOWN_CHOICE, outputChoicePM, 
-				grvVO.getListReportOutputFormats(), defaultChoiceRenderer);
+		outputFormatChoices = new DropDownChoice<ReportOutputFormat>(Constants.REPORT_OUTPUT_DROP_DOWN_CHOICE, outputChoicePM, grvVO.getListReportOutputFormats(), defaultChoiceRenderer);
 		outputFormatChoices.setRequired(true);
 
 	}
 
 	/**
-	 * *DO NOT* call manually!
-	 * This method will automatically be called as part of initialiseFiterForm(..)
+	 * *DO NOT* call manually! This method will automatically be called as part of initialiseFiterForm(..)
 	 */
 	protected abstract void initialiseCustomFilterComponents();
-	
+
 	/**
 	 * Called when the Generate button is clicked
 	 */
 	protected abstract void onGenerateProcess(AjaxRequestTarget target);
-	
+
 	protected void onErrorProcess(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 	}

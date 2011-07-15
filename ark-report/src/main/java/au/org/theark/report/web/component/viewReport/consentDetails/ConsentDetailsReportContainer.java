@@ -14,13 +14,13 @@ public class ConsentDetailsReportContainer extends AbstractSelectedReportContain
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-		
+	private static final long	serialVersionUID	= 1L;
+
 	public ConsentDetailsReportContainer(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	protected void initialiseCPModel() {
 		ConsentDetailsReportVO reportViewVO = new ConsentDetailsReportVO();
@@ -34,7 +34,7 @@ public class ConsentDetailsReportContainer extends AbstractSelectedReportContain
 		ReportOutputPanel reportOutputPanel = new ReportOutputPanel("reportOutputPanel");
 		reportOutputPanel.initialisePanel();
 		reportOutputPanel.setOutputMarkupPlaceholderTag(true);
-		
+
 		rfp.initialisePanel(cpModel, feedbackPanel, reportOutputPanel);
 		add(rfp);
 		add(reportOutputPanel);

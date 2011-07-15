@@ -7,34 +7,31 @@ public class ConsentDetailsDataRow implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	protected String subjectUID;
-	protected String consentStatus;
-	protected String subjectStatus;
-	protected String title;
-	protected String firstName;
-	protected String lastName;
-	protected String streetAddress;
-	protected String suburb;
-	protected String state;
-	protected String postcode;
-	protected String country;
-	protected String workPhone;
-	protected String homePhone;
-	protected String email;
-	protected String sex;
-	protected Date consentDate;
+	private static final long	serialVersionUID	= 1L;
+
+	protected String				subjectUID;
+	protected String				consentStatus;
+	protected String				subjectStatus;
+	protected String				title;
+	protected String				firstName;
+	protected String				lastName;
+	protected String				streetAddress;
+	protected String				suburb;
+	protected String				state;
+	protected String				postcode;
+	protected String				country;
+	protected String				workPhone;
+	protected String				homePhone;
+	protected String				email;
+	protected String				sex;
+	protected Date					consentDate;
 
 	public ConsentDetailsDataRow() {
-		
+
 	}
-	
-	public ConsentDetailsDataRow(String subjectUID, String consentStatus, String subjectStatus, 
-			String title, String firstName, String lastName,
-			String streetAddress, String suburb, String state, String postcode, String country, 
-			String workPhone, String homePhone, String email, 
-			String sex, Date consentDate) {
+
+	public ConsentDetailsDataRow(String subjectUID, String consentStatus, String subjectStatus, String title, String firstName, String lastName, String streetAddress, String suburb, String state,
+			String postcode, String country, String workPhone, String homePhone, String email, String sex, Date consentDate) {
 		super();
 		this.subjectUID = subjectUID;
 		this.consentStatus = consentStatus;

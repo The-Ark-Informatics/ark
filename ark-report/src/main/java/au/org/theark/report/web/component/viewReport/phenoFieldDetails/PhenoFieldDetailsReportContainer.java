@@ -14,13 +14,13 @@ public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportCont
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-		
+	private static final long	serialVersionUID	= 1L;
+
 	public PhenoFieldDetailsReportContainer(String id) {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	protected void initialiseCPModel() {
 		FieldDetailsReportVO reportViewVO = new FieldDetailsReportVO();
@@ -34,7 +34,7 @@ public class PhenoFieldDetailsReportContainer extends AbstractSelectedReportCont
 		ReportOutputPanel reportOutputPanel = new ReportOutputPanel("reportOutputPanel");
 		reportOutputPanel.initialisePanel();
 		reportOutputPanel.setOutputMarkupPlaceholderTag(true);
-		
+
 		rfp.initialisePanel(cpModel, feedbackPanel, reportOutputPanel);
 		add(rfp);
 		add(reportOutputPanel);

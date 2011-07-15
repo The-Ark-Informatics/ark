@@ -20,6 +20,7 @@ import au.org.theark.report.service.IReportService;
 
 /**
  * Based on ...
+ * 
  * @author Teodor Danciu (teodord@users.sourceforge.net)
  * @version $Id: WebappDataSource.java 2692 2009-03-24 17:17:32Z teodord $
  * 
@@ -29,11 +30,11 @@ public class StudyLevelConsentReportDataSource implements Serializable, JRDataSo
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long				serialVersionUID	= 1L;
 
-	private List<ConsentDetailsDataRow> data = null;
+	private List<ConsentDetailsDataRow>	data					= null;
 
-	private int index = -1;
+	private int									index					= -1;
 
 	/**
 	 *
@@ -47,9 +48,9 @@ public class StudyLevelConsentReportDataSource implements Serializable, JRDataSo
 	 */
 	public boolean next() throws JRException {
 		index++;
-		// Need to return false for when (index == data.size()) 
+		// Need to return false for when (index == data.size())
 		// so as to stop the current report from consuming any more data.
-		// However, when another report attempts to consume data it will 
+		// However, when another report attempts to consume data it will
 		// have advanced the index and thus we can reset it automatically
 		if (index > data.size()) {
 			index = 0;
@@ -67,38 +68,53 @@ public class StudyLevelConsentReportDataSource implements Serializable, JRDataSo
 
 		if ("SubjectUID".equals(fieldName)) {
 			value = data.get(index).getSubjectUID();
-		} else if ("ConsentStatus".equals(fieldName)) {
+		}
+		else if ("ConsentStatus".equals(fieldName)) {
 			value = data.get(index).getConsentStatus();
-		} else if ("SubjectStatus".equals(fieldName)) {
+		}
+		else if ("SubjectStatus".equals(fieldName)) {
 			value = data.get(index).getSubjectStatus();
-		} else if ("Title".equals(fieldName)) {
+		}
+		else if ("Title".equals(fieldName)) {
 			value = data.get(index).getTitle();
-		} else if ("FirstName".equals(fieldName)) {
+		}
+		else if ("FirstName".equals(fieldName)) {
 			value = data.get(index).getFirstName();
-		} else if ("LastName".equals(fieldName)) {
+		}
+		else if ("LastName".equals(fieldName)) {
 			value = data.get(index).getLastName();
-		} else if ("StreetAddress".equals(fieldName)) {
+		}
+		else if ("StreetAddress".equals(fieldName)) {
 			value = data.get(index).getStreetAddress();
-		} else if ("Suburb".equals(fieldName)) {
+		}
+		else if ("Suburb".equals(fieldName)) {
 			value = data.get(index).getSuburb();
-		} else if ("State".equals(fieldName)) {
+		}
+		else if ("State".equals(fieldName)) {
 			value = data.get(index).getState();
-		} else if ("Postcode".equals(fieldName)) {
+		}
+		else if ("Postcode".equals(fieldName)) {
 			value = data.get(index).getPostcode();
-		} else if ("Country".equals(fieldName)) {
+		}
+		else if ("Country".equals(fieldName)) {
 			value = data.get(index).getCountry();
-		} else if ("WorkPhone".equals(fieldName)) {
+		}
+		else if ("WorkPhone".equals(fieldName)) {
 			value = data.get(index).getWorkPhone();
-		} else if ("HomePhone".equals(fieldName)) {
+		}
+		else if ("HomePhone".equals(fieldName)) {
 			value = data.get(index).getHomePhone();
-		} else if ("Email".equals(fieldName)) {
+		}
+		else if ("Email".equals(fieldName)) {
 			value = data.get(index).getEmail();
-		} else if ("Sex".equals(fieldName)) {
+		}
+		else if ("Sex".equals(fieldName)) {
 			value = data.get(index).getSex();
-		} else if ("ConsentDate".equals(fieldName)) {
+		}
+		else if ("ConsentDate".equals(fieldName)) {
 			value = data.get(index).getConsentDate();
 		}
-		
+
 		return value;
 	}
 

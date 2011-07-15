@@ -40,24 +40,24 @@ import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLeve
 
 /**
  * @author elam
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO>{
-	
-	protected TextField<String> tfSubjectUID;
-	protected DropDownChoice<SubjectStatus> ddcSubjectStatus;
-	protected DropDownChoice<ConsentStatus> ddcConsentStatus;
-	protected DateTextField dtfConsentDate;
-	
+public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO> {
+
+	protected TextField<String>					tfSubjectUID;
+	protected DropDownChoice<SubjectStatus>	ddcSubjectStatus;
+	protected DropDownChoice<ConsentStatus>	ddcConsentStatus;
+	protected DateTextField							dtfConsentDate;
+
 	public StudyLevelConsentDetailsFilterForm(String id, CompoundPropertyModel<ConsentDetailsReportVO> model) {
 		super(id, model);
 		this.cpModel = model;
 	}
 
 	protected void onGenerateProcess(AjaxRequestTarget target) {
-		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		cpModel.getObject().getLinkSubjectStudy().setStudy(study);
 
@@ -68,7 +68,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
 
 		// show report
-		ServletContext context = ((WebApplication)getApplication()).getServletContext();
+		ServletContext context = ((WebApplication) getApplication()).getServletContext();
 		File reportFile = null;
 
 		reportFile = new File(context.getRealPath("/reportTemplates/" + reportTemplate.getTemplatePath()));
@@ -76,37 +76,37 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		JasperReport report = null;
 		try {
 			design = JRXmlLoader.load(reportFile);
-//			System.out.println(" design -- created " );
+			// System.out.println(" design -- created " );
 			if (design != null) {
-				design.setName(reportTitle);	//set the output file name to match report title
+				design.setName(reportTitle); // set the output file name to match report title
 				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
-					design.setIgnorePagination(true);	//don't paginate CSVs
+					design.setIgnorePagination(true); // don't paginate CSVs
 				}
 				report = JasperCompileManager.compileReport(design);
-//				System.out.println(" design -- compiled " );
+				// System.out.println(" design -- compiled " );
 			}
-		} catch (JRException e) {
+		}
+		catch (JRException e) {
 			reportFile = null;
 			e.printStackTrace();
 		}
-//		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
+		// templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
 		Subject currentUser = SecurityUtils.getSubject();
 		String userName = "(unknown)";
-		if(currentUser.getPrincipal() != null)
-		{
+		if (currentUser.getPrincipal() != null) {
 			userName = (String) currentUser.getPrincipal();
 		}
 		parameters.put("UserName", userName);
 		StudyLevelConsentReportDataSource reportDS = new StudyLevelConsentReportDataSource(reportService, cpModel.getObject());
-		
+
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
 			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
 			pdfResource.setJasperReport(report);
-			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);	
+			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);
 			reportResource = pdfResource;
 		}
 		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
@@ -126,7 +126,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 	protected void initialiseCustomFilterComponents() {
 		tfSubjectUID = new TextField<String>(Constants.LINKSUBJECTSTUDY_SUBJECTUID);
 		add(tfSubjectUID);
-		initialiseConsentDatePicker();	
+		initialiseConsentDatePicker();
 		initialiseSubjectStatusDropDown();
 		initialiseConsentStatusDropDown();
 	}
@@ -138,18 +138,18 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		dtfConsentDate.add(datePicker);
 		add(dtfConsentDate);
 	}
-	
+
 	protected void initialiseSubjectStatusDropDown() {
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> defaultChoiceRenderer = new ChoiceRenderer<SubjectStatus>("name", "id");
-		ddcSubjectStatus  = new DropDownChoice<SubjectStatus>(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, subjectStatusList, defaultChoiceRenderer);
+		ddcSubjectStatus = new DropDownChoice<SubjectStatus>(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, subjectStatusList, defaultChoiceRenderer);
 		add(ddcSubjectStatus);
 	}
-	
+
 	protected void initialiseConsentStatusDropDown() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getConsentStatus();
 		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>("name", "id");
-		ddcConsentStatus  = new DropDownChoice<ConsentStatus>(Constants.CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		ddcConsentStatus = new DropDownChoice<ConsentStatus>(Constants.CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 		add(ddcConsentStatus);
 	}
 

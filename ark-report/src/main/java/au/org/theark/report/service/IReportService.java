@@ -14,23 +14,29 @@ import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
 
-
 public interface IReportService {
 
 	public Integer getTotalSubjectCount(Study study);
+
 	public Map<String, Integer> getSubjectStatusCounts(Study study);
+
 	public Map<String, Integer> getStudyConsentCounts(Study study);
+
 	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp);
+
 	public Long getWithoutStudyCompCount(Study study);
+
 	// TODO: Revise getReportsAvailableList method when migration to new Ark security done
 	public List<ReportTemplate> getReportsAvailableList(ArkUser arkUser, Study study);
+
 	public List<ReportOutputFormat> getOutputFormats();
+
 	public List<ConsentDetailsDataRow> getStudyLevelConsentDetailsList(ConsentDetailsReportVO cdrVO);
+
 	public List<ConsentDetailsDataRow> getStudyCompConsentDetailsList(ConsentDetailsReportVO cdrVO);
-	
-	
+
 	public List<PhenoCollection> getPhenoCollectionList(Study study);
-	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
-			FieldDetailsReportVO fdrVO);
+
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO);
 
 }

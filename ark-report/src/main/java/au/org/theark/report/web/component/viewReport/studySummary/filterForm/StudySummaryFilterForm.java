@@ -48,19 +48,19 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
 
 /**
  * @author elam
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericReportViewVO>{
-	
+public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericReportViewVO> {
+
 	public StudySummaryFilterForm(String id, CompoundPropertyModel<GenericReportViewVO> model) {
 		super(id, model);
 		this.cpModel = model;
 	}
 
 	protected void onGenerateProcess(AjaxRequestTarget target) {
-		
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 
 		String reportTitle = study.getName() + " - Study Summary Report";
@@ -69,7 +69,7 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		ReportOutputFormat reportOutputFormat = cpModel.getObject().getSelectedOutputFormat();
 
 		// show report
-		ServletContext context = ((WebApplication)getApplication()).getServletContext();
+		ServletContext context = ((WebApplication) getApplication()).getServletContext();
 		File reportFile = null;
 
 		reportFile = new File(context.getRealPath("/reportTemplates/" + reportTemplate.getTemplatePath()));
@@ -77,65 +77,65 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		JasperReport report = null;
 		try {
 			design = JRXmlLoader.load(reportFile);
-//			System.out.println(" design -- created " );
+			// System.out.println(" design -- created " );
 			if (design != null) {
-				design.setName(reportTitle);	//set the output file name to match report title
+				design.setName(reportTitle); // set the output file name to match report title
 				if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
-					design.setIgnorePagination(true);	//don't paginate CSVs
+					design.setIgnorePagination(true); // don't paginate CSVs
 				}
 				report = JasperCompileManager.compileReport(design);
-//				System.out.println(" design -- compiled " );
+				// System.out.println(" design -- compiled " );
 			}
-		} catch (JRException e) {
+		}
+		catch (JRException e) {
 			reportFile = null;
 			e.printStackTrace();
 		}
-//		templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
+		// templateIS = getClass().getResourceAsStream("/reportTemplates/WebappReport.jrxml");
 		final Map<String, Object> parameters = new HashMap<String, Object>();
 		parameters.put("BaseDir", new File(context.getRealPath("/reportTemplates")));
 		parameters.put("ReportTitle", reportTitle);
 		Subject currentUser = SecurityUtils.getSubject();
 		String userName = "(unknown)";
-		if(currentUser.getPrincipal() != null)
-		{
+		if (currentUser.getPrincipal() != null) {
 			userName = (String) currentUser.getPrincipal();
 		}
 		parameters.put("UserName", userName);
 		StudySummaryReportDataSource reportDS = new StudySummaryReportDataSource(reportService, study);
-		
+
 		JRResource reportResource = null;
 		if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.PDF_REPORT_FORMAT)) {
 			final JRResource pdfResource = new JRConcreteResource<PdfResourceHandler>(new PdfResourceHandler());
 			pdfResource.setJasperReport(report);
 			pdfResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
+			// This code would emulate a file download as if clicked the user
+			// clicked on the download link, but unfortunately it seems to
 			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//					protected Resource newResource() {
-//						return pdfResource;
-//					}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToPdf", pdfResource));		
+			// ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
+			// protected Resource newResource() {
+			// return pdfResource;
+			// }
+			// };
+			// String url = getRequestCycle().urlFor(ref).toString();
+			// getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+			// add(new ResourceLink<Void>("linkToPdf", pdfResource));
 			reportResource = pdfResource;
 		}
 		else if (reportOutputFormat.getName().equals(au.org.theark.report.service.Constants.CSV_REPORT_FORMAT)) {
 			final JRResource csvResource = new JRConcreteResource<CsvResourceHandler>(new CsvResourceHandler());
 			csvResource.setJasperReport(report);
 			csvResource.setReportParameters(parameters).setReportDataSource(reportDS);
-			// This code would emulate a file download as if clicked the user 
-			// clicked on the download link, but unfortunately it seems to 
+			// This code would emulate a file download as if clicked the user
+			// clicked on the download link, but unfortunately it seems to
 			// stuff up the Indicator (not hidden upon completion).
-//			ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
-//				protected Resource newResource() {
-//					return csvResource;
-//				}
-//			};
-//			String url = getRequestCycle().urlFor(ref).toString();
-//			getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
-//			add(new ResourceLink<Void>("linkToCsv", csvResource));
+			// ResourceReference ref = new ResourceReference(study.getName() + "/" + report.getName() + "." + reportOutputFormat.getName()) {
+			// protected Resource newResource() {
+			// return csvResource;
+			// }
+			// };
+			// String url = getRequestCycle().urlFor(ref).toString();
+			// getRequestCycle().setRequestTarget(new RedirectRequestTarget(url));
+			// add(new ResourceLink<Void>("linkToCsv", csvResource));
 			reportResource = csvResource;
 		}
 		if (reportResource != null) {
@@ -144,7 +144,7 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 			target.addComponent(reportOutputPanel);
 		}
 	}
-	
+
 	protected void onErrorProcess(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 	}

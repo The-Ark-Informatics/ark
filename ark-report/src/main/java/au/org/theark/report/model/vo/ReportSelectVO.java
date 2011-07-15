@@ -12,19 +12,19 @@ import au.org.theark.core.model.study.entity.Study;
 
 /**
  * @author elam
- *
+ * 
  */
 public class ReportSelectVO implements Serializable {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	private Study study;
-	private ReportTemplate selectedReport;
-	private List<ReportTemplate> reportsAvailableList;
-	
+	private static final long		serialVersionUID	= 1L;
+
+	private Study						study;
+	private ReportTemplate			selectedReport;
+	private List<ReportTemplate>	reportsAvailableList;
+
 	public ReportSelectVO() {
 		this.selectedReport = new ReportTemplate();
 		this.reportsAvailableList = new ArrayList<ReportTemplate>();
@@ -49,9 +49,8 @@ public class ReportSelectVO implements Serializable {
 	public List<ReportTemplate> getReportsAvailableList() {
 		return reportsAvailableList;
 	}
-	
-	public void setReportsAvailableList(
-			List<ReportTemplate> reportsAvailableList) {
+
+	public void setReportsAvailableList(List<ReportTemplate> reportsAvailableList) {
 		this.reportsAvailableList = reportsAvailableList;
 	}
 

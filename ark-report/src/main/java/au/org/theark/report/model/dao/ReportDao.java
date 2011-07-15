@@ -46,16 +46,16 @@ import au.org.theark.report.service.Constants;
 
 /**
  * Provide the backend Data Access Object for Reporting
+ * 
  * @author elam
- *
+ * 
  */
 @Repository("reportDao")
 public class ReportDao extends HibernateSessionDao implements IReportDao {
 
-	private static Logger log = LoggerFactory.getLogger(ReportDao.class);
-	private Subject	currentUser;
-	private Date		dateNow;
-
+	private static Logger	log	= LoggerFactory.getLogger(ReportDao.class);
+	private Subject			currentUser;
+	private Date				dateNow;
 
 	public Integer getTotalSubjectCount(Study study) {
 		Integer totalCount = 0;
@@ -66,7 +66,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 
 		return totalCount;
 	}
-	
+
 	public Map<String, Integer> getSubjectStatusCounts(Study study) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
@@ -77,10 +77,10 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setProjection(projectionList);
 		List results = criteria.list();
 		Map<String, Integer> statusMap = new HashMap<String, Integer>();
-		for(Object r: results) {
+		for (Object r : results) {
 			Object[] obj = (Object[]) r;
-			String statusName = (String)obj[0];
-			statusMap.put(statusName, (Integer)obj[1]);
+			String statusName = (String) obj[0];
+			statusMap.put(statusName, (Integer) obj[1]);
 		}
 		return statusMap;
 	}
@@ -96,13 +96,13 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.rowCount());
 		criteria.setProjection(projectionList);
 		List results = criteria.list();
-		for(Object r: results) {
+		for (Object r : results) {
 			Object[] obj = (Object[]) r;
-			String statusName = (String)obj[0];
-			statusMap.put(statusName, (Integer)obj[1]);
+			String statusName = (String) obj[0];
+			statusMap.put(statusName, (Integer) obj[1]);
 		}
-		
-		// Tack on count of when consentStatus = undefined (NULL) 
+
+		// Tack on count of when consentStatus = undefined (NULL)
 		criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.add(Restrictions.eq("study", study));
 		criteria.add(Restrictions.isNull("consentStatus"));
@@ -116,8 +116,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return statusMap;
 	}
 
-	public Map<String, Integer> getStudyCompConsentCounts(Study study,
-			StudyComp studyComp) {
+	public Map<String, Integer> getStudyCompConsentCounts(Study study, StudyComp studyComp) {
 		Map<String, Integer> statusMap = new HashMap<String, Integer>();
 
 		Criteria criteria = getSession().createCriteria(Consent.class);
@@ -130,10 +129,10 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setProjection(projectionList);
 		List results = criteria.list();
 		if ((results != null) && (results.size() > 0)) {
-			for(Object r: results) {
+			for (Object r : results) {
 				Object[] obj = (Object[]) r;
-				String statusName = (String)obj[0];
-				statusMap.put(statusName, (Integer)obj[1]);
+				String statusName = (String) obj[0];
+				statusMap.put(statusName, (Integer) obj[1]);
 			}
 		}
 		else {
@@ -141,49 +140,39 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		}
 		return statusMap;
 	}
-	
+
 	public Long getWithoutStudyCompCount(Study study) {
 
-		/* The following HQL implements this MySQL query:
-		 SELECT COUNT(*) FROM study.link_subject_study AS lss
-			LEFT JOIN study.consent AS c
-			ON lss.id = c.subject_id		-- this line is implicit from annotations on the entity classes
-			WHERE lss.study_id = 2
-			AND c.id IS NULL;
-		*/
-		String hqlString = "SELECT COUNT(*) FROM LinkSubjectStudy AS lss \n"
-							+ "LEFT JOIN lss.consents AS c \n"
-							+ "WHERE lss.study = :study \n"
-							+ "AND c.id IS NULL";
+		/*
+		 * The following HQL implements this MySQL query: SELECT COUNT(*) FROM study.link_subject_study AS lss LEFT JOIN study.consent AS c ON lss.id =
+		 * c.subject_id -- this line is implicit from annotations on the entity classes WHERE lss.study_id = 2 AND c.id IS NULL;
+		 */
+		String hqlString = "SELECT COUNT(*) FROM LinkSubjectStudy AS lss \n" + "LEFT JOIN lss.consents AS c \n" + "WHERE lss.study = :study \n" + "AND c.id IS NULL";
 		Query q = getSession().createQuery(hqlString);
-//		if (hqlString.contains(":study_id")) {
-//			q.setParameter("study_id", study.getId());
-//		}
-//		if (hqlString.contains(":study")) {
-			q.setParameter("study", study);
-//		}
+		// if (hqlString.contains(":study_id")) {
+		// q.setParameter("study_id", study.getId());
+		// }
+		// if (hqlString.contains(":study")) {
+		q.setParameter("study", study);
+		// }
 		Long undefCount = (Long) q.uniqueResult();
 
 		return undefCount;
 	}
-	
+
 	public List<ReportTemplate> getReportsForUser(ArkUser arkUser, Study study) {
 		Criteria criteria = getSession().createCriteria(ReportTemplate.class, "rt");
-/*
-* TODO : Filter reports based on security criteria
-* For now we will implement security upon the selection of a report
-* 
-// The following is not yet designed to work with super admins
-//		criteria.add(Restrictions.eq("arkUser", arkUser));
-		DetachedCriteria functionCriteria = DetachedCriteria.forClass(ArkRolePolicyTemplate.class, "arpt");
-		// Join FieldPhenoCollection and FieldData on ID FK
-		functionCriteria.add(Property.forName("rt.module").eqProperty("arpt." + "arkModule"));
-		functionCriteria.add(Property.forName("rt.function").eqProperty("arpt." + "arkFunction"));
-		criteria.createAlias("arpt." + "arkFunction", "aFn");
-		ArkFunction reportArkFnType = getArkFunctionByName(RoleConstants.REPORT_FUNCTION_TYPE);
-		functionCriteria.add(Restrictions.eq("aFn.arkFunctionType", reportArkFnType));
-		criteria.add(Subqueries.exists(functionCriteria.setProjection(Projections.property("arpt.id"))));
-*/		
+		/*
+		 * TODO : Filter reports based on security criteria For now we will implement security upon the selection of a report
+		 * 
+		 * // The following is not yet designed to work with super admins // criteria.add(Restrictions.eq("arkUser", arkUser)); DetachedCriteria
+		 * functionCriteria = DetachedCriteria.forClass(ArkRolePolicyTemplate.class, "arpt"); // Join FieldPhenoCollection and FieldData on ID FK
+		 * functionCriteria.add(Property.forName("rt.module").eqProperty("arpt." + "arkModule"));
+		 * functionCriteria.add(Property.forName("rt.function").eqProperty("arpt." + "arkFunction")); criteria.createAlias("arpt." + "arkFunction",
+		 * "aFn"); ArkFunction reportArkFnType = getArkFunctionByName(RoleConstants.REPORT_FUNCTION_TYPE);
+		 * functionCriteria.add(Restrictions.eq("aFn.arkFunctionType", reportArkFnType));
+		 * criteria.add(Subqueries.exists(functionCriteria.setProjection(Projections.property("arpt.id"))));
+		 */
 		List<ReportTemplate> reportsAvailListing = criteria.list();
 
 		return reportsAvailListing;
@@ -196,8 +185,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		return outputFormats;
 	}
 
-	public List<LinkSubjectStudy> getStudyLevelConsentDetailsList(
-			ConsentDetailsReportVO cdrVO) {
+	public List<LinkSubjectStudy> getStudyLevelConsentDetailsList(ConsentDetailsReportVO cdrVO) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 
 		// Add study in context to criteria first (linkSubjectStudy on the VO should never be null)
@@ -208,15 +196,12 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		if (cdrVO.getLinkSubjectStudy().getSubjectStatus() != null) {
 			criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_SUBJECTSTATUS, cdrVO.getLinkSubjectStudy().getSubjectStatus()));
 		}
-	
+
 		// we are dealing with study-level consent
 		if (cdrVO.getConsentStatus() != null) {
 			if (cdrVO.getConsentStatus().getName().equals(Constants.NOT_CONSENTED)) {
 				// Special-case: Treat the null FK for consentStatus as "Not Consented"
-				criteria.add(Restrictions.or(
-								Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()),
-								Restrictions.isNull(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS))
-							);
+				criteria.add(Restrictions.or(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()), Restrictions.isNull(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS)));
 			}
 			else {
 				criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTSTATUS, cdrVO.getConsentStatus()));
@@ -225,16 +210,15 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		if (cdrVO.getConsentDate() != null) {
 			criteria.add(Restrictions.eq(Constants.LINKSUBJECTSTUDY_CONSENTDATE, cdrVO.getConsentDate()));
 		}
-		criteria.addOrder(Order.asc("consentStatus"));	//although MySQL causes NULLs to come first 
+		criteria.addOrder(Order.asc("consentStatus")); // although MySQL causes NULLs to come first
 		criteria.addOrder(Order.asc("subjectUID"));
 
-		return (List<LinkSubjectStudy>)criteria.list();
+		return (List<LinkSubjectStudy>) criteria.list();
 	}
-	
-	public List<ConsentDetailsDataRow> getStudyCompConsentList(
-											ConsentDetailsReportVO cdrVO) {
-		//NB: There should only ever be one Consent record for a particular Subject for a particular StudyComp
-		
+
+	public List<ConsentDetailsDataRow> getStudyCompConsentList(ConsentDetailsReportVO cdrVO) {
+		// NB: There should only ever be one Consent record for a particular Subject for a particular StudyComp
+
 		List<ConsentDetailsDataRow> results = new ArrayList<ConsentDetailsDataRow>();
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class, "lss");
 		ProjectionList projectionList = Projections.projectionList();
@@ -249,13 +233,13 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		}
 
 		if (cdrVO.getConsentDate() != null) {
-			//NB: constraint on consentDate or consentStatus automatically removes "Not Consented" state
+			// NB: constraint on consentDate or consentStatus automatically removes "Not Consented" state
 			// So LinkSubjectStudy inner join to Consent ok for populated consentDate
 			criteria.createAlias("lss." + Constants.LINKSUBJECTSTUDY_CONSENT, "c");
 			criteria.createAlias("c." + Constants.CONSENT_CONSENTSTATUS, "cs");
 			// constrain on studyComp
 			criteria.add(Restrictions.eq("c." + Constants.CONSENT_STUDYCOMP, cdrVO.getStudyComp()));
-			// constrain on consentDate 
+			// constrain on consentDate
 			criteria.add(Restrictions.eq("c." + Constants.CONSENT_CONSENTDATE, cdrVO.getConsentDate()));
 			// ConsentStatus is optional for this query...
 			if (cdrVO.getConsentStatus() != null) {
@@ -269,22 +253,22 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			if (cdrVO.getConsentStatus().getName().equals(Constants.NOT_CONSENTED)) {
 				// Need to handle "Not Consented" status differently (since it doesn't have a Consent record)
 				// Helpful website: http://www.cereslogic.com/pages/2008/09/22/hibernate-criteria-subqueries-exists/
-				
+
 				// Build subquery to find all Consent records for a Study Comp
 				DetachedCriteria consentCriteria = DetachedCriteria.forClass(Consent.class, "c");
 				// Constrain on StudyComponent
 				consentCriteria.add(Restrictions.eq("c." + Constants.CONSENT_STUDYCOMP, cdrVO.getStudyComp()));
 				// Just in case "Not Consented" is erroneously entered into a row in the Consent table
-	//			consentCriteria.add(Restrictions.ne("c." + Constants.CONSENT_CONSENTSTATUS, cdrVO.getConsentStatus()));
+				// consentCriteria.add(Restrictions.ne("c." + Constants.CONSENT_CONSENTSTATUS, cdrVO.getConsentStatus()));
 				// Join LinkSubjectStudy and Consent on ID FK
 				consentCriteria.add(Property.forName("c.linkSubjectStudy.id").eqProperty("lss." + "id"));
-				criteria.add(Subqueries.notExists(consentCriteria.setProjection(Projections.property("c.id"))));			
-				
+				criteria.add(Subqueries.notExists(consentCriteria.setProjection(Projections.property("c.id"))));
+
 				// If Consent records follows design for "Not Consented", then:
 				// - consentStatus and consentDate are not populated
 			}
 			else {
-				//NB: constraint on consentDate or consentStatus automatically removes "Not Consented" state
+				// NB: constraint on consentDate or consentStatus automatically removes "Not Consented" state
 				// So LinkSubjectStudy inner join to Consent ok for all recordable consentStatus
 				criteria.createAlias("lss." + Constants.LINKSUBJECTSTUDY_CONSENT, "c");
 				criteria.createAlias("c." + Constants.CONSENT_CONSENTSTATUS, "cs");
@@ -304,16 +288,16 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			log.error("reportDao.getStudyCompConsentList(..) is missing consentDate or consentStatus parameters in the VO");
 			return null;
 		}
-			
+
 		criteria.addOrder(Order.asc("lss." + "subjectUID"));
 		criteria.setProjection(projectionList);
-	    criteria.setResultTransformer(Transformers.aliasToBean(ConsentDetailsDataRow.class));
-	    // This gives a list of subjects matching the specific studyComp and consentStatus
-	    results = criteria.list();
+		criteria.setResultTransformer(Transformers.aliasToBean(ConsentDetailsDataRow.class));
+		// This gives a list of subjects matching the specific studyComp and consentStatus
+		results = criteria.list();
 
 		return results;
 	}
-	
+
 	public Address getBestAddress(LinkSubjectStudy subject) {
 		Address result = null;
 		// Attempt to get the preferred address first
@@ -328,10 +312,10 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("countryState"), "countryState");
 		projectionList.add(Projections.property("otherState"), "otherState");
 		projectionList.add(Projections.property("postCode"), "postCode");
-		criteria.setProjection(projectionList);	// only return fields required for report
-	    criteria.setResultTransformer(Transformers.aliasToBean(Address.class));
-	    
-	    if (criteria.uniqueResult() != null) {
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(Address.class));
+
+		if (criteria.uniqueResult() != null) {
 			result = (Address) criteria.uniqueResult();
 		}
 		else {
@@ -339,14 +323,14 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			criteria = getSession().createCriteria(Address.class);
 			criteria.add(Restrictions.eq("person", subject.getPerson()));
 			criteria.setMaxResults(1);
-			criteria.setProjection(projectionList);	// only return fields required for report
-		    criteria.setResultTransformer(Transformers.aliasToBean(Address.class));
-		    
-		    result = (Address) criteria.uniqueResult();
+			criteria.setProjection(projectionList); // only return fields required for report
+			criteria.setResultTransformer(Transformers.aliasToBean(Address.class));
+
+			result = (Address) criteria.uniqueResult();
 		}
 		return result;
 	}
-	
+
 	public Phone getWorkPhone(LinkSubjectStudy subject) {
 		Phone result = null;
 		Criteria criteria = getSession().createCriteria(Phone.class);
@@ -358,15 +342,15 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("areaCode"), "areaCode");
 		projectionList.add(Projections.property("phoneNumber"), "phoneNumber");
-		criteria.setProjection(projectionList);	// only return fields required for report
-	    criteria.setResultTransformer(Transformers.aliasToBean(Phone.class));
-		
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(Phone.class));
+
 		if (criteria.uniqueResult() != null) {
 			result = (Phone) criteria.uniqueResult();
 		}
 		return result;
 	}
-	
+
 	public Phone getHomePhone(LinkSubjectStudy subject) {
 		Phone result = null;
 		Criteria criteria = getSession().createCriteria(Phone.class);
@@ -374,13 +358,13 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.createAlias("phoneType", "pt");
 		criteria.add(Restrictions.eq("pt.name", "Home"));
 		criteria.setMaxResults(1);
-		
+
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("areaCode"), "areaCode");
 		projectionList.add(Projections.property("phoneNumber"), "phoneNumber");
-		criteria.setProjection(projectionList);	// only return fields required for report
-	    criteria.setResultTransformer(Transformers.aliasToBean(Phone.class));
-		
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(Phone.class));
+
 		if (criteria.uniqueResult() != null) {
 			result = (Phone) criteria.uniqueResult();
 		}
@@ -400,30 +384,28 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		List<LinkSubjectStudy> results = criteria.list();
 		return results;
 	}
-	
-	public Consent getStudyCompConsent(Consent consent)
-	{
+
+	public Consent getStudyCompConsent(Consent consent) {
 		// Note: Should never be possible to have more than one Consent record for a
 		// given a particular subject and study component
 		Criteria criteria = getSession().createCriteria(Consent.class);
-		if (consent != null)
-		{
+		if (consent != null) {
 			criteria.add(Restrictions.eq("study.id", consent.getStudy().getId()));
-			//must only get consents for subject in context
+			// must only get consents for subject in context
 			criteria.add(Restrictions.eq("linkSubjectStudy.id", consent.getLinkSubjectStudy().getId()));
-			//must only get consents for specific studyComp
+			// must only get consents for specific studyComp
 			criteria.add(Restrictions.eq("studyComp.id", consent.getStudyComp().getId()));
 			// Do NOT constrain against consentStatus or consentDate here, because we want to be able to
 			// tell if they are "Not Consented" vs "Consented" with different consentStatus or consentDate.
-//			if (consent.getConsentStatus() != null)
-//			{
-//				criteria.add(Restrictions.eq("consentStatus.id", consent.getConsentStatus().getId()));
-//			}
-//
-//			if (consent.getConsentDate() != null)
-//			{
-//				criteria.add(Restrictions.eq("consentDate", consent.getConsentDate()));
-//			}
+			// if (consent.getConsentStatus() != null)
+			// {
+			// criteria.add(Restrictions.eq("consentStatus.id", consent.getConsentStatus().getId()));
+			// }
+			//
+			// if (consent.getConsentDate() != null)
+			// {
+			// criteria.add(Restrictions.eq("consentDate", consent.getConsentDate()));
+			// }
 
 		}
 		ProjectionList projectionList = Projections.projectionList();
@@ -432,8 +414,8 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("consentDate"), "consentDate");
 		criteria.setProjection(projectionList);
 		criteria.setMaxResults(1);
-	    criteria.setResultTransformer(Transformers.aliasToBean(Consent.class));
-	    Consent result = (Consent) criteria.uniqueResult();
+		criteria.setResultTransformer(Transformers.aliasToBean(Consent.class));
+		Consent result = (Consent) criteria.uniqueResult();
 		return result;
 	}
 
@@ -444,14 +426,13 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		results = criteria.list();
 		return results;
 	}
-	
-	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(
-			FieldDetailsReportVO fdrVO) {
+
+	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO) {
 		List<FieldDetailsDataRow> results = new ArrayList<FieldDetailsDataRow>();
 		Criteria criteria = getSession().createCriteria(FieldPhenoCollection.class, "fpc");
-		criteria.createAlias("phenoCollection", "pc");		//Inner join to Field
-		criteria.createAlias("field", "f");		//Inner join to Field
-		criteria.createAlias("f.fieldType", "ft");	//Inner join to FieldType
+		criteria.createAlias("phenoCollection", "pc"); // Inner join to Field
+		criteria.createAlias("field", "f"); // Inner join to Field
+		criteria.createAlias("f.fieldType", "ft"); // Inner join to FieldType
 		criteria.add(Restrictions.eq("study", fdrVO.getStudy()));
 		if (fdrVO.getPhenoCollection() != null) {
 			criteria.add(Restrictions.eq("phenoCollection", fdrVO.getPhenoCollection()));
@@ -461,7 +442,7 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 			// Join FieldPhenoCollection and FieldData on ID FK
 			fieldDataCriteria.add(Property.forName("f.id").eqProperty("fd." + "field.id"));
 			fieldDataCriteria.add(Property.forName("pc.id").eqProperty("fd." + "collection.id"));
-			criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("fd.id"))));			
+			criteria.add(Subqueries.exists(fieldDataCriteria.setProjection(Projections.property("fd.id"))));
 		}
 		ProjectionList projectionList = Projections.projectionList();
 		projectionList.add(Projections.property("pc.name"), "collection");
@@ -473,20 +454,20 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		projectionList.add(Projections.property("f.missingValue"), "missingValue");
 		projectionList.add(Projections.property("f.units"), "units");
 		projectionList.add(Projections.property("ft.name"), "type");
-		criteria.setProjection(projectionList);	// only return fields required for report
-	    criteria.setResultTransformer(Transformers.aliasToBean(FieldDetailsDataRow.class));
+		criteria.setProjection(projectionList); // only return fields required for report
+		criteria.setResultTransformer(Transformers.aliasToBean(FieldDetailsDataRow.class));
 		criteria.addOrder(Order.asc("pc.id"));
 		criteria.addOrder(Order.asc("f.name"));
-	    results = criteria.list();
-	    
+		results = criteria.list();
+
 		return results;
 	}
 
-	protected ArkFunction getArkFunctionByName(String functionName){
+	protected ArkFunction getArkFunctionByName(String functionName) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
 		criteria.add(Restrictions.eq("name", functionName));
 		criteria.setMaxResults(1);
-		ArkFunction arkFunction  = (ArkFunction)criteria.uniqueResult();
+		ArkFunction arkFunction = (ArkFunction) criteria.uniqueResult();
 		return arkFunction;
 	}
 

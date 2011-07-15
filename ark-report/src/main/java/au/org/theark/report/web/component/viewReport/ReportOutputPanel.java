@@ -17,15 +17,15 @@ import org.wicketstuff.jasperreports.JRResource;
 import au.org.theark.report.model.vo.ReportSelectVO;
 
 public class ReportOutputPanel extends Panel {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	public AbstractLink downloadReportLink;
-	public AjaxButton downloadReportButton;
-	public Form<ReportSelectVO> downloadReportForm;
+	private static final long		serialVersionUID	= 1L;
+
+	public AbstractLink				downloadReportLink;
+	public AjaxButton					downloadReportButton;
+	public Form<ReportSelectVO>	downloadReportForm;
 
 	public ReportOutputPanel(String id) {
 		super(id);
@@ -33,33 +33,33 @@ public class ReportOutputPanel extends Panel {
 
 	public void initialisePanel() {
 		downloadReportLink = new ExternalLink("linkToReport", "", "");
-		downloadReportLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
+		downloadReportLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 		add(downloadReportLink);
 		CompoundPropertyModel<ReportSelectVO> cpModel = new CompoundPropertyModel<ReportSelectVO>(new ReportSelectVO());
 		downloadReportForm = new Form<ReportSelectVO>("downloadReportForm", cpModel);
-		downloadReportButton = new AjaxButton("downloadReportButton"){
+		downloadReportButton = new AjaxButton("downloadReportButton") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -559527968475678014L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{}
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
 		};
-		
+
 		downloadReportForm.add(downloadReportButton);
 		add(downloadReportForm);
 		// Button had caching issues
 		downloadReportForm.setVisible(false);
-		
-		this.setVisible(false);	//start off invisible
+
+		this.setVisible(false); // start off invisible
 	}
-	
+
 	public void setReportResource(JRResource reportResource) {
 		if (reportResource != null) {
 			ResourceLink<Void> newLink = new ResourceLink<Void>("linkToReport", reportResource);
-			newLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
+			newLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 			addOrReplace(newLink);
 			downloadReportForm.addOrReplace(buildDownloadButton(reportResource));
 			downloadReportLink = newLink;
@@ -67,16 +67,15 @@ public class ReportOutputPanel extends Panel {
 		else {
 			if (!downloadReportLink.getClass().equals(ExternalLink.class)) {
 				ExternalLink newLink = new ExternalLink("linkToReport", "", "");
-				newLink.setOutputMarkupPlaceholderTag(true);	//allow link to be replaced even when invisible
+				newLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 				downloadReportLink.replaceWith(newLink);
 				downloadReportLink = newLink;
 			}
 		}
 	}
-	
+
 	private AjaxButton buildDownloadButton(final JRResource reportResource) {
-		AjaxButton ajaxButton = new AjaxButton("downloadReportButton", new StringResourceModel("downloadKey", this, null)) 
-		{
+		AjaxButton ajaxButton = new AjaxButton("downloadReportButton", new StringResourceModel("downloadKey", this, null)) {
 			/**
 			 * 
 			 */
@@ -105,10 +104,9 @@ public class ReportOutputPanel extends Panel {
 		ajaxButton.setOutputMarkupPlaceholderTag(true);
 		return ajaxButton;
 	}
-	
+
 	@Override
-	public boolean isVersioned()
-	{
+	public boolean isVersioned() {
 		return false;
 	}
 }

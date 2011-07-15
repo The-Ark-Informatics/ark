@@ -37,58 +37,56 @@ import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLeve
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 
 @SuppressWarnings("serial")
-public class ReportSelectPanel extends Panel
-{
-	private static Logger log = LoggerFactory.getLogger(ReportSelectPanel.class);
+public class ReportSelectPanel extends Panel {
+	private static Logger							log	= LoggerFactory.getLogger(ReportSelectPanel.class);
 
 	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
-	private IReportService reportService;
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	protected IModel<Object> iModel;
-	CompoundPropertyModel<ReportSelectVO> reportSelectCPM;
+	private IReportService							reportService;
 
-	private ReportContainerVO		reportContainerVO;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<ReportTemplate> pageableListView;
+	protected IModel<Object>						iModel;
+	CompoundPropertyModel<ReportSelectVO>		reportSelectCPM;
 
-	public ReportSelectPanel(String id, CompoundPropertyModel<ReportSelectVO> reportSelectCPM, ReportContainerVO reportContainerVO)
-	{
+	private ReportContainerVO						reportContainerVO;
+
+	private PageableListView<ReportTemplate>	pageableListView;
+
+	public ReportSelectPanel(String id, CompoundPropertyModel<ReportSelectVO> reportSelectCPM, ReportContainerVO reportContainerVO) {
 		super(id);
 		this.reportContainerVO = reportContainerVO;
 		this.reportSelectCPM = reportSelectCPM;
 		reportContainerVO.setReportSelectPanel(this);
 	}
 
-	public void initialisePanel()
-	{
+	public void initialisePanel() {
 		Subject subject = SecurityUtils.getSubject();
-		Long sessionStudyId = (Long)subject.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionStudyId = (Long) subject.getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = null;
 
-		if(sessionStudyId != null && sessionStudyId > 0) {			
+		if (sessionStudyId != null && sessionStudyId > 0) {
 			study = iArkCommonService.getStudy(sessionStudyId);
 			reportSelectCPM.getObject().setStudy(study);
 		}
 		ArkUser arkUser;
-		try { 
+		try {
 			arkUser = iArkCommonService.getArkUser(subject.getPrincipal().toString());
-//			List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser, study);
+			// List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser, study);
 			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, null);
-			
+
 			if (resultList == null || (resultList != null && resultList.size() == 0)) {
 				this.info("No reports are available to you under your current role (NB: roles may depend on the study in context)");
 			}
 			reportSelectCPM.getObject().setReportsAvailableList(resultList);
-		} catch (EntityNotFoundException e) {
+		}
+		catch (EntityNotFoundException e) {
 			log.error("ReportSelectPanel.initialisePanel() could not load the ArkUser based on username in context.  This should not happen.");
 			this.error("A system error has occured. Please notify support if this happens after trying again.");
 		}
-		
+
 		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected Object load() {
@@ -103,56 +101,60 @@ public class ReportSelectPanel extends Panel
 		add(pageNavigator);
 		add(pageableListView);
 	}
-	
+
 	/**
 	 * 
 	 * @param iModel
 	 * @param searchContainer
 	 * @return
 	 */
-	public PageableListView<ReportTemplate> buildPageableListView(IModel iModel){
-		
+	public PageableListView<ReportTemplate> buildPageableListView(IModel iModel) {
+
 		PageableListView<ReportTemplate> sitePageableListView = new PageableListView<ReportTemplate>("reportList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
 			protected void populateItem(final ListItem<ReportTemplate> item) {
-				
+
 				ReportTemplate reportTemplate = item.getModelObject();
-				
+
 				/* The report module */
 				// TODO : will need to change to foreign key reference when new ARK security is implemented
-				if(reportTemplate.getModule() != null){
-					//Add the study Component Key here
-					item.add(new Label("reportTemplate.module.name", reportTemplate.getModule().getName()));	
-				}else{
-					item.add(new Label("reportTemplate.module.name",""));
+				if (reportTemplate.getModule() != null) {
+					// Add the study Component Key here
+					item.add(new Label("reportTemplate.module.name", reportTemplate.getModule().getName()));
 				}
-				
+				else {
+					item.add(new Label("reportTemplate.module.name", ""));
+				}
+
 				// Perform security check upon selection of the report
 				Subject subject = SecurityUtils.getSubject();
 				boolean securityCheckOk = false;
 				try {
-					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), 
-							reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
+					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
 					if (userRole.length() > 0) {
 						securityCheckOk = true;
 					}
-				} catch (EntityNotFoundException e) {
+				}
+				catch (EntityNotFoundException e) {
 					// TODO I don't like this kind of code - if there isn't a record, we should just return NULL.
 					// Only if it really is an error to not have a record, then we should throw an exception.
 				}
 				item.setVisible(securityCheckOk);
-				
+
 				/* Component Name Link */
 				item.add(buildLink(reportTemplate));
-				
-				//TODO when displaying text escape any special characters
+
+				// TODO when displaying text escape any special characters
 				/* Description */
-				if(reportTemplate.getDescription() != null){
-					item.add(new Label("reportTemplate.description", reportTemplate.getDescription()).setEscapeModelStrings(false));//the ID here must match the ones in mark-up	
-				}else{
-					item.add(new Label("reportTemplate.description", ""));//the ID here must match the ones in mark-up
+				if (reportTemplate.getDescription() != null) {
+					item.add(new Label("reportTemplate.description", reportTemplate.getDescription()).setEscapeModelStrings(false));// the ID here must
+																																											// match the ones in
+																																											// mark-up
 				}
-			
+				else {
+					item.add(new Label("reportTemplate.description", ""));// the ID here must match the ones in mark-up
+				}
+
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					@Override
@@ -160,16 +162,15 @@ public class ReportSelectPanel extends Panel
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
-				
+
 			}
 		};
 		return sitePageableListView;
 	}
-	
-	
+
 	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final ReportTemplate reportTemplate) {
-		
+
 		AjaxLink link = new AjaxLink("reportTemplate.link") {
 
 			@Override
@@ -178,23 +179,23 @@ public class ReportSelectPanel extends Panel
 				Subject subject = SecurityUtils.getSubject();
 				boolean securityCheckOk = false;
 				try {
-					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), 
-							reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
+					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
 					if (userRole.length() > 0) {
 						securityCheckOk = true;
 					}
-				} catch (EntityNotFoundException e) {
+				}
+				catch (EntityNotFoundException e) {
 					// TODO I don't like this kind of code - if there isn't a record, we should just return NULL.
 					// Only if it really is an error to not have a record, then we should throw an exception.
 				}
-				
+
 				if (securityCheckOk == false) {
 					this.error("You do not have enough privileges to access this report.  If you believe this is incorrect, then please contact your administrator.");
 				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_SUMMARY_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
-					} 
+					}
 					else {
 						StudySummaryReportContainer selectedReportPanel = new StudySummaryReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
@@ -205,7 +206,7 @@ public class ReportSelectPanel extends Panel
 						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
-				} 
+				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_LEVEL_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
@@ -220,7 +221,7 @@ public class ReportSelectPanel extends Panel
 						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
-				} 
+				}
 				else if (reportTemplate.getName().equals(Constants.STUDY_COMP_CONSENT_REPORT_NAME)) {
 					if (reportSelectCPM.getObject().getStudy() == null) {
 						this.error("This report requires a study in context. Please put a study in context first.");
@@ -257,8 +258,8 @@ public class ReportSelectPanel extends Panel
 				target.addComponent(reportContainerVO.getFeedbackPanel());
 			}
 		};
-		
-		//Add the label for the link
+
+		// Add the label for the link
 		Label nameLinkLabel = new Label("reportTemplate.name", reportTemplate.getName());
 		link.add(nameLinkLabel);
 		return link;
