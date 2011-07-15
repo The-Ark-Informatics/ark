@@ -135,4 +135,12 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count) {
 		return adminDao.searchPageableArkModules(arkModuleCriteria, first, count);
 	}
+
+	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
+		return adminDao.getArkRolePolicyTemplateCount(arkRolePolicyTemplateCriteria);
+	}
+
+	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
+		return adminDao.searchPageableArkRolePolicyTemplates(arkRolePolicyTemplateCriteria, first, count);
+	}
 }

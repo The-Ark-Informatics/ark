@@ -2,8 +2,6 @@ package au.org.theark.admin.model.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -86,4 +84,8 @@ public interface IAdminDao {
 	public int getArkFunctionCount(ArkFunction arkFunctionCriteria);
 
 	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
+
+	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria);
+
+	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count);
 }

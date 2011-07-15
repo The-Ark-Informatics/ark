@@ -215,4 +215,38 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 
 		return criteria;
 	}
+
+	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
+		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
+		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<ArkRolePolicyTemplate> list = criteria.list();
+
+		return list;
+	}
+	
+	protected Criteria buildArkRolePolicyTemplateCriteria(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
+
+		if (arkRolePolicyTemplateCriteria.getId() != null)
+			criteria.add(Restrictions.eq("id", arkRolePolicyTemplateCriteria.getId()));
+
+		if (arkRolePolicyTemplateCriteria.getArkRole() != null)
+			criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
+
+		if (arkRolePolicyTemplateCriteria.getArkModule() != null)
+			criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplateCriteria.getArkModule()));
+		
+		if (arkRolePolicyTemplateCriteria.getArkFunction() != null)
+			criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
+
+		return criteria;
+	}
 }

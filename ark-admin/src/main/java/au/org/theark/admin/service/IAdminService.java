@@ -85,4 +85,8 @@ public interface IAdminService<T> {
 	public int getArkFunctionCount(ArkFunction arkFunctionCriteria);
 
 	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
+
+	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplate);
+	
+	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplate, int first, int count);
 }
