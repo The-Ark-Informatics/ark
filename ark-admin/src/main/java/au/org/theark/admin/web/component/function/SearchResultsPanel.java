@@ -1,7 +1,5 @@
 package au.org.theark.admin.web.component.function;
 
-import java.util.List;
-
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -10,6 +8,8 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -21,34 +21,75 @@ import au.org.theark.admin.web.component.function.form.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.ArkDataProvider;
 
-public class SearchResultsPanel extends Panel
-{	
+public class SearchResultsPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 5237384531161620862L;
-	protected transient Logger log = LoggerFactory.getLogger(SearchResultsPanel.class);
+	private static final long		serialVersionUID	= 5237384531161620862L;
+	protected transient Logger		log					= LoggerFactory.getLogger(SearchResultsPanel.class);
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
-	
-	private ContainerForm containerForm;
-	
-	private ArkCrudContainerVO arkCrudContainerVo;
-	
-	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
-	{
+	private IAdminService<Void>	iAdminService;
+	private ContainerForm			containerForm;
+	private ArkCrudContainerVO		arkCrudContainerVo;
+
+	public SearchResultsPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id);
 		this.containerForm = containerForm;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
 
 	@SuppressWarnings("unchecked")
-	public PageableListView<ArkFunction> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer)
-	{	
-		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) 
-		{
+	public DataView<ArkFunction> buildDataView(ArkDataProvider<ArkFunction, IAdminService> dataProvider) {
+		DataView<ArkFunction> dataView = new DataView<ArkFunction>("arkFunctionList", dataProvider) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 2981419595326128410L;
+
+			@Override
+			protected void populateItem(final Item<ArkFunction> item) {
+				ArkFunction arkFunction = item.getModelObject();
+
+				item.add(buildLink(arkFunction));
+
+				if (arkFunction.getName() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.name", arkFunction.getName()));
+				}
+				else {
+					item.add(new Label("arkFunction.name", ""));
+				}
+
+				if (arkFunction.getDescription() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.description", arkFunction.getDescription()));
+				}
+				else {
+					item.add(new Label("arkFunction.description", ""));
+				}
+
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 5761909841047153853L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+			}
+		};
+		return dataView;
+	}
+
+	@SuppressWarnings("unchecked")
+	public PageableListView<ArkFunction> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
+		PageableListView<ArkFunction> pageableListView = new PageableListView<ArkFunction>("arkFunctionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
 			 * 
 			 */
@@ -56,41 +97,35 @@ public class SearchResultsPanel extends Panel
 
 			@Override
 			protected void populateItem(final ListItem<ArkFunction> item) {
-				
+
 				ArkFunction arkFunction = item.getModelObject();
-				
-				item.add(buildLink(arkFunction,searchResultsContainer));
-				
-				if(arkFunction.getName() != null)
-				{
-					//the ID here must match the ones in mark-up
-					item.add(new Label("arkFunction.name", arkFunction.getName()));	
+
+				item.add(buildLink(arkFunction));
+
+				if (arkFunction.getName() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.name", arkFunction.getName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("arkFunction.name", ""));
 				}
-				
-				if(arkFunction.getDescription() != null)
-				{
-					//the ID here must match the ones in mark-up
-					item.add(new Label("arkFunction.description", arkFunction.getDescription()));	
+
+				if (arkFunction.getDescription() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.description", arkFunction.getDescription()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("arkFunction.description", ""));
 				}
-				
-				if(arkFunction.getArkFunctionType() != null)
-				{
-					//the ID here must match the ones in mark-up
-					item.add(new Label("arkFunction.arkFunctionType", arkFunction.getArkFunctionType().getName()));	
+
+				if (arkFunction.getArkFunctionType() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.arkFunctionType", arkFunction.getArkFunctionType().getName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("arkFunction.arkFunctionType", ""));
 				}
-				
+
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					/**
 					 * 
@@ -102,28 +137,21 @@ public class SearchResultsPanel extends Panel
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
-				
+
 			}
 		};
 		return pageableListView;
 	}
-	
-	
-	@SuppressWarnings({ "unchecked", "serial" })
-	private AjaxLink buildLink(final ArkFunction ArkFunction, final WebMarkupContainer searchResultsContainer)
-	{	
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") 
-		{
+
+	@SuppressWarnings( { "unchecked", "serial" })
+	private AjaxLink buildLink(final ArkFunction arkFunction) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
-			public void onClick(AjaxRequestTarget target) 
-			{				
-				Long id = ArkFunction.getId();
-				ArkFunction ArkFunction = iAdminService.getArkFunction(id); 
+			public void onClick(AjaxRequestTarget target) {
+				Long id = arkFunction.getId();
+				ArkFunction ArkFunction = iAdminService.getArkFunction(id);
 				containerForm.getModelObject().setArkFunction(ArkFunction);
-				
-				List<ArkFunction> arkFunctionList =  iAdminService.getArkFunctionList();
-				containerForm.getModelObject().setArkFunctionList(arkFunctionList);
-				
+
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
 				arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
@@ -131,7 +159,7 @@ public class SearchResultsPanel extends Panel
 				arkCrudContainerVo.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
 				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-				
+
 				// Refresh the markup containers
 				target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
@@ -139,14 +167,14 @@ public class SearchResultsPanel extends Panel
 				target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
 				target.addComponent(arkCrudContainerVo.getViewButtonContainer());
 				target.addComponent(arkCrudContainerVo.getEditButtonContainer());
-				
+
 				// Refresh base container form to remove any feedBack messages
 				target.addComponent(containerForm);
 			}
 		};
-		
-		//Add the label for the link
-		Label linkLabel = new Label("arkFunction.id", ArkFunction.getId().toString());
+
+		// Add the label for the link
+		Label linkLabel = new Label("arkFunction.id", arkFunction.getId().toString());
 		link.add(linkLabel);
 		return link;
 	}

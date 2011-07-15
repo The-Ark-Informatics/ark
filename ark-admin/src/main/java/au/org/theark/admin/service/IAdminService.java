@@ -10,40 +10,44 @@ import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 
-public interface IAdminService<T>
-{	
+public interface IAdminService<T> {
 	/**
 	 * Create a new arkRolePolicyTemplate, via the reference AdminVO object
+	 * 
 	 * @param adminVo
 	 */
 	public void createArkRolePolicyTemplate(AdminVO adminVo);
-	
+
 	/**
 	 * Update an arkRolePolicyTemplate, via the reference AdminVO object
+	 * 
 	 * @param adminVo
 	 */
 	public void updateArkRolePolicyTemplate(AdminVO adminVo);
-	
+
 	/**
 	 * Delete an arkRolePolicyTemplate entity, via the reference AdminVO object
+	 * 
 	 * @param adminVo
 	 */
 	public void deleteArkRolePolicyTemplate(AdminVO adminVo);
-	
+
 	/**
 	 * Create or update an arkRolePolicyTemplate entity
+	 * 
 	 * @param arkRolePolicyTemplate
 	 */
 	public void createOrUpdateArkRolePolicyTemplate(AdminVO adminVo);
-	
+
 	/**
 	 * Get a list of ArkRolePolicyTemplate(s), grouped by Role, Module and function
+	 * 
 	 * @return
 	 */
 	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates();
-	
+
 	public List<ArkRole> getArkRoleList();
-	
+
 	public List<ArkModule> getArkModuleList();
 
 	public List<ArkFunction> getArkFunctionList();
@@ -57,7 +61,7 @@ public interface IAdminService<T>
 	public ArkPermission getArkPermissionByName(String name);
 
 	public ArkModule getArkModule(Long id);
-	
+
 	public ArkFunction getArkFunction(Long id);
 
 	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction);
@@ -65,12 +69,20 @@ public interface IAdminService<T>
 	public List<ArkFunctionType> getArkFunctionTypeList();
 
 	public void creatOrUpdateArkFunction(AdminVO adminVo);
-	
+
 	public void deleteArkFunction(AdminVO adminVo);
-	
+
 	public void creatOrUpdateArkModule(AdminVO adminVo);
-	
+
 	public void deleteArkModule(AdminVO adminVo);
 
 	public List<ArkModule> searchArkModule(ArkModule arkModule);
+
+	public int getArkModuleCount(ArkModule arkModuleCriteria);
+
+	public List<ArkModule> searchPageableArkModules(ArkModule arkModuleCriteria, int first, int count);
+
+	public int getArkFunctionCount(ArkFunction arkFunctionCriteria);
+
+	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
 }

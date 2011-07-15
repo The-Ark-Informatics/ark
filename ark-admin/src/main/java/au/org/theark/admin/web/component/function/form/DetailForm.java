@@ -22,17 +22,16 @@ import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
-public class DetailForm extends AbstractDetailForm<AdminVO>
-{
+public class DetailForm extends AbstractDetailForm<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -4764831185215105696L;
+	private static final long				serialVersionUID	= -4764831185215105696L;
 
-	protected transient Logger log = LoggerFactory.getLogger(DetailForm.class);
-	
+	protected transient Logger				log					= LoggerFactory.getLogger(DetailForm.class);
+
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
+	private IAdminService<Void>			iAdminService;
 
 	private int									mode;
 	private TextField<String>				idTxtFld;
@@ -49,25 +48,23 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * @param feedbackPanel
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
-	{
+	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
 		setMultiPart(true);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("arkFunction.id");
 		idTxtFld.setEnabled(false);
-		
+
 		nameTxtFld = new TextField<String>("arkFunction.name");
 		descriptionTxtAreaFld = new TextArea<String>("arkFunction.description");
 
 		// FunctionType selection
 		initArkFunctionTypeDropDown();
-		
+
 		resourceKeyTxtFld = new TextField<String>("arkFunction.resourceKey");
 
 		attachValidators();
@@ -75,36 +72,31 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initArkFunctionTypeDropDown()
-	{
+	private void initArkFunctionTypeDropDown() {
 		List<ArkFunctionType> arkFunctionTypeList = iAdminService.getArkFunctionTypeList();
 		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
 		arkFunctionTypeDropDown = new DropDownChoice("arkFunction.arkFunctionType", arkFunctionTypeList, defaultChoiceRenderer);
-		arkFunctionTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		arkFunctionTypeDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1007263623823525412L;
 
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
-				
+			protected void onUpdate(AjaxRequestTarget target) {
+
 			}
 		});
 	}
 
 	@Override
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Set required field here
 		nameTxtFld.setRequired(true);
 		arkFunctionTypeDropDown.setRequired(true);
 	}
-	
-	private void addDetailFormComponents()
-	{
+
+	private void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
@@ -113,43 +105,36 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
-	
-	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target)
-	{
+
+	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target) {
 		// Save or update
 		iAdminService.creatOrUpdateArkFunction(containerForm.getModelObject());
-		
+
 		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was created/updated successfully.");
 		target.addComponent(feedBackPanel);
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		containerForm.setModelObject(new AdminVO());
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		// Delete
 		iAdminService.deleteArkFunction(containerForm.getModelObject());
-		
+
 		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was deleted successfully.");
 		editCancelProcess(target, true);
 	}
 
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	protected boolean isNew()
-	{
-		if (containerForm.getModelObject().getArkFunction().getId() == null)
-		{
+	protected boolean isNew() {
+		if (containerForm.getModelObject().getArkFunction().getId() == null) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -157,8 +142,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	/**
 	 * @return the mode
 	 */
-	public int getMode()
-	{
+	public int getMode() {
 		return mode;
 	}
 
@@ -166,8 +150,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * @param mode
 	 *           the mode to set
 	 */
-	public void setMode(int mode)
-	{
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 }

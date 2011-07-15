@@ -18,15 +18,14 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
-public class SearchForm extends AbstractSearchForm<AdminVO>
-{
+public class SearchForm extends AbstractSearchForm<AdminVO> {
 	/**
 	 * 
 	 */
 	private static final long					serialVersionUID	= -204010204180506704L;
-	
+
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
+	private IAdminService<Void>				iAdminService;
 
 	private CompoundPropertyModel<AdminVO>	cpmModel;
 	private ArkCrudContainerVO					arkCrudContainerVo;
@@ -43,8 +42,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	 * @param ArkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchForm(String id, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo, FeedbackPanel feedbackPanel, ContainerForm containerForm)
-	{
+	public SearchForm(String id, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo, FeedbackPanel feedbackPanel, ContainerForm containerForm) {
 		super(id, cpmModel, feedbackPanel, arkCrudContainerVo);
 
 		this.containerForm = containerForm;
@@ -58,41 +56,35 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		addSearchComponentsToForm();
 	}
 
-	protected void initialiseSearchForm()
-	{
+	protected void initialiseSearchForm() {
 		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
-		
+
 		// Role selection
 		initArkRoleDropDown();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private void initArkRoleDropDown()
-	{
+	private void initArkRoleDropDown() {
 		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
 		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
-		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 5591846326218931210L;
 
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 
 			}
 		});
 	}
 
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		ArkRolePolicyTemplate arkRolePolicyTemplate = containerForm.getModelObject().getArkRolePolicyTemplate();
 		List<ArkRolePolicyTemplate> resultList = iAdminService.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
-		if (resultList != null && resultList.size() == 0)
-		{
+		if (resultList != null && resultList.size() == 0) {
 			containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.addComponent(feedbackPanel);
@@ -104,13 +96,11 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 	}
 
-	private void addSearchComponentsToForm()
-	{
+	private void addSearchComponentsToForm() {
 		add(idTxtFld);
 	}
 
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
@@ -120,7 +110,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		arkCrudContainerVo.getViewButtonContainer().setVisible(true);
 		arkCrudContainerVo.getViewButtonContainer().setEnabled(true);
 		arkCrudContainerVo.getEditButtonContainer().setVisible(false);
-		
+
 		// Refresh the markup containers
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
@@ -128,7 +118,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 		target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
 		target.addComponent(arkCrudContainerVo.getViewButtonContainer());
 		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
-		
+
 		// Refresh base container form to remove any feedBack messages
 		target.addComponent(containerForm);
 	}
@@ -137,16 +127,14 @@ public class SearchForm extends AbstractSearchForm<AdminVO>
 	 * @param cpmModel
 	 *           the cpmModel to set
 	 */
-	public void setCpmModel(CompoundPropertyModel<AdminVO> cpmModel)
-	{
+	public void setCpmModel(CompoundPropertyModel<AdminVO> cpmModel) {
 		this.cpmModel = cpmModel;
 	}
 
 	/**
 	 * @return the cpmModel
 	 */
-	public CompoundPropertyModel<AdminVO> getCpmModel()
-	{
+	public CompoundPropertyModel<AdminVO> getCpmModel() {
 		return cpmModel;
 	}
 }

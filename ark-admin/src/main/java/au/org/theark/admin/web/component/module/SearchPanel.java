@@ -10,33 +10,32 @@ import au.org.theark.admin.web.component.module.form.SearchForm;
 import au.org.theark.core.Constants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
-public class SearchPanel extends Panel
-{
+public class SearchPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= -2689739291154679914L;
-	private ContainerForm containerForm;
-	private FeedbackPanel feedBackPanel;
-	private CompoundPropertyModel<AdminVO> cpmModel;
-	private ArkCrudContainerVO arkCrudContainerVo;
-	
+	private static final long					serialVersionUID	= -2689739291154679914L;
+	private ContainerForm						containerForm;
+	private FeedbackPanel						feedBackPanel;
+	private CompoundPropertyModel<AdminVO>	cpmModel;
+	private ArkCrudContainerVO					arkCrudContainerVo;
+
 	/**
 	 * Constructor That uses the VO
+	 * 
 	 * @param id
 	 * @param studyCrudContainerVO
 	 */
-	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo){
-		
+	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, CompoundPropertyModel<AdminVO> cpmModel, ArkCrudContainerVO arkCrudContainerVo) {
+
 		super(id);
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedbackPanel;
 		this.cpmModel = cpmModel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
-	
-	public void initialisePanel()
-	{
+
+	public void initialisePanel() {
 		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, cpmModel, arkCrudContainerVo, feedBackPanel, containerForm);
 		add(searchForm);
 	}

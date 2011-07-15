@@ -7,8 +7,7 @@ import au.org.theark.admin.web.component.module.form.ContainerForm;
 import au.org.theark.admin.web.component.module.form.DetailForm;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 
-public class DetailPanel extends Panel
-{
+public class DetailPanel extends Panel {
 	/**
 	 * 
 	 */
@@ -26,16 +25,14 @@ public class DetailPanel extends Panel
 	 * @param studyCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
-	{
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
 		this.containerForm = containerForm;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 	}
 
-	public void initialisePanel()
-	{
+	public void initialisePanel() {
 		detailForm = new DetailForm("detailForm", feedbackPanel, containerForm, arkCrudContainerVo);
 		detailForm.initialiseDetailForm();
 		add(detailForm); // Add the form to the panel

@@ -15,22 +15,21 @@ import au.org.theark.admin.service.IAdminService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
-public class DetailForm extends AbstractDetailForm<AdminVO>
-{
+public class DetailForm extends AbstractDetailForm<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 7359844049561245524L;
+	private static final long		serialVersionUID	= 7359844049561245524L;
 
-	protected transient Logger log = LoggerFactory.getLogger(DetailForm.class);
-	
+	protected transient Logger		log					= LoggerFactory.getLogger(DetailForm.class);
+
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
+	private IAdminService<Void>	iAdminService;
 
-	private int									mode;
-	private TextField<String>				idTxtFld;
-	private TextField<String>				nameTxtFld;
-	private TextArea<String>				descriptionTxtAreaFld;
+	private int							mode;
+	private TextField<String>		idTxtFld;
+	private TextField<String>		nameTxtFld;
+	private TextArea<String>		descriptionTxtAreaFld;
 
 	/**
 	 * Constructor
@@ -40,19 +39,17 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * @param feedbackPanel
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo)
-	{
+	public DetailForm(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVo) {
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
 		setMultiPart(true);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("arkModule.id");
 		idTxtFld.setEnabled(false);
-		
+
 		nameTxtFld = new TextField<String>("arkModule.name");
 		descriptionTxtAreaFld = new TextArea<String>("arkModule.description");
 
@@ -61,57 +58,48 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	}
 
 	@Override
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Set required field here
 		nameTxtFld.setRequired(true);
 	}
-	
-	private void addDetailFormComponents()
-	{
+
+	private void addDetailFormComponents() {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
-	
-	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target)
-	{
+
+	protected void onSave(Form<AdminVO> containerForm, AjaxRequestTarget target) {
 		// Save or update
 		iAdminService.creatOrUpdateArkModule(containerForm.getModelObject());
-		
+
 		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
 		target.addComponent(feedBackPanel);
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		containerForm.setModelObject(new AdminVO());
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		// Delete
 		iAdminService.deleteArkModule(containerForm.getModelObject());
-		
+
 		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was deleted successfully.");
 		editCancelProcess(target, true);
 	}
 
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	protected boolean isNew()
-	{
-		if (containerForm.getModelObject().getArkFunction().getId() == null)
-		{
+	protected boolean isNew() {
+		if (containerForm.getModelObject().getArkFunction().getId() == null) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
@@ -119,8 +107,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	/**
 	 * @return the mode
 	 */
-	public int getMode()
-	{
+	public int getMode() {
 		return mode;
 	}
 
@@ -128,8 +115,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO>
 	 * @param mode
 	 *           the mode to set
 	 */
-	public void setMode(int mode)
-	{
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 }

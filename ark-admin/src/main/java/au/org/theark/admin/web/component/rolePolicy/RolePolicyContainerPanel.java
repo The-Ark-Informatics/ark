@@ -20,8 +20,7 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
  * @author cellis
  * 
  */
-public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
-{
+public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	/**
 	 * 
 	 */
@@ -31,21 +30,20 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	private DetailPanel										detailPanel;
 	private SearchResultsPanel								searchResultsPanel;
 	private PageableListView<ArkRolePolicyTemplate>	pageableListView;
-	
+
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
+	private IAdminService<Void>							iAdminService;
 
 	/**
 	 * @param id
 	 */
-	public RolePolicyContainerPanel(String id)
-	{
+	public RolePolicyContainerPanel(String id) {
 		super(id, true);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
-		
+
 		initCrudContainerVO();
-		
+
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -57,8 +55,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
@@ -66,8 +63,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		searchPanel = new SearchPanel("searchPanel", feedBackPanel, containerForm, cpModel, arkCrudContainerVO);
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -75,22 +71,19 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 				arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList();
 				containerForm.getModelObject().setArkRolePolicyTemplateList(arkRolePolicyTemplateList);
-				
-				//TODO: Implement grouped method to return list of roles (rather then every arkRolePolicyTemplate)
-				//arkRolePolicyTemplateList = iAdminService.getGroupedArkRolePolicyTemplates();
+
+				// TODO: Implement grouped method to return list of roles (rather then every arkRolePolicyTemplate)
+				// arkRolePolicyTemplateList = iAdminService.getGroupedArkRolePolicyTemplates();
 				pageableListView.removeAll();
 				return arkRolePolicyTemplateList;
 			}
@@ -105,20 +98,19 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO>
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
-	
+
 	/**
 	 * @return the pageableListView
 	 */
-	public PageableListView<ArkRolePolicyTemplate> getPageableListView()
-	{
+	public PageableListView<ArkRolePolicyTemplate> getPageableListView() {
 		return pageableListView;
 	}
 
 	/**
-	 * @param pageableListView the pageableListView to set
+	 * @param pageableListView
+	 *           the pageableListView to set
 	 */
-	public void setPageableListView(PageableListView<ArkRolePolicyTemplate> pageableListView)
-	{
+	public void setPageableListView(PageableListView<ArkRolePolicyTemplate> pageableListView) {
 		this.pageableListView = pageableListView;
 	}
 }

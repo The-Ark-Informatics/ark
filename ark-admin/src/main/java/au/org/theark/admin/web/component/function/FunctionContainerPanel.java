@@ -1,11 +1,12 @@
 package au.org.theark.admin.web.component.function;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -14,38 +15,39 @@ import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.function.form.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider;
 
 /**
  * @author cellis
  * 
  */
-public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO>
-{
+public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long								serialVersionUID	= 442185554812824590L;
-	private ContainerForm									containerForm;
-	private SearchPanel										searchPanel;
-	private DetailPanel										detailPanel;
-	private SearchResultsPanel								searchResultsPanel;
-	private PageableListView<ArkFunction>	pageableListView;
-	
+	private static final long										serialVersionUID	= 442185554812824590L;
+	private ContainerForm											containerForm;
+	private SearchPanel												searchPanel;
+	private DetailPanel												detailPanel;
+	private SearchResultsPanel										searchResultsPanel;
+	private DataView<ArkFunction>									dataView;
+	private ArkDataProvider<ArkFunction, IAdminService>	dataProvider;
+
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
+	private IAdminService<Void>									iAdminService;
 
 	/**
 	 * @param id
 	 */
-	public FunctionContainerPanel(String id)
-	{
+	public FunctionContainerPanel(String id) {
 		super(id, true);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
-		
+
 		initCrudContainerVO();
-		
+
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -57,8 +59,7 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
@@ -66,8 +67,7 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		searchPanel = new SearchPanel("searchPanel", feedBackPanel, containerForm, cpModel, arkCrudContainerVO);
 		searchPanel.initialisePanel();
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -75,31 +75,40 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
-		iModel = new LoadableDetachableModel<Object>()
-		{
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected Object load()
-			{
-				List<ArkFunction> arkFunctionList = new ArrayList<ArkFunction>(0);
-				arkFunctionList = iAdminService.getArkFunctionList();
-				containerForm.getModelObject().setArkFunctionList(arkFunctionList);
-				pageableListView.removeAll();
-				return arkFunctionList;
-			}
-		};
-
-		pageableListView = searchResultsPanel.buildPageableListView(iModel, searchResultPanelContainer);
-		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		initialiseDataView();
+		dataView = searchResultsPanel.buildDataView(dataProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(pageableListView);
-		arkCrudContainerVO.setMyListView(pageableListView);
+		searchResultsPanel.add(dataView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
+	}
+
+	@SuppressWarnings( { "unchecked", "serial" })
+	private void initialiseDataView() {
+		// Data provider to paginate resultList
+		dataProvider = new ArkDataProvider<ArkFunction, IAdminService>(iAdminService) {
+			public int size() {
+				return service.getArkFunctionCount(model.getObject());
+			}
+
+			public Iterator<ArkFunction> iterator(int first, int count) {
+				List<ArkFunction> listCollection = new ArrayList<ArkFunction>();
+				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
+					listCollection = service.searchPageableArkFunctions(model.getObject(), first, count);
+				}
+				return listCollection.iterator();
+			}
+		};
+		// Set the criteria into the data provider's model
+		dataProvider.setModel(new LoadableDetachableModel<ArkFunction>() {
+			@Override
+			protected ArkFunction load() {
+				return cpModel.getObject().getArkFunction();
+			}
+		});
 	}
 }

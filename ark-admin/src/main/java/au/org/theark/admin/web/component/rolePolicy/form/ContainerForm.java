@@ -5,9 +5,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
 
-
-
-public class ContainerForm extends AbstractContainerForm<AdminVO>{
+public class ContainerForm extends AbstractContainerForm<AdminVO> {
 
 	/**
 	 * 
