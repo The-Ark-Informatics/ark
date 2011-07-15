@@ -1140,8 +1140,9 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 		int rowsDeleted = 0;
 		if (phenoCollection != null) {
 			try {
-				String hql = "DELETE FROM FieldData WHERE collection.id=" + phenoCollection.getId().intValue();
-				Query query = getSession().createQuery(hql);
+				String hqlString = "DELETE FROM FieldData WHERE collection= :phenoCollection";
+				Query query = getSession().createQuery(hqlString);
+				query.setParameter("collection", phenoCollection);
 				rowsDeleted = query.executeUpdate();
 
 				if (rowsDeleted == 0) {
