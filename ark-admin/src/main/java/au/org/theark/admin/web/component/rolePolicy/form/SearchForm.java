@@ -14,7 +14,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 
@@ -82,16 +81,12 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
-		ArkRolePolicyTemplate arkRolePolicyTemplate = containerForm.getModelObject().getArkRolePolicyTemplate();
-		List<ArkRolePolicyTemplate> resultList = iAdminService.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
-		if (resultList != null && resultList.size() == 0) {
-			containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
+		int count = iAdminService.getArkRolePolicyTemplateCount(containerForm.getModelObject().getArkRolePolicyTemplate());
+		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.addComponent(feedbackPanel);
 		}
 
-		containerForm.getModelObject().setArkRolePolicyTemplateList(resultList);
-		arkCrudContainerVo.getMyListView().removeAll();
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(true);
 		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
 	}

@@ -11,6 +11,8 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -25,6 +27,7 @@ import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.ArkDataProvider;
 
 public class SearchResultsPanel extends Panel {
 	/**
@@ -50,6 +53,97 @@ public class SearchResultsPanel extends Panel {
 	}
 
 	@SuppressWarnings("unchecked")
+	public DataView<ArkRolePolicyTemplate> buildDataView(ArkDataProvider<ArkRolePolicyTemplate, IAdminService> dataProvider) {
+		DataView<ArkRolePolicyTemplate> dataView = new DataView<ArkRolePolicyTemplate>("arkRolePolicyTemplateList", dataProvider) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -7977497161071264676L;
+
+			@Override
+			protected void populateItem(final Item<ArkRolePolicyTemplate> item) {
+
+				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
+
+				item.add(buildLink(arkRolePolicyTemplate));
+
+				if (arkRolePolicyTemplate.getArkRole() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName()));
+				}
+				else {
+					item.add(new Label("arkRolePolicyTemplate.arkRole", ""));
+				}
+
+				if (arkRolePolicyTemplate.getArkModule() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkRolePolicyTemplate.arkModule", arkRolePolicyTemplate.getArkModule().getName()));
+				}
+				else {
+					item.add(new Label("arkRolePolicyTemplate.arkModule", ""));
+				}
+
+				if (arkRolePolicyTemplate.getArkFunction() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkRolePolicyTemplate.arkFunction", arkRolePolicyTemplate.getArkFunction().getName()));
+				}
+				else {
+					item.add(new Label("arkRolePolicyTemplate.arkFunction", ""));
+				}
+
+				if (arkRolePolicyTemplate.getArkPermission() != null) {
+					// the ID here must match the ones in mark-up
+					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("CREATE")) {
+						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("READ")) {
+						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("UPDATE")) {
+						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("DELETE")) {
+						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
+					}
+				}
+
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1938679383897533820L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+
+			}
+		};
+		return dataView;
+	}
+
+	@SuppressWarnings("unchecked")
 	public PageableListView<ArkRolePolicyTemplate> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 		PageableListView<ArkRolePolicyTemplate> pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplateList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
@@ -62,7 +156,7 @@ public class SearchResultsPanel extends Panel {
 
 				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
 
-				item.add(buildLink(arkRolePolicyTemplate, searchResultsContainer));
+				item.add(buildLink(arkRolePolicyTemplate));
 
 				if (arkRolePolicyTemplate.getArkRole() != null) {
 					// the ID here must match the ones in mark-up
@@ -140,7 +234,7 @@ public class SearchResultsPanel extends Panel {
 	}
 
 	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final ArkRolePolicyTemplate arkRolePolicyTemplate, final WebMarkupContainer searchResultsContainer) {
+	private AjaxLink buildLink(final ArkRolePolicyTemplate arkRolePolicyTemplate) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
