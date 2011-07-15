@@ -241,6 +241,7 @@ public class SearchResultsPanel extends Panel {
 				Long id = arkRolePolicyTemplate.getId();
 				ArkRolePolicyTemplate arkRolePolicyTemplate = iAdminService.getArkRolePolicyTemplate(id);
 				containerForm.getModelObject().setArkRolePolicyTemplate(arkRolePolicyTemplate);
+				containerForm.getModelObject().setArkRole(arkRolePolicyTemplate.getArkRole());
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
@@ -278,7 +279,7 @@ public class SearchResultsPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label linkLabel = new Label("arkRolePolicyTemplate.id", arkRolePolicyTemplate.getId().toString());
+		Label linkLabel = new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName().toString());
 		link.add(linkLabel);
 		return link;
 	}
