@@ -66,15 +66,8 @@ public class SearchResultsPanel extends Panel {
 
 				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
 
+				// Role name is the link
 				item.add(buildLink(arkRolePolicyTemplate));
-
-				if (arkRolePolicyTemplate.getArkRole() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName()));
-				}
-				else {
-					item.add(new Label("arkRolePolicyTemplate.arkRole", ""));
-				}
 
 				if (arkRolePolicyTemplate.getArkModule() != null) {
 					// the ID here must match the ones in mark-up
@@ -156,15 +149,8 @@ public class SearchResultsPanel extends Panel {
 
 				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
 
+				// Role name is the link
 				item.add(buildLink(arkRolePolicyTemplate));
-
-				if (arkRolePolicyTemplate.getArkRole() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName()));
-				}
-				else {
-					item.add(new Label("arkRolePolicyTemplate.arkRole", ""));
-				}
 
 				if (arkRolePolicyTemplate.getArkModule() != null) {
 					// the ID here must match the ones in mark-up
