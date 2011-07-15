@@ -17,15 +17,14 @@ import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
-public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO>
-{
+public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
+	private IStudyService						studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
-	
-	private static final long					serialVersionUID				= 1L;
+	private IArkCommonService					iArkCommonService;
+
+	private static final long					serialVersionUID	= 1L;
 
 	// Panels
 	private SearchPanel							searchComponentPanel;
@@ -35,8 +34,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 	private PageableListView<StudyUpload>	listView;
 	private ContainerForm						containerForm;
 
-	public SubjectUploadContainerPanel(String id)
-	{
+	public SubjectUploadContainerPanel(String id) {
 		super(id);
 
 		/* Initialise the CPM */
@@ -47,61 +45,42 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		//containerForm.add(initialiseDetailPanel());
+		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());
-		//containerForm.add(initialiseSearchPanel());
+		// containerForm.add(initialiseSearchPanel());
 		containerForm.setMultiPart(true);
 		add(containerForm);
 	}
 
-	private WebMarkupContainer initialiseWizardPanel()
-	{
-		wizardPanel = new WizardPanel("wizardPanel", 
-												searchResultPanelContainer, 
-												feedBackPanel, 
-												wizardPanelContainer, 
-												searchPanelContainer, 
-												wizardPanelFormContainer,
-												containerForm);
+	private WebMarkupContainer initialiseWizardPanel() {
+		wizardPanel = new WizardPanel("wizardPanel", searchResultPanelContainer, feedBackPanel, wizardPanelContainer, searchPanelContainer, wizardPanelFormContainer, containerForm);
 		wizardPanel.initialisePanel();
 		wizardPanelContainer.setVisible(true);
 		wizardPanelContainer.add(wizardPanel);
 		return wizardPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchResults()
-	{
-		searchResultPanel = new SearchResultListPanel("searchResults",
-												feedBackPanel,
-												detailPanelContainer,
-												searchPanelContainer, 
-												containerForm, 
-												searchResultPanelContainer, 
-												detailPanel, 
-												viewButtonContainer,
-												editButtonContainer, 
-												detailPanelFormContainer);
+	protected WebMarkupContainer initialiseSearchResults() {
+		searchResultPanel = new SearchResultListPanel("searchResults", feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
+				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
 
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Return all Uploads for the Study in context
 				java.util.Collection<StudyUpload> studyUploads = new ArrayList<StudyUpload>();
-				Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if(isActionPermitted() && sessionStudyId != null)
-				{
+				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				if (isActionPermitted() && sessionStudyId != null) {
 					StudyUpload studyUpload = new StudyUpload();
 					studyUpload.setStudy(iArkCommonService.getStudy(sessionStudyId));
 					studyUploads = studyService.searchUpload(studyUpload);
-					
+
 				}
 				listView.removeAll();
-				return  studyUploads;
+				return studyUploads;
 			}
 		};
 
@@ -116,8 +95,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 		return searchResultPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
 				detailPanelFormContainer);
 		detailPanel.initialisePanel();
@@ -125,8 +103,7 @@ public class SubjectUploadContainerPanel extends AbstractContainerPanel<UploadVO
 		return detailPanelContainer;
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, wizardPanelContainer, wizardPanel, containerForm,
 				viewButtonContainer, editButtonContainer, wizardPanelFormContainer);
 		searchComponentPanel.initialisePanel();

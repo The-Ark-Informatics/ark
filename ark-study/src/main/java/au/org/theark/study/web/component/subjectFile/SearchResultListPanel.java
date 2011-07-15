@@ -32,36 +32,30 @@ import au.org.theark.core.web.component.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
-@SuppressWarnings({ "serial", "unchecked", "unused"})
+@SuppressWarnings({ "serial", "unchecked", "unused" })
 public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService studyService;
-	
-	private transient Logger log = LoggerFactory.getLogger(SearchResultListPanel.class);
+	private IStudyService		studyService;
 
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer;
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer searchResultContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private ContainerForm containerForm;
-	
+	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
+
+	private WebMarkupContainer	detailPanelContainer;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	searchPanelContainer;
+	private WebMarkupContainer	searchResultContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private ContainerForm		containerForm;
+
 	/**
 	 * @param id
 	 */
-	public SearchResultListPanel(String id, 
-			WebMarkupContainer  detailPanelContainer,
-			WebMarkupContainer  detailPanelFormContainer, 
-			WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			ContainerForm containerForm) {
-		
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
+			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
+
 		super(id);
 		// TODO Auto-generated constructor stub
-	 	this.detailPanelContainer = detailPanelContainer;
+		this.detailPanelContainer = detailPanelContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
@@ -75,130 +69,90 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of SubjectFile
 	 */
-	public PageableListView<SubjectFile> buildPageableListView(IModel iModel) 
-	{
-		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(
-				Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE) {
+	public PageableListView<SubjectFile> buildPageableListView(IModel iModel) {
+		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE) {
 			@Override
-			protected void populateItem(final ListItem<SubjectFile> item) 
-			{
+			protected void populateItem(final ListItem<SubjectFile> item) {
 				SubjectFile subjectFile = item.getModelObject();
 				// The ID
-				if (subjectFile.getId() != null) 
-				{
+				if (subjectFile.getId() != null) {
 					// Add the id component here
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_ID,
-							subjectFile.getId().toString()));
-				} 
-				else 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_ID,
-							""));
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_ID, subjectFile.getId().toString()));
+				}
+				else {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_ID, ""));
 				}
 
 				// The filename
-				if (subjectFile.getFilename() != null) 
-				{
+				if (subjectFile.getFilename() != null) {
 					// Add the id component here
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME,
-							subjectFile.getFilename()));
-				} 
-				else 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME,
-							""));
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME, subjectFile.getFilename()));
 				}
-				
-				// The study component
-				if (subjectFile.getStudyComp() != null) 
-				{
-					// Add the id component here
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP,
-							subjectFile.getStudyComp().getName()));
-				} 
-				else 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP,
-							""));
+				else {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME, ""));
 				}
 
+				// The study component
+				if (subjectFile.getStudyComp() != null) {
+					// Add the id component here
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP, subjectFile.getStudyComp().getName()));
+				}
+				else {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP, ""));
+				}
 
 				// TODO when displaying text escape any special characters
 				// UserId
-				if (subjectFile.getUserId() != null) 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID,
-							subjectFile.getUserId()));// the ID here must match the
+				if (subjectFile.getUserId() != null) {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, subjectFile.getUserId()));// the ID here must match the
 					// ones in
 					// mark-up
-				} 
-				else 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID,
-							""));// the ID here must match the ones in mark-up
 				}
-				
+				else {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, ""));// the ID here must match the ones in mark-up
+				}
+
 				// Comments
-				if (subjectFile.getComments() != null) 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS,
-							subjectFile.getComments()));
-				} 
-				else 
-				{
-					item.add(new Label(
-							au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS,
-							""));
+				if (subjectFile.getComments() != null) {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS, subjectFile.getComments()));
+				}
+				else {
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS, ""));
 				}
 
 				// Download file link button
-				AjaxButton downloadButton = buildDownloadButton(subjectFile); 
+				AjaxButton downloadButton = buildDownloadButton(subjectFile);
 				item.add(downloadButton);
 
 				// Delete the upload file
 				item.add(buildDeleteButton(subjectFile, downloadButton));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", true,
-						new AbstractReadOnlyModel() {
-							@Override
-							public String getObject() {
-								return (item.getIndex() % 2 == 1) ? "even"
-										: "odd";
-							}
-						}));
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
 			}
 		};
 		return sitePageableListView;
 	}
 
 	private Link buildDownloadLink(final SubjectFile subjectFile) {
-		Link link = new Link(
-				au.org.theark.study.web.Constants.DOWNLOAD_FILE) 
-		{
+		Link link = new Link(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					data = subjectFile.getPayload().getBytes(1,
-							(int) subjectFile.getPayload().length());
-				} catch (SQLException e) {
+					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
+				}
+				catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(
-						new au.org.theark.core.util.ByteDataRequestTarget(
-								"", data, subjectFile.getFilename()));
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, subjectFile.getFilename()));
 
 			};
 		};
@@ -211,24 +165,19 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxButton buildDownloadButton(final SubjectFile subjectFile) {
-		AjaxButton ajaxButton = new AjaxButton(
-				au.org.theark.study.web.Constants.DOWNLOAD_FILE,
-				new StringResourceModel("downloadKey", this, null)) 
-		{
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
 				byte[] data = null;
 				try {
-					data = subjectFile.getPayload().getBytes(1,
-							(int) subjectFile.getPayload().length());
-				} catch (SQLException e) {
+					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
+				}
+				catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(
-						new au.org.theark.core.util.ByteDataRequestTarget(
-								"", data, subjectFile.getFilename()));
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, subjectFile.getFilename()));
 			};
 		};
 
@@ -241,49 +190,45 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton)
-	{
-	
+	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton) {
 
-		
-		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this)
-		{
+		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
-				if (subjectFile.getId() != null)
-				{
+				if (subjectFile.getId() != null) {
 					try {
-						//TODO: implement disabling of other buttons on row when buttons clicked once
+						// TODO: implement disabling of other buttons on row when buttons clicked once
 						downloadButton.setEnabled(false);
 						target.addComponent(downloadButton);
 						studyService.delete(subjectFile);
-					} catch (ArkSystemException e) {
+					}
+					catch (ArkSystemException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					} catch (EntityNotFoundException e) {
+					}
+					catch (EntityNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 
 				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
-				
+
 				// Update the result panel
 				target.addComponent(searchResultContainer);
 				target.addComponent(containerForm);
 			}
-			
+
 			@Override
-			public boolean isVisible()
-			{
-				SecurityManager securityManager =  ThreadContext.getSecurityManager();
+			public boolean isVisible() {
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();
 				boolean flag = false;
-				if(securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.DELETE)){
+				if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
 					return flag = true;
 				}
-				
+
 				return flag;
 			}
 		};

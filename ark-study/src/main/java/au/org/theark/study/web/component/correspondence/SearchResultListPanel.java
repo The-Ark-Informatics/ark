@@ -21,8 +21,7 @@ import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
-public class SearchResultListPanel extends Panel
-{
+public class SearchResultListPanel extends Panel {
 
 	/**
 	 * 
@@ -37,8 +36,7 @@ public class SearchResultListPanel extends Panel
 	private ContainerForm		containerForm;
 
 	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm)
-	{
+			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
 
 		super(id);
 		this.detailPanelContainer = detailPanelContainer;
@@ -51,91 +49,74 @@ public class SearchResultListPanel extends Panel
 	}
 
 	@SuppressWarnings("unchecked")
-	public PageableListView<Correspondences> buildPageableListView(IModel iModel)
-	{
+	public PageableListView<Correspondences> buildPageableListView(IModel iModel) {
 
-		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE)
-		{
+		PageableListView<Correspondences> pageableListView = new PageableListView<Correspondences>("correspondenceList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 9076367524574951367L;
 
 			@Override
-			protected void populateItem(final ListItem<Correspondences> item)
-			{
+			protected void populateItem(final ListItem<Correspondences> item) {
 				Correspondences correspondence = item.getModelObject();
 
 				// set the date to be the link to details
 				item.add(buildLink(correspondence));
 
-				if (correspondence.getTime() != null)
-				{
+				if (correspondence.getTime() != null) {
 					item.add(new Label("time", correspondence.getTime()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("time", ""));
 				}
 
-				if (correspondence.getOperator() != null)
-				{
+				if (correspondence.getOperator() != null) {
 					item.add(new Label("operator.ldapUserName", correspondence.getOperator().getLdapUserName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("operator.ldapUserName", ""));
 				}
 
-				if (correspondence.getCorrespondenceModeType() != null)
-				{
+				if (correspondence.getCorrespondenceModeType() != null) {
 					item.add(new Label("correspondenceModeType.name", correspondence.getCorrespondenceModeType().getName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("correspondenceModeType.name", ""));
 				}
 
-				if (correspondence.getCorrespondenceDirectionType() != null)
-				{
+				if (correspondence.getCorrespondenceDirectionType() != null) {
 					item.add(new Label("correspondenceDirectionType.name", correspondence.getCorrespondenceDirectionType().getName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("correspondenceDirectionType.name", ""));
 				}
 
-				if (correspondence.getCorrespondenceOutcomeType() != null)
-				{
+				if (correspondence.getCorrespondenceOutcomeType() != null) {
 					item.add(new Label("correspondenceOutcomeType.name", correspondence.getCorrespondenceOutcomeType().getName()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("correspondenceOutcomeType.name", ""));
 				}
 
-				if (correspondence.getReason() != null)
-				{
+				if (correspondence.getReason() != null) {
 					item.add(new Label("reason", correspondence.getReason()));
 				}
-				else
-				{
+				else {
 					item.add(new Label("reason", ""));
 				}
-				
+
 				// Download file link button
 				item.add(buildDownloadButton(correspondence));
-				
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel()
-				{
+
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					/**
 					 * 
 					 */
 					private static final long	serialVersionUID	= -1588380616547616236L;
 
 					@Override
-					public String getObject()
-					{
+					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
@@ -145,19 +126,16 @@ public class SearchResultListPanel extends Panel
 		return pageableListView;
 	}
 
-	@SuppressWarnings({ "unchecked"})
-	private AjaxLink buildLink(final Correspondences correspondence)
-	{
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence")
-		{
+	@SuppressWarnings({ "unchecked" })
+	private AjaxLink buildLink(final Correspondences correspondence) {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("correspondence") {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 826367436671619720L;
 
 			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
+			public void onClick(AjaxRequestTarget target) {
 				containerForm.getModelObject().setCorrespondence(correspondence);
 
 				detailPanelContainer.setVisible(true);
@@ -187,10 +165,9 @@ public class SearchResultListPanel extends Panel
 		link.add(nameLinkLabel);
 		return link;
 	}
-	
+
 	private AjaxButton buildDownloadButton(final Correspondences correspondences) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) 
-		{
+		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
 			/**
 			 * 
 			 */
@@ -202,12 +179,12 @@ public class SearchResultListPanel extends Panel
 				byte[] data = null;
 				try {
 					data = correspondences.getAttachmentPayload().getBytes(1, (int) correspondences.getAttachmentPayload().length());
-				} catch (SQLException e) {
+				}
+				catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(
-						new au.org.theark.core.util.ByteDataRequestTarget("", data, correspondences.getAttachmentFilename()));
+				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, correspondences.getAttachmentFilename()));
 			};
 		};
 

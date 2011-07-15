@@ -26,43 +26,43 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.customfield.form.ContainerForm;
 
-
 /**
  * @author nivedann
- *
+ * 
  */
-public class CustomFieldContainer  extends  AbstractContainerPanel<CustomFieldVO>{
+public class CustomFieldContainer extends AbstractContainerPanel<CustomFieldVO> {
 
-	private ContainerForm containerForm;
-	
-	private SearchPanel searchPanel;
-	private SearchResultListPanel searchResultListPanel;
-	private DetailPanel detailPanel;
-	private PageableListView<SubjectCustmFld> pageableListView;
-	
+	private ContainerForm							containerForm;
+
+	private SearchPanel								searchPanel;
+	private SearchResultListPanel					searchResultListPanel;
+	private DetailPanel								detailPanel;
+	private PageableListView<SubjectCustmFld>	pageableListView;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService iArkCommonService;
-	
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
-	
-	
+	protected IArkCommonService					iArkCommonService;
+
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	private IStudyService							studyService;
+
 	/**
 	 * @param id
 	 */
 	public CustomFieldContainer(String id) {
-		
-		super(id, true);//call the new constructor
+
+		super(id, true);// call the new constructor
 
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
-		containerForm = new ContainerForm("containerForm",cpModel);
+		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseDetailPanel()
 	 */
 	@Override
@@ -71,40 +71,38 @@ public class CustomFieldContainer  extends  AbstractContainerPanel<CustomFieldVO
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseSearchPanel()
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		
-		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", 
-													feedBackPanel,
-													pageableListView, 
-													containerForm,
-													detailPanel,
-													arkCrudContainerVO);
-		
+
+		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, containerForm, detailPanel, arkCrudContainerVO);
+
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseSearchResults()
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		
-		searchResultListPanel = new SearchResultListPanel("searchResults",containerForm,arkCrudContainerVO);
-		
-		
+
+		searchResultListPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO);
+
 		iModel = new LoadableDetachableModel<Object>() {
 			@Override
 			protected Object load() {
 				Collection<SubjectCustmFld> fieldList = new ArrayList<SubjectCustmFld>();
-				
+
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				Study study =	iArkCommonService.getStudy(sessionStudyId);
-				//Get the list of Study Related Custom Fields
+				Study study = iArkCommonService.getStudy(sessionStudyId);
+				// Get the list of Study Related Custom Fields
 				containerForm.getModelObject().getCustomField().setStudy(study);
 				SubjectCustmFld customField = containerForm.getModelObject().getCustomField();
 				fieldList = studyService.searchStudyFields(customField);
@@ -112,17 +110,16 @@ public class CustomFieldContainer  extends  AbstractContainerPanel<CustomFieldVO
 				return fieldList;
 			}
 		};
-		
+
 		pageableListView = searchResultListPanel.buildPageableListView(iModel);
 		pageableListView.setReuseItems(true);
-		
-		//Build Navigator
+
+		// Build Navigator
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
-	
 
 }

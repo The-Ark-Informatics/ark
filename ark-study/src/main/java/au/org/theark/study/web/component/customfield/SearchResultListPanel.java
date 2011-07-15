@@ -23,12 +23,13 @@ import au.org.theark.study.web.component.customfield.form.ContainerForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class SearchResultListPanel extends Panel{
-	
-	protected ArkCrudContainerVO arkCrudContainerVO;
-	protected ContainerForm containerForm;
+public class SearchResultListPanel extends Panel {
+
+	protected ArkCrudContainerVO	arkCrudContainerVO;
+	protected ContainerForm			containerForm;
+
 	/**
 	 * @param id
 	 */
@@ -36,44 +37,45 @@ public class SearchResultListPanel extends Panel{
 		super(id);
 		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		
+
 		// TODO Auto-generated constructor stub
 	}
 
 	public PageableListView<SubjectCustmFld> buildPageableListView(IModel iModel) {
-		
-		PageableListView<SubjectCustmFld> pageableListView = new PageableListView<SubjectCustmFld>(Constants.SEARCH_RESULT_LIST,iModel,au.org.theark.core.Constants.ROWS_PER_PAGE){
+
+		PageableListView<SubjectCustmFld> pageableListView = new PageableListView<SubjectCustmFld>(Constants.SEARCH_RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			@Override
 			protected void populateItem(ListItem<SubjectCustmFld> item) {
-				
+
 				SubjectCustmFld customField = item.getModelObject();
-				
+
 				item.add(buildLink(customField));
-				
-				if(customField.getName() != null){
-					item.add( new Label("name",customField.getName()));
-				}else{
-					item.add( new Label("name",""));
+
+				if (customField.getName() != null) {
+					item.add(new Label("name", customField.getName()));
+				}
+				else {
+					item.add(new Label("name", ""));
 				}
 			}
 		};
-		
+
 		return pageableListView;
 	}
-	
-	private AjaxLink buildLink(final SubjectCustmFld customField){
-		
+
+	private AjaxLink buildLink(final SubjectCustmFld customField) {
+
 		Label nameLinkLabel = new Label(Constants.CUSTOM_FIELD_LABEL, customField.getFieldTitle());
-		
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("fieldTitle"){
+
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("fieldTitle") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				CustomFieldVO customFieldVO = containerForm.getModelObject();
-			
+
 			}
 		};
-		
+
 		link.add(nameLinkLabel);
 		return link;
 	}

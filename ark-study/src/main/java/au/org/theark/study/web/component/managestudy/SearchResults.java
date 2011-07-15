@@ -33,70 +33,74 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
-public class SearchResults extends Panel{
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+public class SearchResults extends Panel {
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
 
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
-	private NonCachingImage studyLogoImage;
-	private transient StudyHelper studyHelper;
-	private TabbedPanel moduleTabbedPanel;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	@SpringBean( name="arkLdapRealm")
-	private ArkLdapRealm realm;
-	
-	private Container studyContainerForm;
-	
-	private StudyCrudContainerVO studyCrudContainerVO;
-	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO,Container containerForm){
+	private static final long		serialVersionUID	= 1L;
+	private NonCachingImage			studyLogoImage;
+	private transient StudyHelper	studyHelper;
+	private TabbedPanel				moduleTabbedPanel;
+
+	@SpringBean(name = "userService")
+	private IUserService				userService;
+
+	@SpringBean(name = "arkLdapRealm")
+	private ArkLdapRealm				realm;
+
+	private Container					studyContainerForm;
+
+	private StudyCrudContainerVO	studyCrudContainerVO;
+
+	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		studyContainerForm = containerForm;
 	}
-	
-	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO,Container containerForm, TabbedPanel moduleTabbedPanel){
+
+	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm, TabbedPanel moduleTabbedPanel) {
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.studyContainerForm = containerForm;
 		this.moduleTabbedPanel = moduleTabbedPanel;
 	}
 
-	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer){
-		
+	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
+
 		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			@Override
 			protected void populateItem(final ListItem<Study> item) {
-				
+
 				Study study = item.getModelObject();
-				
-				if(study.getId() != null){
-					item.add(new Label("id", study.getId().toString()));	
-				}else{
-					item.add(new Label("id",""));
+
+				if (study.getId() != null) {
+					item.add(new Label("id", study.getId().toString()));
 				}
-				
-				item.add(buildLink(study,searchResultsContainer));
-				
-				if(study.getContactPerson() != null){
-					item.add(new Label("contact", study.getContactPerson()));//the ID here must match the ones in mark-up	
-				}else{
-					item.add(new Label("contact", ""));//the ID here must match the ones in mark-up
+				else {
+					item.add(new Label("id", ""));
 				}
-				
+
+				item.add(buildLink(study, searchResultsContainer));
+
+				if (study.getContactPerson() != null) {
+					item.add(new Label("contact", study.getContactPerson()));// the ID here must match the ones in mark-up
+				}
+				else {
+					item.add(new Label("contact", ""));// the ID here must match the ones in mark-up
+				}
+
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(Constants.DD_MM_YYYY);
-				String dateOfApplication ="";
-				if(study.getDateOfApplication() != null){
+				String dateOfApplication = "";
+				if (study.getDateOfApplication() != null) {
 					dateOfApplication = simpleDateFormat.format(study.getDateOfApplication());
-					item.add(new Label("dateOfApplication",dateOfApplication));
-				}else{
-					item.add(new Label("dateOfApplication",dateOfApplication));
+					item.add(new Label("dateOfApplication", dateOfApplication));
+				}
+				else {
+					item.add(new Label("dateOfApplication", dateOfApplication));
 				}
 
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
@@ -105,103 +109,96 @@ public class SearchResults extends Panel{
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
 					}
 				}));
-				
+
 			}
 		};
 		return studyPageableListView;
 	}
-	
-	
+
 	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
-		
+
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyName") {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				
-				
-				SecurityManager securityManager =  ThreadContext.getSecurityManager();
-				Subject currentUser = SecurityUtils.getSubject();		
-				
-				//Place the selected study in session context for the user
+
+				SecurityManager securityManager = ThreadContext.getSecurityManager();
+				Subject currentUser = SecurityUtils.getSubject();
+
+				// Place the selected study in session context for the user
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, study);
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, study.getId());
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 				SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				//Force clearing of Cache to re-load roles for the user for the study
+				// Force clearing of Cache to re-load roles for the user for the study
 				realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-				
-				Study searchStudy = iArkCommonService.getStudy(study.getId()); 
+
+				Study searchStudy = iArkCommonService.getStudy(study.getId());
 				studyContainerForm.getModelObject().setStudy(searchStudy);
 				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
-				
+
 				WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
 				Details detailsPanel = (Details) wmc.get("detailsPanel");
 				DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
-				
+
 				// All SubjectUID generator fields grouped within a container(s)
 				WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
-				
+
 				// Disable all SubjectUID generation fields is subjects exist
-				if(iArkCommonService.studyHasSubjects(searchStudy))
-				{
+				if (iArkCommonService.studyHasSubjects(searchStudy)) {
 					autoSubjectUidcontainer.setEnabled(false);
 					subjectUidcontainer.setEnabled(false);
 				}
-				else
-				{
+				else {
 					autoSubjectUidcontainer.setEnabled(true);
-					if(studyContainerForm.getModelObject().getStudy().getAutoGenerateSubjectUid())
-					{
+					if (studyContainerForm.getModelObject().getStudy().getAutoGenerateSubjectUid()) {
 						subjectUidcontainer.setEnabled(true);
 					}
-					else
-					{
+					else {
 						subjectUidcontainer.setEnabled(false);
 					}
 				}
-				
+
 				target.addComponent(autoSubjectUidcontainer);
 				target.addComponent(subjectUidcontainer);
-				
+
 				// Example auto-generated SubjectUID
 				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
 				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
 				target.addComponent(subjectUidExampleLbl);
-				
-				//Get the Source and Linked Modules for the Study from Backend
-				Collection<ArkModule> availableArkModules  = iArkCommonService.getEntityList(ArkModule.class);
-				Collection<ArkModule> arkModulesLinkedToStudy =  iArkCommonService.getArkModulesLinkedWithStudy(study);
+
+				// Get the Source and Linked Modules for the Study from Backend
+				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
+				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(study);
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
-				
+
 				// Store module names linked to study in session
-				for (Iterator iterator = arkModulesLinkedToStudy.iterator(); iterator.hasNext();)
-				{
+				for (Iterator iterator = arkModulesLinkedToStudy.iterator(); iterator.hasNext();) {
 					ArkModule arkModule = (ArkModule) iterator.next();
 					SecurityUtils.getSubject().getSession().setAttribute(arkModule.getName(), arkModule.getName());
 				}
-	
+
 				studyCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				studyCrudContainerVO.getSearchPanelContainer().setVisible(false);
 				studyCrudContainerVO.getDetailPanelContainer().setVisible(true);
 				studyCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
-				
-				studyCrudContainerVO.getViewButtonContainer().setVisible(true);//saveBtn
-				studyCrudContainerVO.getViewButtonContainer().setEnabled(true);//saveBtn
-				
+
+				studyCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				studyCrudContainerVO.getViewButtonContainer().setEnabled(true);// saveBtn
+
 				studyCrudContainerVO.getEditButtonContainer().setVisible(false);
-				
+
 				studyCrudContainerVO.getSummaryContainer().setVisible(true);
 				studyHelper = new StudyHelper();
-				studyHelper.setStudyLogo(searchStudy, target,studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
+				studyHelper.setStudyLogo(searchStudy, target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
 				studyHelper.setStudyLogoImage(searchStudy, "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
-				
+
 				target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
 				target.addComponent(studyCrudContainerVO.getSearchPanelContainer());
 				target.addComponent(studyCrudContainerVO.getDetailPanelContainer());
@@ -210,19 +207,19 @@ public class SearchResults extends Panel{
 				target.addComponent(studyCrudContainerVO.getEditButtonContainer());
 				target.addComponent(studyCrudContainerVO.getSummaryContainer());
 				target.addComponent(studyCrudContainerVO.getDetailPanelFormContainer());
-				
+
 				// Refresh base container form to remove any feedBack messages
 				target.addComponent(studyContainerForm);
-				
+
 				// Refresh main tabs based on study selection
 				TabbedPanel moduleTabbedPanelRef = moduleTabbedPanel;
-				
+
 				target.addComponent(moduleTabbedPanel);
 			}
-			
+
 		};
-		
-		//Add the label for the link
+
+		// Add the label for the link
 		Label studyNameLinkLabel = new Label("studyNameLink", study.getName());
 		link.add(studyNameLinkLabel);
 		return link;
@@ -230,19 +227,18 @@ public class SearchResults extends Panel{
 	}
 
 	/**
-	 * @param studyLogoImage the studyLogoImage to set
+	 * @param studyLogoImage
+	 *           the studyLogoImage to set
 	 */
-	public void setStudyLogoImage(NonCachingImage studyLogoImage)
-	{
+	public void setStudyLogoImage(NonCachingImage studyLogoImage) {
 		this.studyLogoImage = studyLogoImage;
 	}
 
 	/**
 	 * @return the studyLogoImage
 	 */
-	public NonCachingImage getStudyLogoImage()
-	{
+	public NonCachingImage getStudyLogoImage() {
 		return studyLogoImage;
 	}
-	
+
 }

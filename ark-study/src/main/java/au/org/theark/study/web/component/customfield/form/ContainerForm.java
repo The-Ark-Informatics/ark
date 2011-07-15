@@ -13,17 +13,16 @@ import au.org.theark.core.web.form.AbstractContainerForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class ContainerForm extends AbstractContainerForm<CustomFieldVO>{
+public class ContainerForm extends AbstractContainerForm<CustomFieldVO> {
 
 	/**
 	 * @param id
 	 * @param cpmModel
 	 */
-	public ContainerForm(String id,	CompoundPropertyModel<CustomFieldVO> cpmModel) {
+	public ContainerForm(String id, CompoundPropertyModel<CustomFieldVO> cpmModel) {
 		super(id, cpmModel);
 	}
-	
 
 }

@@ -15,33 +15,24 @@ import au.org.theark.study.web.component.subject.form.DetailsForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
 public class Details extends Panel {
 
+	private DetailsForm			detailsForm;
+	private FeedbackPanel		feedBackPanel;
+	private WebMarkupContainer	searchResultPanelContainer;
+	private WebMarkupContainer	detailPanelContainer;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	searchPanelContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private WebMarkupContainer	arkContextContainer;
+	private ContainerForm		containerForm;
 
-	private DetailsForm detailsForm;
-	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer searchResultPanelContainer;
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer; 
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer arkContextContainer;
-	private ContainerForm containerForm;
+	public Details(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
 
-	public Details(	String id,
-					FeedbackPanel feedBackPanel,
-					WebMarkupContainer searchResultPanelContainer,
-					WebMarkupContainer detailPanelContainer,
-					WebMarkupContainer detailPanelFormContainer, 
-					WebMarkupContainer searchPanelContainer,
-					WebMarkupContainer viewButtonContainer,
-					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer arkContextContainer,
-					ContainerForm containerForm){
-		
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.searchResultPanelContainer = searchResultPanelContainer;
@@ -52,28 +43,18 @@ public class Details extends Panel {
 		this.editButtonContainer = editButtonContainer;
 		this.arkContextContainer = arkContextContainer;
 		this.containerForm = containerForm;
-		
-	}
-	
 
-	public void initialisePanel(){
-		
-		detailsForm = new DetailsForm("detailsForm",	
-									feedBackPanel,
-									searchResultPanelContainer,
-									detailPanelContainer,
-									detailPanelFormContainer,
-									searchPanelContainer,
-									viewButtonContainer, 
-									editButtonContainer,
-									arkContextContainer,
-									containerForm);
-		
+	}
+
+	public void initialisePanel() {
+
+		detailsForm = new DetailsForm("detailsForm", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
+				editButtonContainer, arkContextContainer, containerForm);
+
 		detailsForm.initialiseDetailForm();
-		
+
 		add(detailsForm);
 	}
-	
 
 	public DetailsForm getDetailsForm() {
 		return detailsForm;

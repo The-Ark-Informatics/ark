@@ -17,35 +17,21 @@ import au.org.theark.study.web.component.customfield.form.SearchForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class SearchPanel  extends Panel{
+public class SearchPanel extends Panel {
 
-	
-	
 	/**
 	 * @param id
 	 */
-	public SearchPanel(	String id, 
-						FeedbackPanel feedBackpanel,
-						PageableListView<SubjectCustmFld> pageableListView,
-						ContainerForm containerForm,
-						DetailPanel detailPanel,
-						ArkCrudContainerVO arkCrudContainerVO) {
-		
+	public SearchPanel(String id, FeedbackPanel feedBackpanel, PageableListView<SubjectCustmFld> pageableListView, ContainerForm containerForm, DetailPanel detailPanel,
+			ArkCrudContainerVO arkCrudContainerVO) {
+
 		super(id);
-		
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM,
-												containerForm.getModel(), 
-												pageableListView,
-												feedBackpanel,
-												detailPanel,
-												arkCrudContainerVO);
-		add(searchForm);		
-		
+
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, containerForm.getModel(), pageableListView, feedBackpanel, detailPanel, arkCrudContainerVO);
+		add(searchForm);
+
 	}
-	
-	
-	
 
 }

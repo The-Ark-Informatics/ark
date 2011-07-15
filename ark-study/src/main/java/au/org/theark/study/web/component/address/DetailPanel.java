@@ -9,32 +9,25 @@ import au.org.theark.study.web.component.address.form.DetailForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class DetailPanel extends Panel{
+public class DetailPanel extends Panel {
 
-	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer searchResultPanelContainer;
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer; 
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private ContainerForm containerForm;
-	private DetailForm detailForm;
-	
+	private FeedbackPanel		feedBackPanel;
+	private WebMarkupContainer	searchResultPanelContainer;
+	private WebMarkupContainer	detailPanelContainer;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	searchPanelContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private ContainerForm		containerForm;
+	private DetailForm			detailForm;
+
 	/**
 	 * @param id
 	 */
-	public DetailPanel(String id,
-						FeedbackPanel feedBackPanel,
-						WebMarkupContainer searchResultPanelContainer,
-						WebMarkupContainer detailPanelContainer,
-						WebMarkupContainer detailPanelFormContainer, 
-						WebMarkupContainer searchPanelContainer,
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer,
-						ContainerForm containerForm	) {
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.searchResultPanelContainer = searchResultPanelContainer;
@@ -45,22 +38,15 @@ public class DetailPanel extends Panel{
 		this.editButtonContainer = editButtonContainer;
 		this.containerForm = containerForm;
 	}
-	
-	public void initialisePanel(){
-		
-		detailForm = new DetailForm("detailsForm",
-									feedBackPanel, 
-									searchResultPanelContainer, 
-									detailPanelContainer, 
-									detailPanelFormContainer, 
-									searchPanelContainer, 
-									viewButtonContainer, 
-									editButtonContainer,
-									containerForm);
-		
+
+	public void initialisePanel() {
+
+		detailForm = new DetailForm("detailsForm", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
+				editButtonContainer, containerForm);
+
 		detailForm.initialiseDetailForm();
 		add(detailForm);
-		
+
 	}
 
 	public DetailForm getDetailForm() {

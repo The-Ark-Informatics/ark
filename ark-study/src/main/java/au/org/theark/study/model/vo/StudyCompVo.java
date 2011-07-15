@@ -8,21 +8,22 @@ import au.org.theark.core.model.study.entity.StudyComp;
 
 ;
 /**
- * A container for Study Component related function. 
+ * A container for Study Component related function.
+ * 
  * @author nivedann
- *
+ * 
  */
-public class StudyCompVo implements Serializable{
-	
-	private StudyComp studyComponent;
-	private List<StudyComp> studyCompList;
-	private int mode;
-	
-	public StudyCompVo(){
+public class StudyCompVo implements Serializable {
+
+	private StudyComp			studyComponent;
+	private List<StudyComp>	studyCompList;
+	private int					mode;
+
+	public StudyCompVo() {
 		studyComponent = new StudyComp();
 		studyCompList = new ArrayList<StudyComp>();
 	}
-	
+
 	public int getMode() {
 		return mode;
 	}

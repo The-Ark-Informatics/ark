@@ -20,76 +20,76 @@ import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.study.web.Constants;
 
+public class SearchSiteForm extends Form<SiteModelVO> {
 
-public class SearchSiteForm extends Form<SiteModelVO>{
+	private TextField<String>			siteNameTxtFld;
+	private DropDownChoice<Person>	siteContactDDC;
 
-	private TextField<String> siteNameTxtFld;
-	private DropDownChoice<Person> siteContactDDC;
-	
-	private List<Person> availableContactList;
-	
-	private AjaxButton searchButton;
-	private AjaxButton newButton;
-	private Button resetButton;
+	private List<Person>					availableContactList;
 
-	public SearchSiteForm(String id,CompoundPropertyModel<SiteModelVO> model, List<Person> availablePersons) {
-		
-		super(id,model);
-		
-		//siteIdTxtFld =new TextField<String>(Constants.STUDY_SITE_KEY);
+	private AjaxButton					searchButton;
+	private AjaxButton					newButton;
+	private Button							resetButton;
+
+	public SearchSiteForm(String id, CompoundPropertyModel<SiteModelVO> model, List<Person> availablePersons) {
+
+		super(id, model);
+
+		// siteIdTxtFld =new TextField<String>(Constants.STUDY_SITE_KEY);
 		siteNameTxtFld = new TextField<String>("siteVo.siteName");
 		availableContactList = availablePersons;
-		
-		newButton = new AjaxButton(Constants.NEW){
+
+		newButton = new AjaxButton(Constants.NEW) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//Make the details panel visible
+				// Make the details panel visible
 				onNew(target);
 			}
-		
+
 		};
-		
-		searchButton = new AjaxButton(Constants.SEARCH){
+
+		searchButton = new AjaxButton(Constants.SEARCH) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				//Make the details panel visible
+				// Make the details panel visible
 				onSearch(target);
 			}
 		};
-		
-		resetButton = new Button(Constants.RESET){
-			public void onSubmit(){
+
+		resetButton = new Button(Constants.RESET) {
+			public void onSubmit() {
 				onReset();
 			}
 		};
 		decorateComponents();
 		addComponentsToForm();
 	}
-	
-	private void decorateComponents(){
+
+	private void decorateComponents() {
 		ThemeUiHelper.componentRounded(siteNameTxtFld);
 		ThemeUiHelper.componentRounded(searchButton);
 		ThemeUiHelper.componentRounded(newButton);
 		ThemeUiHelper.componentRounded(resetButton);
 	}
-	
-	private void addComponentsToForm(){
+
+	private void addComponentsToForm() {
 		add(siteNameTxtFld);
 		add(searchButton);
 		add(resetButton);
 		add(newButton);
 	}
-	
-	protected void onSearch(AjaxRequestTarget target){}
-	
-	protected void onNew(AjaxRequestTarget target){}
-	
+
+	protected void onSearch(AjaxRequestTarget target) {
+	}
+
+	protected void onNew(AjaxRequestTarget target) {
+	}
+
 	// A non-ajax function
-	protected void onReset(){
+	protected void onReset() {
 		clearInput();
 		updateFormComponentModels();
-		
+
 	}
-	
 
 }

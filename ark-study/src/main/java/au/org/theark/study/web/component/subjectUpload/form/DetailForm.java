@@ -37,11 +37,10 @@ import au.org.theark.study.web.component.subjectUpload.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends AbstractDetailForm<UploadVO>
-{
+@SuppressWarnings({ "serial", "unused" })
+public class DetailForm extends AbstractDetailForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
+	private IStudyService						studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
@@ -71,16 +70,15 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, AbstractContainerForm<UploadVO> containerForm,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer)
-	{
+	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer,
+			AbstractContainerForm<UploadVO> containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer,
+			WebMarkupContainer searchPanelContainer) {
 
 		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initialiseDropDownChoices()
-	{
+	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<FileFormat> fieldFormatCollection = studyService.getFileFormats();
 		ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.FILE_FORMAT_NAME, au.org.theark.study.web.Constants.FILE_FORMAT_ID);
@@ -91,8 +89,7 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		// Set up field on form here
 		uploadIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_ID);
 		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
@@ -111,16 +108,14 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Add components here eg:
 		detailPanelFormContainer.add(uploadIdTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(fileUploadField);
@@ -134,42 +129,36 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		add(detailPanelFormContainer);
 	}
 
-	private void createDirectoryIfNeeded(String directoryName)
-	{
+	private void createDirectoryIfNeeded(String directoryName) {
 		File theDir = new File(directoryName);
 
 		// if the directory does not exist, create it
-		if (!theDir.exists())
-		{
+		if (!theDir.exists()) {
 			System.out.println("creating directory: " + directoryName);
 			theDir.mkdir();
 		}
 	}
 
 	@Override
-	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target)
-	{
+	protected void onSave(Form<UploadVO> containerForm, AjaxRequestTarget target) {
 		// Implement Save/Update
-		if (containerForm.getModelObject().getUpload().getId() == null)
-		{
+		if (containerForm.getModelObject().getUpload().getId() == null) {
 			setMultiPart(true); // multipart required for file uploads
 
 			// Set study in context
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 			Study study = iArkCommonService.getStudy(studyId);
-			
+
 			// Retrieve file and store as Blob in database
 			// TODO: AJAX-ified and asynchronous and hit database
 			FileUpload fileUpload = fileUploadField.getFileUpload();
 
-			try
-			{
+			try {
 				// Copy file to BLOB object
 				Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 				containerForm.getModelObject().getUpload().setPayload(payload);
 			}
-			catch (IOException ioe)
-			{
+			catch (IOException ioe) {
 				System.out.println("Failed to save the uploaded file: " + ioe);
 			}
 
@@ -180,23 +169,22 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 			String checksum = getHex(byteArray);
 			containerForm.getModelObject().getUpload().setChecksum(checksum);
 			containerForm.getModelObject().getUpload().setFilename(fileUpload.getClientFileName());
-			
-			//containerForm.getModelObject().setPhenoCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-			
+
+			// containerForm.getModelObject().setPhenoCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
+
 			// Set details of link table object
-			//PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
-			//phenoCollectionUpload.setCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
-			//phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
-			//containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
+			// PhenoCollectionUpload phenoCollectionUpload = new PhenoCollectionUpload();
+			// phenoCollectionUpload.setCollection(studyService.getPhenoCollection(sessionPhenoCollectionId));
+			// phenoCollectionUpload.setUpload(containerForm.getModelObject().getUpload());
+			// containerForm.getModelObject().setPhenoCollectionUpload(phenoCollectionUpload);
 
 			// Save
 			studyService.createUpload(containerForm.getModelObject().getUpload());
-			
+
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was created successfully");
 			processErrors(target);
 		}
-		else
-		{
+		else {
 			// Update
 			studyService.updateUpload(containerForm.getModelObject().getUpload());
 			this.info("Subject upload " + containerForm.getModelObject().getUpload().getFilename() + " was updated successfully");
@@ -211,48 +199,40 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 
 	static final String	HEXES	= "0123456789ABCDEF";
 
-	public static String getHex(byte[] raw)
-	{
-		if (raw == null)
-		{
+	public static String getHex(byte[] raw) {
+		if (raw == null) {
 			return null;
 		}
 		final StringBuilder hex = new StringBuilder(2 * raw.length);
-		for (final byte b : raw)
-		{
+		for (final byte b : raw) {
 			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
 		}
 		return hex.toString();
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
 		UploadVO uploadVo = new UploadVO();
 		containerForm.setModelObject(uploadVo);
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		setMultiPart(true); // multipart required for file uploads
 
 		// TODO:(CE) To handle Business and System Exceptions here
@@ -274,16 +254,19 @@ public class DetailForm extends AbstractDetailForm<UploadVO>
 		onCancel(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getUpload().getId() == null){
+		if (containerForm.getModelObject().getUpload().getId() == null) {
 			return true;
-		}else{
+		}
+		else {
 			return false;
 		}
-		
+
 	}
 }

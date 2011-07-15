@@ -5,12 +5,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.StudyModelVO;
 
-public class SummaryForm extends Form{
+public class SummaryForm extends Form {
 
 	public SummaryForm(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id);
 		// TODO Auto-generated constructor stub
-		
+
 	}
 
 }

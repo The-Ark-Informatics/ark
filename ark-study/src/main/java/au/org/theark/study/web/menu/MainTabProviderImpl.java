@@ -20,8 +20,7 @@ import au.org.theark.core.web.component.ArkMainTab;
  * @author nivedann
  * 
  */
-public class MainTabProviderImpl extends Panel implements IMainTabProvider
-{
+public class MainTabProviderImpl extends Panel implements IMainTabProvider {
 	/**
 	 * 
 	 */
@@ -38,21 +37,21 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 	 * @param panelId
 	 *           The panel identifer (passed to the Panel super class)
 	 */
-	public MainTabProviderImpl(String panelId)
-	{
+	public MainTabProviderImpl(String panelId) {
 		super(panelId);
 		moduleTabsList = new ArrayList<ITab>();
 	}
 
 	/**
 	 * Builds the list of sub-menu tabs.
-	 * @param studyLogoMarkup The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
+	 * 
+	 * @param studyLogoMarkup
+	 *           The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
 	 * @return the list of sub-menu tabs
 	 */
-	public List<ITab> buildTabs(WebMarkupContainer studyLogoMarkup)
-	{
+	public List<ITab> buildTabs(WebMarkupContainer studyLogoMarkup) {
 		this.studyLogoMarkup = studyLogoMarkup;
-		
+
 		// Main Top level Tabs
 		ITab studyTab = createTab(au.org.theark.core.Constants.ARK_MODULE_STUDY);
 		ITab subjectTab = createTab(au.org.theark.core.Constants.ARK_MODULE_SUBJECT);
@@ -63,13 +62,16 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 
 	/**
 	 * Builds the list of sub-menu tabs.
-	 * @param studyNameMarkup The reference to the WebMarkupContainer that contains the study name reference (refreshed on Study selection)
-	 * @param studyLogoMarkup The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
-	 * @param arkContextMarkup The reference to the WebMarkupContainer that contains the context items reference (refreshed on Study selection)
+	 * 
+	 * @param studyNameMarkup
+	 *           The reference to the WebMarkupContainer that contains the study name reference (refreshed on Study selection)
+	 * @param studyLogoMarkup
+	 *           The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
+	 * @param arkContextMarkup
+	 *           The reference to the WebMarkupContainer that contains the context items reference (refreshed on Study selection)
 	 * @return the list of sub-menu tabs
 	 */
-	public List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup)
-	{
+	public List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.arkContextMarkup = arkContextMarkup;
@@ -84,14 +86,18 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 
 	/**
 	 * Builds the list of sub-menu tabs.
-	 * @param studyNameMarkup The reference to the WebMarkupContainer that contains the study name reference (refreshed on Study selection)
-	 * @param studyLogoMarkup The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
-	 * @param arkContextMarkup The reference to the WebMarkupContainer that contains the context items reference (refreshed on Study selection)
-	 * @param moduleTabbedPanel The reference to the main tab panel (Allows repainting on Study selection to show particular tabs)
+	 * 
+	 * @param studyNameMarkup
+	 *           The reference to the WebMarkupContainer that contains the study name reference (refreshed on Study selection)
+	 * @param studyLogoMarkup
+	 *           The reference to the WebMarkupContainer that contains the study log reference (refreshed on Study selection)
+	 * @param arkContextMarkup
+	 *           The reference to the WebMarkupContainer that contains the context items reference (refreshed on Study selection)
+	 * @param moduleTabbedPanel
+	 *           The reference to the main tab panel (Allows repainting on Study selection to show particular tabs)
 	 * @return the list of sub-menu tabs
 	 */
-	public List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel)
-	{
+	public List<ITab> buildTabs(WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
 		this.studyNameMarkup = studyNameMarkup;
 		this.studyLogoMarkup = studyLogoMarkup;
 		this.arkContextMarkup = arkContextMarkup;
@@ -105,57 +111,46 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 		return moduleTabsList;
 	}
 
-	public ITab createTab(final String tabName)
-	{
-		if(tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY))
-		{
-			return new ArkMainTab(new Model<String>(tabName))
-			{
+	public ITab createTab(final String tabName) {
+		if (tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
+			return new ArkMainTab(new Model<String>(tabName)) {
 				/**
 				 * 
 				 */
 				private static final long	serialVersionUID	= -8671910074409249398L;
 
 				@Override
-				public Panel getPanel(String pid)
-				{
+				public Panel getPanel(String pid) {
 					return panelToReturn(pid, tabName);
 				}
 
-				public boolean isAccessible()
-				{
+				public boolean isAccessible() {
 					// Study tab is always accessible
 					return true;
 				}
 
-				public boolean isVisible()
-				{
+				public boolean isVisible() {
 					// Study tab is always visible
 					return true;
 				}
 			};
 		}
-		else
-		{
-			return new ArkMainTab(new Model<String>(tabName))
-			{
+		else {
+			return new ArkMainTab(new Model<String>(tabName)) {
 				/**
 				 * 
 				 */
 				private static final long	serialVersionUID	= -6838973454398478802L;
 
 				@Override
-				public Panel getPanel(String pid)
-				{
+				public Panel getPanel(String pid) {
 					return panelToReturn(pid, tabName);
 				}
 
-				public boolean isAccessible()
-				{
+				public boolean isAccessible() {
 					// Only accessible when study in session (repainted on Study selection)
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					if (sessionStudyId == null)
-					{
+					if (sessionStudyId == null) {
 						this.getPanel(au.org.theark.core.Constants.ARK_MODULE_SUBJECT).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
 						return false;
 					}
@@ -163,12 +158,10 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 						return true;
 				}
 
-				public boolean isVisible()
-				{
+				public boolean isVisible() {
 					// Only visible when study in session (repainted on Study selection)
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					if (sessionStudyId == null)
-					{
+					if (sessionStudyId == null) {
 						return false;
 					}
 					else
@@ -187,15 +180,12 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 	 *           The name of the main tab
 	 * @return The panel of sub-menu tabs for the passed in main tabName
 	 */
-	public Panel panelToReturn(String pid, String tabName)
-	{
+	public Panel panelToReturn(String pid, String tabName) {
 		Panel panelToReturn = null;// Set up a common tab that will be accessible for all users
-		if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_STUDY))
-		{
+		if (tabName.equals(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
 			panelToReturn = new StudySubMenuTab(pid, studyNameMarkup, studyLogoMarkup, arkContextMarkup, this);// The sub menus for Study
 		}
-		else if (tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_SUBJECT))
-		{
+		else if (tabName.equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_SUBJECT)) {
 			panelToReturn = new SubjectSubMenuTab(pid, arkContextMarkup);
 		}
 		return panelToReturn;
@@ -205,16 +195,14 @@ public class MainTabProviderImpl extends Panel implements IMainTabProvider
 	 * @param moduleTabbedPanel
 	 *           the moduleTabbedPanel to set
 	 */
-	public void setModuleTabbedPanel(TabbedPanel moduleTabbedPanel)
-	{
+	public void setModuleTabbedPanel(TabbedPanel moduleTabbedPanel) {
 		this.moduleTabbedPanel = moduleTabbedPanel;
 	}
 
 	/**
 	 * @return the moduleTabbedPanel
 	 */
-	public TabbedPanel getModuleTabbedPanel()
-	{
+	public TabbedPanel getModuleTabbedPanel() {
 		return moduleTabbedPanel;
 	}
 }

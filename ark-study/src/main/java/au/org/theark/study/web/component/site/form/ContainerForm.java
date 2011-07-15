@@ -5,10 +5,10 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.SiteModelVO;
 
-public class ContainerForm extends Form<SiteModelVO>{
+public class ContainerForm extends Form<SiteModelVO> {
 
 	public ContainerForm(String id, CompoundPropertyModel<SiteModelVO> siteModelCpm) {
-		super(id,siteModelCpm );
+		super(id, siteModelCpm);
 	}
 
 }

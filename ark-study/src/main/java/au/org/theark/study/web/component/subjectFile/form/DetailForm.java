@@ -41,23 +41,22 @@ import au.org.theark.study.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends AbstractDetailForm<SubjectVO>
-{
-	private transient Logger	log	= LoggerFactory.getLogger(DetailForm.class);
+@SuppressWarnings({ "serial", "unused" })
+public class DetailForm extends AbstractDetailForm<SubjectVO> {
+	private transient Logger						log	= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService		studyService;
+	private IStudyService							studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
+	private IArkCommonService						iArkCommonService;
 
-	private int						mode;
+	private int											mode;
 
-	private TextField<String>	subjectFileIdTxtFld;
-	private TextField<String>	consentFileFilenameTxtFld;
-	private FileUploadField		fileSubjectFileField;
-	private DropDownChoice<StudyCompStatus> studyComponentChoice;
-	private TextArea<String>		commentsTxtArea;
+	private TextField<String>						subjectFileIdTxtFld;
+	private TextField<String>						consentFileFilenameTxtFld;
+	private FileUploadField							fileSubjectFileField;
+	private DropDownChoice<StudyCompStatus>	studyComponentChoice;
+	private TextArea<String>						commentsTxtArea;
 
 	// private ConsentFileProgressBar uploadProgressBar;
 
@@ -73,26 +72,23 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 	 * @param containerForm
 	 */
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<SubjectVO> containerForm)
-	{
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<SubjectVO> containerForm) {
 		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initialiseDropDownChoices()
-	{
+	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice  = new DropDownChoice(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList,defaultChoiceRenderer);	
+		studyComponentChoice = new DropDownChoice(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		// Set up field on form here
 		subjectFileIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_ID);
-		
+
 		// progress bar for upload
 		// uploadProgressBar = new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm);
 
@@ -105,19 +101,17 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		initialiseDropDownChoices();
 
 		commentsTxtArea = new TextArea<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_COMMENTS);
-		
+
 		attachValidators();
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Field validation here
 		fileSubjectFileField.setRequired(true).setLabel(new StringResourceModel("subjectFile.filename.required", this, null));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Add components
 		subjectFileIdTxtFld.setEnabled(false);
 		subjectFileIdTxtFld.setVisible(true);
@@ -125,7 +119,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		detailPanelFormContainer.add(fileSubjectFileField);
 		detailPanelFormContainer.add(studyComponentChoice);
 		detailPanelFormContainer.add(commentsTxtArea);
-		
+
 		// TODO: AJAXify the form to show progress bar
 		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
@@ -133,31 +127,26 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		add(detailPanelFormContainer);
 	}
 
-	private void createDirectoryIfNeeded(String directoryName)
-	{
+	private void createDirectoryIfNeeded(String directoryName) {
 		File theDir = new File(directoryName);
 
 		// if the directory does not exist, create it
-		if (!theDir.exists())
-		{
+		if (!theDir.exists()) {
 			log.debug("Creating directory: " + directoryName);
 			theDir.mkdir();
 		}
 	}
 
 	@Override
-	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target)
-	{	
+	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 		LinkSubjectStudy linkSubjectStudy = null;
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		try
-		{
+		try {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
 			containerForm.getModelObject().getSubjectFile().setLinkSubjectStudy(linkSubjectStudy);
 
 			// Implement Save/Update
-			if (containerForm.getModelObject().getSubjectFile().getId() == null)
-			{
+			if (containerForm.getModelObject().getSubjectFile().getId() == null) {
 				// required for file uploads
 				setMultiPart(true);
 
@@ -165,14 +154,12 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 				// TODO: AJAX-ified and asynchronous and hit database
 				FileUpload fileSubjectFile = fileSubjectFileField.getFileUpload();
 
-				try
-				{
+				try {
 					// Copy file to BLOB object
 					Blob payload = Hibernate.createBlob(fileSubjectFile.getInputStream());
 					containerForm.getModelObject().getSubjectFile().setPayload(payload);
 				}
-				catch (IOException ioe)
-				{
+				catch (IOException ioe) {
 					log.error("Failed to save the uploaded file: " + ioe);
 				}
 
@@ -188,8 +175,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was created successfully");
 				processErrors(target);
 			}
-			else
-			{
+			else {
 				// Update
 				studyService.update(containerForm.getModelObject().getSubjectFile());
 				this.info("Attachment " + containerForm.getModelObject().getSubjectFile().getFilename() + " was updated successfully");
@@ -198,46 +184,40 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 
 			onSavePostProcess(target);
 		}
-		catch (EntityNotFoundException e)
-		{
+		catch (EntityNotFoundException e) {
 			this.error("The record you tried to update is no longer available in the system");
 			processErrors(target);
 		}
-		catch (ArkSystemException e)
-		{
+		catch (ArkSystemException e) {
 			this.error(e.getMessage());
 			processErrors(target);
 		}
-		finally
-		{
+		finally {
 			onSavePostProcess(target);
 		}
 	}
 
 	static final String	HEXES	= "0123456789ABCDEF";
 
-	public static String getHex(byte[] raw)
-	{
-		if (raw == null)
-		{
+	public static String getHex(byte[] raw) {
+		if (raw == null) {
 			return null;
 		}
 		final StringBuilder hex = new StringBuilder(2 * raw.length);
-		for (final byte b : raw)
-		{
+		for (final byte b : raw) {
 			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
 		}
 		return hex.toString();
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		SubjectVO subjectVo = new SubjectVO();
 		LinkSubjectStudy linkSubjectStudy = null;
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		try {
 			linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
-		} catch (EntityNotFoundException e) {
+		}
+		catch (EntityNotFoundException e) {
 			this.error("The Person/Subject in context does not exist in the system. Please contact support.");
 			processErrors(target);
 		}
@@ -246,26 +226,22 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		// required for file uploads
 		setMultiPart(true);
 
@@ -288,16 +264,19 @@ public class DetailForm extends AbstractDetailForm<SubjectVO>
 		onCancel(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getSubjectFile().getId() == null){
+		if (containerForm.getModelObject().getSubjectFile().getId() == null) {
 			return true;
-		}else{
+		}
+		else {
 			return false;
 		}
-		
+
 	}
 }

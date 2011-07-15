@@ -19,70 +19,69 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 
 @SuppressWarnings("serial")
-public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
+public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
-	private ContainerForm containerForm;
-	private DetailPanel detailsPanel;
-	private SearchPanel searchPanel;
-	private SearchResultListPanel searchResultListPanel;
-	private PageableListView<ArkUserVO> pageableListView;	
-	
+	private ContainerForm					containerForm;
+	private DetailPanel						detailsPanel;
+	private SearchPanel						searchPanel;
+	private SearchResultListPanel			searchResultListPanel;
+	private PageableListView<ArkUserVO>	pageableListView;
+
 	/* Spring Beans to Access Service Layer */
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	@SpringBean( name = "userService")
-	private IUserService userService;
-	
-	
-	
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService				iArkCommonService;
+
+	@SpringBean(name = "userService")
+	private IUserService						userService;
+
 	public UserContainerPanel(String id) {
 
 		super(id, true);
-		
+
 		cpModel = new CompoundPropertyModel<ArkUserVO>(new ArkUserVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
-		initCrudContainerVO();//THe CRUD Container VO that will have all the WebMarkupContainers.This will be passed around to various panels
+		initCrudContainerVO();// THe CRUD Container VO that will have all the WebMarkupContainers.This will be passed around to various panels
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
-		
+
 		add(containerForm);
 	}
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		
-		
-		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm,feedBackPanel);
+
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm, feedBackPanel);
 		iModel = new LoadableDetachableModel<Object>() {
-			private static final long serialVersionUID = 1L;
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected Object load() {
 				ArkUserVO arkUserVO = new ArkUserVO();
 				List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
 				try {
-					Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-					if(isActionPermitted()){
-						if(sessionStudyId != null && sessionStudyId > 0){
-							//Search Users must list all the users from ArkUser Group and will include all users across studies.
+					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+					if (isActionPermitted()) {
+						if (sessionStudyId != null && sessionStudyId > 0) {
+							// Search Users must list all the users from ArkUser Group and will include all users across studies.
 							userResultList = userService.searchUser(arkUserVO);
 							containerForm.getModelObject().setUserList(userResultList);
 						}
 						pageableListView.removeAll();
 					}
-				} catch (ArkSystemException e) {
+				}
+				catch (ArkSystemException e) {
 					feedBackPanel.error("A System Error has occured. Please contact support.");
 				}
 				return userResultList;
 			}
 		};
-	
+
 		pageableListView = searchResultListPanel.buildPageableListView(iModel, arkCrudContainerVO.getSearchResultPanelContainer());
 		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("navigator",pageableListView);
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(pageableListView);
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
@@ -91,29 +90,30 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO>{
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		 detailsPanel = new DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
-		 detailsPanel.initialisePanel();
-		 arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, arkCrudContainerVO, containerForm);
+		detailsPanel.initialisePanel();
+		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		
+
 		ArkUserVO arkUserVO = new ArkUserVO();
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
-		
-		try{
-			if(sessionStudyId != null && sessionStudyId > 0){
-				 userResultList = userService.searchUser(arkUserVO);	
+
+		try {
+			if (sessionStudyId != null && sessionStudyId > 0) {
+				userResultList = userService.searchUser(arkUserVO);
 			}
-		}catch(ArkSystemException arkException){
-					
 		}
-		
+		catch (ArkSystemException arkException) {
+
+		}
+
 		containerForm.getModelObject().setUserList(userResultList);
-		searchPanel = new SearchPanel("searchPanel",arkCrudContainerVO,feedBackPanel,containerForm, pageableListView);
+		searchPanel = new SearchPanel("searchPanel", arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		return arkCrudContainerVO.getSearchPanelContainer();

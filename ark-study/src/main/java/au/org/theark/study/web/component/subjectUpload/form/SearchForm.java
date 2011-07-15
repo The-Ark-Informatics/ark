@@ -28,32 +28,30 @@ import au.org.theark.study.web.component.subjectUpload.WizardPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class SearchForm extends AbstractSearchForm<UploadVO>
-{
+@SuppressWarnings({ "serial", "unused" })
+public class SearchForm extends AbstractSearchForm<UploadVO> {
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
+	private IStudyService							studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private PageableListView<StudyUpload>				listView;
+	private PageableListView<StudyUpload>		listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
 	private DetailPanel								detailPanel;
 	private WizardPanel								wizardPanel;
-	private WebMarkupContainer 					wizardContainer;
-	
+	private WebMarkupContainer						wizardContainer;
+
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
-	
+
 	/**
 	 * @param id
 	 */
 	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<StudyUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer wizardContainer, WebMarkupContainer wizardPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer)
-	{
+			WebMarkupContainer editButtonContainer) {
 
 		super(id, model, wizardContainer, wizardPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -63,23 +61,21 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		this.wizardContainer = wizardContainer;
 		initialiseFieldForm();
 
-		Long sessionStudyId = (Long)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> compoundPropertyModel)
-	{
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> compoundPropertyModel) {
 		super(id, compoundPropertyModel);
 		this.cpmModel = compoundPropertyModel;
 		initialiseFieldForm();
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initDropDownChoice()
-	{
+	private void initDropDownChoice() {
 		// Initialise any drop-downs
 		java.util.Collection<FileFormat> fileFormatCollection = studyService.getFileFormats();
 		CompoundPropertyModel<UploadVO> uploadCpm = cpmModel;
@@ -89,8 +85,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, fileFormatPm, (List) fileFormatCollection, fileFormatRenderer);
 	}
 
-	public void initialiseFieldForm()
-	{
+	public void initialiseFieldForm() {
 		uploadIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_ID);
 		uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
 
@@ -99,61 +94,57 @@ public class SearchForm extends AbstractSearchForm<UploadVO>
 		addFieldComponents();
 	}
 
-	private void addFieldComponents()
-	{
+	private void addFieldComponents() {
 		// Add the field components
 		add(uploadIdTxtFld);
 		add(uploadFilenameTxtFld);
 		add(fileFormatDdc);
 	}
-	
+
 	// Reset button implemented in AbstractSearchForm
 
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
-		
+
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(studyId);
-		
+
 		StudyUpload searchUpload = getModelObject().getUpload();
 		searchUpload.setStudy(study);
-		
+
 		java.util.Collection<StudyUpload> uploadCollection = studyService.searchUpload(searchUpload);
-		
-		if (uploadCollection != null && uploadCollection.size() == 0)
-		{
+
+		if (uploadCollection != null && uploadCollection.size() == 0) {
 			this.info("Uploads with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
 		}
-		
+
 		getModelObject().setUploadCollection(uploadCollection);
-		
+
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);
 	}
-	
+
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
-		//NB: Should not be possible to get here (GUI should be using Wizard for new)
+	protected void onNew(AjaxRequestTarget target) {
+		// NB: Should not be possible to get here (GUI should be using Wizard for new)
 		// Due to ARK-108 :: No longer reset the VO onNew(..)
 		UploadVO UploadVO = getModelObject();
 		UploadVO.setMode(au.org.theark.core.Constants.MODE_NEW);
-		UploadVO.getUpload().setId(null);	//must ensure Id is blank onNew
+		UploadVO.getUpload().setId(null); // must ensure Id is blank onNew
 		setModelObject(UploadVO);
-		
+
 		listContainer.setVisible(false);
 		searchMarkupContainer.setVisible(false);
-		
+
 		// Explicitly Show Wizard panel
 		wizardContainer.setVisible(true);
 		wizardContainer.setEnabled(true);
-		
+
 		target.addComponent(listContainer);
 		target.addComponent(searchMarkupContainer);
 		target.addComponent(detailFormCompContainer);

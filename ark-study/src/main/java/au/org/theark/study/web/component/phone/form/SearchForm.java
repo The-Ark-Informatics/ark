@@ -31,40 +31,28 @@ import au.org.theark.study.web.component.phone.DetailPanel;
  * @author Nivedan
  * 
  */
-@SuppressWarnings( { "serial", "unchecked" })
-public class SearchForm extends AbstractSearchForm<PhoneVO>
-{
+@SuppressWarnings({ "serial", "unchecked" })
+public class SearchForm extends AbstractSearchForm<PhoneVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
+	private IArkCommonService					iArkCommonService;
 
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	private IStudyService studyService;
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	private IStudyService						studyService;
 
-	private DetailPanel detailPanel;
-	private PageableListView<Phone> pageableListView;
+	private DetailPanel							detailPanel;
+	private PageableListView<Phone>			pageableListView;
 	private CompoundPropertyModel<PhoneVO>	cpmModel;
-	
-	private TextField<Long> phoneIdTxtFld;
-	private TextField<String> areaCodeTxtFld;
-	private TextField<String> phoneNumberTxtFld;
-	private DropDownChoice<PhoneType> phoneTypeChoice;
 
-	
-	
-	public SearchForm(String id,
-			CompoundPropertyModel<PhoneVO> model, 
-			PageableListView<Phone> listView, 
-			FeedbackPanel feedBackPanel, 
-			WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, 
-			WebMarkupContainer detailContainer, 
-			WebMarkupContainer detailPanelFormContainer, 
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			ContainerForm containerForm)
-	{
-	
+	private TextField<Long>						phoneIdTxtFld;
+	private TextField<String>					areaCodeTxtFld;
+	private TextField<String>					phoneNumberTxtFld;
+	private DropDownChoice<PhoneType>		phoneTypeChoice;
+
+	public SearchForm(String id, CompoundPropertyModel<PhoneVO> model, PageableListView<Phone> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
+
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 		this.cpmModel = model;
 		this.pageableListView = listView;
@@ -73,24 +61,13 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
-	
-	
-	
-	
+
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id,
-						CompoundPropertyModel<PhoneVO> model, 
-						PageableListView<Phone> listView, 
-						FeedbackPanel feedBackPanel, 
-						WebMarkupContainer listContainer,
-						WebMarkupContainer searchMarkupContainer, 
-						WebMarkupContainer detailContainer, 
-						WebMarkupContainer detailPanelFormContainer, 
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer)
-	{
+	public SearchForm(String id, CompoundPropertyModel<PhoneVO> model, PageableListView<Phone> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer) {
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -102,7 +79,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
 
-	protected void initialiseSearchForm(){
+	protected void initialiseSearchForm() {
 		phoneIdTxtFld = new TextField<Long>("phone.id");
 		phoneIdTxtFld.setType(Long.class);
 		areaCodeTxtFld = new TextField<String>("phone.areaCode");
@@ -110,69 +87,75 @@ public class SearchForm extends AbstractSearchForm<PhoneVO>
 
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		phoneTypeChoice = new DropDownChoice("phone.phoneType",phoneTypeList,defaultChoiceRenderer);
-		
+		phoneTypeChoice = new DropDownChoice("phone.phoneType", phoneTypeList, defaultChoiceRenderer);
+
 	}
 
-	protected void addSearchComponentsToForm(){
+	protected void addSearchComponentsToForm() {
 		add(phoneIdTxtFld);
 		add(areaCodeTxtFld);
 		add(phoneNumberTxtFld);
 		add(phoneTypeChoice);
 	}
-	
+
 	protected void attachValidators() {
 		phoneIdTxtFld.add(new RangeValidator<Long>(new Long(0), Long.MAX_VALUE));
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 	}
-	
+
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		String sessionPersonType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);//Subject or Contact: Denotes if it was a subject or contact placed in session
-		try{
-			
+		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
+																																														// Contact:
+																																														// Denotes
+																																														// if it was
+																																														// a subject
+																																														// or
+																																														// contact
+																																														// placed in
+																																														// session
+		try {
+
 			Phone phone = getModelObject().getPhone();
 			phone.setPerson(studyService.getPerson(sessionPersonId));
 
-//			if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
-//				
-//			}else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
-//				
-//			}
+			// if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
+			//
+			// }else if(sessionPersonType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)){
+			//
+			// }
 			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
-			if (phones != null && phones.size() == 0)
-			{
+			if (phones != null && phones.size() == 0) {
 				this.info("Fields with the specified criteria does not exist in the system.");
 				target.addComponent(feedbackPanel);
 			}
-			
+
 			getModelObject().setPhoneList(phones);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 			target.addComponent(listContainer);
 
-			
-		}catch(EntityNotFoundException entityNotFoundException){
+		}
+		catch (EntityNotFoundException entityNotFoundException) {
 			this.warn("There are no phone items available for the specified criteria.");
 			target.addComponent(feedbackPanel);
-			
-		}catch(ArkSystemException arkException){
+
+		}
+		catch (ArkSystemException arkException) {
 			this.error("The Ark Application has encountered a system error.");
 			target.addComponent(feedbackPanel);
 		}
-		
+
 	}
-	
+
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
-		getModelObject().getPhone().setId(null);	//only reset ID (not user definable)
+		getModelObject().getPhone().setId(null); // only reset ID (not user definable)
 		preProcessDetailPanel(target);
 	}
-	
+
 }

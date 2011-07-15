@@ -17,8 +17,7 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
-public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
-{
+public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 
 	private static final long			serialVersionUID	= 1L;
 	private Container						containerForm;
@@ -41,8 +40,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 	 * @param studyLogoMarkup
 	 * @param arkContextMarkup
 	 */
-	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup)
-	{
+	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
 
 		super(id, true);
 		cpModel = new CompoundPropertyModel<StudyModelVO>(new StudyModelVO());
@@ -72,8 +70,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 	 * @param arkContextMarkup
 	 * @param moduleTabbedPanel
 	 */
-	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel)
-	{
+	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
 		super(id, true);
 		this.moduleTabbedPanel = moduleTabbedPanel;
 
@@ -95,8 +92,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 		add(containerForm);
 	}
 
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 
 		searchStudyPanel = new Search("searchStudyPanel", studyCrudContainerVO, feedBackPanel, containerForm);
 		searchStudyPanel.initialisePanel(cpModel);
@@ -105,17 +101,14 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 
 		searchResultsPanel = new SearchResults("searchResults", studyCrudContainerVO, containerForm, moduleTabbedPanel);
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				List<Study> studyList = new ArrayList<Study>();
 				studyList = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
 				studyCrudContainerVO.getPageableListView().removeAll();
@@ -133,8 +126,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 	}
 
 	@Override
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 		detailsPanel = new Details("detailsPanel", feedBackPanel, studyCrudContainerVO, containerForm);
 		detailsPanel.initialisePanel();
 		studyCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
@@ -145,16 +137,14 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO>
 	 * @param moduleTabbedPanel
 	 *           the moduleTabbedPanel to set
 	 */
-	public void setModuleTabbedPanel(TabbedPanel moduleTabbedPanel)
-	{
+	public void setModuleTabbedPanel(TabbedPanel moduleTabbedPanel) {
 		this.moduleTabbedPanel = moduleTabbedPanel;
 	}
 
 	/**
 	 * @return the moduleTabbedPanel
 	 */
-	public TabbedPanel getModuleTabbedPanel()
-	{
+	public TabbedPanel getModuleTabbedPanel() {
 		return moduleTabbedPanel;
 	}
 }

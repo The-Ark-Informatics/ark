@@ -9,21 +9,18 @@ import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 
 public class DeleteButton extends AjaxDeleteButton {
-	
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4536757533116035270L;
+	private static final long	serialVersionUID	= -4536757533116035270L;
 
 	DeleteButton(final ConsentFile consentFile, Component component) {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete
-		super(au.org.theark.study.web.Constants.DELETE_FILE,
-				new StringResourceModel("confirmDelete", component, null),
-				new StringResourceModel(
-						au.org.theark.study.web.Constants.DELETE, component,
-						null));
+		super(au.org.theark.study.web.Constants.DELETE_FILE, new StringResourceModel("confirmDelete", component, null),
+				new StringResourceModel(au.org.theark.study.web.Constants.DELETE, component, null));
 	}
 
 	@Override

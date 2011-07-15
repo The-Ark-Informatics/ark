@@ -28,8 +28,7 @@ import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 /**
  * The first step of this wizard.
  */
-public class SubjectUploadStep1 extends AbstractWizardStepPanel
-{
+public class SubjectUploadStep1 extends AbstractWizardStepPanel {
 
 	/**
 	 * 
@@ -50,14 +49,12 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 	private WizardForm							wizardForm;
 
-	public SubjectUploadStep1(String id)
-	{
+	public SubjectUploadStep1(String id) {
 		super(id);
 		initialiseDetailForm();
 	}
 
-	public SubjectUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm)
-	{
+	public SubjectUploadStep1(String id, Form<UploadVO> containerForm, WizardForm wizardForm) {
 		super(id, "Step 1/5: Select data file to upload", "Select the file containing data, the file type and the specified delimiter, click Next to continue.");
 
 		this.containerForm = containerForm;
@@ -65,9 +62,8 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 		initialiseDetailForm();
 	}
 
-	@SuppressWarnings( { "unchecked" })
-	private void initialiseDropDownChoices()
-	{
+	@SuppressWarnings({ "unchecked" })
+	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<DelimiterType> delimiterTypeCollection = iStudyService.getDelimiterTypes();
 		ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
@@ -76,8 +72,7 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 		containerForm.getModelObject().getUpload().setDelimiterType(iStudyService.getDelimiterType(new Long(1)));
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		// Set up field on form here
 
 		// progress bar for upload
@@ -94,43 +89,36 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Field validation here
 		fileUploadField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
 		delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Add components here
 		add(fileUploadField);
 		add(delimiterTypeDdc);
 	}
 
 	@Override
-	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 	}
 
 	@Override
-	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target)
-	{
+	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		saveFileInMemory();
 	}
 
-	public void setWizardForm(WizardForm wizardForm)
-	{
+	public void setWizardForm(WizardForm wizardForm) {
 		this.wizardForm = wizardForm;
 	}
 
-	public WizardForm getWizardForm()
-	{
+	public WizardForm getWizardForm() {
 		return wizardForm;
 	}
 
-	private void saveFileInMemory()
-	{
+	private void saveFileInMemory() {
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(studyId);
@@ -140,25 +128,23 @@ public class SubjectUploadStep1 extends AbstractWizardStepPanel
 		FileUpload fileUpload = fileUploadField.getFileUpload();
 		containerForm.getModelObject().setFileUpload(fileUpload);
 
-		try
-		{
+		try {
 			// Copy file to BLOB object
 			Blob payload = Hibernate.createBlob(fileUpload.getInputStream());
 			containerForm.getModelObject().getUpload().setPayload(payload);
 		}
-		catch (IOException ioe)
-		{
+		catch (IOException ioe) {
 			System.out.println("Failed to save the uploaded file: " + ioe);
 		}
 
 		// Set details of Upload object
 		containerForm.getModelObject().getUpload().setStudy(study);
 		String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
-		String fileFormatName = filename.substring(filename.lastIndexOf('.')+1).toUpperCase();
+		String fileFormatName = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		au.org.theark.core.model.study.entity.FileFormat fileFormat = new au.org.theark.core.model.study.entity.FileFormat();
 		fileFormat = iStudyService.getFileFormatByName(fileFormatName);
 		containerForm.getModelObject().getUpload().setFileFormat(fileFormat);
-		
+
 		byte[] byteArray = fileUpload.getMD5();
 		String checksum = getHex(byteArray);
 		containerForm.getModelObject().getUpload().setChecksum(checksum);

@@ -27,40 +27,31 @@ import au.org.theark.study.web.component.consentFile.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial" })
-public class SearchForm extends AbstractSearchForm<ConsentVO>
-{
+@SuppressWarnings({ "serial" })
+public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService iArkCommonService;
+	protected IArkCommonService						iArkCommonService;
 
-	@SpringBean( name = Constants.STUDY_SERVICE)
-	protected IStudyService studyService;
+	@SpringBean(name = Constants.STUDY_SERVICE)
+	protected IStudyService								studyService;
 
-	protected DetailPanel detailPanel;
-	protected PageableListView<ConsentFile> pageableListView;
-	protected CompoundPropertyModel<ConsentVO> cpmModel;
-	
+	protected DetailPanel								detailPanel;
+	protected PageableListView<ConsentFile>		pageableListView;
+	protected CompoundPropertyModel<ConsentVO>	cpmModel;
+
 	/**
 	 * Form Components
 	 */
-	protected TextField<String> consentFileId;
-	protected TextField<String> consentFileName;
-	
+	protected TextField<String>						consentFileId;
+	protected TextField<String>						consentFileName;
+
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id,
-						CompoundPropertyModel<ConsentVO> model, 
-						PageableListView<ConsentFile> listView, 
-						FeedbackPanel feedBackPanel, 
-						WebMarkupContainer listContainer,
-						WebMarkupContainer searchMarkupContainer, 
-						WebMarkupContainer detailContainer, 
-						WebMarkupContainer detailPanelFormContainer, 
-						WebMarkupContainer viewButtonContainer,
-						WebMarkupContainer editButtonContainer)
-	{
+	public SearchForm(String id, CompoundPropertyModel<ConsentVO> model, PageableListView<ConsentFile> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
+			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
+			WebMarkupContainer editButtonContainer) {
 
 		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
 
@@ -72,64 +63,60 @@ public class SearchForm extends AbstractSearchForm<ConsentVO>
 		disableSearchForm(sessionConsentId, "There is no consent in context. Please select a Consent.");
 	}
 
-	protected void initialiseSearchForm(){
+	protected void initialiseSearchForm() {
 		consentFileId = new TextField<String>(Constants.CONSENT_FILE_ID);
 		consentFileName = new TextField<String>(Constants.CONSENT_FILE_FILENAME);
 	}
 
-	protected void addSearchComponentsToForm(){
+	protected void addSearchComponentsToForm() {
 		add(consentFileId);
 		add(consentFileName);
 	}
-	
+
 	@Override
-	protected void onSearch(AjaxRequestTarget target)
-	{
+	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
-		ConsentFile consentFile  = new ConsentFile();
+		ConsentFile consentFile = new ConsentFile();
 		Collection<ConsentFile> consentFileList = new ArrayList<ConsentFile>();
-		
-		try 
-		{
+
+		try {
 			Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 			Consent consent = new Consent();
-			
+
 			// Set consentFile.consent reference
-			if(sessionConsentId != null)
-			{
+			if (sessionConsentId != null) {
 				consent = studyService.getConsent(sessionConsentId);
 				consentFile.setConsent(consent);
 				// Look up based on criteria via back end.
-				consentFileList =  studyService.searchConsentFile(consentFile);
+				consentFileList = studyService.searchConsentFile(consentFile);
 			}
-			
-			if(consentFileList != null && consentFileList.size() == 0)
-			{
+
+			if (consentFileList != null && consentFileList.size() == 0) {
 				this.info("There are no consent files for the specified criteria.");
 				target.addComponent(feedbackPanel);
 			}
-			
+
 			getModelObject().setConsentFileList(consentFileList);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);
 			target.addComponent(listContainer);
-			
-			
-		} catch (EntityNotFoundException e) {
+
+		}
+		catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ArkSystemException e) {
+		}
+		catch (ArkSystemException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	protected void onNew(AjaxRequestTarget target)
-	{
+	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
-		getModelObject().getConsentFile().setId(null);	//only reset ID (not user definable)
-			
+		getModelObject().getConsentFile().setId(null); // only reset ID (not user definable)
+
 		preProcessDetailPanel(target);
 	}
 

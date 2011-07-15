@@ -17,38 +17,27 @@ import au.org.theark.core.vo.AddressVO;
 import au.org.theark.study.web.component.address.form.ContainerForm;
 import au.org.theark.study.web.component.address.form.SearchForm;
 
-
 /**
  * @author nivedann
- *
+ * 
  */
-public class SearchPanel extends Panel{
+public class SearchPanel extends Panel {
 
-	private FeedbackPanel feedBackPanel;
-	private WebMarkupContainer searchMarkupContainer;
-	private WebMarkupContainer listContainer;
-	private WebMarkupContainer detailsContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private WebMarkupContainer detailFormContainer;
-	private PageableListView<Address> pageableListView;
+	private FeedbackPanel					feedBackPanel;
+	private WebMarkupContainer				searchMarkupContainer;
+	private WebMarkupContainer				listContainer;
+	private WebMarkupContainer				detailsContainer;
+	private WebMarkupContainer				viewButtonContainer;
+	private WebMarkupContainer				editButtonContainer;
+	private WebMarkupContainer				detailFormContainer;
+	private PageableListView<Address>	pageableListView;
 
-	
 	/* Constructor */
-	public SearchPanel(	String id, 
-					FeedbackPanel feedBackPanel, 
-					WebMarkupContainer searchMarkupContainer, 
-					PageableListView<Address> listView, 
-					WebMarkupContainer resultListContainer,
-					WebMarkupContainer detailPanelContainer, 
-					DetailPanel detail, 
-					ContainerForm containerForm,
-					WebMarkupContainer viewButtonContainer,
-					WebMarkupContainer editButtonContainer,
-					WebMarkupContainer detailPanelFormContainer)
-	{
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<Address> listView, WebMarkupContainer resultListContainer,
+			WebMarkupContainer detailPanelContainer, DetailPanel detail, ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
+			WebMarkupContainer detailPanelFormContainer) {
 		super(id);
-		this.searchMarkupContainer =  searchMarkupContainer;
+		this.searchMarkupContainer = searchMarkupContainer;
 		this.pageableListView = listView;
 		this.feedBackPanel = feedBackPanel;
 		this.listContainer = resultListContainer;
@@ -57,21 +46,12 @@ public class SearchPanel extends Panel{
 		this.editButtonContainer = editButtonContainer;
 		this.detailFormContainer = detailPanelFormContainer;
 	}
-	
-	public void initialisePanel(CompoundPropertyModel<AddressVO> addressVoCpm)
-	{
 
-		SearchForm searchForm = new SearchForm(	au.org.theark.core.Constants.SEARCH_FORM, 
-				addressVoCpm,
-				pageableListView,
-				feedBackPanel,
-				listContainer,
-				searchMarkupContainer,
-				detailsContainer,
-				detailFormContainer,
-				viewButtonContainer,
-				editButtonContainer	);
-		
+	public void initialisePanel(CompoundPropertyModel<AddressVO> addressVoCpm) {
+
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, addressVoCpm, pageableListView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer,
+				detailFormContainer, viewButtonContainer, editButtonContainer);
+
 		add(searchForm);
 	}
 

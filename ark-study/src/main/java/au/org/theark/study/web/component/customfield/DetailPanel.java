@@ -14,12 +14,13 @@ import au.org.theark.study.web.component.customfield.form.ContainerForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
 public class DetailPanel extends Panel {
 
-	private FeedbackPanel feedbackPanel;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private FeedbackPanel		feedbackPanel;
+	private ArkCrudContainerVO	arkCrudContainerVO;
+
 	/**
 	 * @param id
 	 */
@@ -27,14 +28,13 @@ public class DetailPanel extends Panel {
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
-	public DetailPanel(String id, FeedbackPanel feedBackPanel,	ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm){
-	
+
+	public DetailPanel(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		
+
 	}
-	
 
 }

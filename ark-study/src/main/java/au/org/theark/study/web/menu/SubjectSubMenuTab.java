@@ -27,17 +27,16 @@ import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPan
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class SubjectSubMenuTab extends AbstractArkTabPanel{
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService iArkCommonService;
-	
-	private WebMarkupContainer	arkContextMarkup;
-	private List<ITab> tabList;
+public class SubjectSubMenuTab extends AbstractArkTabPanel {
 
-	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService	iArkCommonService;
+
+	private WebMarkupContainer	arkContextMarkup;
+	private List<ITab>			tabList;
+
 	/**
 	 * @param id
 	 */
@@ -47,70 +46,68 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel{
 		tabList = new ArrayList<ITab>();
 		buildTabs();
 	}
-	
+
 	@SuppressWarnings({ "serial", "unchecked" })
-	public  void buildTabs(){
-		
+	public void buildTabs() {
+
 		List<ITab> moduleSubTabsList = new ArrayList<ITab>();
-		
+
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_SUBJECT);
-		List<ArkFunction>   arkFunctionList = iArkCommonService.getModuleFunction(arkModule);//Gets a list of ArkFunctions for the given Module
-		
+		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
+
 		for (final ArkFunction menuArkFunction : arkFunctionList) {
-			
-			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(),this, null))
-			{
+
+			moduleSubTabsList.add(new AbstractTab(new StringResourceModel(menuArkFunction.getResourceKey(), this, null)) {
 				@Override
-				public Panel getPanel(String panelId)
-				{
+				public Panel getPanel(String panelId) {
 					Panel panelToReturn = null;// Set
-					if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)){
-					
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
-						panelToReturn = new SubjectContainer(panelId, arkContextMarkup);//Note the constructor
+					if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
+						panelToReturn = new SubjectContainer(panelId, arkContextMarkup);// Note the constructor
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)){
-					
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_PHONE)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new PhoneContainerPanel(panelId);
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)){
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ADDRESS)) {
 
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new AddressContainerPanel(panelId);
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT)){
-						
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_CONSENT)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new ConsentContainerPanel(panelId);
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_FILE)){
-						
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_FILE)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectFileContainerPanel(panelId);
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)){
-						
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_UPLOAD)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectUploadContainerPanel(panelId);
 					}
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
-						
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CORRESPONDENCE)) {
+
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
-					 
-					else if(menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM)){
-						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT,menuArkFunction);
+
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM)) {
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new CustomFieldContainer(panelId);
 					}
-		
+
 					return panelToReturn;
 				}
-			
+
 			});
 		}
-		
+
 		ArkAjaxTabbedPanel moduleTabbedPanel = new ArkAjaxTabbedPanel(Constants.MENU_SUBJECT_SUBMENU, moduleSubTabsList);
 		add(moduleTabbedPanel);
 	}

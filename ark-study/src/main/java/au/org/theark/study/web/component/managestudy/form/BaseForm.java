@@ -5,11 +5,9 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.StudyModelVO;
 
-public  class BaseForm extends Form<StudyModelVO>{
-	
+public class BaseForm extends Form<StudyModelVO> {
 
-	
-	public BaseForm(String id, CompoundPropertyModel<StudyModelVO> model){
+	public BaseForm(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id, model);
 	}
 

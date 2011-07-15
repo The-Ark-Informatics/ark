@@ -69,64 +69,63 @@ import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 import au.org.theark.study.web.component.managestudy.StudyLogoValidator;
 
-@SuppressWarnings( { "unchecked", "serial", "unused" })
-public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
-{
+@SuppressWarnings({ "unchecked", "serial", "unused" })
+public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService			studyService;
+	private IStudyService							studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
+	private IArkCommonService						iArkCommonService;
 
-	private int									mode;
-	private Label								requiredLabel;
-	private TextField<String>				studyIdTxtFld;
-	private TextField<String>				studyNameTxtFld;
-	private TextArea<String>				studyDescriptionTxtArea;
-	private TextField<String>				estYearOfCompletionTxtFld;
-	private TextField<String>				principalContactTxtFld;
-	private TextField<String>				principalContactPhoneTxtFld;
-	private TextField<String>				chiefInvestigatorTxtFld;
-	private TextField<String>				coInvestigatorTxtFld;
-	private TextField<String>				subjectUidPrefixTxtFld;
-	private TextField<String>				subjectUidTokenTxtFld;
-	private DropDownChoice<SubjectUidToken>			subjectUidTokenDpChoices;
-	//private TextField<String> 				subjectUidPadCharsTxtFld;
-	private DropDownChoice<Long>			subjectUidPadCharsDpChoices;
-	private TextField<Integer>				subjectUidStartTxtFld;
-	private Label								subjectUidExampleLbl;
-	private TextField<String>				bioSpecimenPrefixTxtFld;
-	private DateTextField					dateOfApplicationDp;
-	private DropDownChoice<StudyStatus>	studyStatusDpChoices;
-	private RadioChoice<Boolean>			autoGenSubIdRdChoice;
-	private CheckBox						autoGenSubIdChkBox;
-	private CheckBox							autoConsentChkBox;
-	private RadioChoice<Boolean>			autoConsentRdChoice;
+	private int											mode;
+	private Label										requiredLabel;
+	private TextField<String>						studyIdTxtFld;
+	private TextField<String>						studyNameTxtFld;
+	private TextArea<String>						studyDescriptionTxtArea;
+	private TextField<String>						estYearOfCompletionTxtFld;
+	private TextField<String>						principalContactTxtFld;
+	private TextField<String>						principalContactPhoneTxtFld;
+	private TextField<String>						chiefInvestigatorTxtFld;
+	private TextField<String>						coInvestigatorTxtFld;
+	private TextField<String>						subjectUidPrefixTxtFld;
+	private TextField<String>						subjectUidTokenTxtFld;
+	private DropDownChoice<SubjectUidToken>	subjectUidTokenDpChoices;
+	// private TextField<String> subjectUidPadCharsTxtFld;
+	private DropDownChoice<Long>					subjectUidPadCharsDpChoices;
+	private TextField<Integer>						subjectUidStartTxtFld;
+	private Label										subjectUidExampleLbl;
+	private TextField<String>						bioSpecimenPrefixTxtFld;
+	private DateTextField							dateOfApplicationDp;
+	private DropDownChoice<StudyStatus>			studyStatusDpChoices;
+	private RadioChoice<Boolean>					autoGenSubIdRdChoice;
+	private CheckBox									autoGenSubIdChkBox;
+	private CheckBox									autoConsentChkBox;
+	private RadioChoice<Boolean>					autoConsentRdChoice;
 
 	// Application Select Palette
-	private Palette							appPalette;
-	//NN Working on this. Commented until we turn the new security mechanism
-	private Palette arkModulePalette;
+	private Palette									appPalette;
+	// NN Working on this. Commented until we turn the new security mechanism
+	private Palette									arkModulePalette;
 
 	// Study logo uploader
-	private FileUploadField					fileUploadField;
+	private FileUploadField							fileUploadField;
 
 	// Study Logo image
-	public NonCachingImage					studyLogoImage;
-	private ContextImage						noStudyLogoImage;
-	private Container							containerForm;
+	public NonCachingImage							studyLogoImage;
+	private ContextImage								noStudyLogoImage;
+	private Container									containerForm;
 
 	// Summary Details
-	private Label								studySummaryLabel;
-	private List<ModuleVO>					modules;
+	private Label										studySummaryLabel;
+	private List<ModuleVO>							modules;
 
-	private WebMarkupContainer				autoSubjectUidContainer;
-	private WebMarkupContainer				subjectUidContainer;
-	private String								subjectUidExampleTxt	= "";
+	private WebMarkupContainer						autoSubjectUidContainer;
+	private WebMarkupContainer						subjectUidContainer;
+	private String										subjectUidExampleTxt	= "";
 
-	private transient StudyHelper			studyHelper;
-	protected StudyCrudContainerVO		studyCrudVO;
-	
+	private transient StudyHelper					studyHelper;
+	protected StudyCrudContainerVO				studyCrudVO;
+
 	/**
 	 * Constructor
 	 * 
@@ -135,47 +134,40 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	 * @param feedbackPanel
 	 * @param containerForm
 	 */
-	public DetailForm(String id, StudyCrudContainerVO crudVO, FeedbackPanel feedbackPanel, Container containerForm)
-	{
+	public DetailForm(String id, StudyCrudContainerVO crudVO, FeedbackPanel feedbackPanel, Container containerForm) {
 		super(id, feedbackPanel, crudVO, containerForm);
 		this.studyCrudVO = crudVO;
 		this.containerForm = containerForm;
 		setMultiPart(true);
 		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
 	}
-	
-	public WebMarkupContainer getSubjectUidContainer()
-	{
+
+	public WebMarkupContainer getSubjectUidContainer() {
 		return subjectUidContainer;
 	}
-	
-	public WebMarkupContainer getAutoSubjectUidContainer()
-	{
+
+	public WebMarkupContainer getAutoSubjectUidContainer() {
 		return autoSubjectUidContainer;
 	}
-	
-	public Label getSubjectUidExampleLbl()
-	{
+
+	public Label getSubjectUidExampleLbl() {
 		return subjectUidExampleLbl;
 	}
-	
-	public int getMode()
-	{
+
+	public int getMode() {
 		return mode;
 	}
 
-	public void setMode(int mode)
-	{
+	public void setMode(int mode) {
 		this.mode = mode;
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_ID);
 		studyNameTxtFld = new TextField<String>(Constants.STUDY_NAME);
 		studyNameTxtFld.setRequired(true);
 		studyNameTxtFld.add(new ArkDefaultFormFocusBehavior());
-		
+
 		studyDescriptionTxtArea = new TextArea<String>(Constants.STUDY_DESCRIPTION);
 		estYearOfCompletionTxtFld = new TextField<String>(Constants.STUDY_ESTIMATED_YEAR_OF_COMPLETION);
 		principalContactTxtFld = new TextField<String>(Constants.STUDY_CONTACT_PERSON);
@@ -193,9 +185,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		// Label showing example auto-generated SubjectUIDs
 		subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
-		if(subjectUidExampleTxt == null || subjectUidExampleTxt.length() == 0)
+		if (subjectUidExampleTxt == null || subjectUidExampleTxt.length() == 0)
 			subjectUidExampleTxt = Constants.SUBJECTUID_EXAMPLE;
-		
+
 		subjectUidExampleLbl = new Label("study.subjectUid.example", new PropertyModel(this, "subjectUidExampleTxt"));
 		subjectUidExampleLbl.setOutputMarkupId(true);
 		subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
@@ -203,11 +195,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		// SubjectUID prefix (e.g. three char representation of the Study name
 		subjectUidPrefixTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_UID_PREFIX);
-		subjectUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		subjectUidPrefixTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidPrefix = subjectUidPrefixTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.addComponent(subjectUidExampleLbl);
@@ -216,18 +206,16 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		// Token to separate the string (e.g. "-")
 		subjectUidTokenTxtFld = new TextField<String>("subjectUidToken");
-		subjectUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		subjectUidTokenTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidtToken = subjectUidTokenTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.addComponent(subjectUidExampleLbl);
 			}
 		});
 		subjectUidTokenTxtFld.setVisible(false);
-		
+
 		// Token selection
 		initSubjectUidTokenDropDown();
 
@@ -236,11 +224,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 
 		// If the Study wishes to start the incrementor at a particular value
 		subjectUidStartTxtFld = new TextField<Integer>(au.org.theark.study.web.Constants.SUBJECT_UID_START, Integer.class);
-		subjectUidStartTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		subjectUidStartTxtFld.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidStart = subjectUidStartTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.addComponent(subjectUidExampleLbl);
@@ -255,10 +241,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		datePicker.bind(dateOfApplicationDp);
 		dateOfApplicationDp.add(datePicker);
 
-		//initPalette();
-		
+		// initPalette();
+
 		initialiseArkModulePalette();
-		
+
 		CompoundPropertyModel<StudyModelVO> studyCmpModel = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel(); // details.getCpm();
 		initStudyStatusDropDown(studyCmpModel);
 
@@ -270,17 +256,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		autoGenSubIdChkBox = new CheckBox(Constants.STUDY_AUTO_GENERATE_SUBJECTUID);
 		autoGenSubIdChkBox.setVisible(true);
 
-		autoGenSubIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		autoGenSubIdChkBox.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				boolean autoGenerateSubjectUId = containerForm.getModelObject().getStudy().getAutoGenerateSubjectUid();
 				subjectUidContainer.setEnabled(false);
 
-				if (autoGenerateSubjectUId)
-				{
+				if (autoGenerateSubjectUId) {
 					subjectUidContainer.setEnabled(true);
 				}
 				target.addComponent(subjectUidContainer);
@@ -288,17 +271,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		});
 		autoGenSubIdChkBox.setOutputMarkupId(true);
 
-		autoGenSubIdRdChoice.add(new AjaxFormChoiceComponentUpdatingBehavior()
-		{
+		autoGenSubIdRdChoice.add(new AjaxFormChoiceComponentUpdatingBehavior() {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				boolean autoGenerateSubjectUId = containerForm.getModelObject().getStudy().getAutoGenerateSubjectUid();
 				subjectUidContainer.setEnabled(false);
 
-				if (autoGenerateSubjectUId)
-				{
+				if (autoGenerateSubjectUId) {
 					subjectUidContainer.setEnabled(true);
 				}
 				target.addComponent(subjectUidContainer);
@@ -308,10 +288,10 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		// Radio buttons having issue with setting correct model, hiding and using checkBox
 		autoConsentRdChoice = initRadioButtonChoice(pm, Constants.STUDY_AUTO_CONSENT, "autoConsent");
 		autoConsentRdChoice.setVisible(false);
-		
+
 		autoConsentChkBox = new CheckBox(Constants.STUDY_AUTO_CONSENT);
 		autoConsentChkBox.setVisible(true);
-		
+
 		studyIdTxtFld.setEnabled(false);
 		studySummaryLabel = new Label("studySummaryLabel");
 		studyCrudVO.setStudyLogoUploadContainer(new WebMarkupContainer("studyLogoUploadContainer"));
@@ -334,8 +314,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		addComponents();
 	}
 
-	public String getSubjectUidExample()
-	{
+	public String getSubjectUidExample() {
 		Study study = containerForm.getModelObject().getStudy();
 		String subjectUidPrefix = new String("");
 		String subjectUidToken = new String("");
@@ -350,8 +329,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		if (study.getSubjectUidToken() != null)
 			subjectUidToken = study.getSubjectUidToken().getName();
 
-		if (study.getSubjectUidPadChar() != null)
-		{
+		if (study.getSubjectUidPadChar() != null) {
 			subjectUidPadChar = study.getSubjectUidPadChar().getName().trim();
 		}
 
@@ -361,62 +339,53 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		int size = Integer.parseInt(subjectUidPadChar);
 		subjectUidPaddedIncrementor = StringUtils.leftPad(subjectUidStart, size, "0");
 		subjectUidExample = subjectUidPrefix + subjectUidToken + subjectUidPaddedIncrementor;
-		
+
 		return subjectUidExample;
 	}
 
-	private void initialiseArkModulePalette(){
-		
+	private void initialiseArkModulePalette() {
+
 		CompoundPropertyModel<StudyModelVO> sm = (CompoundPropertyModel<StudyModelVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "name");
-		PropertyModel<Collection<ArkModule>> selectedModPm =  new PropertyModel<Collection<ArkModule>>(sm,"selectedArkModules");
-		PropertyModel<Collection<ArkModule>> availableModulesPm =  new PropertyModel<Collection<ArkModule>>(sm,"availableArkModules");
-		
-		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false)
-		{
+		PropertyModel<Collection<ArkModule>> selectedModPm = new PropertyModel<Collection<ArkModule>>(sm, "selectedArkModules");
+		PropertyModel<Collection<ArkModule>> availableModulesPm = new PropertyModel<Collection<ArkModule>>(sm, "availableArkModules");
+
+		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false) {
 			@Override
-			public ResourceReference getCSS()
-			{
+			public ResourceReference getCSS() {
 				return null;
 			}
 		};
-		
+
 	}
 
-	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel)
-	{
+	private void initStudyStatusDropDown(CompoundPropertyModel<StudyModelVO> studyCmpModel) {
 		List<StudyStatus> studyStatusList = iArkCommonService.getListOfStudyStatus();
 		ChoiceRenderer<StudyStatus> defaultChoiceRenderer = new ChoiceRenderer<StudyStatus>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_STATUS, studyStatusList, defaultChoiceRenderer);
 	}
 
-	private void initSubjectUidTokenDropDown()
-	{
+	private void initSubjectUidTokenDropDown() {
 		List<SubjectUidToken> subjectUidTokenList = iArkCommonService.getListOfSubjectUidToken();
 		ChoiceRenderer<SubjectUidToken> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidToken>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		subjectUidTokenDpChoices = new DropDownChoice(au.org.theark.study.web.Constants.SUBJECT_UID_TOKEN, subjectUidTokenList, defaultChoiceRenderer);
-		subjectUidTokenDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		subjectUidTokenDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidToken = containerForm.getModelObject().getStudy().getSubjectUidToken().getName();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.addComponent(subjectUidExampleLbl);
 			}
 		});
 	}
-	
-	private void initSubjectUidPadCharsDropDown()
-	{
+
+	private void initSubjectUidPadCharsDropDown() {
 		List<SubjectUidPadChar> subjectUidPadCharList = iArkCommonService.getListOfSubjectUidPadChar();
 		ChoiceRenderer<SubjectUidPadChar> defaultChoiceRenderer = new ChoiceRenderer<SubjectUidPadChar>(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		subjectUidPadCharsDpChoices = new DropDownChoice(au.org.theark.study.web.Constants.SUBJECT_UID_PADCHAR, subjectUidPadCharList, defaultChoiceRenderer);
-		subjectUidPadCharsDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange")
-		{
+		subjectUidPadCharsDpChoices.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			@Override
-			protected void onUpdate(AjaxRequestTarget target)
-			{
+			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidPadChar = containerForm.getModelObject().getStudy().getSubjectUidPadChar().getName();
 				subjectUidExampleTxt = getSubjectUidExample();
 				target.addComponent(subjectUidExampleLbl);
@@ -424,8 +393,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		});
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		studyCrudVO.getDetailPanelFormContainer().add(studyIdTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyNameTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyDescriptionTxtArea);
@@ -471,39 +439,32 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	 * @param radioChoiceId
 	 * @return
 	 */
-	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Study> pm, String propertyModelExpr, String radioChoiceId)
-	{
+	private RadioChoice<Boolean> initRadioButtonChoice(PropertyModel<Study> pm, String propertyModelExpr, String radioChoiceId) {
 
 		List<Boolean> list = new ArrayList<Boolean>();
 		list.add(Boolean.TRUE);
 		list.add(Boolean.FALSE);
 		/* Implement the IChoiceRenderer */
 
-		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>()
-		{
-			public Object getDisplayValue(final Boolean choice)
-			{
+		IChoiceRenderer<Boolean> radioChoiceRender = new IChoiceRenderer<Boolean>() {
+			public Object getDisplayValue(final Boolean choice) {
 				String displayValue = Constants.NO;
 
-				if (choice != null && choice.booleanValue())
-				{
+				if (choice != null && choice.booleanValue()) {
 					displayValue = Constants.YES;
 				}
 				return displayValue;
 			}
 
-			public String getIdValue(final Boolean object, final int index)
-			{
+			public String getIdValue(final Boolean object, final int index) {
 				return object.toString();
 			}
 		};
 
-		
 		RadioChoice<Boolean> radioBtn = null;
-		if(pm == null)
+		if (pm == null)
 			radioBtn = new RadioChoice<Boolean>(radioChoiceId);
-		else
-		{
+		else {
 			PropertyModel<Boolean> propertyModel = new PropertyModel<Boolean>(pm, propertyModelExpr);
 			radioBtn = new RadioChoice<Boolean>(radioChoiceId, propertyModel, list, radioChoiceRender);
 		}
@@ -511,8 +472,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	}
 
 	@Override
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", null, new Model<String>("Study Name")));
 		// TODO Have to stop the validator posting the content with the error message
 		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded", null, new Model<String>("Study Synopsis")));
@@ -536,14 +496,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		fileUploadField.add(new StudyLogoValidator());
 	}
 
-	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target)
-	{
+	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target) {
 		boolean validFlag = true;
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("yyyy");
 		int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication));
 
-		if (yearOfCompletion < dateOfApplicationYear)
-		{
+		if (yearOfCompletion < dateOfApplicationYear) {
 			this.error(message);
 			processErrors(target);
 			validFlag = false;
@@ -552,19 +510,17 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 		return validFlag;
 	}
 
-	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved, CannotRemoveArkModuleException
-	{
+	private void processSaveUpdate(StudyModelVO studyModel, AjaxRequestTarget target) throws EntityExistsException, UnAuthorizedOperation, ArkSystemException, EntityCannotBeRemoved,
+			CannotRemoveArkModuleException {
 		Collection<ModuleVO> moduleVoCollection = studyModel.getModulesSelected();
 		// Convert to Set<String> this can be removed later by changing the interface
 		Set<String> moduleList = new HashSet<String>();
-		for (ModuleVO moduleVO : moduleVoCollection)
-		{
+		for (ModuleVO moduleVO : moduleVoCollection) {
 			moduleList.add(moduleVO.getModule());
 		}
 		studyModel.setLmcSelectedApps(moduleList);
 
-		if (studyModel.getStudy() != null && studyModel.getStudy().getId() == null)
-		{
+		if (studyModel.getStudy() != null && studyModel.getStudy().getId() == null) {
 			// Create
 			studyService.createStudy(studyModel);
 			subjectUidExampleTxt = getSubjectUidExample();
@@ -573,15 +529,14 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);// added as part of refactoring
 		}
-		else
-		{
+		else {
 			// Update
 			studyService.updateStudy(studyModel);
-			//studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
-			//subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
+			// studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
+			// subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
 			target.addComponent(subjectUidExampleLbl);
-			//this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
+			// this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
 			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);
@@ -605,23 +560,19 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	}
 
 	@Override
-	protected void onSave(Form<StudyModelVO> containerForm, AjaxRequestTarget target)
-	{
-		try
-		{
+	protected void onSave(Form<StudyModelVO> containerForm, AjaxRequestTarget target) {
+		try {
 			String message = "Estimated Year of Completion must be greater than Date Of Application";
 
 			boolean customValidationFlag = false;
 
-			if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null)
-			{
+			if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null) {
 				customValidationFlag = validateEstYearOfComp(containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion(), containerForm.getModelObject().getStudy().getDateOfApplication(),
 						message, target);
 			}
 
 			// Store Study logo image
-			if (fileUploadField != null && fileUploadField.getFileUpload() != null)
-			{
+			if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 				// Retrieve file and store as Blob in databasse
 				FileUpload fileUpload = fileUploadField.getFileUpload();
 
@@ -631,55 +582,47 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 				containerForm.getModelObject().getStudy().setFilename(fileUpload.getClientFileName());
 			}
 
-			if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null && customValidationFlag)
-			{
+			if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() != null && customValidationFlag) {
 				// If there was a value provided then upon successful validation proceed with save or update
 				processSaveUpdate(containerForm.getModelObject(), target);
 			}
-			else if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() == null)
-			{
+			else if (containerForm.getModelObject().getStudy().getEstimatedYearOfCompletion() == null) {
 				// If the value for estimate year of completion was not provided then we can proceed with save or update.
 				processSaveUpdate(containerForm.getModelObject(), target);
 			}
 		}
-		catch (EntityExistsException eee)
-		{
+		catch (EntityExistsException eee) {
 			this.error("The specified study already exists in the system.");
 		}
-		catch (EntityCannotBeRemoved ecbr)
-		{
+		catch (EntityCannotBeRemoved ecbr) {
 
 			this.error("The Study cannot be removed from the system.There are participants linked to the study");
 		}
-		catch (IOException ioe)
-		{
+		catch (IOException ioe) {
 			// TODO: NN This error is not related to a user. Have to mask this/log it and report it as business exception ie why the file was not
 			// transferred
 			// due to file size etc..or if it was a system exception as a ArkSystemException
 			this.error("There was an error transferring the specified Study logo image.");
 		}
-		catch (ArkSystemException arkSystemExeption)
-		{
+		catch (ArkSystemException arkSystemExeption) {
 			this.error("A System exception has occurred. Please contact Support");
 		}
-		catch (UnAuthorizedOperation e)
-		{
+		catch (UnAuthorizedOperation e) {
 			this.error("You (logged in user) is unauthorised to create/update or archive this study.");
-		} catch (CannotRemoveArkModuleException e) {
+		}
+		catch (CannotRemoveArkModuleException e) {
 			this.error("You cannot remove the modules as part of the update. There are System Users who are associated with this study and modules.");
 		}
 
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		containerForm.setModelObject(new StudyModelVO());
 		studyCrudVO.getSummaryContainer().setVisible(true);
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
@@ -689,14 +632,11 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO>
 	 * @see au.org.theark.core.web.form.AbstractArchiveDetailForm#isNew()
 	 */
 	@Override
-	protected boolean isNew()
-	{
-		if (containerForm.getModelObject().getStudy().getId() == null)
-		{
+	protected boolean isNew() {
+		if (containerForm.getModelObject().getStudy().getId() == null) {
 			return true;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 

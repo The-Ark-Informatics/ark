@@ -55,26 +55,25 @@ import com.csvreader.CsvReader;
  * 
  * @author cellis
  */
-public class SubjectUploader
-{
-	private long					subjectCount;
-	private long					insertCount;
-	private long					updateCount;
-	private long					curPos;
-	private long					srcLength				= -1;																				// -1 means nothing being
-																																							// processed
-	private StopWatch				timer						= null;
-	private char					delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;									// default
+public class SubjectUploader {
+	private long						subjectCount;
+	private long						insertCount;
+	private long						updateCount;
+	private long						curPos;
+	private long						srcLength				= -1;																				// -1 means nothing being
+																																								// processed
+	private StopWatch					timer						= null;
+	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;									// default
 	// delimiter:
 	// COMMA
-	private Study					study;
-	static Logger					log						= LoggerFactory.getLogger(SubjectUploader.class);
-	private IArkCommonService	iArkCommonService		= null;
-	private IStudyService		iStudyService			= null;
-	private StringBuffer			uploadReport			= null;
-	private SimpleDateFormat	simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
-	private Collection<SubjectVO> insertSubjects = new ArrayList<SubjectVO>();
-	private Collection<SubjectVO> updateSubjects = new ArrayList<SubjectVO>();
+	private Study						study;
+	static Logger						log						= LoggerFactory.getLogger(SubjectUploader.class);
+	private IArkCommonService		iArkCommonService		= null;
+	private IStudyService			iStudyService			= null;
+	private StringBuffer				uploadReport			= null;
+	private SimpleDateFormat		simpleDateFormat		= new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
+	private Collection<SubjectVO>	insertSubjects			= new ArrayList<SubjectVO>();
+	private Collection<SubjectVO>	updateSubjects			= new ArrayList<SubjectVO>();
 
 	/**
 	 * SubjectUploader constructor
@@ -86,8 +85,7 @@ public class SubjectUploader
 	 * @param iStudyService
 	 *           study service to perform select/insert/updates to the study database
 	 */
-	public SubjectUploader(Study study, IArkCommonService iArkCommonService, IStudyService iStudyService)
-	{
+	public SubjectUploader(Study study, IArkCommonService iArkCommonService, IStudyService iStudyService) {
 		this.study = study;
 		this.iArkCommonService = iArkCommonService;
 		this.iStudyService = iStudyService;
@@ -110,8 +108,7 @@ public class SubjectUploader
 	 *            general ARK Exception
 	 * @return the upload report detailing the upload process
 	 */
-	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException
-	{
+	public StringBuffer uploadAndReportMatrixSubjectFile(InputStream fileInputStream, long inLength, String inFileFormat, char inDelimChr) throws FileFormatException, ArkSystemException {
 		delimiterCharacter = inDelimChr;
 		uploadReport = new StringBuffer();
 		curPos = 0;
@@ -119,16 +116,14 @@ public class SubjectUploader
 		InputStreamReader inputStreamReader = null;
 		CsvReader csvReader = null;
 		DecimalFormat decimalFormat = new DecimalFormat("0.00");
-		
-		try
-		{
+
+		try {
 			inputStreamReader = new InputStreamReader(fileInputStream);
 			csvReader = new CsvReader(inputStreamReader, delimiterCharacter);
 			String[] stringLineArray;
 
 			srcLength = inLength;
-			if (srcLength <= 0)
-			{
+			if (srcLength <= 0) {
 				uploadReport.append("The input size was not greater than 0. Actual length reported: ");
 				uploadReport.append(srcLength);
 				uploadReport.append("\n");
@@ -149,8 +144,7 @@ public class SubjectUploader
 			int index = 0;
 
 			// Loop through all rows in file
-			while (csvReader.readRecord())
-			{
+			while (csvReader.readRecord()) {
 				// do something with the newline to put the data into
 				// the variables defined above
 				stringLineArray = csvReader.getValues();
@@ -160,12 +154,10 @@ public class SubjectUploader
 				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
 				linkSubjectStudy.setStudy(study);
 
-				try
-				{
+				try {
 					linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUID);
 				}
-				catch (EntityNotFoundException enf)
-				{
+				catch (EntityNotFoundException enf) {
 					// New subject
 					linkSubjectStudy.setSubjectUID(subjectUID);
 					linkSubjectStudy.setStudy(study);
@@ -173,12 +165,10 @@ public class SubjectUploader
 				Person person = linkSubjectStudy.getPerson();
 				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 
-				if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null)
-				{
+				if (linkSubjectStudy.getId() == null && linkSubjectStudy.getPerson().getId() == null) {
 					person = new Person();
 				}
-				else
-				{
+				else {
 					person = linkSubjectStudy.getPerson();
 				}
 
@@ -194,133 +184,107 @@ public class SubjectUploader
 				if (csvReader.getIndex("PREFERRED_NAME") > 0)
 					person.setPreferredName(stringLineArray[csvReader.getIndex("PREFERRED_NAME")]);
 
-				if (csvReader.getIndex("GENDER_TYPE") > 0 || csvReader.getIndex("GENDER") > 0 || csvReader.getIndex("SEX") > 0)
-				{
+				if (csvReader.getIndex("GENDER_TYPE") > 0 || csvReader.getIndex("GENDER") > 0 || csvReader.getIndex("SEX") > 0) {
 					GenderType genderType;
-					if (csvReader.getIndex("GENDER_TYPE") > 0)
-					{
+					if (csvReader.getIndex("GENDER_TYPE") > 0) {
 						index = csvReader.getIndex("GENDER_TYPE");
 					}
-					else if (csvReader.getIndex("GENDER") > 0)
-					{
+					else if (csvReader.getIndex("GENDER") > 0) {
 						index = csvReader.getIndex("GENDER");
 					}
-					else
-					{
+					else {
 						index = csvReader.getIndex("SEX");
 					}
 
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0)
-					{
+					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
 						genderType = iArkCommonService.getGenderType(stringLineArray[index]);
 						person.setGenderType(genderType);
 					}
 				}
 
-				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0)
-				{
+				if (csvReader.getIndex("DATE_OF_BIRTH") > 0 || csvReader.getIndex("DOB") > 0) {
 					Date dateOfBirth = new Date();
 
-					if (csvReader.getIndex("DATE_OF_BIRTH") > 0)
-					{
+					if (csvReader.getIndex("DATE_OF_BIRTH") > 0) {
 						index = csvReader.getIndex("DATE_OF_BIRTH");
 					}
-					else
-					{
+					else {
 						index = csvReader.getIndex("DOB");
 					}
 
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0)
-					{
+					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
 						dateOfBirth = simpleDateFormat.parse(stringLineArray[index]);
 						person.setDateOfBirth(dateOfBirth);
 					}
 				}
 
-				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0)
-				{
+				if (csvReader.getIndex("DATE_OF_DEATH") > 0 || csvReader.getIndex("DODEATH") > 0) {
 					Date dateOfDeath = new Date();
-					if (csvReader.getIndex("DATE_OF_DEATH") > 0)
-					{
+					if (csvReader.getIndex("DATE_OF_DEATH") > 0) {
 						index = csvReader.getIndex("DATE_OF_DEATH");
 					}
-					else
-					{
+					else {
 						index = csvReader.getIndex("DODEATH");
 					}
 
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0)
-					{
+					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
 						dateOfDeath = simpleDateFormat.parse(stringLineArray[index]);
 						person.setDateOfDeath(dateOfDeath);
 					}
 				}
 
-				if (csvReader.getIndex("CAUSE_OF_DEATH") > 0 || csvReader.getIndex("CODEATH") > 0)
-				{
-					if (csvReader.getIndex("CAUSE_OF_DEATH") > 0)
-					{
+				if (csvReader.getIndex("CAUSE_OF_DEATH") > 0 || csvReader.getIndex("CODEATH") > 0) {
+					if (csvReader.getIndex("CAUSE_OF_DEATH") > 0) {
 						index = csvReader.getIndex("CAUSE_OF_DEATH");
 					}
-					else
-					{
+					else {
 						index = csvReader.getIndex("CODEATH");
 					}
 
-					if (stringLineArray[index] != null && stringLineArray[index].length() > 0)
-					{
+					if (stringLineArray[index] != null && stringLineArray[index].length() > 0) {
 						person.setCauseOfDeath(stringLineArray[index]);
 					}
 				}
 
-				if (csvReader.getIndex("VITAL_STATUS") > 0)
-				{
+				if (csvReader.getIndex("VITAL_STATUS") > 0) {
 					String vitalStatusStr = (stringLineArray[csvReader.getIndex("VITAL_STATUS")]);
 					VitalStatus vitalStatus = iArkCommonService.getVitalStatus(vitalStatusStr);
 					person.setVitalStatus(vitalStatus);
 				}
 
-				if (csvReader.getIndex("PREFERRED_EMAIL") > 0)
-				{
+				if (csvReader.getIndex("PREFERRED_EMAIL") > 0) {
 					person.setPreferredEmail(stringLineArray[csvReader.getIndex("PREFERRED_EMAIL")]);
 				}
 
-				if (csvReader.getIndex("OTHER_EMAIL") > 0)
-				{
+				if (csvReader.getIndex("OTHER_EMAIL") > 0) {
 					person.setPreferredEmail(stringLineArray[csvReader.getIndex("OTHER_EMAIL")]);
 				}
 
-				if (csvReader.getIndex("TITLE") > 0)
-				{
+				if (csvReader.getIndex("TITLE") > 0) {
 					String titleStr = (stringLineArray[csvReader.getIndex("TITLE")]);
 					TitleType titleType = iArkCommonService.getTitleType(titleStr);
 					person.setTitleType(titleType);
 				}
 
-				if (csvReader.getIndex("MARITAL_STATUS") > 0)
-				{
+				if (csvReader.getIndex("MARITAL_STATUS") > 0) {
 					String maritalStatusStr = (stringLineArray[csvReader.getIndex("MARITAL_STATUS")]);
 					MaritalStatus maritalStatus = iArkCommonService.getMaritalStatus(maritalStatusStr);
 					person.setMaritalStatus(maritalStatus);
 				}
 
-				if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0)
-				{
+				if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0 || csvReader.getIndex("CONTACT_METHOD") > 0) {
 					String personContactMethodStr = null;
-					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0)
-					{
+					if (csvReader.getIndex("PERSON_CONTACT_METHOD") > 0) {
 						personContactMethodStr = (stringLineArray[csvReader.getIndex("PERSON_CONTACT_METHOD")]);
 					}
-					else
-					{
+					else {
 						personContactMethodStr = (stringLineArray[csvReader.getIndex("CONTACT_METHOD")]);
 					}
 					PersonContactMethod personContactMethod = iArkCommonService.getPersonContactMethod(personContactMethodStr);
 					person.setPersonContactMethod(personContactMethod);
 				}
 
-				if (csvReader.getIndex("STATUS") > 0)
-				{
+				if (csvReader.getIndex("STATUS") > 0) {
 					String statusStr = (stringLineArray[csvReader.getIndex("STATUS")]);
 					SubjectStatus subjectStatus = iArkCommonService.getSubjectStatus(statusStr);
 					linkSubjectStudy.setSubjectStatus(subjectStatus);
@@ -329,9 +293,8 @@ public class SubjectUploader
 				linkSubjectStudy.setPerson(person);
 				subjectVo.setLinkSubjectStudy(linkSubjectStudy);
 
-				if (subjectVo.getLinkSubjectStudy().getId() == null || subjectVo.getLinkSubjectStudy().getPerson().getId() == 0)
-				{
-					//iStudyService.createSubject(subjectVo);
+				if (subjectVo.getLinkSubjectStudy().getId() == null || subjectVo.getLinkSubjectStudy().getPerson().getId() == 0) {
+					// iStudyService.createSubject(subjectVo);
 					insertSubjects.add(subjectVo);
 					StringBuffer sb = new StringBuffer();
 					sb.append("Subject UID: ");
@@ -342,9 +305,8 @@ public class SubjectUploader
 					uploadReport.append(sb);
 					insertCount++;
 				}
-				else
-				{
-					//iStudyService.updateSubject(subjectVo);
+				else {
+					// iStudyService.updateSubject(subjectVo);
 					updateSubjects.add(subjectVo);
 					StringBuffer sb = new StringBuffer();
 					sb.append("Subject UID: ");
@@ -360,20 +322,17 @@ public class SubjectUploader
 				subjectCount++;
 			}
 		}
-		catch (IOException ioe)
-		{
+		catch (IOException ioe) {
 			uploadReport.append("Unexpected I/O exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile IOException stacktrace:", ioe);
 			throw new ArkSystemException("Unexpected I/O exception whilst reading the subject data file");
 		}
-		catch (Exception ex)
-		{
+		catch (Exception ex) {
 			uploadReport.append("Unexpected exception whilst reading the subject data file\n");
 			log.error("processMatrixSubjectFile Exception stacktrace:", ex);
 			throw new ArkSystemException("Unexpected exception occurred when trying to process subject data file");
 		}
-		finally
-		{
+		finally {
 			// Clean up the IO objects
 			timer.stop();
 			uploadReport.append("\n");
@@ -393,25 +352,19 @@ public class SubjectUploader
 			if (timer != null)
 				timer = null;
 
-			if (csvReader != null)
-			{
-				try
-				{
+			if (csvReader != null) {
+				try {
 					csvReader.close();
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					log.error("Cleanup operation failed: csvRdr.close()", ex);
 				}
 			}
-			if (inputStreamReader != null)
-			{
-				try
-				{
+			if (inputStreamReader != null) {
+				try {
 					inputStreamReader.close();
 				}
-				catch (Exception ex)
-				{
+				catch (Exception ex) {
 					log.error("Cleanup operation failed: isr.close()", ex);
 				}
 			}
@@ -432,42 +385,34 @@ public class SubjectUploader
 		uploadReport.append("\n");
 
 		// Batch insert/update
-		try
-		{
+		try {
 			iStudyService.batchInsertSubjects(insertSubjects);
 		}
-		catch (ArkUniqueException e)
-		{
+		catch (ArkUniqueException e) {
 			e.printStackTrace();
 		}
-		catch (ArkSubjectInsertException e)
-		{
+		catch (ArkSubjectInsertException e) {
 			e.printStackTrace();
 		}
-		try
-		{
+		try {
 			iStudyService.batchUpdateSubjects(updateSubjects);
 		}
-		catch (ArkUniqueException e)
-		{
+		catch (ArkUniqueException e) {
 			e.printStackTrace();
 		}
-		catch (ArkSubjectInsertException e)
-		{
+		catch (ArkSubjectInsertException e) {
 			e.printStackTrace();
 		}
-		
+
 		return uploadReport;
 	}
 
-	public org.apache.wicket.util.file.File convertXlsToCsv(File file, char delimChr)
-	{
+	public org.apache.wicket.util.file.File convertXlsToCsv(File file, char delimChr) {
 		delimiterCharacter = delimChr;
 
 		// File to store data in form of CSV
 		org.apache.wicket.util.file.File f = new org.apache.wicket.util.file.File(file.getAbsoluteFile() + ".csv");
-		try
-		{
+		try {
 			OutputStream os = (OutputStream) new FileOutputStream(f);
 			String encoding = "UTF8";
 			OutputStreamWriter osw = new OutputStreamWriter(os, encoding);
@@ -485,15 +430,12 @@ public class SubjectUploader
 			Cell[] row = null;
 
 			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++)
-			{
+			for (int i = 0; i < s.getRows(); i++) {
 				row = s.getRow(i);
 
-				if (row.length > 0)
-				{
+				if (row.length > 0) {
 					bw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++)
-					{
+					for (int j = 1; j < row.length; j++) {
 						bw.write(delimiterCharacter);
 						bw.write(row[j].getContents());
 					}
@@ -504,26 +446,21 @@ public class SubjectUploader
 			bw.flush();
 			bw.close();
 		}
-		catch (UnsupportedEncodingException e)
-		{
+		catch (UnsupportedEncodingException e) {
 			System.err.println(e.toString());
 		}
-		catch (IOException e)
-		{
+		catch (IOException e) {
 			System.err.println(e.toString());
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			System.err.println(e.toString());
 		}
 		return f;
 	}
 
-	public InputStream convertXlsToCsv(Workbook w)
-	{
+	public InputStream convertXlsToCsv(Workbook w) {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		try
-		{
+		try {
 			OutputStreamWriter osw = new OutputStreamWriter(out);
 
 			// Gets first sheet from workbook
@@ -532,15 +469,12 @@ public class SubjectUploader
 			Cell[] row = null;
 
 			// Gets the cells from sheet
-			for (int i = 0; i < s.getRows(); i++)
-			{
+			for (int i = 0; i < s.getRows(); i++) {
 				row = s.getRow(i);
 
-				if (row.length > 0)
-				{
+				if (row.length > 0) {
 					osw.write(row[0].getContents());
-					for (int j = 1; j < row.length; j++)
-					{
+					for (int j = 1; j < row.length; j++) {
 						osw.write(delimiterCharacter);
 						osw.write(row[j].getContents());
 					}
@@ -551,16 +485,13 @@ public class SubjectUploader
 			osw.flush();
 			osw.close();
 		}
-		catch (UnsupportedEncodingException e)
-		{
+		catch (UnsupportedEncodingException e) {
 			System.err.println(e.toString());
 		}
-		catch (IOException e)
-		{
+		catch (IOException e) {
 			System.err.println(e.toString());
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			System.err.println(e.toString());
 		}
 		return new ByteArrayInputStream(out.toByteArray());
@@ -571,8 +502,7 @@ public class SubjectUploader
 	 * 
 	 * @return if a process is actively running, then progress in %; or if no process running, then returns -1
 	 */
-	public double getProgress()
-	{
+	public double getProgress() {
 		double progress = -1;
 
 		if (srcLength > 0)
@@ -586,8 +516,7 @@ public class SubjectUploader
 	 * 
 	 * @return if a process is actively running, then speed in KB/s; or if no process running, then returns -1
 	 */
-	public double getSpeed()
-	{
+	public double getSpeed() {
 		double speed = -1;
 
 		if (srcLength > 0)

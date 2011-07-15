@@ -11,20 +11,18 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.web.component.AjaxDeleteButton;
 
 public class DeleteButton extends AjaxDeleteButton {
-		private static final long serialVersionUID = 4966354164332401574L;
-		private transient Logger log = LoggerFactory.getLogger(DeleteButton.class);
+	private static final long	serialVersionUID	= 4966354164332401574L;
+	private transient Logger	log					= LoggerFactory.getLogger(DeleteButton.class);
 
-		DeleteButton(final StudyUpload upload, Component component) {
-			// Properties contains:
-			// confirmDelete=Are you sure you want to delete?
-			// delete=Delete
-			super(au.org.theark.study.web.Constants.DELETE_FILE,
-					new StringResourceModel("confirmDelete", component, null),
-					new StringResourceModel(au.org.theark.study.web.Constants.DELETE,
-							component, null));
-		}
-		
-		@Override
-		protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-		}
+	DeleteButton(final StudyUpload upload, Component component) {
+		// Properties contains:
+		// confirmDelete=Are you sure you want to delete?
+		// delete=Delete
+		super(au.org.theark.study.web.Constants.DELETE_FILE, new StringResourceModel("confirmDelete", component, null),
+				new StringResourceModel(au.org.theark.study.web.Constants.DELETE, component, null));
 	}
+
+	@Override
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+	}
+}

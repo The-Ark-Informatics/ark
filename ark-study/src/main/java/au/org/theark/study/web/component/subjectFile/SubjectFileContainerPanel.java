@@ -22,8 +22,7 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
-public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
-{
+public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	private static final long					serialVersionUID	= 1L;
 
@@ -46,8 +45,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 * 
 	 * @param id
 	 */
-	public SubjectFileContainerPanel(String id)
-	{
+	public SubjectFileContainerPanel(String id) {
 
 		super(id);
 		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
@@ -59,8 +57,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 		add(containerForm);
 	}
 
-	public SubjectFileContainerPanel(String id, SubjectVO subjectVo)
-	{
+	public SubjectFileContainerPanel(String id, SubjectVO subjectVo) {
 		super(id);
 		// Use consentVo in context from consent page
 		cpModel = new CompoundPropertyModel<SubjectVO>(subjectVo);
@@ -78,8 +75,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseDetailPanel()
 	 */
 	@Override
-	protected WebMarkupContainer initialiseDetailPanel()
-	{
+	protected WebMarkupContainer initialiseDetailPanel() {
 
 		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
 				editButtonContainer, containerForm);
@@ -94,8 +90,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseSearchPanel()
 	 */
 	@Override
-	protected WebMarkupContainer initialiseSearchPanel()
-	{
+	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get the Person in Context and determine the Person Type
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
@@ -116,26 +111,22 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 * @see au.org.theark.core.web.component.AbstractContainerPanel#initialiseSearchResults()
 	 */
 	@Override
-	protected WebMarkupContainer initialiseSearchResults()
-	{
+	protected WebMarkupContainer initialiseSearchResults() {
 
 		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
 				viewButtonContainer, editButtonContainer, containerForm);
 
-		iModel = new LoadableDetachableModel<Object>()
-		{
+		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected Object load()
-			{
+			protected Object load() {
 				// Get the PersonId from session and get the subjectFileList from back end
 				Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
-				try
-				{
-					if(isActionPermitted()){
-						
+				try {
+					if (isActionPermitted()) {
+
 						SubjectFile subjectFile = containerForm.getModelObject().getSubjectFile();
 						Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 						LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
@@ -143,12 +134,10 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 						subjectFileList = studyService.searchSubjectFile(subjectFile);
 					}
 				}
-				catch (EntityNotFoundException e)
-				{
+				catch (EntityNotFoundException e) {
 					containerForm.error("The person ID/Subject in context does not exist in the system.");
 				}
-				catch (ArkSystemException e)
-				{
+				catch (ArkSystemException e) {
 					containerForm.error("A System error has occured. Please contact Support");
 				}
 

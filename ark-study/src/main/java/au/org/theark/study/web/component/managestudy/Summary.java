@@ -6,14 +6,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.StudyModelVO;
 
+public class Summary extends Panel {
 
-
-public class Summary extends Panel{
-	
-	
 	/* A reference of the Model from the Container in this case Search Panel */
-	private CompoundPropertyModel<StudyModelVO> cpm;
-	
+	private CompoundPropertyModel<StudyModelVO>	cpm;
+
 	public CompoundPropertyModel<StudyModelVO> getCpm() {
 		return cpm;
 	}
@@ -21,10 +18,10 @@ public class Summary extends Panel{
 	public void setCpm(CompoundPropertyModel<StudyModelVO> cpm) {
 		this.cpm = cpm;
 	}
-	
-	public Summary(String id, CompoundPropertyModel<StudyModelVO> cpm){
+
+	public Summary(String id, CompoundPropertyModel<StudyModelVO> cpm) {
 		super(id);
-		Label studySummaryLabel = new Label("studySummaryLabel","You have selected the Study " + cpm.getObject().getStudy().getName() + ".Summary of the study follows:");
+		Label studySummaryLabel = new Label("studySummaryLabel", "You have selected the Study " + cpm.getObject().getStudy().getName() + ".Summary of the study follows:");
 		add(studySummaryLabel);
 	}
 

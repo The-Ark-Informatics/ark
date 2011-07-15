@@ -8,29 +8,21 @@ import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
-
 @SuppressWarnings("serial")
-public class WizardPanel extends Panel
-{
-	private WizardForm				wizardForm;
-	private FeedbackPanel			feedBackPanel;
-	private WebMarkupContainer		listContainer;
-	private WebMarkupContainer		searchPanelContainer;
-	protected WebMarkupContainer	resultListContainer;
-	protected WebMarkupContainer	wizardPanelContainer;
-	protected WebMarkupContainer	wizardPanelFormContainer;
-	private WebMarkupContainer		wizardButtonContainer;
-	private ContainerForm			containerForm;
-	private ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid; 
+public class WizardPanel extends Panel {
+	private WizardForm					wizardForm;
+	private FeedbackPanel				feedBackPanel;
+	private WebMarkupContainer			listContainer;
+	private WebMarkupContainer			searchPanelContainer;
+	protected WebMarkupContainer		resultListContainer;
+	protected WebMarkupContainer		wizardPanelContainer;
+	protected WebMarkupContainer		wizardPanelFormContainer;
+	private WebMarkupContainer			wizardButtonContainer;
+	private ContainerForm				containerForm;
+	private ArkExcelWorkSheetAsGrid	arkExcelWorkSheetAsGrid;
 
-	public WizardPanel(String id, 
-							final WebMarkupContainer listContainer, 
-							FeedbackPanel feedBackPanel, 
-							WebMarkupContainer wizardPanelContainer, 
-							WebMarkupContainer searchPanelContainer,
-							WebMarkupContainer wizardPanelFormContainer,
-							ContainerForm containerForm)
-	{
+	public WizardPanel(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer wizardPanelContainer, WebMarkupContainer searchPanelContainer,
+			WebMarkupContainer wizardPanelFormContainer, ContainerForm containerForm) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
 		this.listContainer = listContainer;
@@ -41,45 +33,33 @@ public class WizardPanel extends Panel
 		this.containerForm = containerForm;
 	}
 
-	public void initialisePanel()
-	{
-		wizardForm = new WizardForm("wizardForm", 
-											feedBackPanel, 
-											this, 
-											listContainer, 
-											wizardPanelContainer, 
-											containerForm, 
-											wizardButtonContainer, 
-											wizardPanelFormContainer,
-											searchPanelContainer);
+	public void initialisePanel() {
+		wizardForm = new WizardForm("wizardForm", feedBackPanel, this, listContainer, wizardPanelContainer, containerForm, wizardButtonContainer, wizardPanelFormContainer, searchPanelContainer);
 		wizardForm.initialiseDetailForm();
 		add(wizardForm);
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public WizardForm getWizardForm()
-	{
+	public WizardForm getWizardForm() {
 		return wizardForm;
 	}
 
-	public void setWizardForm(WizardForm wizardForm)
-	{
+	public void setWizardForm(WizardForm wizardForm) {
 		this.wizardForm = wizardForm;
 	}
 
 	/**
-	 * @param arkExcelWorkSheetAsGrid the arkExcelWorkSheetAsGrid to set
+	 * @param arkExcelWorkSheetAsGrid
+	 *           the arkExcelWorkSheetAsGrid to set
 	 */
-	public void setArkExcelWorkSheetAsGrid(ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid)
-	{
+	public void setArkExcelWorkSheetAsGrid(ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid) {
 		this.arkExcelWorkSheetAsGrid = arkExcelWorkSheetAsGrid;
 	}
 
 	/**
 	 * @return the arkExcelWorkSheetAsGrid
 	 */
-	public ArkExcelWorkSheetAsGrid getArkExcelWorkSheetAsGrid()
-	{
+	public ArkExcelWorkSheetAsGrid getArkExcelWorkSheetAsGrid() {
 		return arkExcelWorkSheetAsGrid;
 	}
 }

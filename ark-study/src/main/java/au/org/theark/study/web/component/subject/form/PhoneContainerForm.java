@@ -13,15 +13,14 @@ import au.org.theark.core.vo.SubjectVO;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class PhoneContainerForm extends Form<SubjectVO>{
+public class PhoneContainerForm extends Form<SubjectVO> {
 
-	
-	AjaxButton addPhoneButton;
-	
+	AjaxButton	addPhoneButton;
+
 	public PhoneContainerForm(String id) {
 		super(id);
-	}	
+	}
 
 }

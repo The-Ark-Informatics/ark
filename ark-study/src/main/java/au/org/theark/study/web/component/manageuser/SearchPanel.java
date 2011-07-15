@@ -12,31 +12,32 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.manageuser.form.ContainerForm;
 import au.org.theark.study.web.component.manageuser.form.SearchForm;
 
-public class SearchPanel extends Panel{
-	
-	private FeedbackPanel feedBackPanel;
-	private ArkCrudContainerVO arkCrudContainerVO;
-	private ContainerForm containerForm;
-	private PageableListView<ArkUserVO> pageableListView;
+public class SearchPanel extends Panel {
+
+	private FeedbackPanel					feedBackPanel;
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	private ContainerForm					containerForm;
+	private PageableListView<ArkUserVO>	pageableListView;
+
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param arkCrudContainerVO
 	 * @param feedbackPanel
 	 * @param containerForm
 	 */
-	public SearchPanel(String id, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedbackPanel,ContainerForm containerForm,PageableListView<ArkUserVO> pageableListView){
+	public SearchPanel(String id, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedbackPanel, ContainerForm containerForm, PageableListView<ArkUserVO> pageableListView) {
 		super(id);
 		this.feedBackPanel = feedbackPanel;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
-		this.pageableListView  = pageableListView;
+		this.pageableListView = pageableListView;
 	}
-	
-	public void initialisePanel(CompoundPropertyModel<ArkUserVO> arkUserVOCPM){
-		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM,arkUserVOCPM,arkCrudContainerVO,feedBackPanel,containerForm,pageableListView);
+
+	public void initialisePanel(CompoundPropertyModel<ArkUserVO> arkUserVOCPM) {
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, arkUserVOCPM, arkCrudContainerVO, feedBackPanel, containerForm, pageableListView);
 		add(searchForm);
 	}
-	
 
 }

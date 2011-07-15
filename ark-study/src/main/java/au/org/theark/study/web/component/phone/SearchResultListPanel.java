@@ -24,34 +24,27 @@ import au.org.theark.study.web.component.phone.form.ContainerForm;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class SearchResultListPanel extends Panel{
+public class SearchResultListPanel extends Panel {
 
-	
-	private WebMarkupContainer detailPanelContainer;
-	private WebMarkupContainer detailPanelFormContainer;
-	private WebMarkupContainer searchPanelContainer;
-	private WebMarkupContainer searchResultContainer;
-	private WebMarkupContainer viewButtonContainer;
-	private WebMarkupContainer editButtonContainer;
-	private ContainerForm containerForm;
-	
+	private WebMarkupContainer	detailPanelContainer;
+	private WebMarkupContainer	detailPanelFormContainer;
+	private WebMarkupContainer	searchPanelContainer;
+	private WebMarkupContainer	searchResultContainer;
+	private WebMarkupContainer	viewButtonContainer;
+	private WebMarkupContainer	editButtonContainer;
+	private ContainerForm		containerForm;
+
 	/**
 	 * @param id
 	 */
-	public SearchResultListPanel(String id, 
-			WebMarkupContainer  detailPanelContainer,
-			WebMarkupContainer  detailPanelFormContainer, 
-			WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			ContainerForm containerForm) {
-		
+	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
+			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
+
 		super(id);
 		// TODO Auto-generated constructor stub
-	 	this.detailPanelContainer = detailPanelContainer;
+		this.detailPanelContainer = detailPanelContainer;
 		this.searchPanelContainer = searchPanelContainer;
 		this.searchResultContainer = searchResultContainer;
 		this.viewButtonContainer = viewButtonContainer;
@@ -59,35 +52,38 @@ public class SearchResultListPanel extends Panel{
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.containerForm = containerForm;
 	}
-	
-	public PageableListView<Phone> buildPageableListView(IModel iModel){
-		
-		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST,iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+
+	public PageableListView<Phone> buildPageableListView(IModel iModel) {
+
+		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
 			@Override
 			protected void populateItem(final ListItem<Phone> item) {
 				// TODO Auto-generated method stub
 				Phone phone = item.getModelObject();
-				
+
 				item.add(buildLink(phone));
-				
-				if(phone.getId() != null){
+
+				if (phone.getId() != null) {
 					item.add(new Label("id", phone.getId().toString()));
-				}else{
+				}
+				else {
 					item.add(new Label("id", ""));
 				}
-				
-				if(phone.getAreaCode() != null){
-					item.add(new Label("areaCode",phone.getAreaCode()));	
-				}else{
-					item.add(new Label("areaCode",""));
+
+				if (phone.getAreaCode() != null) {
+					item.add(new Label("areaCode", phone.getAreaCode()));
 				}
-				if(phone.getPhoneType() != null && phone.getPhoneType().getName() != null){
-					item.add(new Label("phoneType.name",phone.getPhoneType().getName()));	
-				}else{
-					item.add(new Label("phoneType.name",""));
+				else {
+					item.add(new Label("areaCode", ""));
 				}
-				
+				if (phone.getPhoneType() != null && phone.getPhoneType().getName() != null) {
+					item.add(new Label("phoneType.name", phone.getPhoneType().getName()));
+				}
+				else {
+					item.add(new Label("phoneType.name", ""));
+				}
+
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -97,11 +93,11 @@ public class SearchResultListPanel extends Panel{
 			}
 		};
 		return pageableListView;
-		
+
 	}
-	
-	private AjaxLink buildLink(final Phone phone){
-		
+
+	private AjaxLink buildLink(final Phone phone) {
+
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phoneNumberLink") {
 
 			@Override
@@ -115,7 +111,7 @@ public class SearchResultListPanel extends Panel{
 				searchResultContainer.setVisible(false);
 				searchPanelContainer.setVisible(false);
 				editButtonContainer.setVisible(false);
-				
+
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailPanelContainer);
 				target.addComponent(detailPanelFormContainer);
@@ -123,12 +119,11 @@ public class SearchResultListPanel extends Panel{
 				target.addComponent(viewButtonContainer);
 				target.addComponent(editButtonContainer);
 			}
-			
+
 		};
 		Label nameLinkLabel = new Label(Constants.PHONE_NUMBER_VALUE, phone.getPhoneNumber());
 		link.add(nameLinkLabel);
 		return link;
 	}
-	
 
 }

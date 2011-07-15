@@ -32,21 +32,21 @@ import au.org.theark.study.service.IStudyService;
  * @author cellis
  * 
  */
-@SuppressWarnings( { "serial", "unused" })
-public class DetailForm extends AbstractDetailForm<ConsentVO>
-{
-	private transient Logger log = LoggerFactory.getLogger(DetailForm.class);
+@SuppressWarnings({ "serial", "unused" })
+public class DetailForm extends AbstractDetailForm<ConsentVO> {
+	private transient Logger	log	= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService					studyService;
+	private IStudyService		studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService					iArkCommonService;
+	private IArkCommonService	iArkCommonService;
 
-	private int									mode;
+	private int						mode;
 
-	private TextField<String>					consentFileIdTxtFld;
-	private TextField<String>					consentFileFilenameTxtFld;
-	private FileUploadField						fileConsentFileField;
+	private TextField<String>	consentFileIdTxtFld;
+	private TextField<String>	consentFileFilenameTxtFld;
+	private FileUploadField		fileConsentFileField;
+
 	// private ConsentFileProgressBar uploadProgressBar;
 
 	/**
@@ -60,42 +60,35 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 	 * @param editButtonContainer
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel,
-			WebMarkupContainer resultListContainer,
-			WebMarkupContainer detailPanelContainer,
-			WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer,
-			AbstractContainerForm<ConsentVO> containerForm) {
-		
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer,
-				detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
-	
+	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
+			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<ConsentVO> containerForm) {
+
+		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+
 		// Check consent in context
-		if(containerForm.getModelObject().getConsent() == null)
-		{
+		if (containerForm.getModelObject().getConsent() == null) {
 			log.debug("There is no consent in context");
-			//disableDetailForm(null, "There is no consent in context");
+			// disableDetailForm(null, "There is no consent in context");
 		}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void initialiseDropDownChoices()
-	{
+	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
-		//java.util.Collection<FileFormat> fieldFormatCollection = studyService.getFileFormats();
-		//ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.FILE_FORMAT_NAME, au.org.theark.study.web.Constants.FILE_FORMAT_ID);
-		//fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, (List) fieldFormatCollection, fieldFormatRenderer);
+		// java.util.Collection<FileFormat> fieldFormatCollection = studyService.getFileFormats();
+		// ChoiceRenderer fieldFormatRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.FILE_FORMAT_NAME,
+		// au.org.theark.study.web.Constants.FILE_FORMAT_ID);
+		// fileFormatDdc = new DropDownChoice<FileFormat>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, (List) fieldFormatCollection,
+		// fieldFormatRenderer);
 
-		//java.util.Collection<DelimiterType> delimiterTypeCollection = studyService.getDelimiterTypes();
-		//ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME, au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
-		//delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List) delimiterTypeCollection, delimiterTypeRenderer);
+		// java.util.Collection<DelimiterType> delimiterTypeCollection = studyService.getDelimiterTypes();
+		// ChoiceRenderer delimiterTypeRenderer = new ChoiceRenderer(au.org.theark.study.web.Constants.DELIMITER_TYPE_NAME,
+		// au.org.theark.study.web.Constants.DELIMITER_TYPE_ID);
+		// delimiterTypeDdc = new DropDownChoice<DelimiterType>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_DELIMITER_TYPE, (List)
+		// delimiterTypeCollection, delimiterTypeRenderer);
 	}
 
-	public void initialiseDetailForm()
-	{
+	public void initialiseDetailForm() {
 		// Set up field on form here
 		consentFileIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.CONSENT_FILE_ID);
 		// uploadFilenameTxtFld = new TextField<String>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME);
@@ -113,23 +106,21 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 		addComponents();
 	}
 
-	protected void attachValidators()
-	{
+	protected void attachValidators() {
 		// Field validation here
-		//fileConsentFileField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
-		//fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
-		//delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
+		// fileConsentFileField.setRequired(true).setLabel(new StringResourceModel("error.filename.required", this, new Model<String>("Filename")));
+		// fileFormatDdc.setRequired(true).setLabel(new StringResourceModel("error.fileFormat.required", this, new Model<String>("File Format")));
+		// delimiterTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.delimiterType.required", this, new Model<String>("Delimiter")));
 	}
 
-	private void addComponents()
-	{
+	private void addComponents() {
 		// Add components
 		consentFileIdTxtFld.setEnabled(false);
 		consentFileIdTxtFld.setVisible(true);
 		detailPanelFormContainer.add(consentFileIdTxtFld);
 		detailPanelFormContainer.add(fileConsentFileField);
-		//detailPanelFormContainer.add(fileFormatDdc);
-		//detailPanelFormContainer.add(delimiterTypeDdc);
+		// detailPanelFormContainer.add(fileFormatDdc);
+		// detailPanelFormContainer.add(delimiterTypeDdc);
 
 		// TODO: AJAXify the form to show progress bar
 		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
@@ -138,146 +129,133 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 		add(detailPanelFormContainer);
 	}
 
-	private void createDirectoryIfNeeded(String directoryName)
-	{
+	private void createDirectoryIfNeeded(String directoryName) {
 		File theDir = new File(directoryName);
 
 		// if the directory does not exist, create it
-		if (!theDir.exists())
-		{
+		if (!theDir.exists()) {
 			log.debug("Creating directory: " + directoryName);
 			theDir.mkdir();
 		}
 	}
 
 	@Override
-	protected void onSave(Form<ConsentVO> containerForm, AjaxRequestTarget target)
-	{
+	protected void onSave(Form<ConsentVO> containerForm, AjaxRequestTarget target) {
 		// Use consent in context
 		Long sessionConsentId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID);
 		Consent consent = new Consent();
-		
-		try 
-		{
+
+		try {
 			// Set consentFile.consent reference
 			consent = studyService.getConsent(sessionConsentId);
 			containerForm.getModelObject().getConsentFile().setConsent(consent);
-			
+
 			// Implement Save/Update
-			if (containerForm.getModelObject().getConsentFile().getId() == null)
-			{
+			if (containerForm.getModelObject().getConsentFile().getId() == null) {
 				// required for file uploads
-				setMultiPart(true); 
-				
+				setMultiPart(true);
+
 				// Retrieve file and store as Blob in database
 				// TODO: AJAX-ified and asynchronous and hit database
 				FileUpload fileConsentFile = fileConsentFileField.getFileUpload();
-	
-				try
-				{
+
+				try {
 					// Copy file to BLOB object
 					Blob payload = Hibernate.createBlob(fileConsentFile.getInputStream());
 					containerForm.getModelObject().getConsentFile().setPayload(payload);
 				}
-				catch (IOException ioe)
-				{
+				catch (IOException ioe) {
 					log.error("Failed to save the uploaded file: " + ioe);
 				}
-	
+
 				byte[] byteArray = fileConsentFile.getMD5();
 				String checksum = getHex(byteArray);
-				
+
 				// Set details of ConsentFile object
 				containerForm.getModelObject().getConsentFile().setChecksum(checksum);
 				containerForm.getModelObject().getConsentFile().setFilename(fileConsentFile.getClientFileName());
-	
+
 				// Save
 				log.debug("Saving consentFile");
 				studyService.create(containerForm.getModelObject().getConsentFile());
 				this.info("Consent file " + containerForm.getModelObject().getConsentFile().getFilename() + " was created successfully");
 				processErrors(target);
 			}
-			else
-			{
+			else {
 				// Update
 				log.debug("Updating consentFile");
 				studyService.update(containerForm.getModelObject().getConsentFile());
 				this.info("Consent file " + containerForm.getModelObject().getConsentFile().getFilename() + " was updated successfully");
 				processErrors(target);
 			}
-	
+
 			onSavePostProcess(target);
-		} catch (EntityNotFoundException e) {
+		}
+		catch (EntityNotFoundException e) {
 			this.error("The Consent file record you tried to update is no longer available in the system");
 			processErrors(target);
-		} catch (ArkSystemException e) {
+		}
+		catch (ArkSystemException e) {
 			this.error(e.getMessage());
 			processErrors(target);
-		}finally{
+		}
+		finally {
 			onSavePostProcess(target);
 		}
 	}
 
 	static final String	HEXES	= "0123456789ABCDEF";
 
-	public static String getHex(byte[] raw)
-	{
-		if (raw == null)
-		{
+	public static String getHex(byte[] raw) {
+		if (raw == null) {
 			return null;
 		}
 		final StringBuilder hex = new StringBuilder(2 * raw.length);
-		for (final byte b : raw)
-		{
+		for (final byte b : raw) {
 			hex.append(HEXES.charAt((b & 0xF0) >> 4)).append(HEXES.charAt((b & 0x0F)));
 		}
 		return hex.toString();
 	}
 
-	protected void onCancel(AjaxRequestTarget target)
-	{
+	protected void onCancel(AjaxRequestTarget target) {
 		// Implement Cancel
 		ConsentVO consentVO = new ConsentVO();
-		Consent consent = containerForm.getModelObject().getConsent(); 
+		Consent consent = containerForm.getModelObject().getConsent();
 		containerForm.setModelObject(consentVO);
 		containerForm.getModelObject().setConsent(consent);
 		onCancelPostProcess(target);
 	}
-	
-	protected void onEditCancel(AjaxRequestTarget target){
+
+	protected void onEditCancel(AjaxRequestTarget target) {
 		ConsentVO consentVO = new ConsentVO();
-		Consent consent = containerForm.getModelObject().getConsent(); 
+		Consent consent = containerForm.getModelObject().getConsent();
 		containerForm.setModelObject(consentVO);
 		containerForm.getModelObject().setConsent(consent);
 	}
 
 	@Override
-	protected void processErrors(AjaxRequestTarget target)
-	{
+	protected void processErrors(AjaxRequestTarget target) {
 		target.addComponent(feedBackPanel);
 	}
 
-	public AjaxButton getDeleteButton()
-	{
+	public AjaxButton getDeleteButton() {
 		return deleteButton;
 	}
 
-	public void setDeleteButton(AjaxButton deleteButton)
-	{
+	public void setDeleteButton(AjaxButton deleteButton) {
 		this.deleteButton = deleteButton;
 	}
 
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow)
-	{
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		// required for file uploads
-		setMultiPart(true); 
+		setMultiPart(true);
 
 		// TODO:(CE) To handle Business and System Exceptions here
-		//studyService.deleteConsentFile(containerForm.getModelObject().getConsentFile());
-		//this.info("Consent file " + containerForm.getModelObject().getConsentFile().getFilename() + " was deleted successfully");
+		// studyService.deleteConsentFile(containerForm.getModelObject().getConsentFile());
+		// this.info("Consent file " + containerForm.getModelObject().getConsentFile().getFilename() + " was deleted successfully");
 
 		// Display delete confirmation message
 		target.addComponent(feedBackPanel);
@@ -294,16 +272,19 @@ public class DetailForm extends AbstractDetailForm<ConsentVO>
 		onCancel(target);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see au.org.theark.core.web.form.AbstractDetailForm#isNew()
 	 */
 	@Override
 	protected boolean isNew() {
-		if(containerForm.getModelObject().getConsent().getId() == null){
+		if (containerForm.getModelObject().getConsent().getId() == null) {
 			return true;
-		}else{
-			return false;	
 		}
-		
+		else {
+			return false;
+		}
+
 	}
 }
