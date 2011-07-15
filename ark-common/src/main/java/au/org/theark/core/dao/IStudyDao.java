@@ -245,8 +245,6 @@ public interface IStudyDao {
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
 	
 	public String getSubjectUidExample(Study study);
-	
-	public Long getSubjectCount(Study study);
 
 	public List<SubjectUidToken> getListOfSubjectUidToken();
 	
@@ -302,4 +300,6 @@ public interface IStudyDao {
 	
 	
 	public List<PhoneStatus> getPhoneStatus();
+
+	public Boolean studyHasSubjects(Study study);
 }

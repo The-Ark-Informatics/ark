@@ -152,8 +152,6 @@ public interface IArkCommonService<T> {
 	
 	public String getSubjectUidExample(Study study);
 
-	public Long getSubjectCount(Study study);
-
 	public List<SubjectUidToken> getListOfSubjectUidToken();
 	
 	/*Access User Roles from Backend */
@@ -360,4 +358,6 @@ public interface IArkCommonService<T> {
 	public List<LinkStudyArkModule> getLinkStudyArkModulesList(Study study);
 	
 	public List<PhoneStatus> getPhoneStatus();
+	
+	public Boolean studyHasSubjects(Study study);
 }

@@ -1,7 +1,6 @@
 package au.org.theark.study.web.component.managestudy;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -146,7 +145,7 @@ public class SearchResults extends Panel{
 				WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();
 				
 				// Disable all SubjectUID generation fields is subjects exist
-				if(iArkCommonService.getSubjectCount(searchStudy) > 0)
+				if(iArkCommonService.studyHasSubjects(searchStudy))
 				{
 					autoSubjectUidcontainer.setEnabled(false);
 					subjectUidcontainer.setEnabled(false);

@@ -260,11 +260,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 		return studyDao.getSubjectUidExample(study);
 	}
 
-	public Long getSubjectCount(Study study)
-	{
-		return studyDao.getSubjectCount(study);
-	}
-
 	public List<SubjectUidToken> getListOfSubjectUidToken()
 	{
 		return studyDao.getListOfSubjectUidToken();
@@ -438,5 +433,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService{
 	
 	public List<PhoneStatus> getPhoneStatus(){
 		return  studyDao.getPhoneStatus();
+	}
+
+	public Boolean studyHasSubjects(Study study)
+	{
+		return studyDao.studyHasSubjects(study);
 	}
 }

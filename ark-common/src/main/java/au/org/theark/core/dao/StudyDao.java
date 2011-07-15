@@ -10,11 +10,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -591,22 +594,6 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		return subjectUidExample;
 	}
 	
-	public Long getSubjectCount(Study study)
-	{
-		Long subjectCount = new Long(0);
-	   if(study.getId() != null)
-	   {
-		   Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
-			criteria.add(Restrictions.eq("study", study));
-			
-			List<LinkSubjectStudy> listOfSubjects =  (List<LinkSubjectStudy>) criteria.list();
-			subjectCount = new Long(listOfSubjects.size());
-	   }
-	   
-		return subjectCount;
-	}
-
-
 	public List<SubjectUidToken> getListOfSubjectUidToken()
 	{
 		Example subjectUidToken = Example.create(new SubjectUidToken());
@@ -827,5 +814,18 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 		Criteria criteria = getSession().createCriteria(PhoneStatus.class);
 		criteria.addOrder(Order.asc("name"));
 		return criteria.list();
+	}
+	
+	public Boolean studyHasSubjects(Study study)
+	{
+		Integer totalCount = null;
+		Criteria criteria = getStatelessSession().createCriteria(Study.class,"study");
+		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(LinkSubjectStudy.class,"lss");
+		criteria.add(Restrictions.eq("study.id", study.getId()));
+		sizeCriteria.add(Property.forName("study").eqProperty("lss.study"));
+		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("lss.id"))));
+		criteria.setProjection(Projections.rowCount());
+		totalCount = (Integer) criteria.uniqueResult();
+		return totalCount > 0;
 	}
 }
