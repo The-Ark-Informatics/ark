@@ -6,16 +6,16 @@ import au.org.theark.vo.ArkUserVO;
 
 /**
  * @author nivedann
- *
+ * 
  */
 public interface IArkUserDao {
-	
+
 	/**
-	 * Create  Ark User in LDAP
+	 * Create Ark User in LDAP
+	 * 
 	 * @param userName
 	 * @param password
 	 */
 	public void createArkUser(ArkUserVO arkUserVO) throws InvalidNameException;
-
 
 }
