@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.criterion.Subqueries;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.HibernateSessionDao;
@@ -16,6 +19,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
@@ -90,12 +94,14 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 	public Boolean hasBioCollections(LinkSubjectStudy linkSubjectStudy)
 	{
+		// Use WHERE EXIST to optimise query even further
 		StatelessSession session = getStatelessSession();
-		Criteria criteria = session.createCriteria(BioCollection.class);
-		criteria.add(Restrictions.eq("linkSubjectStudy", linkSubjectStudy));
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.rowCount());
-		criteria.setProjection(projectionList);
+		Criteria criteria = session.createCriteria(LinkSubjectStudy.class,"lss");
+		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(BioCollection.class,"bc");
+		criteria.add(Restrictions.eq("lss.id", linkSubjectStudy.getId()));
+		sizeCriteria.add(Property.forName("lss.id").eqProperty("bc.linkSubjectStudy.id"));
+		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("bc.id"))));
+		criteria.setProjection(Projections.rowCount());
 		Boolean result = ((Integer)criteria.uniqueResult()) > 0;
 		session.close();
 		
@@ -104,15 +110,17 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 	public Boolean hasBiospecimens(BioCollection bioCollection)
 	{
+		// Use WHERE EXIST to optimise query even further
 		StatelessSession session = getStatelessSession();
-		Criteria criteria = getStatelessSession().createCriteria(Biospecimen.class);
-		criteria.add(Restrictions.eq("bioCollection", bioCollection));
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.rowCount());
-		criteria.setProjection(projectionList);
+		Criteria criteria = session.createCriteria(BioCollection.class,"bc");
+		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(Biospecimen.class,"b");
+		criteria.add(Restrictions.eq("bc.id", bioCollection.getId()));
+		sizeCriteria.add(Property.forName("bc.id").eqProperty("b.bioCollection.id"));
+		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("b.id"))));
+		criteria.setProjection(Projections.rowCount());
 		Boolean result = ((Integer)criteria.uniqueResult()) > 0;
 		session.close();
-
+		
 		return result;
 	}
 
