@@ -38,8 +38,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	protected CompoundPropertyModel<T>	cpModel;
 
 	protected AjaxButton				saveButton;
-	protected AjaxButton				doneButton;
-	protected AjaxButton				cancelButton;
+	protected AjaxButton				closeButton;
 	protected AjaxButton				deleteButton;
 
 	// Add a visitor class for required field marking/validation/highlighting
@@ -90,7 +89,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 			}
 		};
 		
-		doneButton = new AjaxButton("done", new StringResourceModel("doneKey", this, null))
+		closeButton = new AjaxButton("close", new StringResourceModel("closeKey", this, null))
 		{
 			/**
 			 * 
@@ -99,29 +98,13 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form)
 			{
-				onCancel(target);
+				onClose(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form)
 			{
 				processErrors(target);
 			}
-		};
-		
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
-
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1684005199059571017L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				onCancel(target);
-			}
-
 		};
 		
 		deleteButton = new AjaxDeleteButton(Constants.DELETE,	new StringResourceModel("confirmDelete", this, null),	new StringResourceModel(Constants.DELETE,	this, null))
@@ -156,9 +139,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	protected void addComponentsToForm()
 	{
 		arkCrudContainerVo.getEditButtonContainer().add(saveButton);
-		arkCrudContainerVo.getEditButtonContainer().add(doneButton.setDefaultFormProcessing(false));
-		arkCrudContainerVo.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
-		arkCrudContainerVo.getEditButtonContainer().add(deleteButton);
+		arkCrudContainerVo.getEditButtonContainer().add(closeButton.setDefaultFormProcessing(false));
+		arkCrudContainerVo.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
 
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 		add(arkCrudContainerVo.getEditButtonContainer());
@@ -260,7 +242,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 
 	abstract protected void onSave(AjaxRequestTarget target);
 	
-	abstract protected void onCancel(AjaxRequestTarget target);
+	abstract protected void onClose(AjaxRequestTarget target);
 
 	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
 
