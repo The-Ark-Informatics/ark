@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -819,13 +820,15 @@ public class StudyDao<T>  extends HibernateSessionDao implements IStudyDao{
 	public Boolean studyHasSubjects(Study study)
 	{
 		Integer totalCount = null;
-		Criteria criteria = getStatelessSession().createCriteria(Study.class,"study");
+		StatelessSession session = getStatelessSession();
+		Criteria criteria = session.createCriteria(Study.class,"study");
 		DetachedCriteria sizeCriteria = DetachedCriteria.forClass(LinkSubjectStudy.class,"lss");
 		criteria.add(Restrictions.eq("study.id", study.getId()));
 		sizeCriteria.add(Property.forName("study").eqProperty("lss.study"));
 		criteria.add(Subqueries.exists(sizeCriteria.setProjection(Projections.property("lss.id"))));
 		criteria.setProjection(Projections.rowCount());
 		totalCount = (Integer) criteria.uniqueResult();
+		session.close();
 		return totalCount > 0;
 	}
 }
