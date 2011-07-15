@@ -10,6 +10,7 @@ import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
 import au.org.theark.core.model.study.entity.ConsentStatus;
@@ -324,4 +325,6 @@ public interface IStudyDao {
 	public List<PhoneStatus> getPhoneStatus();
 
 	public Boolean studyHasSubjects(Study study);
+	
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 }

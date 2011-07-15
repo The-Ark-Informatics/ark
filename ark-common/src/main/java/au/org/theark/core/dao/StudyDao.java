@@ -33,6 +33,8 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleFunction;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentAnswer;
@@ -813,5 +815,24 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		totalCount = (Integer) criteria.uniqueResult();
 		session.close();
 		return totalCount > 0;
+	}
+	
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
+		
+		Criteria criteria =  getSession().createCriteria(ArkUserRole.class);
+		criteria.createAlias("arkStudy", "arkStudy");
+		
+		criteria.add(Restrictions.eq("arkUser",arkUser));//Represents the user either who is logged in or one that is provided
+		if (study.getId() != null) {
+			criteria.add(Restrictions.eq("arkStudy.id", study.getId()));
+		}
+
+		if (study.getName() != null) {
+			criteria.add(Restrictions.ilike("arkStudy.name", study.getName(), MatchMode.ANYWHERE));
+		}
+		criteria.setProjection(Projections.distinct(Projections.property("study")));
+		List<Study> studies  = (List<Study>) criteria.list();
+		return studies;
+		
 	}
 }

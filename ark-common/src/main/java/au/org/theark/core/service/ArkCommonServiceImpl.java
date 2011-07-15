@@ -58,7 +58,7 @@ import au.org.theark.core.vo.SubjectVO;
  * 
  */
 
-@SuppressWarnings("rawtypes")
+
 @Transactional
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl<T> implements IArkCommonService {
@@ -113,7 +113,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 * @see au.org.theark.core.service.IArkCommonService#getStudy(au.org.theark.core.model.study.entity.Study)
 	 */
 	public List<Study> getStudy(Study study) {
-
 		return studyDao.getStudy(study);
 	}
 
@@ -446,5 +445,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public Boolean studyHasSubjects(Study study) {
 		return studyDao.studyHasSubjects(study);
+	}
+	
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
+		return studyDao.getStudiesForUser(arkUser, study);
 	}
 }

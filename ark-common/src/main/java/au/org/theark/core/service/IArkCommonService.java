@@ -379,4 +379,6 @@ public interface IArkCommonService<T> {
 	public List<PhoneStatus> getPhoneStatus();
 
 	public Boolean studyHasSubjects(Study study);
+	
+	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 }
