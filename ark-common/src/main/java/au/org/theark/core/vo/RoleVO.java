@@ -2,22 +2,23 @@ package au.org.theark.core.vo;
 
 import java.io.Serializable;
 
-public class RoleVO implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
-	private String role;
-	
-	public RoleVO(){
+public class RoleVO implements Serializable {
+
+	private static final long	serialVersionUID	= 1L;
+	private String					role;
+
+	public RoleVO() {
 		super();
 	}
-	
+
 	public String getRole() {
 		return role;
 	}
+
 	public void setRole(String role) {
 		this.role = role;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -38,17 +39,18 @@ public class RoleVO implements Serializable{
 		if (role == null) {
 			if (other.role != null)
 				return false;
-		} else if (!role.equals(other.role))
+		}
+		else if (!role.equals(other.role))
 			return false;
 		return true;
 	}
 
-	public String toString(){
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("Role");
 		sb.append(role);
 		return sb.toString();
-		
+
 	}
 
 }

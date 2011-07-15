@@ -14,15 +14,15 @@ import au.org.theark.core.model.study.entity.StudyConsentQuestion;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class StudyConsentQuestionVO implements Serializable{
-	
-	private StudyConsentQuestion studyConsentQuestion;
-	private Boolean consentStatus;
-	
-	public StudyConsentQuestionVO(){
-		
+public class StudyConsentQuestionVO implements Serializable {
+
+	private StudyConsentQuestion	studyConsentQuestion;
+	private Boolean					consentStatus;
+
+	public StudyConsentQuestionVO() {
+
 	}
 
 	public StudyConsentQuestion getStudyConsentQuestion() {

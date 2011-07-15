@@ -29,23 +29,23 @@ import au.org.theark.core.Constants;
 public class Address implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private Person person; 
-	private String addressLineOne;//Building address or something of the type
-	private String streetAddress;
-	private String postCode;
-	private String city;
-	private Country country;
-	private CountryState countryState;
-	private String otherState;
-	private AddressStatus addressStatus;
-	private AddressType addressType;
-	private Date dateReceived;
-	private String comments;
-	private Boolean preferredMailingAddress;
-	private String source;
-	
-	private Set<StudySite> studySites = new HashSet<StudySite>(0);
+	private Long				id;
+	private Person				person;
+	private String				addressLineOne;									// Building address or something of the type
+	private String				streetAddress;
+	private String				postCode;
+	private String				city;
+	private Country			country;
+	private CountryState		countryState;
+	private String				otherState;
+	private AddressStatus	addressStatus;
+	private AddressType		addressType;
+	private Date				dateReceived;
+	private String				comments;
+	private Boolean			preferredMailingAddress;
+	private String				source;
+
+	private Set<StudySite>	studySites	= new HashSet<StudySite>(0);
 
 	// Constructors
 
@@ -59,10 +59,10 @@ public class Address implements java.io.Serializable {
 	}
 
 	// Property accessors
-	
+
 	@Id
-	@SequenceGenerator(name="address_generator", sequenceName="ADDRESS_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "address_generator")
+	@SequenceGenerator(name = "address_generator", sequenceName = "ADDRESS_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "address_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -72,7 +72,6 @@ public class Address implements java.io.Serializable {
 		this.id = id;
 	}
 
-
 	@Column(name = "STREET_ADDRESS")
 	public String getStreetAddress() {
 		return this.streetAddress;
@@ -81,7 +80,6 @@ public class Address implements java.io.Serializable {
 	public void setStreetAddress(String streetAddress) {
 		this.streetAddress = streetAddress;
 	}
-
 
 	@Column(name = "POST_CODE", length = 10)
 	public String getPostCode() {
@@ -130,7 +128,6 @@ public class Address implements java.io.Serializable {
 		this.addressType = addressType;
 	}
 
-
 	@Temporal(TemporalType.DATE)
 	@Column(name = "DATE_RECEIVED", length = 10)
 	public Date getDateReceived() {
@@ -150,7 +147,7 @@ public class Address implements java.io.Serializable {
 		return comments;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY )
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COUNTRY_ID")
 	public Country getCountry() {
 		return country;
@@ -206,7 +203,7 @@ public class Address implements java.io.Serializable {
 	public void setAddressLineOne(String addressLineOne) {
 		this.addressLineOne = addressLineOne;
 	}
-	
+
 	@Column(name = "SOURCE")
 	public String getSource() {
 		return source;

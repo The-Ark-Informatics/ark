@@ -5,23 +5,23 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /*
-* The ArkDataProvider is designed for use with Hibernate as the underlying data source
-* Due to Hibernate's ability to lazy-load, it is unnecessary to:
-* - (re-)load() the object from the backend
-* - do anything on detach()
-*
-* @author elam
-*/
-public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
+ * The ArkDataProvider is designed for use with Hibernate as the underlying data source
+ * Due to Hibernate's ability to lazy-load, it is unnecessary to:
+ * - (re-)load() the object from the backend
+ * - do anything on detach()
+ *
+ * @author elam
+ */
+public abstract class ArkDataProvider<T, U> implements IDataProvider<T> {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
-	protected IModel<T> model;
-	protected transient U service;
-	
+	private static final long	serialVersionUID	= 1L;
+
+	protected IModel<T>			model;
+	protected transient U		service;
+
 	public ArkDataProvider(U service) {
 		super();
 		this.service = service;
@@ -35,7 +35,7 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 		this.model = model;
 	}
 
-	public IModel<T> model (final T object) {
+	public IModel<T> model(final T object) {
 		return new LoadableDetachableModel<T>() {
 			/**
 			 * 
@@ -44,13 +44,12 @@ public abstract class ArkDataProvider<T,U> implements IDataProvider<T> {
 
 			@Override
 			protected T load() {
-				return (T)object;
+				return (T) object;
 			}
 		};
 	}
-	
+
 	public void detach() {
-		//TODO: Anything?...nope
+		// TODO: Anything?...nope
 	}
 }
-

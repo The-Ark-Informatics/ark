@@ -9,19 +9,18 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.security.ArkPermissionHelper;
 
-@SuppressWarnings({"unchecked"})
+@SuppressWarnings({ "unchecked" })
 /**
  * @author cellis
  *
  */
-public abstract class AjaxDeleteButton extends IndicatingAjaxButton 
-{
+public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 2845373897903023596L;
-	private final IModel confirm;
+	private static final long	serialVersionUID	= 2845373897903023596L;
+	private final IModel			confirm;
 
 	public AjaxDeleteButton(String id, IModel confirm, IModel label) {
 		super(id);
@@ -32,28 +31,20 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton
 	@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
-			private static final long serialVersionUID = 7495281332320552876L;
+			private static final long	serialVersionUID	= 7495281332320552876L;
 
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
-				return "if(!confirm('" + confirm.getObject() + "'))" +
-						"{ " +
-						"	return false " +
-						"} " +
-						"else " +
-						"{ " +
-						"	this.disabled = true; " +
-						"};" + script;
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
 			}
 		};
 	}
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);
-	
+
 	@Override
-	public boolean isVisible()
-	{
+	public boolean isVisible() {
 		return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
 	}
 }

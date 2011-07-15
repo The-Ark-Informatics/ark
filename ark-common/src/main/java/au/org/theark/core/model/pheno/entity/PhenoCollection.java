@@ -27,33 +27,30 @@ import au.org.theark.core.model.Constants;
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.entity.Collection")
 @Table(name = "COLLECTION", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoCollection implements java.io.Serializable
-{
+public class PhenoCollection implements java.io.Serializable {
 	// Fields
-	private Long						id;
-	private Status						status;
-	private Study						study;
-	private String						name;
-	private String						description;
-	private Date						startDate;
-	private Date						endDate;
-	private String						userId;
-	private Date						insertTime;
-	private String						updateUserId;
-	private Date						updateTime;
-	
-	private Set<PhenoCollectionUpload> phenoCollectionUploads = new HashSet<PhenoCollectionUpload>(0);
+	private Long								id;
+	private Status								status;
+	private Study								study;
+	private String								name;
+	private String								description;
+	private Date								startDate;
+	private Date								endDate;
+	private String								userId;
+	private Date								insertTime;
+	private String								updateUserId;
+	private Date								updateTime;
+
+	private Set<PhenoCollectionUpload>	phenoCollectionUploads	= new HashSet<PhenoCollectionUpload>(0);
 
 	// Constructors
 
 	/** default constructor */
-	public PhenoCollection()
-	{
+	public PhenoCollection() {
 	}
 
 	/** minimal constructor */
-	public PhenoCollection(Long id, Status status, Study study, String userId, Date insertTime)
-	{
+	public PhenoCollection(Long id, Status status, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.status = status;
 		this.study = study;
@@ -67,8 +64,7 @@ public class PhenoCollection implements java.io.Serializable
 	 * @param decodeMasks
 	 */
 	public PhenoCollection(Long id, Status status, Study study, String name, String description, Date startDate, Date expiryDate, String userId, Date insertTime, String updateUserId, Date updateTime,
-			Set<PhenoCollectionUpload> phenoCollectionUploads)
-	{
+			Set<PhenoCollectionUpload> phenoCollectionUploads) {
 		this.id = id;
 		this.status = status;
 		this.study = study;
@@ -88,25 +84,21 @@ public class PhenoCollection implements java.io.Serializable
 	@SequenceGenerator(name = "Collection_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STATUS_ID", nullable = false)
-	public Status getStatus()
-	{
+	public Status getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(Status status)
-	{
+	public void setStatus(Status status) {
 		this.status = status;
 	}
 
@@ -115,113 +107,95 @@ public class PhenoCollection implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
+	public Study getStudy() {
 		return study;
 	}
 
-	public void setStudy(Study study)
-	{
+	public void setStudy(Study study) {
 		this.study = study;
 	}
 
 	@Column(name = "NAME", length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "DESCRIPTION", length = 1024)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "START_DATE", length = 7)
-	public Date getStartDate()
-	{
+	public Date getStartDate() {
 		return this.startDate;
 	}
 
-	public void setStartDate(Date startDate)
-	{
+	public void setStartDate(Date startDate) {
 		this.startDate = startDate;
 	}
 
 	@Temporal(TemporalType.DATE)
 	@Column(name = "END_DATE", length = 7)
-	public Date getEndDate()
-	{
+	public Date getEndDate() {
 		return this.endDate;
 	}
 
-	public void setEndDate(Date endDate)
-	{
+	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
 	}
 
 	@Column(name = "USER_ID", nullable = false, length = 50)
-	public String getUserId()
-	{
+	public String getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public Date getInsertTime()
-	{
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(Date insertTime)
-	{
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
 	@Column(name = "UPDATE_USER_ID", length = 50)
-	public String getUpdateUserId()
-	{
+	public String getUpdateUserId() {
 		return this.updateUserId;
 	}
 
-	public void setUpdateUserId(String updateUserId)
-	{
+	public void setUpdateUserId(String updateUserId) {
 		this.updateUserId = updateUserId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public Date getUpdateTime()
-	{
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(Date updateTime)
-	{
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
 	/**
-	 * @param phenoCollectionUploads the phenoCollectionUploads to set
+	 * @param phenoCollectionUploads
+	 *           the phenoCollectionUploads to set
 	 */
-	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads)
-	{
+	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads) {
 		this.phenoCollectionUploads = phenoCollectionUploads;
 	}
 
@@ -229,14 +203,12 @@ public class PhenoCollection implements java.io.Serializable
 	 * @return the phenoCollectionUploads
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
-	public Set<PhenoCollectionUpload> getPhenoCollectionUploads()
-	{
+	public Set<PhenoCollectionUpload> getPhenoCollectionUploads() {
 		return phenoCollectionUploads;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -244,8 +216,7 @@ public class PhenoCollection implements java.io.Serializable
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -253,8 +224,7 @@ public class PhenoCollection implements java.io.Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		PhenoCollection other = (PhenoCollection) obj;
-		if (id == null)
-		{
+		if (id == null) {
 			if (other.id != null)
 				return false;
 		}
@@ -262,5 +232,5 @@ public class PhenoCollection implements java.io.Serializable
 			return false;
 		return true;
 	}
-	
+
 }

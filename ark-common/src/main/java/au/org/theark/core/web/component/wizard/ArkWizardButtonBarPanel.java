@@ -11,10 +11,8 @@ import au.org.theark.core.web.component.wizard.ArkWizardLastButton;
 import au.org.theark.core.Constants;
 
 @SuppressWarnings("serial")
-public class ArkWizardButtonBarPanel extends Panel
-{
-	public ArkWizardButtonBarPanel(String id, Wizard wizard)
-	{
+public class ArkWizardButtonBarPanel extends Panel {
+	public ArkWizardButtonBarPanel(String id, Wizard wizard) {
 		super(id);
 		add(new PreviousButton(Constants.PREVIOUS, wizard));
 		add(new NextButton(Constants.NEXT, wizard));

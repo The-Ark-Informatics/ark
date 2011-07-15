@@ -17,19 +17,16 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "barcodeid_engine", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BarcodeidEngine implements java.io.Serializable
-{
+public class BarcodeidEngine implements java.io.Serializable {
 
 	private Long	id;
 	private int		studyId;
 	private String	class_;
 
-	public BarcodeidEngine()
-	{
+	public BarcodeidEngine() {
 	}
 
-	public BarcodeidEngine(Long id, int studyId, String class_)
-	{
+	public BarcodeidEngine(Long id, int studyId, String class_) {
 		this.id = id;
 		this.studyId = studyId;
 		this.class_ = class_;
@@ -39,35 +36,29 @@ public class BarcodeidEngine implements java.io.Serializable
 	@SequenceGenerator(name = "barcodeidengine_generator", sequenceName = "BARCODEIDENGINE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "barcodeidengine_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "STUDY_ID", nullable = false)
-	public int getStudyId()
-	{
+	public int getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(int studyId)
-	{
+	public void setStudyId(int studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "CLASS", nullable = false, length = 100)
-	public String getClass_()
-	{
+	public String getClass_() {
 		return this.class_;
 	}
 
-	public void setClass_(String class_)
-	{
+	public void setClass_(String class_) {
 		this.class_ = class_;
 	}
 

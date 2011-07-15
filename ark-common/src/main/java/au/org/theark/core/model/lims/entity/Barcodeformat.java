@@ -17,8 +17,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "barcodeformat", schema = Constants.LIMS_TABLE_SCHEMA)
-public class Barcodeformat implements java.io.Serializable
-{
+public class Barcodeformat implements java.io.Serializable {
 
 	private Long		id;
 	private Integer	studyId;
@@ -29,17 +28,14 @@ public class Barcodeformat implements java.io.Serializable
 	private String		format;
 	private Integer	order;
 
-	public Barcodeformat()
-	{
+	public Barcodeformat() {
 	}
 
-	public Barcodeformat(Long id)
-	{
+	public Barcodeformat(Long id) {
 		this.id = id;
 	}
 
-	public Barcodeformat(Long id, Integer studyId, String fieldname, String const_, Integer type, Integer length, String format, Integer order)
-	{
+	public Barcodeformat(Long id, Integer studyId, String fieldname, String const_, Integer type, Integer length, String format, Integer order) {
 		this.id = id;
 		this.studyId = studyId;
 		this.fieldname = fieldname;
@@ -54,90 +50,74 @@ public class Barcodeformat implements java.io.Serializable
 	@SequenceGenerator(name = "barcodeformat_generator", sequenceName = "BARCODEFORMAT_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "barcodeformat_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "STUDY_ID")
-	public Integer getStudyId()
-	{
+	public Integer getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(Integer studyId)
-	{
+	public void setStudyId(Integer studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "FIELDNAME", length = 100)
-	public String getFieldname()
-	{
+	public String getFieldname() {
 		return this.fieldname;
 	}
 
-	public void setFieldname(String fieldname)
-	{
+	public void setFieldname(String fieldname) {
 		this.fieldname = fieldname;
 	}
 
 	@Column(name = "CONST", length = 100)
-	public String getConst_()
-	{
+	public String getConst_() {
 		return this.const_;
 	}
 
-	public void setConst_(String const_)
-	{
+	public void setConst_(String const_) {
 		this.const_ = const_;
 	}
 
 	@Column(name = "TYPE")
-	public Integer getType()
-	{
+	public Integer getType() {
 		return this.type;
 	}
 
-	public void setType(Integer type)
-	{
+	public void setType(Integer type) {
 		this.type = type;
 	}
 
 	@Column(name = "LENGTH")
-	public Integer getLength()
-	{
+	public Integer getLength() {
 		return this.length;
 	}
 
-	public void setLength(Integer length)
-	{
+	public void setLength(Integer length) {
 		this.length = length;
 	}
 
 	@Column(name = "FORMAT", length = 50)
-	public String getFormat()
-	{
+	public String getFormat() {
 		return this.format;
 	}
 
-	public void setFormat(String format)
-	{
+	public void setFormat(String format) {
 		this.format = format;
 	}
 
 	@Column(name = "ORDER")
-	public Integer getOrder()
-	{
+	public Integer getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(Integer order)
-	{
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 

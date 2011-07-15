@@ -21,18 +21,18 @@ import au.org.theark.core.model.Constants;
  * CollectionImport entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name="au.org.theark.phenotypic.model.entity.FieldUpload")
+@Entity(name = "au.org.theark.phenotypic.model.entity.FieldUpload")
 @Table(name = "FIELD_UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldUpload implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private PhenoUpload upload;
-	private Field field;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private Long			id;
+	private PhenoUpload	upload;
+	private Field			field;
+	private String			userId;
+	private Date			insertTime;
+	private String			updateUserId;
+	private Date			updateTime;
 
 	// Constructors
 
@@ -50,10 +50,7 @@ public class FieldUpload implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public FieldUpload(Long id, PhenoUpload upload, 
-			Field field, Date startTime, Date finishTime,
-			String userId, Date insertTime, String updateUserId,
-			Date updateTime) {
+	public FieldUpload(Long id, PhenoUpload upload, Field field, Date startTime, Date finishTime, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.upload = upload;
 		this.field = field;
@@ -65,8 +62,8 @@ public class FieldUpload implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Collection_Import_PK_Seq",sequenceName="PHENOTYPIC.COLLECTION_IMPORT_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Collection_Import_PK_Seq")
+	@SequenceGenerator(name = "Collection_Import_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_IMPORT_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_Import_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -75,25 +72,23 @@ public class FieldUpload implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * @return the upload
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPLOAD_ID", nullable = false)
-	public PhenoUpload getUpload()
-	{
+	public PhenoUpload getUpload() {
 		return upload;
 	}
-	
+
 	/**
-	 * @param upload the upload to set
+	 * @param upload
+	 *           the upload to set
 	 */
-	public void setUpload(PhenoUpload upload)
-	{
+	public void setUpload(PhenoUpload upload) {
 		this.upload = upload;
 	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_ID", nullable = false)

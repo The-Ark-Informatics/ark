@@ -30,15 +30,13 @@ import org.apache.wicket.util.file.Folder;
  * 
  * @author Eelco Hillenius
  */
-public class UploadApplication extends WebApplication
-{
+public class UploadApplication extends WebApplication {
 	private Folder	uploadFolder	= null;
 
 	/**
 	 * Constructor.
 	 */
-	public UploadApplication()
-	{
+	public UploadApplication() {
 	}
 
 	/**
@@ -46,16 +44,14 @@ public class UploadApplication extends WebApplication
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Class getHomePage()
-	{
+	public Class getHomePage() {
 		return UploadPage.class;
 	}
 
 	/**
 	 * @return the folder for uploads
 	 */
-	public Folder getUploadFolder()
-	{
+	public Folder getUploadFolder() {
 		return uploadFolder;
 	}
 
@@ -63,8 +59,7 @@ public class UploadApplication extends WebApplication
 	 * @see org.apache.wicket.examples.WicketExampleApplication#init()
 	 */
 	@Override
-	protected void init()
-	{
+	protected void init() {
 		super.init();
 
 		getResourceSettings().setThrowExceptionOnMissingResource(false);
@@ -73,8 +68,8 @@ public class UploadApplication extends WebApplication
 		// Ensure folder exists
 		uploadFolder.mkdirs();
 
-		//mountBookmarkablePage("/multi", MultiUploadPage.class);
-		//mountBookmarkablePage("/single", UploadPage.class);
+		// mountBookmarkablePage("/multi", MultiUploadPage.class);
+		// mountBookmarkablePage("/single", UploadPage.class);
 
 	}
 
@@ -82,8 +77,7 @@ public class UploadApplication extends WebApplication
 	 * @see org.apache.wicket.protocol.http.WebApplication#newWebRequest(javax.servlet.http.HttpServletRequest)
 	 */
 	@Override
-	protected WebRequest newWebRequest(HttpServletRequest servletRequest)
-	{
+	protected WebRequest newWebRequest(HttpServletRequest servletRequest) {
 		return new UploadWebRequest(servletRequest);
 	}
 }

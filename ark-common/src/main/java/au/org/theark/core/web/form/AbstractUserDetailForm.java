@@ -12,12 +12,12 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
  * Abstract class that extends AbstractDetailForm, for specific implementation for the UserDetailForm
+ * 
  * @author nivedann
  * @param <T>
  * 
  */
-public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T>
-{
+public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 	/**
 	 * 
 	 */
@@ -25,123 +25,104 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T>
 
 	/**
 	 * Default constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm)
-	{
+	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
-	protected void initialiseForm(Boolean isArkCrudContainerVOPattern)
-	{
+	protected void initialiseForm(Boolean isArkCrudContainerVOPattern) {
 
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null))
-		{
+		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
 			private static final long	serialVersionUID	= 1684005199059571017L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				if (isNew())
-				{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				if (isNew()) {
 					editCancelProcess(target, true);
 				}
-				else
-				{
+				else {
 					editCancelProcessForUpdate(target);
 				}
 			}
 		};
 
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -423605230448635419L;
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
 				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				saveOnErrorProcess(target);
 			}
 		};
 
-		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null))
-		{
+		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -2430231894703055744L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// target.addComponent(detailPanelContainer);
 				onDelete(containerForm, target);
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))
-		{
+		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -6282464357368710796L;
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				editButtonProcess(target);
 				// Add the sub-class functionality
 				onEditButtonClick();
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null))
-		{
+		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				editCancelProcess(target, true);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
@@ -150,7 +131,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T>
 
 		addComponentsToForm(true);
 	}
-	
+
 	/**
 	 * Abstract method that allows sub-classes to implement specific functionality for onEditButtonClick event.
 	 */

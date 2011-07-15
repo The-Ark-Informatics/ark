@@ -17,28 +17,28 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ARK_MODULE_FUNCTION", schema = Constants.STUDY_SCHEMA)
-public class ArkModuleFunction implements Serializable{
-	
-	private Long id;
-	private ArkModule arkModule;
-	private ArkFunction arkFunction;
-	private Long functionSequence;
-	
+public class ArkModuleFunction implements Serializable {
+
+	private Long			id;
+	private ArkModule		arkModule;
+	private ArkFunction	arkFunction;
+	private Long			functionSequence;
+
 	/**
 	 * Constructor
 	 */
-	public ArkModuleFunction(){
+	public ArkModuleFunction() {
 		arkModule = new ArkModule();
 		arkFunction = new ArkFunction();
 	}
-	
+
 	@Id
-	@SequenceGenerator(name="ark_module_function_generator", sequenceName="ARK_MODULE_FUNCTION_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "ark_module_function_generator")
+	@SequenceGenerator(name = "ark_module_function_generator", sequenceName = "ARK_MODULE_FUNCTION_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ark_module_function_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -68,7 +68,7 @@ public class ArkModuleFunction implements Serializable{
 		this.arkFunction = arkFunction;
 	}
 
-	@Column(name ="FUNCTION_SEQUENCE", precision = 22, scale = 0)
+	@Column(name = "FUNCTION_SEQUENCE", precision = 22, scale = 0)
 	public Long getFunctionSequence() {
 		return functionSequence;
 	}
@@ -76,7 +76,5 @@ public class ArkModuleFunction implements Serializable{
 	public void setFunctionSequence(Long functionSequence) {
 		this.functionSequence = functionSequence;
 	}
-	
-	
 
 }

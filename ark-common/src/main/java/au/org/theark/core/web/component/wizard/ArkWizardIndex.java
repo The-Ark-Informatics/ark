@@ -10,8 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
  * 
  * @author Eelco Hillenius
  */
-public class ArkWizardIndex extends WebMarkupContainer
-{
+public class ArkWizardIndex extends WebMarkupContainer {
 	/**
 	 * 
 	 */
@@ -22,11 +21,11 @@ public class ArkWizardIndex extends WebMarkupContainer
 	 * partipcate in versioning, which has the effect that whenever a button is clicked in the wizard, it will never result in a change of the
 	 * redirection url. However, though that'll work just fine when you are already in the wizard, there is still the first access to the wizard. But
 	 * if you link to the page that renders it using and internal link, you'll circumvent that.
+	 * 
 	 * @param <T>
 	 */
-	@SuppressWarnings( { "unused", "serial", "unchecked" })
-	private static final class WizardLink<T> extends AjaxLink<T>
-	{
+	@SuppressWarnings({ "unused", "serial", "unchecked" })
+	private static final class WizardLink<T> extends AjaxLink<T> {
 
 		private final Class<? extends Wizard>	wizardClass;
 
@@ -40,25 +39,22 @@ public class ArkWizardIndex extends WebMarkupContainer
 		 * @param wizardClass
 		 *           Class of the wizard to instantiate
 		 */
-		public <C extends Wizard> WizardLink(String id, Class<C> wizardClass)
-		{
+		public <C extends Wizard> WizardLink(String id, Class<C> wizardClass) {
 			super(id);
 			this.wizardClass = wizardClass;
 		}
 
 		@Override
-		public void onClick(AjaxRequestTarget target)
-		{
+		public void onClick(AjaxRequestTarget target) {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 
 	/**
 	 * Construct.
 	 */
-	public ArkWizardIndex(String id)
-	{
+	public ArkWizardIndex(String id) {
 		super(id);
 		// add(new WizardLink("staticWizardLink", StaticWizard.class));
 		// add(new WizardLink("staticWizardWithPanelsLink", StaticWizardWithPanels.class));

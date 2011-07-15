@@ -24,60 +24,53 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "STUDY_CONSENT_QUESTION", schema = Constants.STUDY_SCHEMA)
-public class StudyConsentQuestion implements Serializable{
-	
-	private Long id;
-	private String question;
-	private Study study;
-	private DataType dataType;
-	private String discreteValues;
-	private Long postion;
-	
+public class StudyConsentQuestion implements Serializable {
+
+	private Long		id;
+	private String		question;
+	private Study		study;
+	private DataType	dataType;
+	private String		discreteValues;
+	private Long		postion;
+
 	public DataType getDataType() {
 		return dataType;
 	}
-
 
 	public void setDataType(DataType dataType) {
 		this.dataType = dataType;
 	}
 
-
 	public String getDiscreteValues() {
 		return discreteValues;
 	}
-
 
 	public void setDiscreteValues(String discreteValues) {
 		this.discreteValues = discreteValues;
 	}
 
-
 	public Long getPostion() {
 		return postion;
 	}
-
 
 	public void setPostion(Long postion) {
 		this.postion = postion;
 	}
 
-
 	/**
 	 * Constrcutor
 	 */
-	public StudyConsentQuestion(){
-		
+	public StudyConsentQuestion() {
+
 	}
 
-	
 	@Id
-	@SequenceGenerator(name="studyconsent_gen", sequenceName="STUDY_CONSENT_GEN_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "studyconsent_gen")
+	@SequenceGenerator(name = "studyconsent_gen", sequenceName = "STUDY_CONSENT_GEN_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "studyconsent_gen")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -86,7 +79,7 @@ public class StudyConsentQuestion implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "QUESTION")
 	public String getQuestion() {
 		return question;
@@ -105,5 +98,5 @@ public class StudyConsentQuestion implements Serializable{
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-	
+
 }

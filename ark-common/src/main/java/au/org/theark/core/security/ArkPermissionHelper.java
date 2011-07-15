@@ -11,118 +11,106 @@ import au.org.theark.core.Constants;
 
 /**
  * Global common class that provide helper methods to determine permissions of particular action/module
+ * 
  * @author cellis
- *
+ * 
  */
-public class ArkPermissionHelper
-{
-	private transient static Logger log = LoggerFactory.getLogger(ArkPermissionHelper.class);
-	
+public class ArkPermissionHelper {
+	private transient static Logger	log	= LoggerFactory.getLogger(ArkPermissionHelper.class);
+
 	/**
 	 * Determines whether a particular module function is accessible/permitted by the user in context
+	 * 
 	 * @param actionType
 	 * @return true if user in context has any of the CREATE, UPDATE, or READ permissions
 	 */
-	public static boolean isModuleFunctionAccessPermitted()
-	{
+	public static boolean isModuleFunctionAccessPermitted() {
 		boolean modulePermitted = true;
-		
+
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		
-		boolean hasSearchPermission = hasSearchPermission(securityManager, currentUser); 
+
+		boolean hasSearchPermission = hasSearchPermission(securityManager, currentUser);
 		boolean hasSavePermission = hasSavePermission(securityManager, currentUser);
 		boolean hasEditPermission = hasEditPermission(securityManager, currentUser);
 
 		boolean hasPermissions = (hasSearchPermission || hasSavePermission || hasEditPermission);
-		if (!(hasPermissions))
-		{
+		if (!(hasPermissions)) {
 			modulePermitted = false;
 		}
 		return modulePermitted;
 	}
-	
+
 	/**
 	 * Determines whether a particular module is accessible by the user, for the study in context
+	 * 
 	 * @param arkModuleName
 	 * @return true if module set to be accessed/used within the study in context
 	 */
-	public static boolean isModuleAccessPermitted(String arkModuleName)
-	{
+	public static boolean isModuleAccessPermitted(String arkModuleName) {
 		boolean modulePermitted = true;
-		
+
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		
-		if(sessionStudyId != null)
-		{
+
+		if (sessionStudyId != null) {
 			String arkModule = (String) SecurityUtils.getSubject().getSession().getAttribute(arkModuleName);
-			if(arkModule != null)
-			{
-				if(arkModule.equals(arkModuleName))
-				{
+			if (arkModule != null) {
+				if (arkModule.equals(arkModuleName)) {
 					modulePermitted = true;
 				}
-				else
-				{
+				else {
 					modulePermitted = false;
 				}
 			}
 		}
-		else
-		{
+		else {
 			modulePermitted = false;
 		}
 		return modulePermitted;
 	}
-	
+
 	/**
 	 * Determines whether a particular action is permitted by the user in context (eg Save, Edit, Delete)
+	 * 
 	 * @param actionType
 	 * @return true if action is permitted
 	 */
-	public static boolean isActionPermitted(String actionType)
-	{
+	public static boolean isActionPermitted(String actionType) {
 		boolean actionPermitted = false;
-		
+
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (actionType.equalsIgnoreCase(Constants.SEARCH))
-		{
-			actionPermitted = hasSearchPermission(securityManager, currentUser);	
+		if (actionType.equalsIgnoreCase(Constants.SEARCH)) {
+			actionPermitted = hasSearchPermission(securityManager, currentUser);
 		}
-		else if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW))
-		{
+		else if (actionType.equalsIgnoreCase(Constants.SAVE) || actionType.equalsIgnoreCase(Constants.NEW)) {
 			actionPermitted = hasSavePermission(securityManager, currentUser);
 		}
-		else if (actionType.equalsIgnoreCase(Constants.EDIT))
-		{
+		else if (actionType.equalsIgnoreCase(Constants.EDIT)) {
 			actionPermitted = hasEditPermission(securityManager, currentUser);
 		}
-		else if (actionType.equalsIgnoreCase(Constants.DELETE))
-		{
-			actionPermitted = hasDeletePermission(securityManager, currentUser);	
+		else if (actionType.equalsIgnoreCase(Constants.DELETE)) {
+			actionPermitted = hasDeletePermission(securityManager, currentUser);
 		}
-		
+
 		return actionPermitted;
 	}
-	
+
 	/**
 	 * Determines if current user has Search permissions
+	 * 
 	 * @param securityManager
 	 * @param currentUser
 	 * @return true if READ permission allowed
 	 */
-	public static boolean hasSearchPermission(SecurityManager securityManager, Subject currentUser)
-	{
+	public static boolean hasSearchPermission(SecurityManager securityManager, Subject currentUser) {
 		boolean flag = false;
-		
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
-		{
+
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
 			flag = true;
 		}
-		else
-		{
+		else {
 			flag = false;
 		}
 		return flag;
@@ -130,83 +118,75 @@ public class ArkPermissionHelper
 
 	/**
 	 * Determines if current user has Save permissions
+	 * 
 	 * @param securityManager
 	 * @param currentUser
 	 * @return true if CREATE or UPDATE permission allowed
 	 */
-	public static boolean hasSavePermission(SecurityManager securityManager, Subject currentUser)
-	{
+	public static boolean hasSavePermission(SecurityManager securityManager, Subject currentUser) {
 		boolean flag = false;
-		
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) || 
-				securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
-		{
+
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)) {
 			flag = true;
 		}
-		else
-		{
+		else {
 			flag = false;
 		}
-		return flag;
-	}
-	
-	/**
-	 * Determines if current user has Edit permissions
-	 * @param securityManager
-	 * @param currentUser
-	 * @return true if UPDATE permission allowed
-	 */
-	public static boolean hasEditPermission(SecurityManager securityManager, Subject currentUser)
-	{
-		boolean flag = false;
-	
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
-		{
-			flag = true;
-		}
-		else
-		{
-			flag = false;
-		}
-		
-		return flag;
-	}
-	
-	/**
-	 * Determines if current user has Delete permissions
-	 * @param securityManager
-	 * @param currentUser
-	 * @return true if DELETE permission allowed
-	 */
-	public static boolean hasDeletePermission(SecurityManager securityManager, Subject currentUser)
-	{
-		boolean flag = false;
-		
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-		{
-			flag = true;
-		}
-		else
-		{
-			flag = false;
-		}
-	
 		return flag;
 	}
 
 	/**
-	 * @param log the log to set
+	 * Determines if current user has Edit permissions
+	 * 
+	 * @param securityManager
+	 * @param currentUser
+	 * @return true if UPDATE permission allowed
 	 */
-	public static void setLog(Logger log)
-	{
+	public static boolean hasEditPermission(SecurityManager securityManager, Subject currentUser) {
+		boolean flag = false;
+
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)) {
+			flag = true;
+		}
+		else {
+			flag = false;
+		}
+
+		return flag;
+	}
+
+	/**
+	 * Determines if current user has Delete permissions
+	 * 
+	 * @param securityManager
+	 * @param currentUser
+	 * @return true if DELETE permission allowed
+	 */
+	public static boolean hasDeletePermission(SecurityManager securityManager, Subject currentUser) {
+		boolean flag = false;
+
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
+			flag = true;
+		}
+		else {
+			flag = false;
+		}
+
+		return flag;
+	}
+
+	/**
+	 * @param log
+	 *           the log to set
+	 */
+	public static void setLog(Logger log) {
 		ArkPermissionHelper.log = log;
 	}
 
 	/**
 	 * @return the log
 	 */
-	public static Logger getLog()
-	{
+	public static Logger getLog() {
 		return log;
-	}	
+	}
 }

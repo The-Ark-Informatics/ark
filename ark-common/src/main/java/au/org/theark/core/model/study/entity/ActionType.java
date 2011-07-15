@@ -16,9 +16,9 @@ import au.org.theark.core.Constants;
 public class ActionType implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private String name;
-	private String description;
+	private Long	id;
+	private String	name;
+	private String	description;
 
 	// Constructors
 

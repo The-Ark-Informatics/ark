@@ -24,25 +24,23 @@ import au.org.theark.core.model.Constants;
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MetaData")
+@Entity(name = "au.org.theark.geno.model.entity.MetaData")
 @Table(name = "META_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class MetaData implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MetaDataField metaDataField;
-	private GenoCollection collection;
-	private String value;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Set<SubjectMarkerMetaData> subjectMarkerMetaDatas = new HashSet<SubjectMarkerMetaData>(
-			0);
-	private Set<MarkerMetaData> markerMetaDatas = new HashSet<MarkerMetaData>(0);
-	private Set<SubjectMetaData> subjectMetaDatas = new HashSet<SubjectMetaData>(
-			0);
+	private Long								id;
+	private MetaDataField					metaDataField;
+	private GenoCollection					collection;
+	private String								value;
+	private String								userId;
+	private Date								insertTime;
+	private String								updateUserId;
+	private Date								updateTime;
+	private Set<SubjectMarkerMetaData>	subjectMarkerMetaDatas	= new HashSet<SubjectMarkerMetaData>(0);
+	private Set<MarkerMetaData>			markerMetaDatas			= new HashSet<MarkerMetaData>(0);
+	private Set<SubjectMetaData>			subjectMetaDatas			= new HashSet<SubjectMetaData>(0);
 
 	// Constructors
 
@@ -51,8 +49,7 @@ public class MetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaData(Long id, MetaDataField metaDataField,
-			GenoCollection collection, String userId, Date insertTime) {
+	public MetaData(Long id, MetaDataField metaDataField, GenoCollection collection, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataField = metaDataField;
 		this.collection = collection;
@@ -61,12 +58,8 @@ public class MetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MetaData(Long id, MetaDataField metaDataField,
-			GenoCollection collection, String value, String userId,
-			Date insertTime, String updateUserId, Date updateTime,
-			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas,
-			Set<MarkerMetaData> markerMetaDatas,
-			Set<SubjectMetaData> subjectMetaDatas) {
+	public MetaData(Long id, MetaDataField metaDataField, GenoCollection collection, String value, String userId, Date insertTime, String updateUserId, Date updateTime,
+			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas, Set<MarkerMetaData> markerMetaDatas, Set<SubjectMetaData> subjectMetaDatas) {
 		this.id = id;
 		this.metaDataField = metaDataField;
 		this.collection = collection;
@@ -82,8 +75,8 @@ public class MetaData implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="MetaData_PK_Seq",sequenceName=Constants.META_DATA_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="MetaData_PK_Seq")
+	@SequenceGenerator(name = "MetaData_PK_Seq", sequenceName = Constants.META_DATA_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MetaData_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -130,7 +123,7 @@ public class MetaData implements java.io.Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
@@ -165,8 +158,7 @@ public class MetaData implements java.io.Serializable {
 		return this.subjectMarkerMetaDatas;
 	}
 
-	public void setSubjectMarkerMetaDatas(
-			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas) {
+	public void setSubjectMarkerMetaDatas(Set<SubjectMarkerMetaData> subjectMarkerMetaDatas) {
 		this.subjectMarkerMetaDatas = subjectMarkerMetaDatas;
 	}
 

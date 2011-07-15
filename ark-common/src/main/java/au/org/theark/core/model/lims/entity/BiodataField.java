@@ -22,11 +22,10 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_field", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataField implements java.io.Serializable
-{
+public class BiodataField implements java.io.Serializable {
 
 	private Long							id;
-	private Long								typeId;
+	private Long							typeId;
 	private String							format;
 	private String							columnname;
 	private Integer						unitId;
@@ -36,20 +35,17 @@ public class BiodataField implements java.io.Serializable
 	private Set<Biodata>					biodatas					= new HashSet<Biodata>(0);
 	private Set<BiodataFieldGroup>	biodataFieldGroups	= new HashSet<BiodataFieldGroup>(0);
 
-	public BiodataField()
-	{
+	public BiodataField() {
 	}
 
-	public BiodataField(Long id, Long typeId, String columnname)
-	{
+	public BiodataField(Long id, Long typeId, String columnname) {
 		this.id = id;
 		this.typeId = typeId;
 		this.columnname = columnname;
 	}
 
 	public BiodataField(Long id, Long typeId, String format, String columnname, Integer unitId, String lovtype, String domain, String fieldname, Set<Biodata> biodatas,
-			Set<BiodataFieldGroup> biodataFieldGroups)
-	{
+			Set<BiodataFieldGroup> biodataFieldGroups) {
 		this.id = id;
 		this.typeId = typeId;
 		this.format = format;
@@ -65,112 +61,92 @@ public class BiodataField implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatafield_generator", sequenceName = "BIODATAFIELD_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatafield_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "TYPE_ID", nullable = false)
-	public Long getTypeId()
-	{
+	public Long getTypeId() {
 		return this.typeId;
 	}
 
-	public void setTypeId(Long typeId)
-	{
+	public void setTypeId(Long typeId) {
 		this.typeId = typeId;
 	}
 
 	@Column(name = "FORMAT", length = 20)
-	public String getFormat()
-	{
+	public String getFormat() {
 		return this.format;
 	}
 
-	public void setFormat(String format)
-	{
+	public void setFormat(String format) {
 		this.format = format;
 	}
 
 	@Column(name = "COLUMNNAME", nullable = false, length = 50)
-	public String getColumnname()
-	{
+	public String getColumnname() {
 		return this.columnname;
 	}
 
-	public void setColumnname(String columnname)
-	{
+	public void setColumnname(String columnname) {
 		this.columnname = columnname;
 	}
 
 	@Column(name = "UNIT_ID")
-	public Integer getUnitId()
-	{
+	public Integer getUnitId() {
 		return this.unitId;
 	}
 
-	public void setUnitId(Integer unitId)
-	{
+	public void setUnitId(Integer unitId) {
 		this.unitId = unitId;
 	}
 
 	@Column(name = "LOVTYPE", length = 20)
-	public String getLovtype()
-	{
+	public String getLovtype() {
 		return this.lovtype;
 	}
 
-	public void setLovtype(String lovtype)
-	{
+	public void setLovtype(String lovtype) {
 		this.lovtype = lovtype;
 	}
 
 	@Column(name = "DOMAIN", length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	@Column(name = "FIELDNAME", length = 50)
-	public String getFieldname()
-	{
+	public String getFieldname() {
 		return this.fieldname;
 	}
 
-	public void setFieldname(String fieldname)
-	{
+	public void setFieldname(String fieldname) {
 		this.fieldname = fieldname;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataField")
-	public Set<Biodata> getBiodatas()
-	{
+	public Set<Biodata> getBiodatas() {
 		return this.biodatas;
 	}
 
-	public void setBiodatas(Set<Biodata> biodatas)
-	{
+	public void setBiodatas(Set<Biodata> biodatas) {
 		this.biodatas = biodatas;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataField")
-	public Set<BiodataFieldGroup> getBiodataFieldGroups()
-	{
+	public Set<BiodataFieldGroup> getBiodataFieldGroups() {
 		return this.biodataFieldGroups;
 	}
 
-	public void setBiodataFieldGroups(Set<BiodataFieldGroup> biodataFieldGroups)
-	{
+	public void setBiodataFieldGroups(Set<BiodataFieldGroup> biodataFieldGroups) {
 		this.biodataFieldGroups = biodataFieldGroups;
 	}
 

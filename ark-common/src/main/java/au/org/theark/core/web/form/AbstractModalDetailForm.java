@@ -27,33 +27,31 @@ import au.org.theark.core.web.component.AjaxDeleteButton;
  * @param <T>
  * 
  */
-public abstract class AbstractModalDetailForm<T> extends Form<T>
-{
+public abstract class AbstractModalDetailForm<T> extends Form<T> {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -4135522738458228329L;
+	private static final long				serialVersionUID	= -4135522738458228329L;
 
-	protected FeedbackPanel			feedbackPanel;
+	protected FeedbackPanel					feedbackPanel;
 	protected CompoundPropertyModel<T>	cpModel;
 
-	protected AjaxButton				saveButton;
-	protected AjaxButton				closeButton;
-	protected AjaxButton				deleteButton;
+	protected AjaxButton						saveButton;
+	protected AjaxButton						closeButton;
+	protected AjaxButton						deleteButton;
 
 	// Add a visitor class for required field marking/validation/highlighting
-	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
+	protected ArkFormVisitor				formVisitor			= new ArkFormVisitor();
 
 	// Use this for the model where WebMarkupContainers are set inside this VO
-	protected ArkCrudContainerVO	arkCrudContainerVo;									
+	protected ArkCrudContainerVO			arkCrudContainerVo;
 
-	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> cpModel)
-	{
+	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> cpModel) {
 		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.cpModel = cpModel;
-		
+
 		initialiseForm();
 	}
 
@@ -62,82 +60,70 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
 	 * extend the classes.
 	 */
-	protected void initialiseForm()
-	{
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))
-		{
+	protected void initialiseForm() {
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -423605230448635419L;
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(target);
 				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				saveOnErrorProcess(target);
 			}
 		};
-		
-		closeButton = new AjaxButton("close", new StringResourceModel("closeKey", this, null))
-		{
+
+		closeButton = new AjaxButton("close", new StringResourceModel("closeKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onClose(target);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
-		
-		deleteButton = new AjaxDeleteButton(Constants.DELETE,	new StringResourceModel("confirmDelete", this, null),	new StringResourceModel(Constants.DELETE,	this, null))
-		{
+
+		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -6596207763260166508L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onDeleteConfirmed(target, form);
 			}
-				
+
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
-		
-		// Override default settings as set in ArkCrudContainerVO 
+
+		// Override default settings as set in ArkCrudContainerVO
 		arkCrudContainerVo.getDetailPanelContainer().setEnabled(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 		arkCrudContainerVo.getEditButtonContainer().setEnabled(true);
 		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
-		
+
 		addComponentsToForm();
 	}
 
-	protected void addComponentsToForm()
-	{
+	protected void addComponentsToForm() {
 		arkCrudContainerVo.getEditButtonContainer().add(saveButton);
 		arkCrudContainerVo.getEditButtonContainer().add(closeButton.setDefaultFormProcessing(false));
 		arkCrudContainerVo.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
@@ -147,28 +133,22 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	}
 
 	@SuppressWarnings("unchecked")
-	public void onBeforeRender()
-	{
+	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void saveOnErrorProcess(AjaxRequestTarget target)
-	{
+	protected void saveOnErrorProcess(AjaxRequestTarget target) {
 		boolean setFocusError = false;
 		WebMarkupContainer wmc = arkCrudContainerVo.getDetailPanelFormContainer();
-		for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = wmc.iterator(); iterator.hasNext();) {
 			Component component = (Component) iterator.next();
-			if (component instanceof FormComponent)
-			{
+			if (component instanceof FormComponent) {
 				FormComponent formComponent = (FormComponent) component;
 
-				if (!formComponent.isValid())
-				{
-					if (!setFocusError)
-					{
+				if (!formComponent.isValid()) {
+					if (!setFocusError) {
 						// Place focus on field in error (for the first field in error)
 						target.focusComponent(formComponent);
 						setFocusError = true;
@@ -187,8 +167,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 	 * 
 	 * @param target
 	 */
-	protected void onSavePostProcess(AjaxRequestTarget target)
-	{
+	protected void onSavePostProcess(AjaxRequestTarget target) {
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
@@ -198,50 +177,42 @@ public abstract class AbstractModalDetailForm<T> extends Form<T>
 		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
 	}
 
-	protected void disableModalDetailForm(Long sessionId, String errorMessage)
-	{
-		if (sessionId == null)
-		{
+	protected void disableModalDetailForm(Long sessionId, String errorMessage) {
+		if (sessionId == null) {
 			arkCrudContainerVo.getDetailPanelContainer().setEnabled(false);
 			this.error(errorMessage);
 		}
-		else
-		{
+		else {
 			arkCrudContainerVo.getDetailPanelContainer().setEnabled(true);
 		}
 	}
 
-	protected void disableModalDetailForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVo)
-	{
+	protected void disableModalDetailForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVo) {
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
 		if (!securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
-				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-		{
+				&& !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ) && !securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
 
 			arkCrudContainerVo.getDetailPanelContainer().setEnabled(false);
 			this.error("You do not have the required security privileges to work with this function. Please see your Administrator.");
 		}
-		else
-		{
+		else {
 
-			if (sessionId == null)
-			{
+			if (sessionId == null) {
 				arkCrudContainerVo.getDetailPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}
-			else
-			{
+			else {
 				arkCrudContainerVo.getDetailPanelContainer().setEnabled(true);
 			}
 		}
 	}
-	
+
 	abstract protected void attachValidators();
 
 	abstract protected void onSave(AjaxRequestTarget target);
-	
+
 	abstract protected void onClose(AjaxRequestTarget target);
 
 	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);

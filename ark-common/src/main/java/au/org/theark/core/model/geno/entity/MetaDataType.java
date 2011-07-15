@@ -19,15 +19,15 @@ import au.org.theark.core.model.Constants;
 /**
  * DataType entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MetaDataType")
+@Entity(name = "au.org.theark.geno.model.entity.MetaDataType")
 @Table(name = "META_DATA_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class MetaDataType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<MetaDataField> metaDataFields = new HashSet<MetaDataField>(0);
+	private Long					id;
+	private String					name;
+	private Set<MetaDataField>	metaDataFields	= new HashSet<MetaDataField>(0);
 
 	// Constructors
 
@@ -49,8 +49,8 @@ public class MetaDataType implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-    @SequenceGenerator(name="MetaDataType_PK_Seq",sequenceName=Constants.META_DATA_TYPE_PK_SEQ)
-    @GeneratedValue(strategy=GenerationType.AUTO,generator="MetaDataType_PK_Seq")
+	@SequenceGenerator(name = "MetaDataType_PK_Seq", sequenceName = Constants.META_DATA_TYPE_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MetaDataType_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;

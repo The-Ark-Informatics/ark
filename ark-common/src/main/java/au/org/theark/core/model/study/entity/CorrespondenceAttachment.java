@@ -20,51 +20,50 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondence_attachment", schema = Constants.STUDY_SCHEMA)
 public class CorrespondenceAttachment implements Serializable {
 
-	private Long id;
-	private Correspondences correspondence;
-	private String filename;
-	private Blob payload;
-	private String checksum;
-	private String userId;
-	private String comments;
-	
-	
-    @Id
-    @SequenceGenerator(name="correspondence_attachment_generator", sequenceName="CORRESPONDENCE_GENERATOR_SEQUENCE")
-    @GeneratedValue(strategy=GenerationType.AUTO, generator = "correspondence_attachment_generator")
-    @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	private Long				id;
+	private Correspondences	correspondence;
+	private String				filename;
+	private Blob				payload;
+	private String				checksum;
+	private String				userId;
+	private String				comments;
+
+	@Id
+	@SequenceGenerator(name = "correspondence_attachment_generator", sequenceName = "CORRESPONDENCE_GENERATOR_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "correspondence_attachment_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CORRESPONDENCE_ID")
+	@JoinColumn(name = "CORRESPONDENCE_ID")
 	public Correspondences getCorrespondence() {
 		return correspondence;
 	}
-	
+
 	public void setCorrespondence(Correspondences correspondence) {
 		this.correspondence = correspondence;
 	}
-	
+
 	@Column(name = "FILENAME", length = 255)
 	public String getFilename() {
 		return filename;
 	}
-	
+
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
+
 	@Column(name = "PAYLOAD")
 	public Blob getPayload() {
 		return payload;
 	}
-	
+
 	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
@@ -78,7 +77,7 @@ public class CorrespondenceAttachment implements Serializable {
 		this.checksum = checksum;
 	}
 
-	@Column(name = "USER_ID", length = 100)	
+	@Column(name = "USER_ID", length = 100)
 	public String getUserId() {
 		return userId;
 	}
@@ -95,5 +94,5 @@ public class CorrespondenceAttachment implements Serializable {
 	public void setComments(String comments) {
 		this.comments = comments;
 	}
-	
+
 }

@@ -25,27 +25,27 @@ import au.org.theark.core.model.study.entity.Study;
 /**
  * MetaDataField entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MetaDataField")
+@Entity(name = "au.org.theark.geno.model.entity.MetaDataField")
 @Table(name = "META_DATA_FIELD", schema = Constants.GENO_TABLE_SCHEMA)
 public class MetaDataField implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MetaDataType metaDataType;
-	private Study study;
-	private String name;
-	private String description;
-	private String units;
-	private Long seqNum;
-	private String minValue;
-	private String maxValue;
-	private String discreteValues;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Set<MetaData> metaDatas = new HashSet<MetaData>(0);
+	private Long				id;
+	private MetaDataType		metaDataType;
+	private Study				study;
+	private String				name;
+	private String				description;
+	private String				units;
+	private Long				seqNum;
+	private String				minValue;
+	private String				maxValue;
+	private String				discreteValues;
+	private String				userId;
+	private Date				insertTime;
+	private String				updateUserId;
+	private Date				updateTime;
+	private Set<MetaData>	metaDatas	= new HashSet<MetaData>(0);
 
 	// Constructors
 
@@ -54,8 +54,7 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name,
-			String userId, Date insertTime) {
+	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name, String userId, Date insertTime) {
 		this.id = id;
 		this.metaDataType = metaDataType;
 		this.study = study;
@@ -65,11 +64,8 @@ public class MetaDataField implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name,
-			String description, String units, Long seqNum, String minValue,
-			String maxValue, String discreteValues, String userId,
-			Date insertTime, String updateUserId, Date updateTime,
-			Set<MetaData> metaDatas) {
+	public MetaDataField(Long id, MetaDataType metaDataType, Study study, String name, String description, String units, Long seqNum, String minValue, String maxValue, String discreteValues,
+			String userId, Date insertTime, String updateUserId, Date updateTime, Set<MetaData> metaDatas) {
 		this.id = id;
 		this.metaDataType = metaDataType;
 		this.study = study;
@@ -89,8 +85,8 @@ public class MetaDataField implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="MetaDataField_PK_Seq",sequenceName=Constants.META_DATA_FIELD_PK_SEQ)
-    @GeneratedValue(strategy=GenerationType.AUTO,generator="MetaDataField_PK_Seq")
+	@SequenceGenerator(name = "MetaDataField_PK_Seq", sequenceName = Constants.META_DATA_FIELD_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "MetaDataField_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -192,7 +188,7 @@ public class MetaDataField implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
 		return this.insertTime;
@@ -211,8 +207,8 @@ public class MetaDataField implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATE_TIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}

@@ -12,15 +12,15 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class StudySubjectVO implements Serializable{
-	
-	public StudySubjectVO(){
+public class StudySubjectVO implements Serializable {
+
+	public StudySubjectVO() {
 		subjectStudy = new LinkSubjectStudy();
 	}
-	
-	protected LinkSubjectStudy subjectStudy;
+
+	protected LinkSubjectStudy	subjectStudy;
 
 	public LinkSubjectStudy getSubjectStudy() {
 		return subjectStudy;
@@ -29,6 +29,5 @@ public class StudySubjectVO implements Serializable{
 	public void setSubjectStudy(LinkSubjectStudy subjectStudy) {
 		this.subjectStudy = subjectStudy;
 	}
-	
 
 }

@@ -17,44 +17,43 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "GENDER_TYPE", schema = Constants.STUDY_SCHEMA)
-public class GenderType implements Serializable{
+public class GenderType implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
-	
-	public GenderType(){
-		
+	private Long	id;
+	private String	name;
+	private String	description;
+
+	public GenderType() {
+
 	}
-	
-	public GenderType(Long id){
+
+	public GenderType(Long id) {
 		this.id = id;
 	}
-	
 
 	@Id
-	@Column(name="ID",unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId(){
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
 		return this.id;
 	}
-	
-	public void setId(Long id){
+
+	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "NAME", length = 20)
-	public String getName(){
+	public String getName() {
 		return this.name;
 	}
-	
-	public void setName(String name){
+
+	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Column(name = "DESCRIPTION")
 	public String getDescription() {
 		return this.description;
@@ -63,7 +62,5 @@ public class GenderType implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
-	
+
 }

@@ -31,39 +31,39 @@ import au.org.theark.core.Constants;
 public class Study implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private StudyStatus studyStatus;
-	private String name;
-	private String description;
-	private Date dateOfApplication;
-	private Long estimatedYearOfCompletion;
-	private String chiefInvestigator;
-	private String coInvestigator;
-	
-	private String contactPerson;
-	private String contactPersonPhone;
-	private String ldapGroupName;
-	private Boolean autoConsent;
-	private String subStudyBiospecimenPrefix;
-	private Blob studyLogoBlob;
-	private String filename;
-	
+	private Long								id;
+	private StudyStatus						studyStatus;
+	private String								name;
+	private String								description;
+	private Date								dateOfApplication;
+	private Long								estimatedYearOfCompletion;
+	private String								chiefInvestigator;
+	private String								coInvestigator;
+
+	private String								contactPerson;
+	private String								contactPersonPhone;
+	private String								ldapGroupName;
+	private Boolean							autoConsent;
+	private String								subStudyBiospecimenPrefix;
+	private Blob								studyLogoBlob;
+	private String								filename;
+
 	// SubjectUID autogeneration parameters
-	private Boolean autoGenerateSubjectUid;
-	private Long subjectUidStart;
-	private String subjectUidPrefix;
-	private SubjectUidToken subjectUidToken;
-	private SubjectUidPadChar subjectUidPadChar;
-	
-	private Set<LinkStudySubstudy> linkStudySubstudiesForid = new HashSet<LinkStudySubstudy>(0);
-	private Set<LinkStudyStudysite> linkStudyStudysites = new HashSet<LinkStudyStudysite>(0);
-	private Set<StudyComp> studyComps = new HashSet<StudyComp>(0);
-	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(0);
-	private Set<LinkSubjectStudycomp> linkSubjectStudycomps = new HashSet<LinkSubjectStudycomp>(0);
-	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(0);
-	private Set<LinkSubjectContact> linkSubjectContacts = new HashSet<LinkSubjectContact>(0);
-	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(0);
-	private Set<LinkStudySubstudy> linkStudySubstudiesForSubid = new HashSet<LinkStudySubstudy>(0);
+	private Boolean							autoGenerateSubjectUid;
+	private Long								subjectUidStart;
+	private String								subjectUidPrefix;
+	private SubjectUidToken					subjectUidToken;
+	private SubjectUidPadChar				subjectUidPadChar;
+
+	private Set<LinkStudySubstudy>		linkStudySubstudiesForid		= new HashSet<LinkStudySubstudy>(0);
+	private Set<LinkStudyStudysite>		linkStudyStudysites				= new HashSet<LinkStudyStudysite>(0);
+	private Set<StudyComp>					studyComps							= new HashSet<StudyComp>(0);
+	private Set<SubjectCustmFld>			subjectCustmFlds					= new HashSet<SubjectCustmFld>(0);
+	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps			= new HashSet<LinkSubjectStudycomp>(0);
+	private Set<LinkSubjectStudy>			linkSubjectStudies				= new HashSet<LinkSubjectStudy>(0);
+	private Set<LinkSubjectContact>		linkSubjectContacts				= new HashSet<LinkSubjectContact>(0);
+	private Set<LinkStudyStudycomp>		linkStudyStudycomps				= new HashSet<LinkStudyStudycomp>(0);
+	private Set<LinkStudySubstudy>		linkStudySubstudiesForSubid	= new HashSet<LinkStudySubstudy>(0);
 
 	// Constructors
 
@@ -77,22 +77,11 @@ public class Study implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Study(Long id, StudyStatus studyStatus, String name,
-			String description, Date dateOfApplication,
-			Long estimatedYearOfCompletion, String chiefInvestigator,
-			String coInvestigator, Boolean autoGenerateSubjectUid,
-			Long subjectUIdStart, String subjectIdPrefix, String contactPerson,
-			String contactPersonPhone, String ldapGroupName,
-			Boolean autoConsent, String subStudyBiospecimenPrefix,
-			String filename, SubjectUidToken subjectIdToken, SubjectUidPadChar subjectUIdPadChar,
-			Set<LinkStudySubstudy> linkStudySubstudiesForid,
-			Set<LinkStudyStudysite> linkStudyStudysites,
-			Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds,
-			Set<LinkSubjectStudycomp> linkSubjectStudycomps,
-			Set<LinkSubjectStudy> linkSubjectStudies,
-			Set<LinkSubjectContact> linkSubjectContacts,
-			Set<LinkStudyStudycomp> linkStudyStudycomps,
-			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
+	public Study(Long id, StudyStatus studyStatus, String name, String description, Date dateOfApplication, Long estimatedYearOfCompletion, String chiefInvestigator, String coInvestigator,
+			Boolean autoGenerateSubjectUid, Long subjectUIdStart, String subjectIdPrefix, String contactPerson, String contactPersonPhone, String ldapGroupName, Boolean autoConsent,
+			String subStudyBiospecimenPrefix, String filename, SubjectUidToken subjectIdToken, SubjectUidPadChar subjectUIdPadChar, Set<LinkStudySubstudy> linkStudySubstudiesForid,
+			Set<LinkStudyStudysite> linkStudyStudysites, Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
+			Set<LinkSubjectStudy> linkSubjectStudies, Set<LinkSubjectContact> linkSubjectContacts, Set<LinkStudyStudycomp> linkStudyStudycomps, Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.id = id;
 		this.studyStatus = studyStatus;
 		this.name = name;
@@ -111,7 +100,7 @@ public class Study implements java.io.Serializable {
 		this.subStudyBiospecimenPrefix = subStudyBiospecimenPrefix;
 		this.subjectUidPrefix = subjectIdPrefix;
 		this.subjectUidToken = subjectIdToken;
-		this.subjectUidPadChar = subjectUIdPadChar; 
+		this.subjectUidPadChar = subjectUIdPadChar;
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 		this.linkStudyStudysites = linkStudyStudysites;
 		this.studyComps = studyComps;
@@ -124,11 +113,10 @@ public class Study implements java.io.Serializable {
 	}
 
 	// Property accessors
-	
-	
+
 	@Id
-	@SequenceGenerator(name="study_generator", sequenceName="STUDY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "study_generator")
+	@SequenceGenerator(name = "study_generator", sequenceName = "STUDY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "study_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -157,7 +145,7 @@ public class Study implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION", length=255)
+	@Column(name = "DESCRIPTION", length = 255)
 	public String getDescription() {
 		return this.description;
 	}
@@ -256,7 +244,7 @@ public class Study implements java.io.Serializable {
 	public void setAutoConsent(Boolean autoConsent) {
 		this.autoConsent = autoConsent;
 	}
-	
+
 	@Column(name = "AUTO_GENERATE_SUBJECTUID", precision = 1, scale = 0)
 	public Boolean getAutoGenerateSubjectUid() {
 		return autoGenerateSubjectUid;
@@ -270,15 +258,13 @@ public class Study implements java.io.Serializable {
 	public String getSubStudyBiospecimenPrefix() {
 		return this.subStudyBiospecimenPrefix;
 	}
-	
-	public void setStudyLogoBlob(Blob studyLogoBlob)
-	{
+
+	public void setStudyLogoBlob(Blob studyLogoBlob) {
 		this.studyLogoBlob = studyLogoBlob;
 	}
-	
+
 	@Column(name = "STUDY_LOGO")
-	public Blob getStudyLogoBlob()
-	{
+	public Blob getStudyLogoBlob() {
 		return studyLogoBlob;
 	}
 
@@ -291,8 +277,7 @@ public class Study implements java.io.Serializable {
 		return this.linkStudySubstudiesForid;
 	}
 
-	public void setLinkStudySubstudiesForid(
-			Set<LinkStudySubstudy> linkStudySubstudiesForid) {
+	public void setLinkStudySubstudiesForid(Set<LinkStudySubstudy> linkStudySubstudiesForid) {
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 	}
 
@@ -301,8 +286,7 @@ public class Study implements java.io.Serializable {
 		return this.linkStudyStudysites;
 	}
 
-	public void setLinkStudyStudysites(
-			Set<LinkStudyStudysite> linkStudyStudysites) {
+	public void setLinkStudyStudysites(Set<LinkStudyStudysite> linkStudyStudysites) {
 		this.linkStudyStudysites = linkStudyStudysites;
 	}
 
@@ -329,8 +313,7 @@ public class Study implements java.io.Serializable {
 		return this.linkSubjectStudycomps;
 	}
 
-	public void setLinkSubjectStudycomps(
-			Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
+	public void setLinkSubjectStudycomps(Set<LinkSubjectStudycomp> linkSubjectStudycomps) {
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 	}
 
@@ -348,8 +331,7 @@ public class Study implements java.io.Serializable {
 		return this.linkSubjectContacts;
 	}
 
-	public void setLinkSubjectContacts(
-			Set<LinkSubjectContact> linkSubjectContacts) {
+	public void setLinkSubjectContacts(Set<LinkSubjectContact> linkSubjectContacts) {
 		this.linkSubjectContacts = linkSubjectContacts;
 	}
 
@@ -358,8 +340,7 @@ public class Study implements java.io.Serializable {
 		return this.linkStudyStudycomps;
 	}
 
-	public void setLinkStudyStudycomps(
-			Set<LinkStudyStudycomp> linkStudyStudycomps) {
+	public void setLinkStudyStudycomps(Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 
@@ -368,16 +349,15 @@ public class Study implements java.io.Serializable {
 		return this.linkStudySubstudiesForSubid;
 	}
 
-	public void setLinkStudySubstudiesForSubid(
-			Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
+	public void setLinkStudySubstudiesForSubid(Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.linkStudySubstudiesForSubid = linkStudySubstudiesForSubid;
 	}
 
 	/**
-	 * @param filename the filename to set
+	 * @param filename
+	 *           the filename to set
 	 */
-	public void setFilename(String filename)
-	{
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 
@@ -385,16 +365,15 @@ public class Study implements java.io.Serializable {
 	 * @return the filename
 	 */
 	@Column(name = "FILENAME")
-	public String getFilename()
-	{
+	public String getFilename() {
 		return filename;
 	}
 
 	/**
-	 * @param subjectIdToken the subjectIdToken to set
+	 * @param subjectIdToken
+	 *           the subjectIdToken to set
 	 */
-	public void setSubjectUidToken(SubjectUidToken subjectIdToken)
-	{
+	public void setSubjectUidToken(SubjectUidToken subjectIdToken) {
 		this.subjectUidToken = subjectIdToken;
 	}
 
@@ -403,11 +382,10 @@ public class Study implements java.io.Serializable {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBJECTUID_TOKEN_ID")
-	public SubjectUidToken getSubjectUidToken()
-	{
+	public SubjectUidToken getSubjectUidToken() {
 		return subjectUidToken;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SUBJECTUID_PADCHAR_ID")
 	public SubjectUidPadChar getSubjectUidPadChar() {

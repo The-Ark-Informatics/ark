@@ -14,35 +14,37 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "COUNTRY_STATE", schema = Constants.STUDY_SCHEMA)
 public class CountryState implements Serializable {
-	
-	private Long id;
-	private Country country;
-	private String state;
 
-	public CountryState(){
-		
+	private Long		id;
+	private Country	country;
+	private String		state;
+
+	public CountryState() {
+
 	}
-	
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COUNTRY_ID")
 	public Country getCountry() {
 		return country;
 	}
+
 	public void setCountry(Country country) {
 		this.country = country;
 	}

@@ -21,28 +21,27 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
-	
+public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
+
 	private static final long		serialVersionUID	= 1L;
-	protected FeedbackPanel	feedBackPanel;
-	protected Form<T>	containerForm;
-	protected AjaxButton saveButton;
-	protected AjaxButton cancelButton;
-	protected AjaxButton editButton;
-	protected AjaxButton editCancelButton;
-	protected ArkCrudContainerVO crudVO;
-	
+	protected FeedbackPanel			feedBackPanel;
+	protected Form<T>					containerForm;
+	protected AjaxButton				saveButton;
+	protected AjaxButton				cancelButton;
+	protected AjaxButton				editButton;
+	protected AjaxButton				editCancelButton;
+	protected ArkCrudContainerVO	crudVO;
+
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor formVisitor = new ArkFormVisitor();
-	public void onBeforeRender()
-	{
+	ArkFormVisitor						formVisitor			= new ArkFormVisitor();
+
+	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
 
-	
 	/**
 	 * @param id
 	 */
@@ -53,7 +52,6 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 
 	abstract protected void attachValidators();
 
-
 	abstract protected void onCancel(AjaxRequestTarget target);
 
 	abstract protected void onSave(Form<T> containerForm, AjaxRequestTarget target);
@@ -61,38 +59,39 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 	abstract protected void processErrors(AjaxRequestTarget target);
 
 	abstract protected boolean isNew();
-	
-	protected boolean isActionPermitted(String actionType){
-		
+
+	protected boolean isActionPermitted(String actionType) {
+
 		boolean flag = false;
-		SecurityManager securityManager =  ThreadContext.getSecurityManager();
+		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		
-		if(actionType.equalsIgnoreCase(Constants.SAVE)){
-			
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE) ||
-				securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.CREATE)){
-					
+
+		if (actionType.equalsIgnoreCase(Constants.SAVE)) {
+
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE)) {
+
 				flag = true;
-			}else{
+			}
+			else {
 				flag = false;
 			}
-			
+
 		}
-		else if(actionType.equalsIgnoreCase(Constants.EDIT)){
-			
-			if( securityManager.isPermitted(currentUser.getPrincipals(),  PermissionConstants.UPDATE)){
+		else if (actionType.equalsIgnoreCase(Constants.EDIT)) {
+
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)) {
 				flag = true;
-			}else{
+			}
+			else {
 				flag = false;
 			}
 		}
-		
+
 		return flag;
 	}
-	
-	protected void onCancelPostProcess(AjaxRequestTarget target){
-		
+
+	protected void onCancelPostProcess(AjaxRequestTarget target) {
+
 		crudVO.getViewButtonContainer().setVisible(true);
 		crudVO.getViewButtonContainer().setEnabled(true);
 		crudVO.getDetailPanelContainer().setVisible(true);
@@ -100,7 +99,7 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		crudVO.getSearchResultPanelContainer().setVisible(false);
 		crudVO.getSearchPanelContainer().setVisible(false);
 		crudVO.getEditButtonContainer().setVisible(false);
-		
+
 		target.addComponent(feedBackPanel);
 		target.addComponent(crudVO.getSearchPanelContainer());
 		target.addComponent(crudVO.getSearchResultPanelContainer());
@@ -111,117 +110,106 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		target.addComponent(crudVO.getEditButtonContainer());
 	}
 
-
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param crudVO
 	 * @param containerForm
 	 */
-	public  AbstractArchiveDetailForm(	String id,	FeedbackPanel feedBackPanel, ArkCrudContainerVO crudVO,Form<T> containerForm){
-		
+	public AbstractArchiveDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO crudVO, Form<T> containerForm) {
+
 		super(id);
 		this.crudVO = crudVO;
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedBackPanel;
 		initialiseForm();
 	}
-	
-	@SuppressWarnings("serial")
-	protected void initialiseForm(){
 
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)){
+	@SuppressWarnings("serial")
+	protected void initialiseForm() {
+
+		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
-				if(isNew()){
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				if (isNew()) {
 					editCancelProcess(target);
-				}else{
+				}
+				else {
 					crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
 					crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
 					target.addComponent(crudVO.getDetailPanelContainer());// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-					target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
+					target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered
+																									// using Ajax
 					onCancelPostProcess(target);
 				}
 			}
 		};
 
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null))	{
-			
+		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return isActionPermitted(Constants.SAVE);
 			}
-			
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
 				target.addComponent(crudVO.getDetailPanelContainer());
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				boolean setFocusError = false;
 				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailFormContainer");
-				for (Iterator iterator = wmc.iterator(); iterator.hasNext();)
-				{
+				for (Iterator iterator = wmc.iterator(); iterator.hasNext();) {
 					Component component = (Component) iterator.next();
-					if (component instanceof FormComponent)
-					{
+					if (component instanceof FormComponent) {
 						FormComponent formComponent = (FormComponent) component;
-						
-						if(!formComponent.isValid())
-						{
-							if(!setFocusError)
-							{
+
+						if (!formComponent.isValid()) {
+							if (!setFocusError) {
 								// Place focus on field in error (for the first field in error)
 								target.focusComponent(formComponent);
-				            setFocusError = true;	
+								setFocusError = true;
 							}
 						}
 					}
 				}
-				
+
 				processErrors(target);
 			}
 		};
 
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null))	{
-			
+		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
+
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return isActionPermitted(Constants.EDIT);
 			}
-			
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				crudVO.getViewButtonContainer().setVisible(false);
 				crudVO.getEditButtonContainer().setVisible(true);
 				crudVO.getDetailPanelFormContainer().setEnabled(true);
-				
+
 				target.addComponent(crudVO.getViewButtonContainer());
 				target.addComponent(crudVO.getEditButtonContainer());
 				target.addComponent(crudVO.getDetailPanelFormContainer());
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
 
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)){
-			public void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				editCancelProcess(target);
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
@@ -229,18 +217,18 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		addComponentsToForm();
 	}
 
-	protected void addComponentsToForm(){
+	protected void addComponentsToForm() {
 		crudVO.getEditButtonContainer().add(saveButton);
 		crudVO.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
 		crudVO.getViewButtonContainer().add(editButton);
 		crudVO.getViewButtonContainer().add(editCancelButton.setDefaultFormProcessing(false));
-		
+
 		add(crudVO.getDetailPanelFormContainer());
 		add(crudVO.getEditButtonContainer());
 		add(crudVO.getViewButtonContainer());
 	}
 
-	protected void editCancelProcess(AjaxRequestTarget target){
+	protected void editCancelProcess(AjaxRequestTarget target) {
 		crudVO.getSearchResultPanelContainer().setVisible(true);// Hide the Search Result List Panel via the WebMarkupContainer
 		crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
 		crudVO.getSearchPanelContainer().setVisible(true);
@@ -251,6 +239,7 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 		target.addComponent(crudVO.getSearchResultPanelContainer());
 		onCancel(target);
 	}
+
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
 	 * implementation.Once the user has pressed Save either to create a new entity or update, invoking this method will place the new/edited record
@@ -258,27 +247,26 @@ public abstract class  AbstractArchiveDetailForm <T> extends Form<T>{
 	 * 
 	 * @param target
 	 */
-	protected void onSavePostProcess(AjaxRequestTarget target,ArkCrudContainerVO crudVO){
-		//Visibility
+	protected void onSavePostProcess(AjaxRequestTarget target, ArkCrudContainerVO crudVO) {
+		// Visibility
 		crudVO.getDetailPanelContainer().setVisible(true);
 		crudVO.getViewButtonContainer().setVisible(true);
 		crudVO.getSearchResultPanelContainer().setVisible(false);
 		crudVO.getSearchPanelContainer().setVisible(false);
 		crudVO.getEditButtonContainer().setVisible(false);
-		
-		//Enable
+
+		// Enable
 		crudVO.getDetailPanelFormContainer().setEnabled(false);
 		crudVO.getViewButtonContainer().setEnabled(true);
-	
+
 		target.addComponent(crudVO.getSearchResultPanelContainer());
 		target.addComponent(crudVO.getDetailPanelContainer());
 		target.addComponent(crudVO.getDetailPanelFormContainer());
 		target.addComponent(crudVO.getSearchPanelContainer());
 		target.addComponent(crudVO.getViewButtonContainer());
 		target.addComponent(crudVO.getEditButtonContainer());
-		
+
 		target.addComponent(feedBackPanel);
 	}
-
 
 }

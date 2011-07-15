@@ -17,20 +17,17 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_field_lov", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataFieldLov implements java.io.Serializable
-{
+public class BiodataFieldLov implements java.io.Serializable {
 
-	private Long		id;
+	private Long	id;
 	private int		listId;
 	private String	value;
 	private int		order;
 
-	public BiodataFieldLov()
-	{
+	public BiodataFieldLov() {
 	}
 
-	public BiodataFieldLov(Long id, int listId, String value, int order)
-	{
+	public BiodataFieldLov(Long id, int listId, String value, int order) {
 		this.id = id;
 		this.listId = listId;
 		this.value = value;
@@ -40,46 +37,38 @@ public class BiodataFieldLov implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatafieldlov_generator", sequenceName = "BIODATAFIELDLOV_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatafieldlov_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "LIST_ID", nullable = false)
-	public int getListId()
-	{
+	public int getListId() {
 		return this.listId;
 	}
 
-	public void setListId(int listId)
-	{
+	public void setListId(int listId) {
 		this.listId = listId;
 	}
 
 	@Column(name = "VALUE", nullable = false, length = 50)
-	public String getValue()
-	{
+	public String getValue() {
 		return this.value;
 	}
 
-	public void setValue(String value)
-	{
+	public void setValue(String value) {
 		this.value = value;
 	}
 
 	@Column(name = "ORDER", nullable = false)
-	public int getOrder()
-	{
+	public int getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(int order)
-	{
+	public void setOrder(int order) {
 		this.order = order;
 	}
 

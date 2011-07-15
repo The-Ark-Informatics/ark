@@ -20,10 +20,9 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_site", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvSite implements java.io.Serializable
-{
+public class InvSite implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private String			timestamp;
 	private Integer		deleted;
 	private String			contact;
@@ -33,18 +32,15 @@ public class InvSite implements java.io.Serializable
 	private String			ldapGroup;
 	private Set<InvTank>	invTanks	= new HashSet<InvTank>(0);
 
-	public InvSite()
-	{
+	public InvSite() {
 	}
 
-	public InvSite(Long id, String name)
-	{
+	public InvSite(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, Set<InvTank> invTanks)
-	{
+	public InvSite(Long id, Integer deleted, String contact, String address, String name, String phone, String ldapGroup, Set<InvTank> invTanks) {
 		this.id = id;
 		this.deleted = deleted;
 		this.contact = contact;
@@ -58,104 +54,80 @@ public class InvSite implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "invsite_generator", sequenceName = "INVSITE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invsite_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "CONTACT", length = 50)
-	public String getContact()
-	{
+	public String getContact() {
 		return this.contact;
 	}
 
-	public void setContact(String contact)
-	{
+	public void setContact(String contact) {
 		this.contact = contact;
 	}
 
 	@Column(name = "ADDRESS", length = 65535)
-	public String getAddress()
-	{
+	public String getAddress() {
 		return this.address;
 	}
 
-	public void setAddress(String address)
-	{
+	public void setAddress(String address) {
 		this.address = address;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "PHONE", length = 50)
-	public String getPhone()
-	{
+	public String getPhone() {
 		return this.phone;
 	}
 
-	public void setPhone(String phone)
-	{
+	public void setPhone(String phone) {
 		this.phone = phone;
 	}
 
 	@Column(name = "LDAP_GROUP", length = 50)
-	public String getLdapGroup()
-	{
+	public String getLdapGroup() {
 		return this.ldapGroup;
 	}
 
-	public void setLdapGroup(String ldapGroup)
-	{
+	public void setLdapGroup(String ldapGroup) {
 		this.ldapGroup = ldapGroup;
 	}
 
 	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite")
-	public Set<InvTank> getInvTanks()
-	{
-		return this.invTanks;
-	}
-
-	public void setInvTanks(Set<InvTank> invTanks)
-	{
-		this.invTanks = invTanks;
-	}
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "invSite") public Set<InvTank> getInvTanks() { return this.invTanks; }
+	 * 
+	 * public void setInvTanks(Set<InvTank> invTanks) { this.invTanks = invTanks; }
 	 */
 }

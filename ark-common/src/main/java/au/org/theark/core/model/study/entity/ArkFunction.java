@@ -17,19 +17,17 @@ import au.org.theark.core.Constants;
 
 @Entity
 @Table(name = "ARK_FUNCTION", schema = Constants.STUDY_SCHEMA)
-public class ArkFunction implements Serializable{
-	
-	private Long id;
-	private String name;
-	private String description;
-	private String resourceKey;
-	private ArkFunctionType arkFunctionType;
+public class ArkFunction implements Serializable {
 
-	
-	
+	private Long				id;
+	private String				name;
+	private String				description;
+	private String				resourceKey;
+	private ArkFunctionType	arkFunctionType;
+
 	@Id
-	@SequenceGenerator(name="ark_function_generator", sequenceName="ARK_FUNCTION_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "ark_function_generator")
+	@SequenceGenerator(name = "ark_function_generator", sequenceName = "ARK_FUNCTION_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ark_function_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -57,7 +55,7 @@ public class ArkFunction implements Serializable{
 		this.description = description;
 	}
 
-	@Column(name="RESOURCE_KEY")
+	@Column(name = "RESOURCE_KEY")
 	public String getResourceKey() {
 		return resourceKey;
 	}
@@ -74,7 +72,6 @@ public class ArkFunction implements Serializable{
 
 	public void setArkFunctionType(ArkFunctionType arkFunctionType) {
 		this.arkFunctionType = arkFunctionType;
-	}	
-	
+	}
 
 }

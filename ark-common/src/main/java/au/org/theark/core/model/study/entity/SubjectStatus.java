@@ -22,11 +22,10 @@ public class SubjectStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<LinkSubjectStudy> linkSubjectStudies = new HashSet<LinkSubjectStudy>(
-			0);
+	private Long						id;
+	private String						name;
+	private String						description;
+	private Set<LinkSubjectStudy>	linkSubjectStudies	= new HashSet<LinkSubjectStudy>(0);
 
 	// Constructors
 
@@ -40,8 +39,7 @@ public class SubjectStatus implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectStatus(Long id, String name,
-			String description, Set<LinkSubjectStudy> linkSubjectStudies) {
+	public SubjectStatus(Long id, String name, String description, Set<LinkSubjectStudy> linkSubjectStudies) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

@@ -11,7 +11,8 @@ import javax.persistence.Table;
 import au.org.theark.core.Constants;
 
 /**
- * StudyStatus entity. 
+ * StudyStatus entity.
+ * 
  * @author elam
  */
 @Entity
@@ -21,12 +22,12 @@ public class SubjectUidSequence implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-	
+	private static final long	serialVersionUID	= 1L;
+
 	// Fields
-	private String studyNameId;
-	private Integer uidSequence;
-	private Boolean insertLock;
+	private String					studyNameId;
+	private Integer				uidSequence;
+	private Boolean				insertLock;
 
 	// Constructors
 	/** default constructor */
@@ -34,7 +35,7 @@ public class SubjectUidSequence implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectUidSequence(String studyNameId, Integer uidSequence, Boolean insertLock){
+	public SubjectUidSequence(String studyNameId, Integer uidSequence, Boolean insertLock) {
 		this.studyNameId = studyNameId;
 		this.uidSequence = uidSequence;
 		this.insertLock = insertLock;
@@ -50,7 +51,7 @@ public class SubjectUidSequence implements java.io.Serializable {
 	public void setStudyNameId(String studyNameId) {
 		this.studyNameId = studyNameId;
 	}
-	
+
 	@Column(name = "UID_SEQUENCE", nullable = false)
 	public Integer getUidSequence() {
 		return this.uidSequence;
@@ -64,7 +65,7 @@ public class SubjectUidSequence implements java.io.Serializable {
 	public Boolean getInsertLock() {
 		return insertLock;
 	}
-	
+
 	public void setInsertLock(Boolean insertLock) {
 		this.insertLock = insertLock;
 	}

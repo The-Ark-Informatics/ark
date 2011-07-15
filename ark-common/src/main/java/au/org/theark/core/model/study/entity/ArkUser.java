@@ -17,22 +17,21 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ARK_USER", schema = Constants.STUDY_SCHEMA)
-public class ArkUser implements Serializable{
+public class ArkUser implements Serializable {
 
-	private Long id;
-	private String ldapUserName;
-	
-	
-	public ArkUser(){
+	private Long	id;
+	private String	ldapUserName;
+
+	public ArkUser() {
 	}
 
 	@Id
-	@SequenceGenerator(name="ark_user_generator", sequenceName="ARK_USER_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "ark_user_generator")
+	@SequenceGenerator(name = "ark_user_generator", sequenceName = "ARK_USER_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ark_user_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;

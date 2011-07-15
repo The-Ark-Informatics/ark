@@ -7,12 +7,12 @@ import java.util.List;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
 
-public class ArkModuleVO implements Serializable{
-	
-	private ArkModule arkModule;
-	private List<ArkRole> arkModuleRoles;
-	
-	public ArkModuleVO(){
+public class ArkModuleVO implements Serializable {
+
+	private ArkModule			arkModule;
+	private List<ArkRole>	arkModuleRoles;
+
+	public ArkModuleVO() {
 		arkModule = new ArkModule();
 		arkModuleRoles = new ArrayList<ArkRole>();
 	}

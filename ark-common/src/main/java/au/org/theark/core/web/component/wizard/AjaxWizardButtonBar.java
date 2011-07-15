@@ -23,16 +23,15 @@ import org.apache.wicket.util.string.AppendingStringBuffer;
  * 
  * @see WizardButtonBar
  */
-public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
-{
+public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider {
 	private static final long	serialVersionUID	= 1L;
 
 	private ArkCommonWizard		wizard;
-	private PreviousButton previousButton;
-	private NextButton nextButton;
-	private LastButton lastButton;
-	private CancelButton cancelButton;
-	private FinishButton finishButton;
+	private PreviousButton		previousButton;
+	private NextButton			nextButton;
+	private LastButton			lastButton;
+	private CancelButton			cancelButton;
+	private FinishButton			finishButton;
 
 	/**
 	 * Construct.
@@ -42,8 +41,7 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 	 * @param wizard
 	 *           The containing wizard
 	 */
-	public AjaxWizardButtonBar(String id, ArkCommonWizard wizard)
-	{
+	public AjaxWizardButtonBar(String id, ArkCommonWizard wizard) {
 		super(id);
 
 		this.wizard = wizard;
@@ -51,29 +49,26 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 
 		previousButton = new PreviousButton("previous", wizard);
 		addAjax(previousButton);
-		
+
 		nextButton = new NextButton("next", wizard);
 		addAjax(nextButton);
-		
+
 		lastButton = new LastButton("last", wizard);
 		addAjax(lastButton);
-		
+
 		cancelButton = new CancelButton("cancel", wizard);
 		addAjaxCancel(cancelButton);
-		
+
 		finishButton = new FinishButton("finish", wizard);
 		addAjaxFinish(finishButton);
 	}
 
-	private void addAjax(final WizardButton button)
-	{
-		button.add(new AjaxFormSubmitBehavior("onclick")
-		{
+	private void addAjax(final WizardButton button) {
+		button.add(new AjaxFormSubmitBehavior("onclick") {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected CharSequence getEventHandler()
-			{
+			protected CharSequence getEventHandler() {
 				AppendingStringBuffer handler = new AppendingStringBuffer();
 				handler.append(super.getEventHandler());
 				handler.append("; return false;");
@@ -81,20 +76,17 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			}
 
 			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator()
-			{
+			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target)
-			{
+			protected void onSubmit(AjaxRequestTarget target) {
 				target.addComponent(wizard);
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget target)
-			{
+			protected void onError(AjaxRequestTarget target) {
 				target.addComponent(wizard);
 			}
 		});
@@ -102,15 +94,12 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 		add(button);
 	}
 
-	private void addAjaxCancel(final WizardButton button)
-	{
-		button.add(new AjaxFormSubmitBehavior("onclick")
-		{
+	private void addAjaxCancel(final WizardButton button) {
+		button.add(new AjaxFormSubmitBehavior("onclick") {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected CharSequence getEventHandler()
-			{
+			protected CharSequence getEventHandler() {
 				AppendingStringBuffer handler = new AppendingStringBuffer();
 				handler.append(super.getEventHandler());
 				handler.append("; return false;");
@@ -118,27 +107,22 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			}
 
 			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator()
-			{
+			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target)
-			{
+			protected void onSubmit(AjaxRequestTarget target) {
 				wizard.getWizardModel().cancel();
-				wizard = new ArkCommonWizard(wizard.getId(), wizard.getWizardSteps(), wizard.getResultListContainer(), 
-						wizard.getWizardPanelContainer(), 
-						wizard.getWizardPanelFormContainer(),	
-						wizard.getSearchPanelContainer(),
-						wizard.getTarget());
-				
+				wizard = new ArkCommonWizard(wizard.getId(), wizard.getWizardSteps(), wizard.getResultListContainer(), wizard.getWizardPanelContainer(), wizard.getWizardPanelFormContainer(), wizard
+						.getSearchPanelContainer(), wizard.getTarget());
+
 				wizard.getSearchPanelContainer().setVisible(true);
 				wizard.getResultListContainer().setVisible(true);
 				wizard.getWizardPanelContainer().setVisible(true);
-				
+
 				cancelWizard(target);
-					
+
 				target.addComponent(wizard.getSearchPanelContainer());
 				target.addComponent(wizard.getResultListContainer());
 				target.addComponent(wizard.getWizardPanelContainer());
@@ -146,24 +130,20 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget target)
-			{
+			protected void onError(AjaxRequestTarget target) {
 				target.addComponent(wizard);
 			}
 		});
-		
+
 		add(button);
 	}
 
-	private void addAjaxFinish(final WizardButton button)
-	{
-		button.add(new AjaxFormSubmitBehavior("onclick")
-		{
+	private void addAjaxFinish(final WizardButton button) {
+		button.add(new AjaxFormSubmitBehavior("onclick") {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected CharSequence getEventHandler()
-			{
+			protected CharSequence getEventHandler() {
 				AppendingStringBuffer handler = new AppendingStringBuffer();
 				handler.append(super.getEventHandler());
 				handler.append("; return false;");
@@ -171,20 +151,18 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			}
 
 			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator()
-			{
+			protected IAjaxCallDecorator getAjaxCallDecorator() {
 				return AjaxWizardButtonBar.this.getAjaxCallDecorator();
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target)
-			{
+			protected void onSubmit(AjaxRequestTarget target) {
 				wizard.getSearchPanelContainer().setVisible(true);
 				wizard.getResultListContainer().setVisible(true);
 				wizard.getWizardPanelContainer().setVisible(true);
 
 				wizard.getWizardModel().finish();
-				
+
 				target.addComponent(wizard.getSearchPanelContainer());
 				target.addComponent(wizard.getResultListContainer());
 				target.addComponent(wizard.getWizardPanelContainer());
@@ -192,8 +170,7 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget target)
-			{
+			protected void onError(AjaxRequestTarget target) {
 				target.addComponent(wizard);
 			}
 		});
@@ -204,18 +181,14 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 	/**
 	 * @see org.apache.wicket.extensions.wizard.IDefaultButtonProvider#getDefaultButton(org.apache.wicket.extensions.wizard.IWizardModel)
 	 */
-	public IFormSubmittingComponent getDefaultButton(IWizardModel model)
-	{
-		if (model.isNextAvailable())
-		{
+	public IFormSubmittingComponent getDefaultButton(IWizardModel model) {
+		if (model.isNextAvailable()) {
 			return (Button) get("next");
 		}
-		else if (model.isLastAvailable())
-		{
+		else if (model.isLastAvailable()) {
 			return (Button) get("last");
 		}
-		else if (model.isLastStep(model.getActiveStep()))
-		{
+		else if (model.isLastStep(model.getActiveStep())) {
 			return (Button) get("finish");
 		}
 		return null;
@@ -225,103 +198,92 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 	 * 
 	 * @return call decorator to use or null if none
 	 */
-	protected IAjaxCallDecorator getAjaxCallDecorator()
-	{
+	protected IAjaxCallDecorator getAjaxCallDecorator() {
 		return null;
 	}
-	
-	
-	
-	public void finishWizard(AjaxRequestTarget target)
-	{
-		
+
+	public void finishWizard(AjaxRequestTarget target) {
+
 	}
 
-	public void cancelWizard(AjaxRequestTarget target)
-	{
+	public void cancelWizard(AjaxRequestTarget target) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
 	/**
-	 * @param previousButton the previousButton to set
+	 * @param previousButton
+	 *           the previousButton to set
 	 */
-	public void setPreviousButton(PreviousButton previousButton)
-	{
+	public void setPreviousButton(PreviousButton previousButton) {
 		this.previousButton = previousButton;
 	}
 
 	/**
 	 * @return the previousButton
 	 */
-	public PreviousButton getPreviousButton()
-	{
+	public PreviousButton getPreviousButton() {
 		return previousButton;
 	}
 
 	/**
 	 * @return the nextButton
 	 */
-	public NextButton getNextButton()
-	{
+	public NextButton getNextButton() {
 		return nextButton;
 	}
 
 	/**
-	 * @param nextButton the nextButton to set
+	 * @param nextButton
+	 *           the nextButton to set
 	 */
-	public void setNextButton(NextButton nextButton)
-	{
+	public void setNextButton(NextButton nextButton) {
 		this.nextButton = nextButton;
 	}
 
 	/**
-	 * @param lastButton the lastButton to set
+	 * @param lastButton
+	 *           the lastButton to set
 	 */
-	public void setLastButton(LastButton lastButton)
-	{
+	public void setLastButton(LastButton lastButton) {
 		this.lastButton = lastButton;
 	}
 
 	/**
 	 * @return the lastButton
 	 */
-	public LastButton getLastButton()
-	{
+	public LastButton getLastButton() {
 		return lastButton;
 	}
 
 	/**
-	 * @param cancelButton the cancelButton to set
+	 * @param cancelButton
+	 *           the cancelButton to set
 	 */
-	public void setCancelButton(CancelButton cancelButton)
-	{
+	public void setCancelButton(CancelButton cancelButton) {
 		this.cancelButton = cancelButton;
 	}
 
 	/**
 	 * @return the cancelButton
 	 */
-	public CancelButton getCancelButton()
-	{
+	public CancelButton getCancelButton() {
 		return cancelButton;
 	}
 
 	/**
-	 * @param finishButton the finishButton to set
+	 * @param finishButton
+	 *           the finishButton to set
 	 */
-	public void setFinishButton(FinishButton finishButton)
-	{
+	public void setFinishButton(FinishButton finishButton) {
 		this.finishButton = finishButton;
 	}
 
 	/**
 	 * @return the finishButton
 	 */
-	public FinishButton getFinishButton()
-	{
+	public FinishButton getFinishButton() {
 		return finishButton;
 	}
-	
+
 }

@@ -11,22 +11,22 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
 
 @SuppressWarnings("serial")
-public class StudyModelVO implements Serializable{
+public class StudyModelVO implements Serializable {
 
-	private Study study;
-	private Set<String> lmcAvailableApps;
-	private Set<String> lmcSelectedApps;
-	private List<Study> studyList;
-	private Collection<ModuleVO> modulesAvailable;
-	private Collection<ModuleVO> modulesSelected;
-	
-	private Collection<ArkModule> availableArkModules;
-	private Collection<ArkModule> selectedArkModules;
-	
-	private String studySummaryLabel;
-	private String subjectUidExample;
-	
-	public StudyModelVO(){
+	private Study						study;
+	private Set<String>				lmcAvailableApps;
+	private Set<String>				lmcSelectedApps;
+	private List<Study>				studyList;
+	private Collection<ModuleVO>	modulesAvailable;
+	private Collection<ModuleVO>	modulesSelected;
+
+	private Collection<ArkModule>	availableArkModules;
+	private Collection<ArkModule>	selectedArkModules;
+
+	private String						studySummaryLabel;
+	private String						subjectUidExample;
+
+	public StudyModelVO() {
 		study = new Study();
 		lmcAvailableApps = new HashSet<String>();
 		lmcSelectedApps = new HashSet<String>();
@@ -37,7 +37,7 @@ public class StudyModelVO implements Serializable{
 		selectedArkModules = new ArrayList<ArkModule>();
 		setSubjectUidExample(new String());
 	}
-	
+
 	public Study getStudy() {
 		return study;
 	}
@@ -49,12 +49,15 @@ public class StudyModelVO implements Serializable{
 	public Set<String> getLmcAvailableApps() {
 		return lmcAvailableApps;
 	}
+
 	public void setLmcAvailableApps(Set<String> lmcAvailableApps) {
 		this.lmcAvailableApps = lmcAvailableApps;
 	}
+
 	public Set<String> getLmcSelectedApps() {
 		return lmcSelectedApps;
 	}
+
 	public void setLmcSelectedApps(Set<String> lmcSelectedApps) {
 		this.lmcSelectedApps = lmcSelectedApps;
 	}
@@ -84,34 +87,32 @@ public class StudyModelVO implements Serializable{
 	}
 
 	/**
-	 * @param studySummaryLabel the studySummaryLabel to set
+	 * @param studySummaryLabel
+	 *           the studySummaryLabel to set
 	 */
-	public void setStudySummaryLabel(String studySummaryLabel)
-	{
+	public void setStudySummaryLabel(String studySummaryLabel) {
 		this.studySummaryLabel = studySummaryLabel;
 	}
 
 	/**
 	 * @return the studySummaryLabel
 	 */
-	public String getStudySummaryLabel()
-	{
+	public String getStudySummaryLabel() {
 		return study.getName();
 	}
-	
+
 	/**
 	 * @return the subjectUidExample
 	 */
-	public String getSubjectUidExample()
-	{
+	public String getSubjectUidExample() {
 		return subjectUidExample;
 	}
-	
+
 	/**
-	 * @param subjectUidExample the subjectUidExample to set
+	 * @param subjectUidExample
+	 *           the subjectUidExample to set
 	 */
-	public void setSubjectUidExample(String subjectUidExample)
-	{
+	public void setSubjectUidExample(String subjectUidExample) {
 		this.subjectUidExample = subjectUidExample;
 	}
 

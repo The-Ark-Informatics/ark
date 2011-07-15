@@ -25,27 +25,25 @@ import au.org.theark.core.model.study.entity.Study;
 /**
  * MarkerGroup entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MarkerGroup")
+@Entity(name = "au.org.theark.geno.model.entity.MarkerGroup")
 @Table(name = "MARKER_GROUP", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerGroup implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MarkerType markerType;
-	private Study study;
-	private String name;
-	private String description;
-	private Long visible;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
-			0);
-	private Set<UploadMarkerGroup> uploadMarkerGroups = new HashSet<UploadMarkerGroup>(
-			0);
-	private Set<Marker> markers = new HashSet<Marker>(0);
+	private Long							id;
+	private MarkerType					markerType;
+	private Study							study;
+	private String							name;
+	private String							description;
+	private Long							visible;
+	private String							userId;
+	private Date							insertTime;
+	private String							updateUserId;
+	private Date							updateTime;
+	private Set<CollectionImport>		collectionImports		= new HashSet<CollectionImport>(0);
+	private Set<UploadMarkerGroup>	uploadMarkerGroups	= new HashSet<UploadMarkerGroup>(0);
+	private Set<Marker>					markers					= new HashSet<Marker>(0);
 
 	// Constructors
 
@@ -54,8 +52,7 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MarkerGroup(Long id, MarkerType markerType, Study study,
-			String userId, Date insertTime) {
+	public MarkerGroup(Long id, MarkerType markerType, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.markerType = markerType;
 		this.study = study;
@@ -64,11 +61,8 @@ public class MarkerGroup implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MarkerGroup(Long id, MarkerType markerType, Study study,
-			String name, String description, Long visible,
-			String userId, Date insertTime, String updateUserId,
-			Date updateTime, Set<CollectionImport> collectionImports,
-			Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
+	public MarkerGroup(Long id, MarkerType markerType, Study study, String name, String description, Long visible, String userId, Date insertTime, String updateUserId, Date updateTime,
+			Set<CollectionImport> collectionImports, Set<UploadMarkerGroup> uploadMarkerGroups, Set<Marker> markers) {
 		this.id = id;
 		this.markerType = markerType;
 		this.study = study;
@@ -86,8 +80,8 @@ public class MarkerGroup implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Marker_Group_PK_Seq",sequenceName=Constants.MARKER_GROUP_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Marker_Group_PK_Seq")
+	@SequenceGenerator(name = "Marker_Group_PK_Seq", sequenceName = Constants.MARKER_GROUP_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Marker_Group_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -153,7 +147,7 @@ public class MarkerGroup implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
 		return this.insertTime;
@@ -172,8 +166,8 @@ public class MarkerGroup implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATE_TIME")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}

@@ -20,36 +20,35 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "CONSENT_STATUS", schema = Constants.STUDY_SCHEMA)
-public class ConsentStatus implements Serializable{
-	
-	
-	private Long id;
-	private String name;
-	private String description;
-	
+public class ConsentStatus implements Serializable {
+
+	private Long	id;
+	private String	name;
+	private String	description;
+
 	/**
 	 * Constructor no-arg
 	 */
-	public ConsentStatus(){
-		
+	public ConsentStatus() {
+
 	}
+
 	/**
 	 * Constructor
+	 * 
 	 * @param id
 	 */
-	public ConsentStatus(Long id){
+	public ConsentStatus(Long id) {
 		this.id = id;
 	}
-	
-	
-	
+
 	@Id
-	@SequenceGenerator(name="consent_status_generator", sequenceName="CONSENT_STATUS_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "consent_status_generator")
+	@SequenceGenerator(name = "consent_status_generator", sequenceName = "CONSENT_STATUS_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "consent_status_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -58,7 +57,7 @@ public class ConsentStatus implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return this.name;

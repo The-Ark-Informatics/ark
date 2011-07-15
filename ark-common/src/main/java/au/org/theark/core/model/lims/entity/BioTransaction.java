@@ -25,16 +25,15 @@ import au.org.theark.core.model.study.entity.Study;
  */
 @Entity
 @Table(name = "bio_transaction", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BioTransaction implements java.io.Serializable
-{
+public class BioTransaction implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private String			timestamp;
 	private Biospecimen	biospecimen;
-	private Study		study;
-	private Long		deleted;
+	private Study			study;
+	private Long			deleted;
 	private String			treatment;
-	private Long		sourcestudyId;
+	private Long			sourcestudyId;
 	private String			unit;
 	private Date			deliverydate;
 	private String			fixationtime;
@@ -50,12 +49,10 @@ public class BioTransaction implements java.io.Serializable
 	private String			action;
 	private String			type;
 
-	public BioTransaction()
-	{
+	public BioTransaction() {
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Date transactiondate, Long quantity, Study study)
-	{
+	public BioTransaction(Long id, Biospecimen biospecimen, Date transactiondate, Long quantity, Study study) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactiondate = transactiondate;
@@ -63,9 +60,8 @@ public class BioTransaction implements java.io.Serializable
 		this.study = study;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Study study, Long deleted, String treatment, Long sourcestudyId, String unit, Date deliverydate, String fixationtime,
-			Date transactiondate, Long quantity, String owner, String reason, String status, String studyname, String collaborator, String recorder, String destination, String action, String type)
-	{
+	public BioTransaction(Long id, Biospecimen biospecimen, Study study, Long deleted, String treatment, Long sourcestudyId, String unit, Date deliverydate, String fixationtime, Date transactiondate,
+			Long quantity, String owner, String reason, String status, String studyname, String collaborator, String recorder, String destination, String action, String type) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.study = study;
@@ -91,238 +87,195 @@ public class BioTransaction implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biotransaction_generator", sequenceName = "BIOTRANSACTION_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biotransaction_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_ID")
-	public Biospecimen getBiospecimen()
-	{
+	public Biospecimen getBiospecimen() {
 		return this.biospecimen;
 	}
 
-	public void setBiospecimen(Biospecimen biospecimen)
-	{
+	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
+	public Study getStudy() {
 		return this.study;
 	}
 
-	public void setStudy(Study study)
-	{
+	public void setStudy(Study study) {
 		this.study = study;
 	}
 
 	@Column(name = "DELETED")
-	public Long getDeleted()
-	{
+	public Long getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Long deleted)
-	{
+	public void setDeleted(Long deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "TREATMENT")
-	public String getTreatment()
-	{
+	public String getTreatment() {
 		return this.treatment;
 	}
 
-	public void setTreatment(String treatment)
-	{
+	public void setTreatment(String treatment) {
 		this.treatment = treatment;
 	}
 
 	@Column(name = "SOURCESTUDY_ID")
-	public Long getSourcestudyId()
-	{
+	public Long getSourcestudyId() {
 		return this.sourcestudyId;
 	}
 
-	public void setSourcestudyId(Long sourcestudyId)
-	{
+	public void setSourcestudyId(Long sourcestudyId) {
 		this.sourcestudyId = sourcestudyId;
 	}
 
 	@Column(name = "UNIT", length = 50)
-	public String getUnit()
-	{
+	public String getUnit() {
 		return this.unit;
 	}
 
-	public void setUnit(String unit)
-	{
+	public void setUnit(String unit) {
 		this.unit = unit;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DELIVERYDATE", length = 19)
-	public Date getDeliverydate()
-	{
+	public Date getDeliverydate() {
 		return this.deliverydate;
 	}
 
-	public void setDeliverydate(Date deliverydate)
-	{
+	public void setDeliverydate(Date deliverydate) {
 		this.deliverydate = deliverydate;
 	}
 
 	@Column(name = "FIXATIONTIME", length = 50)
-	public String getFixationtime()
-	{
+	public String getFixationtime() {
 		return this.fixationtime;
 	}
 
-	public void setFixationtime(String fixationtime)
-	{
+	public void setFixationtime(String fixationtime) {
 		this.fixationtime = fixationtime;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TRANSACTIONDATE", nullable = false, length = 19)
-	public Date getTransactiondate()
-	{
+	public Date getTransactiondate() {
 		return this.transactiondate;
 	}
 
-	public void setTransactiondate(Date transactiondate)
-	{
+	public void setTransactiondate(Date transactiondate) {
 		this.transactiondate = transactiondate;
 	}
 
 	@Column(name = "QUANTITY", nullable = false, precision = 22, scale = 0)
-	public Long getQuantity()
-	{
+	public Long getQuantity() {
 		return this.quantity;
 	}
 
-	public void setQuantity(Long quantity)
-	{
+	public void setQuantity(Long quantity) {
 		this.quantity = quantity;
 	}
 
 	@Column(name = "OWNER")
-	public String getOwner()
-	{
+	public String getOwner() {
 		return this.owner;
 	}
 
-	public void setOwner(String owner)
-	{
+	public void setOwner(String owner) {
 		this.owner = owner;
 	}
 
 	@Column(name = "REASON", length = 65535)
-	public String getReason()
-	{
+	public String getReason() {
 		return this.reason;
 	}
 
-	public void setReason(String reason)
-	{
+	public void setReason(String reason) {
 		this.reason = reason;
 	}
 
 	@Column(name = "STATUS", length = 50)
-	public String getStatus()
-	{
+	public String getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
 	@Column(name = "STUDY", length = 50)
-	public String getStudyName()
-	{
+	public String getStudyName() {
 		return this.studyname;
 	}
 
-	public void setStudyName(String studyname)
-	{
+	public void setStudyName(String studyname) {
 		this.studyname = studyname;
 	}
 
 	@Column(name = "COLLABORATOR")
-	public String getCollaborator()
-	{
+	public String getCollaborator() {
 		return this.collaborator;
 	}
 
-	public void setCollaborator(String collaborator)
-	{
+	public void setCollaborator(String collaborator) {
 		this.collaborator = collaborator;
 	}
 
 	@Column(name = "RECORDER")
-	public String getRecorder()
-	{
+	public String getRecorder() {
 		return this.recorder;
 	}
 
-	public void setRecorder(String recorder)
-	{
+	public void setRecorder(String recorder) {
 		this.recorder = recorder;
 	}
 
 	@Column(name = "DESTINATION")
-	public String getDestination()
-	{
+	public String getDestination() {
 		return this.destination;
 	}
 
-	public void setDestination(String destination)
-	{
+	public void setDestination(String destination) {
 		this.destination = destination;
 	}
 
 	@Column(name = "ACTION", length = 50)
-	public String getAction()
-	{
+	public String getAction() {
 		return this.action;
 	}
 
-	public void setAction(String action)
-	{
+	public void setAction(String action) {
 		this.action = action;
 	}
 
 	@Column(name = "TYPE", length = 100)
-	public String getType()
-	{
+	public String getType() {
 		return this.type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 

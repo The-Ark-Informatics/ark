@@ -27,19 +27,18 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Study study;
-	private DataType dataType;
-	private String fieldTitle;
-	private String name;
-	private String description;
-	private String minValue;
-	private String maxValue;
-	private String discreteValues;
-	private Long fieldPostion;
-	
-	private Set<SubjectCustFldDat> subjectCustFldDats = new HashSet<SubjectCustFldDat>(
-			0);
+	private Long							id;
+	private Study							study;
+	private DataType						dataType;
+	private String							fieldTitle;
+	private String							name;
+	private String							description;
+	private String							minValue;
+	private String							maxValue;
+	private String							discreteValues;
+	private Long							fieldPostion;
+
+	private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
 
 	// Constructors
 
@@ -48,21 +47,20 @@ public class SubjectCustmFld implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectCustmFld(Long id, Study study,
-			DataType dataType) {
+	public SubjectCustmFld(Long id, Study study, DataType dataType) {
 		this.id = id;
 		this.study = study;
 		this.dataType = dataType;
 	}
 
-	/** full constructor 
-	 * @param minValue 
-	 * @param maxValue 
-	 * @param discreteValues */
-	public SubjectCustmFld(Long id, Study study,
-			DataType dataType, String name, String description, 
-			String minValue, String maxValue, String discreteValues,
-			Set<SubjectCustFldDat> subjectCustFldDats) {
+	/**
+	 * full constructor
+	 * 
+	 * @param minValue
+	 * @param maxValue
+	 * @param discreteValues
+	 */
+	public SubjectCustmFld(Long id, Study study, DataType dataType, String name, String description, String minValue, String maxValue, String discreteValues, Set<SubjectCustFldDat> subjectCustFldDats) {
 		this.id = id;
 		this.study = study;
 		this.dataType = dataType;
@@ -76,8 +74,8 @@ public class SubjectCustmFld implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="subject_fld_gen", sequenceName="SUB_FLD_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "subject_fld_gen")
+	@SequenceGenerator(name = "subject_fld_gen", sequenceName = "SUB_FLD_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_fld_gen")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -116,7 +114,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "DESCRIPTION", length=255)
+	@Column(name = "DESCRIPTION", length = 255)
 	public String getDescription() {
 		return this.description;
 	}
@@ -161,7 +159,7 @@ public class SubjectCustmFld implements java.io.Serializable {
 		this.subjectCustFldDats = subjectCustFldDats;
 	}
 
-	@Column(name = "FIELD_POSITION",  nullable = false, precision = 22, scale = 0)
+	@Column(name = "FIELD_POSITION", nullable = false, precision = 22, scale = 0)
 	public Long getFieldPostion() {
 		return fieldPostion;
 	}

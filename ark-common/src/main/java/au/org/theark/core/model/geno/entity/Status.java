@@ -16,15 +16,15 @@ import au.org.theark.core.model.Constants;
 /**
  * Status entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.Status")
+@Entity(name = "au.org.theark.geno.model.entity.Status")
 @Table(name = "STATUS", schema = Constants.GENO_TABLE_SCHEMA)
 public class Status implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<GenoCollection> collections = new HashSet<GenoCollection>(0);
+	private Long						id;
+	private String						name;
+	private Set<GenoCollection>	collections	= new HashSet<GenoCollection>(0);
 
 	// Constructors
 

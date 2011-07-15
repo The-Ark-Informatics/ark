@@ -14,7 +14,8 @@ import javax.persistence.Table;
 import au.org.theark.core.Constants;
 
 /**
- * PersonSurnameHistory entity. 
+ * PersonSurnameHistory entity.
+ * 
  * @author cellis
  */
 @Entity
@@ -26,9 +27,9 @@ public class PersonLastnameHistory implements java.io.Serializable {
 	 */
 	private static final long	serialVersionUID	= -568162910323332654L;
 	// Fields
-	private Long id;
-	private Person person;
-	private String lastName;
+	private Long					id;
+	private Person					person;
+	private String					lastName;
 
 	// Constructors
 
@@ -50,8 +51,8 @@ public class PersonLastnameHistory implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="person_lastname_history_generator", sequenceName="PERSON_LASTNAME_HISTORY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "person_lastname_history_generator")
+	@SequenceGenerator(name = "person_lastname_history_generator", sequenceName = "PERSON_LASTNAME_HISTORY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "person_lastname_history_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -60,12 +61,12 @@ public class PersonLastnameHistory implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	/**
-	 * @param person the person to set
+	 * @param person
+	 *           the person to set
 	 */
-	public void setPerson(Person person)
-	{
+	public void setPerson(Person person) {
 		this.person = person;
 	}
 
@@ -74,8 +75,7 @@ public class PersonLastnameHistory implements java.io.Serializable {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "PERSON_ID")
-	public Person getPerson()
-	{
+	public Person getPerson() {
 		return person;
 	}
 
@@ -88,7 +88,8 @@ public class PersonLastnameHistory implements java.io.Serializable {
 	}
 
 	/**
-	 * @param person the surname to set
+	 * @param person
+	 *           the surname to set
 	 */
 	public void setLastName(String lastName) {
 		this.lastName = lastName;

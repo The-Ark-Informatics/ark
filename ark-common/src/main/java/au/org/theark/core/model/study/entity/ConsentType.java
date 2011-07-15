@@ -11,16 +11,16 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "CONSENT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class ConsentType implements Serializable {
-	
-	private Long id;
-	private String name;
-	private String description;
-	
+
+	private Long	id;
+	private String	name;
+	private String	description;
+
 	@Id
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
@@ -48,6 +48,5 @@ public class ConsentType implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 
 }

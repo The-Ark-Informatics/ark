@@ -16,7 +16,8 @@ import javax.persistence.Table;
 import au.org.theark.core.Constants;
 
 /**
- * SubjectFile entity. 
+ * SubjectFile entity.
+ * 
  * @author cellis
  */
 @Entity
@@ -28,15 +29,15 @@ public class SubjectFile implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3611814204230766317L;
-	private Long id;
-	private LinkSubjectStudy linkSubjectStudy;
-	private StudyComp studyComp;
-	private String filename;
-	private Blob payload;
-	private String checksum;
-	private String userId;
-	private String comments;
+	private static final long	serialVersionUID	= -3611814204230766317L;
+	private Long					id;
+	private LinkSubjectStudy	linkSubjectStudy;
+	private StudyComp				studyComp;
+	private String					filename;
+	private Blob					payload;
+	private String					checksum;
+	private String					userId;
+	private String					comments;
 
 	// Constructors
 
@@ -45,7 +46,7 @@ public class SubjectFile implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectFile(Long id, LinkSubjectStudy linkSubjectStudy, StudyComp studyComp,	String filename, String userId) {
+	public SubjectFile(Long id, LinkSubjectStudy linkSubjectStudy, StudyComp studyComp, String filename, String userId) {
 		this.id = id;
 		this.linkSubjectStudy = linkSubjectStudy;
 		this.studyComp = studyComp;
@@ -55,8 +56,8 @@ public class SubjectFile implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="SubjectFile_PK_Seq",sequenceName="SUBJECTFILE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="SubjectFile_PK_Seq")
+	@SequenceGenerator(name = "SubjectFile_PK_Seq", sequenceName = "SUBJECTFILE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "SubjectFile_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -65,11 +66,12 @@ public class SubjectFile implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	/**
-	 * @param linkSubjectStudy the linkSubjectStudy to set
+	 * @param linkSubjectStudy
+	 *           the linkSubjectStudy to set
 	 */
-	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
-	{
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
@@ -78,16 +80,15 @@ public class SubjectFile implements java.io.Serializable {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
-	public LinkSubjectStudy getLinkSubjectStudy()
-	{
+	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
 	}
 
 	/**
-	 * @param studyComp the studyComp to set
+	 * @param studyComp
+	 *           the studyComp to set
 	 */
-	public void setStudyComp(StudyComp studyComp)
-	{
+	public void setStudyComp(StudyComp studyComp) {
 		this.studyComp = studyComp;
 	}
 
@@ -96,11 +97,10 @@ public class SubjectFile implements java.io.Serializable {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_COMP_ID")
-	public StudyComp getStudyComp()
-	{
+	public StudyComp getStudyComp() {
 		return studyComp;
 	}
-	
+
 	@Column(name = "FILENAME", length = 260)
 	public String getFilename() {
 		return this.filename;
@@ -109,7 +109,7 @@ public class SubjectFile implements java.io.Serializable {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
+
 	@Column(name = "PAYLOAD")
 	public Blob getPayload() {
 		return this.payload;
@@ -118,12 +118,12 @@ public class SubjectFile implements java.io.Serializable {
 	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
-	
+
 	@Column(name = "CHECKSUM")
 	public String getChecksum() {
 		return checksum;
 	}
-	
+
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}
@@ -138,10 +138,10 @@ public class SubjectFile implements java.io.Serializable {
 	}
 
 	/**
-	 * @param comments the comments to set
+	 * @param comments
+	 *           the comments to set
 	 */
-	public void setComments(String comments)
-	{
+	public void setComments(String comments) {
 		this.comments = comments;
 	}
 
@@ -149,8 +149,7 @@ public class SubjectFile implements java.io.Serializable {
 	 * @return the comments
 	 */
 	@Column(name = "COMMENTS", length = 500)
-	public String getComments()
-	{
+	public String getComments() {
 		return comments;
 	}
 }

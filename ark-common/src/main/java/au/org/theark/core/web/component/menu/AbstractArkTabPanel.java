@@ -12,18 +12,18 @@ import au.org.theark.core.service.IArkCommonService;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class AbstractArkTabPanel extends Panel{
-	
-	@SpringBean( name="arkLdapRealm")
-	private ArkLdapRealm realm;
-	
-	@SpringBean( name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void> iArkCommonService;
+public class AbstractArkTabPanel extends Panel {
 
-	private ArkModule arkModule;
-	
+	@SpringBean(name = "arkLdapRealm")
+	private ArkLdapRealm					realm;
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
+
+	private ArkModule						arkModule;
+
 	/**
 	 * @param id
 	 */
@@ -31,17 +31,17 @@ public class AbstractArkTabPanel extends Panel{
 		super(id);
 	}
 
-
 	/**
 	 * Clear the current user's session principals
+	 * 
 	 * @param arkModuleName
 	 * @param arkFunction
 	 */
-	public void processAuthorizationCache(String arkModuleName , ArkFunction arkFunction){
-		arkModule = iArkCommonService.getArkModuleByName(arkModuleName); //Place a default module into session
+	public void processAuthorizationCache(String arkModuleName, ArkFunction arkFunction) {
+		arkModule = iArkCommonService.getArkModuleByName(arkModuleName); // Place a default module into session
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_FUNCTION_KEY, arkFunction.getId());
 		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY, arkModule.getId());
-		Subject currentUser = SecurityUtils.getSubject();	
+		Subject currentUser = SecurityUtils.getSubject();
 		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 	}
 

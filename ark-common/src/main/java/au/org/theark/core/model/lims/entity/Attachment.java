@@ -17,8 +17,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "attachment", schema = Constants.LIMS_TABLE_SCHEMA)
-public class Attachment implements java.io.Serializable
-{
+public class Attachment implements java.io.Serializable {
 
 	private Long		id;
 	private String		timestamp;
@@ -29,19 +28,16 @@ public class Attachment implements java.io.Serializable
 	private String		domain;
 	private String		na;
 
-	public Attachment()
-	{
+	public Attachment() {
 	}
 
-	public Attachment(Long id, String attachedby, String domain)
-	{
+	public Attachment(Long id, String attachedby, String domain) {
 		this.id = id;
 		this.attachedby = attachedby;
 		this.domain = domain;
 	}
 
-	public Attachment(Long id, Integer deleted, String attachedby, String fileName, String comments, String domain, String na)
-	{
+	public Attachment(Long id, Integer deleted, String attachedby, String fileName, String comments, String domain, String na) {
 		this.id = id;
 		this.deleted = deleted;
 		this.attachedby = attachedby;
@@ -55,91 +51,74 @@ public class Attachment implements java.io.Serializable
 	@SequenceGenerator(name = "attachment_generator", sequenceName = "ATTACHMENT_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "attachment_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "ATTACHEDBY", nullable = false, length = 65535)
-	public String getAttachedby()
-	{
+	public String getAttachedby() {
 		return this.attachedby;
 	}
 
-	public void setAttachedby(String attachedby)
-	{
+	public void setAttachedby(String attachedby) {
 		this.attachedby = attachedby;
 	}
 
 	@Column(name = "FILE_NAME", length = 50)
-	public String getFileName()
-	{
+	public String getFileName() {
 		return this.fileName;
 	}
 
-	public void setFileName(String fileName)
-	{
+	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
 
 	@Column(name = "COMMENTS", length = 65535)
-	public String getComments()
-	{
+	public String getComments() {
 		return this.comments;
 	}
 
-	public void setComments(String comments)
-	{
+	public void setComments(String comments) {
 		this.comments = comments;
 	}
 
 	@Column(name = "DOMAIN", nullable = false, length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	@Column(name = "NA", length = 50)
-	public String getNa()
-	{
+	public String getNa() {
 		return this.na;
 	}
 
-	public void setNa(String na)
-	{
+	public void setNa(String na) {
 		this.na = na;
 	}
 

@@ -20,31 +20,33 @@ import au.org.theark.core.Constants;
 
 /**
  * Provides a mechanism to associate a person with more than one address(home,work etc).
+ * 
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "PERSON_ADDRESS", schema = Constants.STUDY_SCHEMA)
 public class PersonAddress implements Serializable {
-	
-	private Long id;
-	private Address address;
-	private Person person;
-	
-	/**
-	 * Constructor 
-	 */
-	public PersonAddress(){
-		
-	}
-	
+
+	private Long		id;
+	private Address	address;
+	private Person		person;
+
 	/**
 	 * Constructor
+	 */
+	public PersonAddress() {
+
+	}
+
+	/**
+	 * Constructor
+	 * 
 	 * @param id
 	 * @param person
 	 * @param address
 	 */
-	public PersonAddress(Long id, Person person, Address address){
+	public PersonAddress(Long id, Person person, Address address) {
 		this.id = id;
 		this.address = address;
 		this.person = person;
@@ -80,6 +82,5 @@ public class PersonAddress implements Serializable {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-	
 
 }

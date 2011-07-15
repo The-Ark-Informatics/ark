@@ -4,8 +4,7 @@ import java.awt.image.BufferedImage;
 
 import org.apache.wicket.markup.html.image.resource.DynamicImageResource;
 
-public class ImageResource extends DynamicImageResource
-{
+public class ImageResource extends DynamicImageResource {
 
 	/**
 	 * 
@@ -15,26 +14,21 @@ public class ImageResource extends DynamicImageResource
 	// has to save this or get the image another way!
 	private byte[]					image;
 
-	public ImageResource(byte[] image, String format)
-	{
+	public ImageResource(byte[] image, String format) {
 		this.image = image;
 		setFormat(format);
 	}
 
-	public ImageResource(BufferedImage image)
-	{
+	public ImageResource(BufferedImage image) {
 		this.image = toImageData(image);
 	}
 
 	@Override
-	protected byte[] getImageData()
-	{
-		if (image != null)
-		{
+	protected byte[] getImageData() {
+		if (image != null) {
 			return image;
 		}
-		else
-		{
+		else {
 			return new byte[0];
 		}
 
@@ -44,8 +38,7 @@ public class ImageResource extends DynamicImageResource
 	 * 1 day!
 	 */
 	@Override
-	protected int getCacheDuration()
-	{
+	protected int getCacheDuration() {
 
 		return 3600 * 24;
 	}

@@ -20,8 +20,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_cell", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvCell implements java.io.Serializable
-{
+public class InvCell implements java.io.Serializable {
 
 	private Long	id;
 	private String	timestamp;
@@ -31,18 +30,15 @@ public class InvCell implements java.io.Serializable
 	private Long	colno;
 	private String	status;
 
-	public InvCell()
-	{
+	public InvCell() {
 	}
 
-	public InvCell(Long id, InvBox invBox)
-	{
+	public InvCell(Long id, InvBox invBox) {
 		this.id = id;
 		this.invBox = invBox;
 	}
 
-	public InvCell(Long id, InvBox invBox, Long deleted, Long rowno, Long colno, String status)
-	{
+	public InvCell(Long id, InvBox invBox, Long deleted, Long rowno, Long colno, String status) {
 		this.id = id;
 		this.invBox = invBox;
 		this.deleted = deleted;
@@ -54,81 +50,66 @@ public class InvCell implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "invcell_generator", sequenceName = "INVCELL_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invcell_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BOX_ID", nullable = false)
-	public InvBox getInvBox()
-	{
+	public InvBox getInvBox() {
 		return this.invBox;
 	}
 
-	public void setInvBox(InvBox invBox)
-	{
+	public void setInvBox(InvBox invBox) {
 		this.invBox = invBox;
 	}
 
 	@Column(name = "DELETED")
-	public Long getDeleted()
-	{
+	public Long getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Long deleted)
-	{
+	public void setDeleted(Long deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "ROWNO")
-	public Long getRowno()
-	{
+	public Long getRowno() {
 		return this.rowno;
 	}
 
-	public void setRowno(Long rowno)
-	{
+	public void setRowno(Long rowno) {
 		this.rowno = rowno;
 	}
 
 	@Column(name = "COLNO")
-	public Long getColno()
-	{
+	public Long getColno() {
 		return this.colno;
 	}
 
-	public void setColno(Long colno)
-	{
+	public void setColno(Long colno) {
 		this.colno = colno;
 	}
 
 	@Column(name = "STATUS", length = 50)
-	public String getStatus()
-	{
+	public String getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

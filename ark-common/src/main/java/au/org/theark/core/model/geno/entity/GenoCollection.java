@@ -25,30 +25,28 @@ import au.org.theark.core.model.study.entity.Study;
 /**
  * Collection entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.Collection")
+@Entity(name = "au.org.theark.geno.model.entity.Collection")
 @Table(name = "COLLECTION", schema = Constants.GENO_TABLE_SCHEMA)
 public class GenoCollection implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Status status;
-	private Study study;
-	private String name;
-	private String description;
-	private Date startDate;
-	private Date expiryDate;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Set<MetaData> metaDatas = new HashSet<MetaData>(0);
-	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
-			0);
-	private Set<EncodedData> encodedDatas = new HashSet<EncodedData>(0);
-	private Set<DecodeMask> decodeMasks = new HashSet<DecodeMask>(0);
-	private Set<UploadCollection> uploadCollections = new HashSet<UploadCollection>(
-			0);
+	private Long						id;
+	private Status						status;
+	private Study						study;
+	private String						name;
+	private String						description;
+	private Date						startDate;
+	private Date						expiryDate;
+	private String						userId;
+	private Date						insertTime;
+	private String						updateUserId;
+	private Date						updateTime;
+	private Set<MetaData>			metaDatas			= new HashSet<MetaData>(0);
+	private Set<CollectionImport>	collectionImports	= new HashSet<CollectionImport>(0);
+	private Set<EncodedData>		encodedDatas		= new HashSet<EncodedData>(0);
+	private Set<DecodeMask>			decodeMasks			= new HashSet<DecodeMask>(0);
+	private Set<UploadCollection>	uploadCollections	= new HashSet<UploadCollection>(0);
 
 	// Constructors
 
@@ -57,8 +55,7 @@ public class GenoCollection implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public GenoCollection(Long id, Status status, Study study, String userId,
-			Date insertTime) {
+	public GenoCollection(Long id, Status status, Study study, String userId, Date insertTime) {
 		this.id = id;
 		this.status = status;
 		this.study = study;
@@ -66,14 +63,13 @@ public class GenoCollection implements java.io.Serializable {
 		this.insertTime = insertTime;
 	}
 
-	/** full constructor 
-	 * @param decodeMasks */
-	public GenoCollection(Long id, Status status, Study study, String name,
-			String description, Date startDate, Date expiryDate, String userId,
-			Date insertTime, String updateUserId, Date updateTime,
-			Set<MetaData> metaDatas, Set<CollectionImport> collectionImports,
-			Set<EncodedData> encodedDatas, Set<DecodeMask> decodeMasks, 
-			Set<UploadCollection> uploadCollections) {
+	/**
+	 * full constructor
+	 * 
+	 * @param decodeMasks
+	 */
+	public GenoCollection(Long id, Status status, Study study, String name, String description, Date startDate, Date expiryDate, String userId, Date insertTime, String updateUserId, Date updateTime,
+			Set<MetaData> metaDatas, Set<CollectionImport> collectionImports, Set<EncodedData> encodedDatas, Set<DecodeMask> decodeMasks, Set<UploadCollection> uploadCollections) {
 		this.id = id;
 		this.status = status;
 		this.study = study;
@@ -94,8 +90,8 @@ public class GenoCollection implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Collection_PK_Seq",sequenceName=Constants.COLLECTION_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Collection_PK_Seq")
+	@SequenceGenerator(name = "Collection_PK_Seq", sequenceName = Constants.COLLECTION_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -236,7 +232,7 @@ public class GenoCollection implements java.io.Serializable {
 	public void setDecodeMasks(Set<DecodeMask> decodeMasks) {
 		this.decodeMasks = decodeMasks;
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "collection")
 	public Set<UploadCollection> getUploadCollections() {
 		return this.uploadCollections;

@@ -19,28 +19,29 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ARK_ROLE", schema = Constants.STUDY_SCHEMA)
-public class ArkRole implements Serializable{
+public class ArkRole implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<ArkRolePermission> arkRolePermission  = new HashSet<ArkRolePermission>(0);
-	
-	public ArkRole(){
-		
+	private Long							id;
+	private String							name;
+	private String							description;
+	private Set<ArkRolePermission>	arkRolePermission	= new HashSet<ArkRolePermission>(0);
+
+	public ArkRole() {
+
 	}
-	
+
 	@Id
-	@SequenceGenerator(name="role_generator", sequenceName="ROLE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "role_generator")
+	@SequenceGenerator(name = "role_generator", sequenceName = "ROLE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "role_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -92,9 +93,10 @@ public class ArkRole implements Serializable{
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		}
+		else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
-	
+
 }

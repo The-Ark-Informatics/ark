@@ -12,9 +12,9 @@ import org.apache.wicket.model.IModel;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public abstract class AbstractSearchResultPanel<T> extends Panel{
+public abstract class AbstractSearchResultPanel<T> extends Panel {
 
 	/**
 	 * @param id
@@ -23,10 +23,7 @@ public abstract class AbstractSearchResultPanel<T> extends Panel{
 		super(id);
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 	public abstract PageableListView<T> buildPageableListView(IModel iModel);
 
-	
-	
 }

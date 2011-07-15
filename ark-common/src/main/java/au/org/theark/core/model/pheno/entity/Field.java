@@ -27,29 +27,29 @@ import au.org.theark.core.model.Constants;
 public class Field implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private Study study;
-	private FieldType fieldType;
-	private String name;
-	private String description;
-	private String units;
-	private Long seqNum;
-	private String minValue;
-	private String maxValue;
-	private String encodedValues;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Boolean qualityControlStatus;
-	private String missingValue;
-	
+	private Long		id;
+	private Study		study;
+	private FieldType	fieldType;
+	private String		name;
+	private String		description;
+	private String		units;
+	private Long		seqNum;
+	private String		minValue;
+	private String		maxValue;
+	private String		encodedValues;
+	private String		userId;
+	private Date		insertTime;
+	private String		updateUserId;
+	private Date		updateTime;
+	private Boolean	qualityControlStatus;
+	private String		missingValue;
+
 	// Constructors
 
 	/** default constructor */
 	public Field() {
 	}
-	
+
 	/** minimal constructor */
 	public Field(Long id, FieldType fieldType, Long studyId, String name, String userId, Date insertTime) {
 		this.id = id;
@@ -60,10 +60,8 @@ public class Field implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Field(Long id, FieldType fieldType, String name,
-			String description, String units, Long seqNum, String minValue,
-			String maxValue, String encodedValues, String userId,
-			Date insertTime, String updateUserId, Date updateTime) {
+	public Field(Long id, FieldType fieldType, String name, String description, String units, Long seqNum, String minValue, String maxValue, String encodedValues, String userId, Date insertTime,
+			String updateUserId, Date updateTime) {
 		this.id = id;
 		this.fieldType = fieldType;
 		this.name = name;
@@ -81,8 +79,8 @@ public class Field implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Field_PK_Seq",sequenceName="PHENOTYPIC.FIELD_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Field_PK_Seq")
+	@SequenceGenerator(name = "Field_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -91,12 +89,12 @@ public class Field implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	/**
-	 * @param study the study to set
+	 * @param study
+	 *           the study to set
 	 */
-	public void setStudy(Study study)
-	{
+	public void setStudy(Study study) {
 		this.study = study;
 	}
 
@@ -105,8 +103,7 @@ public class Field implements java.io.Serializable {
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
+	public Study getStudy() {
 		return study;
 	}
 
@@ -212,14 +209,15 @@ public class Field implements java.io.Serializable {
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "UPDATE_TIME")
+	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
 	/**
-	 * @param updateTime the updateTime to set
-	 */ 
+	 * @param updateTime
+	 *           the updateTime to set
+	 */
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
@@ -228,7 +226,7 @@ public class Field implements java.io.Serializable {
 		this.qualityControlStatus = qualityControlStatus;
 	}
 
-	@Column(name="QUALITY_CONTROL_STATUS")
+	@Column(name = "QUALITY_CONTROL_STATUS")
 	public Boolean getQualityControlStatus() {
 		return qualityControlStatus;
 	}
@@ -237,7 +235,7 @@ public class Field implements java.io.Serializable {
 		this.missingValue = missingValue;
 	}
 
-	@Column(name="MISSING_VALUE")
+	@Column(name = "MISSING_VALUE")
 	public String getMissingValue() {
 		return missingValue;
 	}

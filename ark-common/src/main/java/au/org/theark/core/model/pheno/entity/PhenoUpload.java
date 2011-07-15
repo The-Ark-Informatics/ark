@@ -29,37 +29,34 @@ import au.org.theark.core.model.Constants;
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.entity.Upload")
 @Table(name = "UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoUpload implements java.io.Serializable
-{
+public class PhenoUpload implements java.io.Serializable {
 
 	// Fields
-	private Long				id;
-	private Study				study;
-	private FileFormat		fileFormat;
-	private DelimiterType	delimiterType;
-	private String				filename;
-	private Blob				payload;
-	private String				checksum;
-	private Date				startTime;
-	private Date				finishTime;
-	private Blob				uploadReport;
-	private String				userId;
-	private Date				insertTime;
-	private String				updateUserId;
-	private Date				updateTime;
-	private String				uploadType;
-	
-	private Set<PhenoCollectionUpload> phenoCollectionUploads = new HashSet<PhenoCollectionUpload>(0);
+	private Long								id;
+	private Study								study;
+	private FileFormat						fileFormat;
+	private DelimiterType					delimiterType;
+	private String								filename;
+	private Blob								payload;
+	private String								checksum;
+	private Date								startTime;
+	private Date								finishTime;
+	private Blob								uploadReport;
+	private String								userId;
+	private Date								insertTime;
+	private String								updateUserId;
+	private Date								updateTime;
+	private String								uploadType;
+
+	private Set<PhenoCollectionUpload>	phenoCollectionUploads	= new HashSet<PhenoCollectionUpload>(0);
 
 	// Constructors
 	/** default constructor */
-	public PhenoUpload()
-	{
+	public PhenoUpload() {
 	}
 
 	/** minimal constructor */
-	public PhenoUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport)
-	{
+	public PhenoUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
@@ -72,13 +69,11 @@ public class PhenoUpload implements java.io.Serializable
 	@SequenceGenerator(name = "Upload_PK_Seq", sequenceName = "PHENOTYPIC.UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -87,16 +82,15 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
+	public Study getStudy() {
 		return study;
 	}
-	
+
 	/**
-	 * @param study the study to set
+	 * @param study
+	 *           the study to set
 	 */
-	public void setStudy(Study study)
-	{
+	public void setStudy(Study study) {
 		this.study = study;
 	}
 
@@ -105,13 +99,11 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FILE_FORMAT_ID", nullable = false)
-	public FileFormat getFileFormat()
-	{
+	public FileFormat getFileFormat() {
 		return this.fileFormat;
 	}
 
-	public void setFileFormat(FileFormat fileFormat)
-	{
+	public void setFileFormat(FileFormat fileFormat) {
 		this.fileFormat = fileFormat;
 	}
 
@@ -119,8 +111,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param delimiterType
 	 *           the delimiterType to set
 	 */
-	public void setDelimiterType(DelimiterType delimiterType)
-	{
+	public void setDelimiterType(DelimiterType delimiterType) {
 		this.delimiterType = delimiterType;
 	}
 
@@ -129,8 +120,7 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
-	public DelimiterType getDelimiterType()
-	{
+	public DelimiterType getDelimiterType() {
 		return delimiterType;
 	}
 
@@ -138,8 +128,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the filename
 	 */
 	@Column(name = "FILENAME", length = 260)
-	public String getFilename()
-	{
+	public String getFilename() {
 		return this.filename;
 	}
 
@@ -147,8 +136,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param filename
 	 *           the filename to set
 	 */
-	public void setFilename(String filename)
-	{
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 
@@ -156,8 +144,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the payload
 	 */
 	@Column(name = "PAYLOAD")
-	public Blob getPayload()
-	{
+	public Blob getPayload() {
 		return this.payload;
 	}
 
@@ -165,8 +152,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param payload
 	 *           the payload to set
 	 */
-	public void setPayload(Blob payload)
-	{
+	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
 
@@ -174,8 +160,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the checksum
 	 */
 	@Column(name = "CHECKSUM", nullable = false, length = 50)
-	public String getChecksum()
-	{
+	public String getChecksum() {
 		return checksum;
 	}
 
@@ -183,26 +168,24 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param checksum
 	 *           the checksum to set
 	 */
-	public void setChecksum(String checksum)
-	{
+	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}
-	
+
 	/**
 	 * @return the startTime
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "START_TIME", nullable = false)
-	public Date getStartTime()
-	{
+	public Date getStartTime() {
 		return startTime;
 	}
 
 	/**
-	 * @param startTime the startTime to set
+	 * @param startTime
+	 *           the startTime to set
 	 */
-	public void setStartTime(Date startTime)
-	{
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
@@ -211,24 +194,23 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FINISH_TIME")
-	public Date getFinishTime()
-	{
+	public Date getFinishTime() {
 		return finishTime;
 	}
-	
+
 	/**
-	 * @param finishTime the finishTime to set
+	 * @param finishTime
+	 *           the finishTime to set
 	 */
-	public void setFinishTime(Date finishTime)
-	{
+	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
 	}
 
 	/**
-	 * @param uploadReport the uploadReport to set
+	 * @param uploadReport
+	 *           the uploadReport to set
 	 */
-	public void setUploadReport(Blob uploadReport)
-	{
+	public void setUploadReport(Blob uploadReport) {
 		this.uploadReport = uploadReport;
 	}
 
@@ -236,8 +218,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the uploadReport
 	 */
 	@Column(name = "UPLOAD_REPORT")
-	public Blob getUploadReport()
-	{
+	public Blob getUploadReport() {
 		return uploadReport;
 	}
 
@@ -245,8 +226,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the userId
 	 */
 	@Column(name = "USER_ID", nullable = false, length = 50)
-	public String getUserId()
-	{
+	public String getUserId() {
 		return this.userId;
 	}
 
@@ -254,8 +234,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param userId
 	 *           the userId to set
 	 */
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -264,8 +243,7 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public Date getInsertTime()
-	{
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
@@ -273,8 +251,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param insertTime
 	 *           the insertTime to set
 	 */
-	public void setInsertTime(Date insertTime)
-	{
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
@@ -282,8 +259,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the updateUserId
 	 */
 	@Column(name = "UPDATE_USER_ID", length = 50)
-	public String getUpdateUserId()
-	{
+	public String getUpdateUserId() {
 		return this.updateUserId;
 	}
 
@@ -291,8 +267,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param updateUserId
 	 *           the updateUserId to set
 	 */
-	public void setUpdateUserId(String updateUserId)
-	{
+	public void setUpdateUserId(String updateUserId) {
 		this.updateUserId = updateUserId;
 	}
 
@@ -301,8 +276,7 @@ public class PhenoUpload implements java.io.Serializable
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public Date getUpdateTime()
-	{
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
@@ -310,16 +284,15 @@ public class PhenoUpload implements java.io.Serializable
 	 * @param updateTime
 	 *           the updateTime to set
 	 */
-	public void setUpdateTime(Date updateTime)
-	{
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 
 	/**
-	 * @param phenoCollectionUploads the phenoCollectionUploads to set
+	 * @param phenoCollectionUploads
+	 *           the phenoCollectionUploads to set
 	 */
-	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads)
-	{
+	public void setPhenoCollectionUploads(Set<PhenoCollectionUpload> phenoCollectionUploads) {
 		this.phenoCollectionUploads = phenoCollectionUploads;
 	}
 
@@ -327,16 +300,15 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the phenoCollectionUploads
 	 */
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "upload")
-	public Set<PhenoCollectionUpload> getPhenoCollectionUploads()
-	{
+	public Set<PhenoCollectionUpload> getPhenoCollectionUploads() {
 		return phenoCollectionUploads;
 	}
 
 	/**
-	 * @param uploadType the uploadType to set
+	 * @param uploadType
+	 *           the uploadType to set
 	 */
-	public void setUploadType(String uploadType)
-	{
+	public void setUploadType(String uploadType) {
 		this.uploadType = uploadType;
 	}
 
@@ -344,8 +316,7 @@ public class PhenoUpload implements java.io.Serializable
 	 * @return the uploadType
 	 */
 	@Column(name = "UPLOAD_TYPE")
-	public String getUploadType()
-	{
+	public String getUploadType() {
 		return uploadType;
 	}
 }

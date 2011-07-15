@@ -16,15 +16,15 @@ import au.org.theark.core.model.Constants;
  * Status entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity(name="au.org.theark.phenotypic.model.entity.Status")
+@Entity(name = "au.org.theark.phenotypic.model.entity.Status")
 @Table(name = "STATUS", schema = Constants.PHENO_TABLE_SCHEMA)
 public class Status implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<PhenoCollection> collections = new HashSet<PhenoCollection>(0);
+	private Long						id;
+	private String						name;
+	private Set<PhenoCollection>	collections	= new HashSet<PhenoCollection>(0);
 
 	// Constructors
 

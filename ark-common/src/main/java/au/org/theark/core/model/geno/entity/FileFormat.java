@@ -16,15 +16,15 @@ import au.org.theark.core.model.Constants;
 /**
  * FileFormat entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.FileFormat")
+@Entity(name = "au.org.theark.geno.model.entity.FileFormat")
 @Table(name = "FILE_FORMAT", schema = Constants.GENO_TABLE_SCHEMA)
 public class FileFormat implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<Upload> uploads = new HashSet<Upload>(0);
+	private Long			id;
+	private String			name;
+	private Set<Upload>	uploads	= new HashSet<Upload>(0);
 
 	// Constructors
 

@@ -9,8 +9,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.model.IModel;
 
 @SuppressWarnings("unchecked")
-public abstract class AjaxEditorButton extends AjaxButton
-{
+public abstract class AjaxEditorButton extends AjaxButton {
 	/**
 	 * 
 	 */
@@ -19,55 +18,41 @@ public abstract class AjaxEditorButton extends AjaxButton
 	private final IModel				confirm;
 	private transient ListItem<?>	parent;
 
-	public AjaxEditorButton(String id, IModel confirm, IModel label)
-	{
+	public AjaxEditorButton(String id, IModel confirm, IModel label) {
 		super(id);
 		this.setModel(label);
 		this.confirm = confirm;
 	}
 
-	protected final ListItem<?> getItem()
-	{
-		if (parent == null)
-		{
+	protected final ListItem<?> getItem() {
+		if (parent == null) {
 			parent = findParent(ListItem.class);
 		}
 		return parent;
 	}
 
-	protected final List<?> getList()
-	{
+	protected final List<?> getList() {
 		return getEditor().items;
 	}
 
-	protected final AbstractListEditor<?> getEditor()
-	{
+	protected final AbstractListEditor<?> getEditor() {
 		return (AbstractListEditor<?>) getItem().getParent();
 	}
 
 	@Override
-	protected void onDetach()
-	{
+	protected void onDetach() {
 		parent = null;
 		super.onDetach();
 	}
 
 	@Override
-	protected IAjaxCallDecorator getAjaxCallDecorator()
-	{
-		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator())
-		{
+	protected IAjaxCallDecorator getAjaxCallDecorator() {
+		return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
 			private static final long	serialVersionUID	= 7495281332320552876L;
 
 			@Override
-			public CharSequence preDecorateScript(CharSequence script)
-			{
-				return 	"if(!confirm('" + confirm.getObject() + "'))" + 
-							"{ " + "	return false " + "} " + 
-							"else " + 
-							"{ " + 
-							"	this.disabled = true; " + "};" + 
-							script;
+			public CharSequence preDecorateScript(CharSequence script) {
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
 			}
 		};
 	}

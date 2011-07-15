@@ -13,16 +13,16 @@ import au.org.theark.core.model.Constants;
 /**
  * DecodeMask entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.DecodeMask")
+@Entity(name = "au.org.theark.geno.model.entity.DecodeMask")
 @Table(name = "DECODE_MASK", schema = Constants.GENO_TABLE_SCHEMA)
 public class DecodeMask implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private GenoCollection collection;
-	private Marker marker;
-	private Long bitPosition;
+	private Long				id;
+	private GenoCollection	collection;
+	private Marker				marker;
+	private Long				bitPosition;
 
 	// Constructors
 

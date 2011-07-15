@@ -17,23 +17,22 @@ import au.org.theark.core.model.study.entity.ConsentAnswer;
 /**
  * @author nivedann
  * @param <T>
- *
+ * 
  */
-public class DropDownPanel extends Panel{
+public class DropDownPanel extends Panel {
 
-	private DropDownChoice<ConsentAnswer> consentAnswerChoice;
+	private DropDownChoice<ConsentAnswer>	consentAnswerChoice;
+
 	/**
 	 * @param id
 	 */
-	public DropDownPanel(String id,String selectControlId, List<ConsentAnswer> choicesList) {
-		
+	public DropDownPanel(String id, String selectControlId, List<ConsentAnswer> choicesList) {
+
 		super(id);
-		
-		ChoiceRenderer<ConsentAnswer>  choiceRenderer = new ChoiceRenderer<ConsentAnswer>("name", "id");
-		consentAnswerChoice  = new DropDownChoice<ConsentAnswer>(selectControlId, (List)choicesList, choiceRenderer);
+
+		ChoiceRenderer<ConsentAnswer> choiceRenderer = new ChoiceRenderer<ConsentAnswer>("name", "id");
+		consentAnswerChoice = new DropDownChoice<ConsentAnswer>(selectControlId, (List) choicesList, choiceRenderer);
 		add(consentAnswerChoice);
 	}
-	
-	
 
 }

@@ -20,27 +20,23 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_group", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataGroup implements java.io.Serializable
-{
+public class BiodataGroup implements java.io.Serializable {
 
-	private Long									id;
+	private Long								id;
 	private String								groupName;
 	private String								domain;
 	private Set<BiodataGroupCriteria>	biodataGroupCriterias	= new HashSet<BiodataGroupCriteria>(0);
 	private Set<BiodataFieldGroup>		biodataFieldGroups		= new HashSet<BiodataFieldGroup>(0);
 
-	public BiodataGroup()
-	{
+	public BiodataGroup() {
 	}
 
-	public BiodataGroup(Long id, String groupName)
-	{
+	public BiodataGroup(Long id, String groupName) {
 		this.id = id;
 		this.groupName = groupName;
 	}
 
-	public BiodataGroup(Long id, String groupName, String domain, Set<BiodataGroupCriteria> biodataGroupCriterias, Set<BiodataFieldGroup> biodataFieldGroups)
-	{
+	public BiodataGroup(Long id, String groupName, String domain, Set<BiodataGroupCriteria> biodataGroupCriterias, Set<BiodataFieldGroup> biodataFieldGroups) {
 		this.id = id;
 		this.groupName = groupName;
 		this.domain = domain;
@@ -51,60 +47,42 @@ public class BiodataGroup implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatagroup_generator", sequenceName = "BIODATAGROUP_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatagroup_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "GROUP_NAME", nullable = false, length = 100)
-	public String getGroupName()
-	{
+	public String getGroupName() {
 		return this.groupName;
 	}
 
-	public void setGroupName(String groupName)
-	{
+	public void setGroupName(String groupName) {
 		this.groupName = groupName;
 	}
 
 	@Column(name = "DOMAIN", length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataGroup")
-	public Set<BiodataGroupCriteria> getBiodataGroupCriterias()
-	{
-		return this.biodataGroupCriterias;
-	}
-
-	public void setBiodataGroupCriterias(Set<BiodataGroupCriteria> biodataGroupCriterias)
-	{
-		this.biodataGroupCriterias = biodataGroupCriterias;
-	}
-
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataGroup")
-	public Set<BiodataFieldGroup> getBiodataFieldGroups()
-	{
-		return this.biodataFieldGroups;
-	}
-
-	public void setBiodataFieldGroups(Set<BiodataFieldGroup> biodataFieldGroups)
-	{
-		this.biodataFieldGroups = biodataFieldGroups;
-	}
-	*/
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataGroup") public Set<BiodataGroupCriteria> getBiodataGroupCriterias() { return
+	 * this.biodataGroupCriterias; }
+	 * 
+	 * public void setBiodataGroupCriterias(Set<BiodataGroupCriteria> biodataGroupCriterias) { this.biodataGroupCriterias = biodataGroupCriterias; }
+	 * 
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataGroup") public Set<BiodataFieldGroup> getBiodataFieldGroups() { return
+	 * this.biodataFieldGroups; }
+	 * 
+	 * public void setBiodataFieldGroups(Set<BiodataFieldGroup> biodataFieldGroups) { this.biodataFieldGroups = biodataFieldGroups; }
+	 */
 
 }

@@ -22,10 +22,10 @@ public class PhoneType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<Phone> phones = new HashSet<Phone>(0);
+	private Long			id;
+	private String			name;
+	private String			description;
+	private Set<Phone>	phones	= new HashSet<Phone>(0);
 
 	// Constructors
 
@@ -39,8 +39,7 @@ public class PhoneType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public PhoneType(Long id, String name, String description,
-			Set<Phone> phones) {
+	public PhoneType(Long id, String name, String description, Set<Phone> phones) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

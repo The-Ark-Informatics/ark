@@ -13,35 +13,29 @@ import java.util.List;
  * 
  * @author Jonny Wray
  */
-public class AjaxDynamicTabbedPanel extends DynamicTabbedPanel
-{
+public class AjaxDynamicTabbedPanel extends DynamicTabbedPanel {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -553938295672538628L;
 
-	public AjaxDynamicTabbedPanel(final String id, final IModel<List<ITab>> tabModel)
-	{
+	public AjaxDynamicTabbedPanel(final String id, final IModel<List<ITab>> tabModel) {
 		super(id, tabModel);
 		setOutputMarkupId(true);
 		setVersioned(false);
 	}
 
 	@Override
-	protected WebMarkupContainer newLink(final String linkId, final int index)
-	{
-		return new AjaxFallbackLink<Void>(linkId)
-		{
+	protected WebMarkupContainer newLink(final String linkId, final int index) {
+		return new AjaxFallbackLink<Void>(linkId) {
 
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			public void onClick(final AjaxRequestTarget target)
-			{
+			public void onClick(final AjaxRequestTarget target) {
 				setSelectedTab(index);
-				if (target != null)
-				{
+				if (target != null) {
 					target.addComponent(AjaxDynamicTabbedPanel.this);
 				}
 				onAjaxUpdate(target);
@@ -60,7 +54,6 @@ public class AjaxDynamicTabbedPanel extends DynamicTabbedPanel
 	 * @param target
 	 *           ajax target used to update this component
 	 */
-	protected void onAjaxUpdate(final AjaxRequestTarget target)
-	{
+	protected void onAjaxUpdate(final AjaxRequestTarget target) {
 	}
 }

@@ -22,22 +22,21 @@ import au.org.theark.core.Constants;
  * Phone entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "PHONE",  schema = Constants.STUDY_SCHEMA, uniqueConstraints={@UniqueConstraint(columnNames={"AREA_CODE", "PHONE_NUMBER", "PERSON_ID"})})
+@Table(name = "PHONE", schema = Constants.STUDY_SCHEMA, uniqueConstraints = { @UniqueConstraint(columnNames = { "AREA_CODE", "PHONE_NUMBER", "PERSON_ID" }) })
 public class Phone implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private PhoneType phoneType;
-	private Person person;
-	private String phoneNumber;
-	private String areaCode;
-	private PhoneStatus phoneStatus;
-	private String source;
-	private Date dateReceived; 
-	private YesNo silentMode;
-	private String comment;
-	
+	private Long			id;
+	private PhoneType		phoneType;
+	private Person			person;
+	private String			phoneNumber;
+	private String			areaCode;
+	private PhoneStatus	phoneStatus;
+	private String			source;
+	private Date			dateReceived;
+	private YesNo			silentMode;
+	private String			comment;
 
 	// Constructors
 
@@ -51,8 +50,7 @@ public class Phone implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Phone(Long id, PhoneType phoneType, Person person,
-			String phoneNumber,String areaCode) {
+	public Phone(Long id, PhoneType phoneType, Person person, String phoneNumber, String areaCode) {
 		this.id = id;
 		this.phoneType = phoneType;
 		this.person = person;
@@ -62,8 +60,8 @@ public class Phone implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="phone_generator", sequenceName="PHONE_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "phone_generator")
+	@SequenceGenerator(name = "phone_generator", sequenceName = "PHONE_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "phone_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -101,7 +99,7 @@ public class Phone implements java.io.Serializable {
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
-	
+
 	@Column(name = "AREA_CODE", length = 10)
 	public String getAreaCode() {
 		return this.areaCode;
@@ -158,5 +156,5 @@ public class Phone implements java.io.Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
+
 }

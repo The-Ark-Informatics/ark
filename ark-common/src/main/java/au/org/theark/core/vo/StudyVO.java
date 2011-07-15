@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StudyVO extends BaseVO{
+public class StudyVO extends BaseVO {
 
-	private String studyName;
-	private List<ModuleVO> modules;
-	private List<RoleVO> roles;//From a user' perspective the list of roles for a study in context. E.g. study_admin or ordinary_user
+	private String				studyName;
+	private List<ModuleVO>	modules;
+	private List<RoleVO>		roles;		// From a user' perspective the list of roles for a study in context. E.g. study_admin or ordinary_user
 
 	/**
 	 * Constructor
 	 */
-	public StudyVO(){
+	public StudyVO() {
 		super();
 		this.roles = new ArrayList<RoleVO>();
 		studyStatusVo = new StudyStatusVo();
 	}
-	
+
 	public List<RoleVO> getRoles() {
 		return roles;
 	}
@@ -26,7 +26,7 @@ public class StudyVO extends BaseVO{
 	public void setRoles(List<RoleVO> roles) {
 		this.roles = roles;
 	}
-	
+
 	public List<ModuleVO> getModules() {
 		return modules;
 	}
@@ -42,26 +42,24 @@ public class StudyVO extends BaseVO{
 	public void setStudyName(String studyName) {
 		this.studyName = studyName;
 	}
-	
-	
-	private Long studyKey;
-	private String name;
-	private String description;
-	private Date dateOfApplication;
-	private Long estimatedYearOfCompletion;
-	private String chiefInvestigator;
-	private String coInvestigator;
-	private Boolean autoGenerateSubjectKey;
-	private Long subjectKeyStart;
-	private String subjectIdPrefix;
-	private String contactPerson;
-	private String contactPersonPhone;
-	private String ldapGroupName;
-	private Boolean autoConsent;
-	private String subStudyBiospecimenPrefix;
-	private StudyStatusVo studyStatusVo;
-	
-	
+
+	private Long				studyKey;
+	private String				name;
+	private String				description;
+	private Date				dateOfApplication;
+	private Long				estimatedYearOfCompletion;
+	private String				chiefInvestigator;
+	private String				coInvestigator;
+	private Boolean			autoGenerateSubjectKey;
+	private Long				subjectKeyStart;
+	private String				subjectIdPrefix;
+	private String				contactPerson;
+	private String				contactPersonPhone;
+	private String				ldapGroupName;
+	private Boolean			autoConsent;
+	private String				subStudyBiospecimenPrefix;
+	private StudyStatusVo	studyStatusVo;
+
 	public Long getStudyKey() {
 		return studyKey;
 	}

@@ -14,14 +14,14 @@ import au.org.theark.core.Constants;
  * LinkStudySubstudy entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "LINK_STUDY_SUBSTUDY", schema =Constants.STUDY_SCHEMA)
+@Table(name = "LINK_STUDY_SUBSTUDY", schema = Constants.STUDY_SCHEMA)
 public class LinkStudySubstudy implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Study studyByStudyKey;
-	private Study studyBySubstudyKey;
+	private Long	id;
+	private Study	studyByStudyKey;
+	private Study	studyBySubstudyKey;
 
 	// Constructors
 
@@ -35,8 +35,7 @@ public class LinkStudySubstudy implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkStudySubstudy(Long id, Study studyByStudyKey,
-			Study studyBySubstudyKey) {
+	public LinkStudySubstudy(Long id, Study studyByStudyKey, Study studyBySubstudyKey) {
 		this.id = id;
 		this.studyByStudyKey = studyByStudyKey;
 		this.studyBySubstudyKey = studyBySubstudyKey;

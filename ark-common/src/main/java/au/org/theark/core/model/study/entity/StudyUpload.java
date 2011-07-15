@@ -24,8 +24,7 @@ import au.org.theark.core.Constants;
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.study.entity.Upload")
 @Table(name = "UPLOAD", schema = Constants.STUDY_SCHEMA)
-public class StudyUpload implements java.io.Serializable
-{
+public class StudyUpload implements java.io.Serializable {
 
 	// Fields
 	private Long				id;
@@ -42,13 +41,11 @@ public class StudyUpload implements java.io.Serializable
 
 	// Constructors
 	/** default constructor */
-	public StudyUpload()
-	{
+	public StudyUpload() {
 	}
 
 	/** minimal constructor */
-	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport)
-	{
+	public StudyUpload(Long id, FileFormat fileFormat, DelimiterType delimiterType, String filename, Blob uploadReport) {
 		this.id = id;
 		this.fileFormat = fileFormat;
 		this.delimiterType = delimiterType;
@@ -61,13 +58,11 @@ public class StudyUpload implements java.io.Serializable
 	@SequenceGenerator(name = "SubjectUpload_PK_Seq", sequenceName = "STUDY.UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "SubjectUpload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -76,16 +71,15 @@ public class StudyUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
-	public Study getStudy()
-	{
+	public Study getStudy() {
 		return study;
 	}
-	
+
 	/**
-	 * @param study the study to set
+	 * @param study
+	 *           the study to set
 	 */
-	public void setStudy(Study study)
-	{
+	public void setStudy(Study study) {
 		this.study = study;
 	}
 
@@ -94,13 +88,11 @@ public class StudyUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FILE_FORMAT_ID", nullable = false)
-	public FileFormat getFileFormat()
-	{
+	public FileFormat getFileFormat() {
 		return this.fileFormat;
 	}
 
-	public void setFileFormat(FileFormat fileFormat)
-	{
+	public void setFileFormat(FileFormat fileFormat) {
 		this.fileFormat = fileFormat;
 	}
 
@@ -108,8 +100,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @param delimiterType
 	 *           the delimiterType to set
 	 */
-	public void setDelimiterType(DelimiterType delimiterType)
-	{
+	public void setDelimiterType(DelimiterType delimiterType) {
 		this.delimiterType = delimiterType;
 	}
 
@@ -118,8 +109,7 @@ public class StudyUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
-	public DelimiterType getDelimiterType()
-	{
+	public DelimiterType getDelimiterType() {
 		return delimiterType;
 	}
 
@@ -127,8 +117,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @return the filename
 	 */
 	@Column(name = "FILENAME", length = 260)
-	public String getFilename()
-	{
+	public String getFilename() {
 		return this.filename;
 	}
 
@@ -136,8 +125,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @param filename
 	 *           the filename to set
 	 */
-	public void setFilename(String filename)
-	{
+	public void setFilename(String filename) {
 		this.filename = filename;
 	}
 
@@ -145,8 +133,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @return the payload
 	 */
 	@Column(name = "PAYLOAD")
-	public Blob getPayload()
-	{
+	public Blob getPayload() {
 		return this.payload;
 	}
 
@@ -154,8 +141,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @param payload
 	 *           the payload to set
 	 */
-	public void setPayload(Blob payload)
-	{
+	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
 
@@ -163,8 +149,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @return the checksum
 	 */
 	@Column(name = "CHECKSUM", nullable = false, length = 50)
-	public String getChecksum()
-	{
+	public String getChecksum() {
 		return checksum;
 	}
 
@@ -172,26 +157,24 @@ public class StudyUpload implements java.io.Serializable
 	 * @param checksum
 	 *           the checksum to set
 	 */
-	public void setChecksum(String checksum)
-	{
+	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}
-	
+
 	/**
 	 * @return the startTime
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "START_TIME", nullable = false)
-	public Date getStartTime()
-	{
+	public Date getStartTime() {
 		return startTime;
 	}
 
 	/**
-	 * @param startTime the startTime to set
+	 * @param startTime
+	 *           the startTime to set
 	 */
-	public void setStartTime(Date startTime)
-	{
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
@@ -200,24 +183,23 @@ public class StudyUpload implements java.io.Serializable
 	 */
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "FINISH_TIME")
-	public Date getFinishTime()
-	{
+	public Date getFinishTime() {
 		return finishTime;
 	}
-	
+
 	/**
-	 * @param finishTime the finishTime to set
+	 * @param finishTime
+	 *           the finishTime to set
 	 */
-	public void setFinishTime(Date finishTime)
-	{
+	public void setFinishTime(Date finishTime) {
 		this.finishTime = finishTime;
 	}
 
 	/**
-	 * @param uploadReport the uploadReport to set
+	 * @param uploadReport
+	 *           the uploadReport to set
 	 */
-	public void setUploadReport(Blob uploadReport)
-	{
+	public void setUploadReport(Blob uploadReport) {
 		this.uploadReport = uploadReport;
 	}
 
@@ -225,8 +207,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @return the uploadReport
 	 */
 	@Column(name = "UPLOAD_REPORT")
-	public Blob getUploadReport()
-	{
+	public Blob getUploadReport() {
 		return uploadReport;
 	}
 
@@ -234,8 +215,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @return the userId
 	 */
 	@Column(name = "USER_ID", nullable = false, length = 100)
-	public String getUserId()
-	{
+	public String getUserId() {
 		return this.userId;
 	}
 
@@ -243,8 +223,7 @@ public class StudyUpload implements java.io.Serializable
 	 * @param userId
 	 *           the userId to set
 	 */
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 }

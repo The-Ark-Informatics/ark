@@ -40,9 +40,8 @@ import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
  * @param <T>
  * 
  */
-@SuppressWarnings( { "unchecked" })
-public abstract class AbstractWizardForm<T> extends Form<T>
-{
+@SuppressWarnings({ "unchecked" })
+public abstract class AbstractWizardForm<T> extends Form<T> {
 
 	private static final long			serialVersionUID	= 1L;
 
@@ -74,13 +73,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	// WebMarkupContainers are set inside this
 	// VO
 
-	public AbstractWizardForm(String id)
-	{
+	public AbstractWizardForm(String id) {
 		this(id, null);
 	}
 
-	public AbstractWizardForm(String id, IModel model)
-	{
+	public AbstractWizardForm(String id, IModel model) {
 		super(id, model);
 
 		buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
@@ -102,8 +99,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * @param containerForm
 	 */
 	public AbstractWizardForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer wizardPanelContainer, WebMarkupContainer wizardPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, Form<T> containerForm)
-	{
+			WebMarkupContainer searchPanelContainer, Form<T> containerForm) {
 		super(id);
 		this.resultListContainer = resultListContainer;
 		this.wizardPanelContainer = wizardPanelContainer;
@@ -118,12 +114,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		initialiseForm();
 		initialiseGridView();
 		addFormComponents();
-		
+
 		disableWizardForm();
 	}
 
-	protected void initialiseForm()
-	{
+	protected void initialiseForm() {
 		// previous button
 		previousLink = createPrevious();
 		previousLink.setVisible(false);
@@ -154,8 +149,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	/**
 	 * Implement this to add all the form components/objects
 	 */
-	protected void addFormComponents()
-	{
+	protected void addFormComponents() {
 		// Web mark up for buttons
 		wizardButtonContainer = new WebMarkupContainer("wizardButtonContainer");
 		wizardButtonContainer.setOutputMarkupPlaceholderTag(true);
@@ -169,67 +163,55 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		add(wizardButtonContainer);
 	}
 
-	private void initialiseGridView()
-	{
+	private void initialiseGridView() {
 		arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView");
 		arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 		arkExcelWorkSheetAsGrid.setVisible(false);
 		wizardPanelFormContainer.addOrReplace(arkExcelWorkSheetAsGrid);
 	}
 
-	public void onBeforeRender()
-	{
+	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
 
-	public WebMarkupContainer getWizardButtonContainer()
-	{
+	public WebMarkupContainer getWizardButtonContainer() {
 		return wizardButtonContainer;
 	}
 
-	public void setWizardButtonContainer(WebMarkupContainer wizardButtonContainer)
-	{
+	public void setWizardButtonContainer(WebMarkupContainer wizardButtonContainer) {
 		this.wizardButtonContainer = wizardButtonContainer;
 	}
 
-	public WebMarkupContainer getWizardPanelFormContainer()
-	{
+	public WebMarkupContainer getWizardPanelFormContainer() {
 		return wizardPanelFormContainer;
 	}
 
-	public void setWizardPanelFormContainer(WebMarkupContainer wizardPanelFormContainer)
-	{
+	public void setWizardPanelFormContainer(WebMarkupContainer wizardPanelFormContainer) {
 		this.wizardPanelFormContainer = wizardPanelFormContainer;
 	}
 
-	public AjaxButton getNextButton()
-	{
+	public AjaxButton getNextButton() {
 		return nextButton;
 	}
 
-	public void setNextButton(AjaxButton nextButton)
-	{
+	public void setNextButton(AjaxButton nextButton) {
 		this.nextButton = nextButton;
 	}
 
-	public void setPreviousLink(AjaxLink previousLink)
-	{
+	public void setPreviousLink(AjaxLink previousLink) {
 		this.previousLink = previousLink;
 	}
 
-	public ArkExcelWorkSheetAsGrid getArkExcelWorkSheetAsGrid()
-	{
+	public ArkExcelWorkSheetAsGrid getArkExcelWorkSheetAsGrid() {
 		return arkExcelWorkSheetAsGrid;
 	}
 
-	public void setArkExcelWorkSheetAsGrid(ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid)
-	{
+	public void setArkExcelWorkSheetAsGrid(ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid) {
 		this.arkExcelWorkSheetAsGrid = arkExcelWorkSheetAsGrid;
 	}
 
-	protected void onCancelPostProcess(AjaxRequestTarget target)
-	{
+	protected void onCancelPostProcess(AjaxRequestTarget target) {
 		initialiseGridView();
 		wizardPanelContainer.setVisible(true);
 		resultListContainer.setVisible(true);
@@ -240,21 +222,17 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		target.addComponent(resultListContainer);
 	}
 
-	private AjaxButton createNext()
-	{
-		nextButton = new ArkBusyAjaxButton("next", new StringResourceModel("wizardNextKey", this, null))
-		{
+	private AjaxButton createNext() {
+		nextButton = new ArkBusyAjaxButton("next", new StringResourceModel("wizardNextKey", this, null)) {
 			private static final long	serialVersionUID	= 0L;
 
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				onNextError(target, form);
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onNextSubmit(target, form);
 			}
 		};
@@ -262,15 +240,12 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return nextButton;
 	}
 
-	private AjaxLink createPrevious()
-	{
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("previous")
-		{
+	private AjaxLink createPrevious() {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("previous") {
 			private static final long	serialVersionUID	= 0L;
 
 			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
+			public void onClick(AjaxRequestTarget target) {
 				onPreviousClick(target);
 			}
 		};
@@ -278,22 +253,18 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return link;
 	}
 
-	private AjaxButton createFinish()
-	{
-		finishButton = new AjaxButton("finish", new StringResourceModel("wizardFinishKey", this, null))
-		{
+	private AjaxButton createFinish() {
+		finishButton = new AjaxButton("finish", new StringResourceModel("wizardFinishKey", this, null)) {
 
 			private static final long	serialVersionUID	= 0L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onFinishSubmit(target, form);
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				onFinishError(target, form);
 			}
 		};
@@ -301,15 +272,12 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return finishButton;
 	}
 
-	private AjaxLink createCancel()
-	{
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("cancel")
-		{
+	private AjaxLink createCancel() {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("cancel") {
 			private static final long	serialVersionUID	= 0L;
 
 			@Override
-			public void onClick(AjaxRequestTarget target)
-			{
+			public void onClick(AjaxRequestTarget target) {
 				onCancelClick(target);
 			}
 		};
@@ -317,8 +285,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return link;
 	}
 
-	public LoadableDetachableModel getLabelModel(String label)
-	{
+	public LoadableDetachableModel getLabelModel(String label) {
 		return new StringResourceModel(label, AbstractWizardForm.this, null);
 	}
 
@@ -326,8 +293,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	// Event form triggers
 	//
 
-	protected void onFinishSubmit(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onFinishSubmit(AjaxRequestTarget target, Form<?> form) {
 		log.debug("finish.onSubmit");
 		previousLink.setVisible(false);
 		nextButton.setVisible(true);
@@ -343,28 +309,23 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		onFinish(target, form);
 	}
 
-	protected void onFinishError(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onFinishError(AjaxRequestTarget target, Form<?> form) {
 		log.debug("finish.onError");
 		AbstractWizardForm.this.onError(target, form);
 	}
 
-	protected void onPreviousClick(AjaxRequestTarget target)
-	{
+	protected void onPreviousClick(AjaxRequestTarget target) {
 		HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
-		if (historyAjaxBehavior != null)
-		{
+		if (historyAjaxBehavior != null) {
 			historyAjaxBehavior.registerAjaxEvent(target, this);
 		}
 		AbstractWizardForm.this.gotoPrevious(target);
 	}
 
-	protected void onNextSubmit(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onNextSubmit(AjaxRequestTarget target, Form<?> form) {
 		log.debug("next.onSubmit");
 		HistoryAjaxBehavior historyAjaxBehavior = getHistoryAjaxBehavior();
-		if (historyAjaxBehavior != null)
-		{
+		if (historyAjaxBehavior != null) {
 			historyAjaxBehavior.registerAjaxEvent(target, this);
 		}
 
@@ -375,8 +336,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		AbstractWizardForm.this.gotoNext(target);
 	}
 
-	protected void onNextError(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onNextError(AjaxRequestTarget target, Form<?> form) {
 		log.debug("next.onError");
 		// Wizard steps are contained within a WebMarkupContainer
 		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
@@ -384,8 +344,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		currentStep.onStepOutNextError(AbstractWizardForm.this, target);
 	}
 
-	protected void onCancelClick(AjaxRequestTarget target)
-	{
+	protected void onCancelClick(AjaxRequestTarget target) {
 		cancelled = true;
 
 		previousLink.setVisible(false);
@@ -408,8 +367,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @param target
 	 */
-	protected void gotoNext(AjaxRequestTarget target)
-	{
+	protected void gotoNext(AjaxRequestTarget target) {
 		// Wizard steps are contained within a WebMarkupContainer
 		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
 		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
@@ -421,14 +379,12 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		currentStep.handleWizardState(this, target);
 
 		AbstractWizardStepPanel next = currentStep.getNextStep();
-		if (next != null)
-		{
+		if (next != null) {
 			next.onStepInNext(AbstractWizardForm.this, target);
 			currentStep.replaceWith(next);
 
 			// If no more steps, on final step
-			if (next.getNextStep() == null)
-			{
+			if (next.getNextStep() == null) {
 				nextButton.setEnabled(false);
 				cancelLink.setEnabled(false);
 				finishButton.setEnabled(true);
@@ -448,16 +404,14 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @param target
 	 */
-	protected void gotoPrevious(AjaxRequestTarget target)
-	{
+	protected void gotoPrevious(AjaxRequestTarget target) {
 		WebMarkupContainer wmc = (WebMarkupContainer) get("wizardFormContainer");
 		AbstractWizardStepPanel currentStep = (AbstractWizardStepPanel) wmc.get("step");
 		log.debug("gotoPrevious.currentStep={}", currentStep.getClass().getName());
 		currentStep.onStepOutPrevious(AbstractWizardForm.this, target);
 
 		AbstractWizardStepPanel previous = currentStep.getPreviousStep();
-		if (previous != null)
-		{
+		if (previous != null) {
 			currentStep.replaceWith(previous);
 			previous.onStepInPrevious(this, target);
 			previous.handleWizardState(this, target);
@@ -466,17 +420,14 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		target.addComponent(feedBackPanel);
 	}
 
-	public HistoryAjaxBehavior getHistoryAjaxBehavior()
-	{
+	public HistoryAjaxBehavior getHistoryAjaxBehavior() {
 		// Start here
 		Component current = getParent();
 
 		// Walk up containment hierarchy
-		while (current != null)
-		{
+		while (current != null) {
 			// Is current an instance of this class?
-			if (IHistoryAjaxBehaviorOwner.class.isInstance(current))
-			{
+			if (IHistoryAjaxBehaviorOwner.class.isInstance(current)) {
 				return ((IHistoryAjaxBehaviorOwner) current).getHistoryAjaxBehavior();
 			}
 
@@ -486,44 +437,34 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return null;
 	}
 
-	protected boolean isActionPermitted(String actionType)
-	{
+	protected boolean isActionPermitted(String actionType) {
 		boolean flag = false;
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		if (actionType.equalsIgnoreCase(Constants.SAVE))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE))
-			{
+		if (actionType.equalsIgnoreCase(Constants.SAVE)) {
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE) || securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE)) {
 
 				flag = true;
 			}
-			else
-			{
+			else {
 				flag = false;
 			}
 		}
-		else if (actionType.equalsIgnoreCase(Constants.EDIT))
-		{
+		else if (actionType.equalsIgnoreCase(Constants.EDIT)) {
 
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE))
-			{
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)) {
 				flag = true;
 			}
-			else
-			{
+			else {
 				flag = false;
 			}
 		}
-		else if (actionType.equalsIgnoreCase(Constants.DELETE))
-		{
-			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE))
-			{
+		else if (actionType.equalsIgnoreCase(Constants.DELETE)) {
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.DELETE)) {
 				flag = true;
 			}
-			else
-			{
+			else {
 				flag = false;
 			}
 		}
@@ -531,13 +472,11 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 		return flag;
 	}
 
-	public boolean isCancelled()
-	{
+	public boolean isCancelled() {
 		return cancelled;
 	}
 
-	public void setCancelled(boolean cancelled)
-	{
+	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
 
@@ -546,8 +485,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @return
 	 */
-	public Component getNextLink()
-	{
+	public Component getNextLink() {
 		return get("nextLink");
 	}
 
@@ -556,8 +494,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @return
 	 */
-	public Component getPreviousLink()
-	{
+	public Component getPreviousLink() {
 		return get("previousLink");
 	}
 
@@ -566,8 +503,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @return
 	 */
-	public Component getFinishLink()
-	{
+	public Component getFinishLink() {
 		return get("finish");
 	}
 
@@ -576,8 +512,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @return
 	 */
-	public Component getCancelLink()
-	{
+	public Component getCancelLink() {
 		return get("cancelLink");
 	}
 
@@ -586,8 +521,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @return
 	 */
-	public static String getStepId()
-	{
+	public static String getStepId() {
 		return "step";
 	}
 
@@ -596,8 +530,7 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * 
 	 * @param target
 	 */
-	public void changeWizardFormStyle(String cssClassName)
-	{
+	public void changeWizardFormStyle(String cssClassName) {
 		add(new AttributeModifier("class", new Model(cssClassName)));
 	}
 
@@ -630,18 +563,15 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * @param target
 	 */
 	protected abstract void processErrors(AjaxRequestTarget target);
-	
+
 	/**
 	 * Called to disable entire WizardForm, and display reason.
 	 */
-	protected void disableWizardForm()
-	{
-		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
-		{
+	protected void disableWizardForm() {
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW)) {
 			this.setEnabled(true);
 		}
-		else
-		{
+		else {
 			this.setEnabled(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
@@ -653,22 +583,17 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * @param sessionId
 	 * @param errorMessage
 	 */
-	protected void disableWizardForm(Long sessionId, String errorMessage)
-	{
-		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
-		{
-			if (sessionId == null)
-			{
+	protected void disableWizardForm(Long sessionId, String errorMessage) {
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW)) {
+			if (sessionId == null) {
 				this.setEnabled(false);
 				this.error(errorMessage);
 			}
-			else
-			{
+			else {
 				this.setEnabled(true);
 			}
 		}
-		else
-		{
+		else {
 			this.setEnabled(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
@@ -681,22 +606,17 @@ public abstract class AbstractWizardForm<T> extends Form<T>
 	 * @param errorMessage
 	 * @param arkCrudContainserVO
 	 */
-	protected void disableWizardForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
-	{
-		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW))
-		{
-			if (sessionId == null)
-			{
+	protected void disableWizardForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO) {
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW)) {
+			if (sessionId == null) {
 				arkCrudContainerVO.getWizardPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}
-			else
-			{
+			else {
 				arkCrudContainerVO.getWizardPanelContainer().setEnabled(true);
 			}
 		}
-		else
-		{
+		else {
 			arkCrudContainerVO.getWizardPanelContainer().setEnabled(false);
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);

@@ -16,15 +16,15 @@ import au.org.theark.core.model.Constants;
 /**
  * MarkerType entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MarkerType")
+@Entity(name = "au.org.theark.geno.model.entity.MarkerType")
 @Table(name = "MARKER_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<MarkerGroup> markerGroups = new HashSet<MarkerGroup>(0);
+	private Long					id;
+	private String					name;
+	private Set<MarkerGroup>	markerGroups	= new HashSet<MarkerGroup>(0);
 
 	// Constructors
 

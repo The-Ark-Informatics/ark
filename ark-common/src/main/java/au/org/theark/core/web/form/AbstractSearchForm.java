@@ -25,8 +25,7 @@ import au.org.theark.core.web.component.ArkBusyAjaxButton;
  * @param <T>
  * 
  */
-public abstract class AbstractSearchForm<T> extends Form<T>
-{
+public abstract class AbstractSearchForm<T> extends Form<T> {
 
 	/**
 	 * 
@@ -49,8 +48,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param id
 	 * @param model
 	 */
-	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel)
-	{
+	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel) {
 		super(id, cpmModel);
 
 		initialiseForm();
@@ -70,8 +68,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param feedBackPanel
 	 */
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormCompContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer listContainer, FeedbackPanel feedBackPanel)
-	{
+			WebMarkupContainer editButtonContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer listContainer, FeedbackPanel feedBackPanel) {
 
 		super(id, cpmModel);
 		this.viewButtonContainer = viewButtonContainer;
@@ -91,81 +88,68 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param id
 	 * @param cpmModel
 	 */
-	public AbstractSearchForm(String id, IModel<T> cpmModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO)
-	{
+	public AbstractSearchForm(String id, IModel<T> cpmModel, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, cpmModel);
 		this.feedbackPanel = feedBackPanel;
 		initialiseForm(arkCrudContainerVO);
 	}
 
-	protected void onReset()
-	{
+	protected void onReset() {
 		clearInput();
 		updateFormComponentModels();
 	}
 
-	protected void initialiseForm()
-	{
-		searchButton = new AjaxButton(Constants.SEARCH)
-		{
+	protected void initialiseForm() {
+		searchButton = new AjaxButton(Constants.SEARCH) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -3504899640173586559L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make the details panel visible
 				onSearch(target);
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(feedbackPanel);
 			}
 		};
 
-		resetButton = new Button(Constants.RESET)
-		{
+		resetButton = new Button(Constants.RESET) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -6785467702774902246L;
 
-			public void onSubmit()
-			{
+			public void onSubmit() {
 				onReset();
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
 			}
 		};
 
-		newButton = new ArkBusyAjaxButton(Constants.NEW)
-		{
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 3592424656251078184L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make the details panel visible, disabling delete button (if found)
 				AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
-				if (ajaxButton != null)
-				{
+				if (ajaxButton != null) {
 					ajaxButton.setEnabled(false);
 					target.addComponent(ajaxButton);
 				}
@@ -174,14 +158,12 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.NEW);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(feedbackPanel);
 			}
 		};
@@ -194,57 +176,48 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * 
 	 * @param arkCrudContainerVO
 	 */
-	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO)
-	{
-		searchButton = new AjaxButton(Constants.SEARCH)
-		{
+	protected void initialiseForm(final ArkCrudContainerVO arkCrudContainerVO) {
+		searchButton = new AjaxButton(Constants.SEARCH) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -8096410123770458109L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make the details panel visible
 				onSearch(target);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(feedbackPanel);
 			}
 		};
 
-		resetButton = new Button(Constants.RESET)
-		{
+		resetButton = new Button(Constants.RESET) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 5818909400695185935L;
 
-			public void onSubmit()
-			{
+			public void onSubmit() {
 				onReset();
 			}
 		};
 
-		newButton = new ArkBusyAjaxButton(Constants.NEW)
-		{
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1666656098281624401L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Make the details panel visible, disabling delete button (if found)
 				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
 				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
-				if (ajaxButton != null)
-				{
+				if (ajaxButton != null) {
 					ajaxButton.setEnabled(false);
 					target.addComponent(ajaxButton);
 				}
@@ -253,14 +226,12 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.NEW);
 			}
 
 			@Override
-			protected void onError(final AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
 				target.addComponent(feedbackPanel);
 			}
 		};
@@ -268,15 +239,13 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 		addComponentsToForm();
 	}
 
-	protected void addComponentsToForm()
-	{
+	protected void addComponentsToForm() {
 		add(searchButton);
 		add(resetButton.setDefaultFormProcessing(false));
 		add(newButton);
 	}
 
-	protected void preProcessDetailPanel(AjaxRequestTarget target)
-	{
+	protected void preProcessDetailPanel(AjaxRequestTarget target) {
 		detailPanelContainer.setVisible(true);
 		listContainer.setVisible(false);
 		editButtonContainer.setVisible(true);
@@ -298,8 +267,7 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param target
 	 * @param flag
 	 */
-	protected void preProcessDetailPanel(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO)
-	{
+	protected void preProcessDetailPanel(AjaxRequestTarget target, ArkCrudContainerVO arkCrudContainerVO) {
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
@@ -324,44 +292,34 @@ public abstract class AbstractSearchForm<T> extends Form<T>
 	 * @param sessionId
 	 * @param errorMessage
 	 */
-	protected void disableSearchForm(Long sessionId, String errorMessage)
-	{
-		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
-		{
-			if (sessionId == null)
-			{
+	protected void disableSearchForm(Long sessionId, String errorMessage) {
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
+			if (sessionId == null) {
 				searchMarkupContainer.setEnabled(false);
 				this.error(errorMessage);
 			}
-			else
-			{
+			else {
 				searchMarkupContainer.setEnabled(true);
 			}
 		}
-		else
-		{
+		else {
 			searchMarkupContainer.setEnabled(false);
 			listContainer.setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
 	}
 
-	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO)
-	{
-		if (ArkPermissionHelper.isModuleFunctionAccessPermitted())
-		{
-			if (sessionId == null)
-			{
+	protected void disableSearchForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO) {
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
+			if (sessionId == null) {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 				this.error(errorMessage);
 			}
-			else
-			{
+			else {
 				arkCrudContainerVO.getSearchPanelContainer().setEnabled(true);
 			}
 		}
-		else
-		{
+		else {
 			arkCrudContainerVO.getSearchPanelContainer().setEnabled(false);
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);

@@ -9,7 +9,8 @@ import javax.persistence.UniqueConstraint;
 import au.org.theark.core.Constants;
 
 /**
- * PersonContactMethod entity. 
+ * PersonContactMethod entity.
+ * 
  * @author cellis
  */
 @Entity
@@ -21,8 +22,8 @@ public class PersonContactMethod implements java.io.Serializable {
 	 */
 	private static final long	serialVersionUID	= -5632425806775287317L;
 	// Fields
-	private Long id;
-	private String name;
+	private Long					id;
+	private String					name;
 
 	// Constructors
 
@@ -51,7 +52,7 @@ public class PersonContactMethod implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "NAME", unique = true, nullable = false, length = 50)
 	public String getName() {
 		return this.name;

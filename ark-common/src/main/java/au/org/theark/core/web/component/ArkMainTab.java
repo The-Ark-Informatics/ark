@@ -11,8 +11,7 @@ import org.apache.wicket.model.IModel;
  * @author cellis
  * 
  */
-public abstract class ArkMainTab extends AbstractTab
-{
+public abstract class ArkMainTab extends AbstractTab {
 	/**
 	 * 
 	 */
@@ -25,8 +24,7 @@ public abstract class ArkMainTab extends AbstractTab
 	 * @param id
 	 *           The id of the tab that Ajax will reference
 	 */
-	public ArkMainTab(IModel<String> id)
-	{
+	public ArkMainTab(IModel<String> id) {
 		super(id);
 	}
 
@@ -41,14 +39,11 @@ public abstract class ArkMainTab extends AbstractTab
 	public abstract boolean isVisible();
 
 	@Override
-	public Panel getPanel(String panelId)
-	{
-		if (panel == null)
-		{
+	public Panel getPanel(String panelId) {
+		if (panel == null) {
 			// Lazily create the panel
 			panel = createPanel();
-			if (!TabbedPanel.TAB_PANEL_ID.equals(panel.getId()))
-			{
+			if (!TabbedPanel.TAB_PANEL_ID.equals(panel.getId())) {
 				throw new IllegalArgumentException("Panel id must be TabbedPanel.TAB_PANEL_ID");
 			}
 			panel.setOutputMarkupId(true);
@@ -56,8 +51,7 @@ public abstract class ArkMainTab extends AbstractTab
 		return panel;
 	}
 
-	protected Panel createPanel()
-	{
+	protected Panel createPanel() {
 		throw new IllegalArgumentException("Must provide a panel");
 	}
 }

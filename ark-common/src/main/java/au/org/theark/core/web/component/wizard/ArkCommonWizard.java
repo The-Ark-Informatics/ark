@@ -8,16 +8,15 @@ import org.apache.wicket.extensions.wizard.WizardStep;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 
 @SuppressWarnings("serial")
-public class ArkCommonWizard extends Wizard
-{
-	private WebMarkupContainer resultListContainer;
-	private WebMarkupContainer wizardPanelContainer;
-	private WebMarkupContainer wizardPanelFormContainer;	
-	private WebMarkupContainer searchPanelContainer;
-	private AjaxRequestTarget target;
-	private WizardStep[] wizardSteps;
-	private AjaxWizardButtonBar buttonBar;
-	
+public class ArkCommonWizard extends Wizard {
+	private WebMarkupContainer		resultListContainer;
+	private WebMarkupContainer		wizardPanelContainer;
+	private WebMarkupContainer		wizardPanelFormContainer;
+	private WebMarkupContainer		searchPanelContainer;
+	private AjaxRequestTarget		target;
+	private WizardStep[]				wizardSteps;
+	private AjaxWizardButtonBar	buttonBar;
+
 	/**
 	 * Constructor with specified wizard home/index page
 	 * 
@@ -26,22 +25,20 @@ public class ArkCommonWizard extends Wizard
 	 * @param wizardSteps
 	 *           The custom wizard steps to be used
 	 */
-	public ArkCommonWizard(String id, WizardStep[] wizardSteps)
-	{
+	public ArkCommonWizard(String id, WizardStep[] wizardSteps) {
 		super(id);
 
 		// create a model with the specified steps
 		WizardModel model = new WizardModel();
-		
-		for (int i = 0; i < wizardSteps.length; i++)
-		{
+
+		for (int i = 0; i < wizardSteps.length; i++) {
 			model.add(wizardSteps[i]);
 		}
 
 		// initialize the wizard
 		init(model);
 	}
-	
+
 	/**
 	 * Constructor with specified wizard home/index page
 	 * 
@@ -50,29 +47,21 @@ public class ArkCommonWizard extends Wizard
 	 * @param wizardSteps
 	 *           The custom wizard steps to be used
 	 */
-	public ArkCommonWizard(String id, 
-			WizardStep[] wizardSteps, 
-			WebMarkupContainer resultListContainer, 
-			WebMarkupContainer wizardPanelContainer, 
-			WebMarkupContainer wizardPanelFormContainer,	
-			WebMarkupContainer searchPanelContainer,
-			AjaxRequestTarget target
-			)
-	{
+	public ArkCommonWizard(String id, WizardStep[] wizardSteps, WebMarkupContainer resultListContainer, WebMarkupContainer wizardPanelContainer, WebMarkupContainer wizardPanelFormContainer,
+			WebMarkupContainer searchPanelContainer, AjaxRequestTarget target) {
 		super(id);
-		
+
 		this.setResultListContainer(resultListContainer);
 		this.setWizardPanelContainer(wizardPanelContainer);
 		this.setWizardPanelFormContainer(wizardPanelFormContainer);
 		this.setSearchPanelContainer(searchPanelContainer);
 		this.setTarget(target);
 		this.wizardSteps = new WizardStep[wizardSteps.length];
-		
+
 		// create a model with the specified steps
 		WizardModel model = new WizardModel();
-		
-		for (int i = 0; i < wizardSteps.length; i++)
-		{
+
+		for (int i = 0; i < wizardSteps.length; i++) {
 			this.wizardSteps[i] = wizardSteps[i];
 			model.add(wizardSteps[i]);
 		}
@@ -80,129 +69,119 @@ public class ArkCommonWizard extends Wizard
 		// initialize the wizard
 		init(model);
 	}
-	
 
 	@Override
-	protected Component newButtonBar(java.lang.String id)
-	{
+	protected Component newButtonBar(java.lang.String id) {
 		return new AjaxWizardButtonBar(id, this);
 	}
 
 	@Override
-	protected Component newOverviewBar(java.lang.String id)
-	{
+	protected Component newOverviewBar(java.lang.String id) {
 		return new ArkWizardOverviewPanel(id);
 	}
 
 	/**
-	 * @param resultListContainer the resultListContainer to set
+	 * @param resultListContainer
+	 *           the resultListContainer to set
 	 */
-	public void setResultListContainer(WebMarkupContainer resultListContainer)
-	{
+	public void setResultListContainer(WebMarkupContainer resultListContainer) {
 		this.resultListContainer = resultListContainer;
 	}
 
 	/**
 	 * @return the resultListContainer
 	 */
-	public WebMarkupContainer getResultListContainer()
-	{
+	public WebMarkupContainer getResultListContainer() {
 		return resultListContainer;
 	}
 
 	/**
-	 * @param wizardPanelContainer the wizardPanelContainer to set
+	 * @param wizardPanelContainer
+	 *           the wizardPanelContainer to set
 	 */
-	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer)
-	{
+	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer) {
 		this.wizardPanelContainer = wizardPanelContainer;
 	}
 
 	/**
 	 * @return the wizardPanelContainer
 	 */
-	public WebMarkupContainer getWizardPanelContainer()
-	{
+	public WebMarkupContainer getWizardPanelContainer() {
 		return wizardPanelContainer;
 	}
 
 	/**
-	 * @param wizardPanelFormContainer the wizardPanelFormContainer to set
+	 * @param wizardPanelFormContainer
+	 *           the wizardPanelFormContainer to set
 	 */
-	public void setWizardPanelFormContainer(WebMarkupContainer wizardPanelFormContainer)
-	{
+	public void setWizardPanelFormContainer(WebMarkupContainer wizardPanelFormContainer) {
 		this.wizardPanelFormContainer = wizardPanelFormContainer;
 	}
 
 	/**
 	 * @return the wizardPanelFormContainer
 	 */
-	public WebMarkupContainer getWizardPanelFormContainer()
-	{
+	public WebMarkupContainer getWizardPanelFormContainer() {
 		return wizardPanelFormContainer;
 	}
 
 	/**
-	 * @param searchPanelContainer the searchPanelContainer to set
+	 * @param searchPanelContainer
+	 *           the searchPanelContainer to set
 	 */
-	public void setSearchPanelContainer(WebMarkupContainer searchPanelContainer)
-	{
+	public void setSearchPanelContainer(WebMarkupContainer searchPanelContainer) {
 		this.searchPanelContainer = searchPanelContainer;
 	}
 
 	/**
 	 * @return the searchPanelContainer
 	 */
-	public WebMarkupContainer getSearchPanelContainer()
-	{
+	public WebMarkupContainer getSearchPanelContainer() {
 		return searchPanelContainer;
 	}
 
 	/**
-	 * @param target the target to set
+	 * @param target
+	 *           the target to set
 	 */
-	public void setTarget(AjaxRequestTarget target)
-	{
+	public void setTarget(AjaxRequestTarget target) {
 		this.target = target;
 	}
 
 	/**
 	 * @return the target
 	 */
-	public AjaxRequestTarget getTarget()
-	{
+	public AjaxRequestTarget getTarget() {
 		return target;
 	}
 
 	/**
-	 * @param wizardSteps the wizardSteps to set
+	 * @param wizardSteps
+	 *           the wizardSteps to set
 	 */
-	public void setWizardSteps(WizardStep[] wizardSteps)
-	{
+	public void setWizardSteps(WizardStep[] wizardSteps) {
 		this.wizardSteps = wizardSteps;
 	}
 
 	/**
 	 * @return the wizardSteps
 	 */
-	public WizardStep[] getWizardSteps()
-	{
+	public WizardStep[] getWizardSteps() {
 		return wizardSteps;
 	}
 
 	/**
-	 * @param buttonBar the buttonBar to set
+	 * @param buttonBar
+	 *           the buttonBar to set
 	 */
-	public void setButtonBar(AjaxWizardButtonBar buttonBar)
-	{
+	public void setButtonBar(AjaxWizardButtonBar buttonBar) {
 		this.buttonBar = buttonBar;
 	}
 
 	/**
 	 * @return the buttonBar
 	 */
-	public AjaxWizardButtonBar getButtonBar()
-	{
+	public AjaxWizardButtonBar getButtonBar() {
 		return buttonBar;
 	}
 }

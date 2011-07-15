@@ -23,8 +23,7 @@ import au.org.theark.core.model.Constants;
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.entity.PhenoCollectionUpload")
 @Table(name = "COLLECTION_UPLOAD", schema = Constants.PHENO_TABLE_SCHEMA)
-public class PhenoCollectionUpload implements java.io.Serializable
-{
+public class PhenoCollectionUpload implements java.io.Serializable {
 
 	// Fields
 	private Long				id;
@@ -38,13 +37,11 @@ public class PhenoCollectionUpload implements java.io.Serializable
 	// Constructors
 
 	/** default constructor */
-	public PhenoCollectionUpload()
-	{
+	public PhenoCollectionUpload() {
 	}
 
 	/** minimal constructor */
-	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime)
-	{
+	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime) {
 		this.id = id;
 		this.upload = upload;
 		this.phenoCollection = phenoCollection;
@@ -53,8 +50,7 @@ public class PhenoCollectionUpload implements java.io.Serializable
 	}
 
 	/** full constructor */
-	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime, String updateUserId, Date updateTime)
-	{
+	public PhenoCollectionUpload(Long id, PhenoUpload upload, PhenoCollection phenoCollection, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.upload = upload;
 		this.phenoCollection = phenoCollection;
@@ -69,13 +65,11 @@ public class PhenoCollectionUpload implements java.io.Serializable
 	@SequenceGenerator(name = "Collection_Upload_PK_Seq", sequenceName = "PHENOTYPIC.COLLECTION_UPLOAD_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Collection_Upload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -84,8 +78,7 @@ public class PhenoCollectionUpload implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "UPLOAD_ID", nullable = false)
-	public PhenoUpload getUpload()
-	{
+	public PhenoUpload getUpload() {
 		return upload;
 	}
 
@@ -93,66 +86,55 @@ public class PhenoCollectionUpload implements java.io.Serializable
 	 * @param upload
 	 *           the upload to set
 	 */
-	public void setUpload(PhenoUpload upload)
-	{
+	public void setUpload(PhenoUpload upload) {
 		this.upload = upload;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COLLECTION_ID", nullable = false)
-	public PhenoCollection getCollection()
-	{
+	public PhenoCollection getCollection() {
 		return this.phenoCollection;
 	}
 
-	public void setCollection(PhenoCollection collection)
-	{
+	public void setCollection(PhenoCollection collection) {
 		this.phenoCollection = collection;
 	}
 
 	@Column(name = "USER_ID", nullable = false, length = 50)
-	public String getUserId()
-	{
+	public String getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
-	public Date getInsertTime()
-	{
+	public Date getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(Date insertTime)
-	{
+	public void setInsertTime(Date insertTime) {
 		this.insertTime = insertTime;
 	}
 
 	@Column(name = "UPDATE_USER_ID", length = 50)
-	public String getUpdateUserId()
-	{
+	public String getUpdateUserId() {
 		return this.updateUserId;
 	}
 
-	public void setUpdateUserId(String updateUserId)
-	{
+	public void setUpdateUserId(String updateUserId) {
 		this.updateUserId = updateUserId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
-	public Date getUpdateTime()
-	{
+	public Date getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(Date updateTime)
-	{
+	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
 }

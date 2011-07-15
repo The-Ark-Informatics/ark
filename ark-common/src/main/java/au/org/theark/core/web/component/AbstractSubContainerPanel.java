@@ -25,8 +25,7 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
  * 
  */
 @SuppressWarnings("serial")
-public abstract class AbstractSubContainerPanel<T> extends Panel
-{
+public abstract class AbstractSubContainerPanel<T> extends Panel {
 
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm						realm;
@@ -43,8 +42,7 @@ public abstract class AbstractSubContainerPanel<T> extends Panel
 	/**
 	 * @param id
 	 */
-	public AbstractSubContainerPanel(String id)
-	{
+	public AbstractSubContainerPanel(String id) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		Subject currentUser = SecurityUtils.getSubject();
@@ -52,38 +50,32 @@ public abstract class AbstractSubContainerPanel<T> extends Panel
 		currentUser.hasRole("Administrator");
 	}
 
-	public AbstractSubContainerPanel(String id, boolean flag)
-	{
+	public AbstractSubContainerPanel(String id, boolean flag) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		Subject currentUser = SecurityUtils.getSubject();
 		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());// TODO(NN) Uncomment after the User management usecase is complete
 	}
 
-	public void initCrudContainerVO()
-	{
+	public void initCrudContainerVO() {
 		arkCrudContainerVO = new ArkCrudContainerVO();
 	}
 
-	protected WebMarkupContainer initialiseFeedBackPanel()
-	{
+	protected WebMarkupContainer initialiseFeedBackPanel() {
 		/* Feedback Panel */
 		feedbackPanel = new FeedbackPanel("feedbackMessage");
 		feedbackPanel.setOutputMarkupId(true);
 		return feedbackPanel;
 	}
 
-	protected boolean isActionPermitted()
-	{
+	protected boolean isActionPermitted() {
 		boolean flag = false;
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ))
-		{
+		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
 			flag = true;
 		}
-		else
-		{
+		else {
 			flag = false;
 		}
 		return flag;

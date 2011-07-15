@@ -12,11 +12,10 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
  * @author cellis
  */
 @SuppressWarnings("serial")
-public class ArkWizardWithPanels extends Wizard
-{
-	private Class<ArkWizardIndex> wizardIndexClass;
-	private WebMarkupContainer wizardBasePanel;
-	
+public class ArkWizardWithPanels extends Wizard {
+	private Class<ArkWizardIndex>	wizardIndexClass;
+	private WebMarkupContainer		wizardBasePanel;
+
 	protected WebMarkupContainer	resultListContainer;
 	protected WebMarkupContainer	wizardPanelContainer;
 	protected WebMarkupContainer	searchPanelContainer;
@@ -28,13 +27,11 @@ public class ArkWizardWithPanels extends Wizard
 	/**
 	 * The first step of this wizard.
 	 */
-	private static final class Step1 extends WizardStep
-	{
+	private static final class Step1 extends WizardStep {
 		/**
 		 * Construct.
 		 */
-		public Step1()
-		{
+		public Step1() {
 			super("One", "The first step");
 		}
 	}
@@ -42,13 +39,11 @@ public class ArkWizardWithPanels extends Wizard
 	/**
 	 * The second step of this wizard.
 	 */
-	private static final class Step2 extends WizardStep
-	{
+	private static final class Step2 extends WizardStep {
 		/**
 		 * Construct.
 		 */
-		public Step2()
-		{
+		public Step2() {
 			super("Two", "The second step");
 		}
 	}
@@ -56,41 +51,35 @@ public class ArkWizardWithPanels extends Wizard
 	/**
 	 * The third step of this wizard.
 	 */
-	private static final class Step3 extends WizardStep
-	{
+	private static final class Step3 extends WizardStep {
 		/**
 		 * Construct.
 		 */
-		public Step3()
-		{
+		public Step3() {
 			super("Three", "The third step");
 		}
 	}
-	
+
 	/**
 	 * The fourth step of this wizard.
 	 */
-	private static final class Step4 extends WizardStep
-	{
+	private static final class Step4 extends WizardStep {
 		/**
 		 * Construct.
 		 */
-		public Step4()
-		{
+		public Step4() {
 			super("Four", "The fourth step");
 		}
 	}
-	
+
 	/**
 	 * The fifth step of this wizard.
 	 */
-	private static final class Step5 extends WizardStep
-	{
+	private static final class Step5 extends WizardStep {
 		/**
 		 * Construct.
 		 */
-		public Step5()
-		{
+		public Step5() {
 			super("Fifth", "The fifth step");
 		}
 	}
@@ -101,8 +90,7 @@ public class ArkWizardWithPanels extends Wizard
 	 * @param id
 	 *           The component id
 	 */
-	public ArkWizardWithPanels(String id)
-	{
+	public ArkWizardWithPanels(String id) {
 		super(id);
 		wizardIndexClass = ArkWizardIndex.class;
 
@@ -120,7 +108,7 @@ public class ArkWizardWithPanels extends Wizard
 		// initialize the wizard
 		init(model);
 	}
-	
+
 	/**
 	 * Constructor with specified wizard home/index page
 	 * 
@@ -129,8 +117,7 @@ public class ArkWizardWithPanels extends Wizard
 	 * @param wizardIndexClass
 	 *           The home/index page the wizard will go to on finish
 	 */
-	public ArkWizardWithPanels(String id, Class<ArkWizardIndex> wizardIndexClass)
-	{
+	public ArkWizardWithPanels(String id, Class<ArkWizardIndex> wizardIndexClass) {
 		super(id);
 
 		// create a model with a couple of custom panels
@@ -147,7 +134,7 @@ public class ArkWizardWithPanels extends Wizard
 		// initialize the wizard
 		init(model);
 	}
-	
+
 	/**
 	 * Constructor with specified wizard home/index page
 	 * 
@@ -156,21 +143,20 @@ public class ArkWizardWithPanels extends Wizard
 	 * @param wizardSteps
 	 *           The custom wizard steps to be used
 	 */
-	public ArkWizardWithPanels(String id, WizardStep[] wizardSteps)
-	{
-		// FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer wizardPanelContainer, WebMarkupContainer wizardPanelFormContainer,WebMarkupContainer searchPanelContainer
+	public ArkWizardWithPanels(String id, WizardStep[] wizardSteps) {
+		// FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer wizardPanelContainer, WebMarkupContainer
+		// wizardPanelFormContainer,WebMarkupContainer searchPanelContainer
 		super(id);
-//		this.feedBackPanel = feedBackPanel;
-//		this.resultListContainer = resultListContainer;
-//		this.wizardPanelContainer = wizardPanelContainer;
-//		this.wizardPanelFormContainer = wizardPanelFormContainer;
-//		this.searchPanelContainer = searchPanelContainer;
+		// this.feedBackPanel = feedBackPanel;
+		// this.resultListContainer = resultListContainer;
+		// this.wizardPanelContainer = wizardPanelContainer;
+		// this.wizardPanelFormContainer = wizardPanelFormContainer;
+		// this.searchPanelContainer = searchPanelContainer;
 
 		// create a model with the specified steps
 		WizardModel model = new WizardModel();
-		
-		for (int i = 0; i < wizardSteps.length; i++)
-		{
+
+		for (int i = 0; i < wizardSteps.length; i++) {
 			model.add(wizardSteps[i]);
 		}
 
@@ -178,53 +164,51 @@ public class ArkWizardWithPanels extends Wizard
 		init(model);
 	}
 
-//	/**
-//	 * @see org.apache.wicket.extensions.wizard.Wizard#onCancel()
-//	 */
-//	@Override
-//	public void onCancel()
-//	{
-//		setResponsePage(getWizardIndexClass());
-//	}
-//
-//	/**
-//	 * @see org.apache.wicket.extensions.wizard.Wizard#onFinish()
-//	 */
-//	@Override
-//	public void onFinish()
-//	{
-//		setResponsePage(getWizardIndexClass());
-//	}
+	// /**
+	// * @see org.apache.wicket.extensions.wizard.Wizard#onCancel()
+	// */
+	// @Override
+	// public void onCancel()
+	// {
+	// setResponsePage(getWizardIndexClass());
+	// }
+	//
+	// /**
+	// * @see org.apache.wicket.extensions.wizard.Wizard#onFinish()
+	// */
+	// @Override
+	// public void onFinish()
+	// {
+	// setResponsePage(getWizardIndexClass());
+	// }
 
 	/**
-	 * @param arkWizardIndexClass the wizardIndexClass to set
+	 * @param arkWizardIndexClass
+	 *           the wizardIndexClass to set
 	 */
-	public void setWizardIndexClass(Class<ArkWizardIndex> arkWizardIndexClass)
-	{
+	public void setWizardIndexClass(Class<ArkWizardIndex> arkWizardIndexClass) {
 		this.wizardIndexClass = arkWizardIndexClass;
 	}
 
 	/**
 	 * @return the wizardIndexClass
 	 */
-	public Class<ArkWizardIndex> getWizardIndexClass()
-	{
+	public Class<ArkWizardIndex> getWizardIndexClass() {
 		return wizardIndexClass;
 	}
 
 	/**
-	 * @param wizardBasePanel the wizardBasePanel to set
+	 * @param wizardBasePanel
+	 *           the wizardBasePanel to set
 	 */
-	public void setWizardBasePanel(WebMarkupContainer wizardBasePanel)
-	{
+	public void setWizardBasePanel(WebMarkupContainer wizardBasePanel) {
 		this.wizardBasePanel = wizardBasePanel;
 	}
 
 	/**
 	 * @return the wizardBasePanel
 	 */
-	public WebMarkupContainer getWizardBasePanel()
-	{
+	public WebMarkupContainer getWizardBasePanel() {
 		return wizardBasePanel;
 	}
 }

@@ -19,7 +19,8 @@ import javax.persistence.TemporalType;
 import au.org.theark.core.Constants;
 
 /**
- * ConsentFile entity. 
+ * ConsentFile entity.
+ * 
  * @author cellis
  */
 @Entity
@@ -31,16 +32,16 @@ public class ConsentFile implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -3611814204230766317L;
-	private Long id;
-	private Consent consent;
-	private String filename;
-	private Blob payload;
-	private String checksum;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private static final long	serialVersionUID	= -3611814204230766317L;
+	private Long					id;
+	private Consent				consent;
+	private String					filename;
+	private Blob					payload;
+	private String					checksum;
+	private String					userId;
+	private Date					insertTime;
+	private String					updateUserId;
+	private Date					updateTime;
 
 	// Constructors
 
@@ -49,8 +50,7 @@ public class ConsentFile implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public ConsentFile(Long id, Consent consent, 
-			String filename, String userId, Date insertTime) {
+	public ConsentFile(Long id, Consent consent, String filename, String userId, Date insertTime) {
 		this.id = id;
 		this.consent = consent;
 		this.filename = filename;
@@ -60,8 +60,8 @@ public class ConsentFile implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="ConsentFile_PK_Seq",sequenceName="CONSENTFILE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="ConsentFile_PK_Seq")
+	@SequenceGenerator(name = "ConsentFile_PK_Seq", sequenceName = "CONSENTFILE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ConsentFile_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -70,6 +70,7 @@ public class ConsentFile implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	public void setConsent(Consent consent) {
 		this.consent = consent;
 	}
@@ -79,7 +80,7 @@ public class ConsentFile implements java.io.Serializable {
 	public Consent getConsent() {
 		return consent;
 	}
-	
+
 	@Column(name = "FILENAME", length = 260)
 	public String getFilename() {
 		return this.filename;
@@ -88,7 +89,7 @@ public class ConsentFile implements java.io.Serializable {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
+
 	@Column(name = "PAYLOAD")
 	public Blob getPayload() {
 		return this.payload;
@@ -97,12 +98,12 @@ public class ConsentFile implements java.io.Serializable {
 	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
-	
+
 	@Column(name = "CHECKSUM")
 	public String getChecksum() {
 		return checksum;
 	}
-	
+
 	public void setChecksum(String checksum) {
 		this.checksum = checksum;
 	}

@@ -19,9 +19,9 @@ public class LinkSiteContact implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private StudySite studySite;
-	private Person person;
+	private Long		id;
+	private StudySite	studySite;
+	private Person		person;
 
 	// Constructors
 
@@ -35,8 +35,7 @@ public class LinkSiteContact implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkSiteContact(Long id, StudySite studySite,
-			Person person) {
+	public LinkSiteContact(Long id, StudySite studySite, Person person) {
 		this.id = id;
 		this.studySite = studySite;
 		this.person = person;

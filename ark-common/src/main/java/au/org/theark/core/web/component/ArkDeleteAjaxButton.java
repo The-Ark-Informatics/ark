@@ -7,15 +7,13 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ArkDeleteAjaxButton extends AjaxDeleteButton
-{
+public class ArkDeleteAjaxButton extends AjaxDeleteButton {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 2210428932835290880L;
 
-	ArkDeleteAjaxButton(String id, Component component)
-	{
+	ArkDeleteAjaxButton(String id, Component component) {
 		// Properties contains:
 		// confirmDelete=Are you sure you want to delete?
 		// delete=Delete
@@ -23,7 +21,6 @@ public class ArkDeleteAjaxButton extends AjaxDeleteButton
 	}
 
 	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-	{
+	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 	}
 }

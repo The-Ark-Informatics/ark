@@ -14,28 +14,28 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ARK_PERMISSION", schema = Constants.STUDY_SCHEMA)
-public class ArkPermission implements Serializable{
-	
+public class ArkPermission implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
-	
-	public ArkPermission(){
-		
+	private Long	id;
+	private String	name;
+	private String	description;
+
+	public ArkPermission() {
+
 	}
-	
+
 	@Id
-	@SequenceGenerator(name="permission_generator", sequenceName="PERMISSION_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "permission_generator")
+	@SequenceGenerator(name = "permission_generator", sequenceName = "PERMISSION_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "permission_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}

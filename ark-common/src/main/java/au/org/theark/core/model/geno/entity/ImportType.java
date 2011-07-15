@@ -16,16 +16,15 @@ import au.org.theark.core.model.Constants;
 /**
  * ImportType entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.ImportType")
+@Entity(name = "au.org.theark.geno.model.entity.ImportType")
 @Table(name = "IMPORT_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class ImportType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private Set<CollectionImport> collectionImports = new HashSet<CollectionImport>(
-			0);
+	private Long						id;
+	private String						name;
+	private Set<CollectionImport>	collectionImports	= new HashSet<CollectionImport>(0);
 
 	// Constructors
 
@@ -39,8 +38,7 @@ public class ImportType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public ImportType(Long id, String name,
-			Set<CollectionImport> collectionImports) {
+	public ImportType(Long id, String name, Set<CollectionImport> collectionImports) {
 		this.id = id;
 		this.name = name;
 		this.collectionImports = collectionImports;

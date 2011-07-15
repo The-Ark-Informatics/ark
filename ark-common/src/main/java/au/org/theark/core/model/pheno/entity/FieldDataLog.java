@@ -17,7 +17,6 @@ import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
 
-
 /**
  * MetaData entity. @author MyEclipse Persistence Tools
  */
@@ -27,14 +26,14 @@ import au.org.theark.core.model.Constants;
 public class FieldDataLog implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private FieldData fieldData;
-	private String comment;
-	private String value;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private Long		id;
+	private FieldData	fieldData;
+	private String		comment;
+	private String		value;
+	private String		userId;
+	private Date		insertTime;
+	private String		updateUserId;
+	private Date		updateTime;
 
 	// Constructors
 
@@ -43,7 +42,7 @@ public class FieldDataLog implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public FieldDataLog(Long id, FieldData fieldData,	String comment, String userId, Date insertTime) {
+	public FieldDataLog(Long id, FieldData fieldData, String comment, String userId, Date insertTime) {
 		this.id = id;
 		this.fieldData = fieldData;
 		this.comment = comment;
@@ -52,7 +51,7 @@ public class FieldDataLog implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public FieldDataLog(Long id,FieldData fieldData, String comment, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
+	public FieldDataLog(Long id, FieldData fieldData, String comment, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.fieldData = fieldData;
 		this.comment = comment;
@@ -65,8 +64,8 @@ public class FieldDataLog implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="FieldDataLog_PK_Seq",sequenceName="PHENOTYPIC.FIELD_DATA_LOG_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="FieldDataLog_PK_Seq")
+	@SequenceGenerator(name = "FieldDataLog_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_DATA_LOG_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "FieldDataLog_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -94,7 +93,7 @@ public class FieldDataLog implements java.io.Serializable {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-	
+
 	@Column(name = "VALUE", length = 2000)
 	public String getValue() {
 		return this.value;
@@ -112,7 +111,7 @@ public class FieldDataLog implements java.io.Serializable {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {

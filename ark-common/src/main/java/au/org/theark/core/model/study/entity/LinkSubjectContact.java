@@ -19,11 +19,11 @@ public class LinkSubjectContact implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Study study;
-	private Relationship relationship;
-	private Person personBySubjectId;
-	private Person personByContactId;
+	private Long			id;
+	private Study			study;
+	private Relationship	relationship;
+	private Person			personBySubjectId;
+	private Person			personByContactId;
 
 	// Constructors
 
@@ -37,9 +37,7 @@ public class LinkSubjectContact implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkSubjectContact(Long id, Study study,
-			Relationship relationship, Person personBySubjectId,
-			Person personByContactId) {
+	public LinkSubjectContact(Long id, Study study, Relationship relationship, Person personBySubjectId, Person personByContactId) {
 		this.id = id;
 		this.study = study;
 		this.relationship = relationship;

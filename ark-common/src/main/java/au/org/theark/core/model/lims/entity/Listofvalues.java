@@ -17,8 +17,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "listofvalues", schema = Constants.LIMS_TABLE_SCHEMA)
-public class Listofvalues implements java.io.Serializable
-{
+public class Listofvalues implements java.io.Serializable {
 
 	private Long		id;
 	private String		timestamp;
@@ -34,20 +33,17 @@ public class Listofvalues implements java.io.Serializable
 	private int			iseditable;
 	private String		language;
 
-	public Listofvalues()
-	{
+	public Listofvalues() {
 	}
 
-	public Listofvalues(Long id, int iseditable, String language)
-	{
+	public Listofvalues(Long id, int iseditable, String language) {
 		this.id = id;
 		this.iseditable = iseditable;
 		this.language = language;
 	}
 
 	public Listofvalues(Long id, Integer studyId, Integer deleted, String type, String value, Integer sortorder, Integer groupId, String description, String parenttype, String parentvalue,
-			int iseditable, String language)
-	{
+			int iseditable, String language) {
 		this.id = id;
 		this.studyId = studyId;
 		this.deleted = deleted;
@@ -65,146 +61,119 @@ public class Listofvalues implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "listofvalues_generator", sequenceName = "LISTOFVALUES_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "listofvalues_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "STUDY_ID")
-	public Integer getStudyId()
-	{
+	public Integer getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(Integer studyId)
-	{
+	public void setStudyId(Integer studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "TYPE", length = 100)
-	public String getType()
-	{
+	public String getType() {
 		return this.type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 
 	@Column(name = "VALUE", length = 100)
-	public String getValue()
-	{
+	public String getValue() {
 		return this.value;
 	}
 
-	public void setValue(String value)
-	{
+	public void setValue(String value) {
 		this.value = value;
 	}
 
 	@Column(name = "SORTORDER")
-	public Integer getSortorder()
-	{
+	public Integer getSortorder() {
 		return this.sortorder;
 	}
 
-	public void setSortorder(Integer sortorder)
-	{
+	public void setSortorder(Integer sortorder) {
 		this.sortorder = sortorder;
 	}
 
 	@Column(name = "GROUP_ID")
-	public Integer getGroupId()
-	{
+	public Integer getGroupId() {
 		return this.groupId;
 	}
 
-	public void setGroupId(Integer groupId)
-	{
+	public void setGroupId(Integer groupId) {
 		this.groupId = groupId;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Column(name = "PARENTTYPE", length = 65535)
-	public String getParenttype()
-	{
+	public String getParenttype() {
 		return this.parenttype;
 	}
 
-	public void setParenttype(String parenttype)
-	{
+	public void setParenttype(String parenttype) {
 		this.parenttype = parenttype;
 	}
 
 	@Column(name = "PARENTVALUE", length = 65535)
-	public String getParentvalue()
-	{
+	public String getParentvalue() {
 		return this.parentvalue;
 	}
 
-	public void setParentvalue(String parentvalue)
-	{
+	public void setParentvalue(String parentvalue) {
 		this.parentvalue = parentvalue;
 	}
 
 	@Column(name = "ISEDITABLE", nullable = false)
-	public int getIseditable()
-	{
+	public int getIseditable() {
 		return this.iseditable;
 	}
 
-	public void setIseditable(int iseditable)
-	{
+	public void setIseditable(int iseditable) {
 		this.iseditable = iseditable;
 	}
 
 	@Column(name = "LANGUAGE", nullable = false, length = 20)
-	public String getLanguage()
-	{
+	public String getLanguage() {
 		return this.language;
 	}
 
-	public void setLanguage(String language)
-	{
+	public void setLanguage(String language) {
 		this.language = language;
 	}
 

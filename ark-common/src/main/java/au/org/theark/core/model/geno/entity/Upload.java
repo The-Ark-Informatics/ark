@@ -25,25 +25,23 @@ import au.org.theark.core.model.Constants;
 /**
  * Upload entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.Upload")
+@Entity(name = "au.org.theark.geno.model.entity.Upload")
 @Table(name = "UPLOAD", schema = Constants.GENO_TABLE_SCHEMA)
 public class Upload implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private FileFormat fileFormat;
-	private DelimiterType delimiterType;
-	private String filename;
-	private Set<UploadMarkerGroup> uploadMarkerGroups = new HashSet<UploadMarkerGroup>(
-			0);
-	private Set<UploadCollection> uploadCollections = new HashSet<UploadCollection>(
-			0);
-	private Blob payload;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private Long							id;
+	private FileFormat					fileFormat;
+	private DelimiterType				delimiterType;
+	private String							filename;
+	private Set<UploadMarkerGroup>	uploadMarkerGroups	= new HashSet<UploadMarkerGroup>(0);
+	private Set<UploadCollection>		uploadCollections		= new HashSet<UploadCollection>(0);
+	private Blob							payload;
+	private String							userId;
+	private Date							insertTime;
+	private String							updateUserId;
+	private Date							updateTime;
 
 	// Constructors
 
@@ -52,8 +50,7 @@ public class Upload implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, 
-			String filename, String userId, Date insertTime) {
+	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, String filename, String userId, Date insertTime) {
 		this.id = id;
 		this.delimiterType = delimiterType;
 		this.fileFormat = fileFormat;
@@ -63,9 +60,7 @@ public class Upload implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, 
-			String filename, String userId, Date insertTime, 
-			Set<UploadMarkerGroup> uploadMarkerGroups,
+	public Upload(Long id, DelimiterType delimiterType, FileFormat fileFormat, String filename, String userId, Date insertTime, Set<UploadMarkerGroup> uploadMarkerGroups,
 			Set<UploadCollection> uploadCollections) {
 		this.id = id;
 		this.delimiterType = delimiterType;
@@ -79,8 +74,8 @@ public class Upload implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Upload_PK_Seq",sequenceName=Constants.UPLOAD_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_PK_Seq")
+	@SequenceGenerator(name = "Upload_PK_Seq", sequenceName = Constants.UPLOAD_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -89,6 +84,7 @@ public class Upload implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FILE_FORMAT_ID", nullable = false)
 	public FileFormat getFileFormat() {
@@ -99,7 +95,6 @@ public class Upload implements java.io.Serializable {
 		this.fileFormat = fileFormat;
 	}
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "DELIMITER_TYPE_ID", nullable = false)
 	public DelimiterType getDelimiterType() {
@@ -109,7 +104,7 @@ public class Upload implements java.io.Serializable {
 	public void setDelimiterType(DelimiterType delimiterType) {
 		this.delimiterType = delimiterType;
 	}
-	
+
 	@Column(name = "FILENAME", length = 260)
 	public String getFilename() {
 		return this.filename;
@@ -118,7 +113,7 @@ public class Upload implements java.io.Serializable {
 	public void setFilename(String filename) {
 		this.filename = filename;
 	}
-	
+
 	@Column(name = "PAYLOAD")
 	public Blob getPayload() {
 		return this.payload;
@@ -127,7 +122,7 @@ public class Upload implements java.io.Serializable {
 	public void setPayload(Blob payload) {
 		this.payload = payload;
 	}
-	
+
 	@Column(name = "USER_ID", nullable = false)
 	public String getUserId() {
 		return this.userId;

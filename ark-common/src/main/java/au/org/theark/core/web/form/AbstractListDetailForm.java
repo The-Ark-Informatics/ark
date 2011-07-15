@@ -15,42 +15,40 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.listeditor.AbstractListEditor;
 
-/**s
+/**
+ * s
+ * 
  * @author cellis
  * 
  */
-public abstract class AbstractListDetailForm<T> extends Form<T>
-{
+public abstract class AbstractListDetailForm<T> extends Form<T> {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -4025065993634203645L;
+	private static final long			serialVersionUID	= -4025065993634203645L;
 
-	protected transient Logger log = LoggerFactory.getLogger(AbstractListDetailForm.class);
-	
+	protected transient Logger			log					= LoggerFactory.getLogger(AbstractListDetailForm.class);
+
 	protected AbstractListEditor<?>	listEditor			= null;
-	protected FeedbackPanel			feedbackPanel;
-	protected Form<T>					containerForm;
+	protected FeedbackPanel				feedbackPanel;
+	protected Form<T>						containerForm;
 
 	// Add a visitor class for required field marking/validation/highlighting
-	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
-	
-	protected AjaxButton newButton;
+	protected ArkFormVisitor			formVisitor			= new ArkFormVisitor();
 
-	public AbstractListDetailForm(String id)
-	{
+	protected AjaxButton					newButton;
+
+	public AbstractListDetailForm(String id) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 	}
-	
-	public AbstractListDetailForm(String id, IModel<T> model)
-	{
+
+	public AbstractListDetailForm(String id, IModel<T> model) {
 		super(id, model);
 		setOutputMarkupPlaceholderTag(true);
 	}
-	
-	public AbstractListDetailForm(String id, FeedbackPanel feedbackPanel, IModel<T> model)
-	{
+
+	public AbstractListDetailForm(String id, FeedbackPanel feedbackPanel, IModel<T> model) {
 		super(id, model);
 		this.feedbackPanel = feedbackPanel;
 		setOutputMarkupPlaceholderTag(true);
@@ -61,34 +59,29 @@ public abstract class AbstractListDetailForm<T> extends Form<T>
 	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
 	 * extend the classes.
 	 */
-	public void initialiseForm()
-	{
+	public void initialiseForm() {
 		addComponentsToForm();
 	}
 
-	protected void addComponentsToForm()
-	{
-		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null))
-		{
+	protected void addComponentsToForm() {
+		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -8505652280527122102L;
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
 			}
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Sub class to implement New button press
 				onNew(target, containerForm);
 			}
 		};
-		
+
 		newButton.setDefaultFormProcessing(false);
 
 		addOrReplace(newButton);
@@ -96,45 +89,46 @@ public abstract class AbstractListDetailForm<T> extends Form<T>
 	}
 
 	/**
-	 * @param listEditor the listEditor to set
+	 * @param listEditor
+	 *           the listEditor to set
 	 */
-	public void setListEditor(AbstractListEditor<?> listEditor)
-	{
+	public void setListEditor(AbstractListEditor<?> listEditor) {
 		this.listEditor = listEditor;
 	}
 
 	/**
 	 * @return the listEditor
 	 */
-	public AbstractListEditor<?> getListEditor()
-	{
+	public AbstractListEditor<?> getListEditor() {
 		return listEditor;
 	}
 
 	@SuppressWarnings("unchecked")
-	public void onBeforeRender()
-	{
+	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
 	}
 
 	abstract protected void attachValidators();
-	
+
 	/**
 	 * Initialises the listEditor within the form
+	 * 
 	 * @return
 	 */
 	abstract protected AbstractListEditor<?> initialiseListEditor();
 
 	/**
 	 * Sub-class implements the action when New button clicked
+	 * 
 	 * @param target
 	 * @param form
 	 */
 	abstract protected void onNew(AjaxRequestTarget target, Form<T> form);
-	
+
 	/**
 	 * Show the modal window that contains the detail form to create/edit/delete
+	 * 
 	 * @param target
 	 * @param form
 	 */

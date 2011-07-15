@@ -14,18 +14,17 @@ import au.org.theark.core.model.study.entity.Address;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class AddressVO implements Serializable{
-	
-	protected Address address;
-	protected Collection<Address> addresses;
-	
-	
+public class AddressVO implements Serializable {
+
+	protected Address					address;
+	protected Collection<Address>	addresses;
+
 	/**
 	 * 
 	 */
-	public AddressVO(){
+	public AddressVO() {
 		address = new Address();
 		addresses = new ArrayList<Address>();
 	}
@@ -45,6 +44,5 @@ public class AddressVO implements Serializable{
 	public void setAddresses(Collection<Address> addresses) {
 		this.addresses = addresses;
 	}
-
 
 }

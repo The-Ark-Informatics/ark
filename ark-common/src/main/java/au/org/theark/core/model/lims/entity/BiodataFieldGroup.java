@@ -20,27 +20,23 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_field_group", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataFieldGroup implements java.io.Serializable
-{
+public class BiodataFieldGroup implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private BiodataGroup	biodataGroup;
 	private BiodataField	biodataField;
 	private Integer		position;
 
-	public BiodataFieldGroup()
-	{
+	public BiodataFieldGroup() {
 	}
 
-	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField)
-	{
+	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataField = biodataField;
 	}
 
-	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField, Integer position)
-	{
+	public BiodataFieldGroup(Long id, BiodataGroup biodataGroup, BiodataField biodataField, Integer position) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataField = biodataField;
@@ -50,48 +46,40 @@ public class BiodataFieldGroup implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatafieldgroup_generator", sequenceName = "BIODATAFIELDGROUP_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatafieldgroup_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID", nullable = false)
-	public BiodataGroup getBiodataGroup()
-	{
+	public BiodataGroup getBiodataGroup() {
 		return this.biodataGroup;
 	}
 
-	public void setBiodataGroup(BiodataGroup biodataGroup)
-	{
+	public void setBiodataGroup(BiodataGroup biodataGroup) {
 		this.biodataGroup = biodataGroup;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_ID", nullable = false)
-	public BiodataField getBiodataField()
-	{
+	public BiodataField getBiodataField() {
 		return this.biodataField;
 	}
 
-	public void setBiodataField(BiodataField biodataField)
-	{
+	public void setBiodataField(BiodataField biodataField) {
 		this.biodataField = biodataField;
 	}
 
 	@Column(name = "POSITION")
-	public Integer getPosition()
-	{
+	public Integer getPosition() {
 		return this.position;
 	}
 
-	public void setPosition(Integer position)
-	{
+	public void setPosition(Integer position) {
 		this.position = position;
 	}
 

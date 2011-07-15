@@ -10,15 +10,16 @@ import au.org.theark.core.model.Constants;
 /**
  * DelimiterType entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.DelimiterType")
+@Entity(name = "au.org.theark.geno.model.entity.DelimiterType")
 @Table(name = "DELIMITER_TYPE", schema = Constants.GENO_TABLE_SCHEMA)
 public class DelimiterType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-//	private Set<Upload> uploads = new HashSet<Upload>(0);
+	private Long	id;
+	private String	name;
+
+	// private Set<Upload> uploads = new HashSet<Upload>(0);
 
 	// Constructors
 
@@ -32,11 +33,12 @@ public class DelimiterType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DelimiterType(Long id, String name/*,
-			Set<Upload> uploads*/) {
+	public DelimiterType(Long id, String name/*
+															 * , Set<Upload> uploads
+															 */) {
 		this.id = id;
 		this.name = name;
-//		this.uploads = uploads;
+		// this.uploads = uploads;
 	}
 
 	// Property accessors
@@ -59,13 +61,13 @@ public class DelimiterType implements java.io.Serializable {
 		this.name = name;
 	}
 
-//	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "delimiterType")
-//	public Set<Upload> getUploads() {
-//		return this.uploads;
-//	}
-//
-//	public void setUploads(Set<Upload> uploads) {
-//		this.uploads = uploads;
-//	}
+	// @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "delimiterType")
+	// public Set<Upload> getUploads() {
+	// return this.uploads;
+	// }
+	//
+	// public void setUploads(Set<Upload> uploads) {
+	// this.uploads = uploads;
+	// }
 
 }

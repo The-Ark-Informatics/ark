@@ -20,11 +20,11 @@ public class EmailAccount implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private EmailAccountType emailAccountType;
-	private String name;
-	private boolean primaryAccount;
-	private Long personId;
+	private Long					id;
+	private EmailAccountType	emailAccountType;
+	private String					name;
+	private boolean				primaryAccount;
+	private Long					personId;
 
 	// Constructors
 
@@ -38,9 +38,7 @@ public class EmailAccount implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public EmailAccount(Long id,
-			EmailAccountType emailAccountType, String name,
-			boolean primaryAccount, Long personId) {
+	public EmailAccount(Long id, EmailAccountType emailAccountType, String name, boolean primaryAccount, Long personId) {
 		this.id = id;
 		this.emailAccountType = emailAccountType;
 		this.name = name;

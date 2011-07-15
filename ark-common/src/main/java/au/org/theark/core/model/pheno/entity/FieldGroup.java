@@ -22,22 +22,21 @@ import au.org.theark.core.model.Constants;
 
 /**
  * @author cellis
- *
+ * 
  */
 @SuppressWarnings("unused")
 @Entity
 @Table(name = "FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
-public class FieldGroup
-{
+public class FieldGroup {
 	// Fields
-	private Long id;
-	private String name;
-	private String description;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	
+	private Long	id;
+	private String	name;
+	private String	description;
+	private String	userId;
+	private Date	insertTime;
+	private String	updateUserId;
+	private Date	updateTime;
+
 	// Constructors
 	/** default constructor */
 	public FieldGroup() {
@@ -50,7 +49,7 @@ public class FieldGroup
 		this.userId = userId;
 		this.insertTime = insertTime;
 	}
-	
+
 	/** full constructor */
 	public FieldGroup(Long id, String name, String description, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
@@ -61,11 +60,11 @@ public class FieldGroup
 		this.updateUserId = updateUserId;
 		this.updateTime = updateTime;
 	}
-	
+
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Field_Group_PK_Seq",sequenceName="PHENOTYPIC.FIELD_GROUP_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Field_Group_PK_Seq")
+	@SequenceGenerator(name = "Field_Group_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_GROUP_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_Group_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -122,7 +121,7 @@ public class FieldGroup
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-   @Column(name = "UPDATE_TIME")
+	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}

@@ -23,10 +23,9 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_tray", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvTray implements java.io.Serializable
-{
+public class InvTray implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private String			timestamp;
 	private InvTank		invTank;
 	private Integer		deleted;
@@ -36,19 +35,16 @@ public class InvTray implements java.io.Serializable
 	private Integer		capacity;
 	private Set<InvBox>	invBoxes	= new HashSet<InvBox>(0);
 
-	public InvTray()
-	{
+	public InvTray() {
 	}
 
-	public InvTray(Long id, InvTank invTank, String name)
-	{
+	public InvTray(Long id, InvTank invTank, String name) {
 		this.id = id;
 		this.invTank = invTank;
 		this.name = name;
 	}
 
-	public InvTray(Long id, InvTank invTank, Integer deleted, String name, Integer available, String description, Integer capacity, Set<InvBox> invBoxes)
-	{
+	public InvTray(Long id, InvTank invTank, Integer deleted, String name, Integer available, String description, Integer capacity, Set<InvBox> invBoxes) {
 		this.id = id;
 		this.invTank = invTank;
 		this.deleted = deleted;
@@ -62,106 +58,82 @@ public class InvTray implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "invbox_generator", sequenceName = "INVBOX_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invbox_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TANK_ID", nullable = false)
-	public InvTank getInvTank()
-	{
+	public InvTank getInvTank() {
 		return this.invTank;
 	}
 
-	public void setInvTank(InvTank invTank)
-	{
+	public void setInvTank(InvTank invTank) {
 		this.invTank = invTank;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "AVAILABLE")
-	public Integer getAvailable()
-	{
+	public Integer getAvailable() {
 		return this.available;
 	}
 
-	public void setAvailable(Integer available)
-	{
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 
 	@Column(name = "DESCRIPTION", length = 65535)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Column(name = "CAPACITY")
-	public Integer getCapacity()
-	{
+	public Integer getCapacity() {
 		return this.capacity;
 	}
 
-	public void setCapacity(Integer capacity)
-	{
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 
 	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invBox")
-	public Set<InvBox> getInvBoxes()
-	{
-		return this.invBoxes;
-	}
-
-	public void setInvBoxes(Set<InvBox> invBoxes)
-	{
-		this.invBoxes = invBoxes;
-	}
-	*/
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "invBox") public Set<InvBox> getInvBoxes() { return this.invBoxes; }
+	 * 
+	 * public void setInvBoxes(Set<InvBox> invBoxes) { this.invBoxes = invBoxes; }
+	 */
 
 }

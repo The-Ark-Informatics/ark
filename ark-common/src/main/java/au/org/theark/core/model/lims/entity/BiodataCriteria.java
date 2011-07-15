@@ -22,8 +22,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_criteria", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataCriteria implements java.io.Serializable
-{
+public class BiodataCriteria implements java.io.Serializable {
 
 	private Long								id;
 	private Integer							studyId;
@@ -33,17 +32,14 @@ public class BiodataCriteria implements java.io.Serializable
 	private String								description;
 	private Set<BiodataGroupCriteria>	biodataGroupCriterias	= new HashSet<BiodataGroupCriteria>(0);
 
-	public BiodataCriteria()
-	{
+	public BiodataCriteria() {
 	}
 
-	public BiodataCriteria(Long id)
-	{
+	public BiodataCriteria(Long id) {
 		this.id = id;
 	}
 
-	public BiodataCriteria(Long id, Integer studyId, String domain, String field, String value, String description, Set<BiodataGroupCriteria> biodataGroupCriterias)
-	{
+	public BiodataCriteria(Long id, Integer studyId, String domain, String field, String value, String description, Set<BiodataGroupCriteria> biodataGroupCriterias) {
 		this.id = id;
 		this.studyId = studyId;
 		this.domain = domain;
@@ -57,79 +53,65 @@ public class BiodataCriteria implements java.io.Serializable
 	@SequenceGenerator(name = "biodatacriteria_generator", sequenceName = "BIODATACRITERIA_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatacriteria_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "STUDY_ID")
-	public Integer getStudyId()
-	{
+	public Integer getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(Integer studyId)
-	{
+	public void setStudyId(Integer studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "DOMAIN", length = 50)
-	public String getDomain()
-	{
+	public String getDomain() {
 		return this.domain;
 	}
 
-	public void setDomain(String domain)
-	{
+	public void setDomain(String domain) {
 		this.domain = domain;
 	}
 
 	@Column(name = "FIELD", length = 50)
-	public String getField()
-	{
+	public String getField() {
 		return this.field;
 	}
 
-	public void setField(String field)
-	{
+	public void setField(String field) {
 		this.field = field;
 	}
 
 	@Column(name = "VALUE")
-	public String getValue()
-	{
+	public String getValue() {
 		return this.value;
 	}
 
-	public void setValue(String value)
-	{
+	public void setValue(String value) {
 		this.value = value;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biodataCriteria")
-	public Set<BiodataGroupCriteria> getBiodataGroupCriterias()
-	{
+	public Set<BiodataGroupCriteria> getBiodataGroupCriterias() {
 		return this.biodataGroupCriterias;
 	}
 
-	public void setBiodataGroupCriterias(Set<BiodataGroupCriteria> biodataGroupCriterias)
-	{
+	public void setBiodataGroupCriterias(Set<BiodataGroupCriteria> biodataGroupCriterias) {
 		this.biodataGroupCriterias = biodataGroupCriterias;
 	}
 

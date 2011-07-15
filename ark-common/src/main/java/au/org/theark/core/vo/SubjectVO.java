@@ -19,39 +19,37 @@ import au.org.theark.core.model.study.entity.StudyConsentQuestion;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 
-
-
 /**
  * @author nivedann
- *
+ * 
  */
 @SuppressWarnings("serial")
-public class SubjectVO implements Serializable{
-	
-	protected String subjectFullName;
-	protected SubjectStatus subjectStatus;
-	protected LinkSubjectStudy linkSubjectStudy;
-	protected Collection<SubjectVO> subjectList;
-	protected SubjectFile subjectFile;
-	protected ConsentAnswer consentAnswerSelect;
-	protected String subjectPreviousLastname;
+public class SubjectVO implements Serializable {
 
-	/** A List of phone numbers linked to this person/subject*/
-	protected Collection<Phone> phoneList;
-	/** A List of Address linked to this person/subject*/
-	protected Collection<Address> addressList;
-	/** A List of Email account linked to this person/subject*/
-	protected Collection<EmailAccount> emailAccountList;
-	
-	protected Collection<StudyConsentQuestion> consentQuestions;
-	
-	/** A List of Files linked to this person/subject*/
-	protected Collection<SubjectFile> subjectFileList;
-	
+	protected String										subjectFullName;
+	protected SubjectStatus								subjectStatus;
+	protected LinkSubjectStudy							linkSubjectStudy;
+	protected Collection<SubjectVO>					subjectList;
+	protected SubjectFile								subjectFile;
+	protected ConsentAnswer								consentAnswerSelect;
+	protected String										subjectPreviousLastname;
+
+	/** A List of phone numbers linked to this person/subject */
+	protected Collection<Phone>						phoneList;
+	/** A List of Address linked to this person/subject */
+	protected Collection<Address>						addressList;
+	/** A List of Email account linked to this person/subject */
+	protected Collection<EmailAccount>				emailAccountList;
+
+	protected Collection<StudyConsentQuestion>	consentQuestions;
+
+	/** A List of Files linked to this person/subject */
+	protected Collection<SubjectFile>				subjectFileList;
+
 	/**
 	 * Constructor
 	 */
-	public SubjectVO(){
+	public SubjectVO() {
 		phoneList = new ArrayList<Phone>();
 		addressList = new ArrayList<Address>();
 		emailAccountList = new ArrayList<EmailAccount>();
@@ -69,8 +67,8 @@ public class SubjectVO implements Serializable{
 		this.subjectFullName = subjectFullName;
 	}
 
-	protected Collection<LinkSubjectStudy> participants;
-	
+	protected Collection<LinkSubjectStudy>	participants;
+
 	public Collection<LinkSubjectStudy> getParticipants() {
 		return participants;
 	}
@@ -78,7 +76,7 @@ public class SubjectVO implements Serializable{
 	public void setParticipants(Collection<LinkSubjectStudy> participants) {
 		this.participants = participants;
 	}
-		
+
 	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
 	}
@@ -86,7 +84,7 @@ public class SubjectVO implements Serializable{
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
-	
+
 	public Collection<Phone> getPhoneList() {
 		return phoneList;
 	}
@@ -127,13 +125,11 @@ public class SubjectVO implements Serializable{
 		this.subjectList = subjectList;
 	}
 
-	public SubjectFile getSubjectFile()
-	{
+	public SubjectFile getSubjectFile() {
 		return subjectFile;
 	}
 
-	public void setSubjectFile(SubjectFile subjectFile)
-	{
+	public void setSubjectFile(SubjectFile subjectFile) {
 		this.subjectFile = subjectFile;
 	}
 
@@ -146,28 +142,25 @@ public class SubjectVO implements Serializable{
 	}
 
 	/**
-	 * @param subjectPreviousLastname the subjectPreviousLastname to set
+	 * @param subjectPreviousLastname
+	 *           the subjectPreviousLastname to set
 	 */
-	public void setSubjectPreviousLastname(String subjectPreviousLastname)
-	{
+	public void setSubjectPreviousLastname(String subjectPreviousLastname) {
 		this.subjectPreviousLastname = subjectPreviousLastname;
 	}
 
 	/**
 	 * @return the subjectPreviousLastname
 	 */
-	public String getSubjectPreviousLastname()
-	{
+	public String getSubjectPreviousLastname() {
 		return subjectPreviousLastname;
 	}
-	
-	public Collection<SubjectFile> getSubjectFileList()
-	{
+
+	public Collection<SubjectFile> getSubjectFileList() {
 		return subjectFileList;
 	}
 
-	public void setSubjectFileList(Collection<SubjectFile> subjectFileList)
-	{
+	public void setSubjectFileList(Collection<SubjectFile> subjectFileList) {
 		this.subjectFileList = subjectFileList;
 	}
 }

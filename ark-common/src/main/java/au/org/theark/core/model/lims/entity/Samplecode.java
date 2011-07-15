@@ -17,8 +17,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "samplecode", schema = Constants.LIMS_TABLE_SCHEMA)
-public class Samplecode implements java.io.Serializable
-{
+public class Samplecode implements java.io.Serializable {
 
 	private Long		id;
 	private int			studyId;
@@ -29,19 +28,16 @@ public class Samplecode implements java.io.Serializable
 	private Integer	order;
 	private String		childcode;
 
-	public Samplecode()
-	{
+	public Samplecode() {
 	}
 
-	public Samplecode(Long id, int studyId, String sampletype)
-	{
+	public Samplecode(Long id, int studyId, String sampletype) {
 		this.id = id;
 		this.studyId = studyId;
 		this.sampletype = sampletype;
 	}
 
-	public Samplecode(Long id, int studyId, String sampletype, String samplesubtype, Integer sampletypeId, String code, Integer order, String childcode)
-	{
+	public Samplecode(Long id, int studyId, String sampletype, String samplesubtype, Integer sampletypeId, String code, Integer order, String childcode) {
 		this.id = id;
 		this.studyId = studyId;
 		this.sampletype = sampletype;
@@ -55,90 +51,74 @@ public class Samplecode implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "samplecode_generator", sequenceName = "SAMPLECODE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "samplecode_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "STUDY_ID", nullable = false)
-	public int getStudyId()
-	{
+	public int getStudyId() {
 		return this.studyId;
 	}
 
-	public void setStudyId(int studyId)
-	{
+	public void setStudyId(int studyId) {
 		this.studyId = studyId;
 	}
 
 	@Column(name = "SAMPLETYPE", nullable = false, length = 100)
-	public String getSampletype()
-	{
+	public String getSampletype() {
 		return this.sampletype;
 	}
 
-	public void setSampletype(String sampletype)
-	{
+	public void setSampletype(String sampletype) {
 		this.sampletype = sampletype;
 	}
 
 	@Column(name = "SAMPLESUBTYPE", length = 50)
-	public String getSamplesubtype()
-	{
+	public String getSamplesubtype() {
 		return this.samplesubtype;
 	}
 
-	public void setSamplesubtype(String samplesubtype)
-	{
+	public void setSamplesubtype(String samplesubtype) {
 		this.samplesubtype = samplesubtype;
 	}
 
 	@Column(name = "SAMPLETYPE_ID")
-	public Integer getSampletypeId()
-	{
+	public Integer getSampletypeId() {
 		return this.sampletypeId;
 	}
 
-	public void setSampletypeId(Integer sampletypeId)
-	{
+	public void setSampletypeId(Integer sampletypeId) {
 		this.sampletypeId = sampletypeId;
 	}
 
 	@Column(name = "CODE", length = 4)
-	public String getCode()
-	{
+	public String getCode() {
 		return this.code;
 	}
 
-	public void setCode(String code)
-	{
+	public void setCode(String code) {
 		this.code = code;
 	}
 
 	@Column(name = "ORDER")
-	public Integer getOrder()
-	{
+	public Integer getOrder() {
 		return this.order;
 	}
 
-	public void setOrder(Integer order)
-	{
+	public void setOrder(Integer order) {
 		this.order = order;
 	}
 
 	@Column(name = "CHILDCODE", length = 4)
-	public String getChildcode()
-	{
+	public String getChildcode() {
 		return this.childcode;
 	}
 
-	public void setChildcode(String childcode)
-	{
+	public void setChildcode(String childcode) {
 		this.childcode = childcode;
 	}
 

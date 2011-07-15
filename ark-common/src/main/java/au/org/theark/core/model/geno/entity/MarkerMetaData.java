@@ -17,19 +17,19 @@ import au.org.theark.core.model.Constants;
 /**
  * MarkerMetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.MarkerMetaData")
+@Entity(name = "au.org.theark.geno.model.entity.MarkerMetaData")
 @Table(name = "MARKER_META_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class MarkerMetaData implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MetaData metaData;
-	private Marker marker;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private Long		id;
+	private MetaData	metaData;
+	private Marker		marker;
+	private String		userId;
+	private Date		insertTime;
+	private String		updateUserId;
+	private Date		updateTime;
 
 	// Constructors
 
@@ -38,8 +38,7 @@ public class MarkerMetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public MarkerMetaData(Long id, MetaData metaData, Marker marker,
-			String userId, Date insertTime) {
+	public MarkerMetaData(Long id, MetaData metaData, Marker marker, String userId, Date insertTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.marker = marker;
@@ -48,9 +47,7 @@ public class MarkerMetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public MarkerMetaData(Long id, MetaData metaData, Marker marker,
-			String userId, Date insertTime, String updateUserId,
-			Date updateTime) {
+	public MarkerMetaData(Long id, MetaData metaData, Marker marker, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.marker = marker;
@@ -100,7 +97,7 @@ public class MarkerMetaData implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
 		return this.insertTime;
@@ -119,7 +116,7 @@ public class MarkerMetaData implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;

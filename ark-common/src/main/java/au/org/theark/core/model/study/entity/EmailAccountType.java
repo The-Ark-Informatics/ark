@@ -21,10 +21,10 @@ public class EmailAccountType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<EmailAccount> emailAccounts = new HashSet<EmailAccount>(0);
+	private Long					id;
+	private String					name;
+	private String					description;
+	private Set<EmailAccount>	emailAccounts	= new HashSet<EmailAccount>(0);
 
 	// Constructors
 
@@ -38,8 +38,7 @@ public class EmailAccountType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public EmailAccountType(Long id, String name,
-			String description, Set<EmailAccount> emailAccounts) {
+	public EmailAccountType(Long id, String name, String description, Set<EmailAccount> emailAccounts) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

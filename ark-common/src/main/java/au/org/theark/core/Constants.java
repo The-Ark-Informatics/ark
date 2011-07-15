@@ -4,8 +4,7 @@ package au.org.theark.core;
  * Common constants that apply to
  *  all of the Ark modules
  */
-public class Constants
-{
+public class Constants {
 	/* Module Role Display Names */
 	public static final String	DISPLAY_ROLE_STUDY_ADMIN						= "Study Admin";
 	public static final String	DISPLAY_ROLE_ORDINARY_USER						= "Ordinary User";
@@ -272,7 +271,7 @@ public class Constants
 	public static final String	STUDY													= "study";
 	public static final String	NO_STUDY_IN_CONTEXT_MESSAGE					= "There is no study in context. Please select a Study.";
 	public static final String	MODULE_NOT_ACCESSIBLE_MESSAGE					= "You do not have the required security privileges to work with this function. Please see your Administrator.";
-	
+
 	/* Session Objects */
 	public static final String	SESSION_STUDY_KEY									= "SESSION_STUDY";
 	public static final String	SESSION_STUDY_MODULES_KEY						= "SESSION_STUDY_MODULES";

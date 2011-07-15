@@ -23,12 +23,11 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_box", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvBox implements java.io.Serializable
-{
+public class InvBox implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private String			timestamp;
-	private InvTray			invTray;
+	private InvTray		invTray;
 	private Integer		deleted;
 	private int				noofcol;
 	private String			colnotype;
@@ -41,12 +40,10 @@ public class InvBox implements java.io.Serializable
 	private int				type;
 	private Set<InvCell>	invCells	= new HashSet<InvCell>(0);
 
-	public InvBox()
-	{
+	public InvBox() {
 	}
 
-	public InvBox(Long id, InvTray invTray, int noofcol, String colnotype, int noofrow, String rownotype, int type)
-	{
+	public InvBox(Long id, InvTray invTray, int noofcol, String colnotype, int noofrow, String rownotype, int type) {
 		this.id = id;
 		this.invTray = invTray;
 		this.noofcol = noofcol;
@@ -57,8 +54,7 @@ public class InvBox implements java.io.Serializable
 	}
 
 	public InvBox(Long id, InvTray invTray, Integer deleted, int noofcol, String colnotype, Integer capacity, String name, Integer available, int noofrow, String rownotype, Integer transferId,
-			int type, Set<InvCell> invCells)
-	{
+			int type, Set<InvCell> invCells) {
 		this.id = id;
 		this.invTray = invTray;
 		this.deleted = deleted;
@@ -77,161 +73,127 @@ public class InvBox implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "invtray_generator", sequenceName = "INVTRAY_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtray_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "TRAY_ID", nullable = false)
-	public InvTray getInvBox()
-	{
+	public InvTray getInvBox() {
 		return this.invTray;
 	}
 
-	public void setInvBox(InvTray invTray)
-	{
+	public void setInvBox(InvTray invTray) {
 		this.invTray = invTray;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "NOOFCOL", nullable = false)
-	public int getNoofcol()
-	{
+	public int getNoofcol() {
 		return this.noofcol;
 	}
 
-	public void setNoofcol(int noofcol)
-	{
+	public void setNoofcol(int noofcol) {
 		this.noofcol = noofcol;
 	}
 
 	@Column(name = "COLNOTYPE", nullable = false, length = 15)
-	public String getColnotype()
-	{
+	public String getColnotype() {
 		return this.colnotype;
 	}
 
-	public void setColnotype(String colnotype)
-	{
+	public void setColnotype(String colnotype) {
 		this.colnotype = colnotype;
 	}
 
 	@Column(name = "CAPACITY")
-	public Integer getCapacity()
-	{
+	public Integer getCapacity() {
 		return this.capacity;
 	}
 
-	public void setCapacity(Integer capacity)
-	{
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 
 	@Column(name = "NAME", length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "AVAILABLE")
-	public Integer getAvailable()
-	{
+	public Integer getAvailable() {
 		return this.available;
 	}
 
-	public void setAvailable(Integer available)
-	{
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 
 	@Column(name = "NOOFROW", nullable = false)
-	public int getNoofrow()
-	{
+	public int getNoofrow() {
 		return this.noofrow;
 	}
 
-	public void setNoofrow(int noofrow)
-	{
+	public void setNoofrow(int noofrow) {
 		this.noofrow = noofrow;
 	}
 
 	@Column(name = "ROWNOTYPE", nullable = false, length = 15)
-	public String getRownotype()
-	{
+	public String getRownotype() {
 		return this.rownotype;
 	}
 
-	public void setRownotype(String rownotype)
-	{
+	public void setRownotype(String rownotype) {
 		this.rownotype = rownotype;
 	}
 
 	@Column(name = "TRANSFER_ID")
-	public Integer getTransferId()
-	{
+	public Integer getTransferId() {
 		return this.transferId;
 	}
 
-	public void setTransferId(Integer transferId)
-	{
+	public void setTransferId(Integer transferId) {
 		this.transferId = transferId;
 	}
 
 	@Column(name = "TYPE", nullable = false)
-	public int getType()
-	{
+	public int getType() {
 		return this.type;
 	}
 
-	public void setType(int type)
-	{
+	public void setType(int type) {
 		this.type = type;
 	}
 
 	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invTray")
-	public Set<InvCell> getInvCells()
-	{
-		return this.invCells;
-	}
-
-	public void setInvCells(Set<InvCell> invCells)
-	{
-		this.invCells = invCells;
-	}
-	*/
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "invTray") public Set<InvCell> getInvCells() { return this.invCells; }
+	 * 
+	 * public void setInvCells(Set<InvCell> invCells) { this.invCells = invCells; }
+	 */
 
 }

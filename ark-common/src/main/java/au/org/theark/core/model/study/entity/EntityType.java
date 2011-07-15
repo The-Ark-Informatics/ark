@@ -11,18 +11,17 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ENTITY_TYPE", schema = Constants.STUDY_SCHEMA)
 public class EntityType implements Serializable {
-	
-	
-	private Long id;
-	private String name;
-	
-	public EntityType(){
-		
+
+	private Long	id;
+	private String	name;
+
+	public EntityType() {
+
 	}
 
 	public Long getId() {
@@ -42,7 +41,5 @@ public class EntityType implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	
 
 }

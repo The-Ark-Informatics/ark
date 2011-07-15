@@ -24,8 +24,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata", schema = Constants.LIMS_TABLE_SCHEMA)
-public class Biodata implements java.io.Serializable
-{
+public class Biodata implements java.io.Serializable {
 
 	private Long			id;
 	private BiodataField	biodataField;
@@ -35,19 +34,16 @@ public class Biodata implements java.io.Serializable
 	private Integer		numberValue;
 	private Date			dateValue;
 
-	public Biodata()
-	{
+	public Biodata() {
 	}
 
-	public Biodata(Long id, BiodataField biodataField, Date dateCollected)
-	{
+	public Biodata(Long id, BiodataField biodataField, Date dateCollected) {
 		this.id = id;
 		this.biodataField = biodataField;
 		this.dateCollected = dateCollected;
 	}
 
-	public Biodata(Long id, BiodataField biodataField, Integer domainId, Date dateCollected, String stringValue, Integer numberValue, Date dateValue)
-	{
+	public Biodata(Long id, BiodataField biodataField, Integer domainId, Date dateCollected, String stringValue, Integer numberValue, Date dateValue) {
 		this.id = id;
 		this.biodataField = biodataField;
 		this.domainId = domainId;
@@ -61,82 +57,68 @@ public class Biodata implements java.io.Serializable
 	@SequenceGenerator(name = "biodata_generator", sequenceName = "BIODATA_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodata_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_ID", nullable = false)
-	public BiodataField getBiodataField()
-	{
+	public BiodataField getBiodataField() {
 		return this.biodataField;
 	}
 
-	public void setBiodataField(BiodataField biodataField)
-	{
+	public void setBiodataField(BiodataField biodataField) {
 		this.biodataField = biodataField;
 	}
 
 	@Column(name = "DOMAIN_ID")
-	public Integer getDomainId()
-	{
+	public Integer getDomainId() {
 		return this.domainId;
 	}
 
-	public void setDomainId(Integer domainId)
-	{
+	public void setDomainId(Integer domainId) {
 		this.domainId = domainId;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_COLLECTED", nullable = false, length = 19)
-	public Date getDateCollected()
-	{
+	public Date getDateCollected() {
 		return this.dateCollected;
 	}
 
-	public void setDateCollected(Date dateCollected)
-	{
+	public void setDateCollected(Date dateCollected) {
 		this.dateCollected = dateCollected;
 	}
 
 	@Column(name = "STRING_VALUE", length = 65535)
-	public String getStringValue()
-	{
+	public String getStringValue() {
 		return this.stringValue;
 	}
 
-	public void setStringValue(String stringValue)
-	{
+	public void setStringValue(String stringValue) {
 		this.stringValue = stringValue;
 	}
 
 	@Column(name = "NUMBER_VALUE")
-	public Integer getNumberValue()
-	{
+	public Integer getNumberValue() {
 		return this.numberValue;
 	}
 
-	public void setNumberValue(Integer numberValue)
-	{
+	public void setNumberValue(Integer numberValue) {
 		this.numberValue = numberValue;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_VALUE", length = 19)
-	public Date getDateValue()
-	{
+	public Date getDateValue() {
 		return this.dateValue;
 	}
 
-	public void setDateValue(Date dateValue)
-	{
+	public void setDateValue(Date dateValue) {
 		this.dateValue = dateValue;
 	}
 

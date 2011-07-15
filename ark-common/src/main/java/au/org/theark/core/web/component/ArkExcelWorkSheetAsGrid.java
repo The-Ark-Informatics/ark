@@ -39,27 +39,26 @@ import au.org.theark.core.util.ArkSheetMetaData;
 
 import com.csvreader.CsvReader;
 
-public class ArkExcelWorkSheetAsGrid extends Panel
-{
+public class ArkExcelWorkSheetAsGrid extends Panel {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID				= 2950851261474110946L;
-	private transient Sheet			sheet;																										// an instance of an Excel WorkSheet
-	private transient ArkSheetMetaData		sheetMetaData;
-	private byte[]						workBookAsBytes;
-	private char						delimiterType;
-	private HashSet<Integer>		insertRows;
-	private HashSet<Integer>		updateRows;
-	private HashSet<ArkGridCell> insertCells;
-	private HashSet<ArkGridCell> updateCells;
-	private HashSet<ArkGridCell> warningCells;
-	private HashSet<ArkGridCell>	errorCells;
-	private String						fileFormat;
-	private WebMarkupContainer		wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
+	private static final long				serialVersionUID				= 2950851261474110946L;
+	private transient Sheet					sheet;																										// an instance of an Excel
+																																									// WorkSheet
+	private transient ArkSheetMetaData	sheetMetaData;
+	private byte[]								workBookAsBytes;
+	private char								delimiterType;
+	private HashSet<Integer>				insertRows;
+	private HashSet<Integer>				updateRows;
+	private HashSet<ArkGridCell>			insertCells;
+	private HashSet<ArkGridCell>			updateCells;
+	private HashSet<ArkGridCell>			warningCells;
+	private HashSet<ArkGridCell>			errorCells;
+	private String								fileFormat;
+	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 
-	public ArkExcelWorkSheetAsGrid(String id)
-	{
+	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
@@ -71,8 +70,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGrid();
 	}
 
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload)
-	{
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
@@ -87,8 +85,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGridKey(fileUpload);
 	}
 
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells)
-	{
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = updateRows;
@@ -101,9 +98,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
-	
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> errorCells)
-	{
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<ArkGridCell> errorCells) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
@@ -117,9 +114,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
-	
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> errorCells)
-	{
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> errorCells) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
@@ -133,9 +130,9 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
-	
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer>  insertRows, HashSet<Integer> updateRows, HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> warningCells, HashSet<ArkGridCell> errorCells)
-	{
+
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> warningCells, HashSet<ArkGridCell> errorCells) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.insertRows = insertRows;
@@ -150,14 +147,12 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		initialiseGridKey(fileUpload);
 	}
 
-	private void initialiseGrid()
-	{
+	private void initialiseGrid() {
 		add(createHeadings());
 		add(createMainGrid());
 	}
 
-	private void initialiseGridKey(FileUpload fileUpload)
-	{
+	private void initialiseGridKey(FileUpload fileUpload) {
 		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
 		wizardDataGridKeyContainer.setOutputMarkupId(true);
 		// Download file link button
@@ -169,46 +164,37 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * generating rows using the Loop class and the PropertyModel with SheetMetaData instance works magicWe bound the numbers of rows stored in
 	 * SheetMetaData instance to the Loop using PropertyModel. No table will be displayed before an upload.
 	 */
-	@SuppressWarnings( { "serial", "unchecked" })
-	private Loop createMainGrid()
-	{
+	@SuppressWarnings({ "serial", "unchecked" })
+	private Loop createMainGrid() {
 		// We create a Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "rows" value
-		return new Loop("rows", new PropertyModel(sheetMetaData, "rows"))
-		{
-			public void populateItem(LoopItem item)
-			{
+		return new Loop("rows", new PropertyModel(sheetMetaData, "rows")) {
+			public void populateItem(LoopItem item) {
 				final int row = item.getIteration();
 
-				if(!insertRows.isEmpty() || !updateRows.isEmpty())
-				{
+				if (!insertRows.isEmpty() || !updateRows.isEmpty()) {
 					setRowCssStyle(row, item);
 				}
 
-				if (row > 0)
-				{
+				if (row > 0) {
 					// creates the row numbers
 					item.add(new Label("rowNo", new Model(String.valueOf(row))));
 
 					// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "cols" value
-					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols"))
-					{
-						public void populateItem(LoopItem item)
-						{
+					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols")) {
+						public void populateItem(LoopItem item) {
 							final int col = item.getIteration();
 							/*
 							 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance
 							 * which gets updated each time we upload a new Excel File, the value for each cell is automatically updated
 							 */
-							IModel<Object> model = new Model()
-							{
+							IModel<Object> model = new Model() {
 								/**
 								 * 
 								 */
 								private static final long	serialVersionUID	= 1144128566137457199L;
 
 								@Override
-								public Serializable getObject()
-								{
+								public Serializable getObject() {
 									Cell cell = sheet.getCell(col, row);
 									return cell.getContents();
 								}
@@ -217,49 +203,37 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 							item.add(cellData);
 
 							ArkGridCell cell = new ArkGridCell(col, row);
-							if (errorCells.contains(cell))
-							{
-								item.add(new AbstractBehavior()
-								{
+							if (errorCells.contains(cell)) {
+								item.add(new AbstractBehavior() {
 									@Override
-									public void onComponentTag(Component component, ComponentTag tag)
-									{
+									public void onComponentTag(Component component, ComponentTag tag) {
 										super.onComponentTag(component, tag);
 										tag.put("style", "background: red;");
 									};
 								});
-							} 
-							else if (warningCells.contains(cell))
-							{
-								item.add(new AbstractBehavior()
-								{
+							}
+							else if (warningCells.contains(cell)) {
+								item.add(new AbstractBehavior() {
 									@Override
-									public void onComponentTag(Component component, ComponentTag tag)
-									{
+									public void onComponentTag(Component component, ComponentTag tag) {
 										super.onComponentTag(component, tag);
 										tag.put("style", "background: orange;");
 									};
 								});
-							} 
-							else if (updateCells.contains(cell))
-							{
-								item.add(new AbstractBehavior()
-								{
+							}
+							else if (updateCells.contains(cell)) {
+								item.add(new AbstractBehavior() {
 									@Override
-									public void onComponentTag(Component component, ComponentTag tag)
-									{
+									public void onComponentTag(Component component, ComponentTag tag) {
 										super.onComponentTag(component, tag);
 										tag.put("style", "background: lightblue;");
 									};
 								});
 							}
-							else if (insertCells.contains(cell))
-							{
-								item.add(new AbstractBehavior()
-								{
+							else if (insertCells.contains(cell)) {
+								item.add(new AbstractBehavior() {
 									@Override
-									public void onComponentTag(Component component, ComponentTag tag)
-									{
+									public void onComponentTag(Component component, ComponentTag tag) {
 										super.onComponentTag(component, tag);
 										tag.put("style", "background: lightgreen;");
 									};
@@ -268,14 +242,11 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 						}
 					});
 				}
-				else
-				{
+				else {
 					item.add(new Label("rowNo", new Model("")));
 					item.setVisible(false);
-					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols"))
-					{
-						public void populateItem(LoopItem item)
-						{
+					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols")) {
+						public void populateItem(LoopItem item) {
 							Label cellData = new Label("cellData", new Model(""));
 							item.add(cellData);
 						}
@@ -291,15 +262,11 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			 * 
 			 * @param cell
 			 */
-			private void setRowCssStyle(Integer row, LoopItem item)
-			{
-				if (updateRows.contains(row))
-				{
-					item.add(new AbstractBehavior()
-					{
+			private void setRowCssStyle(Integer row, LoopItem item) {
+				if (updateRows.contains(row)) {
+					item.add(new AbstractBehavior() {
 						@Override
-						public void onComponentTag(Component component, ComponentTag tag)
-						{
+						public void onComponentTag(Component component, ComponentTag tag) {
 							super.onComponentTag(component, tag);
 							// Light yellow for updates
 							tag.put("style", "background: lightblue;");
@@ -307,13 +274,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 						};
 					});
 				}
-				else
-				{
-					item.add(new AbstractBehavior()
-					{
+				else {
+					item.add(new AbstractBehavior() {
 						@Override
-						public void onComponentTag(Component component, ComponentTag tag)
-						{
+						public void onComponentTag(Component component, ComponentTag tag) {
 							super.onComponentTag(component, tag);
 							// Light green for inserts
 							tag.put("style", "background: lightgreen;");
@@ -325,35 +289,30 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		};
 	}
 
-	@SuppressWarnings( { "unchecked" })
-	private Loop createHeadings()
-	{
-		return new Loop("heading", new PropertyModel(sheetMetaData, "cols"))
-		{
+	@SuppressWarnings({ "unchecked" })
+	private Loop createHeadings() {
+		return new Loop("heading", new PropertyModel(sheetMetaData, "cols")) {
 
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
-			public void populateItem(LoopItem item)
-			{
+			public void populateItem(LoopItem item) {
 				final int col = item.getIteration();
 
 				/*
 				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
 				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
 				 */
-				IModel<Object> model = new Model()
-				{
+				IModel<Object> model = new Model() {
 					/**
 					 * 
 					 */
 					private static final long	serialVersionUID	= 1144128566137457199L;
 
 					@Override
-					public Serializable getObject()
-					{
+					public Serializable getObject() {
 						Cell cell = sheet.getCell(col, 0);
 						return cell.getContents();
 					}
@@ -364,33 +323,26 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		};
 	}
 
-	public void initialiseWorkbook(InputStream inputStream, char delimChar)
-	{
+	public void initialiseWorkbook(InputStream inputStream, char delimChar) {
 		delimiterType = delimChar;
-		if (fileFormat.equalsIgnoreCase("XLS"))
-		{
-			try
-			{
+		if (fileFormat.equalsIgnoreCase("XLS")) {
+			try {
 				// Try to get the XLS workbook/sheet
 				// Streams directly from inputStream into Workbook.getWorkbook(Inputstream)
 				Workbook wkb = Workbook.getWorkbook(inputStream);
 				sheet = wkb.getSheet(0); // get First Work Sheet
 			}
-			catch (IOException e)
-			{
+			catch (IOException e) {
 				e.printStackTrace();
 			}
-			catch (BiffException e)
-			{
+			catch (BiffException e) {
 				e.printStackTrace();
 			}
 		}
-		else
-		{
+		else {
 			// Error when reading XLS file type, so must be CSV or TXT
 			// Thus attempt a convert from csv or text to xls format
-			try
-			{
+			try {
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 				CsvReader csvReader = new CsvReader(inputStreamReader, delimiterType);
@@ -410,27 +362,21 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				errorCellFormat.setBackground(Colour.RED);
 
 				// Loop through all rows in file
-				while (csvReader.readRecord())
-				{
+				while (csvReader.readRecord()) {
 					String[] stringArray = csvReader.getValues();
 
-					for (int col = 0; col < stringArray.length; col++)
-					{
+					for (int col = 0; col < stringArray.length; col++) {
 						jxl.write.Label label = new jxl.write.Label(col, row, stringArray[col]);
 
-						if (!errorCells.isEmpty())
-						{
+						if (!errorCells.isEmpty()) {
 							ArkGridCell cell = new ArkGridCell(col, row);
-							if (errorCells.contains(cell))
-							{
+							if (errorCells.contains(cell)) {
 								label.setCellFormat(errorCellFormat);
 							}
-							else if (updateRows.contains(row))
-							{
+							else if (updateRows.contains(row)) {
 								label.setCellFormat(updateCellFormat);
 							}
-							else
-							{
+							else {
 								label.setCellFormat(insertCellFormat);
 							}
 						}
@@ -449,20 +395,17 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 				inputStream.close();
 				output.close();
 			}
-			catch (IOException e)
-			{
+			catch (IOException e) {
 				e.printStackTrace();
 			}
-			catch (RowsExceededException e)
-			{
+			catch (RowsExceededException e) {
 				e.printStackTrace();
 			}
-			catch (WriteException e)
-			{
+			catch (WriteException e) {
 				e.printStackTrace();
 			}
 		}
-		
+
 		// Store validated/formated workbook as bytes[] for download
 		workBookAsBytes = writeOutValidationXlsFileToBytes();
 
@@ -473,21 +416,17 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		sheetMetaData.setCols(sheet.getColumns());
 	}
 
-	private AjaxButton buildDownloadButton(final FileUpload fileUpload)
-	{
-		AjaxButton ajaxButton = new AjaxButton("downloadGridData", new StringResourceModel("downloadGridData", this, null))
-		{
+	private AjaxButton buildDownloadButton(final FileUpload fileUpload) {
+		AjaxButton ajaxButton = new AjaxButton("downloadGridData", new StringResourceModel("downloadGridData", this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 2409955824467683966L;
 
 			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form)
-			{
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				byte[] data = writeOutValidationXlsFileToBytes();
-				if(data != null)
-				{
+				if (data != null) {
 					getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, "DataValidationFile.xls"));
 				}
 			};
@@ -496,19 +435,16 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
 
-		if (errorCells.isEmpty())
-		{
+		if (errorCells.isEmpty()) {
 			ajaxButton.setVisible(false);
 		}
 
 		return ajaxButton;
 	}
 
-	public byte[] writeOutValidationXlsFileToBytes()
-	{
+	public byte[] writeOutValidationXlsFileToBytes() {
 		byte[] bytes = null;
-		try
-		{
+		try {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			WritableWorkbook w = Workbook.createWorkbook(output);
 			WritableSheet writableSheet = w.createSheet("Sheet", 0);
@@ -524,31 +460,24 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			WritableCellFormat warningCellFormat = new WritableCellFormat(normalFont);
 			warningCellFormat.setBackground(Colour.LIGHT_ORANGE);
 
-			for (int row = 0; row < sheetMetaData.getRows(); row++)
-			{
-				for (int col = 0; col < sheetMetaData.getCols(); col++)
-				{
+			for (int row = 0; row < sheetMetaData.getRows(); row++) {
+				for (int col = 0; col < sheetMetaData.getCols(); col++) {
 					Cell cell = sheet.getCell(col, row);
 					String cellData = cell.getContents();
 					jxl.write.Label label = new jxl.write.Label(col, row, cellData);
 
 					ArkGridCell gridCell = new ArkGridCell(col, row);
-					if(row>0)
-					{
-						if (errorCells.contains(gridCell))
-						{
+					if (row > 0) {
+						if (errorCells.contains(gridCell)) {
 							label.setCellFormat(errorCellFormat);
 						}
-						else if(warningCells.contains(gridCell))
-						{
+						else if (warningCells.contains(gridCell)) {
 							label.setCellFormat(warningCellFormat);
 						}
-						else if (updateCells.contains(gridCell))
-						{
+						else if (updateCells.contains(gridCell)) {
 							label.setCellFormat(updateCellFormat);
 						}
-						else
-						{
+						else {
 							label.setCellFormat(insertCellFormat);
 						}
 					}
@@ -561,18 +490,16 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 			bytes = output.toByteArray();
 			output.close();
 		}
-		catch (Exception e)
-		{
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 		return bytes;
 	}
-	
+
 	/**
 	 * @return the errorCols
 	 */
-	public HashSet<Integer> getErrorCols()
-	{
+	public HashSet<Integer> getErrorCols() {
 		return insertRows;
 	}
 
@@ -580,16 +507,14 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param insertRows
 	 *           the insertRows to set
 	 */
-	public void setInsertRows(HashSet<Integer> insertRows)
-	{
+	public void setInsertRows(HashSet<Integer> insertRows) {
 		this.insertRows = insertRows;
 	}
 
 	/**
 	 * @return the updateCols
 	 */
-	public HashSet<Integer> getUpdateRows()
-	{
+	public HashSet<Integer> getUpdateRows() {
 		return updateRows;
 	}
 
@@ -597,8 +522,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param updateRows
 	 *           the updateRows to set
 	 */
-	public void setUpdateRows(HashSet<Integer> updateRows)
-	{
+	public void setUpdateRows(HashSet<Integer> updateRows) {
 		this.updateRows = updateRows;
 	}
 
@@ -606,18 +530,14 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param errorCols
 	 *           the errorCols to set
 	 */
-	public void setErrorCols(HashSet<Integer> errorCols)
-	{
+	public void setErrorCols(HashSet<Integer> errorCols) {
 		this.insertRows = errorCols;
 	}
-
-
 
 	/**
 	 * @return the insertRows
 	 */
-	public HashSet<Integer> getInsertRows()
-	{
+	public HashSet<Integer> getInsertRows() {
 		return insertRows;
 	}
 
@@ -625,16 +545,14 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param wizardDataGridKeyContainer
 	 *           the wizardDataGridKeyContainer to set
 	 */
-	public void setWizardDataGridKeyContainer(WebMarkupContainer wizardDataGridKeyContainer)
-	{
+	public void setWizardDataGridKeyContainer(WebMarkupContainer wizardDataGridKeyContainer) {
 		this.wizardDataGridKeyContainer = wizardDataGridKeyContainer;
 	}
 
 	/**
 	 * @return the wizardDataGridKeyContainer
 	 */
-	public WebMarkupContainer getWizardDataGridKeyContainer()
-	{
+	public WebMarkupContainer getWizardDataGridKeyContainer() {
 		return wizardDataGridKeyContainer;
 	}
 
@@ -642,90 +560,82 @@ public class ArkExcelWorkSheetAsGrid extends Panel
 	 * @param errorCells
 	 *           the errorCells to set
 	 */
-	public void setErrorCells(HashSet<ArkGridCell> errorCells)
-	{
+	public void setErrorCells(HashSet<ArkGridCell> errorCells) {
 		this.errorCells = errorCells;
 	}
 
 	/**
 	 * @return the errorCells
 	 */
-	public HashSet<ArkGridCell> getErrorCells()
-	{
+	public HashSet<ArkGridCell> getErrorCells() {
 		return errorCells;
 	}
 
-	public String getFileFormat()
-	{
+	public String getFileFormat() {
 		return fileFormat;
 	}
 
-	public void setFileFormat(String fileFormat)
-	{
+	public void setFileFormat(String fileFormat) {
 		this.fileFormat = fileFormat;
 	}
 
 	/**
-	 * @param workBookAsBytes the workBookAsBytes to set
+	 * @param workBookAsBytes
+	 *           the workBookAsBytes to set
 	 */
-	public void setWorkBookAsBytes(byte[] workBookAsBytes)
-	{
+	public void setWorkBookAsBytes(byte[] workBookAsBytes) {
 		this.workBookAsBytes = workBookAsBytes;
 	}
 
 	/**
 	 * @return the workBookAsBytes
 	 */
-	public byte[] getWorkBookAsBytes()
-	{
+	public byte[] getWorkBookAsBytes() {
 		return workBookAsBytes;
 	}
 
 	/**
-	 * @param insertCells the insertCells to set
+	 * @param insertCells
+	 *           the insertCells to set
 	 */
-	public void setInsertCells(HashSet<ArkGridCell> insertCells)
-	{
+	public void setInsertCells(HashSet<ArkGridCell> insertCells) {
 		this.insertCells = insertCells;
 	}
 
 	/**
 	 * @return the insertCells
 	 */
-	public HashSet<ArkGridCell> getInsertCells()
-	{
+	public HashSet<ArkGridCell> getInsertCells() {
 		return insertCells;
 	}
 
 	/**
-	 * @param updateCells the updateCells to set
+	 * @param updateCells
+	 *           the updateCells to set
 	 */
-	public void setUpdateCells(HashSet<ArkGridCell> updateCells)
-	{
+	public void setUpdateCells(HashSet<ArkGridCell> updateCells) {
 		this.updateCells = updateCells;
 	}
 
 	/**
 	 * @return the updateCells
 	 */
-	public HashSet<ArkGridCell> getUpdateCells()
-	{
+	public HashSet<ArkGridCell> getUpdateCells() {
 		return updateCells;
 	}
 
 	/**
-	 * @param warningCells the warningCells to set
+	 * @param warningCells
+	 *           the warningCells to set
 	 */
-	public void setWarningCells(HashSet<ArkGridCell> warningCells)
-	{
+	public void setWarningCells(HashSet<ArkGridCell> warningCells) {
 		this.warningCells = warningCells;
 	}
 
 	/**
 	 * @return the warningCells
 	 */
-	public HashSet<ArkGridCell> getWarningCells()
-	{
+	public HashSet<ArkGridCell> getWarningCells() {
 		return warningCells;
 	}
 }

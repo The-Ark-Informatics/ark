@@ -22,10 +22,10 @@ public class DataType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<SubjectCustmFld> subjectCustmFlds = new HashSet<SubjectCustmFld>(0);
+	private Long						id;
+	private String						name;
+	private String						description;
+	private Set<SubjectCustmFld>	subjectCustmFlds	= new HashSet<SubjectCustmFld>(0);
 
 	// Constructors
 
@@ -40,7 +40,7 @@ public class DataType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DataType(Long id, String name, String description,	Set<SubjectCustmFld> subjectCustmFlds) {
+	public DataType(Long id, String name, String description, Set<SubjectCustmFld> subjectCustmFlds) {
 		this.id = id;
 		this.name = name;
 		this.description = description;

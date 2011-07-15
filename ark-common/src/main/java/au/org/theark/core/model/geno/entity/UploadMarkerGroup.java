@@ -16,19 +16,19 @@ import au.org.theark.core.model.Constants;
 /**
  * UploadMarkerGroup entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.UploadMarkerGroup")
+@Entity(name = "au.org.theark.geno.model.entity.UploadMarkerGroup")
 @Table(name = "UPLOAD_MARKER_GROUP", schema = Constants.GENO_TABLE_SCHEMA)
 public class UploadMarkerGroup implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Upload upload;
-	private MarkerGroup markerGroup;
-	private String userId;
-	private String insertTime;
-	private String updateUserId;
-	private String updateTime;
+	private Long			id;
+	private Upload			upload;
+	private MarkerGroup	markerGroup;
+	private String			userId;
+	private String			insertTime;
+	private String			updateUserId;
+	private String			updateTime;
 
 	// Constructors
 
@@ -44,9 +44,7 @@ public class UploadMarkerGroup implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup,
-			String userId, String insertTime, String updateUserId,
-			String updateTime) {
+	public UploadMarkerGroup(Long id, Upload upload, MarkerGroup markerGroup, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.upload = upload;
 		this.markerGroup = markerGroup;
@@ -58,8 +56,8 @@ public class UploadMarkerGroup implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Upload_Marker_PK_Seq",sequenceName=Constants.UPLOAD_MARKER_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_Marker_PK_Seq")
+	@SequenceGenerator(name = "Upload_Marker_PK_Seq", sequenceName = Constants.UPLOAD_MARKER_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_Marker_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;

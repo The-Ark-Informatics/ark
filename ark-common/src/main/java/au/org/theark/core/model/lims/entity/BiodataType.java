@@ -17,25 +17,21 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_type", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataType implements java.io.Serializable
-{
+public class BiodataType implements java.io.Serializable {
 
-	private Long		id;
+	private Long	id;
 	private String	name;
 	private String	description;
 
-	public BiodataType()
-	{
+	public BiodataType() {
 	}
 
-	public BiodataType(Long id, String name)
-	{
+	public BiodataType(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
-	public BiodataType(Long id, String name, String description)
-	{
+	public BiodataType(Long id, String name, String description) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -44,35 +40,29 @@ public class BiodataType implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatatype_generator", sequenceName = "BIODATATYPE_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatatype_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "DESCRIPTION", length = 100)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 

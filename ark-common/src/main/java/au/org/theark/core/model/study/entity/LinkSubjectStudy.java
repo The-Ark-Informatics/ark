@@ -30,39 +30,37 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Study study;
-	private SubjectStatus subjectStatus;
-	private Person person;
-	private String subjectUID;
-	private String otherState;
-	private Long amdrfId;
-	private Date studyApproachDate;
-	private Long yearOfFirstMamogram;
-	private Long yearOfRecentMamogram;
-	private Long totalNumberOfMamograms;
-	private String siteAddress;
-	private Country country;
-	private CountryState state;
-	private String city;
-	private String postCode;
-	private YesNo consentToActiveContact;
-	private YesNo consentToPassiveDataGathering;
-	private YesNo consentToUseData;
-	
-	private ConsentStatus consentStatus;
-	private ConsentType consentType;
-	private Date consentDate;
-	
-	private String heardAboutStudy;
-	private String comment;
-	private YesNo consentDownloaded;
-	
-	private Set<Consent> consents = new HashSet<Consent>();	
-	private Set<SubjectCustFldDat> subjectCustFldDats = new HashSet<SubjectCustFldDat>(
-			0);
+	private Long							id;
+	private Study							study;
+	private SubjectStatus				subjectStatus;
+	private Person							person;
+	private String							subjectUID;
+	private String							otherState;
+	private Long							amdrfId;
+	private Date							studyApproachDate;
+	private Long							yearOfFirstMamogram;
+	private Long							yearOfRecentMamogram;
+	private Long							totalNumberOfMamograms;
+	private String							siteAddress;
+	private Country						country;
+	private CountryState					state;
+	private String							city;
+	private String							postCode;
+	private YesNo							consentToActiveContact;
+	private YesNo							consentToPassiveDataGathering;
+	private YesNo							consentToUseData;
 
-	
+	private ConsentStatus				consentStatus;
+	private ConsentType					consentType;
+	private Date							consentDate;
+
+	private String							heardAboutStudy;
+	private String							comment;
+	private YesNo							consentDownloaded;
+
+	private Set<Consent>					consents					= new HashSet<Consent>();
+	private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
 	public YesNo getConsentToPassiveDataGathering() {
@@ -95,8 +93,8 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="link_subject_study_generator", sequenceName="LINK_SUBJECT_STUDY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "link_subject_study_generator")
+	@SequenceGenerator(name = "link_subject_study_generator", sequenceName = "LINK_SUBJECT_STUDY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "link_subject_study_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -105,7 +103,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "STUDY_APPROACH_DATE", length = 7)
 	public Date getStudyApproachDate() {
@@ -115,13 +113,12 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setStudyApproachDate(Date studyApproachDate) {
 		this.studyApproachDate = studyApproachDate;
 	}
-	
+
 	@Column(name = "YEAR_OF_FIRST_MAMOGRAM", precision = 22, scale = 0)
 	public Long getYearOfFirstMamogram() {
 		return yearOfFirstMamogram;
 	}
-		
-	
+
 	public void setYearOfFirstMamogram(Long yearOfFirstMamogram) {
 		this.yearOfFirstMamogram = yearOfFirstMamogram;
 	}
@@ -134,7 +131,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setYearOfRecentMamogram(Long yearOfRecentMamogram) {
 		this.yearOfRecentMamogram = yearOfRecentMamogram;
 	}
-	
+
 	@Column(name = "TOTAL_MAMOGRAMS", precision = 22, scale = 0)
 	public Long getTotalNumberOfMamograms() {
 		return totalNumberOfMamograms;
@@ -153,7 +150,7 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.siteAddress = siteAddress;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY )
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "COUNTRY_ID")
 	public Country getCountry() {
 		return country;
@@ -191,14 +188,12 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.postCode = postCode;
 	}
 
-
-	
 	// Constructors
 
 	/** default constructor */
 	public LinkSubjectStudy() {
 		person = new Person();
-		
+
 	}
 
 	/** minimal constructor */
@@ -207,17 +202,13 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkSubjectStudy(Long id, Study study,
-			SubjectStatus subjectStatus, Person person,
-			Set<SubjectCustFldDat> subjectCustFldDats) {
+	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustFldDat> subjectCustFldDats) {
 		this.id = id;
 		this.study = study;
 		this.subjectStatus = subjectStatus;
 		this.person = person;
 		this.subjectCustFldDats = subjectCustFldDats;
 	}
-
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
@@ -266,30 +257,33 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public void setSubjectUID(String subjectUID) {
 		this.subjectUID = subjectUID;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_STATUS_ID")
 	public ConsentStatus getConsentStatus() {
 		return consentStatus;
 	}
+
 	public void setConsentStatus(ConsentStatus consentStatus) {
 		this.consentStatus = consentStatus;
 	}
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TYPE_ID")
 	public ConsentType getConsentType() {
 		return consentType;
 	}
+
 	public void setConsentType(ConsentType consentType) {
 		this.consentType = consentType;
 	}
-	
+
 	@Temporal(TemporalType.DATE)
 	@Column(name = "CONSENT_DATE", length = 7)
 	public Date getConsentDate() {
 		return consentDate;
 	}
+
 	public void setConsentDate(Date consentDate) {
 		this.consentDate = consentDate;
 	}
@@ -303,8 +297,8 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.otherState = otherState;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy="linkSubjectStudy")
-    public Set<Consent> getConsents() {
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
+	public Set<Consent> getConsents() {
 		return consents;
 	}
 
@@ -334,12 +328,10 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	public String getComment() {
 		return comment;
 	}
-	
-	
+
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_DOWNLOADED")

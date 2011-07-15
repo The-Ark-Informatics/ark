@@ -9,11 +9,11 @@ import au.org.theark.core.model.study.entity.Correspondences;
 
 public class CorrespondenceVO implements Serializable {
 
-	private Correspondences correspondence;
-	private Collection<Correspondences> correspondenceList;
+	private Correspondences								correspondence;
+	private Collection<Correspondences>				correspondenceList;
 	// TODO: why is this single item needed if we have a collection?
-	private CorrespondenceAttachment correspondenceAttachment;
-	private Collection<CorrespondenceAttachment> correspondenceAttachmentList;
+	private CorrespondenceAttachment					correspondenceAttachment;
+	private Collection<CorrespondenceAttachment>	correspondenceAttachmentList;
 
 	public CorrespondenceVO() {
 		correspondence = new Correspondences();
@@ -21,19 +21,19 @@ public class CorrespondenceVO implements Serializable {
 		correspondenceAttachment = new CorrespondenceAttachment();
 		correspondenceAttachmentList = new ArrayList<CorrespondenceAttachment>();
 	}
-	
+
 	public Correspondences getCorrespondence() {
 		return correspondence;
 	}
-	
+
 	public void setCorrespondence(Correspondences correspondence) {
 		this.correspondence = correspondence;
 	}
-	
+
 	public Collection<Correspondences> getCorrespondenceList() {
 		return correspondenceList;
 	}
-	
+
 	public void setCorrespondenceList(Collection<Correspondences> correspondenceList) {
 		this.correspondenceList = correspondenceList;
 	}
@@ -42,8 +42,7 @@ public class CorrespondenceVO implements Serializable {
 		return correspondenceAttachment;
 	}
 
-	public void setCorrespondenceAttachment(
-			CorrespondenceAttachment correspondenceAttachment) {
+	public void setCorrespondenceAttachment(CorrespondenceAttachment correspondenceAttachment) {
 		this.correspondenceAttachment = correspondenceAttachment;
 	}
 
@@ -51,9 +50,8 @@ public class CorrespondenceVO implements Serializable {
 		return correspondenceAttachmentList;
 	}
 
-	public void setCorrespondenceAttachmentList(
-			Collection<CorrespondenceAttachment> correspondenceAttachmentList) {
+	public void setCorrespondenceAttachmentList(Collection<CorrespondenceAttachment> correspondenceAttachmentList) {
 		this.correspondenceAttachmentList = correspondenceAttachmentList;
 	}
-	
+
 }

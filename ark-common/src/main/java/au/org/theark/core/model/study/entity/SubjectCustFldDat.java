@@ -19,10 +19,10 @@ public class SubjectCustFldDat implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private SubjectCustmFld subjectCustmFld;
-	private LinkSubjectStudy linkSubjectStudy;
-	private String fieldData;
+	private Long					id;
+	private SubjectCustmFld		subjectCustmFld;
+	private LinkSubjectStudy	linkSubjectStudy;
+	private String					fieldData;
 
 	// Constructors
 
@@ -36,9 +36,7 @@ public class SubjectCustFldDat implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectCustFldDat(Long id,
-			SubjectCustmFld subjectCustmFld, LinkSubjectStudy linkSubjectStudy,
-			String fieldData) {
+	public SubjectCustFldDat(Long id, SubjectCustmFld subjectCustmFld, LinkSubjectStudy linkSubjectStudy, String fieldData) {
 		this.id = id;
 		this.subjectCustmFld = subjectCustmFld;
 		this.linkSubjectStudy = linkSubjectStudy;

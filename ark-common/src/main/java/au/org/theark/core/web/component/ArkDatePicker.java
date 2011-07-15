@@ -10,17 +10,16 @@ import org.apache.wicket.extensions.yui.calendar.DatePicker;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class ArkDatePicker extends DatePicker{
-	
-	public ArkDatePicker(){
+public class ArkDatePicker extends DatePicker {
+
+	public ArkDatePicker() {
 		super();
 	}
-	
+
 	@Override
-	protected boolean enableMonthYearSelection()
-	{
+	protected boolean enableMonthYearSelection() {
 		return true;
 	}
 

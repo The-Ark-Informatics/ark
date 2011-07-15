@@ -19,8 +19,7 @@ import au.org.theark.core.model.Constants;
 @SuppressWarnings("serial")
 @Entity(name = "au.org.theark.phenotypic.model.entity.FieldFieldGroup")
 @Table(name = "FIELD_FIELD_GROUP", schema = Constants.PHENO_TABLE_SCHEMA)
-public class FieldFieldGroup implements java.io.Serializable
-{
+public class FieldFieldGroup implements java.io.Serializable {
 
 	// Fields
 
@@ -35,21 +34,18 @@ public class FieldFieldGroup implements java.io.Serializable
 	// Constructors
 
 	/** default constructor */
-	public FieldFieldGroup()
-	{
+	public FieldFieldGroup() {
 	}
 
 	/** minimal constructor */
-	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field)
-	{
+	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field) {
 		this.id = id;
 		this.fieldGroup = fieldGroup;
 		this.field = field;
 	}
 
 	/** full constructor */
-	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field, String userId, String insertTime, String updateUserId, String updateTime)
-	{
+	public FieldFieldGroup(Long id, FieldGroup fieldGroup, Field field, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.fieldGroup = fieldGroup;
 		this.field = field;
@@ -64,13 +60,11 @@ public class FieldFieldGroup implements java.io.Serializable
 	@SequenceGenerator(name = "Field_Field_Group_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_FIELD_GROUP_PK_SEQ")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Field_Field_Group_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -79,8 +73,7 @@ public class FieldFieldGroup implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_GROUP_ID", nullable = false)
-	public FieldGroup getFieldGroup()
-	{
+	public FieldGroup getFieldGroup() {
 		return fieldGroup;
 	}
 
@@ -88,8 +81,7 @@ public class FieldFieldGroup implements java.io.Serializable
 	 * @param fieldGroup
 	 *           the fieldGroup to set
 	 */
-	public void setFieldGroup(FieldGroup fieldGroup)
-	{
+	public void setFieldGroup(FieldGroup fieldGroup) {
 		this.fieldGroup = fieldGroup;
 	}
 
@@ -98,8 +90,7 @@ public class FieldFieldGroup implements java.io.Serializable
 	 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "FIELD_ID", nullable = false)
-	public Field getField()
-	{
+	public Field getField() {
 		return field;
 	}
 
@@ -107,52 +98,43 @@ public class FieldFieldGroup implements java.io.Serializable
 	 * @param field
 	 *           the field to set
 	 */
-	public void setField(Field field)
-	{
+	public void setField(Field field) {
 		this.field = field;
 	}
 
 	@Column(name = "USER_ID", length = 50)
-	public String getUserId()
-	{
+	public String getUserId() {
 		return this.userId;
 	}
 
-	public void setUserId(String userId)
-	{
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
 	@Column(name = "INSERT_TIME")
-	public String getInsertTime()
-	{
+	public String getInsertTime() {
 		return this.insertTime;
 	}
 
-	public void setInsertTime(String insertTime)
-	{
+	public void setInsertTime(String insertTime) {
 		this.insertTime = insertTime;
 	}
 
 	@Column(name = "UPDATE_USER_ID", length = 50)
-	public String getUpdateUserId()
-	{
+	public String getUpdateUserId() {
 		return this.updateUserId;
 	}
 
-	public void setUpdateUserId(String updateUserId)
-	{
+	public void setUpdateUserId(String updateUserId) {
 		this.updateUserId = updateUserId;
 	}
 
 	@Column(name = "UPDATE_TIME")
-	public String getUpdateTime()
-	{
+	public String getUpdateTime() {
 		return this.updateTime;
 	}
 
-	public void setUpdateTime(String updateTime)
-	{
+	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
 	}
 }

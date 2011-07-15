@@ -11,21 +11,17 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import au.org.theark.core.web.behavior.ArkRequiredFieldHintBehavior;
 
 @SuppressWarnings("unchecked")
-public class ArkFormVisitor implements IVisitor, Serializable
-{
+public class ArkFormVisitor implements IVisitor, Serializable {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -1613309540699904032L;
 	Set<Component>					visited				= new HashSet<Component>();
 
-	public Object component(Component component)
-	{
-		if (!visited.contains(component))
-		{
+	public Object component(Component component) {
+		if (!visited.contains(component)) {
 			visited.add(component);
-			if (component instanceof FormComponent)
-			{
+			if (component instanceof FormComponent) {
 				// Force id's in HTML to allow for target.focusCompont to focus on fieds in error
 				component.setOutputMarkupId(true);
 				// Add a "*" after the required fields

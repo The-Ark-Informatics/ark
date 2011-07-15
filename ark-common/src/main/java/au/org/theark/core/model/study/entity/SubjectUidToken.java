@@ -19,8 +19,8 @@ public class SubjectUidToken implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
+	private Long	id;
+	private String	name;
 
 	// Constructors
 
@@ -33,7 +33,7 @@ public class SubjectUidToken implements java.io.Serializable {
 		this.id = id;
 	}
 
-	public SubjectUidToken(Long id, String name){
+	public SubjectUidToken(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}

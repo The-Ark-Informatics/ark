@@ -19,19 +19,16 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "biodata_group_criteria", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BiodataGroupCriteria implements java.io.Serializable
-{
+public class BiodataGroupCriteria implements java.io.Serializable {
 
-	private Long					id;
+	private Long				id;
 	private BiodataGroup		biodataGroup;
 	private BiodataCriteria	biodataCriteria;
 
-	public BiodataGroupCriteria()
-	{
+	public BiodataGroupCriteria() {
 	}
 
-	public BiodataGroupCriteria(Long id, BiodataGroup biodataGroup, BiodataCriteria biodataCriteria)
-	{
+	public BiodataGroupCriteria(Long id, BiodataGroup biodataGroup, BiodataCriteria biodataCriteria) {
 		this.id = id;
 		this.biodataGroup = biodataGroup;
 		this.biodataCriteria = biodataCriteria;
@@ -40,37 +37,31 @@ public class BiodataGroupCriteria implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "biodatagroupcriteria_generator", sequenceName = "BIODATAGROUPCRITERIA_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biodatagroupcriteria_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "GROUP_ID", nullable = false)
-	public BiodataGroup getBiodataGroup()
-	{
+	public BiodataGroup getBiodataGroup() {
 		return this.biodataGroup;
 	}
 
-	public void setBiodataGroup(BiodataGroup biodataGroup)
-	{
+	public void setBiodataGroup(BiodataGroup biodataGroup) {
 		this.biodataGroup = biodataGroup;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CRITERIA_ID", nullable = false)
-	public BiodataCriteria getBiodataCriteria()
-	{
+	public BiodataCriteria getBiodataCriteria() {
 		return this.biodataCriteria;
 	}
 
-	public void setBiodataCriteria(BiodataCriteria biodataCriteria)
-	{
+	public void setBiodataCriteria(BiodataCriteria biodataCriteria) {
 		this.biodataCriteria = biodataCriteria;
 	}
 

@@ -16,39 +16,38 @@ import au.org.theark.core.Constants;
 @Table(name = "correspondence_status_type", schema = Constants.STUDY_SCHEMA)
 public class CorrespondenceStatusType implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
+	private Long	id;
+	private String	name;
+	private String	description;
 
-    @Id
-    @SequenceGenerator(name="correspondence_status_type_generator", sequenceName="CORRESPONDENCE_STATUS_TYPE_SEQUENCE")
-    @GeneratedValue(strategy=GenerationType.AUTO, generator = "correspondence_status_type_generator")
-    @Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	@Id
+	@SequenceGenerator(name = "correspondence_status_type_generator", sequenceName = "CORRESPONDENCE_STATUS_TYPE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "correspondence_status_type_generator")
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "NAME", length = 255)
 	public String getName() {
 		return name;
 	}
-	
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Column(name = "DESCRIPTION", length = 4096)
 	public String getDescription() {
 		return description;
 	}
-	
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	
+
 }

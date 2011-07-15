@@ -22,38 +22,37 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "VITAL_STATUS", schema = Constants.STUDY_SCHEMA)
-public class VitalStatus implements Serializable{
+public class VitalStatus implements Serializable {
 
-	//Fields
-	private Long id;
+	// Fields
+	private Long			id;
 
+	private String			name;
+	private String			description;
+	private Set<Person>	persons	= new HashSet<Person>(0);
 
-	private String name;
-	private String description;
-	private Set<Person> persons = new HashSet<Person>(0);
-	
-	public VitalStatus(){
-		
+	public VitalStatus() {
+
 	}
-	
-	public VitalStatus(Long id){
+
+	public VitalStatus(Long id) {
 		this.id = id;
 	}
-	
-	public void setId(Long id){
+
+	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Id
-	@Column(name="ID",unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId(){
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
 		return this.id;
 	}
-	
+
 	@Column(name = "NAME", length = 25)
 	public String getName() {
 		return name;
@@ -62,7 +61,7 @@ public class VitalStatus implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Column(name = "DESCRIPTION")
 	public String getDescription() {
 		return this.description;
@@ -73,13 +72,12 @@ public class VitalStatus implements Serializable{
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "vitalStatus")
-	public Set<Person> getPersons(){
+	public Set<Person> getPersons() {
 		return this.persons;
 	}
-	
-	public void setPersons(Set<Person> persons){
+
+	public void setPersons(Set<Person> persons) {
 		this.persons = persons;
 	}
-	
-	
+
 }

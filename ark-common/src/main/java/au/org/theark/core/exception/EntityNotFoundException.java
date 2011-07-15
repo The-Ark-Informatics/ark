@@ -8,15 +8,15 @@ package au.org.theark.core.exception;
 
 /**
  * @author nivedann
- *
+ * 
  */
-public class EntityNotFoundException extends ArkBaseException{
+public class EntityNotFoundException extends ArkBaseException {
 
-	public EntityNotFoundException(){
+	public EntityNotFoundException() {
 		super();
 	}
-	
-	public EntityNotFoundException(String errorMessage){
+
+	public EntityNotFoundException(String errorMessage) {
 		super(errorMessage);
 	}
 

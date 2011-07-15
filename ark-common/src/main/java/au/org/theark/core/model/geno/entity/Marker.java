@@ -26,29 +26,28 @@ import au.org.theark.core.model.Constants;
 /**
  * Marker entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.Marker")
+@Entity(name = "au.org.theark.geno.model.entity.Marker")
 @Table(name = "MARKER", schema = Constants.GENO_TABLE_SCHEMA)
 public class Marker implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MarkerGroup markerGroup;
-	private String name;
-	private String description;
-	private String chromosome;
-	private Long position;
-	private String gene;
-	private String majorAllele;
-	private String minorAllele;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Set<SubjectMarkerMetaData> subjectMarkerMetaDatas = new HashSet<SubjectMarkerMetaData>(
-			0);
-	private Set<MarkerMetaData> markerMetaDatas = new HashSet<MarkerMetaData>(0);
-	private Set<DecodeMask> decodeMasks = new HashSet<DecodeMask>(0);
+	private Long								id;
+	private MarkerGroup						markerGroup;
+	private String								name;
+	private String								description;
+	private String								chromosome;
+	private Long								position;
+	private String								gene;
+	private String								majorAllele;
+	private String								minorAllele;
+	private String								userId;
+	private Date								insertTime;
+	private String								updateUserId;
+	private Date								updateTime;
+	private Set<SubjectMarkerMetaData>	subjectMarkerMetaDatas	= new HashSet<SubjectMarkerMetaData>(0);
+	private Set<MarkerMetaData>			markerMetaDatas			= new HashSet<MarkerMetaData>(0);
+	private Set<DecodeMask>					decodeMasks					= new HashSet<DecodeMask>(0);
 
 	// Constructors
 
@@ -57,8 +56,7 @@ public class Marker implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public Marker(Long id, MarkerGroup markerGroup, String chromosome,
-			String userId, Date insertTime) {
+	public Marker(Long id, MarkerGroup markerGroup, String chromosome, String userId, Date insertTime) {
 		this.id = id;
 		this.markerGroup = markerGroup;
 		this.chromosome = chromosome;
@@ -67,12 +65,8 @@ public class Marker implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public Marker(Long id, MarkerGroup markerGroup, String name,
-			String description, String chromosome, Long position, String gene,
-			String majorAllele, String minorAllele, String userId,
-			Date insertTime, String updateUserId, Date updateTime,
-			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas,
-			Set<MarkerMetaData> markerMetaDatas, Set<DecodeMask> decodeMasks) {
+	public Marker(Long id, MarkerGroup markerGroup, String name, String description, String chromosome, Long position, String gene, String majorAllele, String minorAllele, String userId,
+			Date insertTime, String updateUserId, Date updateTime, Set<SubjectMarkerMetaData> subjectMarkerMetaDatas, Set<MarkerMetaData> markerMetaDatas, Set<DecodeMask> decodeMasks) {
 		this.id = id;
 		this.markerGroup = markerGroup;
 		this.name = name;
@@ -93,8 +87,8 @@ public class Marker implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Marker_PK_Seq",sequenceName=Constants.MARKER_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Marker_PK_Seq")
+	@SequenceGenerator(name = "Marker_PK_Seq", sequenceName = Constants.MARKER_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Marker_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -104,8 +98,8 @@ public class Marker implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade={CascadeType.PERSIST, CascadeType.MERGE})
-	@Cascade({org.hibernate.annotations.CascadeType.REPLICATE, org.hibernate.annotations.CascadeType.SAVE_UPDATE})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	@Cascade({ org.hibernate.annotations.CascadeType.REPLICATE, org.hibernate.annotations.CascadeType.SAVE_UPDATE })
 	@JoinColumn(name = "MARKER_GROUP_ID", nullable = false)
 	public MarkerGroup getMarkerGroup() {
 		return this.markerGroup;
@@ -187,7 +181,7 @@ public class Marker implements java.io.Serializable {
 		this.userId = userId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
 		return this.insertTime;
@@ -206,7 +200,7 @@ public class Marker implements java.io.Serializable {
 		this.updateUserId = updateUserId;
 	}
 
-    @Temporal(TemporalType.TIMESTAMP)
+	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
@@ -221,8 +215,7 @@ public class Marker implements java.io.Serializable {
 		return this.subjectMarkerMetaDatas;
 	}
 
-	public void setSubjectMarkerMetaDatas(
-			Set<SubjectMarkerMetaData> subjectMarkerMetaDatas) {
+	public void setSubjectMarkerMetaDatas(Set<SubjectMarkerMetaData> subjectMarkerMetaDatas) {
 		this.subjectMarkerMetaDatas = subjectMarkerMetaDatas;
 	}
 

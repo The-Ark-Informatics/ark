@@ -26,10 +26,9 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "inv_tank", schema = Constants.LIMS_TABLE_SCHEMA)
-public class InvTank implements java.io.Serializable
-{
+public class InvTank implements java.io.Serializable {
 
-	private Long				id;
+	private Long			id;
 	private String			timestamp;
 	private InvSite		invSite;
 	private Integer		deleted;
@@ -45,20 +44,17 @@ public class InvTank implements java.io.Serializable
 	private String			description;
 	private Set<InvTray>	invTrays	= new HashSet<InvTray>(0);
 
-	public InvTank()
-	{
+	public InvTank() {
 	}
 
-	public InvTank(Long id, InvSite invSite, String name)
-	{
+	public InvTank(Long id, InvSite invSite, String name) {
 		this.id = id;
 		this.invSite = invSite;
 		this.name = name;
 	}
 
 	public InvTank(Long id, InvSite invSite, Integer deleted, String location, String status, Integer capacity, String lastservicenote, String name, Integer available, Date decommissiondate,
-			Date commissiondate, Date lastservicedate, String description, Set<InvTray> invTrays)
-	{
+			Date commissiondate, Date lastservicedate, String description, Set<InvTray> invTrays) {
 		this.id = id;
 		this.invSite = invSite;
 		this.deleted = deleted;
@@ -78,174 +74,138 @@ public class InvTank implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "invtank_generator", sequenceName = "INVTANK_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "invtank_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SITE_ID", nullable = false)
-	public InvSite getInvSite()
-	{
+	public InvSite getInvSite() {
 		return this.invSite;
 	}
 
-	public void setInvSite(InvSite invSite)
-	{
+	public void setInvSite(InvSite invSite) {
 		this.invSite = invSite;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "LOCATION", length = 65535)
-	public String getLocation()
-	{
+	public String getLocation() {
 		return this.location;
 	}
 
-	public void setLocation(String location)
-	{
+	public void setLocation(String location) {
 		this.location = location;
 	}
 
 	@Column(name = "STATUS", length = 50)
-	public String getStatus()
-	{
+	public String getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(String status)
-	{
+	public void setStatus(String status) {
 		this.status = status;
 	}
 
 	@Column(name = "CAPACITY")
-	public Integer getCapacity()
-	{
+	public Integer getCapacity() {
 		return this.capacity;
 	}
 
-	public void setCapacity(Integer capacity)
-	{
+	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
 
 	@Column(name = "LASTSERVICENOTE", length = 65535)
-	public String getLastservicenote()
-	{
+	public String getLastservicenote() {
 		return this.lastservicenote;
 	}
 
-	public void setLastservicenote(String lastservicenote)
-	{
+	public void setLastservicenote(String lastservicenote) {
 		this.lastservicenote = lastservicenote;
 	}
 
 	@Column(name = "NAME", nullable = false, length = 50)
-	public String getName()
-	{
+	public String getName() {
 		return this.name;
 	}
 
-	public void setName(String name)
-	{
+	public void setName(String name) {
 		this.name = name;
 	}
 
 	@Column(name = "AVAILABLE")
-	public Integer getAvailable()
-	{
+	public Integer getAvailable() {
 		return this.available;
 	}
 
-	public void setAvailable(Integer available)
-	{
+	public void setAvailable(Integer available) {
 		this.available = available;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DECOMMISSIONDATE", length = 19)
-	public Date getDecommissiondate()
-	{
+	public Date getDecommissiondate() {
 		return this.decommissiondate;
 	}
 
-	public void setDecommissiondate(Date decommissiondate)
-	{
+	public void setDecommissiondate(Date decommissiondate) {
 		this.decommissiondate = decommissiondate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "COMMISSIONDATE", length = 19)
-	public Date getCommissiondate()
-	{
+	public Date getCommissiondate() {
 		return this.commissiondate;
 	}
 
-	public void setCommissiondate(Date commissiondate)
-	{
+	public void setCommissiondate(Date commissiondate) {
 		this.commissiondate = commissiondate;
 	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LASTSERVICEDATE", length = 19)
-	public Date getLastservicedate()
-	{
+	public Date getLastservicedate() {
 		return this.lastservicedate;
 	}
 
-	public void setLastservicedate(Date lastservicedate)
-	{
+	public void setLastservicedate(Date lastservicedate) {
 		this.lastservicedate = lastservicedate;
 	}
 
 	@Column(name = "DESCRIPTION", length = 65535)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	/*
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "invTank")
-	public Set<InvTray> getInvTrays()
-	{
-		return this.invTrays;
-	}
-
-	public void setInvTrays(Set<InvTray> invTrays)
-	{
-		this.invTrays = invTrays;
-	}
-	*/
+	 * @OneToMany(fetch = FetchType.LAZY, mappedBy = "invTank") public Set<InvTray> getInvTrays() { return this.invTrays; }
+	 * 
+	 * public void setInvTrays(Set<InvTray> invTrays) { this.invTrays = invTrays; }
+	 */
 }

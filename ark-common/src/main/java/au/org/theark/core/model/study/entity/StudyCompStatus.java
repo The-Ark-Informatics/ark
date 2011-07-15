@@ -22,11 +22,10 @@ public class StudyCompStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<LinkStudyStudycomp> linkStudyStudycomps = new HashSet<LinkStudyStudycomp>(
-			0);
+	private Long							id;
+	private String							name;
+	private String							description;
+	private Set<LinkStudyStudycomp>	linkStudyStudycomps	= new HashSet<LinkStudyStudycomp>(0);
 
 	// Constructors
 
@@ -40,8 +39,7 @@ public class StudyCompStatus implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StudyCompStatus(Long id, String name,
-			String description, Set<LinkStudyStudycomp> linkStudyStudycomps) {
+	public StudyCompStatus(Long id, String name, String description, Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -82,8 +80,7 @@ public class StudyCompStatus implements java.io.Serializable {
 		return this.linkStudyStudycomps;
 	}
 
-	public void setLinkStudyStudycomps(
-			Set<LinkStudyStudycomp> linkStudyStudycomps) {
+	public void setLinkStudyStudycomps(Set<LinkStudyStudycomp> linkStudyStudycomps) {
 		this.linkStudyStudycomps = linkStudyStudycomps;
 	}
 

@@ -17,26 +17,26 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 
 @Entity
 @Table(name = "ARK_USER_ROLE", schema = Constants.STUDY_SCHEMA)
-public class ArkUserRole implements Serializable{
-	
-	private Long id;
-	private ArkRole arkRole;
-	private ArkModule arkModule;
-	private ArkUser arkUser;
-	private Study study;
-	
-	public ArkUserRole(){
-		
+public class ArkUserRole implements Serializable {
+
+	private Long		id;
+	private ArkRole	arkRole;
+	private ArkModule	arkModule;
+	private ArkUser	arkUser;
+	private Study		study;
+
+	public ArkUserRole() {
+
 	}
 
 	@Id
-	@SequenceGenerator(name="user_role_generator", sequenceName="USER_ROLE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "user_role_generator")
+	@SequenceGenerator(name = "user_role_generator", sequenceName = "USER_ROLE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "user_role_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -90,8 +90,7 @@ public class ArkUserRole implements Serializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((arkModule == null) ? 0 : arkModule.hashCode());
+		result = prime * result + ((arkModule == null) ? 0 : arkModule.hashCode());
 		result = prime * result + ((arkRole == null) ? 0 : arkRole.hashCode());
 		return result;
 	}
@@ -108,12 +107,14 @@ public class ArkUserRole implements Serializable{
 		if (arkModule == null) {
 			if (other.arkModule != null)
 				return false;
-		} else if (!arkModule.equals(other.arkModule))
+		}
+		else if (!arkModule.equals(other.arkModule))
 			return false;
 		if (arkRole == null) {
 			if (other.arkRole != null)
 				return false;
-		} else if (!arkRole.equals(other.arkRole))
+		}
+		else if (!arkRole.equals(other.arkRole))
 			return false;
 		return true;
 	}

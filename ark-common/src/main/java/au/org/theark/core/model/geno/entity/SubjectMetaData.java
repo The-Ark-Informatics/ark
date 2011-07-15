@@ -14,19 +14,19 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 /**
  * SubjectMetaData entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.SubjectMetaData")
+@Entity(name = "au.org.theark.geno.model.entity.SubjectMetaData")
 @Table(name = "SUBJECT_META_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class SubjectMetaData implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private MetaData metaData;
-	private LinkSubjectStudy subjectId;
-	private String userId;
-	private String insertTime;
-	private String updateUserId;
-	private String updateTime;
+	private Long					id;
+	private MetaData				metaData;
+	private LinkSubjectStudy	subjectId;
+	private String					userId;
+	private String					insertTime;
+	private String					updateUserId;
+	private String					updateTime;
 
 	// Constructors
 
@@ -35,8 +35,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** minimal constructor */
-	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId,
-			String userId, String insertTime) {
+	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId, String userId, String insertTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.subjectId = subjectId;
@@ -45,9 +44,7 @@ public class SubjectMetaData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId,
-			String userId, String insertTime, String updateUserId,
-			String updateTime) {
+	public SubjectMetaData(Long id, MetaData metaData, LinkSubjectStudy subjectId, String userId, String insertTime, String updateUserId, String updateTime) {
 		this.id = id;
 		this.metaData = metaData;
 		this.subjectId = subjectId;

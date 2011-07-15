@@ -12,9 +12,9 @@ public class JFreeChartImage extends Image {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1383706328089971627L;
-	private int width;
-	private int height;
+	private static final long	serialVersionUID	= 1383706328089971627L;
+	private int						width;
+	private int						height;
 
 	public JFreeChartImage(String id, JFreeChart chart, int width, int height) {
 		super(id, new Model<JFreeChart>(chart));
@@ -28,7 +28,7 @@ public class JFreeChartImage extends Image {
 			/**
 			 * 
 			 */
-			private static final long serialVersionUID = -6764144907661389644L;
+			private static final long	serialVersionUID	= -6764144907661389644L;
 
 			@Override
 			protected byte[] getImageData() {
@@ -40,7 +40,8 @@ public class JFreeChartImage extends Image {
 			protected void setHeaders(WebResponse response) {
 				if (isCacheable()) {
 					super.setHeaders(response);
-				} else {
+				}
+				else {
 					response.setHeader("Pragma", "no-cache");
 					response.setHeader("Cache-Control", "no-cache");
 					response.setDateHeader("Expires", 0);

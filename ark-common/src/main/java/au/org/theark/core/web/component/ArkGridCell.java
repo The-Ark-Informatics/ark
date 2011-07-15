@@ -2,41 +2,37 @@ package au.org.theark.core.web.component;
 
 import java.io.Serializable;
 
-public class ArkGridCell implements Serializable
-{
+public class ArkGridCell implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -2945343327357120514L;
-	int col;
-	int row;
-	
-	public ArkGridCell(int col, int row)
-	{
+	int								col;
+	int								row;
+
+	public ArkGridCell(int col, int row) {
 		this.col = col;
 		this.row = row;
 	}
-	
-	public int getCol()
-	{
+
+	public int getCol() {
 		return col;
 	}
-	public void setCol(int col)
-	{
+
+	public void setCol(int col) {
 		this.col = col;
 	}
-	public int getRow()
-	{
+
+	public int getRow() {
 		return row;
 	}
-	public void setRow(int row)
-	{
+
+	public void setRow(int row) {
 		this.row = row;
 	}
 
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + col;
@@ -45,8 +41,7 @@ public class ArkGridCell implements Serializable
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -60,5 +55,5 @@ public class ArkGridCell implements Serializable
 			return false;
 		return true;
 	}
-	
+
 }

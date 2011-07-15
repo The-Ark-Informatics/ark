@@ -17,8 +17,7 @@ import au.org.theark.core.model.Constants;
  */
 @Entity
 @Table(name = "listofvalues_description", schema = Constants.LIMS_TABLE_SCHEMA)
-public class ListofvaluesDescription implements java.io.Serializable
-{
+public class ListofvaluesDescription implements java.io.Serializable {
 
 	private Long		id;
 	private String		timestamp;
@@ -27,19 +26,16 @@ public class ListofvaluesDescription implements java.io.Serializable
 	private String		description;
 	private String		descId;
 
-	public ListofvaluesDescription()
-	{
+	public ListofvaluesDescription() {
 	}
 
-	public ListofvaluesDescription(Long id, String type, String description)
-	{
+	public ListofvaluesDescription(Long id, String type, String description) {
 		this.id = id;
 		this.type = type;
 		this.description = description;
 	}
 
-	public ListofvaluesDescription(Long id, Integer deleted, String type, String description, String descId)
-	{
+	public ListofvaluesDescription(Long id, Integer deleted, String type, String description, String descId) {
 		this.id = id;
 		this.deleted = deleted;
 		this.type = type;
@@ -50,69 +46,56 @@ public class ListofvaluesDescription implements java.io.Serializable
 	@Id
 	@SequenceGenerator(name = "listofvaluesdesc_generator", sequenceName = "LISTOFVALUESDESC_SEQUENCE")
 	@GeneratedValue(strategy = GenerationType.AUTO, generator = "listofvaluesdesc_generator")
-	public Long getId()
-	{
+	public Long getId() {
 		return this.id;
 	}
 
-	public void setId(Long id)
-	{
+	public void setId(Long id) {
 		this.id = id;
 	}
 
-	
 	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp()
-	{
+	public String getTimestamp() {
 		return this.timestamp;
 	}
 
-	public void setTimestamp(String timestamp)
-	{
+	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
 
 	@Column(name = "DELETED")
-	public Integer getDeleted()
-	{
+	public Integer getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Integer deleted)
-	{
+	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
 	}
 
 	@Column(name = "TYPE", nullable = false)
-	public String getType()
-	{
+	public String getType() {
 		return this.type;
 	}
 
-	public void setType(String type)
-	{
+	public void setType(String type) {
 		this.type = type;
 	}
 
 	@Column(name = "DESCRIPTION", nullable = false, length = 65535)
-	public String getDescription()
-	{
+	public String getDescription() {
 		return this.description;
 	}
 
-	public void setDescription(String description)
-	{
+	public void setDescription(String description) {
 		this.description = description;
 	}
 
 	@Column(name = "DESC_ID", length = 55)
-	public String getDescId()
-	{
+	public String getDescId() {
 		return this.descId;
 	}
 
-	public void setDescId(String descId)
-	{
+	public void setDescId(String descId) {
 		this.descId = descId;
 	}
 

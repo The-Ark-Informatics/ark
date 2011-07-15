@@ -22,12 +22,12 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private StudyComp studyComp;
-	private Study study;
-	private Person person;
-	private StudyCompStatus studyComponentStatus;
-	
+	private Long				id;
+	private StudyComp			studyComp;
+	private Study				study;
+	private Person				person;
+	private StudyCompStatus	studyComponentStatus;
+
 	// Constructors
 
 	/** default constructor */
@@ -40,8 +40,7 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkSubjectStudycomp(Long id,
-			StudyComp studyComp, Study study, Person person, StudyCompStatus studyComponentStatus) {
+	public LinkSubjectStudycomp(Long id, StudyComp studyComp, Study study, Person person, StudyCompStatus studyComponentStatus) {
 		this.id = id;
 		this.studyComp = studyComp;
 		this.study = study;
@@ -51,8 +50,8 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="subject_component_generator", sequenceName="SUBJECT_COMPONENT_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "subject_component_generator")
+	@SequenceGenerator(name = "subject_component_generator", sequenceName = "SUBJECT_COMPONENT_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_component_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -91,7 +90,6 @@ public class LinkSubjectStudycomp implements java.io.Serializable {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
-
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_COMP_STATUS_ID")

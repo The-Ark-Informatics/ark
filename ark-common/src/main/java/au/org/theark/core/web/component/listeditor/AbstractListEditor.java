@@ -8,30 +8,26 @@ import org.apache.wicket.markup.html.form.IFormModelUpdateListener;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 
-public abstract class AbstractListEditor<T> extends RepeatingView implements IFormModelUpdateListener
-{
+public abstract class AbstractListEditor<T> extends RepeatingView implements IFormModelUpdateListener {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -5555167696920984309L;
-	List<T>	items;
-	
-	public AbstractListEditor(String id)
-	{
+	List<T>							items;
+
+	public AbstractListEditor(String id) {
 		super(id);
 		setOutputMarkupId(true);
 	}
 
-	public AbstractListEditor(String id, IModel<List<T>> model)
-	{
+	public AbstractListEditor(String id, IModel<List<T>> model) {
 		super(id, model);
 		setOutputMarkupId(true);
 	}
 
 	protected abstract void onPopulateItem(ListItem<T> item);
 
-	public void addItem(T value)
-	{
+	public void addItem(T value) {
 		items.add(value);
 		ListItem<T> item = new ListItem<T>(newChildId(), items.size() - 1);
 		add(item);
@@ -39,13 +35,10 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	}
 
 	@Override
-	protected void onBeforeRender()
-	{
-		if (!hasBeenRendered())
-		{
+	protected void onBeforeRender() {
+		if (!hasBeenRendered()) {
 			items = new ArrayList<T>(getModelObject());
-			for (int i = 0; i < items.size(); i++)
-			{
+			for (int i = 0; i < items.size(); i++) {
 				ListItem<T> li = new ListItem<T>(newChildId(), i);
 				add(li);
 				onPopulateItem(li);
@@ -54,8 +47,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 		super.onBeforeRender();
 	}
 
-	public void updateModel()
-	{
+	public void updateModel() {
 		setModelObject(items);
 	}
 
@@ -66,14 +58,12 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 * @param item
 	 * @return
 	 */
-	public boolean canRemove(List<T> items, T item)
-	{
+	public boolean canRemove(List<T> items, T item) {
 		return true;
 	}
 
 	@SuppressWarnings("unchecked")
-	final boolean checkRemove(ListItem<?> item)
-	{
+	final boolean checkRemove(ListItem<?> item) {
 		List<T> list = Collections.unmodifiableList(items);
 		ListItem<T> li = (ListItem<T>) item;
 		return canRemove(list, li.getModelObject());
@@ -85,8 +75,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 * @return model
 	 */
 	@SuppressWarnings("unchecked")
-	public final IModel<List<T>> getModel()
-	{
+	public final IModel<List<T>> getModel() {
 		return (IModel<List<T>>) getDefaultModel();
 	}
 
@@ -95,8 +84,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 * 
 	 * @param model
 	 */
-	public final void setModel(IModel<List<T>> model)
-	{
+	public final void setModel(IModel<List<T>> model) {
 		setDefaultModel(model);
 	}
 
@@ -106,8 +94,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 * @return model object
 	 */
 	@SuppressWarnings("unchecked")
-	public final List<T> getModelObject()
-	{
+	public final List<T> getModelObject() {
 		return (List<T>) getDefaultModelObject();
 	}
 
@@ -116,8 +103,7 @@ public abstract class AbstractListEditor<T> extends RepeatingView implements IFo
 	 * 
 	 * @param object
 	 */
-	public final void setModelObject(List<T> object)
-	{
+	public final void setModelObject(List<T> object) {
 		setDefaultModelObject(object);
 	}
 

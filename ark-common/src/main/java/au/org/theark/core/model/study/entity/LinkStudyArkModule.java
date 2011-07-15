@@ -17,22 +17,22 @@ import au.org.theark.core.Constants;
 
 @Entity
 @Table(name = "link_study_arkmodule", schema = Constants.STUDY_SCHEMA)
-public class LinkStudyArkModule implements Serializable{
-	
-	private Long id;
-	private Study study;
-	private ArkModule arkModule;
-	
+public class LinkStudyArkModule implements Serializable {
+
+	private Long		id;
+	private Study		study;
+	private ArkModule	arkModule;
+
 	/**
 	 * Constructor
 	 */
-	public LinkStudyArkModule(){
-		
+	public LinkStudyArkModule() {
+
 	}
 
 	@Id
-	@SequenceGenerator(name="link_study_arkmodule_generator", sequenceName="STUDY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "link_study_arkmodule_generator")
+	@SequenceGenerator(name = "link_study_arkmodule_generator", sequenceName = "STUDY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "link_study_arkmodule_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;

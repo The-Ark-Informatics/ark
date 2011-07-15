@@ -7,28 +7,29 @@ import org.apache.shiro.util.ThreadContext;
 
 /**
  * A wrapper for Shiro Security Manager
+ * 
  * @author nivedann
- *
+ * 
  */
 public class ArkSecurityManager {
-	
-	private static ArkSecurityManager arkManager;
-	
-	public static  ArkSecurityManager getInstance(){
-		
-		if(arkManager == null){
+
+	private static ArkSecurityManager	arkManager;
+
+	public static ArkSecurityManager getInstance() {
+
+		if (arkManager == null) {
 			arkManager = new ArkSecurityManager();
 		}
 		return arkManager;
 	}
-	
-	private  SecurityManager getShiroSecurityManager(){
-		return  ThreadContext.getSecurityManager();
-		
+
+	private SecurityManager getShiroSecurityManager() {
+		return ThreadContext.getSecurityManager();
+
 	}
-	
-	public  boolean subjectHasRole(String roleName){
-		
+
+	public boolean subjectHasRole(String roleName) {
+
 		Subject currentUser = SecurityUtils.getSubject();
 		return getShiroSecurityManager().hasRole(currentUser.getPrincipals(), roleName);
 	}

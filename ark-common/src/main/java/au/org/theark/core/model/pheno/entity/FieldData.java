@@ -28,29 +28,28 @@ import au.org.theark.core.model.Constants;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "FIELD_DATA", schema = Constants.PHENO_TABLE_SCHEMA)
-public class FieldData implements java.io.Serializable 
-{
+public class FieldData implements java.io.Serializable {
 	// Fields
-	private Long id;
-	private PhenoCollection collection;
-	private LinkSubjectStudy linkSubjectStudy;
-	private Date dateCollected;
-	private Field field;
-	private String value;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
-	private Boolean passedQualityControl;
-	private Set<FieldDataLog> fieldDataLogs = new HashSet<FieldDataLog>(0);
-	
+	private Long					id;
+	private PhenoCollection		collection;
+	private LinkSubjectStudy	linkSubjectStudy;
+	private Date					dateCollected;
+	private Field					field;
+	private String					value;
+	private String					userId;
+	private Date					insertTime;
+	private String					updateUserId;
+	private Date					updateTime;
+	private Boolean				passedQualityControl;
+	private Set<FieldDataLog>	fieldDataLogs	= new HashSet<FieldDataLog>(0);
+
 	// Constructors
 	/** default constructor */
 	public FieldData() {
 	}
 
 	/** minimal constructor */
-	public FieldData(Long id, Field field,	PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String userId, Date insertTime) {
+	public FieldData(Long id, Field field, PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String userId, Date insertTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
@@ -61,7 +60,8 @@ public class FieldData implements java.io.Serializable
 	}
 
 	/** full constructor */
-	public FieldData(Long id, Field field,	PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String value, String userId, Date insertTime, String updateUserId, Date updateTime) {
+	public FieldData(Long id, Field field, PhenoCollection collection, Date dateCollected, LinkSubjectStudy linkSubjectStudy, String value, String userId, Date insertTime, String updateUserId,
+			Date updateTime) {
 		this.id = id;
 		this.field = field;
 		this.collection = collection;
@@ -76,8 +76,8 @@ public class FieldData implements java.io.Serializable
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="FieldData_PK_Seq",sequenceName="PHENOTYPIC.FIELD_DATA_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="FieldData_PK_Seq")
+	@SequenceGenerator(name = "FieldData_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_DATA_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "FieldData_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -106,7 +106,7 @@ public class FieldData implements java.io.Serializable
 	public void setCollection(PhenoCollection collection) {
 		this.collection = collection;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_COLLECTED", nullable = false)
 	public Date getDateCollected() {
@@ -116,7 +116,7 @@ public class FieldData implements java.io.Serializable
 	public void setDateCollected(Date dateCollected) {
 		this.dateCollected = dateCollected;
 	}
-	
+
 	@Column(name = "VALUE", length = 2000)
 	public String getValue() {
 		return this.value;
@@ -134,7 +134,7 @@ public class FieldData implements java.io.Serializable
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "INSERT_TIME", nullable = false)
 	public Date getInsertTime() {
@@ -163,59 +163,55 @@ public class FieldData implements java.io.Serializable
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
 	}
-	
+
 	/**
 	 * @return the linkSubjectStudy
 	 */
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "LINK_SUBJECT_STUDY_ID")
-	public LinkSubjectStudy getLinkSubjectStudy()
-	{
+	public LinkSubjectStudy getLinkSubjectStudy() {
 		return linkSubjectStudy;
 	}
 
 	/**
-	 * @param linkSubjectStudy the linkSubjectStudy to set
+	 * @param linkSubjectStudy
+	 *           the linkSubjectStudy to set
 	 */
-	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy)
-	{
+	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
-	
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "fieldData")
-	public Set<FieldDataLog> getFieldDataLogs()
-	{
+	public Set<FieldDataLog> getFieldDataLogs() {
 		return fieldDataLogs;
 	}
 
 	/**
-	 * @param fieldDataLogs the fieldDataLogs to set
+	 * @param fieldDataLogs
+	 *           the fieldDataLogs to set
 	 */
-	public void setFieldDataLogs(Set<FieldDataLog> fieldDataLogs)
-	{
+	public void setFieldDataLogs(Set<FieldDataLog> fieldDataLogs) {
 		this.fieldDataLogs = fieldDataLogs;
 	}
 
 	/**
-	 * @param passedQualityControl the passedQualityControl to set
+	 * @param passedQualityControl
+	 *           the passedQualityControl to set
 	 */
-	public void setPassedQualityControl(Boolean passedQualityControl)
-	{
+	public void setPassedQualityControl(Boolean passedQualityControl) {
 		this.passedQualityControl = passedQualityControl;
 	}
 
 	/**
 	 * @return the passedQualityControl
 	 */
-	@Column(name="PASSED_QUALITY_CONTROL")
-	public Boolean getPassedQualityControl()
-	{
+	@Column(name = "PASSED_QUALITY_CONTROL")
+	public Boolean getPassedQualityControl() {
 		return passedQualityControl;
 	}
-	
+
 	@Override
-	public int hashCode()
-	{
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((collection == null) ? 0 : collection.hashCode());
@@ -227,8 +223,7 @@ public class FieldData implements java.io.Serializable
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -236,29 +231,25 @@ public class FieldData implements java.io.Serializable
 		if (getClass() != obj.getClass())
 			return false;
 		FieldData other = (FieldData) obj;
-		if (collection == null)
-		{
+		if (collection == null) {
 			if (other.collection != null)
 				return false;
 		}
 		else if (!collection.equals(other.collection))
 			return false;
-		if (dateCollected == null)
-		{
+		if (dateCollected == null) {
 			if (other.dateCollected != null)
 				return false;
 		}
 		else if (!dateCollected.equals(other.dateCollected))
 			return false;
-		if (field == null)
-		{
+		if (field == null) {
 			if (other.field != null)
 				return false;
 		}
 		else if (!field.equals(other.field))
 			return false;
-		if (linkSubjectStudy == null)
-		{
+		if (linkSubjectStudy == null) {
 			if (other.linkSubjectStudy != null)
 				return false;
 		}

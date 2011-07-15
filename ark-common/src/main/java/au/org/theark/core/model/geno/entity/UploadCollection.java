@@ -20,19 +20,19 @@ import au.org.theark.core.model.Constants;
 /**
  * UploadCollection entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.UploadCollection")
+@Entity(name = "au.org.theark.geno.model.entity.UploadCollection")
 @Table(name = "UPLOAD_COLLECTION", schema = Constants.GENO_TABLE_SCHEMA)
 public class UploadCollection implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private GenoCollection collection;
-	private Upload upload;
-	private String userId;
-	private Date insertTime;
-	private String updateUserId;
-	private Date updateTime;
+	private Long				id;
+	private GenoCollection	collection;
+	private Upload				upload;
+	private String				userId;
+	private Date				insertTime;
+	private String				updateUserId;
+	private Date				updateTime;
 
 	// Constructors
 
@@ -48,9 +48,7 @@ public class UploadCollection implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public UploadCollection(Long id, GenoCollection collection, Upload upload,
-			String userId, Date insertTime, String updateUserId,
-			Date updateTime) {
+	public UploadCollection(Long id, GenoCollection collection, Upload upload, String userId, Date insertTime, String updateUserId, Date updateTime) {
 		this.id = id;
 		this.collection = collection;
 		this.upload = upload;
@@ -62,8 +60,8 @@ public class UploadCollection implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Upload_Collection_PK_Seq",sequenceName=Constants.UPLOAD_COLLECTION_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Upload_Collection_PK_Seq")
+	@SequenceGenerator(name = "Upload_Collection_PK_Seq", sequenceName = Constants.UPLOAD_COLLECTION_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Upload_Collection_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;

@@ -11,45 +11,43 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "COUNTRY", schema = Constants.STUDY_SCHEMA)
 public class Country implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
-	private String countryCode;
-	
+	private Long	id;
+	private String	name;
+	private String	description;
+	private String	countryCode;
 
-
-	public Country(){
+	public Country() {
 	}
-	
-	public Country(Long id){
+
+	public Country(Long id) {
 		this.id = id;
 	}
-	
+
 	@Id
-	@Column(name="ID",unique = true, nullable = false, precision = 22, scale = 0)
-	public Long getId(){
+	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
+	public Long getId() {
 		return this.id;
 	}
-	
-	public void setId(Long id){
+
+	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	@Column(name = "NAME", length = 100)
-	public String getName(){
+	public String getName() {
 		return this.name;
 	}
-	
-	public void setName(String name){
+
+	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Column(name = "DESCRIPTION")
 	public String getDescription() {
 		return this.description;
@@ -58,7 +56,7 @@ public class Country implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+
 	@Column(name = "COUNTRY_CODE", length = 2)
 	public String getCountryCode() {
 		return countryCode;
@@ -89,14 +87,16 @@ public class Country implements Serializable {
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		}
+		else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		}
+		else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
-	
+
 }

@@ -17,19 +17,19 @@ import au.org.theark.core.Constants;
 
 @Entity
 @Table(name = "ARK_ROLE_PERMISSION", schema = Constants.STUDY_SCHEMA)
-public class ArkRolePermission implements Serializable{
+public class ArkRolePermission implements Serializable {
 
-	private Long id;
-	private ArkRole arkRole;
-	private ArkPermission arkPermission;
-	
-	public ArkRolePermission(){
-		
+	private Long				id;
+	private ArkRole			arkRole;
+	private ArkPermission	arkPermission;
+
+	public ArkRolePermission() {
+
 	}
 
 	@Id
-	@SequenceGenerator(name="role_permission_generator", sequenceName="ARK_ROLE_PERMISSION_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "role_permission_generator")
+	@SequenceGenerator(name = "role_permission_generator", sequenceName = "ARK_ROLE_PERMISSION_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "role_permission_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -38,7 +38,6 @@ public class ArkRolePermission implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ARK_ROLE_ID")

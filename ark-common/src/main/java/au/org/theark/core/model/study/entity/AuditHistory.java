@@ -20,19 +20,19 @@ import au.org.theark.core.Constants;
  * AuditHistory entity. @author MyEclipse Persistence Tools
  */
 @Entity
-@Table(name = "AUDIT_HISTORY", schema =  Constants.STUDY_SCHEMA)
+@Table(name = "AUDIT_HISTORY", schema = Constants.STUDY_SCHEMA)
 public class AuditHistory implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private StudyStatus studyStatus;
-	private Date dateTime;
-	private String actionType;
-	private String arkUserId;
-	private String comment;
-	private Long entityId;
-	private String entityType;
+	private Long			id;
+	private StudyStatus	studyStatus;
+	private Date			dateTime;
+	private String			actionType;
+	private String			arkUserId;
+	private String			comment;
+	private Long			entityId;
+	private String			entityType;
 
 	// Constructors
 
@@ -46,9 +46,7 @@ public class AuditHistory implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public AuditHistory(Long id, StudyStatus studyStatus,
-			Date dateTime, String actionType, String etaUserId,
-			String comment, Long entityKey, String entityType) {
+	public AuditHistory(Long id, StudyStatus studyStatus, Date dateTime, String actionType, String etaUserId, String comment, Long entityKey, String entityType) {
 		this.id = id;
 		this.studyStatus = studyStatus;
 		this.dateTime = dateTime;
@@ -61,8 +59,8 @@ public class AuditHistory implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="ah_generator", sequenceName="AUDIT_HISTORY_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "ah_generator")
+	@SequenceGenerator(name = "ah_generator", sequenceName = "AUDIT_HISTORY_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "ah_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -71,7 +69,6 @@ public class AuditHistory implements java.io.Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_TIME")
@@ -110,7 +107,7 @@ public class AuditHistory implements java.io.Serializable {
 	public void setStudyStatus(StudyStatus studyStatus) {
 		this.studyStatus = studyStatus;
 	}
-	
+
 	@Column(name = "ARK_USER_ID", length = 255)
 	public String getArkUserId() {
 		return arkUserId;
@@ -119,7 +116,6 @@ public class AuditHistory implements java.io.Serializable {
 	public void setArkUserId(String arkUserId) {
 		this.arkUserId = arkUserId;
 	}
-
 
 	@Column(name = "ACTION_TYPE")
 	public String getActionType() {

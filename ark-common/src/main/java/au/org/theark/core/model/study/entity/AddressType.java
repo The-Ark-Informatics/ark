@@ -16,9 +16,9 @@ public class AddressType implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
+	private Long	id;
+	private String	name;
+	private String	description;
 
 	// Constructors
 

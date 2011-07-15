@@ -19,18 +19,18 @@ import au.org.theark.core.model.Constants;
 public class FieldSummary implements java.io.Serializable {
 
 	// Fields
-	private Long id;
-	private int fields;
-	private int fieldsWithData;
-	
+	private Long	id;
+	private int		fields;
+	private int		fieldsWithData;
+
 	// Constructors
 	public FieldSummary() {
 	}
-	
+
 	// Note: db "table" is actually a view, and id actually = study.id
 	@Id
-	@SequenceGenerator(name="FieldSummary_PK_Seq",sequenceName="PHENOTYPIC.FIELD_SUMMARY_PK_SEQ")
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="FieldSummary_PK_Seq")
+	@SequenceGenerator(name = "FieldSummary_PK_Seq", sequenceName = "PHENOTYPIC.FIELD_SUMMARY_PK_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "FieldSummary_PK_Seq")
 	@Column(name = "STUDY_ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;

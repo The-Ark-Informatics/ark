@@ -23,8 +23,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author Jonny Wray
  */
-public class DynamicTabbedPanel extends Panel
-{
+public class DynamicTabbedPanel extends Panel {
 	private static final long		serialVersionUID	= 1L;
 
 	/** id used for child panels */
@@ -34,18 +33,15 @@ public class DynamicTabbedPanel extends Panel
 
 	private transient Boolean[]	tabsVisibilityCache;
 
-	public DynamicTabbedPanel(final String id, final IModel<List<ITab>> tabModel)
-	{
+	public DynamicTabbedPanel(final String id, final IModel<List<ITab>> tabModel) {
 		super(id, new Model<Integer>(-1));
 		this.tabModel = tabModel;
 
-		final IModel<Integer> tabCount = new AbstractReadOnlyModel<Integer>()
-		{
+		final IModel<Integer> tabCount = new AbstractReadOnlyModel<Integer>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			public Integer getObject()
-			{
+			public Integer getObject() {
 				return tabModel.getObject().size();
 			}
 		};
@@ -54,14 +50,12 @@ public class DynamicTabbedPanel extends Panel
 		add(tabsContainer);
 
 		// add the loop used to generate tab names
-		tabsContainer.add(new Loop("tabs", tabCount)
-		{
+		tabsContainer.add(new Loop("tabs", tabCount) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void populateItem(final LoopItem item)
-			{
-				final int index = item.getIteration(); //.getIndex();
+			protected void populateItem(final LoopItem item) {
+				final int index = item.getIteration(); // .getIndex();
 				final ITab tab = tabModel.getObject().get(index);
 
 				final WebMarkupContainer titleLink = newLink("link", index);
@@ -71,13 +65,11 @@ public class DynamicTabbedPanel extends Panel
 			}
 
 			@Override
-			protected LoopItem newItem(final int iteration)
-			{
+			protected LoopItem newItem(final int iteration) {
 				return newTabContainer(iteration);
 			}
 
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return tabCount.getObject() > 0;
 			}
 		});
@@ -91,15 +83,12 @@ public class DynamicTabbedPanel extends Panel
 	 *           container id
 	 * @return container
 	 */
-	protected WebMarkupContainer newTabsContainer(final String id)
-	{
-		return new WebMarkupContainer(id)
-		{
+	protected WebMarkupContainer newTabsContainer(final String id) {
+		return new WebMarkupContainer(id) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onComponentTag(final ComponentTag tag)
-			{
+			protected void onComponentTag(final ComponentTag tag) {
 				super.onComponentTag(tag);
 				tag.put("class", getTabContainerCssClass());
 			}
@@ -109,42 +98,34 @@ public class DynamicTabbedPanel extends Panel
 	/*
 	 * Generates a loop item used to represent a specific tab's <code>li</code> element.
 	 */
-	protected LoopItem newTabContainer(final int tabIndex)
-	{
-		return new LoopItem(tabIndex)
-		{
+	protected LoopItem newTabContainer(final int tabIndex) {
+		return new LoopItem(tabIndex) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			protected void onComponentTag(final ComponentTag tag)
-			{
+			protected void onComponentTag(final ComponentTag tag) {
 				super.onComponentTag(tag);
 				String cssClass = (String) tag.getString("class");
-				if (cssClass == null)
-				{
+				if (cssClass == null) {
 					cssClass = " ";
 				}
 				cssClass += " tab" + getIndex();
 
-				if (getIndex() == getSelectedTab())
-				{
+				if (getIndex() == getSelectedTab()) {
 					cssClass += " selected";
 				}
-				if (getIndex() == getTabs().size() - 1)
-				{
+				if (getIndex() == getTabs().size() - 1) {
 					cssClass += " last";
 				}
 				tag.put("class", cssClass.trim());
 			}
 
-			private int getIndex()
-			{
+			private int getIndex() {
 				return tabIndex;
 			}
 
 			@Override
-			public boolean isVisible()
-			{
+			public boolean isVisible() {
 				return getTabs().get(tabIndex).isVisible();
 			}
 		};
@@ -154,32 +135,25 @@ public class DynamicTabbedPanel extends Panel
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void onBeforeRender()
-	{
-		if (tabModel.getObject().size() == 0)
-		{
+	protected void onBeforeRender() {
+		if (tabModel.getObject().size() == 0) {
 			// force an empty container to be created every time if we have no tabs
 			setSelectedTab(0);
 		}
-		else if (getSelectedTab() > tabModel.getObject().size())
-		{
+		else if (getSelectedTab() > tabModel.getObject().size()) {
 			setSelectedTab(0);
 		}
-		else if ((getSelectedTab() == -1) || (isTabVisible(getSelectedTab()) == false))
-		{
+		else if ((getSelectedTab() == -1) || (isTabVisible(getSelectedTab()) == false)) {
 			// find first visible selected tab
 			int selected = 0;
-			for (int i = 0; i < tabModel.getObject().size(); i++)
-			{
-				if (isTabVisible(i))
-				{
+			for (int i = 0; i < tabModel.getObject().size(); i++) {
+				if (isTabVisible(i)) {
 					selected = i;
 					break;
 				}
 			}
 
-			if (selected == tabModel.getObject().size())
-			{
+			if (selected == tabModel.getObject().size()) {
 				/*
 				 * none of the tabs are selected...
 				 * 
@@ -197,16 +171,14 @@ public class DynamicTabbedPanel extends Panel
 	/**
 	 * @return the value of css class attribute that will be added to a div containing the tabs. The default value is <code>tab-row</code>
 	 */
-	protected String getTabContainerCssClass()
-	{
+	protected String getTabContainerCssClass() {
 		return "tab-row";
 	}
 
 	/**
 	 * @return list of tabs that can be used by the user to add/remove/reorder tabs in the panel
 	 */
-	public final List<? extends ITab> getTabs()
-	{
+	public final List<? extends ITab> getTabs() {
 		return tabModel.getObject();
 	}
 
@@ -221,8 +193,7 @@ public class DynamicTabbedPanel extends Panel
 	 *           index of tab
 	 * @return title component
 	 */
-	protected Component newTitle(final String titleId, final IModel<?> titleModel, final int index)
-	{
+	protected Component newTitle(final String titleId, final IModel<?> titleModel, final int index) {
 		return new Label(titleId, titleModel);
 	}
 
@@ -238,14 +209,11 @@ public class DynamicTabbedPanel extends Panel
 	 * Example implementation:
 	 * 
 	 * <pre>
-	 * protected WebMarkupContainer newLink(String linkId, final int index)
-	 * {
-	 * 	return new Link(linkId)
-	 * 	{
+	 * protected WebMarkupContainer newLink(String linkId, final int index) {
+	 * 	return new Link(linkId) {
 	 * 		private static final long	serialVersionUID	= 1L;
 	 * 
-	 * 		public void onClick()
-	 * 		{
+	 * 		public void onClick() {
 	 * 			setSelectedTab(index);
 	 * 		}
 	 * 	};
@@ -258,15 +226,12 @@ public class DynamicTabbedPanel extends Panel
 	 *           index of the tab that should be activated when this link is clicked. See {@link #setSelectedTab(int)}.
 	 * @return created link component
 	 */
-	protected WebMarkupContainer newLink(final String linkId, final int index)
-	{
-		return new Link<Void>(linkId)
-		{
+	protected WebMarkupContainer newLink(final String linkId, final int index) {
+		return new Link<Void>(linkId) {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			public void onClick()
-			{
+			public void onClick() {
 				setSelectedTab(index);
 			}
 		};
@@ -279,10 +244,8 @@ public class DynamicTabbedPanel extends Panel
 	 *           index of the tab to select
 	 * @return this for chaining
 	 */
-	public DynamicTabbedPanel setSelectedTab(final int index)
-	{
-		if ((index < 0) || ((index >= tabModel.getObject().size()) && (index > 0)))
-		{
+	public DynamicTabbedPanel setSelectedTab(final int index) {
+		if ((index < 0) || ((index >= tabModel.getObject().size()) && (index > 0))) {
 			throw new IndexOutOfBoundsException();
 		}
 
@@ -290,24 +253,20 @@ public class DynamicTabbedPanel extends Panel
 
 		final Component component;
 
-		if ((tabModel.getObject().size() == 0) || !isTabVisible(index))
-		{
+		if ((tabModel.getObject().size() == 0) || !isTabVisible(index)) {
 			// no tabs or the currently selected tab is not visible
 			component = new EmptyPanel(TAB_PANEL_ID);
 		}
-		else
-		{
+		else {
 			// show panel from selected tab
 			ITab tab = tabModel.getObject().get(index);
 			component = tab.getPanel(TAB_PANEL_ID);
-			if (component == null)
-			{
+			if (component == null) {
 				throw new WicketRuntimeException("ITab.getPanel() returned null. TabbedPanel [" + getPath() + "] ITab index [" + index + "]");
 			}
 		}
 
-		if (!component.getId().equals(TAB_PANEL_ID))
-		{
+		if (!component.getId().equals(TAB_PANEL_ID)) {
 			throw new WicketRuntimeException("ITab.getPanel() returned a panel with invalid id [" + component.getId()
 					+ "]. You must always return a panel with id equal to the provided panelId parameter. TabbedPanel [" + getPath() + "] ITab index [" + index + "]");
 		}
@@ -320,8 +279,7 @@ public class DynamicTabbedPanel extends Panel
 	/**
 	 * @return index of the selected tab
 	 */
-	public final int getSelectedTab()
-	{
+	public final int getSelectedTab() {
 		return (Integer) getDefaultModelObject();
 	}
 
@@ -330,37 +288,30 @@ public class DynamicTabbedPanel extends Panel
 	 * @param tabIndex
 	 * @return visible
 	 */
-	private boolean isTabVisible(final int tabIndex)
-	{
-		if (tabsVisibilityCache == null)
-		{
+	private boolean isTabVisible(final int tabIndex) {
+		if (tabsVisibilityCache == null) {
 			tabsVisibilityCache = new Boolean[tabModel.getObject().size()];
 		}
-		if (tabsVisibilityCache.length < tabIndex + 1)
-		{
+		if (tabsVisibilityCache.length < tabIndex + 1) {
 			Boolean[] resized = new Boolean[tabIndex + 1];
 			System.arraycopy(tabsVisibilityCache, 0, resized, 0, tabsVisibilityCache.length);
 			tabsVisibilityCache = resized;
 		}
-		if (tabsVisibilityCache.length > 0)
-		{
+		if (tabsVisibilityCache.length > 0) {
 			Boolean visible = tabsVisibilityCache[tabIndex];
-			if (visible == null)
-			{
+			if (visible == null) {
 				visible = tabModel.getObject().get(tabIndex).isVisible();
 				tabsVisibilityCache[tabIndex] = visible;
 			}
 			return visible;
 		}
-		else
-		{
+		else {
 			return false;
 		}
 	}
 
 	@Override
-	protected void onDetach()
-	{
+	protected void onDetach() {
 		tabsVisibilityCache = null;
 		tabModel.detach();
 		super.onDetach();

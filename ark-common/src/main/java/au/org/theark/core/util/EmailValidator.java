@@ -7,10 +7,8 @@ import java.util.regex.Pattern;
  * Checks for invalid characters
  * in email addresses
  */
-public class EmailValidator
-{
-	public static void main(String[] args) throws Exception
-	{
+public class EmailValidator {
+	public static void main(String[] args) throws Exception {
 		String input = "@sun.com";
 		// Checks for email addresses starting with
 		// inappropriate symbols like dots or @ signs.
@@ -22,8 +20,7 @@ public class EmailValidator
 		// www. and prints a message if it does.
 		p = Pattern.compile("^www\\.");
 		m = p.matcher(input);
-		if (m.find())
-		{
+		if (m.find()) {
 			System.out.println("Email addresses don't start" + " with \"www.\", only web pages do.");
 		}
 		p = Pattern.compile("[^A-Za-z0-9\\.\\@_\\-~#]+");
@@ -32,8 +29,7 @@ public class EmailValidator
 		boolean result = m.find();
 		boolean deletedIllegalChars = false;
 
-		while (result)
-		{
+		while (result) {
 			deletedIllegalChars = true;
 			m.appendReplacement(sb, "");
 			result = m.find();
@@ -44,32 +40,30 @@ public class EmailValidator
 
 		input = sb.toString();
 
-		if (deletedIllegalChars)
-		{
+		if (deletedIllegalChars) {
 			System.out.println("It contained incorrect characters" + " , such as spaces or commas.");
 		}
 	}
-	
+
 	/**
 	 * 
 	 * @param emailAddress
 	 * @return true if a valid email address
 	 */
-	public boolean isValid(String emailAddress){
+	public boolean isValid(String emailAddress) {
 		String input = "@sun.com";
 		// Checks for email addresses starting with
 		// inappropriate symbols like dots or @ signs.
 		Pattern p = Pattern.compile("^\\.|^\\@");
 		Matcher m = p.matcher(input);
-		if (m.find()){
+		if (m.find()) {
 			return false;
 		}
-		
+
 		// Checks for email addresses that start with www. and returns false if it does.
 		p = Pattern.compile("^www\\.");
 		m = p.matcher(input);
-		if (m.find())
-		{
+		if (m.find()) {
 			return false;
 		}
 		p = Pattern.compile("[^A-Za-z0-9\\.\\@_\\-~#]+");
@@ -78,8 +72,7 @@ public class EmailValidator
 		boolean result = m.find();
 		boolean deletedIllegalChars = false;
 
-		while (result)
-		{
+		while (result) {
 			deletedIllegalChars = true;
 			m.appendReplacement(sb, "");
 			result = m.find();
@@ -90,11 +83,10 @@ public class EmailValidator
 
 		input = sb.toString();
 
-		if (deletedIllegalChars)
-		{
+		if (deletedIllegalChars) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

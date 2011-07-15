@@ -19,27 +19,27 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "ARK_MODULE", schema = Constants.STUDY_SCHEMA)
-public class ArkModule implements Serializable{
+public class ArkModule implements Serializable {
 
-	private Long id;
-	private String name;
-	private String description;
+	private Long	id;
+	private String	name;
+	private String	description;
 
-	
-	public ArkModule(){
+	public ArkModule() {
 	}
-	
+
 	@Id
-	@SequenceGenerator(name="module_generator", sequenceName="MODULE_SEQUENCE")
-	@GeneratedValue(strategy=GenerationType.AUTO, generator = "module_generator")
+	@SequenceGenerator(name = "module_generator", sequenceName = "MODULE_SEQUENCE")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "module_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -83,16 +83,16 @@ public class ArkModule implements Serializable{
 		if (id == null) {
 			if (other.id != null)
 				return false;
-		} else if (!id.equals(other.id))
+		}
+		else if (!id.equals(other.id))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
-		} else if (!name.equals(other.name))
+		}
+		else if (!name.equals(other.name))
 			return false;
 		return true;
 	}
 
-	
-	
 }

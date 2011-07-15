@@ -18,18 +18,18 @@ import au.org.theark.core.Constants;
 
 /**
  * @author nivedann
- *
+ * 
  */
 @Entity
 @Table(name = "DOMAIN_TYPE", schema = Constants.STUDY_SCHEMA)
-public class DomainType implements Serializable{
-	
-	private Long id;
-	private String name;
-	private String description;
-	
-	public DomainType(){
-		
+public class DomainType implements Serializable {
+
+	private Long	id;
+	private String	name;
+	private String	description;
+
+	public DomainType() {
+
 	}
 
 	// Property accessors
@@ -42,6 +42,7 @@ public class DomainType implements Serializable{
 	public void setId(Long id) {
 		this.id = id;
 	}
+
 	@Column(name = "NAME", nullable = false, length = 50)
 	public String getName() {
 		return name;
@@ -59,6 +60,5 @@ public class DomainType implements Serializable{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
 
 }

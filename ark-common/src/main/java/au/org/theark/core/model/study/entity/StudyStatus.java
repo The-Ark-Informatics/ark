@@ -21,10 +21,10 @@ public class StudyStatus implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private String name;
-	private String description;
-	private Set<Study> studies = new HashSet<Study>(0);
+	private Long			id;
+	private String			name;
+	private String			description;
+	private Set<Study>	studies	= new HashSet<Study>(0);
 
 	// Constructors
 
@@ -38,15 +38,14 @@ public class StudyStatus implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public StudyStatus(Long id, String name, String description,
-			Set<Study> studies) {
+	public StudyStatus(Long id, String name, String description, Set<Study> studies) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.studies = studies;
 	}
-	
-	public StudyStatus(Long id, String name){
+
+	public StudyStatus(Long id, String name) {
 		this.id = id;
 		this.name = name;
 	}

@@ -19,17 +19,17 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 /**
  * EncodedData entity. @author MyEclipse Persistence Tools
  */
-@Entity(name="au.org.theark.geno.model.entity.EncodedData")
+@Entity(name = "au.org.theark.geno.model.entity.EncodedData")
 @Table(name = "ENCODED_DATA", schema = Constants.GENO_TABLE_SCHEMA)
 public class EncodedData implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private GenoCollection collection;
-	private LinkSubjectStudy subject;
-	private Blob encodedBit1;
-	private Blob encodedBit2;
+	private Long					id;
+	private GenoCollection		collection;
+	private LinkSubjectStudy	subject;
+	private Blob					encodedBit1;
+	private Blob					encodedBit2;
 
 	// Constructors
 
@@ -45,8 +45,7 @@ public class EncodedData implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	private EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject,
-			Blob encodedBit1, Blob encodedBit2) {
+	private EncodedData(Long id, GenoCollection collection, LinkSubjectStudy subject, Blob encodedBit1, Blob encodedBit2) {
 		this.id = id;
 		this.collection = collection;
 		this.subject = subject;
@@ -56,8 +55,8 @@ public class EncodedData implements java.io.Serializable {
 
 	// Property accessors
 	@Id
-	@SequenceGenerator(name="Encoded_Data_PK_Seq",sequenceName=Constants.ENCODED_DATA_PK_SEQ)
-	@GeneratedValue(strategy=GenerationType.AUTO,generator="Encoded_Data_PK_Seq")
+	@SequenceGenerator(name = "Encoded_Data_PK_Seq", sequenceName = Constants.ENCODED_DATA_PK_SEQ)
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "Encoded_Data_PK_Seq")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return this.id;
@@ -86,7 +85,7 @@ public class EncodedData implements java.io.Serializable {
 	public void setSubject(LinkSubjectStudy subject) {
 		this.subject = subject;
 	}
-	
+
 	@Column(name = "ENCODED_BIT1")
 	public Blob getEncodedBit1() {
 		return this.encodedBit1;
@@ -96,17 +95,17 @@ public class EncodedData implements java.io.Serializable {
 		this.encodedBit1 = encodedBit1;
 	}
 
-//	public void getEncodedBit1AsStream(OutputStream os) throws SQLException, IOException
-//	{
-//		InputStream blobStream = this.encodedBit1.getBinaryStream();
-//		IOUtils.copy(blobStream, os);
-//		blobStream.close();
-//	}
-//	
-//	public void setEncodedBit1AsStream(InputStream is) throws IOException
-//	{
-//		this.encodedBit1 = Hibernate.createBlob(is);
-//	}
+	// public void getEncodedBit1AsStream(OutputStream os) throws SQLException, IOException
+	// {
+	// InputStream blobStream = this.encodedBit1.getBinaryStream();
+	// IOUtils.copy(blobStream, os);
+	// blobStream.close();
+	// }
+	//
+	// public void setEncodedBit1AsStream(InputStream is) throws IOException
+	// {
+	// this.encodedBit1 = Hibernate.createBlob(is);
+	// }
 
 	@Column(name = "ENCODED_BIT2")
 	public Blob getEncodedBit2() {
@@ -117,16 +116,16 @@ public class EncodedData implements java.io.Serializable {
 		this.encodedBit2 = encodedBit2;
 	}
 
-//	public void getEncodedBit2AsStream(OutputStream os) throws SQLException, IOException
-//	{
-//		InputStream blobStream = this.encodedBit2.getBinaryStream();
-//		IOUtils.copy(blobStream, os);		//there is a 2GB limit the return value
-//		blobStream.close();
-//	}
-//	
-//	public void setEncodedBit2AsStream(InputStream is) throws IOException
-//	{
-//		this.encodedBit2 = Hibernate.createBlob(is);
-//	}
-	
+	// public void getEncodedBit2AsStream(OutputStream os) throws SQLException, IOException
+	// {
+	// InputStream blobStream = this.encodedBit2.getBinaryStream();
+	// IOUtils.copy(blobStream, os); //there is a 2GB limit the return value
+	// blobStream.close();
+	// }
+	//
+	// public void setEncodedBit2AsStream(InputStream is) throws IOException
+	// {
+	// this.encodedBit2 = Hibernate.createBlob(is);
+	// }
+
 }

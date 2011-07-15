@@ -19,9 +19,9 @@ public class LinkStudyStudysite implements java.io.Serializable {
 
 	// Fields
 
-	private Long id;
-	private Study study;
-	private StudySite studySite;
+	private Long		id;
+	private Study		study;
+	private StudySite	studySite;
 
 	// Constructors
 
@@ -35,8 +35,7 @@ public class LinkStudyStudysite implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkStudyStudysite(Long id, Study study,
-			StudySite studySite) {
+	public LinkStudyStudysite(Long id, Study study, StudySite studySite) {
 		this.id = id;
 		this.study = study;
 		this.studySite = studySite;
