@@ -3,6 +3,7 @@ package au.org.theark.admin.model.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -83,17 +84,21 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate) {
 		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 
-		if (arkRolePolicyTemplate.getId() != null)
+		if (arkRolePolicyTemplate.getId() != null) {
 			criteria.add(Restrictions.eq("id", arkRolePolicyTemplate.getId()));
+		}
 
-		if (arkRolePolicyTemplate.getArkRole() != null)
+		if (arkRolePolicyTemplate.getArkRole() != null) {
 			criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplate.getArkRole()));
+		}
 
-		if (arkRolePolicyTemplate.getArkModule() != null)
+		if (arkRolePolicyTemplate.getArkModule() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplate.getArkModule()));
-
-		if (arkRolePolicyTemplate.getArkFunction() != null)
-			criteria.add(Restrictions.eq("id", arkRolePolicyTemplate.getArkFunction()));
+		}
+		
+		if (arkRolePolicyTemplate.getArkFunction() != null) {
+			criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplate.getArkFunction()));
+		}
 
 		return criteria.list();
 	}
@@ -139,21 +144,25 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 
 	public List<ArkFunction> searchArkFunction(ArkFunction arkFunction) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
-		if (arkFunction.getId() != null)
+		if (arkFunction.getId() != null) {
 			criteria.add(Restrictions.eq("id", arkFunction.getId()));
+		}
 
-		if (arkFunction.getName() != null)
-			criteria.add(Restrictions.eq("name", arkFunction.getName()));
+		if (arkFunction.getName() != null) {
+			criteria.add(Restrictions.ilike("name", arkFunction.getName(), MatchMode.ANYWHERE));
+		}
 		return criteria.list();
 	}
 
 	public List<ArkModule> searchArkModule(ArkModule arkModule) {
 		Criteria criteria = getSession().createCriteria(ArkFunction.class);
-		if (arkModule.getId() != null)
+		if (arkModule.getId() != null) {
 			criteria.add(Restrictions.eq("id", arkModule.getId()));
+		}
 
-		if (arkModule.getName() != null)
-			criteria.add(Restrictions.eq("name", arkModule.getName()));
+		if (arkModule.getName() != null) {
+			criteria.add(Restrictions.ilike("name", arkModule.getName(), MatchMode.ANYWHERE));
+		}
 		return criteria.list();
 	}
 
@@ -180,7 +189,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 			criteria.add(Restrictions.eq("id", arkModuleCriteria.getId()));
 
 		if (arkModuleCriteria.getName() != null)
-			criteria.add(Restrictions.eq("name", arkModuleCriteria.getName()));
+			criteria.add(Restrictions.ilike("name", arkModuleCriteria.getName(), MatchMode.ANYWHERE));
 
 		return criteria;
 	}
@@ -208,7 +217,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 			criteria.add(Restrictions.eq("id", arkFunctionCriteria.getId()));
 
 		if (arkFunctionCriteria.getName() != null)
-			criteria.add(Restrictions.eq("name", arkFunctionCriteria.getName()));
+			criteria.add(Restrictions.ilike("name", arkFunctionCriteria.getName(), MatchMode.ANYWHERE));
 
 		if (arkFunctionCriteria.getArkFunctionType() != null)
 			criteria.add(Restrictions.eq("arkFunctionType", arkFunctionCriteria.getArkFunctionType()));
@@ -235,17 +244,21 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 	protected Criteria buildArkRolePolicyTemplateCriteria(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
 		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 
-		if (arkRolePolicyTemplateCriteria.getId() != null)
+		if (arkRolePolicyTemplateCriteria.getId() != null) {
 			criteria.add(Restrictions.eq("id", arkRolePolicyTemplateCriteria.getId()));
+		}
 
-		if (arkRolePolicyTemplateCriteria.getArkRole() != null)
+		if (arkRolePolicyTemplateCriteria.getArkRole() != null) {
 			criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
+		}
 
-		if (arkRolePolicyTemplateCriteria.getArkModule() != null)
+		if (arkRolePolicyTemplateCriteria.getArkModule() != null) {
 			criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplateCriteria.getArkModule()));
+		}
 		
-		if (arkRolePolicyTemplateCriteria.getArkFunction() != null)
+		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
 			criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
+		}
 
 		return criteria;
 	}
