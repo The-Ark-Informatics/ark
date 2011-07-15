@@ -70,6 +70,14 @@ public class SearchResultsPanel extends Panel {
 				else {
 					item.add(new Label("arkFunction.description", ""));
 				}
+				
+				if (arkFunction.getArkFunctionType() != null) {
+					// the ID here must match the ones in mark-up
+					item.add(new Label("arkFunction.arkFunctionType", arkFunction.getArkFunctionType().getName()));
+				}
+				else {
+					item.add(new Label("arkFunction.arkFunctionType", ""));
+				}
 
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					/**
