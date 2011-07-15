@@ -31,6 +31,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ContainerForm							containerForm;
 	private FeedbackPanel							feedbackPanel;
 	private TextField<String>						idTxtFld;
+	private TextField<String>						nameTxtFld;
 	private DropDownChoice<ArkFunctionType>	arkFunctionTypeDropDown;
 
 	/**
@@ -57,6 +58,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	protected void initialiseSearchForm() {
 		idTxtFld = new TextField<String>("arkFunction.id");
+		nameTxtFld = new TextField<String>("arkFunction.name");
 
 		// Type selection
 		initArkFunctionTypeDropDown();
@@ -81,6 +83,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
+		target.addComponent(feedbackPanel);
 		int count = iAdminService.getArkFunctionCount(containerForm.getModelObject().getArkFunction());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
@@ -93,6 +96,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	private void addSearchComponentsToForm() {
 		add(idTxtFld);
+		add(nameTxtFld);
+		add(arkFunctionTypeDropDown);
 	}
 
 	protected void onNew(AjaxRequestTarget target) {

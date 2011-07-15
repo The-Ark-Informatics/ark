@@ -81,6 +81,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
+		target.addComponent(feedbackPanel);
 		int count = iAdminService.getArkRolePolicyTemplateCount(containerForm.getModelObject().getArkRolePolicyTemplate());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
@@ -93,6 +94,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	private void addSearchComponentsToForm() {
 		add(idTxtFld);
+		add(arkRoleDropDown);
 	}
 
 	protected void onNew(AjaxRequestTarget target) {

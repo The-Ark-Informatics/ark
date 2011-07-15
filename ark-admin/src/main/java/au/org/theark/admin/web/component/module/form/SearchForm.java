@@ -25,6 +25,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
 	private TextField<String>					idTxtFld;
+	private TextField<String>					nameTxtFld;
 
 	/**
 	 * Constructor
@@ -50,9 +51,11 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	protected void initialiseSearchForm() {
 		idTxtFld = new TextField<String>("arkModule.id");
+		nameTxtFld = new TextField<String>("arkModule.name");
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
+		target.addComponent(feedbackPanel);
 		int count = iAdminService.getArkModuleCount(containerForm.getModelObject().getArkModule());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
@@ -65,6 +68,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	private void addSearchComponentsToForm() {
 		add(idTxtFld);
+		add(nameTxtFld);
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
