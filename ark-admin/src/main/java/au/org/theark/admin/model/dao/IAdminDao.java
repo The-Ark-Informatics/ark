@@ -2,6 +2,10 @@ package au.org.theark.admin.model.dao;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+
+import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -88,4 +92,8 @@ public interface IAdminDao {
 	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria);
 
 	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count);
+	
+	public int getArkRolePolicyCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria);
+	
+	public List<AdminVO> searchPageableArkRolePolicies(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count);
 }
