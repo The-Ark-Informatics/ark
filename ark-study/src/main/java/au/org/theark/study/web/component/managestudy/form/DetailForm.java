@@ -233,8 +233,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			}
 		});
 
-		bioSpecimenPrefixTxtFld = new TextField<String>(Constants.SUB_STUDY_BIOSPECIMENT_PREFIX);
-
 		// Create new DateTextField and assign date format
 		dateOfApplicationDp = new DateTextField(Constants.STUDY_SEARCH_DOA, au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker datePicker = new ArkDatePicker();
@@ -415,7 +413,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		subjectUidContainer.add(subjectUidExampleLbl);
 		studyCrudVO.getDetailPanelFormContainer().add(subjectUidContainer);
 
-		studyCrudVO.getDetailPanelFormContainer().add(bioSpecimenPrefixTxtFld);
+		// moved to LIMS Admin module/function
+		//studyCrudVO.getDetailPanelFormContainer().add(bioSpecimenPrefixTxtFld);
 
 		// AutoGenerateSubjectUID needs own container to be disabled on certain criteria
 		autoSubjectUidContainer.add(autoGenSubIdRdChoice);

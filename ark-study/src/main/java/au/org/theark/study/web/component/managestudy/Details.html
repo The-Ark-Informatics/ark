@@ -335,20 +335,19 @@
 			<div id="detailPanelBreaker">&nbsp;</div>
 			<!--  Row 7 Ends -->
 			
-			<!--  Row 8 Sub Study Prefix -->
+			<!--  Row 8  -->
 			<div id="panelContentLeft">&nbsp;</div>
-			
+		
 			<div id="fldLabel">
 				<div class="label">
-					<label for="substudyPrefix">
-						<wicket:message	key="study.biospecimen.prefix">Biospecimen Prefix:</wicket:message>
+					<label for="applicationModules">
+						<wicket:message	key="study.applicationModules">Application Modules:</wicket:message>
+						<span wicket:id="selectedArkModules">[Palette]</span>
 					</label>
 				</div>
 			</div>
 			<div id="fldControl">
-				<div class="text">
-					<input wicket:id="study.subStudyBiospecimenPrefix" type="text" maxLength="3"/>
-				</div>
+				&nbsp;
 			</div>
 			
 			<div id="panelMargin">&nbsp;</div>
@@ -365,40 +364,19 @@
 					<!--  Study Logo uploader -->
 			        <input wicket:id="study.filename" id="studyLogoUpload" type="file" />
 				</div>
+				
+				<div id="fldControl">
+					<div wicket:id="studyLogoImageContainer">
+						<!--  Study Logo image -->
+						<img wicket:id="study.studyLogoImage" id="studyLogoImage" />
+					</div>
+					<div id="note">
+						<wicket:message	key="study.studyLogoNote">[Note replaced from properties]</wicket:message>
+					</div>
+				</div>
+				
+				<div id="moduleLogoMargin" style="margin-left: auto; margin-right: auto; width=30%;">&nbsp;</div>
 			</div>
-			
-			<div id="detailPanelContentRight">&nbsp;</div>
-			<div id="detailPanelBreaker">&nbsp;</div>
-			
-			<!--  Row 8 Ends    -->
-			 
-			<div id="panelContentLeft">&nbsp;</div>
-			
-			<div id="applicationModules" style="float: left;">
-				<!--  <div class="label">
-					<wicket:message	key="study.applicationModules">Application Modules:</wicket:message>
-				</div>
-				<span wicket:id="modulesSelected"></span>
-				-->
-				<div class="label">
-					<wicket:message	key="study.applicationModules">Application Modules:</wicket:message>
-				</div>
-				<span wicket:id="selectedArkModules"></span>
-			</div>
-			
-			<div id="panelMargin">&nbsp;</div>
-			
-			<div id="studyLogoImage" style="float: left; padding-left: 10%;">
-				<div wicket:id="studyLogoImageContainer">
-					<!--  Study Logo image -->
-					<img wicket:id="study.studyLogoImage" id="studyLogoImage" />
-				</div>
-				<div id="note">
-					<wicket:message	key="study.studyLogoNote">[Note replaced from properties]</wicket:message>
-				</div>
-			</div>
-			
-			<div id="moduleLogoMargin" style="margin-left: auto; margin-right: auto; width=30%;">&nbsp;</div>
 			
 			<div id="panelContentRight">&nbsp;</div>				
 			<div id="detailPanelBreaker">&nbsp;</div>
