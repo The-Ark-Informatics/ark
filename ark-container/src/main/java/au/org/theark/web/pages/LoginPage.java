@@ -21,7 +21,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,12 +107,7 @@ public class LoginPage<T> extends WebPage
 		PasswordTextField	passwordTxtFld	= new PasswordTextField("password");
 		AjaxButton			submitButton;
 
-		private void decorateComponents()
-		{
-			ThemeUiHelper.buttonRoundedFocused(submitButton);
-			ThemeUiHelper.componentRounded(userNameTxtFld);
-			ThemeUiHelper.componentRounded(passwordTxtFld);
-		}
+	
 
 		private void addComponentsToForm()
 		{
@@ -151,8 +145,6 @@ public class LoginPage<T> extends WebPage
 					target.addComponent(feedBackPanel);
 				}
 			};
-
-			decorateComponents();
 			addComponentsToForm();
 		}
 
