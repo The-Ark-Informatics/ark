@@ -2,10 +2,6 @@ package au.org.theark.study.web.component.site.form;
 
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
@@ -13,10 +9,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.study.web.Constants;
 
@@ -61,15 +55,7 @@ public class SearchSiteForm extends Form<SiteModelVO> {
 				onReset();
 			}
 		};
-		decorateComponents();
 		addComponentsToForm();
-	}
-
-	private void decorateComponents() {
-		ThemeUiHelper.componentRounded(siteNameTxtFld);
-		ThemeUiHelper.componentRounded(searchButton);
-		ThemeUiHelper.componentRounded(newButton);
-		ThemeUiHelper.componentRounded(resetButton);
 	}
 
 	private void addComponentsToForm() {

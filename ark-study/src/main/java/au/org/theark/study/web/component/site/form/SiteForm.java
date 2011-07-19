@@ -9,7 +9,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
-import org.odlabs.wiquery.ui.themes.ThemeUiHelper;
 
 import au.org.theark.core.vo.SiteModelVO;
 import au.org.theark.core.vo.SiteVO;
@@ -79,7 +78,6 @@ public class SiteForm extends Form<SiteModelVO> {
 		siteNameTxtFld.add(new ArkDefaultFormFocusBehavior());
 		siteDescription = new TextArea<String>("siteVo.siteDescription");
 		attachValidators();
-		decorateComponents();
 		addComponents();
 	}
 
@@ -89,11 +87,6 @@ public class SiteForm extends Form<SiteModelVO> {
 		add(saveButton);
 		add(cancelButton.setDefaultFormProcessing(false));
 
-	}
-
-	private void decorateComponents() {
-		ThemeUiHelper.componentRounded(siteNameTxtFld);
-		ThemeUiHelper.componentRounded(siteDescription);
 	}
 
 	private void attachValidators() {
