@@ -15,7 +15,6 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -397,11 +396,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.createAlias("arkModule", "moduleName");
 		criteria.addOrder(Order.asc("moduleName.name"));
 		arkModuleList = criteria.list();
-		Log.info(arkModuleList.size());
 		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
 			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
-			Log.info("\n Module Name " + arkModuleRole.getArkModule().getName());
-			Log.info("\n Role Name " + arkModuleRole.getArkRole().getName());
+			
 		}
 		return arkModuleList;
 	}
