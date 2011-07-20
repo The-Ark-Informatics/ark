@@ -33,12 +33,14 @@ public class CustomField implements Serializable {
 	private String	description;
 	private FieldType fieldType;
 	private Study study;
-	private String	units;
-	private Long	seqNum;
+	private ArkModule arkModule;
+	private UnitType unitType;
 	private String	minValue;
 	private String	maxValue;
 	private String	encodedValues;
 	private String	missingValue;
+	private DataType dataType;
+
 	
 	/**
 	 * Constructor
@@ -96,26 +98,7 @@ public class CustomField implements Serializable {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
-	@Column(name = "UNITS", length = 50)
-	public String getUnits() {
-		return units;
-	}
-
-	public void setUnits(String units) {
-		this.units = units;
-	}
 	
-	@Column(name = "SEQ_NUM", precision = 22, scale = 0)
-	public Long getSeqNum() {
-		return seqNum;
-	}
-
-	public void setSeqNum(Long seqNum) {
-		this.seqNum = seqNum;
-	}
-
 	@Column(name = "MIN_VALUE", length = 100)
 	public String getMinValue() {
 		return minValue;
@@ -150,6 +133,36 @@ public class CustomField implements Serializable {
 
 	public void setMissingValue(String missingValue) {
 		this.missingValue = missingValue;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UNIT_TYPE_ID", nullable = false)
+	public UnitType getUnitType() {
+		return unitType;
+	}
+
+	public void setUnitType(UnitType unitType) {
+		this.unitType = unitType;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "DATA_TYPE_ID", nullable = false)
+	public DataType getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(DataType dataType) {
+		this.dataType = dataType;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_MODULE_ID", nullable = false)
+	public ArkModule getArkModule() {
+		return arkModule;
+	}
+
+	public void setArkModule(ArkModule arkModule) {
+		this.arkModule = arkModule;
 	}
 
 
