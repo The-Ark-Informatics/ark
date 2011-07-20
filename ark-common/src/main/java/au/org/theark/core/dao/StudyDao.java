@@ -10,7 +10,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -42,6 +45,8 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -61,6 +66,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -834,5 +840,15 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		List<Study> studies  = (List<Study>) criteria.list();
 		return studies;
 		
+	}
+	
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException{
+		
+		CustomField customField = customFieldVO.getCustomField();
+		CustomFieldDisplay customFieldDisplay = customFieldVO.getCustomFieldDisplay();
+		Session session  = getSession();
+		session.save(customField);
+		customFieldDisplay.setCustomField(customField);
+		session.save(customFieldDisplay);
 	}
 }

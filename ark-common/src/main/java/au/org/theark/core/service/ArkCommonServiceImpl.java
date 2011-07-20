@@ -48,6 +48,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -449,5 +450,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
 		return studyDao.getStudiesForUser(arkUser, study);
+	}
+	
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException{
+		studyDao.createCustomField(customFieldVO);
 	}
 }

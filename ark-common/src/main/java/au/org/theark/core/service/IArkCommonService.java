@@ -5,12 +5,12 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkModuleFunction;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 public interface IArkCommonService<T> {
@@ -380,5 +381,22 @@ public interface IArkCommonService<T> {
 
 	public Boolean studyHasSubjects(Study study);
 	
+	/**
+	 * Get a list of studies that the given ark user is associated with.
+	 * @param arkUser
+	 * @param study
+	 * @return
+	 */
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
+	
+	/**
+	 * 
+	 * @param customFieldVO
+	 * @throws ArkUniqueException
+	 * @throws ArkSystemException
+	 */
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
+	
+	
+	
 }

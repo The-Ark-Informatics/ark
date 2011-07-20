@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -35,6 +36,7 @@ import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -327,4 +329,6 @@ public interface IStudyDao {
 	public Boolean studyHasSubjects(Study study);
 	
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
+	
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
 }
