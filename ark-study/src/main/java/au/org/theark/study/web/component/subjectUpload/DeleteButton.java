@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.StudyUpload;
-import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 public class DeleteButton extends AjaxDeleteButton {
 	private static final long	serialVersionUID	= 4966354164332401574L;

@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.vo.MenuModule;
-import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
+import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.report.web.Constants;
 import au.org.theark.report.web.component.viewReport.ReportContainerPanel;
 

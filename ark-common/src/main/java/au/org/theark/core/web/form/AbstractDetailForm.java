@@ -15,8 +15,8 @@ import org.apache.wicket.model.StringResourceModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.core.web.component.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 
 /**
  * <p>

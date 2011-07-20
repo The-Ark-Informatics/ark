@@ -15,7 +15,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.report.model.vo.GenericReportViewVO;

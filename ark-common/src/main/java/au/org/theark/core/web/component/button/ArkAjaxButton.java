@@ -1,26 +1,26 @@
-package au.org.theark.core.web.component;
+package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.model.IModel;
 
 /**
- * AjaxButton that disables onSubmit, and renables once processing completed, also has an AJAX indicator
+ * AjaxButton that disables onSubmit, and renables once processing completed
  */
-public abstract class ArkIndicatingAjaxButton extends IndicatingAjaxButton {
+public abstract class ArkAjaxButton extends AjaxButton {
 
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 5799668393803636626L;
+	private static final long	serialVersionUID	= -4620255487709221599L;
 
-	public ArkIndicatingAjaxButton(String id) {
+	public ArkAjaxButton(String id) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 	}
 
-	public ArkIndicatingAjaxButton(String id, IModel<String> model) {
+	public ArkAjaxButton(String id, IModel<String> model) {
 		super(id, model, null);
 		setOutputMarkupPlaceholderTag(true);
 	}

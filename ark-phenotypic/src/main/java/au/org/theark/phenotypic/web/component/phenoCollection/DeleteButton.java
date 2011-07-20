@@ -6,7 +6,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 public class DeleteButton extends AjaxDeleteButton {
 	/**

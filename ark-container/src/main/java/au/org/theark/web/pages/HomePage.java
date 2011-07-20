@@ -13,7 +13,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
+import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.report.web.menu.ReportTabProviderImpl;

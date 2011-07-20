@@ -1,4 +1,4 @@
-package au.org.theark.core.web.component;
+package au.org.theark.core.web.component.tabbedPanel;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,6 +13,8 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import au.org.theark.core.web.component.ArkMainTab;
 
 public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 	/**

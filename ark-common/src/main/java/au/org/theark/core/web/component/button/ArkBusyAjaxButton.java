@@ -1,4 +1,4 @@
-package au.org.theark.core.web.component;
+package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;

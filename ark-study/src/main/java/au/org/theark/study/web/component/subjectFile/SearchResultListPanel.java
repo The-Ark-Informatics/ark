@@ -28,7 +28,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 

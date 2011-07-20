@@ -15,8 +15,8 @@ import au.org.theark.admin.web.component.rolePolicy.RolePolicyContainerPanel;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
+import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 
 public class AdminSubMenuTab extends AbstractArkTabPanel {
 	/**

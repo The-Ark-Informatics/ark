@@ -13,8 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.ArkDownloadAjaxButton;
-import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
+import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
+import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
 import au.org.theark.phenotypic.model.vo.UploadVO;

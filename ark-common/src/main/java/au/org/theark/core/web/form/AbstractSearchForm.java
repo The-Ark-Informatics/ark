@@ -12,7 +12,7 @@ import org.apache.wicket.model.IModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxButton;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 
 /**
  * <p>

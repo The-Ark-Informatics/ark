@@ -24,8 +24,8 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.FieldUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
-import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.core.web.component.ArkDownloadTemplateButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldUpload.form.ContainerForm;
 

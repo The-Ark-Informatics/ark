@@ -1,28 +1,25 @@
-package au.org.theark.core.web.component;
+package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
-
-import au.org.theark.core.security.ArkPermissionHelper;
 
 @SuppressWarnings({ "unchecked" })
 /**
  * @author cellis
  *
  */
-public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
-
+public abstract class AjaxConfirmButton extends AjaxButton {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 2845373897903023596L;
+	private static final long	serialVersionUID	= 8138160131842627124L;
 	private final IModel			confirm;
 
-	public AjaxDeleteButton(String id, IModel confirm, IModel label) {
+	public AjaxConfirmButton(String id, IModel confirm, IModel label) {
 		super(id);
 		this.setModel(label);
 		this.confirm = confirm;
@@ -35,16 +32,11 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	this.disabled = true; " + "};" + script;
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	return true; " + "};" + script;
 			}
 		};
 	}
 
 	@Override
 	protected abstract void onSubmit(AjaxRequestTarget target, Form<?> form);
-
-	@Override
-	public boolean isVisible() {
-		return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
-	}
 }

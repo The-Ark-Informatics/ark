@@ -28,7 +28,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.ArkIndicatingAjaxButton;
+import au.org.theark.core.web.component.button.ArkIndicatingAjaxButton;
 import au.org.theark.core.web.form.ArkFormVisitor;
 
 public class LoginPage<T> extends WebPage

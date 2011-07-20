@@ -27,8 +27,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.core.web.component.ArkDownloadTemplateButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 

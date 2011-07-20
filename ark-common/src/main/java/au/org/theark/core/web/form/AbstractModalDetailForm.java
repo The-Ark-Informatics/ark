@@ -20,7 +20,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 /**
  * @author cellis

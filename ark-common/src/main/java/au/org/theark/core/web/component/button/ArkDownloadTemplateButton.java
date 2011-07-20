@@ -1,4 +1,4 @@
-package au.org.theark.core.web.component;
+package au.org.theark.core.web.component.button;
 
 import jxl.Workbook;
 import jxl.write.WritableCellFormat;

@@ -31,8 +31,8 @@ import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
-import au.org.theark.core.web.component.AjaxDeleteButton;
-import au.org.theark.core.web.component.ArkDownloadTemplateButton;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 

@@ -4,7 +4,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
-import au.org.theark.core.web.component.ArkExcelWorkSheetAsGrid;
+import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
