@@ -24,7 +24,7 @@ import au.org.theark.core.model.Constants;
  */
 
 @Entity
-@Table(name = "FIELD", schema = Constants.STUDY_SCHEMA)
+@Table(name = "CUSTOM_FIELD", schema = Constants.STUDY_SCHEMA)
 public class CustomField implements Serializable {
 	
 
