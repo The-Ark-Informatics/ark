@@ -1,7 +1,6 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,10 +29,10 @@ public class CustomField implements Serializable {
 	
 
 	private Long id;
-	private Study study;
-	private FieldType fieldType;
 	private String	name;
 	private String	description;
+	private FieldType fieldType;
+	private Study study;
 	private String	units;
 	private Long	seqNum;
 	private String	minValue;
