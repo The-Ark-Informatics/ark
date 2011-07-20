@@ -133,7 +133,7 @@ public class SearchResultListPanel extends Panel {
 					target.addComponent(arkCrudContainerVO.getViewButtonContainer());
 					target.addComponent(arkCrudContainerVO.getEditButtonContainer());
 					target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-					target.addComponent(containerForm);
+					target.addComponent(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				}
