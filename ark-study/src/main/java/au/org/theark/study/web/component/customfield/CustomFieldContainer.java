@@ -103,8 +103,8 @@ public class CustomFieldContainer extends AbstractContainerPanel<CustomFieldVO> 
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 				Study study = iArkCommonService.getStudy(sessionStudyId);
 				// Get the list of Study Related Custom Fields
-				containerForm.getModelObject().getCustomField().setStudy(study);
-				SubjectCustmFld customField = containerForm.getModelObject().getCustomField();
+				containerForm.getModelObject().getSubjectCustomField().setStudy(study);
+				SubjectCustmFld customField = containerForm.getModelObject().getSubjectCustomField();
 				fieldList = studyService.searchStudyFields(customField);
 				pageableListView.removeAll();
 				return fieldList;

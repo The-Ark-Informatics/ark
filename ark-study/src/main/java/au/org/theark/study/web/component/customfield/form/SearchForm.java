@@ -102,10 +102,10 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		// Get the list of Study Related Custom Fields
-		getModelObject().getCustomField().setStudy(study);
+		getModelObject().getSubjectCustomField().setStudy(study);
 
 		CustomFieldVO vo = getModelObject();
-		SubjectCustmFld customField = vo.getCustomField();
+		SubjectCustmFld customField = vo.getSubjectCustomField();
 
 		List<SubjectCustmFld> subjectCustomFldList = studyService.searchStudyFields(customField);
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
