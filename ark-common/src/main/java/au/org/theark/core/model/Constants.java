@@ -2,6 +2,8 @@ package au.org.theark.core.model;
 
 // Constants for Entity-to-database definitions
 public class Constants {
+	
+	public static final String	STUDY_SCHEMA = "study";
 	// Pheno
 	public static final String	PHENO_TABLE_SCHEMA			= "pheno";
 
