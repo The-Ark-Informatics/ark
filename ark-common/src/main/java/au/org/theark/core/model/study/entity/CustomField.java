@@ -40,6 +40,7 @@ public class CustomField implements Serializable {
 	private String	encodedValues;
 	private String	missingValue;
 	private DataType dataType;
+	private boolean customFieldHasData;
 
 	
 	/**
@@ -164,6 +165,18 @@ public class CustomField implements Serializable {
 	public void setArkModule(ArkModule arkModule) {
 		this.arkModule = arkModule;
 	}
+
+	@Column(name = "HAS_DATA", precision = 1, scale = 0)
+	public boolean getCustomFieldHasData() {
+		return customFieldHasData;
+	}
+
+	public void setCustomFieldHasData(boolean customFieldHasData) {
+		this.customFieldHasData = customFieldHasData;
+	}
+	
+
+	
 
 
 }
