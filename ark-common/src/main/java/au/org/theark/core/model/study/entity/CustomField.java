@@ -40,7 +40,7 @@ public class CustomField implements Serializable {
 	private String	encodedValues;
 	private String	missingValue;
 	private DataType dataType;
-	private boolean customFieldHasData;
+	private Boolean customFieldHasData;
 
 	
 	/**
@@ -95,7 +95,7 @@ public class CustomField implements Serializable {
 		return description;
 	}
 
-	@Column(name = "DESCRIPTION", nullable = false, length = 1024)
+	@Column(name = "DESCRIPTION", length = 1024)
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -167,11 +167,11 @@ public class CustomField implements Serializable {
 	}
 
 	@Column(name = "HAS_DATA", precision = 1, scale = 0)
-	public boolean getCustomFieldHasData() {
+	public Boolean getCustomFieldHasData() {
 		return customFieldHasData;
 	}
 
-	public void setCustomFieldHasData(boolean customFieldHasData) {
+	public void setCustomFieldHasData(Boolean customFieldHasData) {
 		this.customFieldHasData = customFieldHasData;
 	}
 	
