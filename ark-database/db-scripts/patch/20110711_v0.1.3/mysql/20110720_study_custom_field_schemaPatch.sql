@@ -41,3 +41,10 @@ CREATE  TABLE `study`.`custom_field` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
+
+
+
+ALTER TABLE `study`.`custom_field` ADD COLUMN `HAS_DATA` INT NULL  AFTER `DATA_TYPE_ID` ;
+ALTER TABLE `study`.`custom_field` CHANGE COLUMN `HAS_DATA` `HAS_DATA` INT(11) NOT NULL DEFAULT 0  ;
+
+
