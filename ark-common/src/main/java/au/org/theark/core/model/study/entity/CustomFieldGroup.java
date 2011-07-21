@@ -54,7 +54,7 @@ public class CustomFieldGroup implements Serializable{
 		this.name = name;
 	}
 
-	@Column(name = "NAME", length = 1000)
+	@Column(name = "DESCRIPTION", length = 1000)
 	public String getDescription() {
 		return description;
 	}
