@@ -136,7 +136,7 @@ public class CustomField implements Serializable {
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "UNIT_TYPE_ID", nullable = false)
+	@JoinColumn(name = "UNIT_TYPE_ID")
 	public UnitType getUnitType() {
 		return unitType;
 	}
