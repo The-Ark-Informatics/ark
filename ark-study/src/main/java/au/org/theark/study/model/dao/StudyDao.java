@@ -241,37 +241,14 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * @see au.org.theark.study.model.dao.IStudyDao#create(au.org.theark.study.model.entity.StudyComp)
 	 */
 	public void create(StudyComp studyComponent) throws ArkSystemException, EntityExistsException {
-		try {
-			if (isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent)) {
-				getSession().save(studyComponent);
-			}
-			else {
-				throw new EntityExistsException("A Study component already exists for this study.");
-			}
-
-		}
-		catch (HibernateException hibException) {
-			log.error("A hibernate exception occured. Cannot create the study component ID: " + studyComponent.getName() + " Cause " + hibException.getStackTrace());
-			throw new ArkSystemException("Cannot create Study component");
-		}
+			
+			getSession().save(studyComponent);
 
 	}
 
 	public void update(StudyComp studyComponent) throws ArkSystemException, EntityExistsException {
-		try {
-			if (isStudyCompUnique(studyComponent.getName(), studyComponent.getStudy(), studyComponent)) {
-				getSession().update(studyComponent);
-			}
-			else {
-				throw new EntityExistsException("A Study component already exists for this study.");
-			}
-
-		}
-		catch (HibernateException hibException) {
-			log.error("Update of Study Component Failed: " + hibException.getMessage());
-			log.error("A hibernate exception occured. Cannot update the study component ID: " + studyComponent.getId() + " Cause " + hibException.getStackTrace());
-			throw new ArkSystemException("Cannot update Study component due to system error");
-		}
+	
+		getSession().update(studyComponent);
 	}
 
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved {
