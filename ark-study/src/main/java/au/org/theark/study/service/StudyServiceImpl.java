@@ -163,7 +163,6 @@ public class StudyServiceImpl implements IStudyService {
 			arkCommonService.createAuditHistory(ah);
 		}catch (ConstraintViolationException cvex) {
 			log.error("Study Component already exists.: " + cvex);
-			// the following ArkUniqueException message will be shown to the user
 			throw new EntityExistsException("A Study Component already exits.");
 		}
 		catch (Exception ex) {
@@ -186,7 +185,6 @@ public class StudyServiceImpl implements IStudyService {
 			arkCommonService.createAuditHistory(ah);
 		}catch (ConstraintViolationException cvex) {
 			log.error("Study Component already exists.: " + cvex);
-			// the following ArkUniqueException message will be shown to the user
 			throw new EntityExistsException("A Study Component already exists.");
 		}
 		catch (Exception ex) {
@@ -621,6 +619,14 @@ public class StudyServiceImpl implements IStudyService {
 
 	public void delete(StudyComp studyComp) throws ArkSystemException, EntityCannotBeRemoved, UnAuthorizedOperation {
 		studyDao.delete(studyComp);
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+
+		ah.setComment("Deleted Study Component " + studyComp.getName());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
+		ah.setStudyStatus(studyComp.getStudy().getStudyStatus());
+		ah.setEntityId(studyComp.getId());
+		arkCommonService.createAuditHistory(ah);
 	}
 
 	public Collection<FileFormat> getFileFormats() {
