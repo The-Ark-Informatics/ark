@@ -11,7 +11,7 @@ import au.org.theark.core.model.Constants;
  * MarkerType entity. @author MyEclipse Persistence Tools
  */
 @SuppressWarnings("serial")
-@Entity
+@Entity (name="au.org.theark.core.model.pheno.entity.FieldType")
 @Table(name = "FIELD_TYPE", schema = Constants.PHENO_TABLE_SCHEMA)
 public class FieldType implements java.io.Serializable {
 
