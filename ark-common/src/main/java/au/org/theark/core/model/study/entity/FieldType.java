@@ -14,7 +14,7 @@ import au.org.theark.core.model.Constants;
  *
  */
 
-@Entity
+@Entity(name="au.org.theark.core.model.study.entity.FieldType")
 @Table(name = "FIELD_TYPE", schema = Constants.STUDY_SCHEMA)
 public class FieldType implements Serializable{
 	
