@@ -39,7 +39,6 @@ public class CustomField implements Serializable {
 	private String	maxValue;
 	private String	encodedValues;
 	private String	missingValue;
-	private DataType dataType;
 	private Boolean customFieldHasData;
 
 	
@@ -146,15 +145,6 @@ public class CustomField implements Serializable {
 		this.unitType = unitType;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "DATA_TYPE_ID", nullable = false)
-	public DataType getDataType() {
-		return dataType;
-	}
-
-	public void setDataType(DataType dataType) {
-		this.dataType = dataType;
-	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ARK_MODULE_ID", nullable = false)
@@ -175,8 +165,5 @@ public class CustomField implements Serializable {
 		this.customFieldHasData = customFieldHasData;
 	}
 	
-
-	
-
 
 }
