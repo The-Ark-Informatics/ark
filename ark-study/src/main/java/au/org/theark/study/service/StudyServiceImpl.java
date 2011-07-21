@@ -149,30 +149,50 @@ public class StudyServiceImpl implements IStudyService {
 		return studyDao.searchStudyComp(studyCompCriteria);
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void create(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException {
+		try{
+			studyDao.create(studyComponent);
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 
-		studyDao.create(studyComponent);
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-
-		ah.setComment("Created Study Component " + studyComponent.getName());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
-		ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
-		ah.setEntityId(studyComponent.getId());
-		arkCommonService.createAuditHistory(ah);
+			ah.setComment("Created Study Component " + studyComponent.getName());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
+			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
+			ah.setEntityId(studyComponent.getId());
+			arkCommonService.createAuditHistory(ah);
+		}catch (ConstraintViolationException cvex) {
+			log.error("Study Component already exists.: " + cvex);
+			// the following ArkUniqueException message will be shown to the user
+			throw new EntityExistsException("A Study Component already exits.");
+		}
+		catch (Exception ex) {
+			log.error("Problem creating Study Component: " + ex);
+			throw new ArkSystemException("Problem creating Study Component: " + ex.getMessage());
+		}
 	}
 
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void update(StudyComp studyComponent) throws UnAuthorizedOperation, ArkSystemException, EntityExistsException {
-
-		studyDao.update(studyComponent);
-		AuditHistory ah = new AuditHistory();
-		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-
-		ah.setComment("Updated Study Component " + studyComponent.getName());
-		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
-		ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
-		ah.setEntityId(studyComponent.getId());
-		arkCommonService.createAuditHistory(ah);
+		try{
+			studyDao.update(studyComponent);
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+	
+			ah.setComment("Updated Study Component " + studyComponent.getName());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_STUDY_COMPONENT);
+			ah.setStudyStatus(studyComponent.getStudy().getStudyStatus());
+			ah.setEntityId(studyComponent.getId());
+			arkCommonService.createAuditHistory(ah);
+		}catch (ConstraintViolationException cvex) {
+			log.error("Study Component already exists.: " + cvex);
+			// the following ArkUniqueException message will be shown to the user
+			throw new EntityExistsException("A Study Component already exists.");
+		}
+		catch (Exception ex) {
+			log.error("Problem updating Study Component: " + ex);
+			throw new ArkSystemException("Problem updating Study Component: " + ex.getMessage());
+		}
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
