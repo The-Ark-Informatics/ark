@@ -47,15 +47,6 @@ public class BiospecimenModalDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
-		// CompoundPropertyModel<LimsVO> cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-		// Biospecimen biospecimenBackend;
-		// try {
-		// biospecimenBackend = iLimsService.getBiospecimen(biospecimen.getId());
-		// cpModel.getObject().setBiospecimen(biospecimenBackend);
-		// } catch (EntityNotFoundException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 		detailForm = new BiospecimenModalDetailForm("detailForm", detailFeedbackPanel, arkCrudContainerVo, modalWindow, cpModel);
 		detailForm.initialiseDetailForm();
 		add(detailFeedbackPanel);

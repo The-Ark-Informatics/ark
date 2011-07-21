@@ -71,6 +71,27 @@ public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	public CollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
+		refreshEntityFromBackend();
+	}
+
+	protected void refreshEntityFromBackend() {
+		// Get BioCollection entity fresh from backend
+		BioCollection bc = cpModel.getObject().getBioCollection();
+		if (bc.getId() != null) {
+			try {
+				cpModel.getObject().setBioCollection(iLimsService.getBioCollection(bc.getId()));
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				e.printStackTrace();
+			}
+			catch (ArkSystemException e) {
+				// TODO Auto-generated catch block
+				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				e.printStackTrace();
+			}
+		}		
 	}
 
 	public void initialiseDetailForm() {
@@ -175,26 +196,4 @@ public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 		}
 	}
 
-	@Override
-	public void onBeforeRender() {
-		// Get fresh from backend
-		BioCollection bc = cpModel.getObject().getBioCollection();
-		if (bc.getId() != null) {
-			try {
-				cpModel.getObject().setBioCollection(iLimsService.getBioCollection(bc.getId()));
-			}
-			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
-			}
-			catch (ArkSystemException e) {
-				// TODO Auto-generated catch block
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
-			}
-		}
-
-		super.onBeforeRender();
-	}
 }

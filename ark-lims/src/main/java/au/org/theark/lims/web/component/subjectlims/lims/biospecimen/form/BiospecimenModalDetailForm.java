@@ -74,6 +74,22 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	public BiospecimenModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
+		refreshEntityFromBackend();
+	}
+	
+	protected void refreshEntityFromBackend() {
+		// Get the Biospecimen entity fresh from backend
+		Biospecimen b = cpModel.getObject().getBiospecimen();
+		if (b.getId() != null) {
+			try {
+				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(b.getId()));
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
+				e.printStackTrace();
+			}
+		}		
 	}
 
 	public void initialiseDetailForm() {
@@ -197,20 +213,4 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 	}
 
-	@Override
-	public void onBeforeRender() {
-		// Get fresh from backend
-		Biospecimen b = cpModel.getObject().getBiospecimen();
-		if (b.getId() != null) {
-			try {
-				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(b.getId()));
-			}
-			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
-			}
-		}
-		super.onBeforeRender();
-	}
 }
