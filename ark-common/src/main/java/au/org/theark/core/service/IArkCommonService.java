@@ -6,6 +6,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -21,6 +22,7 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -390,12 +392,17 @@ public interface IArkCommonService<T> {
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
 	/**
-	 * 
 	 * @param customFieldVO
 	 * @throws ArkUniqueException
 	 * @throws ArkSystemException
+	 * @throws EntityExistsException 
+	 * @throws ArkUniqueException 
 	 */
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException,  ArkUniqueException;
+	
+	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException;
+	
+	public CustomField getCustomField(Long id );
 	
 	
 	
