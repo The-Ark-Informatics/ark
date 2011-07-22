@@ -6,7 +6,6 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
-import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -23,6 +22,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -392,18 +392,37 @@ public interface IArkCommonService<T> {
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
 	/**
+	 * A generic interface that will return count of the subjects in the study
+	 * @param customFieldCriteria
+	 * @return int
+	 */
+	public int getCustomFieldCount(CustomField customFieldCriteria);
+
+	/**
+	 * A generic interface that will return a list CustomFields specified by a particular criteria, and a paginated reference point
+	 * @param customFieldCriteria
+	 * @param first - index to the first item (for that page)
+	 * @param count - number of items to return (for that page)
+	 * @return Collection of Custom Fields
+	 */
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
+
+	/**
+	 * A generic interface that will return a list Custom FieldTypes
+	 * @return Collection of Custom Field Types
+	 */
+	public Collection<FieldType> getFieldTypes();
+
+	/**
+	 * 
 	 * @param customFieldVO
 	 * @throws ArkUniqueException
 	 * @throws ArkSystemException
-	 * @throws EntityExistsException 
-	 * @throws ArkUniqueException 
 	 */
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException,  ArkUniqueException;
 	
 	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException;
 	
 	public CustomField getCustomField(Long id );
-	
-	
 	
 }

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -332,6 +333,12 @@ public interface IStudyDao {
 	
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
+	public int getCustomFieldCount(CustomField customFieldCriteria);
+
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
+
+	public Collection<FieldType> getFieldTypes();
+	
 	//public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
 	
 	public void createCustomField(CustomField customField) throws  ArkSystemException;
@@ -347,4 +354,5 @@ public interface IStudyDao {
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
 	
 	public CustomFieldDisplay getCustomFieldDisplay(Long id );
+
 }

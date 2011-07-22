@@ -461,6 +461,19 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study){
 		return studyDao.getStudiesForUser(arkUser, study);
 	}
+
+	public int getCustomFieldCount(CustomField customFieldCriteria) {
+		return studyDao.getCustomFieldCount(customFieldCriteria);
+	}
+
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
+		// TODO Auto-generated method stub
+		return studyDao.searchPageableCustomFields(customFieldCriteria, first, count);
+	}
+
+	public Collection<FieldType> getFieldTypes() {
+		return studyDao.getFieldTypes();
+	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
