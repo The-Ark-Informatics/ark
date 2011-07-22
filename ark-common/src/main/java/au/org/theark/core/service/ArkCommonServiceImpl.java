@@ -467,7 +467,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
-		// TODO Auto-generated method stub
 		return studyDao.searchPageableCustomFields(customFieldCriteria, first, count);
 	}
 

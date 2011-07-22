@@ -843,12 +843,38 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
-	
-	public void createCustomField(CustomField customField) throws  ArkSystemException{
-	
-			getSession().save(customField);
+	public int getCustomFieldCount(CustomField customFieldCriteria) {
+		// Handle for study or module not in context
+		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkModule() == null) {
+			return 0;
+		}
+		Criteria criteria  = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
+		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+
+	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
+		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
+		return customFieldList;
+	}
+
+	public Collection<FieldType> getFieldTypes() {
+		Criteria criteria = getSession().createCriteria(FieldType.class);
+		List<FieldType> customFieldTypeList = (List<FieldType>) criteria.list();
+		return customFieldTypeList;
 	}
 	
+	public void createCustomField(CustomField customField) throws  ArkSystemException{
+			getSession().save(customField);
+	}
 	
 	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
 		getSession().save(customFieldDisplay);
@@ -885,32 +911,4 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		getSession().update(customFieldDisplay);
 	}
 
-	public int getCustomFieldCount(CustomField customFieldCriteria) {
-		// Handle for study or module not in context
-		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkModule() == null) {
-			return 0;
-		}
-		Criteria criteria  = getSession().createCriteria(CustomField.class);
-		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
-		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
-		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount;
-	}
-
-	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
-		Criteria criteria = getSession().createCriteria(CustomField.class);
-		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
-		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
-		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
-		return customFieldList;
-	}
-
-	public Collection<FieldType> getFieldTypes() {
-		Criteria criteria = getSession().createCriteria(FieldType.class);
-		List<FieldType> customFieldTypeList = (List<FieldType>) criteria.list();
-		return customFieldTypeList;
-	}
 }
