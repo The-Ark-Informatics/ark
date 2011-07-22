@@ -12,7 +12,6 @@ import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
-import org.hibernate.Transaction;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
@@ -24,10 +23,11 @@ import org.hibernate.criterion.Subqueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -47,6 +47,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -842,13 +843,45 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException{
-		
-		CustomField customField = customFieldVO.getCustomField();
-		CustomFieldDisplay customFieldDisplay = customFieldVO.getCustomFieldDisplay();
-		Session session  = getSession();
-		session.save(customField);
-		customFieldDisplay.setCustomField(customField);
-		session.save(customFieldDisplay);
+	
+	public void createCustomField(CustomField customField) throws  ArkSystemException{
+	
+			getSession().save(customField);
+	}
+	
+	
+	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
+		getSession().save(customFieldDisplay);
+	}
+	
+	
+	public FieldType getFieldTypeById(Long fieldTpeId){
+		Criteria criteria = getSession().createCriteria(FieldType.class);
+		criteria.add(Restrictions.eq("id", fieldTpeId));
+		criteria.setMaxResults(1);
+		return (FieldType)criteria.uniqueResult();
+	}
+	
+	public CustomField getCustomField(Long id ){
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (CustomField)criteria.uniqueResult();
+	}
+	
+	public CustomFieldDisplay getCustomFieldDisplay(Long id ){
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.add(Restrictions.eq("id", id));
+		criteria.setMaxResults(1);
+		return (CustomFieldDisplay)criteria.uniqueResult();
+	}
+	
+	
+	public void updateCustomField(CustomField customField) throws  ArkSystemException{
+		 getSession().update(customField);
+	}
+	
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
+		getSession().update(customFieldDisplay);
 	}
 }

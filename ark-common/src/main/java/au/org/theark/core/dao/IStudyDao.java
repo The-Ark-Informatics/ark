@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -18,6 +17,9 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.MaritalStatus;
@@ -330,5 +332,19 @@ public interface IStudyDao {
 	
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
+	//public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
+	
+	public void createCustomField(CustomField customField) throws  ArkSystemException;
+	
+	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
+	
+	public FieldType getFieldTypeById(Long fieldTpeId);
+	
+	public CustomField getCustomField(Long id );
+	
+	public void updateCustomField(CustomField customField) throws  ArkSystemException;
+	
+	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
+	
+	public CustomFieldDisplay getCustomFieldDisplay(Long id );
 }
