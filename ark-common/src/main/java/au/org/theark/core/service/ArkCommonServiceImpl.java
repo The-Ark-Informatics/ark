@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.hibernate.exception.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
@@ -13,6 +17,7 @@ import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -28,6 +33,9 @@ import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -64,6 +72,8 @@ import au.org.theark.core.vo.SubjectVO;
 @Service(Constants.ARK_COMMON_SERVICE)
 public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
+	private static Logger		log	= LoggerFactory.getLogger(ArkCommonServiceImpl.class);
+	
 	private IArkAuthorisation	arkAuthorisationDao;
 	private IStudyDao				studyDao;
 	private ILdapPersonDao		ldapInterface;
@@ -452,7 +462,78 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getStudiesForUser(arkUser, study);
 	}
 	
-	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException{
-		studyDao.createCustomField(customFieldVO);
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
+		try{
+			populate(customFieldVO);
+			studyDao.createCustomField(customFieldVO.getCustomField());
+			customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
+			studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+			
+		}catch (ConstraintViolationException cvex) {
+			log.error("Custom Field Already Exists.: " + cvex);
+			throw new ArkUniqueException("A Custom Field already exits.");
+		}
+		catch (Exception ex) {
+			log.error("Problem creating Custom Field: " + ex);
+			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
+		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
+		try{
+			
+			CustomField cf = getCustomField(new Long("4"));
+			customFieldVO.getCustomField().setName("Heard about study");
+			CustomFieldDisplay cfd = studyDao.getCustomFieldDisplay(new Long("1"));
+			customFieldVO.setCustomField(cf);
+			customFieldVO.setCustomFieldDisplay(cfd);
+			
+			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
+				studyDao.updateCustomField(customFieldVO.getCustomField());
+				cfd.setCustomField(customFieldVO.getCustomField());
+				studyDao.updateCustomFieldDisplay(cfd);
+			}else{
+				studyDao.updateCustomFieldDisplay(cfd);
+			}
+			
+		}
+		catch (ConstraintViolationException cvex) {
+			log.error("Custom Field Already Exists.: " + cvex);
+			throw new ArkUniqueException("A Custom Field already exits.");
+		}
+		catch (Exception ex) {
+			log.error("Problem creating Custom Field: " + ex);
+			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
+		}
+	}
+	
+	
+	public FieldType getFieldTypeById(Long filedTypeId){
+		return studyDao.getFieldTypeById(filedTypeId);
+	}
+	private void populate(CustomFieldVO customFieldVO){
+		CustomField cf = customFieldVO.getCustomField();
+		
+		Study study  = getStudy(new Long("2"));
+		ArkModule arkModule  = getArkModuleById(new Long("1"));
+		FieldType ft = getFieldTypeById(new Long("1"));
+		cf.setStudy(study);
+		cf.setCustomFieldHasData(false);
+		cf.setName("Heard about study");
+		cf.setArkModule(arkModule);
+		cf.setFieldType(ft);
+		
+		CustomFieldDisplay cfd = customFieldVO.getCustomFieldDisplay();
+		cfd.setCustomField(cf);
+		cfd.setRequired(true);
+		cfd.setRequiredMessage("Heard about study required");
+		cfd.setSequence(new Long("2"));
+		
+	}
+	
+	public CustomField getCustomField(Long id ){
+		return studyDao.getCustomField(id);
 	}
 }
