@@ -12,3 +12,6 @@ DROP INDEX `MODULE_ID_UNIQUE`
 
 alter table custom_field add unique(name,study_id,ark_module_id);
 
+ALTER TABLE `study`.`custom_field` CHANGE COLUMN `FIELD_TYPE` `FIELD_TYPE_ID` INT(11) NOT NULL  ;
+
+
