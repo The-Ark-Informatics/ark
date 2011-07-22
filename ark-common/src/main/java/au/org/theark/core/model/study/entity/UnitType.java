@@ -14,7 +14,7 @@ import au.org.theark.core.model.Constants;
  *
  */
 @Entity
-@Table(name = "TITLE_TYPE", schema = Constants.STUDY_SCHEMA)
+@Table(name = "UNIT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class UnitType implements Serializable{
 	
 	private Long	id;
