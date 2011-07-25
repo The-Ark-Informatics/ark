@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -18,9 +16,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
@@ -98,8 +94,6 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 
 	
 	protected void onSearch(AjaxRequestTarget target) {
-		
-		Subject currentUser = SecurityUtils.getSubject();
 		
 		List<Study> studyResultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
 		if(studyResultList != null && studyResultList.size() == 0){
