@@ -29,6 +29,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -107,6 +108,9 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 		attachValidators();
 		addComponents();
+		
+		// Focus on Sample Type dropdown
+		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
 	}
 
 	private void initSampleTypeDdc() {
@@ -155,6 +159,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	}
 
 	protected void attachValidators() {
+		idTxtFld.setRequired(true);
 		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));

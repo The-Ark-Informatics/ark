@@ -1,42 +1,28 @@
 package au.org.theark.lims.web.component.biocollection.form;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -112,9 +98,13 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 		attachValidators();
 		addComponents();
+		
+		// Focus on Collection Date
+		collectionDateTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 
 	protected void attachValidators() {
+		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.name.required", this, new Model<String>("Name")));
 	}
 
