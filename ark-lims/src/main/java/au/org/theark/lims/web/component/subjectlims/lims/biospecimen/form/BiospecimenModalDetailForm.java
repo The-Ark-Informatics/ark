@@ -1,6 +1,5 @@
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -28,6 +27,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -60,8 +60,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private TextField<String>					quantityTxtFld;
 
 	private ModalWindow							modalWindow;
-	private String									subjectUIDInContext;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -108,6 +107,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		attachValidators();
 		addComponents();
+		
+		// Focus on Sample Type
+		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
 	}
 
 	private void initSampleTypeDdc() {
@@ -117,8 +119,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	private void initBioCollectionDdc() {
-		// Get a list of collections for the study/subject in context by default
-		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 
 		Study study = null;
@@ -145,6 +145,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	protected void attachValidators() {
+		idTxtFld.setRequired(true);
 		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
