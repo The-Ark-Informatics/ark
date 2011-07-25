@@ -2,7 +2,6 @@ package au.org.theark.lims.web.component.biospecimen;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -10,16 +9,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
@@ -160,11 +156,6 @@ public class SearchResultListPanel extends Panel {
 				limsVo.setBiospecimen(biospecimenFromBackend);
 				limsVo.setLinkSubjectStudy(biospecimenFromBackend.getLinkSubjectStudy());
 				limsVo.setBioCollection(biospecimenFromBackend.getBioCollection());
-
-				// Set SubjectUID into context
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, biospecimenFromBackend.getLinkSubjectStudy().getSubjectUID());
-				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setSubjectContextLabel(target, biospecimenFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 
 				containerForm.setModelObject(limsVo);
 
