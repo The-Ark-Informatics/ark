@@ -40,7 +40,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subjectlims.lims.biocollection.CollectionModalDetailPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionModalDetailPanel;
 
 /**
  * @author cellis
@@ -398,7 +398,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
-		modalContentPanel = new CollectionModalDetailPanel("content", modalWindow, cpModel);
+		modalContentPanel = new BioCollectionModalDetailPanel("content", modalWindow, cpModel);
 
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Collection Detail");

@@ -22,6 +22,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -33,12 +34,12 @@ import au.org.theark.lims.web.Constants;
  * 
  */
 @SuppressWarnings({ "unused" })
-public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
+public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
 	private static final long			serialVersionUID	= 2926069852602563767L;
-	private static final Logger		log					= LoggerFactory.getLogger(CollectionModalDetailForm.class);
+	private static final Logger		log					= LoggerFactory.getLogger(BioCollectionModalDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -68,7 +69,7 @@ public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	 * @param containerForm
 	 * @param detailPanelContainer
 	 */
-	public CollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioCollectionModalDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVo, ModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
@@ -111,9 +112,13 @@ public class CollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 
 		attachValidators();
 		addComponents();
+		
+		// Focus on Collection Date
+		collectionDateTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
 
 	protected void attachValidators() {
+		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioCollection.name.required", this, new Model<String>("Name")));
 	}
 
