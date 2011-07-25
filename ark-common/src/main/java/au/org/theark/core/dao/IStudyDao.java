@@ -354,5 +354,9 @@ public interface IStudyDao {
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
 	
 	public CustomFieldDisplay getCustomFieldDisplay(Long id );
+	
+	public void deleteCustomField(CustomField customField) throws ArkSystemException;
+	
+	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
 
 }

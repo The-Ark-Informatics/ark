@@ -910,5 +910,13 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException{
 		getSession().update(customFieldDisplay);
 	}
+	
+	public void deleteCustomField(CustomField customField) throws ArkSystemException{
+		getSession().delete(customField);
+	}
+	
+	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException{
+		getSession().delete(customFieldDisplay);
+	}
 
 }
