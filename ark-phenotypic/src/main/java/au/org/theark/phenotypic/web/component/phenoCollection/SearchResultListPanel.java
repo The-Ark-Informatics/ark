@@ -2,7 +2,6 @@ package au.org.theark.phenotypic.web.component.phenoCollection;
 
 import java.text.SimpleDateFormat;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -22,7 +21,6 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.form.DetailForm;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 
 @SuppressWarnings({ "serial", "unchecked" })
@@ -162,9 +160,6 @@ public class SearchResultListPanel extends Panel {
 				field.setStudy(phenoCollection.getStudy());
 				collectionVo.setFieldsAvailable(iPhenotypicService.searchField(field));
 				containerForm.setModelObject(collectionVo);
-
-				// Place the selected collection in session context for the user
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, phenoCollection.getId());
 
 				detailsPanelContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(false);
