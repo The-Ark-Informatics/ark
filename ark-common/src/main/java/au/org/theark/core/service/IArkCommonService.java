@@ -6,6 +6,7 @@ import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -424,5 +425,7 @@ public interface IArkCommonService<T> {
 	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException;
 	
 	public CustomField getCustomField(Long id );
+	
+	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved;
 	
 }

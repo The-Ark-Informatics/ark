@@ -18,6 +18,7 @@ import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
+import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
@@ -504,6 +505,25 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			log.error("Problem creating Custom Field: " + ex);
 			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
 		}
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved{
+		
+		try{		
+			
+			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
+				studyDao.deleteCustomField(customFieldVO.getCustomField());
+				studyDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+			}else{
+				throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
+			}	
+		}
+		catch (Exception ex) {
+			log.error("Unable to delete CustomField. " + ex);
+			throw new ArkSystemException("Unable to delete Custom Field: " + ex.getMessage());
+		}
+		
 	}
 	
 	
