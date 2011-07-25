@@ -339,8 +339,6 @@ public interface IStudyDao {
 
 	public Collection<FieldType> getFieldTypes();
 	
-	//public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException;
-	
 	public void createCustomField(CustomField customField) throws  ArkSystemException;
 	
 	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
