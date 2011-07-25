@@ -35,6 +35,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -466,9 +467,24 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
+			AuditHistory ah = new AuditHistory();
+			populate(customFieldVO);
 			studyDao.createCustomField(customFieldVO.getCustomField());
 			customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 			studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+			//Custom Field History
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
+			ah.setEntityId(customFieldVO.getCustomField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+			createAuditHistory(ah);
+			//Custom Field Display History
+			ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+			ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
+			ah.setEntityId(customFieldVO.getCustomField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+			createAuditHistory(ah);
 			
 		}catch (ConstraintViolationException cvex) {
 			log.error("Custom Field Already Exists.: " + cvex);
@@ -488,13 +504,28 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try{
 			
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
+			
 				studyDao.updateCustomField(customFieldVO.getCustomField());
-				
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				//Custom Field History
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+				ah.setComment("Updated Custom Field " + customFieldVO.getCustomField().getName());
+				ah.setEntityId(customFieldVO.getCustomField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+				createAuditHistory(ah);
 			}else{
 				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 			}
+			
+			//Custom Field Display History
+			AuditHistory ah = new AuditHistory();
+			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+			ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
+			ah.setEntityId(customFieldVO.getCustomField().getId());
+			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+			createAuditHistory(ah);
 			
 		}
 		catch (ConstraintViolationException cvex) {
@@ -515,6 +546,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
 				studyDao.deleteCustomField(customFieldVO.getCustomField());
 				studyDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
+				String fieldName  =customFieldVO.getCustomField().getName();
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+				ah.setComment("Deleted Custom Field " + customFieldVO.getCustomField().getName());
+				ah.setEntityId(customFieldVO.getCustomField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+				createAuditHistory(ah);
+				//History for Custom Display Field Display
+				ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+				ah.setComment("Deleted Custom Display Field For Custom Field " + fieldName);
+				ah.setEntityId(customFieldVO.getCustomFieldDisplay().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+				createAuditHistory(ah);
 			}else{
 				throw new EntityCannotBeRemoved("Custom Field cannot be removed, it is used in the system");
 			}	
@@ -535,4 +580,25 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public CustomField getCustomField(Long id ){
 		return studyDao.getCustomField(id);
 	}
+	
+	private void populate(CustomFieldVO customFieldVO){
+		CustomField cf = customFieldVO.getCustomField();
+		
+		Study study  = getStudy(new Long("2"));
+		ArkModule arkModule  = getArkModuleById(new Long("1"));
+		FieldType ft = getFieldTypeById(new Long("1"));
+		cf.setStudy(study);
+		cf.setCustomFieldHasData(false);
+		cf.setName("Heard about study");
+		cf.setArkModule(arkModule);
+		cf.setFieldType(ft);
+		
+		CustomFieldDisplay cfd = customFieldVO.getCustomFieldDisplay();
+		cfd.setCustomField(cf);
+		cfd.setRequired(true);
+		cfd.setRequiredMessage("Heard about study required");
+		cfd.setSequence(new Long("2"));
+		
+	}
+
 }
