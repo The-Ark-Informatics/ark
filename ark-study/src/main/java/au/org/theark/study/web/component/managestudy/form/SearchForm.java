@@ -100,24 +100,13 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 		
 		Subject currentUser = SecurityUtils.getSubject();
-		List<Study> studyResultList = new ArrayList<Study>();
-		try {
-			
-			
-			ArkUser arkUser  =iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			studyResultList  = iArkCommonService.getStudiesForUser(arkUser, containerForm.getModelObject().getStudy());
-			
-			if (studyResultList != null && studyResultList.size() == 0) {
-				containerForm.getModelObject().setStudyList(studyResultList);
-				this.info("There are no records that matched your query. Please modify your filter");
-				target.addComponent(feedbackPanel);
-			}
-			
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		
+		List<Study> studyResultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
+		if(studyResultList != null && studyResultList.size() == 0){
+			containerForm.getModelObject().setStudyList(studyResultList);
+			this.info("There are no records that matched your query. Please modify your filter");
+			target.addComponent(feedbackPanel);
 		}
-
 		containerForm.getModelObject().setStudyList(studyResultList);
 		studyCrudContainerVO.getPageableListView().removeAll();
 		studyCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
