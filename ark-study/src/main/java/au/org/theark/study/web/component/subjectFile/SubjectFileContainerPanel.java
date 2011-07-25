@@ -126,12 +126,14 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 				Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
 				try {
 					if (isActionPermitted()) {
-
 						SubjectFile subjectFile = containerForm.getModelObject().getSubjectFile();
 						Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-						LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
-						subjectFile.setLinkSubjectStudy(linkSubjectStudy);
-						subjectFileList = studyService.searchSubjectFile(subjectFile);
+						
+						if(sessionPersonId != null){
+							LinkSubjectStudy linkSubjectStudy = iArkCommonService.getSubject(sessionPersonId);
+							subjectFile.setLinkSubjectStudy(linkSubjectStudy);
+							subjectFileList = studyService.searchSubjectFile(subjectFile);
+						}
 					}
 				}
 				catch (EntityNotFoundException e) {
