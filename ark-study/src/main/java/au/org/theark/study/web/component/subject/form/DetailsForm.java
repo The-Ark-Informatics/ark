@@ -504,8 +504,14 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 				StringBuffer sb = new StringBuffer();
 				sb.append("The Subject with Subject UID: ");
 				sb.append(subjectVO.getLinkSubjectStudy().getSubjectUID());
-				sb.append(" has been created successfully and linked to the study in context ");
+				sb.append(" has been created successfully and linked to the study in context: ");
 				sb.append(study.getName());
+				sb.append(".");
+				
+				if(study.getAutoConsent()){
+					sb.append(" The Subject has been automatically consented to the Study.");
+				}
+				
 				onSavePostProcess(target);
 				this.info(sb.toString());
 

@@ -40,6 +40,8 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.model.study.entity.ConsentStatus;
+import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.CorrespondenceAttachment;
 import au.org.theark.core.model.study.entity.CorrespondenceDirectionType;
 import au.org.theark.core.model.study.entity.CorrespondenceModeType;
@@ -400,6 +402,19 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						linkSubjectStudy.setSubjectUID(subjectUID);
 						session.update(linkSubjectStudy);
 					}
+					
+					// Auto consent Subject
+					if(subjectVo.getLinkSubjectStudy().getStudy().getAutoConsent() && 
+							subjectVo.getLinkSubjectStudy().getSubjectStatus().getName().equalsIgnoreCase("Subject"))
+					{
+						subjectVo.getLinkSubjectStudy().setConsentDate(new Date());
+						subjectVo.getLinkSubjectStudy().setConsentStatus(getConsentStatusByName("Consented"));
+						subjectVo.getLinkSubjectStudy().setConsentType(getConsentTypeByName("Electronic"));
+						YesNo yesno = getYesNo("Yes");
+						subjectVo.getLinkSubjectStudy().setConsentToActiveContact(yesno);
+						subjectVo.getLinkSubjectStudy().setConsentToPassiveDataGathering(yesno);
+						subjectVo.getLinkSubjectStudy().setConsentToUseData(yesno);
+					}
 				}
 			}
 			else {
@@ -410,6 +425,28 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			// Disable insertion lock
 			setSubjectUidSequenceLock(study, false);
 		}
+	}
+
+	private ConsentType getConsentTypeByName(String name) {
+		ConsentType consentType = null;
+		Criteria criteria = getSession().createCriteria(ConsentType.class);
+		criteria.add(Restrictions.eq("name", name));
+
+		if (criteria.list().size() > 0) {
+			consentType = (ConsentType) criteria.list().get(0);
+		}
+		return consentType;
+	}
+
+	private ConsentStatus getConsentStatusByName(String name) {
+		ConsentStatus consentStatus = null;
+		Criteria criteria = getSession().createCriteria(ConsentStatus.class);
+		criteria.add(Restrictions.eq("name", name));
+
+		if (criteria.list().size() > 0) {
+			consentStatus = (ConsentStatus) criteria.list().get(0);
+		}
+		return consentStatus;
 	}
 
 	private VitalStatus getVitalStatus(Long id) {
