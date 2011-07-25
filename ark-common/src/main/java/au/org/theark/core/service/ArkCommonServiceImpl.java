@@ -34,7 +34,6 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -371,17 +370,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 
 	/**
-	 * 
-	 */
-
-	// @SuppressWarnings("unchecked")
-	// public Collection<String> getArkUserRolePermission(String ldapUserName,ArkUsecase arkUseCase,String userRole, ArkModule arkModule,Study study)
-	// throws EntityNotFoundException{
-	//
-	// return arkAuthorisationDao.getArkUserRolePermission(ldapUserName, arkUseCase, userRole, arkModule, study);
-	// }
-
-	/**
 	 * Returns All Permissions as collection of Strings
 	 * 
 	 * @return Collection<String> that represents ArkPermission
@@ -477,7 +465,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
-			populate(customFieldVO);
 			studyDao.createCustomField(customFieldVO.getCustomField());
 			customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 			studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
@@ -491,23 +478,21 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
 		}
 	}
-	
+	/**
+	 * Update  a Custom Field if it is not yet any data and update the Custom Field display
+	 * details.
+	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
 			
-			CustomField cf = getCustomField(new Long("4"));
-			customFieldVO.getCustomField().setName("Heard about study");
-			CustomFieldDisplay cfd = studyDao.getCustomFieldDisplay(new Long("1"));
-			customFieldVO.setCustomField(cf);
-			customFieldVO.setCustomFieldDisplay(cfd);
-			
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
 				studyDao.updateCustomField(customFieldVO.getCustomField());
-				cfd.setCustomField(customFieldVO.getCustomField());
-				studyDao.updateCustomFieldDisplay(cfd);
+				
+				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
+				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 			}else{
-				studyDao.updateCustomFieldDisplay(cfd);
+				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 			}
 			
 		}
@@ -525,25 +510,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public FieldType getFieldTypeById(Long filedTypeId){
 		return studyDao.getFieldTypeById(filedTypeId);
 	}
-	private void populate(CustomFieldVO customFieldVO){
-		CustomField cf = customFieldVO.getCustomField();
-		
-		Study study  = getStudy(new Long("2"));
-		ArkModule arkModule  = getArkModuleById(new Long("1"));
-		FieldType ft = getFieldTypeById(new Long("1"));
-		cf.setStudy(study);
-		cf.setCustomFieldHasData(false);
-		cf.setName("Heard about study");
-		cf.setArkModule(arkModule);
-		cf.setFieldType(ft);
-		
-		CustomFieldDisplay cfd = customFieldVO.getCustomFieldDisplay();
-		cfd.setCustomField(cf);
-		cfd.setRequired(true);
-		cfd.setRequiredMessage("Heard about study required");
-		cfd.setSequence(new Long("2"));
-		
-	}
+
 	
 	public CustomField getCustomField(Long id ){
 		return studyDao.getCustomField(id);
