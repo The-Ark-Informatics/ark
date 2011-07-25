@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.mydetails;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -22,27 +23,34 @@ import au.org.theark.study.web.component.mydetails.form.MyDetailsForm;
  */
 public class MyDetails extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 8278822398202036799L;
 	private transient Logger						log	= LoggerFactory.getLogger(MyDetails.class);
-	// private UserForm userForm;
-	private FeedbackPanel							feedBackPanel;
-
 	@SpringBean(name = "userService")
 	private IUserService								userService;
-
 	private CompoundPropertyModel<ArkUserVO>	arkUserModelCpm;
 
-	public MyDetails(String id, ArkUserVO arkUserVO, final FeedbackPanel feedBackPanel) {
+	public MyDetails(String id, ArkUserVO arkUserVO, final FeedbackPanel feedBackPanel, ModalWindow modalWindow) {
 		super(id);
 		/* Initialise the CPM */
 		arkUserModelCpm = new CompoundPropertyModel<ArkUserVO>(arkUserVO);
-		this.feedBackPanel = feedBackPanel;
+		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm, feedBackPanel, modalWindow) {
 
-		MyDetailsForm myDetailForm = new MyDetailsForm(Constants.USER_DETAILS_FORM, arkUserModelCpm, feedBackPanel) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -8858977824290273852L;
 
 			protected void onSave(AjaxRequestTarget target) {
 				ArkUserVO arkUser = getModelObject();
-				// Temporary allow the user to select if he wants to change it
-				arkUser.setChangePassword(true);
+				
+				if((arkUser.getPassword() != null && arkUser.getConfirmPassword() != null) &&
+						(!arkUser.getPassword().isEmpty() && !arkUser.getConfirmPassword().isEmpty())	){
+					// Temporary allow the user to select if he wants to change it
+					arkUser.setChangePassword(true);
+				}
 
 				try {
 					userService.updateLdapUser(arkUser);
@@ -51,7 +59,7 @@ public class MyDetails extends Panel {
 				}
 				catch (ArkSystemException arkSystemException) {
 					log.error("Exception occured while performing an update on the user details in LDAP " + arkSystemException.getMessage());
-					this.error("An error has occured,cannot update user details.Please contact support.");
+					this.error("An error has occured, cannot update user details. Please contact support.");
 					processFeedback(target, feedBackPanel);
 					// add custom error message to feedback panel.
 				}

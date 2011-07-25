@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.mydetails;
 
 import org.apache.shiro.subject.Subject;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -20,6 +21,11 @@ import au.org.theark.study.web.Constants;
  */
 public class MyDetailsContainer extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3880466028840378961L;
+
 	private transient Logger	log	= LoggerFactory.getLogger(MyDetailsContainer.class);
 
 	/**
@@ -36,7 +42,7 @@ public class MyDetailsContainer extends Panel {
 	 * @param userVO
 	 * @param subject
 	 */
-	public MyDetailsContainer(String id, ArkUserVO userVO, Subject subject) {
+	public MyDetailsContainer(String id, ArkUserVO userVO, Subject subject, ModalWindow modalWindow) {
 		super(id);
 		// Create a Form instance and send in the currently logged in user details
 		userVO.setUserName(subject.getPrincipal().toString());
@@ -52,7 +58,7 @@ public class MyDetailsContainer extends Panel {
 
 		// Add the details panel into the container
 		userVO.setMode(Constants.MODE_EDIT);
-		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO, feedBackPanel));
+		add(new MyDetails(Constants.MY_DETAILS_PANEL, userVO, feedBackPanel, modalWindow));
 	}
 
 	private FeedbackPanel initialiseFeedBackPanel() {
