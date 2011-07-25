@@ -10,6 +10,7 @@ import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -23,6 +24,7 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
@@ -71,11 +73,29 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
 
-		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+		// Override New button, disabling
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 
-		if (subjectUIDInContext == null || subjectUIDInContext.isEmpty()) {
-			newButton.setVisible(false);
-		}
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 4695227309689500914L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.addComponent(feedbackPanel);
+			}
+		};
+		addOrReplace(newButton);
 	}
 
 	/**

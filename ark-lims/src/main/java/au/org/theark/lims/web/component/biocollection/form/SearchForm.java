@@ -6,6 +6,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -14,12 +15,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDatePicker;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
@@ -68,11 +68,29 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
 
-		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-		if (subjectUIDInContext == null || subjectUIDInContext.isEmpty()) {
-			// Cannot create new BioCollection without a subject
-			newButton.setVisible(false);
-		}
+		// Override New button, disabling
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 4695227309689500914L;
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+			}
+
+			@Override
+			public boolean isVisible() {
+				return false;
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.addComponent(feedbackPanel);
+			}
+		};
+		addOrReplace(newButton);
 	}
 
 	/**
