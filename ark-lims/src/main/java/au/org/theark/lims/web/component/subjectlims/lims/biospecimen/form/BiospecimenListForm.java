@@ -37,7 +37,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.BiospecimenIdGenerator;
+import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
@@ -385,7 +385,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 
 			// Create new BiospecimenUID
-			newModel.getObject().getBiospecimen().setBiospecimenId(BiospecimenIdGenerator.generateBiospecimenId());
+			newModel.getObject().getBiospecimen().setBiospecimenId(UniqueIdGenerator.generateUniqueId());
 
 			showModalWindow(target, newModel); // listDetailsForm);
 		}

@@ -38,6 +38,7 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
+import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.CollectionModalDetailPanel;
 
@@ -389,7 +390,10 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		// newModel.getObject().setBioCollection(new BioCollection());
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 		newModel.getObject().getBioCollection().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
-
+		
+		// Create new generated Collection Name
+		newModel.getObject().getBioCollection().setName(UniqueIdGenerator.generateUniqueId());
+		
 		showModalWindow(target, newModel); // listDetailsForm);
 	}
 
