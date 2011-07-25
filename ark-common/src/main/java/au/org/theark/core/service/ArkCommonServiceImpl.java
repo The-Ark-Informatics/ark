@@ -468,7 +468,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
 			AuditHistory ah = new AuditHistory();
-			populate(customFieldVO);
 			studyDao.createCustomField(customFieldVO.getCustomField());
 			customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 			studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
