@@ -4,7 +4,10 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
@@ -17,12 +20,13 @@ import au.org.theark.core.model.Constants;
 @Table(name = "UNIT_TYPE", schema = Constants.STUDY_SCHEMA)
 public class UnitType implements Serializable{
 	
-	private Long	id;
-	private String	name;
-	private String	description;
+	private Long		id;
+	private ArkModule	arkModule;
+	private String		name;
+	private String		description;
 	
 	public UnitType(){
-		
+		arkModule = new ArkModule();
 	}
 	
 	@Id
@@ -35,6 +39,16 @@ public class UnitType implements Serializable{
 		this.id = id;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_MODULE_ID")
+	public ArkModule getArkModule() {
+		return arkModule;
+	}
+
+	public void setArkModule(ArkModule arkModule) {
+		this.arkModule = arkModule;
+	}
+	
 	@Column(name = "NAME", length = 45)
 	public String getName() {
 		return this.name;
