@@ -1,9 +1,6 @@
 package au.org.theark.lims.web.component.biospecimen.form;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
@@ -37,7 +34,6 @@ import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.BiospecimenIdGenerator;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimen.DetailPanel;
 import au.org.theark.lims.web.component.biospecimen.SearchPanel;
