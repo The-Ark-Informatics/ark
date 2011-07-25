@@ -30,6 +30,7 @@ public class Constants {
 	public static final String			SEARCH															= "search";
 	public static final String			NEW																= "new";
 	public static final String			RESET																= "reset";
+	public static final String			CLOSE																= "close";
 	public static final String			ADD_PHONE														= "addPhone";
 	public static final int				MODE_NEW															= 1;
 	public static final int				MODE_EDIT														= 2;
@@ -333,5 +334,6 @@ public class Constants {
 
 	// 1 digit, 1 lower, 1 upper, 1 symbol "@#$%", from 6 to 20
 	public static final String			PASSWORD_PATTERN												= "((?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20})";
+	
 
 }
