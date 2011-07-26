@@ -26,6 +26,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePermission;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -654,4 +655,40 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.delete(arkUserVO.getArkUserEntity());
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
+		List<Study> studyList = new ArrayList<Study>(0);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.createAlias("arkUser", "usr");
+		criteria.add(Restrictions.eq("usr", arkUserVo.getArkUserEntity()));
+		criteria.setProjection(Projections.projectionList().add(
+				Projections.distinct(Projections.property("study")))
+				.add(Projections.property("study")));
+		criteria.setResultTransformer(Transformers.aliasToBean(Study.class));
+		
+		studyList = (List<Study>) criteria.list();
+		
+		return studyList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		arkUserRoleList = (List<ArkUserRole>) criteria.list();
+		return arkUserRoleList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule) {
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
+		criteria.add(Restrictions.eq("arkRole", arkRole));
+		if(!arkRole.getName().equalsIgnoreCase(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		arkRolePolicyTemplateList = (List<ArkRolePolicyTemplate>) criteria.list();
+		return arkRolePolicyTemplateList;
+	}
 }

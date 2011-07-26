@@ -10,6 +10,7 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkRole;
+import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -143,4 +144,9 @@ public interface IArkAuthorisation<T> {
 
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
 
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
+
+	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo);
+
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule);
 }
