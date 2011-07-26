@@ -20,10 +20,11 @@
 		</license>
 	</licenses>
 	<dependencies>
+		<!--  Ark Dependencies -->
 		<dependency>
-			<groupId>au.org.theark.core</groupId>
-			<artifactId>ark-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+		  <groupId>au.org.theark.core</groupId>
+		  <artifactId>ark-common</artifactId>
+		  <version>0.1.3-SNAPSHOT</version>
 		</dependency>
 
 
