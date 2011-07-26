@@ -13,21 +13,20 @@ public class HideShowPanel extends Panel {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 678875273789181319L;
-	private Panel					panel	= new Panel("panel");
+	private Panel					panel					= new Panel("panel");
 	private AjaxLink<Void>		showHideLink;
 	private Image					showHideImage;
-	private boolean 				showPanel = false;
-	private ResourceReference	showPanelImage				= new ResourceReference(HideShowPanel.class, "showPanelImage.png");
-	private ResourceReference	hidePanelImage					= new ResourceReference(HideShowPanel.class, "hidePanelImage.png");
+	private ResourceReference	showPanelImage		= new ResourceReference(HideShowPanel.class, "showPanelImage.png");
+	private ResourceReference	hidePanelImage		= new ResourceReference(HideShowPanel.class, "hidePanelImage.png");
 	private IModel<String>		titleModel;
 
-	public HideShowPanel(String id, IModel<String> titleModel, Panel panel, boolean showPanel) {
+	public HideShowPanel(String id, IModel<String> titleModel, Panel panel, boolean visible) {
 		super(id);
 		setOutputMarkupId(true);
 		setOutputMarkupPlaceholderTag(true);
 		this.titleModel = titleModel;
 		this.panel = panel;
-		this.showPanel = showPanel;
+		this.panel.setVisible(visible);
 		initialisePanel();
 		addComponents();
 	}
@@ -41,13 +40,13 @@ public class HideShowPanel extends Panel {
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				panel.setVisible(!showPanel);
+				panel.setVisible(!panel.isVisible());
 				target.addComponent(panel);
 				target.addComponent(showHideImage);
 			}
 
 		};
-		
+
 		showHideImage = new Image("showHideImage") {
 			/**
 			 * 
@@ -56,9 +55,10 @@ public class HideShowPanel extends Panel {
 
 			@Override
 			public ResourceReference getImageResourceReference() {
-				return showPanel ? hidePanelImage : showPanelImage;
+				return panel.isVisible() ? hidePanelImage : showPanelImage;
 			}
 		};
+		
 		showHideImage.setOutputMarkupId(true);
 		showHideImage.setOutputMarkupPlaceholderTag(true);
 
