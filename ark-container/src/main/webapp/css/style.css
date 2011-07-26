@@ -804,6 +804,7 @@ div.ex {
 #note {
 	font-size: 7pt;
 	font-weight: bold;
+	width: 200px;
 }
 
 wicket-ajax-indicator {
