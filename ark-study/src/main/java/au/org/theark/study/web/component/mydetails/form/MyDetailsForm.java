@@ -1,23 +1,41 @@
 package au.org.theark.study.web.component.mydetails.form;
 
+import java.util.Collection;
+import java.util.List;
+
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
+import org.apache.wicket.markup.html.image.ContextImage;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.EmailAddressValidator;
 import org.apache.wicket.validation.validator.PatternValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUserRole;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.ArkFormVisitor;
+import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
 
 public class MyDetailsForm extends Form<ArkUserVO> {
@@ -26,7 +44,11 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 2381693804874240001L;
-
+	@SuppressWarnings("rawtypes")
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService		iArkCommonService;
+	@SpringBean(name = "userService")
+	private IUserService								userService;
 	protected TextField<String>	userNameTxtField			= new TextField<String>(Constants.USER_NAME);
 	protected TextField<String>	firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
 	protected TextField<String>	lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
@@ -40,6 +62,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	private AjaxButton				closeButton;
 	private FeedbackPanel			feedbackPanel;
 	private ModalWindow				modalWindow;
+	@SuppressWarnings("rawtypes")
+	private PageableListView 					pageableListView;
 	// Add a visitor class for required field marking/validation/highlighting
 	ArkFormVisitor						formVisitor					= new ArkFormVisitor();
 
@@ -49,7 +73,20 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		this.modalWindow = modalWindow;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void initialiseForm() {
+		ArkUserVO arkUserVOFromBackend = new ArkUserVO();
+		try {
+			arkUserVOFromBackend = userService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
+			List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUser(arkUserVOFromBackend);
+			arkUserVOFromBackend.setArkUserRoleList(arkUserRoleList);
+			getModelObject().setArkUserRoleList(arkUserRoleList);
+		}
+		catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
 			/**
 			 * 
@@ -78,6 +115,86 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		};
 		
 		emailTxtField.add(EmailAddressValidator.getInstance());
+		
+		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected Object load() {
+				return getModelObject().getArkUserRoleList();	
+			}
+		};
+
+		pageableListView = new PageableListView("arkUserRoleList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void populateItem(final ListItem item) {
+				ArkUserRole arkUserRole = (ArkUserRole) item.getModelObject();
+				MyDetailsForm.this.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
+				item.add(new Label("moduleName", arkUserRole.getArkModule().getName()));
+				item.add(new Label("roleName", arkUserRole.getArkRole().getName()));
+				
+				try {
+					Collection<String> rolePermissions = iArkCommonService.getArkRolePermission(arkUserRole.getArkRole().getName());
+					if (rolePermissions.contains("CREATE")) {
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (rolePermissions.contains("READ")) {
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (rolePermissions.contains("UPDATE")) {
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
+					}
+
+					// the ID here must match the ones in mark-up
+					if (rolePermissions.contains("DELETE")) {
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
+					}
+					else {
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
+					}
+				}
+				catch (EntityNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				item.setEnabled(false);
+				
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= -8887455455175404701L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+			}
+		};
+
+		pageableListView.setReuseItems(true);
+		
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		add(pageNavigator);
+		
 		attachValidators();
 		addComponents();
 	}
@@ -115,6 +232,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(new EqualPasswordInputValidator(userPasswordField, confirmPasswordField));
 		add(saveButton);
 		add(closeButton);
+		add(pageableListView);
 	}
 	
 	@SuppressWarnings("unchecked")
