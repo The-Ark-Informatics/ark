@@ -13,6 +13,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.admin.web.menu.AdminTabProviderImpl;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
@@ -94,8 +95,7 @@ public class HomePage extends BasePage
 			moduleTabsList.add(itab);
 		}
 
-		//TODO: Geno & Registry not to be deployed as yet into Test
-		/*  Geno  Not avaialble in 0.1.3 Snapshot
+		/*  Geno Not available in 0.1.3 Snapshot
 		GenoTabProviderImpl genoTabs = new GenoTabProviderImpl("geno");
 		 List<ITab> genoTabsList = genoTabs.buildTabs();
 		 for (ITab itab : genoTabsList)
@@ -104,7 +104,7 @@ public class HomePage extends BasePage
 		 }
 		 */
 
-		/*  Registry not avaialable in 0.1.3
+		/*  Registry Not available in 0.1.3 Snapshot
 		 RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl("registry");
 		 List<ITab> registryTabList = registryTabProvider.buildTabs();
 		 for(ITab tab : registryTabList)
@@ -113,7 +113,7 @@ public class HomePage extends BasePage
 		 }
 		 */
 
-		// 
+		// LIMS
 		LimsTabProviderImpl limsTabProvider = new LimsTabProviderImpl("lims");
 		List<ITab> limsTabList = limsTabProvider.buildTabs(this.arkContextPanelMarkup);
 		for (ITab tab : limsTabList)
@@ -130,14 +130,12 @@ public class HomePage extends BasePage
 		}
 		
 		// Admin
-		/*  Not avaialble in 0.1.3 Snapshot
 		AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl("admin");
 		List<ITab> adminTabList = adminTabProvider.buildTabs();
 		for (ITab tab : adminTabList)
 		{
 			moduleTabsList.add(tab);
 		}
-		*/
 		
 		moduleTabbedPanel = new ArkAjaxTabbedPanel("moduleTabsList", moduleTabsList);
 		moduleTabbedPanel.setOutputMarkupPlaceholderTag(true);
