@@ -356,5 +356,7 @@ public interface IStudyDao {
 	public void deleteCustomField(CustomField customField) throws ArkSystemException;
 	
 	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
+	
+	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
 
 }

@@ -500,7 +500,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	 */
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
+		
+		boolean isUnique = studyDao.isCustomFieldUnqiue(customFieldVO.getCustomField().getName(), customFieldVO.getCustomField().getStudy(), customFieldVO.getCustomField());
+		if(!isUnique){
+			log.error("Custom Field Already Exists.: " );
+			throw new ArkUniqueException("A Custom Field already exits.");
+		}
 		try{
+			
 			
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
 			
@@ -532,8 +539,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			throw new ArkUniqueException("A Custom Field already exits.");
 		}
 		catch (Exception ex) {
-			log.error("Problem creating Custom Field: " + ex);
-			throw new ArkSystemException("Problem creating Custom Field: " + ex.getMessage());
+			log.error("Problem updating Custom Field: " + ex);
+			throw new ArkSystemException("Problem updating Custom Field: " + ex.getMessage());
 		}
 	}
 	
@@ -599,5 +606,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		cfd.setSequence(new Long("2"));
 		
 	}
+	
+
 
 }

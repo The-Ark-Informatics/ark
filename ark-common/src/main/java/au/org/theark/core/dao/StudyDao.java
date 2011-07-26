@@ -918,5 +918,32 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException{
 		getSession().delete(customFieldDisplay);
 	}
+	
+	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate){
+		
+		boolean isUnique = true;
+		StatelessSession stateLessSession = getStatelessSession();
+		Criteria criteria = stateLessSession.createCriteria(CustomField.class);
+		criteria.add(Restrictions.eq("name", customFieldName));
+		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.eq("arkModule", customFieldToUpdate.getArkModule()));
+		criteria.setMaxResults(1);
+		
+		CustomField existingField = (CustomField) criteria.uniqueResult();
+		
+		if( (customFieldToUpdate.getId() != null && customFieldToUpdate.getId() > 0)){
+			
+			if(existingField != null && !customFieldToUpdate.getId().equals(existingField.getId())){
+				isUnique = false;
+			}
+		}else{
+			if(existingField != null){
+				isUnique = false;
+			}
+		}
+		
+		stateLessSession.close();
+		return isUnique;
+	}
 
 }
