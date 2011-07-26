@@ -868,3 +868,10 @@ div.wicket-aa ul li.selected {
 	padding: 2px;
 	margin: 0;
 }
+
+.hideShowPanel {
+    border: thin solid #6F6F6F;
+    margin-bottom: -1px;
+    margin-left: -1px;
+    margin-right: -1px;
+}
