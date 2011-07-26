@@ -60,8 +60,9 @@
 							<!--	Login/Logout Welcome panel must be made a re-usable panel-->
 							<div id="welcomePanel">
 								<div id="welcomeMessage">
-									Welcome&nbsp;<span wicket:id="loggedInUser" id="loggedInUser"></span>&nbsp;|&nbsp;<a wicket:id="ajaxLogoutLink" href="#">Logout</a>
+									Welcome&nbsp;<a wicket:id="myDetailLink" href="#"><span wicket:id="loggedInUser" id="loggedInUser">[userId]</span></a>&nbsp;|&nbsp;<a wicket:id="ajaxLogoutLink" href="#">Logout</a>
 								</div>
+								<div wicket:id="modalWindow"></div>
 							</div>
 						</div>
 						<!-- End div header -->

@@ -12,6 +12,9 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
 
+import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
+
 /**
  * <p>
  * The <code>BasePage</code> class that extends the {@link org.apache.wicket.markup.html.WebPage WebPage} class.
@@ -32,23 +35,27 @@ import org.apache.wicket.protocol.http.WebResponse;
  */
 public abstract class BasePage extends WebPage
 {
+	private transient Subject 		currentUser;
 	private String						principal;
 	private Label						userNameLbl;
 	private Label						studyNameLbl;
 
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
+	
+	private MyDetailModalWindow modalWindow;
 
 	/**
 	 * Default constructor
 	 */
+	@SuppressWarnings("unchecked")
 	public BasePage()
 	{
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/" + Constants.NO_STUDY_LOGO_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 
-		Subject currentUser = SecurityUtils.getSubject();
+		currentUser = SecurityUtils.getSubject();
 
 		if (currentUser.getPrincipal() != null)
 		{
@@ -71,11 +78,35 @@ public abstract class BasePage extends WebPage
 			add(studyNameMarkup);
 			add(studyLogoMarkup);
 			add(productImage);
-			// add(bannerImage);
+			
+			AjaxLink myDetailLink = new AjaxLink("myDetailLink") {
 
-			add(userNameLbl);
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 422053857225833627L;
 
-			@SuppressWarnings("unchecked")
+				@Override
+				public void onClick(AjaxRequestTarget target) {
+					showModalWindow(target);
+				}
+			};
+			
+			myDetailLink.add(userNameLbl);
+			add(myDetailLink);
+			modalWindow = new MyDetailModalWindow("modalWindow"){
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= -1351016643735035753L;
+
+				@Override
+				protected void onCloseModalWindow(AjaxRequestTarget target) {
+					//target.addComponent(BasePage.this);
+				}
+			};
+			add(modalWindow);
+
 			AjaxLink link = new AjaxLink("ajaxLogoutLink")
 			{
 				/**
@@ -112,6 +143,13 @@ public abstract class BasePage extends WebPage
 		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
 		response.setHeader("Expires", "-1");
 		response.setHeader("Pragma", "no-cache");
+	}
+	
+	protected void showModalWindow(AjaxRequestTarget target) {
+		MyDetailsContainer modalContentPanel = new MyDetailsContainer("content", new ArkUserVO(), currentUser, modalWindow);
+		modalWindow.setTitle("My Detail");
+		modalWindow.setContent(modalContentPanel);
+		modalWindow.show(target);
 	}
 
 	/**
