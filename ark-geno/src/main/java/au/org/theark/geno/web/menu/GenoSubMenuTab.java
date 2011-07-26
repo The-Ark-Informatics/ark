@@ -19,7 +19,7 @@ import au.org.theark.core.security.ArkSecurityManager;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.MenuModule;
-import au.org.theark.core.web.component.ArkAjaxTabbedPanel;
+import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.geno.web.Constants;
 import au.org.theark.geno.web.component.genoCollection.GenoCollectionContainerPanel;
 import au.org.theark.geno.web.component.genoCollection.SearchPanel;
@@ -74,11 +74,11 @@ public class GenoSubMenuTab extends Panel {
 					if (moduleName.getModuleName().equalsIgnoreCase(Constants.GENO_SUBMENU_TEST)) {
 						ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
 						Subject currentUser = SecurityUtils.getSubject();
-						if (arkSecurityManager.subjectHasRole(RoleConstants.ARK_SUPER_ADMIN)) {
+						if (arkSecurityManager.subjectHasRole(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 							System.out.println("Used Ark super admin role");
 							flag =  currentUser.isAuthenticated();
-						} else if (arkSecurityManager.subjectHasRole(RoleConstants.GWAS_SUPER_ADMIN)) {
-							System.out.println("Used GWAS super admin role");
+						} else if (arkSecurityManager.subjectHasRole("'Geno Read-Only User'")) {
+							System.out.println("Used GWAS read only role");
 							flag =  currentUser.isAuthenticated();	 
 						} else {
 							flag = false;

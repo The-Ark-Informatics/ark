@@ -358,7 +358,7 @@ public class DetailPanel extends Panel {
 			ArkSecurityManager arkSecurityManager = ArkSecurityManager.getInstance();
 			Subject currentUser = SecurityUtils.getSubject();
 			
-			if (arkSecurityManager.subjectHasRole(RoleConstants.STUDY_ADMIN)) {
+			if (arkSecurityManager.subjectHasRole("GENO Administrator")) {
 				genoService.deleteUploadCollection(containerForm.getModelObject().getUploadCollection());
 				this.info("Geno upload " + containerForm.getModelObject().getUploadCollection().getUpload().getFilename() + " was deleted successfully");	
 			   	// Display delete confirmation message
