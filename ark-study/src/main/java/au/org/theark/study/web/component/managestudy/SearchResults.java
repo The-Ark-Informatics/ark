@@ -169,9 +169,16 @@ public class SearchResults extends Panel {
 				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
 				target.addComponent(subjectUidExampleLbl);
 
-				// Get the Source and Linked Modules for the Study from Backend
+				// Get the Source Modules from database
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
+				
+				// Hide Report and Admin modules from "Available" view
+				availableArkModules.remove(iArkCommonService.getArkModuleByName("Admin"));
+				availableArkModules.remove(iArkCommonService.getArkModuleByName("Report"));
+				
+				// Get the Modules for the Study from database
 				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(study);
+				
 				studyContainerForm.getModelObject().setAvailableArkModules(availableArkModules);
 				studyContainerForm.getModelObject().setSelectedArkModules(arkModulesLinkedToStudy);
 
