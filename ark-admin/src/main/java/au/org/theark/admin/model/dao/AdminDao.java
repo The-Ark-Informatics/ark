@@ -3,20 +3,17 @@ package au.org.theark.admin.model.dao;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
-import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.type.Type;
+import org.hibernate.transform.ResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
@@ -216,20 +213,11 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		return criteria;
 	}
 
-	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
-		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
+	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
+		Criteria criteria = buildarkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVoCriteria);
 		criteria.setProjection(Projections.rowCount());
 		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
-	}
-
-	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
-		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
-		criteria.setFirstResult(first);
-		criteria.setMaxResults(count);
-		List<ArkRolePolicyTemplate> list = criteria.list();
-
-		return list;
 	}
 	
 	protected Criteria buildArkRolePolicyTemplateCriteria(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
@@ -238,7 +226,7 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		if (arkRolePolicyTemplateCriteria.getId() != null) {
 			criteria.add(Restrictions.eq("arpt.id", arkRolePolicyTemplateCriteria.getId()));
 		}
-
+		
 		if (arkRolePolicyTemplateCriteria.getArkRole() != null) {
 			criteria.add(Restrictions.eq("arpt.arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
 		}
@@ -250,116 +238,53 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
 			criteria.add(Restrictions.eq("arpt.arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
 		}
-		
-		//ResultTransformer resultTransformer = Transformers.aliasToBean(ArkRolePolicyTemplate.class);
-		//criteria.setResultTransformer(resultTransformer);
-
 		return criteria;
 	}
 	
-	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates() {
-		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
-		criteria.createAlias("arkRole", "role");
-		criteria.createAlias("arkModule", "module");
-		criteria.createAlias("arkFunction", "function");
+	protected Criteria buildarkRoleModuleFunctionVoCriteria(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class, "arpt");
 
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.groupProperty("role.id"));
-		projectionList.add(Projections.groupProperty("module.id"));
-		projectionList.add(Projections.groupProperty("function.id"));
-
-		criteria.setProjection(projectionList);
-		return criteria.list();
-	}
-	
-	public int getArkRolePolicyCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
-		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
-		criteria.setProjection(Projections.rowCount());
-		Integer totalCount = (Integer) criteria.uniqueResult();
-		return totalCount;
-	}
-
-	public List<AdminVO> searchPageableArkRolePolicies(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
-/*		Criteria criteria = getSession().createCriteria(ArkRolePolicy.class, "arpt");
-
-		if (arkRolePolicyTemplateCriteria.getArkRole() != null) {
-			criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
+		if (arkRoleModuleFunctionVoCriteria.getArkRole() != null) {
+			criteria.add(Restrictions.eq("arpt.arkRole", arkRoleModuleFunctionVoCriteria.getArkRole()));
 		}
 
-		if (arkRolePolicyTemplateCriteria.getArkModule() != null) {
-			criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplateCriteria.getArkModule()));
+		if (arkRoleModuleFunctionVoCriteria.getArkModule() != null) {
+			criteria.add(Restrictions.eq("arpt.arkModule", arkRoleModuleFunctionVoCriteria.getArkModule()));
 		}
 		
-		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
-			criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
+		if (arkRoleModuleFunctionVoCriteria.getArkFunction() != null) {
+			criteria.add(Restrictions.eq("arpt.arkFunction", arkRoleModuleFunctionVoCriteria.getArkFunction()));
 		}
-*/		
-		Criteria criteria = buildArkRolePolicyTemplateCriteria(arkRolePolicyTemplateCriteria);
+
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arpt.arkRole"), "arkRole");
+		projectionList.add(Projections.groupProperty("arpt.arkModule"), "arkModule");
+		projectionList.add(Projections.groupProperty("arpt.arkFunction"), "arkFunction");
+
+		criteria.setProjection(projectionList);
+		
+		ResultTransformer resultTransformer = Transformers.aliasToBean(ArkRoleModuleFunctionVO.class);
+		criteria.setResultTransformer(resultTransformer);
+
+		return criteria;
+	}
+
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
+		Criteria criteria = buildarkRoleModuleFunctionVoCriteria(arkRoleModuleFunctionVo);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		
-		// Permissions
-		DetachedCriteria createPermissionCriteria = DetachedCriteria.forClass(ArkPermission.class, "ap");
-		createPermissionCriteria.add(Restrictions.eq("ap.id", new Long(1)));
-		DetachedCriteria readPermissionCriteria = DetachedCriteria.forClass(ArkPermission.class, "ap");
-		readPermissionCriteria.add(Restrictions.eq("ap.id", new Long(2)));
-		DetachedCriteria updatePermissionCriteria = DetachedCriteria.forClass(ArkPermission.class, "ap");
-		updatePermissionCriteria.add(Restrictions.eq("ap.id", new Long(3)));
-		DetachedCriteria deletePermissionCriteria = DetachedCriteria.forClass(ArkPermission.class, "ap");
-		deletePermissionCriteria.add(Restrictions.eq("ap.id", new Long(4)));
+		// Restrict to NOT show Super Administrator (safety)
+		// NOTE arpt alias set in buildarkRoleModuleFunctionVoCriteria 
+		criteria.add((Restrictions.ne("arpt.arkRole", getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR))));
 		
-		createPermissionCriteria.add(Property.forName("arpt.arkPermission").eqProperty("ap"));
-		readPermissionCriteria.add(Property.forName("arpt.arkPermission").eqProperty("ap"));
-		updatePermissionCriteria.add(Property.forName("arpt.arkPermission").eqProperty("ap"));
-		deletePermissionCriteria.add(Property.forName("arpt.arkPermission").eqProperty("ap"));
-		
-		Projection projection = Projections.max("ap.name");
-		createPermissionCriteria.setProjection(projection);
-		readPermissionCriteria.setProjection(projection);
-		updatePermissionCriteria.setProjection(projection);
-		deletePermissionCriteria.setProjection(projection);
-
-		//criteria.add(Property.forName("createPermission").eq(createPermissionCriteria));
-		//criteria.add(Property.forName("readPermission").eq(readPermissionCriteria));
-		//criteria.add(Property.forName("updatePermission").eq(updatePermissionCriteria));
-		//criteria.add(Property.forName("deletePermission").eq(deletePermissionCriteria));
-		
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.groupProperty("arpt.arkRole"));
-		projectionList.add(Projections.groupProperty("arpt.arkFunction"));
-		//projectionList.add(Projections.sqlProjection("sum(arpt.arkPermission.id)", new String[] {"createPermission"}, new Type[] { Hibernate.LONG } ));
-		
-		
-		projectionList.add(Projections.max("arpt.arkPermission.id"), "createPermission");
-		projectionList.add(Projections.max("arpt.arkPermission.id"), "readPermission");
-		projectionList.add(Projections.max("arpt.arkPermission.id"), "updatePermission");
-		projectionList.add(Projections.max("arpt.arkPermission.id"), "deletePermission");
-		
-		criteria.setProjection(projectionList);
-
-		List criterialist = criteria.list();
-		return criterialist;
+		List<ArkRoleModuleFunctionVO> list = criteria.list();
+		return list;
 	}
-	
-	protected Criteria buildArkRolePolicyPolicyCriteria(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
-		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 
-		if (arkRolePolicyTemplateCriteria.getId() != null) {
-			criteria.add(Restrictions.eq("id", arkRolePolicyTemplateCriteria.getId()));
-		}
-
-		if (arkRolePolicyTemplateCriteria.getArkRole() != null) {
-			criteria.add(Restrictions.eq("arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
-		}
-
-		if (arkRolePolicyTemplateCriteria.getArkModule() != null) {
-			criteria.add(Restrictions.eq("arkModule", arkRolePolicyTemplateCriteria.getArkModule()));
-		}
-		
-		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
-			criteria.add(Restrictions.eq("arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
-		}
-
-		return criteria;
+	public ArkRole getArkRoleByName(String name) {
+		Criteria criteria = getSession().createCriteria(ArkRole.class);
+		criteria.add(Restrictions.eq("name", name));
+		return (ArkRole) criteria.list().get(0);
 	}
 }

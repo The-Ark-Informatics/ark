@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.admin.model.dao.IAdminDao;
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -52,10 +53,6 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		adminDao.createOrUpdateArkRolePolicyTemplate(adminVo.getArkRolePolicyTemplate());
 	}
 
-	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates() {
-		return adminDao.getGroupedArkRolePolicyTemplates();
-	}
-
 	public List<ArkFunction> getArkFunctionList() {
 		return adminDao.getArkFunctionList();
 	}
@@ -78,10 +75,6 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList() {
 		return adminDao.getArkRolePolicyTemplateList();
-	}
-
-	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate) {
-		return adminDao.searchArkRolePolicyTemplate(arkRolePolicyTemplate);
 	}
 
 	public ArkFunction getArkFunction(Long id) {
@@ -136,19 +129,15 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 		return adminDao.searchPageableArkModules(arkModuleCriteria, first, count);
 	}
 
-	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
-		return adminDao.getArkRolePolicyTemplateCount(arkRolePolicyTemplateCriteria);
+	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVO) {
+		return adminDao.getArkRoleModuleFunctionVOCount(arkRoleModuleFunctionVO);
 	}
 
-	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
-		return adminDao.searchPageableArkRolePolicyTemplates(arkRolePolicyTemplateCriteria, first, count);
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count) {
+		return adminDao.searchPageableArkRoleModuleFunctionVO(arkRoleModuleFunctionVo, first, count);
 	}
 
-	public int getArkRolePolicyCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
-		return adminDao.getArkRolePolicyCount(arkRolePolicyTemplateCriteria);
-	}
-
-	public List<AdminVO> searchPageableArkRolePolicies(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count) {
-		return adminDao.searchPageableArkRolePolicies(arkRolePolicyTemplateCriteria, first, count);
+	public ArkRole getArkRoleByName(String name) {
+		return adminDao.getArkRoleByName(name);
 	}
 }

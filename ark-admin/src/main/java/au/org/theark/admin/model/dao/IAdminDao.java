@@ -2,10 +2,7 @@ package au.org.theark.admin.model.dao;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Projections;
-
-import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
@@ -42,13 +39,6 @@ public interface IAdminDao {
 	 */
 	public void createOrUpdateArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate);
 
-	/**
-	 * Get a list of ArkRolePolicyTemplate(s), grouped by Role, Module and function
-	 * 
-	 * @return
-	 */
-	public List<ArkRolePolicyTemplate> getGroupedArkRolePolicyTemplates();
-
 	public List<ArkRole> getArkRoleList();
 
 	public List<ArkModule> getArkModuleList();
@@ -58,8 +48,6 @@ public interface IAdminDao {
 	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id);
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList();
-
-	public List<ArkRolePolicyTemplate> searchArkRolePolicyTemplate(ArkRolePolicyTemplate arkRolePolicyTemplate);
 
 	public ArkPermission getArkPermissionByName(String name);
 
@@ -89,11 +77,9 @@ public interface IAdminDao {
 
 	public List<ArkFunction> searchPageableArkFunctions(ArkFunction arkFunctionCriteria, int first, int count);
 
-	public int getArkRolePolicyTemplateCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria);
+	public int getArkRoleModuleFunctionVOCount(ArkRoleModuleFunctionVO arkRoleModuleFunctionVoCriteria);
 
-	public List<ArkRolePolicyTemplate> searchPageableArkRolePolicyTemplates(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count);
+	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count);
 	
-	public int getArkRolePolicyCount(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria);
-	
-	public List<AdminVO> searchPageableArkRolePolicies(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria, int first, int count);
+	public ArkRole getArkRoleByName(String name);
 }
