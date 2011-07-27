@@ -26,7 +26,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
-import au.org.theark.core.model.study.entity.ArkRolePermission;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -604,7 +603,11 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkUserVO.setArkUserPresentInDatabase(true);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUser));
-		criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
+		
+		// Restrict by Study if NOT Super Administrator
+		if(!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
+		}
 		arkUserRoleList = criteria.list();
 
 		return arkUserRoleList;
