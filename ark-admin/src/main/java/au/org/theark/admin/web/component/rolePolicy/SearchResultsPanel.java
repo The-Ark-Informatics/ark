@@ -5,25 +5,21 @@ import java.util.Collection;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
@@ -39,9 +35,6 @@ public class SearchResultsPanel extends Panel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
-	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>		iAdminService;
-
 	private ContainerForm				containerForm;
 
 	private ArkCrudContainerVO			arkCrudContainerVo;
@@ -53,8 +46,8 @@ public class SearchResultsPanel extends Panel {
 	}
 
 	@SuppressWarnings("unchecked")
-	public DataView<ArkRolePolicyTemplate> buildDataView(ArkDataProvider<ArkRolePolicyTemplate, IAdminService> dataProvider) {
-		DataView<ArkRolePolicyTemplate> dataView = new DataView<ArkRolePolicyTemplate>("arkRolePolicyTemplateList", dataProvider) {
+	public DataView<ArkRoleModuleFunctionVO> buildDataView(ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService> dataProvider) {
+		DataView<ArkRoleModuleFunctionVO> dataView = new DataView<ArkRoleModuleFunctionVO>("arkRoleModuleFunctionVoList", dataProvider) {
 
 			/**
 			 * 
@@ -62,61 +55,65 @@ public class SearchResultsPanel extends Panel {
 			private static final long	serialVersionUID	= -7977497161071264676L;
 
 			@Override
-			protected void populateItem(final Item<ArkRolePolicyTemplate> item) {
+			protected void populateItem(final Item<ArkRoleModuleFunctionVO> item) {
 
-				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
+				ArkRoleModuleFunctionVO arkRoleModuleFunctionVo = item.getModelObject();
 
 				// Role name is the link
-				item.add(buildLink(arkRolePolicyTemplate));
+				item.add(buildLink(arkRoleModuleFunctionVo));
 
-				if (arkRolePolicyTemplate.getArkModule() != null) {
+				if (arkRoleModuleFunctionVo.getArkModule() != null) {
 					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkModule", arkRolePolicyTemplate.getArkModule().getName()));
+					item.add(new Label("arkRoleModuleFunctionVo.arkModule", arkRoleModuleFunctionVo.getArkModule().getName()));
 				}
 				else {
-					item.add(new Label("arkRolePolicyTemplate.arkModule", ""));
+					item.add(new Label("arkRoleModuleFunctionVo.arkModule", ""));
 				}
 
-				if (arkRolePolicyTemplate.getArkFunction() != null) {
+				if (arkRoleModuleFunctionVo.getArkFunction() != null) {
 					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkFunction", arkRolePolicyTemplate.getArkFunction().getName()));
+					item.add(new Label("arkRoleModuleFunctionVo.arkFunction", arkRoleModuleFunctionVo.getArkFunction().getName()));
 				}
 				else {
-					item.add(new Label("arkRolePolicyTemplate.arkFunction", ""));
+					item.add(new Label("arkRoleModuleFunctionVo.arkFunction", ""));
 				}
 
-				if (arkRolePolicyTemplate.getArkPermission() != null) {
-					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("CREATE")) {
-						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
+				try {
+					Collection<String> roleFunctionPermissions = iArkCommonService.getArkRolePermission(arkRoleModuleFunctionVo.getArkFunction(), arkRoleModuleFunctionVo.getArkRole().getName(),
+							arkRoleModuleFunctionVo.getArkModule());
+					if (roleFunctionPermissions.contains("CREATE")) {
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else {
-						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
+						item.addOrReplace(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
 					}
 
 					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("READ")) {
-						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
+					if (roleFunctionPermissions.contains("READ")) {
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
 					}
 					else {
-						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
+						item.addOrReplace(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
 					}
 
 					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("UPDATE")) {
-						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
+					if (roleFunctionPermissions.contains("UPDATE")) {
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else {
-						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
+						item.addOrReplace(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
 					}
 
 					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("DELETE")) {
-						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
+					if (roleFunctionPermissions.contains("DELETE")) {
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
 					}
 					else {
-						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
+						item.addOrReplace(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
 					}
+				}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
 				}
 
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
@@ -136,98 +133,14 @@ public class SearchResultsPanel extends Panel {
 		return dataView;
 	}
 
-	@SuppressWarnings("unchecked")
-	public PageableListView<ArkRolePolicyTemplate> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
-		PageableListView<ArkRolePolicyTemplate> pageableListView = new PageableListView<ArkRolePolicyTemplate>("arkRolePolicyTemplateList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 3350183112731574263L;
-
-			@Override
-			protected void populateItem(final ListItem<ArkRolePolicyTemplate> item) {
-
-				ArkRolePolicyTemplate arkRolePolicyTemplate = item.getModelObject();
-
-				// Role name is the link
-				item.add(buildLink(arkRolePolicyTemplate));
-
-				if (arkRolePolicyTemplate.getArkModule() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkModule", arkRolePolicyTemplate.getArkModule().getName()));
-				}
-				else {
-					item.add(new Label("arkRolePolicyTemplate.arkModule", ""));
-				}
-
-				if (arkRolePolicyTemplate.getArkFunction() != null) {
-					// the ID here must match the ones in mark-up
-					item.add(new Label("arkRolePolicyTemplate.arkFunction", arkRolePolicyTemplate.getArkFunction().getName()));
-				}
-				else {
-					item.add(new Label("arkRolePolicyTemplate.arkFunction", ""));
-				}
-
-				if (arkRolePolicyTemplate.getArkPermission() != null) {
-					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("CREATE")) {
-						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.add(new ContextImage("arkCreatePermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("READ")) {
-						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.add(new ContextImage("arkReadPermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("UPDATE")) {
-						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.add(new ContextImage("arkUpdatePermission", new Model<String>("images/icons/cross.png")));
-					}
-
-					// the ID here must match the ones in mark-up
-					if (arkRolePolicyTemplate.getArkPermission().getName().equalsIgnoreCase("DELETE")) {
-						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/tick.png")));
-					}
-					else {
-						item.add(new ContextImage("arkDeletePermission", new Model<String>("images/icons/cross.png")));
-					}
-				}
-
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= 1938679383897533820L;
-
-					@Override
-					public String getObject() {
-						return (item.getIndex() % 2 == 1) ? "even" : "odd";
-					}
-				}));
-
-			}
-		};
-		return pageableListView;
-	}
-
 	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final ArkRolePolicyTemplate arkRolePolicyTemplate) {
+	private AjaxLink buildLink(final ArkRoleModuleFunctionVO arkRoleModuleFunctionVo) {
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				Long id = arkRolePolicyTemplate.getId();
-				ArkRolePolicyTemplate arkRolePolicyTemplate = iAdminService.getArkRolePolicyTemplate(id);
-				containerForm.getModelObject().setArkRolePolicyTemplate(arkRolePolicyTemplate);
-				containerForm.getModelObject().setArkRole(arkRolePolicyTemplate.getArkRole());
+				containerForm.getModelObject().setArkRole(arkRoleModuleFunctionVo.getArkRole());
+				containerForm.getModelObject().setArkModule(arkRoleModuleFunctionVo.getArkModule());
+				containerForm.getModelObject().setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
 
 				arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
@@ -239,8 +152,8 @@ public class SearchResultsPanel extends Panel {
 
 				// Get all permission rows, and assign to VO accordingly
 				try {
-					Collection<String> arkPermissions = iArkCommonService.getArkRolePermission(arkRolePolicyTemplate.getArkFunction(), arkRolePolicyTemplate.getArkRole().getName(), arkRolePolicyTemplate
-							.getArkModule());
+					Collection<String> arkPermissions = iArkCommonService.getArkRolePermission(arkRoleModuleFunctionVo.getArkFunction(), arkRoleModuleFunctionVo.getArkRole().getName(),
+							arkRoleModuleFunctionVo.getArkModule());
 					// Set up boolean references in VO
 					containerForm.getModelObject().setArkCreatePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.CREATE));
 					containerForm.getModelObject().setArkReadPermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.READ));
@@ -265,7 +178,13 @@ public class SearchResultsPanel extends Panel {
 		};
 
 		// Add the label for the link
-		Label linkLabel = new Label("arkRolePolicyTemplate.arkRole", arkRolePolicyTemplate.getArkRole().getName().toString());
+		Label linkLabel;
+		if(arkRoleModuleFunctionVo.getArkRole() != null) {
+			linkLabel = new Label("arkRoleModuleFunctionVo.arkRole", arkRoleModuleFunctionVo.getArkRole().getName().toString());
+		}
+		else {
+			linkLabel = new Label("arkRoleModuleFunctionVo.arkRole", "-");
+		}
 		link.add(linkLabel);
 		return link;
 	}

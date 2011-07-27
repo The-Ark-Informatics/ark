@@ -12,9 +12,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
@@ -32,8 +32,8 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private SearchPanel										searchPanel;
 	private DetailPanel										detailPanel;
 	private SearchResultsPanel								searchResultsPanel;
-	private DataView<ArkRolePolicyTemplate>									dataView;
-	private ArkDataProvider<ArkRolePolicyTemplate, IAdminService>	dataProvider;
+	private DataView<ArkRoleModuleFunctionVO>									dataView;
+	private ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>	dataProvider;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
 	private IAdminService<Void>							iAdminService;
@@ -90,24 +90,24 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	@SuppressWarnings( { "unchecked", "serial" })
 	private void initialiseDataView() {
 		// Data provider to paginate resultList
-		dataProvider = new ArkDataProvider<ArkRolePolicyTemplate, IAdminService>(iAdminService) {
+		dataProvider = new ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>(iAdminService) {
 			public int size() {
-				return service.getArkRolePolicyTemplateCount(model.getObject());
+				return service.getArkRoleModuleFunctionVOCount(model.getObject());
 			}
 
-			public Iterator<ArkRolePolicyTemplate> iterator(int first, int count) {
-				List<ArkRolePolicyTemplate> listCollection = new ArrayList<ArkRolePolicyTemplate>();
+			public Iterator<ArkRoleModuleFunctionVO> iterator(int first, int count) {
+				List<ArkRoleModuleFunctionVO> listCollection = new ArrayList<ArkRoleModuleFunctionVO>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					listCollection = service.searchPageableArkRolePolicyTemplates(model.getObject(), first, count);
+					listCollection = service.searchPageableArkRoleModuleFunctionVO(model.getObject(), first, count);
 				}
 				return listCollection.iterator();
 			}
 		};
 		// Set the criteria into the data provider's model
-		dataProvider.setModel(new LoadableDetachableModel<ArkRolePolicyTemplate>() {
+		dataProvider.setModel(new LoadableDetachableModel<ArkRoleModuleFunctionVO>() {
 			@Override
-			protected ArkRolePolicyTemplate load() {
-				return cpModel.getObject().getArkRolePolicyTemplate();
+			protected ArkRoleModuleFunctionVO load() {
+				return cpModel.getObject().getArkRoleModuleFunctionVo();
 			}
 		});
 	}

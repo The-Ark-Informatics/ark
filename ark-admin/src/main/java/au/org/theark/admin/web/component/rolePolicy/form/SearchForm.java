@@ -6,7 +6,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -30,7 +29,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ArkCrudContainerVO					arkCrudContainerVo;
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
-	private TextField<String>					idTxtFld;
 	private DropDownChoice<ArkRole>			arkRoleDropDown;
 
 	/**
@@ -56,8 +54,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void initialiseSearchForm() {
-		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
-
 		// Role selection
 		initArkRoleDropDown();
 	}
@@ -66,7 +62,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private void initArkRoleDropDown() {
 		List<ArkRole> arkRoleList = iAdminService.getArkRoleList();
 		ChoiceRenderer<ArkRole> defaultChoiceRenderer = new ChoiceRenderer<ArkRole>("name", "id");
-		arkRoleDropDown = new DropDownChoice("arkRolePolicyTemplate.arkRole", arkRoleList, defaultChoiceRenderer);
+		arkRoleDropDown = new DropDownChoice("arkRoleModuleFunctionVo.arkRole", arkRoleList, defaultChoiceRenderer);
 		arkRoleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
 			/**
 			 * 
@@ -82,7 +78,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
-		int count = iAdminService.getArkRolePolicyTemplateCount(containerForm.getModelObject().getArkRolePolicyTemplate());
+		int count = iAdminService.getArkRoleModuleFunctionVOCount(containerForm.getModelObject().getArkRoleModuleFunctionVo());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
 			target.addComponent(feedbackPanel);
@@ -93,7 +89,6 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	private void addSearchComponentsToForm() {
-		add(idTxtFld);
 		add(arkRoleDropDown);
 	}
 
