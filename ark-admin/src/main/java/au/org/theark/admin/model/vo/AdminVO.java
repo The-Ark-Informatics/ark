@@ -35,6 +35,7 @@ public class AdminVO implements Serializable {
 	private Boolean							arkReadPermission;
 	private Boolean							arkUpdatePermission;
 	private Boolean							arkDeletePermission;
+	private ArkRoleModuleFunctionVO		arkRoleModuleFunctionVo;
 
 	public AdminVO() {
 		this.arkRole = new ArkRole();
@@ -49,6 +50,7 @@ public class AdminVO implements Serializable {
 		this.arkReadPermission = new Boolean("False");
 		this.arkUpdatePermission = new Boolean("False");
 		this.arkDeletePermission = new Boolean("False");
+		this.arkRoleModuleFunctionVo = new ArkRoleModuleFunctionVO();
 	}
 
 	/**
@@ -229,5 +231,19 @@ public class AdminVO implements Serializable {
 	 */
 	public void setArkDeletePermission(Boolean arkDeletePermission) {
 		this.arkDeletePermission = arkDeletePermission;
+	}
+
+	/**
+	 * @param arkRoleModuleFunctionVo the arkRoleModuleFunctionVO to set
+	 */
+	public void setArkRoleModuleFunctionVo(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo) {
+		this.arkRoleModuleFunctionVo = arkRoleModuleFunctionVo;
+	}
+
+	/**
+	 * @return the arkRoleModuleFunctionVO
+	 */
+	public ArkRoleModuleFunctionVO getArkRoleModuleFunctionVo() {
+		return arkRoleModuleFunctionVo;
 	}
 }
