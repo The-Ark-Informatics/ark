@@ -29,6 +29,8 @@ public abstract class AbstractDetailModalWindow extends ModalWindow {
 		setResizable(false);
 		setWidthUnit("%");
 		setInitialWidth(90);
+		setHeightUnit("%");
+		setInitialHeight(100);
 		setCssClassName(CSS_CLASS_GRAY);
 		add(initialiseFeedBackPanel());
 	}
