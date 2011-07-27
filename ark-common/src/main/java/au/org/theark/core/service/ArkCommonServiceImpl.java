@@ -54,6 +54,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
@@ -461,8 +462,16 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.searchPageableCustomFields(customFieldCriteria, first, count);
 	}
 
-	public Collection<FieldType> getFieldTypes() {
+	public List<FieldType> getFieldTypes() {
 		return studyDao.getFieldTypes();
+	}
+
+	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults) {
+		return studyDao.getUnitTypeNames(unitTypeCriteria, maxResults);
+	}
+
+	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
+		return studyDao.getUnitTypes(unitTypeCriteria);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
@@ -607,8 +616,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		cfd.setSequence(new Long("2"));
 		
 	}
-	
-
 
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getStudyListForUser(arkUserVo);

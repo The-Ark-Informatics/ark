@@ -30,6 +30,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
+import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -65,6 +66,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.CustomFieldVO;
@@ -843,33 +845,101 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 	}
 	
+	protected Criteria buildGeneralCustomFieldCritera(CustomField customField) {
+		Criteria criteria = getSession().createCriteria(CustomField.class);
+		// Must be constrained on study and module
+		criteria.add(Restrictions.eq("study", customField.getStudy()));
+		criteria.add(Restrictions.eq("arkModule", customField.getArkModule()));
+		
+		if (customField.getId() != null) {
+			criteria.add(Restrictions.eq("id", customField.getId()));
+		}
+
+		if (customField.getName() != null) {
+			criteria.add(Restrictions.ilike("name", customField.getName(), MatchMode.ANYWHERE));
+		}
+		
+		if (customField.getFieldType() != null) {
+			criteria.add(Restrictions.eq("fieldType", customField.getFieldType()));
+		}
+
+		if (customField.getDescription() != null) {
+			criteria.add(Restrictions.ilike("description", customField.getDescription(), MatchMode.ANYWHERE));
+		}
+
+		if (customField.getUnitType() != null && customField.getUnitType().getName() != null) {
+			criteria.createAlias("unitType", "ut");
+			criteria.add(Restrictions.ilike("ut.name", customField.getUnitType().getName(), MatchMode.ANYWHERE));
+		}
+
+		if (customField.getMinValue() != null) {
+			criteria.add(Restrictions.ilike("minValue", customField.getMinValue(), MatchMode.ANYWHERE));
+		}
+
+		if (customField.getMaxValue() != null) {
+			criteria.add(Restrictions.ilike("maxValue", customField.getMaxValue(), MatchMode.ANYWHERE));
+		}
+
+		return criteria;
+	}
+	
 	public int getCustomFieldCount(CustomField customFieldCriteria) {
 		// Handle for study or module not in context
 		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkModule() == null) {
 			return 0;
 		}
-		Criteria criteria  = getSession().createCriteria(CustomField.class);
-		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
-		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
+		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		criteria.setProjection(Projections.rowCount());
 		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
 	}
 
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count) {
-		Criteria criteria = getSession().createCriteria(CustomField.class);
-		criteria.add(Restrictions.eq("study", customFieldCriteria.getStudy()));
-		criteria.add(Restrictions.eq("arkModule", customFieldCriteria.getArkModule()));
+		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
+		// Return fields ordered alphabetically
+		criteria.addOrder(Order.asc("name"));
 		List<CustomField> customFieldList = (List<CustomField>) criteria.list();
 		return customFieldList;
 	}
 
-	public Collection<FieldType> getFieldTypes() {
+	public List<FieldType> getFieldTypes() {
 		Criteria criteria = getSession().createCriteria(FieldType.class);
 		List<FieldType> customFieldTypeList = (List<FieldType>) criteria.list();
 		return customFieldTypeList;
+	}
+	
+	protected Criteria buildGeneralUnitTypeCriteria(UnitType unitTypeCriteria) {
+		Criteria criteria = getSession().createCriteria(UnitType.class);
+		// Bring back units that are module-specific as well as the global unit types (null FK)
+		if (unitTypeCriteria.getArkModule() != null) {
+			criteria.add(Restrictions.or(Restrictions.isNull("arkModule"), Restrictions.eq("arkModule", unitTypeCriteria.getArkModule())));
+		}
+		else {
+			criteria.add(Restrictions.isNull("arkModule"));
+		}
+		if (unitTypeCriteria.getName() != null) {
+			criteria.add(Restrictions.ilike("name", unitTypeCriteria.getName(), MatchMode.START));
+		}
+		return criteria;
+	}
+	
+	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults) {
+		Criteria criteria = buildGeneralUnitTypeCriteria(unitTypeCriteria);
+		if (maxResults > 0) {
+			// Only restrict results if the parameter is greater than 0 (i.e. can use 0 for unconstrained).
+			criteria.setMaxResults(maxResults);
+		}
+		criteria.setProjection(Projections.property("name"));
+		List<String> customFieldUnitTypeNames = criteria.list();
+		return customFieldUnitTypeNames;
+	}
+	
+	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria) {
+		Criteria criteria = buildGeneralUnitTypeCriteria(unitTypeCriteria);
+		List<UnitType> results = criteria.list();
+		return results;
 	}
 	
 	public void createCustomField(CustomField customField) throws  ArkSystemException{

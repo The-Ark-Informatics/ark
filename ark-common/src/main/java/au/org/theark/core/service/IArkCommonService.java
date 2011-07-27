@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.ArkModuleVO;
@@ -410,11 +411,21 @@ public interface IArkCommonService<T> {
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
 	/**
-	 * A generic interface that will return a list Custom FieldTypes
-	 * @return Collection of Custom Field Types
+	 * A generic interface that will return a list Custom Field FieldTypes
+	 * @return Collection of Custom Field FieldTypes
 	 */
-	public Collection<FieldType> getFieldTypes();
+	public List<FieldType> getFieldTypes();
+	
+	/**
+	 * A generic interface that will return a list Custom Field UnitType names for AutoCompletion
+	 * @param customFieldCriteria - criteria for the query on UnitType
+	 * @param maxResults - applies a maximum number of results to return if greater than 0 (otherwise, unconstrained)
+	 * @return List of Custom Field UnitTypes
+	 */	
+	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults);
 
+	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
+	
 	/**
 	 * 
 	 * @param customFieldVO

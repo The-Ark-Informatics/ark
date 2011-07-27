@@ -37,9 +37,9 @@ import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidPadChar;
 import au.org.theark.core.model.study.entity.SubjectUidToken;
 import au.org.theark.core.model.study.entity.TitleType;
+import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -337,8 +337,12 @@ public interface IStudyDao {
 
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
-	public Collection<FieldType> getFieldTypes();
+	public List<FieldType> getFieldTypes();
 	
+	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults);
+	
+	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
+
 	public void createCustomField(CustomField customField) throws  ArkSystemException;
 	
 	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
