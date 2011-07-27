@@ -43,29 +43,27 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 2381693804874240001L;
-	@SuppressWarnings("rawtypes")
+	private static final long			serialVersionUID			= 2381693804874240001L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
+	private IArkCommonService<Void>	iArkCommonService;
 	@SpringBean(name = "userService")
-	private IUserService								userService;
-	protected TextField<String>	userNameTxtField			= new TextField<String>(Constants.USER_NAME);
-	protected TextField<String>	firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
-	protected TextField<String>	lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
-	protected TextField<String>	emailTxtField				= new TextField<String>(Constants.EMAIL);
-	protected TextField<String>	phoneNumberTxtField		= new TextField<String>(Constants.PHONE_NUMBER);
-	protected PasswordTextField	userPasswordField			= new PasswordTextField(Constants.PASSWORD);
-	protected PasswordTextField	confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
-	protected PasswordTextField	oldPasswordField			= new PasswordTextField(Constants.OLD_PASSWORD);
-	protected WebMarkupContainer	groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
-	private AjaxButton				saveButton;
-	private AjaxButton				closeButton;
-	private FeedbackPanel			feedbackPanel;
-	private ModalWindow				modalWindow;
-	@SuppressWarnings("rawtypes")
-	private PageableListView 					pageableListView;
+	private IUserService					iUserService;
+	protected TextField<String>		userNameTxtField			= new TextField<String>(Constants.USER_NAME);
+	protected TextField<String>		firstNameTxtField			= new TextField<String>(Constants.FIRST_NAME);
+	protected TextField<String>		lastNameTxtField			= new TextField<String>(Constants.LAST_NAME);
+	protected TextField<String>		emailTxtField				= new TextField<String>(Constants.EMAIL);
+	protected TextField<String>		phoneNumberTxtField		= new TextField<String>(Constants.PHONE_NUMBER);
+	protected PasswordTextField		userPasswordField			= new PasswordTextField(Constants.PASSWORD);
+	protected PasswordTextField		confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
+	protected WebMarkupContainer		groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
+	private AjaxButton					saveButton;
+	private AjaxButton					closeButton;
+	private FeedbackPanel				feedbackPanel;
+	private ModalWindow					modalWindow;
+	@SuppressWarnings("unchecked")
+	private PageableListView			pageableListView;
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor						formVisitor					= new ArkFormVisitor();
+	ArkFormVisitor							formVisitor					= new ArkFormVisitor();
 
 	public MyDetailsForm(String id, CompoundPropertyModel<ArkUserVO> model, final FeedbackPanel feedbackPanel, ModalWindow modalWindow) {
 		super(id, model);
@@ -73,11 +71,11 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		this.modalWindow = modalWindow;
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings( { "unchecked" })
 	public void initialiseForm() {
 		ArkUserVO arkUserVOFromBackend = new ArkUserVO();
 		try {
-			arkUserVOFromBackend = userService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
+			arkUserVOFromBackend = iUserService.lookupArkUser(getModelObject().getUserName(), getModelObject().getStudy());
 			List<ArkUserRole> arkUserRoleList = iArkCommonService.getArkRoleListByUser(arkUserVOFromBackend);
 			arkUserVOFromBackend.setArkUserRoleList(arkUserRoleList);
 			getModelObject().setArkUserRoleList(arkUserRoleList);
@@ -86,7 +84,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
 			/**
 			 * 
@@ -112,30 +110,43 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				modalWindow.close(target);
 			}
+
+			public void onError(AjaxRequestTarget target, Form<?> form) {
+				processFeedback(target, feedbackPanel);
+			}
 		};
-		
+		closeButton.setDefaultFormProcessing(false);
+
 		emailTxtField.add(EmailAddressValidator.getInstance());
-		
+
 		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected Object load() {
-				return getModelObject().getArkUserRoleList();	
+				return getModelObject().getArkUserRoleList();
 			}
 		};
 
 		pageableListView = new PageableListView("arkUserRoleList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 
-			private static final long	serialVersionUID	= 1L;
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 3557668722549243826L;
 
 			@Override
 			protected void populateItem(final ListItem item) {
 				ArkUserRole arkUserRole = (ArkUserRole) item.getModelObject();
-				MyDetailsForm.this.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
+				if (arkUserRole.getStudy() != null) {
+					MyDetailsForm.this.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
+				}
+				else {
+					MyDetailsForm.this.addOrReplace(new Label("studyName", "[All Study Access]"));
+				}
 				item.add(new Label("moduleName", arkUserRole.getArkModule().getName()));
 				item.add(new Label("roleName", arkUserRole.getArkRole().getName()));
-				
+
 				try {
 					Collection<String> rolePermissions = iArkCommonService.getArkRolePermission(arkUserRole.getArkRole().getName());
 					if (rolePermissions.contains("CREATE")) {
@@ -173,9 +184,9 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				item.setEnabled(false);
-				
+
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
 					/**
 					 * 
@@ -191,10 +202,10 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		};
 
 		pageableListView.setReuseItems(true);
-		
+
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		add(pageNavigator);
-		
+
 		attachValidators();
 		addComponents();
 	}
@@ -234,7 +245,7 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 		add(closeButton);
 		add(pageableListView);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void onBeforeRender() {
 		super.onBeforeRender();
