@@ -1,6 +1,7 @@
 package au.org.theark.admin.web.component.rolePolicy;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -10,12 +11,16 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.rolePolicy.form.ContainerForm;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider;
 
@@ -27,16 +32,19 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	/**
 	 * 
 	 */
-	private static final long								serialVersionUID	= 442185554812824590L;
-	private ContainerForm									containerForm;
-	private SearchPanel										searchPanel;
-	private DetailPanel										detailPanel;
-	private SearchResultsPanel								searchResultsPanel;
+	private static final long														serialVersionUID	= 442185554812824590L;
+	protected transient Logger														log					= LoggerFactory.getLogger(RolePolicyContainerPanel.class);
+	private ContainerForm															containerForm;
+	private SearchPanel																searchPanel;
+	private DetailPanel																detailPanel;
+	private SearchResultsPanel														searchResultsPanel;
 	private DataView<ArkRoleModuleFunctionVO>									dataView;
 	private ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>	dataProvider;
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>												iArkCommonService;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
-	private IAdminService<Void>							iAdminService;
+	private IAdminService<Void>													iAdminService;
 
 	/**
 	 * @param id
@@ -76,7 +84,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, arkCrudContainerVO);
+		searchResultsPanel = new SearchResultsPanel("searchResultsPanel", containerForm, feedBackPanel, arkCrudContainerVO);
 		initialiseDataView();
 		dataView = searchResultsPanel.buildDataView(dataProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
@@ -99,6 +107,24 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 				List<ArkRoleModuleFunctionVO> listCollection = new ArrayList<ArkRoleModuleFunctionVO>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 					listCollection = service.searchPageableArkRoleModuleFunctionVO(model.getObject(), first, count);
+
+					for (Iterator iterator = listCollection.iterator(); iterator.hasNext();) {
+						ArkRoleModuleFunctionVO arkRoleModuleFunctionVO = (ArkRoleModuleFunctionVO) iterator.next();
+						// Get all permission rows, and assign to VO accordingly
+						try {
+							Collection<String> arkPermissions = iArkCommonService.getArkRolePermission(arkRoleModuleFunctionVO.getArkFunction(), arkRoleModuleFunctionVO.getArkRole().getName(),
+									arkRoleModuleFunctionVO.getArkModule());
+							// Set up boolean references in VO
+							arkRoleModuleFunctionVO.setArkCreatePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.CREATE));
+							arkRoleModuleFunctionVO.setArkReadPermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.READ));
+							arkRoleModuleFunctionVO.setArkUpdatePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.UPDATE));
+							arkRoleModuleFunctionVO.setArkDeletePermission(arkPermissions.contains(au.org.theark.core.security.PermissionConstants.DELETE));
+						}
+						catch (EntityNotFoundException e) {
+							log.error(e.getMessage());
+						}
+					}
+
 				}
 				return listCollection.iterator();
 			}

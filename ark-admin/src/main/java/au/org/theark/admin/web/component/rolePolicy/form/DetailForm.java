@@ -2,26 +2,35 @@ package au.org.theark.admin.web.component.rolePolicy.form;
 
 import java.util.List;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.AbstractReadOnlyModel;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.admin.model.vo.AdminVO;
+import au.org.theark.admin.model.vo.ArkRoleModuleFunctionVO;
 import au.org.theark.admin.service.IAdminService;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractDetailForm;
 
@@ -36,14 +45,10 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 	private IAdminService<Void>			iAdminService;
 
 	private int									mode;
-	private TextField<String>				idTxtFld;
 	private DropDownChoice<ArkRole>		arkRoleDropDown;
 	private DropDownChoice<ArkModule>	arkModuleDropDown;
-	private DropDownChoice<ArkFunction>	arkFunctionDropDown;
-	private CheckBox							arkCreatePermissionChkBox;
-	private CheckBox							arkReadPermissionChkBox;
-	private CheckBox							arkUpdatePermissionChkBox;
-	private CheckBox							arkDeletePermissionChkBox;
+	@SuppressWarnings("unchecked")
+	private PageableListView				pageableListView;
 
 	/**
 	 * Constructor
@@ -60,34 +65,59 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		setMultiPart(true);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void initialiseDetailForm() {
-		idTxtFld = new TextField<String>("arkRolePolicyTemplate.id");
-		idTxtFld.setEnabled(false);
-
 		// Role selection
 		initArkRoleDropDown();
 
 		// Module selection
 		initArkModuleDropDown();
 
-		// Function selection
-		initArkFunctionDropDown();
+		IModel<List<ArkUserRole>> iModel = new LoadableDetachableModel() {
+			private static final long	serialVersionUID	= 1L;
 
-		arkCreatePermissionChkBox = new CheckBox("arkCreatePermission");
-		arkCreatePermissionChkBox.setVisible(true);
-		arkCreatePermissionChkBox.setOutputMarkupId(true);
+			@Override
+			protected Object load() {
+				return getModelObject().getArkRoleModuleFunctionVoList();
+			}
+		};
 
-		arkReadPermissionChkBox = new CheckBox("arkReadPermission");
-		arkReadPermissionChkBox.setVisible(true);
-		arkReadPermissionChkBox.setOutputMarkupId(true);
+		// Maybe user getModelObject().getArkRolePolicyTemplateList().size()
+		pageableListView = new PageableListView("arkRoleModuleFunctionVoList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
-		arkUpdatePermissionChkBox = new CheckBox("arkUpdatePermission");
-		arkUpdatePermissionChkBox.setVisible(true);
-		arkUpdatePermissionChkBox.setOutputMarkupId(true);
+			@Override
+			protected void populateItem(final ListItem item) {
+				ArkRoleModuleFunctionVO	arkRoleModuleFunctionVo = (ArkRoleModuleFunctionVO) item.getModelObject();
+				item.add(new Label("arkFunction.name", arkRoleModuleFunctionVo.getArkFunction().getName()));
+				item.addOrReplace(new CheckBox("arkCreatePermission"));
+				item.addOrReplace(new CheckBox("arkReadPermission"));
+				item.addOrReplace(new CheckBox("arkUpdatePermission"));
+				item.addOrReplace(new CheckBox("arkDeletePermission"));
+				item.setEnabled(false);
 
-		arkDeletePermissionChkBox = new CheckBox("arkDeletePermission");
-		arkDeletePermissionChkBox.setVisible(true);
-		arkDeletePermissionChkBox.setOutputMarkupId(true);
+				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= -3761802307040022900L;
+
+					@Override
+					public String getObject() {
+						return (item.getIndex() % 2 == 1) ? "even" : "odd";
+					}
+				}));
+			}
+		};
+
+		pageableListView.setReuseItems(true);
+
+		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
+		add(pageNavigator);
 
 		attachValidators();
 		addDetailFormComponents();
@@ -109,7 +139,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 			}
 		});
-		arkRoleDropDown.setEnabled(isNew());
+		arkRoleDropDown.setEnabled(false);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -128,38 +158,13 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 
 			}
 		});
-		arkModuleDropDown.setEnabled(isNew());
-	}
-
-	@SuppressWarnings("unchecked")
-	private void initArkFunctionDropDown() {
-		List<ArkFunction> arkFunctionList = iAdminService.getArkFunctionList();
-		ChoiceRenderer<ArkFunction> defaultChoiceRenderer = new ChoiceRenderer<ArkFunction>("name", "id");
-		arkFunctionDropDown = new DropDownChoice("arkRolePolicyTemplate.arkFunction", arkFunctionList, defaultChoiceRenderer);
-		arkFunctionDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1007263623823525412L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-
-			}
-		});
-		arkFunctionDropDown.setEnabled(isNew());
+		arkModuleDropDown.setEnabled(false);
 	}
 
 	private void addDetailFormComponents() {
-		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkRoleDropDown);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(arkModuleDropDown);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkFunctionDropDown);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkCreatePermissionChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkReadPermissionChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkUpdatePermissionChkBox);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(arkDeletePermissionChkBox);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(pageableListView);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
@@ -225,7 +230,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 			iAdminService.createOrUpdateArkRolePolicyTemplate(adminVo);
 		}
 
-		this.info("Ark Role Policy Template for Role: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole().getName() + " was created/updated successfully.");
+		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was created/updated successfully.");
 		target.addComponent(feedBackPanel);
 	}
 
@@ -237,7 +242,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		// Delete
 		iAdminService.deleteArkRolePolicyTemplate(containerForm.getModelObject());
 
-		this.info("Ark Role Policy Template for Role: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkRole().getName() + " was deleted successfully.");
+		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was deleted successfully.");
 		editCancelProcess(target, true);
 	}
 

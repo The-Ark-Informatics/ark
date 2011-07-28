@@ -7,24 +7,24 @@
 				&nbsp;
 			</th>
 			<th width="15%">
-				<wicket:message key="arkRoleModuleFunctionVo.arkRole">arkRole</wicket:message>
+				<wicket:message key="arkRole">arkRole</wicket:message>
 			</th>
 			<th width="15%">
-				<wicket:message key="arkRoleModuleFunctionVo.arkModule">arkModule</wicket:message>
+				<wicket:message key="arkModule">arkModule</wicket:message>
 			</th>
 			<th width="15%">
-				<wicket:message key="arkRoleModuleFunctionVo.arkFunction">arkFunction</wicket:message>
+				<wicket:message key="arkFunction">arkFunction</wicket:message>
 			</th>
-			<th width="5%">
+			<th width="5%" align="center">
 				<wicket:message key="arkCreatePermission">create</wicket:message>
 			</th>
-			<th width="5%">
+			<th width="5%" align="center">
 				<wicket:message key="arkReadPermission">read</wicket:message>
 			</th>
-			<th width="5%">
+			<th width="5%" align="center">
 				<wicket:message key="arkUpdatePermission">update</wicket:message>
 			</th>
-			<th width="5%">
+			<th width="5%" align="center">
 				<wicket:message key="arkDeletePermission">delete</wicket:message>
 			</th>
 			<th width="2%">
@@ -33,33 +33,35 @@
 		</tr>
 		<tr wicket:id="arkRoleModuleFunctionVoList">
 			<td width="2%">
-				&nbsp;
+				<span wicket:id="rowEditWMC">
+					<input wicket:id="listEditButton" type="submit" value="Edit"/>
+				</span>
 			</td>
 			<td width="15%">
-				<a href="#" wicket:id="link">
-					<span wicket:id="arkRoleModuleFunctionVo.arkRole">arkRole</span>
-				</a>
+				<span wicket:id="arkRole">arkRole</span>
 			</td>
 			<td width="15%">
-				<span wicket:id="arkRoleModuleFunctionVo.arkModule">arkModule</span>
+				<span wicket:id="arkModule">arkModule</span>
 			</td>
 			<td width="15%">
-				<span wicket:id="arkRoleModuleFunctionVo.arkFunction">arkFunction</span>
+				<span wicket:id="arkFunction">arkFunction</span>
 			</td>
-			<td width="5%">
-				<img wicket:id="arkCreatePermission"/>
+			<td width="5%" align="center">
+				<input type="checkbox" wicket:id="arkCreatePermission"/>
 			</td>
-			<td width="5%">
-				<img wicket:id="arkReadPermission"/>
+			<td width="5%" align="center">
+				<input type="checkbox" wicket:id="arkReadPermission"/>
 			</td>
-			<td width="5%">
-				<img wicket:id="arkUpdatePermission"/>
+			<td width="5%" align="center">
+				<input type="checkbox" wicket:id="arkUpdatePermission"/>
 			</td>
-			<td width="5%">
-				<img wicket:id="arkDeletePermission"/>
+			<td width="5%" align="center">
+				<input type="checkbox" wicket:id="arkDeletePermission"/>
 			</td>
 			<td width="2%">
-				&nbsp;
+				<span wicket:id="rowSaveWMC">
+					<input wicket:id="listSaveButton" type="submit" value="Save"/>
+				</span>
 			</td>
 		</tr>
 		<tr>
