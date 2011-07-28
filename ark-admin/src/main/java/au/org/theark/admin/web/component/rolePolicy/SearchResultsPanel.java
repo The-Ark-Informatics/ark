@@ -1,5 +1,6 @@
 package au.org.theark.admin.web.component.rolePolicy;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -158,6 +159,8 @@ public class SearchResultsPanel extends Panel {
 		ArkPermission arkPermission = new ArkPermission();
 		AdminVO adminVo = new AdminVO();
 		adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+		
+		List<String> permissionList = new ArrayList<String>(4);
 
 		// Delete all permissions first
 		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList(arkRolePolicyTemplate);
@@ -165,38 +168,37 @@ public class SearchResultsPanel extends Panel {
 			ArkRolePolicyTemplate arkRolePolicyTemplateToDelete = (ArkRolePolicyTemplate) iterator.next();
 			AdminVO adminVoToDelete = new AdminVO();
 			adminVoToDelete.setArkRolePolicyTemplate(arkRolePolicyTemplateToDelete);
-			// iAdminService.deleteArkRolePolicyTemplate(adminVo);
-			this.info("Deleting policy for ArkRolePolicyTemplate.id: " + arkRolePolicyTemplateToDelete.getId());
+			iAdminService.deleteArkRolePolicyTemplate(adminVo);
 		}
 
 		// Save each permission where selected
 		if (arkRoleModuleFunctionVo.getArkCreatePermission()) {
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.CREATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			// iAdminService.createArkRolePolicyTemplate(adminVo);
-			this.info("Creating permission " + arkPermission.getName() + " for ArkRolePolicyTemplate.id: " + arkRolePolicyTemplate.getId());
+			iAdminService.createArkRolePolicyTemplate(adminVo);
+			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkReadPermission()) {
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.READ);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			// iAdminService.createArkRolePolicyTemplate(adminVo);
-			this.info("Creating permission " + arkPermission.getName() + " for ArkRolePolicyTemplate.id: " + arkRolePolicyTemplate.getId());
+			iAdminService.createArkRolePolicyTemplate(adminVo);
+			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkUpdatePermission()) {
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.UPDATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			// iAdminService.createArkRolePolicyTemplate(adminVo);
-			this.info("Creating permission " + arkPermission.getName() + " for ArkRolePolicyTemplate.id: " + arkRolePolicyTemplate.getId());
+			iAdminService.createArkRolePolicyTemplate(adminVo);
+			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkDeletePermission()) {
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.DELETE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			// iAdminService.createArkRolePolicyTemplate(adminVo);
-			this.info("Creating permission " + arkPermission.getName() + " for ArkRolePolicyTemplate.id: " + arkRolePolicyTemplate.getId());
+			iAdminService.createArkRolePolicyTemplate(adminVo);
+			permissionList.add(arkPermission.getName());
 		}
-		this.info("Role Policy for function " + arkRoleModuleFunctionVo.getArkFunction().getName() + " updated.");
+		this.info("Role Policy for function " + arkRoleModuleFunctionVo.getArkFunction().getName() + " updated with the following permissions: " + permissionList);
 	}
 }
