@@ -20,6 +20,11 @@ public abstract class AjaxConfirmButton extends AjaxButton {
 	private static final long	serialVersionUID	= 8138160131842627124L;
 	private IModel					confirm				= new StringResourceModel("confirm", this, null);
 
+	public AjaxConfirmButton(String id, IModel label) {
+		super(id);
+		this.setModel(label);
+	}
+	
 	public AjaxConfirmButton(String id, IModel confirm, IModel label) {
 		super(id);
 		this.setModel(label);
