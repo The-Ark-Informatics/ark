@@ -596,26 +596,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public CustomField getCustomField(Long id ){
 		return studyDao.getCustomField(id);
 	}
-	
-	private void populate(CustomFieldVO customFieldVO){
-		CustomField cf = customFieldVO.getCustomField();
-		
-		Study study  = getStudy(new Long("2"));
-		ArkModule arkModule  = getArkModuleById(new Long("1"));
-		FieldType ft = getFieldTypeById(new Long("1"));
-		cf.setStudy(study);
-		cf.setCustomFieldHasData(false);
-		cf.setName("Heard about study");
-		cf.setArkModule(arkModule);
-		cf.setFieldType(ft);
-		
-		CustomFieldDisplay cfd = customFieldVO.getCustomFieldDisplay();
-		cfd.setCustomField(cf);
-		cfd.setRequired(true);
-		cfd.setRequiredMessage("Heard about study required");
-		cfd.setSequence(new Long("2"));
-		
-	}
 
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getStudyListForUser(arkUserVo);
