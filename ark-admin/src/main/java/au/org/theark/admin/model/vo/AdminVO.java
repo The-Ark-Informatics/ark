@@ -21,21 +21,22 @@ public class AdminVO implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long				serialVersionUID	= -3939245546324873647L;
+	private static final long					serialVersionUID	= -3939245546324873647L;
 
-	private ArkRole							arkRole;
-	private ArkModule							arkModule;
-	private ArkFunction						arkFunction;
-	private ArkRolePolicyTemplate			arkRolePolicyTemplate;
-	private Study								study;
-	private List<Study>						studyList;
-	private List<ArkRolePolicyTemplate>	arkRolePolicyTemplateList;
-	private List<ArkFunction>				arkFunctionList;
-	private Boolean							arkCreatePermission;
-	private Boolean							arkReadPermission;
-	private Boolean							arkUpdatePermission;
-	private Boolean							arkDeletePermission;
-	private ArkRoleModuleFunctionVO		arkRoleModuleFunctionVo;
+	private ArkRole								arkRole;
+	private ArkModule								arkModule;
+	private ArkFunction							arkFunction;
+	private ArkRolePolicyTemplate				arkRolePolicyTemplate;
+	private Study									study;
+	private List<Study>							studyList;
+	private List<ArkRolePolicyTemplate>		arkRolePolicyTemplateList;
+	private List<ArkFunction>					arkFunctionList;
+	private Boolean								arkCreatePermission;
+	private Boolean								arkReadPermission;
+	private Boolean								arkUpdatePermission;
+	private Boolean								arkDeletePermission;
+	private ArkRoleModuleFunctionVO			arkRoleModuleFunctionVo;
+	private List<ArkRoleModuleFunctionVO>	arkRoleModuleFunctionVoList;
 
 	public AdminVO() {
 		this.arkRole = new ArkRole();
@@ -51,6 +52,7 @@ public class AdminVO implements Serializable {
 		this.arkUpdatePermission = new Boolean("False");
 		this.arkDeletePermission = new Boolean("False");
 		this.arkRoleModuleFunctionVo = new ArkRoleModuleFunctionVO();
+		this.setArkRoleModuleFunctionVoList(new ArrayList<ArkRoleModuleFunctionVO>(0));
 	}
 
 	/**
@@ -234,7 +236,8 @@ public class AdminVO implements Serializable {
 	}
 
 	/**
-	 * @param arkRoleModuleFunctionVo the arkRoleModuleFunctionVO to set
+	 * @param arkRoleModuleFunctionVo
+	 *           the arkRoleModuleFunctionVO to set
 	 */
 	public void setArkRoleModuleFunctionVo(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo) {
 		this.arkRoleModuleFunctionVo = arkRoleModuleFunctionVo;
@@ -245,5 +248,20 @@ public class AdminVO implements Serializable {
 	 */
 	public ArkRoleModuleFunctionVO getArkRoleModuleFunctionVo() {
 		return arkRoleModuleFunctionVo;
+	}
+
+	/**
+	 * @param arkRoleModuleFunctionVoList
+	 *           the arkRoleModuleFunctionVoList to set
+	 */
+	public void setArkRoleModuleFunctionVoList(List<ArkRoleModuleFunctionVO> arkRoleModuleFunctionVoList) {
+		this.arkRoleModuleFunctionVoList = arkRoleModuleFunctionVoList;
+	}
+
+	/**
+	 * @return the arkRoleModuleFunctionVoList
+	 */
+	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList() {
+		return arkRoleModuleFunctionVoList;
 	}
 }

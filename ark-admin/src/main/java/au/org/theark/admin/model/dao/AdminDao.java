@@ -287,4 +287,42 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		criteria.add(Restrictions.eq("name", name));
 		return (ArkRole) criteria.list().get(0);
 	}
+
+	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole) {
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class, "arpt");
+		criteria.add(Restrictions.eq("arpt.arkRole", arkRole));
+
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arpt.arkRole"), "arkRole");
+		projectionList.add(Projections.groupProperty("arpt.arkModule"), "arkModule");
+		projectionList.add(Projections.groupProperty("arpt.arkFunction"), "arkFunction");
+
+		criteria.setProjection(projectionList);
+		
+		ResultTransformer resultTransformer = Transformers.aliasToBean(ArkRoleModuleFunctionVO.class);
+		criteria.setResultTransformer(resultTransformer);
+
+		return criteria.list();
+	}
+
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList(ArkRolePolicyTemplate arkRolePolicyTemplateCriteria) {
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class, "arpt");
+
+		if (arkRolePolicyTemplateCriteria.getId() != null) {
+			criteria.add(Restrictions.eq("arpt.id", arkRolePolicyTemplateCriteria.getId()));
+		}
+		
+		if (arkRolePolicyTemplateCriteria.getArkRole() != null) {
+			criteria.add(Restrictions.eq("arpt.arkRole", arkRolePolicyTemplateCriteria.getArkRole()));
+		}
+
+		if (arkRolePolicyTemplateCriteria.getArkModule() != null) {
+			criteria.add(Restrictions.eq("arpt.arkModule", arkRolePolicyTemplateCriteria.getArkModule()));
+		}
+		
+		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
+			criteria.add(Restrictions.eq("arpt.arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
+		}
+		return criteria.list();
+	}
 }

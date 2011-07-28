@@ -47,6 +47,8 @@ public interface IAdminService<T> {
 	public List<ArkFunction> getArkFunctionList();
 
 	public ArkRolePolicyTemplate getArkRolePolicyTemplate(Long id);
+	
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList(ArkRolePolicyTemplate arkRolePolicyTemplate);
 
 	public ArkPermission getArkPermissionByName(String name);
 
@@ -81,4 +83,6 @@ public interface IAdminService<T> {
 	public List<ArkRoleModuleFunctionVO> searchPageableArkRoleModuleFunctionVO(ArkRoleModuleFunctionVO arkRoleModuleFunctionVo, int first, int count);
 	
 	public ArkRole getArkRoleByName(String name);
+
+	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole);
 }
