@@ -6,8 +6,9 @@ import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 
-@SuppressWarnings({ "unchecked" })
+@SuppressWarnings( { "unchecked" })
 /**
  * @author cellis
  *
@@ -17,7 +18,7 @@ public abstract class AjaxConfirmButton extends AjaxButton {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 8138160131842627124L;
-	private final IModel			confirm;
+	private IModel					confirm				= new StringResourceModel("confirm", this, null);
 
 	public AjaxConfirmButton(String id, IModel confirm, IModel label) {
 		super(id);
