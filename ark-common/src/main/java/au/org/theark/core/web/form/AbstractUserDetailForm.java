@@ -108,7 +108,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 		};
 
