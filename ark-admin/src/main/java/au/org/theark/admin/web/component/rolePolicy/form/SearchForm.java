@@ -12,6 +12,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.admin.model.vo.AdminVO;
 import au.org.theark.admin.service.IAdminService;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -30,6 +31,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	private ContainerForm						containerForm;
 	private FeedbackPanel						feedbackPanel;
 	private DropDownChoice<ArkRole>			arkRoleDropDown;
+	private DropDownChoice<ArkModule>		arkModuleDropDown;
 
 	/**
 	 * Constructor
@@ -54,8 +56,8 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void initialiseSearchForm() {
-		// Role selection
 		initArkRoleDropDown();
+		initArkModuleDropDown();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -73,9 +75,39 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
+				// Reset the Module list when the Role changes
+				ArkRole arkRole = getModelObject().getArkRoleModuleFunctionVo().getArkRole();
+				updateModuleDropDown(arkRole);
+            target.addComponent(arkModuleDropDown);
+			}
+		});
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void initArkModuleDropDown() {
+		List<ArkModule> arkModuleList = iAdminService.getArkModuleList();
+		// Restrict searching/selecting of Super Administrator
+		arkModuleList.remove(iAdminService.getArkRoleByName(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR));
+		ChoiceRenderer<ArkModule> defaultChoiceRenderer = new ChoiceRenderer<ArkModule>("name", "id");
+		arkModuleDropDown = new DropDownChoice("arkRoleModuleFunctionVo.arkModule", arkModuleList, defaultChoiceRenderer);
+		arkModuleDropDown.add(new AjaxFormComponentUpdatingBehavior("onChange") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 5591846326218931210L;
+
+			@Override
+			protected void onUpdate(AjaxRequestTarget target) {
 
 			}
 		});
+		arkModuleDropDown.setOutputMarkupPlaceholderTag(true);
+	}
+	
+	protected void updateModuleDropDown(ArkRole arkRole) {
+		List<ArkModule> arkModuleList = iAdminService.getArkModuleList(arkRole);
+		arkModuleDropDown.getChoices().clear();
+		arkModuleDropDown.setChoices(arkModuleList);
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
@@ -92,6 +124,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 
 	private void addSearchComponentsToForm() {
 		add(arkRoleDropDown);
+		add(arkModuleDropDown);
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
