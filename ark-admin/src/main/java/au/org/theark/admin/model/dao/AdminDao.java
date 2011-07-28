@@ -18,6 +18,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkFunctionType;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkModuleRole;
 import au.org.theark.core.model.study.entity.ArkPermission;
 import au.org.theark.core.model.study.entity.ArkRole;
 import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
@@ -323,6 +324,19 @@ public class AdminDao extends HibernateSessionDao implements IAdminDao {
 		if (arkRolePolicyTemplateCriteria.getArkFunction() != null) {
 			criteria.add(Restrictions.eq("arpt.arkFunction", arkRolePolicyTemplateCriteria.getArkFunction()));
 		}
+		return criteria.list();
+	}
+
+	public List<ArkModule> getArkModuleList(ArkRole arkRole) {
+		Criteria criteria = getSession().createCriteria(ArkModuleRole.class);
+		
+		if(arkRole != null) {
+			criteria.add(Restrictions.eq("arkRole", arkRole));
+		}
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkModule"), "arkModule");
+		criteria.setProjection(projectionList);
+		
 		return criteria.list();
 	}
 }

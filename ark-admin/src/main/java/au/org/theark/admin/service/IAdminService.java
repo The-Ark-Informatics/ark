@@ -85,4 +85,6 @@ public interface IAdminService<T> {
 	public ArkRole getArkRoleByName(String name);
 
 	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole);
+
+	public List<ArkModule> getArkModuleList(ArkRole arkRole);
 }

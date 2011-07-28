@@ -148,4 +148,8 @@ public class AdminServiceImpl<T> implements IAdminService<T> {
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList(ArkRolePolicyTemplate arkRolePolicyTemplate) {
 		return adminDao.getArkRolePolicyTemplateList(arkRolePolicyTemplate);
 	}
+
+	public List<ArkModule> getArkModuleList(ArkRole arkRole) {
+		return adminDao.getArkModuleList(arkRole);
+	}
 }

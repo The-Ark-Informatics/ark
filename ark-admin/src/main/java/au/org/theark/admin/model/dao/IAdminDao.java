@@ -86,4 +86,6 @@ public interface IAdminDao {
 	public List<ArkRoleModuleFunctionVO> getArkRoleModuleFunctionVoList(ArkRole arkRole);
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplateList(ArkRolePolicyTemplate arkRolePolicyTemplate);
+
+	public List<ArkModule> getArkModuleList(ArkRole arkRole);
 }
