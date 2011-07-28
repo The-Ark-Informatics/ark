@@ -94,7 +94,7 @@ public class CustomFieldDisplay implements Serializable{
 		this.requiredMessage = requiredMessage;
 	}
 
-	@Column(name = "SEQUENCE", unique = true, nullable = false, precision = 22, scale = 0)
+	@Column(name = "SEQUENCE",  precision = 22, scale = 0)
 	public Long getSequence() {
 		return sequence;
 	}
