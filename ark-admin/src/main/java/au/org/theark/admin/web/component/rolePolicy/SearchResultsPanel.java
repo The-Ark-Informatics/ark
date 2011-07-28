@@ -152,51 +152,79 @@ public class SearchResultsPanel extends Panel {
 	 * @param arkRoleModuleFunctionVo
 	 */
 	private void onSave(AjaxRequestTarget target, final ArkRoleModuleFunctionVO arkRoleModuleFunctionVo) {
-		ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
-		arkRolePolicyTemplate.setArkRole(arkRoleModuleFunctionVo.getArkRole());
-		arkRolePolicyTemplate.setArkModule(arkRoleModuleFunctionVo.getArkModule());
-		arkRolePolicyTemplate.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
-		ArkPermission arkPermission = new ArkPermission();
-		AdminVO adminVo = new AdminVO();
-		adminVo.setArkRolePolicyTemplate(arkRolePolicyTemplate);
-		
 		List<String> permissionList = new ArrayList<String>(4);
-
+		
 		// Delete all permissions first
-		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList(arkRolePolicyTemplate);
+		ArkRolePolicyTemplate arkRolePolicyTemplateToDelete = new ArkRolePolicyTemplate();
+		arkRolePolicyTemplateToDelete.setArkRole(arkRoleModuleFunctionVo.getArkRole());
+		arkRolePolicyTemplateToDelete.setArkModule(arkRoleModuleFunctionVo.getArkModule());
+		arkRolePolicyTemplateToDelete.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
+
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = iAdminService.getArkRolePolicyTemplateList(arkRolePolicyTemplateToDelete);
 		for (Iterator<ArkRolePolicyTemplate> iterator = arkRolePolicyTemplateList.iterator(); iterator.hasNext();) {
-			ArkRolePolicyTemplate arkRolePolicyTemplateToDelete = (ArkRolePolicyTemplate) iterator.next();
+			ArkRolePolicyTemplate rowToDelete = (ArkRolePolicyTemplate) iterator.next();
 			AdminVO adminVoToDelete = new AdminVO();
-			adminVoToDelete.setArkRolePolicyTemplate(arkRolePolicyTemplateToDelete);
-			iAdminService.deleteArkRolePolicyTemplate(adminVo);
+			adminVoToDelete.setArkRolePolicyTemplate(rowToDelete);
+			iAdminService.deleteArkRolePolicyTemplate(adminVoToDelete);
 		}
 
 		// Save each permission where selected
 		if (arkRoleModuleFunctionVo.getArkCreatePermission()) {
+			AdminVO adminVoCreatePermission = new AdminVO();
+			ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
+			arkRolePolicyTemplate.setArkRole(arkRoleModuleFunctionVo.getArkRole());
+			arkRolePolicyTemplate.setArkModule(arkRoleModuleFunctionVo.getArkModule());
+			arkRolePolicyTemplate.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
+			ArkPermission arkPermission = new ArkPermission();
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.CREATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			iAdminService.createArkRolePolicyTemplate(adminVo);
+			adminVoCreatePermission.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			iAdminService.createArkRolePolicyTemplate(adminVoCreatePermission);
 			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkReadPermission()) {
+			AdminVO adminVoReadPermission = new AdminVO();
+			ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
+			arkRolePolicyTemplate.setArkRole(arkRoleModuleFunctionVo.getArkRole());
+			arkRolePolicyTemplate.setArkModule(arkRoleModuleFunctionVo.getArkModule());
+			arkRolePolicyTemplate.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
+			ArkPermission arkPermission = new ArkPermission();
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.READ);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			iAdminService.createArkRolePolicyTemplate(adminVo);
+			adminVoReadPermission = new AdminVO();
+			adminVoReadPermission.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			iAdminService.createArkRolePolicyTemplate(adminVoReadPermission);
 			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkUpdatePermission()) {
+			AdminVO adminVoUpdatePermission = new AdminVO();
+			ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
+			arkRolePolicyTemplate.setArkRole(arkRoleModuleFunctionVo.getArkRole());
+			arkRolePolicyTemplate.setArkModule(arkRoleModuleFunctionVo.getArkModule());
+			arkRolePolicyTemplate.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
+			ArkPermission arkPermission = new ArkPermission();
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.UPDATE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			iAdminService.createArkRolePolicyTemplate(adminVo);
+			adminVoUpdatePermission = new AdminVO();
+			adminVoUpdatePermission.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			iAdminService.createArkRolePolicyTemplate(adminVoUpdatePermission);
 			permissionList.add(arkPermission.getName());
 		}
 
 		if (arkRoleModuleFunctionVo.getArkDeletePermission()) {
+			AdminVO adminVoDeletePermission = new AdminVO();
+			ArkRolePolicyTemplate arkRolePolicyTemplate = new ArkRolePolicyTemplate();
+			arkRolePolicyTemplate.setArkRole(arkRoleModuleFunctionVo.getArkRole());
+			arkRolePolicyTemplate.setArkModule(arkRoleModuleFunctionVo.getArkModule());
+			arkRolePolicyTemplate.setArkFunction(arkRoleModuleFunctionVo.getArkFunction());
+			ArkPermission arkPermission = new ArkPermission();
 			arkPermission = iAdminService.getArkPermissionByName(au.org.theark.core.security.PermissionConstants.DELETE);
 			arkRolePolicyTemplate.setArkPermission(arkPermission);
-			iAdminService.createArkRolePolicyTemplate(adminVo);
+			adminVoDeletePermission = new AdminVO();
+			adminVoDeletePermission.setArkRolePolicyTemplate(arkRolePolicyTemplate);
+			iAdminService.createArkRolePolicyTemplate(adminVoDeletePermission);
 			permissionList.add(arkPermission.getName());
 		}
 		this.info("Role Policy for function " + arkRoleModuleFunctionVo.getArkFunction().getName() + " updated with the following permissions: " + permissionList);
