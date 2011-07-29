@@ -36,7 +36,6 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -609,4 +608,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return arkAuthorisationDao.getArkRolePolicyTemplate(arkRole, arkModule);
 	}
 
+	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
+		return arkAuthorisationDao.getArkRoleListByUserAndStudy(arkUserVo, study);
+	}
 }
