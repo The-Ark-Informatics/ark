@@ -7,6 +7,8 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -22,12 +24,15 @@ public class CustomFieldVO implements Serializable {
 	
 	private CustomField customField;
 	private CustomFieldDisplay customFieldDisplay;
-
+	
+	protected boolean useCustomFieldDisplay;	// Flags whether or not CustomFieldDisplay should be saved, etc
+	
 	public CustomFieldVO() {
 		super();
 		subjectCustomField = new SubjectCustmFld();
 		customField = new CustomField();
 		customFieldDisplay = new CustomFieldDisplay();
+		useCustomFieldDisplay = false;
 	}
 
 	public SubjectCustmFld getSubjectCustomField() {
@@ -54,6 +59,12 @@ public class CustomFieldVO implements Serializable {
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	
+	public boolean isUseCustomFieldDisplay() {
+		return useCustomFieldDisplay;
+	}
+
+	public void setUseCustomFieldDisplay(boolean useCustomFieldDisplay) {
+		this.useCustomFieldDisplay = useCustomFieldDisplay;
+	}
 
 }
