@@ -754,6 +754,24 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		Criteria studycriteria = criteria.createCriteria("study");
+		studycriteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("arkModule"));
+		criteria.addOrder(Order.asc("arkRole"));
+		arkUserRoleList = (List<ArkUserRole>) criteria.list();
+		return arkUserRoleList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		Criteria studycriteria = criteria.createCriteria("study");
+		studycriteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("study.name"));
+		criteria.addOrder(Order.asc("arkModule"));
+		criteria.addOrder(Order.asc("arkRole"));
 		arkUserRoleList = (List<ArkUserRole>) criteria.list();
 		return arkUserRoleList;
 	}
