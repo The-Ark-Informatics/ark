@@ -30,7 +30,6 @@ public class CustomFieldDisplay implements Serializable{
 	private Boolean required;
 	private String requiredMessage;
 	private Long sequence;
-	private String fieldLabel;
 	
 	
 	public CustomFieldDisplay(){
@@ -105,14 +104,6 @@ public class CustomFieldDisplay implements Serializable{
 		this.sequence = sequence;
 	}
 
-	@Column(name = "CUSTOM_FIELD_LABEL",length=255)
-	public String getFieldLabel() {
-		return fieldLabel;
-	}
 
-
-	public void setFieldLabel(String fieldLabel) {
-		this.fieldLabel = fieldLabel;
-	}
 	
 }
