@@ -496,6 +496,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
 			ah.setEntityId(customFieldVO.getCustomField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
+			
 			createAuditHistory(ah);
 			//Create CustomFieldDisplay only if allowed 
 			if(customFieldVO.isUseCustomFieldDisplay()){
@@ -609,10 +610,6 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getFieldTypeById(filedTypeId);
 	}
 
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy) {
-		return arkAuthorisationDao.getStudyListForUser(arkUserVo, searchStudy);
-	}
-
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
 		return arkAuthorisationDao.getArkRoleListByUser(arkUserVo);
 	}
@@ -623,5 +620,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
 		return arkAuthorisationDao.getArkRoleListByUserAndStudy(arkUserVo, study);
+	}
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
+		return arkAuthorisationDao.getStudyListForUser(arkUserVo);		
 	}
 }

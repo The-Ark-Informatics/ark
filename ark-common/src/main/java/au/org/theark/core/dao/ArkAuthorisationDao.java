@@ -662,9 +662,64 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.delete(arkUserVO.getArkUserEntity());
 	}
 
+	
+	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException {
+		StudyStatus studyStatus = new StudyStatus();
+		studyStatus.setName("Archive");
+		Example studyStatusExample = Example.create(studyStatus);
+
+		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
+		if (studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0) {
+			return (StudyStatus) studyStatusCriteria.list().get(0);
+		}
+		else {
+			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
+			throw new StatusNotAvailableException();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy) {
+	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		Criteria studycriteria = criteria.createCriteria("study");
+		studycriteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("arkModule"));
+		criteria.addOrder(Order.asc("arkRole"));
+		arkUserRoleList = (List<ArkUserRole>) criteria.list();
+		return arkUserRoleList;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
+		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+		Criteria studycriteria = criteria.createCriteria("study");
+		studycriteria.addOrder(Order.asc("name"));
+		criteria.addOrder(Order.asc("study.name"));
+		criteria.addOrder(Order.asc("arkModule"));
+		criteria.addOrder(Order.asc("arkRole"));
+		arkUserRoleList = (List<ArkUserRole>) criteria.list();
+		return arkUserRoleList;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule) {
+		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
+		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
+		criteria.add(Restrictions.eq("arkRole", arkRole));
+		if (!arkRole.getName().equalsIgnoreCase(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		arkRolePolicyTemplateList = (List<ArkRolePolicyTemplate>) criteria.list();
+		return arkRolePolicyTemplateList;
+	}
+	
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
 		List<Study> studyList = new ArrayList<Study>(0);
+		Study searchStudy = arkUserVo.getStudy();
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		
 		try {
@@ -731,60 +786,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		criteria.setProjection(projectionList);
 		
 		studyList = criteria.list();
-		return studyList;
-	}
-	
-	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException {
-		StudyStatus studyStatus = new StudyStatus();
-		studyStatus.setName("Archive");
-		Example studyStatusExample = Example.create(studyStatus);
-
-		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
-		if (studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0) {
-			return (StudyStatus) studyStatusCriteria.list().get(0);
-		}
-		else {
-			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
-			throw new StatusNotAvailableException();
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
-		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
-		Criteria studycriteria = criteria.createCriteria("study");
-		studycriteria.addOrder(Order.asc("name"));
-		criteria.addOrder(Order.asc("arkModule"));
-		criteria.addOrder(Order.asc("arkRole"));
-		arkUserRoleList = (List<ArkUserRole>) criteria.list();
-		return arkUserRoleList;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
-		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
-		Criteria studycriteria = criteria.createCriteria("study");
-		studycriteria.addOrder(Order.asc("name"));
-		criteria.addOrder(Order.asc("study.name"));
-		criteria.addOrder(Order.asc("arkModule"));
-		criteria.addOrder(Order.asc("arkRole"));
-		arkUserRoleList = (List<ArkUserRole>) criteria.list();
-		return arkUserRoleList;
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule) {
-		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
-		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
-		criteria.add(Restrictions.eq("arkRole", arkRole));
-		if (!arkRole.getName().equalsIgnoreCase(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
-			criteria.add(Restrictions.eq("arkModule", arkModule));
-		}
-		arkRolePolicyTemplateList = (List<ArkRolePolicyTemplate>) criteria.list();
-		return arkRolePolicyTemplateList;
+		return studyList;		
+		
 	}
 }

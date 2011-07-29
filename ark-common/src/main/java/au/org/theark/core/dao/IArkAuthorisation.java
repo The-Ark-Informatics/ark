@@ -144,11 +144,11 @@ public interface IArkAuthorisation<T> {
 
 	public void deleteArkUser(ArkUserVO arkUserVO) throws ArkSystemException, EntityNotFoundException;
 
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy);
-
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo);
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule);
 	
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
+	
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
 }

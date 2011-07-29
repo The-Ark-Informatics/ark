@@ -443,7 +443,7 @@ public interface IArkCommonService<T> {
 	
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved;
 
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy);
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
 	
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo);
 
