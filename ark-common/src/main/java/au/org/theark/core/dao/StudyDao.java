@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
-import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Example;
@@ -23,14 +22,11 @@ import org.hibernate.criterion.Subqueries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
-import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.study.entity.AddressStatus;
 import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -69,7 +65,6 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.UnitType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
-import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
@@ -122,7 +117,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
 			}
 			catch (StatusNotAvailableException notAvailable) {
-				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
 			}
 		}
 		else {
@@ -131,7 +126,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 				studyCriteria.add(Restrictions.ne(Constants.STUDY_STATUS, status));
 			}
 			catch (StatusNotAvailableException notAvailable) {
-				log.error("Cannot look up and filter on archive status.Reference data could be missing");
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
 			}
 
 		}
