@@ -128,7 +128,8 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			}
 		};
 
-		pageableListView = new PageableListView("arkUserRoleList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+		//TODO: Amend hard-coded 50 row limit, pageableListView didn't work within a ModalWindow
+		pageableListView = new PageableListView("arkUserRoleList", iModel, 50) {
 
 			/**
 			 * 
@@ -138,14 +139,16 @@ public class MyDetailsForm extends Form<ArkUserVO> {
 			@Override
 			protected void populateItem(final ListItem item) {
 				ArkUserRole arkUserRole = (ArkUserRole) item.getModelObject();
+
 				if (arkUserRole.getStudy() != null) {
-					MyDetailsForm.this.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
+					item.addOrReplace(new Label("studyName", arkUserRole.getStudy().getName()));
 				}
 				else {
-					MyDetailsForm.this.addOrReplace(new Label("studyName", "[All Study Access]"));
+					item.addOrReplace(new Label("studyName", "[All Study Access]"));
 				}
-				item.add(new Label("moduleName", arkUserRole.getArkModule().getName()));
-				item.add(new Label("roleName", arkUserRole.getArkRole().getName()));
+				
+				item.addOrReplace(new Label("moduleName", arkUserRole.getArkModule().getName()));
+				item.addOrReplace(new Label("roleName", arkUserRole.getArkRole().getName()));
 
 				try {
 					Collection<String> rolePermissions = iArkCommonService.getArkRolePermission(arkUserRole.getArkRole().getName());
