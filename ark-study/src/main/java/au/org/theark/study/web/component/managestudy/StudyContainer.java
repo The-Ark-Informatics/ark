@@ -3,6 +3,8 @@ package au.org.theark.study.web.component.managestudy;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.extensions.markup.html.tabs.TabbedPanel;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
@@ -10,16 +12,24 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.study.web.component.managestudy.form.Container;
 
 public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
-
-	private static final long			serialVersionUID	= 1L;
+	/**
+	 * 
+	 */
+	private static final long			serialVersionUID	= 6705316114204293307L;
+	private final Logger					log					= LoggerFactory.getLogger(StudyContainer.class);
 	private Container						containerForm;
 	private Details						detailsPanel;
 	private SearchResults				searchResultsPanel;
@@ -93,7 +103,6 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-
 		searchStudyPanel = new Search("searchStudyPanel", studyCrudContainerVO, feedBackPanel, containerForm);
 		searchStudyPanel.initialisePanel(cpModel);
 		studyCrudContainerVO.getSearchPanelContainer().add(searchStudyPanel);
@@ -102,17 +111,28 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-
 		searchResultsPanel = new SearchResults("searchResults", studyCrudContainerVO, containerForm, moduleTabbedPanel);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected Object load() {
-				List<Study> studyList = new ArrayList<Study>();
-				studyList = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
+				List<Study> studyListForUser = new ArrayList<Study>(0);
+				try {
+					Subject currentUser = SecurityUtils.getSubject();
+					ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+					ArkUserVO arkUserVo = new ArkUserVO();
+					arkUserVo.setArkUserEntity(arkUser);
+					studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo, containerForm.getModelObject().getStudy());
+					if (studyListForUser.size() == 0) {
+						StudyContainer.this.error("You do not have any access permissions to any Study. Please see your Administrator.");
+					}
+				}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
+				}
 				studyCrudContainerVO.getPageableListView().removeAll();
-				return studyList;
+				return studyListForUser;
 			}
 		};
 

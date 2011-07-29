@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -15,13 +17,17 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.ModuleVO;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -31,9 +37,9 @@ import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 
 public class SearchForm extends AbstractSearchForm<StudyModelVO> {
-
 	private static final long							serialVersionUID	= -5468677674413992897L;
-
+	private final Logger									log					= LoggerFactory.getLogger(SearchForm.class);
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService							iArkCommonService;
 
@@ -72,6 +78,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		addSearchComponentsToForm();
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void initialiseSearchForm() {
 		studyIdTxtFld = new TextField<String>(Constants.STUDY_SEARCH_KEY);
 
@@ -92,19 +99,32 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		initStudyStatusDropDown(pmStudyStatus);
 	}
 
-	
+	@SuppressWarnings("unchecked")
 	protected void onSearch(AjaxRequestTarget target) {
-		
-		List<Study> studyResultList  = iArkCommonService.getStudy(containerForm.getModelObject().getStudy());
-		if(studyResultList != null && studyResultList.size() == 0){
-			containerForm.getModelObject().setStudyList(studyResultList);
-			this.info("There are no records that matched your query. Please modify your filter");
-			target.addComponent(feedbackPanel);
+		try {
+			List<Study> studyListForUser = new ArrayList<Study>(0);
+			// Search study
+			Study searchStudy = containerForm.getModelObject().getStudy();
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			arkUserVo.setStudy(searchStudy);
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo, searchStudy);
+
+			if (studyListForUser.size() == 0) {
+				containerForm.getModelObject().setStudyList(studyListForUser);
+				this.info("There are no records that matched your query. Please modify your filter");
+				target.addComponent(feedbackPanel);
+			}
+			containerForm.getModelObject().setStudyList(studyListForUser);
+			studyCrudContainerVO.getPageableListView().removeAll();
+			studyCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
 		}
-		containerForm.getModelObject().setStudyList(studyResultList);
-		studyCrudContainerVO.getPageableListView().removeAll();
-		studyCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-		target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 	}
 
 	private void addSearchComponentsToForm() {
@@ -115,19 +135,16 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		add(studyStatusDpChoices);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings( { "unchecked" })
 	private void initStudyStatusDropDown(PropertyModel<StudyStatus> pmStudyStatus) {
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.STUDY_STATUS_KEY);
 		studyStatusDpChoices = new DropDownChoice(Constants.STUDY_DROP_DOWN_CHOICE, pmStudyStatus, studyStatusList, defaultChoiceRenderer);
 	}
 
+	@SuppressWarnings("unchecked")
 	protected void onNew(AjaxRequestTarget target) {
-
 		containerForm.setModelObject(new StudyModelVO());
-
-		List<ModuleVO> modules = new ArrayList<ModuleVO>();
 		Collection<ArkModule> availableArkModules = new ArrayList<ArkModule>();
-
 		availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
 		containerForm.getModelObject().setAvailableArkModules(availableArkModules);// ArkModule from database not LDAP.
 
@@ -175,6 +192,5 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		target.addComponent(subjectUidcontainer);
 
 		preProcessDetailPanel(target, studyCrudContainerVO);
-
 	}
 }
