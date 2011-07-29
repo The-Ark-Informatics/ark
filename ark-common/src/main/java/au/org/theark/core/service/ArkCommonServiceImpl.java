@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -473,12 +474,23 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getUnitTypes(unitTypeCriteria);
 	}
 	
+	public CustomField getCustomField(Long id) {
+		return studyDao.getCustomField(id);
+	}
+	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria) {
+		return studyDao.getCustomFieldDisplayByCustomField(cfCriteria);
+	}
+	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
 			//Create Both CustomField and CustomFieldDisplay
 			AuditHistory ah = new AuditHistory();
+			// Field can not have data yet (since it's new)
+			customFieldVO.getCustomField().setCustomFieldHasData(false);
 			studyDao.createCustomField(customFieldVO.getCustomField());
+
 			//Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
@@ -490,6 +502,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				//Set the CustomField this CustomFieldDisplay entity is linked to
 				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
 				studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				// Put in the sequence based on the ID
+				customFieldVO.getCustomFieldDisplay().setSequence(customFieldVO.getCustomFieldDisplay().getId());
+				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+
 				//Custom Field Display History
 				ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
@@ -562,9 +578,9 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		try{		
 			
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
-				studyDao.deleteCustomField(customFieldVO.getCustomField());
 				studyDao.deleteCustomDisplayField(customFieldVO.getCustomFieldDisplay());
-				String fieldName  =customFieldVO.getCustomField().getName();
+				studyDao.deleteCustomField(customFieldVO.getCustomField());
+				String fieldName = customFieldVO.getCustomField().getName();
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
 				ah.setComment("Deleted Custom Field " + customFieldVO.getCustomField().getName());
@@ -589,14 +605,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		
 	}
 	
-	
-	public FieldType getFieldTypeById(Long filedTypeId){
+	private FieldType getFieldTypeById(Long filedTypeId) {
 		return studyDao.getFieldTypeById(filedTypeId);
-	}
-
-	
-	public CustomField getCustomField(Long id ){
-		return studyDao.getCustomField(id);
 	}
 
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy) {

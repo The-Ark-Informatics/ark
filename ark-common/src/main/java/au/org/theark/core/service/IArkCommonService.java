@@ -24,6 +24,7 @@ import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -426,6 +427,10 @@ public interface IArkCommonService<T> {
 
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
 	
+	public CustomField getCustomField(Long id );
+	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
+
 	/**
 	 * 
 	 * @param customFieldVO
@@ -436,8 +441,6 @@ public interface IArkCommonService<T> {
 	
 	public void updateCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException;
 	
-	public CustomField getCustomField(Long id );
-	
 	public void deleteCustomField(CustomFieldVO customFieldVO) throws ArkSystemException,EntityCannotBeRemoved;
 
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy);
@@ -445,6 +448,6 @@ public interface IArkCommonService<T> {
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo);
 
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule);
-	
+
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
 }
