@@ -10,6 +10,8 @@ import java.util.Set;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
+import org.hibernate.criterion.Example;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
@@ -19,8 +21,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkModuleRole;
@@ -31,10 +35,10 @@ import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
-
 
 /**
  * @author nivedan
@@ -398,7 +402,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkModuleList = criteria.list();
 		for (Iterator iterator = arkModuleList.iterator(); iterator.hasNext();) {
 			ArkModuleRole arkModuleRole = (ArkModuleRole) iterator.next();
-			
+
 		}
 		return arkModuleList;
 	}
@@ -603,9 +607,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		arkUserVO.setArkUserPresentInDatabase(true);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUser));
-		
+
 		// Restrict by Study if NOT Super Administrator
-		if(!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
 		}
 		arkUserRoleList = criteria.list();
@@ -659,21 +663,92 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy) {
 		List<Study> studyList = new ArrayList<Study>(0);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		criteria.createAlias("arkUser", "usr");
-		criteria.add(Restrictions.eq("usr", arkUserVo.getArkUserEntity()));
-		criteria.setProjection(Projections.projectionList().add(
-				Projections.distinct(Projections.property("study")))
-				.add(Projections.property("study")));
-		criteria.setResultTransformer(Transformers.aliasToBean(Study.class));
 		
-		studyList = (List<Study>) criteria.list();
+		try {
+			// Restrict by user if NOT Super Administrator
+			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+			}
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
 		
+		// Restrict on study criteria (by default, NOT 'Archive' status)
+		Criteria studyCriteria = criteria.createCriteria("study");	
+		
+		if (searchStudy.getId() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
+		}
+
+		if (searchStudy.getName() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, searchStudy.getName(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getDateOfApplication() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, searchStudy.getDateOfApplication()));
+		}
+
+		if (searchStudy.getEstimatedYearOfCompletion() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, searchStudy.getEstimatedYearOfCompletion()));
+		}
+
+		if (searchStudy.getChiefInvestigator() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, searchStudy.getChiefInvestigator(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getContactPerson() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, searchStudy.getContactPerson(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getStudyStatus() != null) {
+			studyCriteria.add(Restrictions.eq("studyStatus", searchStudy.getStudyStatus()));
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne("studyStatus", status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+		}
+		else {
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne("studyStatus", status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+		}
+		
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		
+		criteria.setProjection(projectionList);
+		
+		studyList = criteria.list();
 		return studyList;
 	}
 	
+	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException {
+		StudyStatus studyStatus = new StudyStatus();
+		studyStatus.setName("Archive");
+		Example studyStatusExample = Example.create(studyStatus);
+
+		Criteria studyStatusCriteria = getSession().createCriteria(StudyStatus.class).add(studyStatusExample);
+		if (studyStatusCriteria != null && studyStatusCriteria.list() != null && studyStatusCriteria.list().size() > 0) {
+			return (StudyStatus) studyStatusCriteria.list().get(0);
+		}
+		else {
+			log.error("Study Status Table maybe out of synch. Please check if it has an entry for Archive status");
+			throw new StatusNotAvailableException();
+		}
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
@@ -688,7 +763,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		List<ArkRolePolicyTemplate> arkRolePolicyTemplateList = new ArrayList<ArkRolePolicyTemplate>(0);
 		Criteria criteria = getSession().createCriteria(ArkRolePolicyTemplate.class);
 		criteria.add(Restrictions.eq("arkRole", arkRole));
-		if(!arkRole.getName().equalsIgnoreCase(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
+		if (!arkRole.getName().equalsIgnoreCase(au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
 		arkRolePolicyTemplateList = (List<ArkRolePolicyTemplate>) criteria.list();

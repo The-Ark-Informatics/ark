@@ -597,8 +597,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		return studyDao.getCustomField(id);
 	}
 
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo) {
-		return arkAuthorisationDao.getStudyListForUser(arkUserVo);
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo, Study searchStudy) {
+		return arkAuthorisationDao.getStudyListForUser(arkUserVo, searchStudy);
 	}
 
 	public List<ArkUserRole> getArkRoleListByUser(ArkUserVO arkUserVo) {
