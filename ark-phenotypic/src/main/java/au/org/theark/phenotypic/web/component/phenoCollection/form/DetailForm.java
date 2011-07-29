@@ -3,7 +3,6 @@ package au.org.theark.phenotypic.web.component.phenoCollection.form;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -27,7 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.Status;
-import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
@@ -43,7 +42,7 @@ import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
  * @author nivedann
  * 
  */
-@SuppressWarnings({ "serial", "unchecked", "unused" })
+@SuppressWarnings( { "serial", "unchecked", "unused" })
 public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
@@ -115,16 +114,15 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 				null)) {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				iPhenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
-				this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully");
+				int rowsDeleted = iPhenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
+				this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully.");
+				this.info(rowsDeleted + " deleted.");
 				processErrors(target);
 			}
 
 			@Override
 			public boolean isVisible() {
-				// TODO NN Uncomment after User Management UI is completed
-				// return isActionPermitted(Constants.DELETE);
-				return (true);
+				return (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE));
 			}
 		};
 
@@ -189,11 +187,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 			this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was updated successfully");
 			processErrors(target);
 		}
-
-		// Reset context item
-		ContextHelper contextHelper = new ContextHelper();
-		SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID, containerForm.getModelObject().getPhenoCollection().getId());
-		contextHelper.setPhenoContextLabel(target, containerForm.getModelObject().getPhenoCollection().getName(), arkContextMarkup);
 
 		onSavePostProcess(target);
 	}
