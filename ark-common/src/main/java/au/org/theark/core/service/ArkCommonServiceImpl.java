@@ -476,24 +476,28 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
 	public void createCustomField(CustomFieldVO customFieldVO) throws  ArkSystemException, ArkUniqueException{
 		try{
+			//Create Both CustomField and CustomFieldDisplay
 			AuditHistory ah = new AuditHistory();
 			studyDao.createCustomField(customFieldVO.getCustomField());
-			customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
-			studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 			//Custom Field History
 			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
 			ah.setComment("Created Custom " + customFieldVO.getCustomField().getName());
 			ah.setEntityId(customFieldVO.getCustomField().getId());
 			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 			createAuditHistory(ah);
-			//Custom Field Display History
-			ah = new AuditHistory();
-			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
-			ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
-			ah.setEntityId(customFieldVO.getCustomField().getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-			createAuditHistory(ah);
-			
+			//Create CustomFieldDisplay only if allowed 
+			if(customFieldVO.isUseCustomFieldDisplay()){
+				//Set the CustomField this CustomFieldDisplay entity is linked to
+				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
+				studyDao.createCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				//Custom Field Display History
+				ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_CREATED);
+				ah.setComment("Created Custom Field Display" + customFieldVO.getCustomField().getName());
+				ah.setEntityId(customFieldVO.getCustomField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+				createAuditHistory(ah);
+			}
 		}catch (ConstraintViolationException cvex) {
 			log.error("Custom Field Already Exists.: " + cvex);
 			throw new ArkUniqueException("A Custom Field already exits.");
@@ -517,12 +521,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		}
 		try{
 			
-			
 			if(!customFieldVO.getCustomField().getCustomFieldHasData()){
-			
 				studyDao.updateCustomField(customFieldVO.getCustomField());
-				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
-				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 				//Custom Field History
 				AuditHistory ah = new AuditHistory();
 				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
@@ -530,17 +530,20 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 				ah.setEntityId(customFieldVO.getCustomField().getId());
 				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD);
 				createAuditHistory(ah);
-			}else{
-				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
 			}
 			
-			//Custom Field Display History
-			AuditHistory ah = new AuditHistory();
-			ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
-			ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
-			ah.setEntityId(customFieldVO.getCustomField().getId());
-			ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
-			createAuditHistory(ah);
+			//Only Update CustomFieldDisplay when it is allowed
+			if(customFieldVO.isUseCustomFieldDisplay()){
+				customFieldVO.getCustomFieldDisplay().setCustomField(customFieldVO.getCustomField());
+				studyDao.updateCustomFieldDisplay(customFieldVO.getCustomFieldDisplay());
+				//Custom Field Display History
+				AuditHistory ah = new AuditHistory();
+				ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_UPDATED);
+				ah.setComment("Updated Custom Field Display " + customFieldVO.getCustomField().getName());
+				ah.setEntityId(customFieldVO.getCustomField().getId());
+				ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_CUSTOM_FIELD_DISPLAY);
+				createAuditHistory(ah);
+			}			
 			
 		}
 		catch (ConstraintViolationException cvex) {
