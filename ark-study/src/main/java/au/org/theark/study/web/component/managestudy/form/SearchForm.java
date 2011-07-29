@@ -104,13 +104,14 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		try {
 			List<Study> studyListForUser = new ArrayList<Study>(0);
 			// Search study
-			Study searchStudy = containerForm.getModelObject().getStudy();
+			Study searchStudyCriteria = containerForm.getModelObject().getStudy();
 			Subject currentUser = SecurityUtils.getSubject();
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
 			ArkUserVO arkUserVo = new ArkUserVO();
 			arkUserVo.setArkUserEntity(arkUser);
-			arkUserVo.setStudy(searchStudy);
-			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo, searchStudy);
+			arkUserVo.setStudy(searchStudyCriteria);
+			
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
 
 			if (studyListForUser.size() == 0) {
 				containerForm.getModelObject().setStudyList(studyListForUser);
@@ -124,6 +125,8 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
+			this.error("There are no records that matched your query. Please modify your filter");
+			target.addComponent(feedbackPanel);
 		}
 	}
 
