@@ -40,6 +40,7 @@ public class CustomField implements Serializable {
 	private String	encodedValues;
 	private String	missingValue;
 	private Boolean customFieldHasData;
+	private String fieldLabel;
 
 	
 	/**
@@ -164,6 +165,15 @@ public class CustomField implements Serializable {
 	public void setCustomFieldHasData(Boolean customFieldHasData) {
 		this.customFieldHasData = customFieldHasData;
 	}
-	
+
+	@Column(name = "CUSTOM_FIELD_LABEL",length=255)
+	public String getFieldLabel() {
+		return fieldLabel;
+	}
+
+
+	public void setFieldLabel(String fieldLabel) {
+		this.fieldLabel = fieldLabel;
+	}
 
 }
