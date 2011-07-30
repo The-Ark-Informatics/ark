@@ -199,6 +199,10 @@ public class PhenotypicValidator {
 		Field field = fieldData.getField();
 		String minValue = field.getMinValue();
 		String maxValue = field.getMaxValue();
+		
+		if((fieldData.getValue().trim().equalsIgnoreCase(field.getMissingValue().trim()))) {
+			return isInValidRange;
+		}
 
 		if ((minValue == null || minValue.isEmpty()) && (maxValue == null || maxValue.isEmpty())) {
 			return isInValidRange;
@@ -267,6 +271,13 @@ public class PhenotypicValidator {
 		boolean inEncodedValues = true;
 
 		Field field = fieldData.getField();
+		
+		// If matched MISSING_VALUE, then ok
+		String value = fieldData.getValue().trim();
+		String missingValue = field.getMissingValue().trim();
+		if((fieldData.getValue().trim().equalsIgnoreCase(field.getMissingValue().trim()))) {
+			return inEncodedValues;
+		}
 
 		// Validate if encoded values is defined, and not a DATE fieldType
 		if (field.getEncodedValues() != null && !field.getEncodedValues().isEmpty() && !field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE)) {
