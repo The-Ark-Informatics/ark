@@ -123,7 +123,8 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 					ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
 					ArkUserVO arkUserVo = new ArkUserVO();
 					arkUserVo.setArkUserEntity(arkUser);
-					studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo, containerForm.getModelObject().getStudy());
+					arkUserVo.setStudy(containerForm.getModelObject().getStudy());
+					studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
 					if (studyListForUser.size() == 0) {
 						StudyContainer.this.error("You do not have any access permissions to any Study. Please see your Administrator.");
 					}
