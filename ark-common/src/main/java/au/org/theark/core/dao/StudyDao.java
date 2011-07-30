@@ -1011,4 +1011,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return isUnique;
 	}
 
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
