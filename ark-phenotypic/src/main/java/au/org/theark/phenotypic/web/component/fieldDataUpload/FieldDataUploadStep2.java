@@ -38,7 +38,7 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 	public java.util.Collection<String>	validationMessages	= null;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
+	private IArkCommonService<Void>		iArkCommonService;
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
@@ -116,7 +116,7 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 			inputStream.reset();
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);

@@ -57,6 +57,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private HashSet<ArkGridCell>			errorCells;
 	private String								fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
+	private int 								rowsToDisplay = au.org.theark.core.Constants.ROWS_PER_PAGE;
 
 	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
@@ -70,7 +71,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGrid();
 	}
 
-	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload) {
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, int rowsToDisplay) {
 		super(id);
 		this.sheetMetaData = new ArkSheetMetaData();
 		this.updateRows = new HashSet<Integer>();
@@ -80,6 +81,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		this.warningCells = new HashSet<ArkGridCell>();
 		this.errorCells = new HashSet<ArkGridCell>();
 		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
 		initialiseWorkbook(inputStream, delimChar);
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
@@ -146,6 +148,23 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
+	
+	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
+			HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> warningCells, HashSet<ArkGridCell> errorCells, int rowsToDisplay) {
+		super(id);
+		this.sheetMetaData = new ArkSheetMetaData();
+		this.insertRows = insertRows;
+		this.updateRows = updateRows;
+		this.insertCells = insertCells;
+		this.updateCells = updateCells;
+		this.warningCells = warningCells;
+		this.errorCells = errorCells;
+		this.fileFormat = fileFormat;
+		this.rowsToDisplay = rowsToDisplay;
+		initialiseWorkbook(inputStream, delimChar);
+		initialiseGrid();
+		initialiseGridKey(fileUpload);
+	}
 
 	private void initialiseGrid() {
 		add(createHeadings());
@@ -175,7 +194,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 					setRowCssStyle(row, item);
 				}
 
-				if (row > 0) {
+				if (row > 0 && row <= rowsToDisplay) {
 					// creates the row numbers
 					item.add(new Label("rowNo", new Model(String.valueOf(row))));
 

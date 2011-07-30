@@ -119,7 +119,7 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
 			inputStream.reset();
-			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload);
+			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
