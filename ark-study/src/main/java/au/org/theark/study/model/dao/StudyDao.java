@@ -1,5 +1,6 @@
 package au.org.theark.study.model.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -11,6 +12,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -1663,6 +1665,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			fileFormat = (FileFormat) criteria.list().get(0);
 		}
 		return fileFormat;
+	}
+	
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria){
+		
+		String queryString = "select COUNT(*) from study.custom_field_display as cfd LEFT JOIN study.subject_custom_field_data  as cfdd on  cfd.id = cfdd.id  and  cfdd.link_subject_study_id = :linkSubjectStudy";
+		Query query = getSession().createSQLQuery(queryString);
+		query.setParameter("linkSubjectStudy",linkSubjectStudyCriteria.getId());
+		BigInteger count = ((BigInteger)query.uniqueResult());
+		return count.intValue();
 	}
 
 }

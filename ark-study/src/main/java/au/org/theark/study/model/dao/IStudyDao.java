@@ -295,4 +295,6 @@ public interface IStudyDao {
 	public DelimiterType getDelimiterType(Long id);
 
 	public FileFormat getFileFormatByName(String fileFormatName);
+	
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria);
 }
