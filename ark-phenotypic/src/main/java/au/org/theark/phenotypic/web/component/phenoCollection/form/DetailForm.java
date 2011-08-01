@@ -116,7 +116,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				int rowsDeleted = iPhenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
 				this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was cleared successfully.");
-				this.info(rowsDeleted + " deleted.");
+				this.info(rowsDeleted + " field data rows deleted.");
 				processErrors(target);
 			}
 
