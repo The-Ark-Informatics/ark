@@ -120,6 +120,16 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MAX_VALUE, ""));// the ID here must match the ones in mark-up
 				}
+				
+				// TODO when displaying text escape any special characters
+				// Missing Value
+				if (field.getMissingValue() != null) {
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MISSING_VALUE, field.getMissingValue()));// the ID here must match the
+					// ones in mark-up
+				}
+				else {
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.FIELDVO_FIELD_MISSING_VALUE, ""));// the ID here must match the ones in mark-up
+				}
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {

@@ -4,7 +4,7 @@
 	<table width="100%" cellspacing="0" class="dataview">
 		<tr>
 			<th width="2%">&nbsp;</th>
-			<th width="5%">
+			<th width="6%">
 				<label for="fieldId">
 					<wicket:message	key="field.id">Field ID:</wicket:message>
 				</label>
@@ -39,12 +39,17 @@
 					<wicket:message	key="field.max">Max:</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+				<label for="fieldMaxValue">
+					<wicket:message	key="field.missingValue">Missing Value:</wicket:message>
+				</label>
+			</th>
 			<th width="2%">&nbsp;</th>
 		</tr>
 		<!--  The Data Result Set -->
 		<tr wicket:id="fieldList">
 			<td width="2%">&nbsp;</td>
-			<td width="5%">
+			<td width="6%">
 				<span wicket:id="field.id">100</span>
 			</td>
 			<td width="15%">
@@ -66,6 +71,9 @@
 			</td>
 			<td width="10%">
 				<span wicket:id="field.maxValue">MaxValue</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.missingValue">MissingValue</span>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>
