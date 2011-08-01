@@ -1141,12 +1141,12 @@ public class PhenotypicValidator {
 	}
 
 	private static boolean validateFieldMissingDefinition(Field field, Collection<String> errorMessages) {
-		boolean isValid = false;
+		boolean isValid = true;
 
 		if (!(field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_CHARACTER) || field.getFieldType().getName().equalsIgnoreCase(Constants.FIELD_TYPE_NUMBER) || field.getFieldType()
 				.getName().equalsIgnoreCase(Constants.FIELD_TYPE_DATE))) {
 			errorMessages.add(PhenotypicValidationMessage.fieldMissingValueNotDefinedType(field));
-			return isValid;
+			isValid = false;
 		}
 
 		// Number field type
