@@ -5,34 +5,35 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
 /*
- * The ArkDataProvider is designed for use with Hibernate as the underlying data source
+ * The ArkDataProvider2 is designed for use with Hibernate as the underlying data source
+ * with the flexibility of the criteria being a different type to the return object.
  * Due to Hibernate's ability to lazy-load, it is:
  * - unnecessary to (re-)load() the object from the backend for the "model(T object)"
  * - unnecessary to do anything on detach()
  *
  * @author elam
  */
-public abstract class ArkDataProvider<T, U> implements IDataProvider<T> {
+public abstract class ArkDataProvider2<S, T, U> implements IDataProvider<T> {
 
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= 1L;
 
-	protected IModel<T>			model;
+	protected IModel<S>			criteriaModel;
 	protected transient U		service;
 
-	public ArkDataProvider(U service) {
+	public ArkDataProvider2(U service) {
 		super();
 		this.service = service;
 	}
 
-	public IModel<T> getModel() {
-		return model;
+	public IModel<S> getCriteriaModel() {
+		return criteriaModel;
 	}
 
-	public void setModel(IModel<T> model) {
-		this.model = model;
+	public void setCriteriaModel(IModel<S> model) {
+		this.criteriaModel = model;
 	}
 
 	// Implemented based on using Hibernate with Wicket - i.e. it just needs to return a 
