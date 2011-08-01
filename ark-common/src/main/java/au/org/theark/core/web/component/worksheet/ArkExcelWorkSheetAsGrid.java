@@ -45,7 +45,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	 */
 	private static final long				serialVersionUID				= 2950851261474110946L;
 	private transient Sheet					sheet;																										// an instance of an Excel
-																																									// WorkSheet
+	// WorkSheet
 	private transient ArkSheetMetaData	sheetMetaData;
 	private byte[]								workBookAsBytes;
 	private char								delimiterType;
@@ -57,7 +57,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private HashSet<ArkGridCell>			errorCells;
 	private String								fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
-	private int 								rowsToDisplay = au.org.theark.core.Constants.ROWS_PER_PAGE;
+	private int									rowsToDisplay					= au.org.theark.core.Constants.ROWS_PER_PAGE;
 
 	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
@@ -148,7 +148,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		initialiseGrid();
 		initialiseGridKey(fileUpload);
 	}
-	
+
 	public ArkExcelWorkSheetAsGrid(String id, InputStream inputStream, String fileFormat, char delimChar, FileUpload fileUpload, HashSet<Integer> insertRows, HashSet<Integer> updateRows,
 			HashSet<ArkGridCell> insertCells, HashSet<ArkGridCell> updateCells, HashSet<ArkGridCell> warningCells, HashSet<ArkGridCell> errorCells, int rowsToDisplay) {
 		super(id);
@@ -167,23 +167,50 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	}
 
 	private void initialiseGrid() {
+		add(new Label("rowsToDisplay", rowsToDisplay + " rows of file"));
 		add(createHeadings());
 		add(createMainGrid());
 	}
 
-	private void initialiseGridKey(FileUpload fileUpload) {
-		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
-		wizardDataGridKeyContainer.setOutputMarkupId(true);
-		// Download file link button
-		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
-		add(wizardDataGridKeyContainer);
+	@SuppressWarnings( { "unchecked" })
+	private Loop createHeadings() {
+		return new Loop("heading", new PropertyModel(sheetMetaData, "cols")) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= -7027878243061138904L;
+
+			public void populateItem(LoopItem item) {
+				final int col = item.getIteration();
+
+				/*
+				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
+				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
+				 */
+				IModel<Object> model = new Model() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1144128566137457199L;
+
+					@Override
+					public Serializable getObject() {
+						Cell cell = sheet.getCell(col, 0);
+						return cell.getContents();
+					}
+				};
+				Label cellData = new Label("cellHead", model);
+				item.add(cellData);
+			}
+		};
 	}
 
 	/*
 	 * generating rows using the Loop class and the PropertyModel with SheetMetaData instance works magicWe bound the numbers of rows stored in
 	 * SheetMetaData instance to the Loop using PropertyModel. No table will be displayed before an upload.
 	 */
-	@SuppressWarnings({ "serial", "unchecked" })
+	@SuppressWarnings( { "serial", "unchecked" })
 	private Loop createMainGrid() {
 		// We create a Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "rows" value
 		return new Loop("rows", new PropertyModel(sheetMetaData, "rows")) {
@@ -308,40 +335,6 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		};
 	}
 
-	@SuppressWarnings({ "unchecked" })
-	private Loop createHeadings() {
-		return new Loop("heading", new PropertyModel(sheetMetaData, "cols")) {
-
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -7027878243061138904L;
-
-			public void populateItem(LoopItem item) {
-				final int col = item.getIteration();
-
-				/*
-				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
-				 * updated each time we upload a new Excel File, the value for each cell is automatically updated
-				 */
-				IModel<Object> model = new Model() {
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= 1144128566137457199L;
-
-					@Override
-					public Serializable getObject() {
-						Cell cell = sheet.getCell(col, 0);
-						return cell.getContents();
-					}
-				};
-				Label cellData = new Label("cellHead", model);
-				item.add(cellData);
-			}
-		};
-	}
-
 	public void initialiseWorkbook(InputStream inputStream, char delimChar) {
 		delimiterType = delimChar;
 		if (fileFormat.equalsIgnoreCase("XLS")) {
@@ -433,6 +426,14 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 		 */
 		sheetMetaData.setRows(sheet.getRows());
 		sheetMetaData.setCols(sheet.getColumns());
+	}
+
+	private void initialiseGridKey(FileUpload fileUpload) {
+		wizardDataGridKeyContainer.setVisible((!insertRows.isEmpty() || !updateRows.isEmpty()));
+		wizardDataGridKeyContainer.setOutputMarkupId(true);
+		// Download file link button
+		wizardDataGridKeyContainer.add(buildDownloadButton(fileUpload));
+		add(wizardDataGridKeyContainer);
 	}
 
 	private AjaxButton buildDownloadButton(final FileUpload fileUpload) {
