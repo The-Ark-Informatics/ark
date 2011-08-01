@@ -1145,11 +1145,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				query.setParameter("phenoCollection", phenoCollection);
 				rowsDeleted = query.executeUpdate();
 
-				if (rowsDeleted == 0) {
-					log.error("in clearPhenoCollection: Failed to perform DELETE operation");
-				}
-				else {
-					log.info("Cleared PhenoCollection: " + phenoCollection.getName() + " " + rowsDeleted + " rows deleted successfully");
+				log.info("Cleared PhenoCollection: " + phenoCollection.getName() + " " + rowsDeleted + " field data rows deleted successfully");
+
+				// Delete PhenoCollectionUploads and FK Upload as well
+				List<PhenoCollectionUpload> phenoCollectionUploadList = getPhenoCollectionUploadList(phenoCollection);
+				for (Iterator iterator = phenoCollectionUploadList.iterator(); iterator.hasNext();) {
+					PhenoCollectionUpload phenoCollectionUpload = (PhenoCollectionUpload) iterator.next();
+					deleteCollectionUpload(phenoCollectionUpload);
+					deleteUpload(phenoCollectionUpload.getUpload());
 				}
 			}
 			catch (Exception e) {
@@ -1157,6 +1160,17 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 			}
 		}
 		return rowsDeleted;
+	}
+	
+	private java.util.List<PhenoCollectionUpload> getPhenoCollectionUploadList(PhenoCollection phenoCollection) {
+		Criteria criteria = getSession().createCriteria(PhenoCollectionUpload.class);
+
+		if (phenoCollection != null) {
+			criteria.add(Restrictions.eq("collection", phenoCollection));
+		}
+
+		java.util.List<PhenoCollectionUpload> uploadCollection = criteria.list();
+		return uploadCollection;
 	}
 
 	public java.util.List<BarChartResult> getFieldsWithDataResults(Study study) {
