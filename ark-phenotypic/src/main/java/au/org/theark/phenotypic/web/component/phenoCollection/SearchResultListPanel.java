@@ -17,7 +17,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
-import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -171,10 +170,6 @@ public class SearchResultListPanel extends Panel {
 				viewButtonContainer.setVisible(true);
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
-
-				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setStudyContextLabel(target, phenoCollection.getStudy().getName(), arkContextMarkup);
-				contextHelper.setPhenoContextLabel(target, phenoCollection.getName(), arkContextMarkup);
 
 				target.addComponent(searchResultContainer);
 				target.addComponent(detailsPanelContainer);
