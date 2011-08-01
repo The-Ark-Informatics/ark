@@ -1146,14 +1146,14 @@ public class PhenotypicDao extends HibernateSessionDao implements IPhenotypicDao
 				rowsDeleted = query.executeUpdate();
 
 				if (rowsDeleted == 0) {
-					System.out.println("fail to perform operation");
+					log.error("in clearPhenoCollection: Failed to perform DELETE operation");
 				}
 				else {
-					System.out.println(rowsDeleted + "rows deleted sucessfully");
+					log.info("Cleared PhenoCollection: " + phenoCollection.getName() + " " + rowsDeleted + " rows deleted successfully");
 				}
 			}
 			catch (Exception e) {
-				System.out.println(e.getMessage());
+				log.error(e.getMessage());
 			}
 		}
 		return rowsDeleted;
