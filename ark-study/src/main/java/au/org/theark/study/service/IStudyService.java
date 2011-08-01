@@ -263,6 +263,6 @@ public interface IStudyService {
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count);
 	
-	public int getSubjectCustomFieldDataCount(SubjectCustomFieldData subjectCustomFieldData);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria);
 			
 }

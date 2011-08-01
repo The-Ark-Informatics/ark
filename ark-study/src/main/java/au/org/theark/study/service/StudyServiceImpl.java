@@ -849,7 +849,7 @@ public class StudyServiceImpl implements IStudyService {
 	/**
 	 * 
 	 */
-	public int getSubjectCustomFieldDataCount(SubjectCustomFieldData subjectCustomFieldData) {
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria) {
 		return 0;
 	}
 }
