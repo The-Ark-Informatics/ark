@@ -660,7 +660,14 @@ public class PhenotypicServiceImpl implements IPhenotypicService {
 	}
 
 	public int clearPhenoCollection(PhenoCollection phenoCollection) {
-		return phenotypicDao.clearPhenoCollection(phenoCollection);
+		int rowsDeleted = phenotypicDao.clearPhenoCollection(phenoCollection);
+		AuditHistory ah = new AuditHistory();
+		ah.setActionType(au.org.theark.core.Constants.ACTION_TYPE_DELETED);
+		ah.setComment("Cleared PhenoCollection " + phenoCollection.getId() + " " + rowsDeleted + " field data rows deleted");
+		ah.setEntityId(phenoCollection.getId());
+		ah.setEntityType(au.org.theark.core.Constants.ENTITY_TYPE_PHENO_COLLECTION);
+		iArkCommonService.createAuditHistory(ah);
+		return rowsDeleted;
 	}
 
 	public List<BarChartResult> getFieldsWithDataResults(Study study) {
