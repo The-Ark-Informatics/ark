@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.Example;
@@ -683,8 +684,20 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		List<ArkUserRole> arkUserRoleList = new ArrayList<ArkUserRole>(0);
 		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
 		criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
-		Criteria studycriteria = criteria.createCriteria("study");
-		studycriteria.addOrder(Order.asc("name"));
+		// Restrict by Study if NOT Super Administrator
+		try {
+			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				Criteria studycriteria = criteria.createCriteria("study");
+				studycriteria.addOrder(Order.asc("name"));
+			}
+		}
+		catch (HibernateException e) {
+			log.error(e.getMessage());
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
 		criteria.addOrder(Order.asc("arkModule"));
 		criteria.addOrder(Order.asc("arkRole"));
 		arkUserRoleList = (List<ArkUserRole>) criteria.list();
