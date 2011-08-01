@@ -266,7 +266,9 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		studyComponentStatusChoice.setRequired(true).setLabel(new StringResourceModel("studyComponent.status.required", this, null));
 		consentedDatePicker.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("consent.consentdate", this, null));
 		consentedDatePicker.setRequired(true);
-
+		consentCompletedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("completed.date.DateValidator.maximum", this, null));
+		consentRequestedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("requested.date.DateValidator.maximum", this, null));
+		consentReceivedDtf.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("received.date.DateValidator.maximum", this, null));
 	}
 
 	/*
@@ -317,41 +319,64 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected void onSave(Form<ConsentVO> containerForm, AjaxRequestTarget target) {
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		// save new
-		try {
+		boolean isOkToSave = true;
+		
+		String status = containerForm.getModelObject().getConsent().getStudyComponentStatus().getName();
+		
+		if(status.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED) && containerForm.getModelObject().getConsent().getCompletedDate() == null){
+			isOkToSave = false;
+			this.error("Completed Date is a required field.");
+		}else if(status.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED) &&  containerForm.getModelObject().getConsent().getRequestedDate() == null){
+			isOkToSave = false;
+			this.error("Requested Date is a required field.");
+		}else if(status.equalsIgnoreCase(Constants.STUDY_STATUS_RECEIVED) &&  containerForm.getModelObject().getConsent().getReceivedDate() == null){
+			isOkToSave = false;
+			this.error("Received Date is a required field.");
+		}else{
+			isOkToSave = true;
+		}
+		
+		if(isOkToSave){
+			try {
 
-			// Subject in Context
-			Person subject = studyService.getPerson(personSessionId);
-			// containerForm.getModelObject().getConsent().setSubject(subject);
-			// TODO Get the LinkSubjectStudy here and place it int he model
-			// Study in Context
-			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-			Study study = iArkCommonService.getStudy(studyId);
-			containerForm.getModelObject().getConsent().setStudy(study);
+				// Subject in Context
+				Person subject = studyService.getPerson(personSessionId);
+				// containerForm.getModelObject().getConsent().setSubject(subject);
+				// TODO Get the LinkSubjectStudy here and place it int he model
+				// Study in Context
+				Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+				Study study = iArkCommonService.getStudy(studyId);
+				containerForm.getModelObject().getConsent().setStudy(study);
+				
+				if (containerForm.getModelObject().getConsent().getId() == null) {
 
-			if (containerForm.getModelObject().getConsent().getId() == null) {
+					studyService.create(containerForm.getModelObject().getConsent());
+					this.info("Consent was successfuly created for the Subject ");
+					processErrors(target);
+				}
+				else {
+					studyService.update(containerForm.getModelObject().getConsent());
+					this.info("Consent was successfuly updated for the Subject ");
+					processErrors(target);
+				}
 
-				studyService.create(containerForm.getModelObject().getConsent());
-				this.info("Consent was successfuly created for the Subject ");
+			}
+			catch (EntityNotFoundException e) {
+				this.error("The Consent record you tried to update is no longer available in the system");
 				processErrors(target);
 			}
-			else {
-				studyService.update(containerForm.getModelObject().getConsent());
-				this.info("Consent was successfuly updated for the Subject ");
+			catch (ArkSystemException e) {
+				this.error(e.getMessage());
 				processErrors(target);
 			}
-
-		}
-		catch (EntityNotFoundException e) {
-			this.error("The Consent record you tried to update is no longer available in the system");
+			finally {
+				onSavePostProcess(target);
+			}
+			
+		}else{
 			processErrors(target);
 		}
-		catch (ArkSystemException e) {
-			this.error(e.getMessage());
-			processErrors(target);
-		}
-		finally {
-			onSavePostProcess(target);
-		}
+	
 
 	}
 
