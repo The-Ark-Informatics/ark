@@ -261,7 +261,8 @@ public interface IStudyService {
 
 	public FileFormat getFileFormatByName(String fileFormatName);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudy);
-		
-		
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count);
+	
+	public int getSubjectCustomFieldDataCount(SubjectCustomFieldData subjectCustomFieldData);
+			
 }
