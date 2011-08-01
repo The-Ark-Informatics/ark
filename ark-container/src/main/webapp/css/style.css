@@ -291,13 +291,13 @@ body {
 }
 
 h1,h2,h3,h4,h5,h6,h7,h8 {
-	color: #E9601A;
+	color: #000000;
 }
 
 #extitle {
 	font-size: 12pt;
 	font-weight: bold;
-	color: #E9601A;
+	color: #000000;
 	padding: 10px 10px 10px 10px;
 }
 
@@ -327,7 +327,7 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 .blockWithBorder {
 	border-width: thin;
 	border-style: dotted;
-	border-color: #E9601A;
+	border-color: #000000;
 }
 
 #hellomessage {
@@ -338,7 +338,7 @@ h1,h2,h3,h4,h5,h6,h7,h8 {
 	background-color: #BBBBBB;
 	color: white;
 	font-weight: bold;
-	border-bottom: solid #E9601A;
+	border-bottom: solid #000000;
 	border-width: thin;
 	padding: 2px 2px 2px 6px;
 }
