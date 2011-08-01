@@ -1,6 +1,7 @@
 package au.org.theark.study.service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.vo.StudyModelVO;
@@ -258,4 +260,8 @@ public interface IStudyService {
 	public DelimiterType getDelimiterType(Long id);
 
 	public FileFormat getFileFormatByName(String fileFormatName);
+	
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudy);
+		
+		
 }

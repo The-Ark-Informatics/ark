@@ -3,6 +3,7 @@ package au.org.theark.study.service;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -50,6 +51,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
@@ -833,5 +835,13 @@ public class StudyServiceImpl implements IStudyService {
 
 	public FileFormat getFileFormatByName(String fileFormatName) {
 		return studyDao.getFileFormatByName(fileFormatName);
+	}
+	
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudy){
+		
+		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
+		
+		
+		return customfieldDataList;
 	}
 }
