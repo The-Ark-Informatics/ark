@@ -1474,7 +1474,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		Study study = null;
 		int i = 1;
 
-		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
+		session.beginTransaction();
+		
+		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
 			study = subjectVo.getLinkSubjectStudy().getStudy();
 
@@ -1522,19 +1524,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						Person person = subjectVo.getLinkSubjectStudy().getPerson();
 						session.save(person);
 
-						PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-						if (person.getLastName() != null) {
-							personLastNameHistory.setPerson(person);
-							personLastNameHistory.setLastName(person.getLastName());
-							session.save(personLastNameHistory);
-						}
-
-						// Update subjectPreviousLastname
-						subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
-
 						LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
-						session.save(linkSubjectStudy);// The hibernate session is the same. This should be automatically bound with Spring's
-																	// OpenSessionInViewFilter
+						session.save(linkSubjectStudy);
 					}
 				}
 				else {
@@ -1545,22 +1536,24 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 				// Disable insertion lock
 				setSubjectUidSequenceLock(study, false);
 			}
-			if ((i++ % 50) == 0) { // 50, same as the JDBC batch size
-											// flush a batch of inserts and release memory:
+			if ((i++ % 50) == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
+				log.info("Hit 50 row batch size, flushing and releasing memory");
 				session.flush();
 				session.clear();
 			}
 		}
+		session.getTransaction().commit();
+		session.close();
 	}
 
 	public void batchUpdateSubjects(Collection<SubjectVO> subjectVoCollection) {
 		Session session = getSession();
-		Study study = null;
 		int i = 1;
 
-		for (Iterator iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
+		session.beginTransaction();
+		
+		for (Iterator<SubjectVO> iterator = subjectVoCollection.iterator(); iterator.hasNext();) {
 			SubjectVO subjectVo = (SubjectVO) iterator.next();
-			study = subjectVo.getLinkSubjectStudy().getStudy();
 
 			Person person = subjectVo.getLinkSubjectStudy().getPerson();
 			session.update(person);// Update Person and associated Phones
@@ -1574,19 +1567,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					personLastNameHistory.setLastName(person.getLastName());
 					session.update(personLastNameHistory);
 				}
+				
+				// Update subjectPreviousLastname
+				subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 			}
-
-			// Update subjectPreviousLastname
-			subjectVo.setSubjectPreviousLastname(getPreviousLastname(person));
 
 			LinkSubjectStudy linkSubjectStudy = subjectVo.getLinkSubjectStudy();
 			session.update(linkSubjectStudy);
-			if (i++ % 50 == 0) { // 50, same as the JDBC batch size
-										// flush a batch of inserts and release memory:
+			if (i++ % 50 == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
+				log.info("Hit 50 row batch size, flushing and releasing memory");
 				session.flush();
 				session.clear();
 			}
 		}
+		session.getTransaction().commit();
+		session.close();
 	}
 
 	public Collection<ArkUser> lookupArkUser(Study study) {
