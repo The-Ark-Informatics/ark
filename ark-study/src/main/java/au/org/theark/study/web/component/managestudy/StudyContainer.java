@@ -29,7 +29,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	 * 
 	 */
 	private static final long			serialVersionUID	= 6705316114204293307L;
-	private final Logger					log					= LoggerFactory.getLogger(StudyContainer.class);
+	private static final Logger		log					= LoggerFactory.getLogger(StudyContainer.class);
 	private Container						containerForm;
 	private Details						detailsPanel;
 	private SearchResults				searchResultsPanel;

@@ -49,7 +49,7 @@ import au.org.theark.core.vo.ArkUserVO;
 @Repository("arkAuthorisationDao")
 public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkAuthorisation {
 
-	final Logger	log	= LoggerFactory.getLogger(ArkAuthorisationDao.class);
+	static final Logger	log	= LoggerFactory.getLogger(ArkAuthorisationDao.class);
 
 	/**
 	 * Looks up a ArkUser based on a String that represents the user name in LDAP. If the user name provided is null or is invalid/does not exist in
