@@ -2,8 +2,6 @@ package au.org.theark.report.web.component.viewReport;
 
 import java.util.List;
 
-import mx4j.log.Log;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
@@ -22,7 +20,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.dao.ArkAuthorisationDao;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
@@ -35,6 +32,7 @@ import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetai
 import au.org.theark.report.web.component.viewReport.phenoFieldDetails.PhenoFieldDetailsReportContainer;
 import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLevelConsentReportContainer;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
+import au.org.theark.report.web.component.viewReport.studyUserRolePermissions.StudyUserRolePermissionsReportContainer;
 
 @SuppressWarnings("serial")
 public class ReportSelectPanel extends Panel {
@@ -243,6 +241,21 @@ public class ReportSelectPanel extends Panel {
 					}
 					else {
 						PhenoFieldDetailsReportContainer selectedReportPanel = new PhenoFieldDetailsReportContainer("selectedReportContainerPanel");
+						selectedReportPanel.setOutputMarkupId(true);
+						// Replace the old selectedReportPanel with this new one
+						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
+						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
+						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
+						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						this.info(reportTemplate.getName() + " template selected.");
+					}
+				}
+				else if (reportTemplate.getName().equals(Constants.STUDY_USER_ROLE_PERMISSIONS)) {
+					if (reportSelectCPM.getObject().getStudy() == null) {
+						this.error("This report requires a study in context. Please put a study in context first.");
+					}
+					else {
+						StudyUserRolePermissionsReportContainer selectedReportPanel = new StudyUserRolePermissionsReportContainer("selectedReportContainerPanel");
 						selectedReportPanel.setOutputMarkupId(true);
 						// Replace the old selectedReportPanel with this new one
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
