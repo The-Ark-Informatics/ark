@@ -351,18 +351,18 @@ public interface IStudyDao {
 	
 	public CustomField getCustomField(Long id );
 	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
+	
+	public CustomFieldDisplay getCustomFieldDisplay(Long id );
+	
 	public void updateCustomField(CustomField customField) throws  ArkSystemException;
 	
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
-	
-	public CustomFieldDisplay getCustomFieldDisplay(Long id );
 	
 	public void deleteCustomField(CustomField customField) throws ArkSystemException;
 	
 	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
 	
 	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
-
-	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
 
 }

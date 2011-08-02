@@ -960,14 +960,20 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		return (CustomField)criteria.uniqueResult();
 	}
 	
+	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria){
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.add(Restrictions.eq("customField.id", cfCriteria.getId()));
+		criteria.setMaxResults(1);
+		return (CustomFieldDisplay)criteria.uniqueResult();
+	}
+	
 	public CustomFieldDisplay getCustomFieldDisplay(Long id ){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.add(Restrictions.eq("id", id));
 		criteria.setMaxResults(1);
 		return (CustomFieldDisplay)criteria.uniqueResult();
 	}
-	
-	
+		
 	public void updateCustomField(CustomField customField) throws  ArkSystemException{
 		 getSession().update(customField);
 	}
@@ -1009,11 +1015,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		stateLessSession.close();
 		return isUnique;
-	}
-
-	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
