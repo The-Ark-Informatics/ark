@@ -57,6 +57,7 @@ public class Constants {
 	public static final String	PERSON_CONTEXT_TYPE_SUBJECT					= "subject";
 	public static final String	PERSON_CONTEXT_TYPE_CONTACT					= "contact";
 	public static final String	PERSON_CONTEXT_CONSENT_ID						= "consentId";
+	public static final String	MODULE_CONTEXT_NAME								= "moduleName";
 
 	/* Menu tabs */
 	public static final String	MENU_SUBJECT_SUBMENU								= "subjectSubMenus";
