@@ -42,7 +42,7 @@ import au.org.theark.geno.util.IPedDataAcceptor;
 @Service(Constants.GENO_SERVICE)
 public class GenoService implements IGenoService {
 
-	final Logger log = LoggerFactory.getLogger(GenoService.class);
+	static final Logger log = LoggerFactory.getLogger(GenoService.class);
 
 	private ICollectionDao collectionDao;
 	private IGwasDao gwasDao;

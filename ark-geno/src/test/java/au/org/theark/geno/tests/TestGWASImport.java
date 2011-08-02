@@ -30,7 +30,7 @@ import au.org.theark.geno.service.IGenoService;
 @Transactional
 public class TestGWASImport extends AbstractTransactionalJUnit38SpringContextTests {
 
-	final Logger log = LoggerFactory.getLogger(TestGWASImport.class);
+	static final Logger log = LoggerFactory.getLogger(TestGWASImport.class);
 
 	@Autowired
 	@SpringBean(name = Constants.GENO_SERVICE)
