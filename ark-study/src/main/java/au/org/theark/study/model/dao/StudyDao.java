@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -405,18 +406,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 						session.update(linkSubjectStudy);
 					}
 					
-					// Auto consent Subject
-					if(subjectVo.getLinkSubjectStudy().getStudy().getAutoConsent() && 
-							subjectVo.getLinkSubjectStudy().getSubjectStatus().getName().equalsIgnoreCase("Subject"))
-					{
-						subjectVo.getLinkSubjectStudy().setConsentDate(new Date());
-						subjectVo.getLinkSubjectStudy().setConsentStatus(getConsentStatusByName("Consented"));
-						subjectVo.getLinkSubjectStudy().setConsentType(getConsentTypeByName("Electronic"));
-						YesNo yesno = getYesNo("Yes");
-						subjectVo.getLinkSubjectStudy().setConsentToActiveContact(yesno);
-						subjectVo.getLinkSubjectStudy().setConsentToPassiveDataGathering(yesno);
-						subjectVo.getLinkSubjectStudy().setConsentToUseData(yesno);
-					}
+					autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 				}
 			}
 			else {
@@ -426,6 +416,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		finally {
 			// Disable insertion lock
 			setSubjectUidSequenceLock(study, false);
+		}
+	}
+
+	private void autoConsentLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
+		// Auto consent Subject
+		if(linkSubjectStudy.getStudy().getAutoConsent() && 
+				linkSubjectStudy.getSubjectStatus().getName().equalsIgnoreCase("Subject"))
+		{
+			linkSubjectStudy.setConsentDate(new Date());
+			linkSubjectStudy.setConsentStatus(getConsentStatusByName("Consented"));
+			linkSubjectStudy.setConsentType(getConsentTypeByName("Electronic"));
+			YesNo yesno = getYesNo("Yes");
+			linkSubjectStudy.setConsentToActiveContact(yesno);
+			linkSubjectStudy.setConsentToPassiveDataGathering(yesno);
+			linkSubjectStudy.setConsentToUseData(yesno);
 		}
 	}
 
@@ -1522,6 +1527,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 							VitalStatus vitalStatus = getVitalStatus(new Long(0));
 							subjectVo.getLinkSubjectStudy().getPerson().setVitalStatus(vitalStatus);
 						}
+						
+						autoConsentLinkSubjectStudy(subjectVo.getLinkSubjectStudy());
 
 						Person person = subjectVo.getLinkSubjectStudy().getPerson();
 						session.save(person);
@@ -1676,4 +1683,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return count.intValue();
 	}
 
+	/**
+	 * Update the Study consent fo all LinkSubjectStudy's in the specified Study
+	 * @param study
+	 */
+	public void consentAllLinkSubjectsToStudy(Study study) {
+		Session session = getSession();
+		Set<LinkSubjectStudy> linkSubjectStudyList = study.getLinkSubjectStudies();
+		for (Iterator<LinkSubjectStudy> iterator = linkSubjectStudyList.iterator(); iterator.hasNext();) {
+			LinkSubjectStudy linkSubjectStudy = (LinkSubjectStudy) iterator.next();
+			autoConsentLinkSubjectStudy(linkSubjectStudy);
+			session.update(linkSubjectStudy);
+		}
+	}
 }
