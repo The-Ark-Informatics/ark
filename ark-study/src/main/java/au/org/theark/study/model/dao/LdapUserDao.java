@@ -204,17 +204,17 @@ public class LdapUserDao implements ILdapUserDao {
 	public ArkUserVO getUser(String username) throws ArkSystemException {
 
 		ArkUserVO etaUserVO = null;
-		log.info("\n getUser ");
+		log.debug("\n getUser ");
 		try {
 			LdapName ldapName = new LdapName(basePeopleDn);
 			ldapName.add(new Rdn("cn", username));
 			Name nameObj = (Name) ldapName;
 			etaUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());
-			log.info("\n etauserVO " + etaUserVO);
+			log.debug("\n etauserVO " + etaUserVO);
 
 		}
 		catch (InvalidNameException ne) {
-			log.info("\nGiven username or user does not exist." + username);
+			log.debug("\nGiven username or user does not exist." + username);
 			throw new ArkSystemException("A System error has occured");
 
 		}
@@ -231,7 +231,7 @@ public class LdapUserDao implements ILdapUserDao {
 	private static class PersonContextMapper implements ContextMapper {
 
 		public Object mapFromContext(Object ctx) {
-			log.info("\n PersonContext Mapper...");
+			log.debug("\n PersonContext Mapper...");
 			DirContextAdapter context = (DirContextAdapter) ctx;
 
 			ArkUserVO arkUserVO = new ArkUserVO();
@@ -263,7 +263,7 @@ public class LdapUserDao implements ILdapUserDao {
 	private static class LiteSiteContextMapper implements ContextMapper {
 
 		public Object mapFromContext(Object ctx) {
-			log.info("\n LiteSiteContext Mapper...");
+			log.debug("\n LiteSiteContext Mapper...");
 			DirContextAdapter context = (DirContextAdapter) ctx;
 			SiteVO siteVo = new SiteVO();
 			siteVo.setSiteName(context.getStringAttribute("cn"));
@@ -434,10 +434,10 @@ public class LdapUserDao implements ILdapUserDao {
 
 		// if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
 		// securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-		// log.info("User can access all users");
+		// log.debug("User can access all users");
 		// userList = searchAllUsers(userVO);
 		// }else{
-		// log.info("User can access only a sub-set of users.");
+		// log.debug("User can access only a sub-set of users.");
 		// //Get logged in user's Groups and roles(and permissions)
 		// userName = (String) currentUser.getPrincipal();
 		// //delegate call to another method and get back a list of users into userList
@@ -481,7 +481,7 @@ public class LdapUserDao implements ILdapUserDao {
 			Name nameObj = (Name) ldapName;
 
 			arkUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new LitePersonContextMapper());
-			log.info("\n etauserVO " + arkUserVO);
+			log.debug("\n etauserVO " + arkUserVO);
 			if (arkUserVO.getUserName().equalsIgnoreCase(username)) {
 				isPresent = true;
 			}
@@ -542,7 +542,7 @@ public class LdapUserDao implements ILdapUserDao {
 	}
 
 	public void update(ArkUserVO userVO) throws ArkSystemException {
-		log.info("update() invoked: Updating user details in LDAP");
+		log.debug("update() invoked: Updating user details in LDAP");
 		try {
 			// Assuming that all validation is already done update the attributes in LDAP
 			LdapName ldapName = new LdapName(getBasePeopleDn());
