@@ -38,7 +38,7 @@ import au.org.theark.study.web.component.managestudy.StudyHelper;
 
 public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 	private static final long							serialVersionUID	= -5468677674413992897L;
-	private final Logger									log					= LoggerFactory.getLogger(SearchForm.class);
+	private static final Logger						log					= LoggerFactory.getLogger(SearchForm.class);
 	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService							iArkCommonService;
