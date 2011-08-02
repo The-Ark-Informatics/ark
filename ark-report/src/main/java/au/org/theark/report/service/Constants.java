@@ -10,6 +10,7 @@ public class Constants {
 	public static final String	STUDY_COMP_CONSENT_REPORT_NAME	= "Study Component Consent Details Report";
 	public static final String	STUDY_LEVEL_CONSENT_REPORT_NAME	= "Study-level Consent Details Report";
 	public static final String	PHENO_FIELD_DETAILS_REPORT_NAME	= "Phenotypic Field Details Report (Data Dictionary)";
+	public static final String	STUDY_USER_ROLE_PERMISSIONS	= "Study User Role Permissions Report";
 
 	public static final String	PDF_REPORT_FORMAT						= "PDF";
 	public static final Object	CSV_REPORT_FORMAT						= "CSV";
@@ -28,5 +29,7 @@ public class Constants {
 	public static final String	CONSENT_CONSENTSTATUS				= "consentStatus";
 	public static final String	CONSENT_CONSENTDATE					= "consentDate";
 	public static final String	CONSENT_LINKSUBJECTSTUDY			= "linkSubjectStudy";
+
+	
 
 }

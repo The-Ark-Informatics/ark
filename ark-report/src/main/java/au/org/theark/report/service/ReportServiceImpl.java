@@ -32,6 +32,7 @@ import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 @Transactional
 @Service(Constants.REPORT_SERVICE)
@@ -315,5 +316,10 @@ public class ReportServiceImpl implements IReportService {
 
 	public List<PhenoCollection> getPhenoCollectionList(Study study) {
 		return reportDao.getPhenoCollectionList(study);
+	}
+
+	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study) {
+		// TODO Auto-generated method stub
+		return reportDao.getStudyUserRolePermissions(study);
 	}
 }

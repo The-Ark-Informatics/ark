@@ -13,6 +13,7 @@ import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 
 public interface IReportService {
 
@@ -38,5 +39,7 @@ public interface IReportService {
 	public List<PhenoCollection> getPhenoCollectionList(Study study);
 
 	public List<FieldDetailsDataRow> getPhenoFieldDetailsList(FieldDetailsReportVO fdrVO);
+
+	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study);
 
 }
