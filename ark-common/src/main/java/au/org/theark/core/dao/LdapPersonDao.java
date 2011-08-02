@@ -147,7 +147,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 	}
 
 	public List<ModuleVO> getModules(boolean isDisplay) {
-		log.info("getModules()");
+		log.debug("getModules()");
 		AndFilter moduleFilter = new AndFilter();
 		moduleFilter.and(new EqualsFilter("objectClass", "organizationalUnit"));
 
@@ -187,7 +187,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 	 */
 	public void isMemberof(String moduleName, ArkUserVO etaUserVO) throws ArkSystemException {
 		/* Given Module Id and Role Name we can determine 1. If the user is a member of the module 2. If he has a particular role */
-		log.info("\n --- isMemberof = " + moduleName);
+		log.debug("\n --- isMemberof = " + moduleName);
 
 		boolean isStudyAvailable = false;
 		String groupBase = "ou=groups";
@@ -285,7 +285,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 			sb.append(moduleName);
 			sb.append(" stack trace ");
 			sb.append(ee.getStackTrace());
-			log.info(sb.toString());
+			log.debug(sb.toString());
 		}
 	}
 
@@ -327,7 +327,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 	 */
 	public List<String> getModuleRoles(String moduleId) {
 
-		log.info("\n ------ In getModuleRoles() " + moduleId);
+		log.debug("\n ------ In getModuleRoles() " + moduleId);
 		if (moduleId == null || moduleId.trim().length() == 0) {
 			return null;// Throw an application exception here
 		}
@@ -341,7 +341,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 			dn = new LdapName(getBaseModuleDn());
 			dn.add(new Rdn("ou", moduleId.trim()));// get the module name from the parameter
 			dn.add(new Rdn("ou", "roles"));
-			log.info("Filter to apply = " + andFilter.encode() + " DN =" + dn.toString());
+			log.debug("Filter to apply = " + andFilter.encode() + " DN =" + dn.toString());
 
 			List<?> roles = ldapTemplate.search(dn, andFilter.encode(), SearchControls.SUBTREE_SCOPE, new AttributesMapper() {
 
@@ -351,7 +351,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 						return returnObject;
 					}
 					catch (javax.naming.NamingException e) {
-						log.info("Exception occured in getModuleRoles " + e.getMessage());
+						log.debug("Exception occured in getModuleRoles " + e.getMessage());
 						e.printStackTrace();
 						//logger.error("$AttributesMapper.mapFromAttributes(Attributes) - NamingException", e); //$NON-NLS-1$
 						// e.printStackTrace();
@@ -364,7 +364,7 @@ public class LdapPersonDao implements ILdapPersonDao {
 
 		}
 		catch (InvalidNameException ine) {
-			log.error("An Exception occure in getModuleRoles()" + ine.getMessage());
+			log.error("An Exception occured in getModuleRoles()" + ine.getMessage());
 			return null;// need to notify admin
 		}
 		return roleVoList;
