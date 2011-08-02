@@ -30,18 +30,17 @@ import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.ArkRolePolicyTemplate;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.FieldDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.model.vo.report.FieldDetailsDataRow;
+import au.org.theark.report.model.vo.report.StudyUserRolePermissionsDataRow;
 import au.org.theark.report.service.Constants;
 
 /**
@@ -469,6 +468,15 @@ public class ReportDao extends HibernateSessionDao implements IReportDao {
 		criteria.setMaxResults(1);
 		ArkFunction arkFunction = (ArkFunction) criteria.uniqueResult();
 		return arkFunction;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<StudyUserRolePermissionsDataRow> getStudyUserRolePermissions(Study study) {
+		String sqlString = "SELECT * FROM `study`.`study_user_role_permission_view` WHERE studyName = :studyName"; 
+		Query q = getSession().createSQLQuery(sqlString);
+		q.setParameter("studyName", study.getName());
+		q.setResultTransformer(Transformers.aliasToBean(StudyUserRolePermissionsDataRow.class));
+		return q.list();
 	}
 
 }
