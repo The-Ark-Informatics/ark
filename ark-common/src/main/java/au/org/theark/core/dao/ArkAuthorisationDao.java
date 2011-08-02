@@ -599,6 +599,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * 
 	 * @throws EntityNotFoundException
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ArkUserRole> getArkUserLinkedModuleAndRoles(ArkUserVO arkUserVO) throws EntityNotFoundException {
 
 		ArkUser arkUser;
@@ -613,10 +614,14 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		if (!isUserAdminHelper(arkUser.getLdapUserName(), au.org.theark.core.security.RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)) {
 			criteria.add(Restrictions.eq("study", arkUserVO.getStudy()));
 		}
-		arkUserRoleList = criteria.list();
-
+		
+		try{
+			arkUserRoleList = criteria.list();
+		}
+		catch(org.hibernate.TransientObjectException toe){
+			log.error(toe.getMessage());
+		}
 		return arkUserRoleList;
-
 	}
 
 	/**
