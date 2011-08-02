@@ -31,7 +31,7 @@ import au.org.theark.study.model.dao.IUserDao;
 @Service("userService")
 public class UserServiceImpl implements IUserService {
 
-	final Logger					log	= LoggerFactory.getLogger(UserServiceImpl.class);
+	static final Logger			log	= LoggerFactory.getLogger(UserServiceImpl.class);
 
 	private IStudyService		studyService;															// To gain access to Study Schema
 	private IArkCommonService	arkCommonService;

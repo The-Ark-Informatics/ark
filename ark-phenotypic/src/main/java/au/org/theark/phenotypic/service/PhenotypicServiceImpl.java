@@ -45,7 +45,7 @@ import au.org.theark.phenotypic.util.PhenoDataUploader;
 @Transactional
 @Service("phenotypicService")
 public class PhenotypicServiceImpl implements IPhenotypicService {
-	final Logger							log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
+	static final Logger							log	= LoggerFactory.getLogger(PhenotypicServiceImpl.class);
 
 	private IArkCommonService<Void>	iArkCommonService;
 	private IPhenotypicDao				phenotypicDao;
