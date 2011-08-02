@@ -3,6 +3,7 @@ package au.org.theark.core.model.study.entity;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
@@ -59,7 +59,18 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private YesNo							consentDownloaded;
 
 	private Set<Consent>					consents					= new HashSet<Consent>();
-	private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
+	//private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
+	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
+	public Set<SubjectCustomFieldData> getSubjectCustomFieldDataSet() {
+		return subjectCustomFieldDataSet;
+	}
+
+	public void setSubjectCustomFieldDataSet(Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
+		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
+	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CONSENT_TO_PASSIVE_DATA_GATHERING_ID")
@@ -202,12 +213,13 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustFldDat> subjectCustFldDats) {
+	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
 		this.id = id;
 		this.study = study;
 		this.subjectStatus = subjectStatus;
 		this.person = person;
-		this.subjectCustFldDats = subjectCustFldDats;
+		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
+		
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -238,15 +250,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 
 	public void setPerson(Person person) {
 		this.person = person;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
-	public Set<SubjectCustFldDat> getSubjectCustFldDats() {
-		return this.subjectCustFldDats;
-	}
-
-	public void setSubjectCustFldDats(Set<SubjectCustFldDat> subjectCustFldDats) {
-		this.subjectCustFldDats = subjectCustFldDats;
 	}
 
 	@Column(name = "SUBJECT_UID", length = 50)
