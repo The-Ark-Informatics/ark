@@ -27,7 +27,7 @@ public class SubjectCustomFieldData implements Serializable{
 	private Long id;
 	private LinkSubjectStudy linkSubjectStudy;
 	private CustomFieldDisplay customFieldDisplay;
-	private String customFieldValue;
+	private String dataValue;
 	
 	/**
 	 * Default Constructor
@@ -68,16 +68,14 @@ public class SubjectCustomFieldData implements Serializable{
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	@Column(name = "CUSTOM_FIELD_VALUE",length=2000)
-	public String getCustomFieldValue() {
-		return customFieldValue;
+	@Column(name = "DATA_VALUE",length=2000)
+	public String getDataValue() {
+		return dataValue;
 	}
 
-	public void setCustomFieldValue(String customFieldValue) {
-		this.customFieldValue = customFieldValue;
+	public void setDataValue(String dataValue) {
+		this.dataValue = dataValue;
 	}
-	
-	
 	
 
 }
