@@ -29,7 +29,7 @@
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
-		  <version>${ark.version}</version>
+		  <version>${ark-common.version}</version>
 		</dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
@@ -116,6 +116,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark.version>0.1.3-SNAPSHOT</ark.version>
+		<ark-common.version>0.1.3-SNAPSHOT</ark-common.version>
 	</properties>
 </project>

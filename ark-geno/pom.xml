@@ -4,13 +4,18 @@
 	<groupId>au.org.theark.geno</groupId>
 	<artifactId>ark-geno</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>Ark Geno</name>
 	<description>Module that contains all Genotypic related functionality.</description>
 	<organization>
-		<name>The Ark</name>
+		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
+		<url>http://www.genepi.meddent.uwa.edu.au/</url>
 	</organization>
 	<url>http://the-ark.org.au/</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://projects.genepi.org.au/secure/Dashboard.jspa</url>
+	</issueManagement>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -23,7 +28,7 @@
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
-		  <version>0.1.3-SNAPSHOT</version>
+		  <version>${ark-common.version}</version>
 		</dependency>
 
 	    <!--  Spring Batch (Job) --> 
@@ -32,7 +37,6 @@
 		    <artifactId>spring-batch-core</artifactId>
 		    <version>2.1.3.RELEASE</version>
 		</dependency>
-
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
@@ -134,5 +138,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
+		<ark-common.version>0.1.3-SNAPSHOT</ark-common.version>
 	</properties>
 </project>

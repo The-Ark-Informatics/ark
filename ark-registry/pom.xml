@@ -4,14 +4,18 @@
 	<groupId>au.org.theark.registry</groupId>
 	<artifactId>ark-registry</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0-SNAPSHOT</version>
-	<!-- TODO project name  -->
 	<name>Ark Registry</name>
-	<description></description>
-	<!--
-		TODO <organization> <name>company name</name> <url>company url</url>
-		</organization>
-	-->
+	<version>0.1.3-SNAPSHOT</version>
+	<description>ARK Module that contains all Subject/Prospective Registration related functionality.</description>
+	<organization>
+		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
+		<url>http://www.genepi.meddent.uwa.edu.au/</url>
+	</organization>
+	<url>http://the-ark.org.au/</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://projects.genepi.org.au/secure/Dashboard.jspa</url>
+	</issueManagement>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -24,9 +28,8 @@
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
-		  <version>0.1.3-SNAPSHOT</version>
+		  <version>${ark-common.version}</version>
 		</dependency>
-
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
 		<dependency>
@@ -43,12 +46,14 @@
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty-management</artifactId>
@@ -112,5 +117,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
+		<ark-common.version>0.1.3-SNAPSHOT</ark-common.version>
 	</properties>
 	</project>
