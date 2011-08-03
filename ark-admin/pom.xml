@@ -5,13 +5,18 @@
 	<artifactId>ark-admin</artifactId>
 	<packaging>jar</packaging>
 	<version>0.1.3-SNAPSHOT</version>
-	<!-- TODO project name  -->
 	<name>ark-admin</name>
-	<description></description>
-	<!--
-		TODO <organization> <name>company name</name> <url>company url</url>
-		</organization>
-	-->
+	<description>Administration module for the ARK</description>
+	<organization>
+		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
+		<url>http://www.genepi.meddent.uwa.edu.au/</url>
+	</organization>
+	<url>http://www.theark.org.au</url>
+	<issueManagement>
+		<system>JIRA</system>
+		<url>http://projects.genepi.org.au/secure/Dashboard.jspa</url>
+	</issueManagement>
+	<inceptionYear>15/07/2011</inceptionYear>
 	<licenses>
 		<license>
 			<name>The Apache Software License, Version 2.0</name>
@@ -24,7 +29,7 @@
 		<dependency>
 		  <groupId>au.org.theark.core</groupId>
 		  <artifactId>ark-common</artifactId>
-		  <version>0.1.3-SNAPSHOT</version>
+		  <version>${ark.version}</version>
 		</dependency>
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
@@ -54,7 +59,6 @@
 			<version>${jetty.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
 	</dependencies>
 	<build>
 		<resources>
@@ -112,6 +116,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
+		<ark.version>0.1.3-SNAPSHOT</ark.version>
 	</properties>
-
 </project>
