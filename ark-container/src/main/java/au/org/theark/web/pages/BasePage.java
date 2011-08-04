@@ -17,48 +17,49 @@ import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 
 /**
  * <p>
- * The <code>BasePage</code> class that extends the {@link org.apache.wicket.markup.html.WebPage WebPage} class.
- * This page will be inherited by all wicket pages.
- * Contains basic functionality that all pages will require:
+ * The <code>BasePage</code> class that extends the {@link org.apache.wicket.markup.html.WebPage WebPage} class. This page will be inherited by all
+ * wicket pages. Contains basic functionality that all pages will require:
  * <ul>
- * 	<li>e.g. add the menu in here so all pages can inherit it by default.</li> 
+ * <li>e.g. add the menu in here so all pages can inherit it by default.</li>
  * </ul>
  * Access to each menu item will be determined by the subclass via annotations:
  * <ul>
- * 	<li>e.g if one of the menu item was Admin the class linked or invoked will place the constraints via annotations</li>
+ * <li>e.g if one of the menu item was Admin the class linked or invoked will place the constraints via annotations</li>
  * </ul>
- * Using IStrategyAuthorization,  the application will determine if the link is accessible to the current logged in user.
+ * Using IStrategyAuthorization, the application will determine if the link is accessible to the current logged in user.
  * </p>
+ * 
  * @author nivedann
  * @author cellis
  * 
  */
-public abstract class BasePage extends WebPage
-{
-	private transient Subject 		currentUser;
+public abstract class BasePage extends WebPage {
+	/**
+	 * 
+	 */
+	private static final long		serialVersionUID	= 4173121872289013698L;
+	private transient Subject		currentUser;
 	private String						principal;
 	private Label						userNameLbl;
 	private Label						studyNameLbl;
 
 	protected WebMarkupContainer	studyNameMarkup;
 	protected WebMarkupContainer	studyLogoMarkup;
-	
-	private MyDetailModalWindow modalWindow;
+
+	private MyDetailModalWindow	modalWindow;
 
 	/**
 	 * Default constructor
 	 */
 	@SuppressWarnings("unchecked")
-	public BasePage()
-	{
+	public BasePage() {
 		ContextImage hostedByImage = new ContextImage("hostedByImage", new Model<String>("images/" + Constants.HOSTED_BY_IMAGE));
 		ContextImage studyLogoImage = new ContextImage("studyLogoImage", new Model<String>("images/" + Constants.NO_STUDY_LOGO_IMAGE));
 		ContextImage productImage = new ContextImage("productImage", new Model<String>("images/" + Constants.PRODUCT_IMAGE));
 
 		currentUser = SecurityUtils.getSubject();
 
-		if (currentUser.getPrincipal() != null)
-		{
+		if (currentUser.getPrincipal() != null) {
 			principal = (String) currentUser.getPrincipal();
 			userNameLbl = new Label("loggedInUser", new Model<String>(principal));
 			studyNameLbl = new Label("studyNameLabel", new Model<String>(" "));
@@ -78,7 +79,7 @@ public abstract class BasePage extends WebPage
 			add(studyNameMarkup);
 			add(studyLogoMarkup);
 			add(productImage);
-			
+
 			AjaxLink myDetailLink = new AjaxLink("myDetailLink") {
 
 				/**
@@ -91,10 +92,10 @@ public abstract class BasePage extends WebPage
 					showModalWindow(target);
 				}
 			};
-			
+
 			myDetailLink.add(userNameLbl);
 			add(myDetailLink);
-			modalWindow = new MyDetailModalWindow("modalWindow"){
+			modalWindow = new MyDetailModalWindow("modalWindow") {
 				/**
 				 * 
 				 */
@@ -102,21 +103,19 @@ public abstract class BasePage extends WebPage
 
 				@Override
 				protected void onCloseModalWindow(AjaxRequestTarget target) {
-					//target.addComponent(BasePage.this);
+					// target.addComponent(BasePage.this);
 				}
 			};
 			add(modalWindow);
 
-			AjaxLink link = new AjaxLink("ajaxLogoutLink")
-			{
+			AjaxLink link = new AjaxLink("ajaxLogoutLink") {
 				/**
 				 * 
 				 */
 				private static final long	serialVersionUID	= 422053857225833627L;
 
 				@Override
-				public void onClick(AjaxRequestTarget target)
-				{
+				public void onClick(AjaxRequestTarget target) {
 					Subject subject = SecurityUtils.getSubject();
 					// Place the selected study in session context for the user
 					SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -129,22 +128,20 @@ public abstract class BasePage extends WebPage
 			};
 			add(link);
 		}
-		else
-		{
+		else {
 			setResponsePage(LoginPage.class);
 		}
 	}
 
 	@Override
-	protected void configureResponse()
-	{
+	protected void configureResponse() {
 		super.configureResponse();
 		WebResponse response = getWebRequestCycle().getWebResponse();
 		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
 		response.setHeader("Expires", "-1");
 		response.setHeader("Pragma", "no-cache");
 	}
-	
+
 	protected void showModalWindow(AjaxRequestTarget target) {
 		MyDetailsContainer modalContentPanel = new MyDetailsContainer("content", new ArkUserVO(), currentUser, modalWindow);
 		modalWindow.setTitle("My Detail");
