@@ -1,6 +1,5 @@
 package au.org.theark.study.model.dao;
 
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -13,7 +12,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -51,6 +49,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1674,13 +1673,17 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		return fileFormat;
 	}
 	
+	/**
+	 * The count can be based on CustomFieldDisplay only instead of a left join with it using
+	 * SubjectCustomFieldData
+	 */
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria){
-		
-		String queryString = "select COUNT(*) from study.custom_field_display as cfd LEFT JOIN study.subject_custom_field_data  as cfdd on  cfd.id = cfdd.id  and  cfdd.link_subject_study_id = :linkSubjectStudy";
-		Query query = getSession().createSQLQuery(queryString);
-		query.setParameter("linkSubjectStudy",linkSubjectStudyCriteria.getId());
-		BigInteger count = ((BigInteger)query.uniqueResult());
-		return count.intValue();
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.createAlias("customField", "cfield");
+		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
+		criteria.setProjection(Projections.rowCount());
+		Integer i = (Integer) criteria.uniqueResult();
+		return i.intValue();
 	}
 
 	/**
