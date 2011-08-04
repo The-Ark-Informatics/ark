@@ -52,6 +52,22 @@ public class LoadCsvFileHelper {
 		this.iCSVLoaderService = iCSVLoaderService;
 		this.databaseName = databaseName;
 	}
+	
+	/**
+	 * Constructor. Takes in a fileUpload as a parameter and attempts to load data into the database
+	 * 
+	 * @param iCSVLoaderService 
+	 * 			 The service required for Hibernate access
+	 * @param databaseName
+	 *           The schema/database name to where the data resides
+	 * @param delimiterCharacter
+	 *           The file field delimiter (comma, tab, pipe etc)
+	 */
+	public LoadCsvFileHelper(ICSVLoaderService iCSVLoaderService, String databaseName, char delimiterCharacter) {
+		setTemporaryFileName(createTemporaryFileName());
+		this.iCSVLoaderService = iCSVLoaderService;
+		this.databaseName = databaseName;
+	}
 
 	/**
 	 * Constructor. Takes in a csvFile as a parameter and attempts to load data into the database
@@ -69,25 +85,11 @@ public class LoadCsvFileHelper {
 	}
 
 	/**
-	 * Constructor. Takes in a fileUpload as a parameter and attempts to load data into the database
-	 * 
+	 * Convert the specified fileUpload to CSV format, and save as a CsvBlob
 	 * @param fileUpload
-	 *           The Wicket fileUpload reference
-	 * @param iCSVLoaderService 
-	 * 			 The service required for Hibernate access
-	 * @param databaseName
-	 *           The schema/database name to where the data resides
 	 * @param delimiterCharacter
-	 *           The file field delimiter (comma, tab, pipe etc)
 	 */
-	public LoadCsvFileHelper(FileUpload fileUpload, ICSVLoaderService iCSVLoaderService, String databaseName, char delimiterCharacter) {
-		setTemporaryFileName(createTemporaryFileName());
-		this.iCSVLoaderService = iCSVLoaderService;
-		this.databaseName = databaseName;
-		convertToCSV(fileUpload, delimiterCharacter);
-	}
-
-	private void convertToCSV(FileUpload fileUpload, char delimiterCharacter) {
+	public void convertToCSVAndSave(FileUpload fileUpload, char delimiterCharacter) {
 		String filename = fileUpload.getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		InputStream inputStream = null;
