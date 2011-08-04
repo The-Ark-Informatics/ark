@@ -1682,8 +1682,8 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
 		criteria.setProjection(Projections.rowCount());
-		Integer i = (Integer) criteria.uniqueResult();
-		return i.intValue();
+		Integer count = (Integer) criteria.uniqueResult();
+		return count.intValue();
 	}
 
 	/**
