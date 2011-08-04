@@ -2,7 +2,9 @@ package au.org.theark.phenotypic.web.component.fieldDataUpload;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
@@ -117,8 +119,6 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 				target.addComponent(downloadValMsgButton);
 			}
 
-			 
-			
 			// Show file data
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
@@ -130,7 +130,20 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 			target.addComponent(form.getWizardPanelFormContainer());
 			
 			// test temp file/table creation
-			LoadCsvFileHelper loadCsvFileHelper = new LoadCsvFileHelper(containerForm.getModelObject().getFileUpload(), iCSVLoaderService, "study",  delimChar);
+			LoadCsvFileHelper loadCsvFileHelper = new LoadCsvFileHelper(iCSVLoaderService, "study",  delimChar);
+			//loadCsvFileHelper.setTemporaryTableName("tmp_table");
+			
+			StopWatch timer = new StopWatch();
+			DecimalFormat decimalFormat = new DecimalFormat("0.00");
+			timer.start();
+			log.info("Started loadCsvFileHelper ");
+			loadCsvFileHelper.setTemporaryTableName("tmp_table");
+			loadCsvFileHelper.setTemporaryFileName("/tmp/tempFile.csv");
+			loadCsvFileHelper.convertToCSVAndSave(containerForm.getModelObject().getFileUpload(), delimChar);
+			loadCsvFileHelper.createTemporaryTable();
+			timer.stop();
+			log.info("Finished loadCsvFileHelper ");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
 		}
 		catch (NullPointerException npe) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";

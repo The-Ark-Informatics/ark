@@ -2,13 +2,12 @@ package au.org.theark.core.dao;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.JDBCException;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
@@ -76,63 +75,101 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 	public void writeBlobToTempFile(String databaseName, Long id, String temporaryFileName, char delimiterCharacter) {
 		if (databaseName != null && id != null) {
 			Session session = getSession();
-			int success = 1;
-
-			CsvBlob csvBlob = getCsvBlob(id);
-
+			session.beginTransaction();
+			
+			StringBuffer sqlBlobToFile = new StringBuffer();
+			sqlBlobToFile.append("SELECT csv_blob ");
+			sqlBlobToFile.append("INTO OUTFILE '");
+			sqlBlobToFile.append(temporaryFileName);
+			sqlBlobToFile.append("'");
+			sqlBlobToFile.append("FROM  study.csv_blob ");
+			sqlBlobToFile.append("WHERE id = ");
+			sqlBlobToFile.append(id.intValue());
+			sqlBlobToFile.append(" ");
+			
 			try {
-				File blobFile = new File(temporaryFileName);
-				FileOutputStream outStream = new FileOutputStream(blobFile);
-				InputStream inStream = csvBlob.getCsvBlob().getBinaryStream();
-
-				int length = -1;
-				int size = (int) csvBlob.getCsvBlob().length();
-				byte[] buffer = new byte[size];
-
-				while ((length = inStream.read(buffer)) != -1) {
-					outStream.write(buffer, 0, length);
-					outStream.flush();
-				}
-
-				inStream.close();
-				outStream.close();
+				log.info("Writing out file: " + temporaryFileName);
+				log.info(sqlBlobToFile.toString());
+				session.createSQLQuery(sqlBlobToFile.toString()).executeUpdate();
+				log.info("SQL writeBlobToTempFile SUCCEEDED");
 			}
-			catch (Exception e) {
+			catch(JDBCException e) {
 				log.error(e.getMessage());
-				log.error("ERROR(djv_exportBlob) Unable to export:" + temporaryFileName);
-				success = 0;
+				log.error("SQL writeBlobToTempFile FAILED");
 			}
 			finally {
-
-			}
-
+				session.flush();
+			}		
 		}
-		log.info("SQL writeBlobToTempFile SUCCEEDED");
 	}
 
-	public void loadTempFileToDatabase(String temporaryFileName, String temporaryTableName) {
+	/**
+	 * Load the temporary created file back into the database, to temporary table, using the [LOAD DATA INFILE] SQL statement
+	 * @param temporaryFileName
+	 * @param databaseName
+	 * @param temporaryTableName
+	 * @return the number fo rows in the table
+	 */
+	public int loadTempFileToDatabase(String temporaryFileName, String databaseName, String temporaryTableName) {
+		int rowCount = 0;
+		
+		StringBuffer tableName = new StringBuffer();
+		tableName.append(databaseName);
+		tableName.append(".");
+		tableName.append(temporaryTableName);
+		
 		if (temporaryTableName != null && temporaryTableName != null) {
+			Session session = getSession();
+			session.beginTransaction();
 			StringBuffer sqlTempFileToTable = new StringBuffer();
 			sqlTempFileToTable.append("LOAD DATA INFILE '");
 			sqlTempFileToTable.append(temporaryFileName);
 			sqlTempFileToTable.append("' INTO TABLE ");
-			sqlTempFileToTable.append(temporaryTableName);
+			sqlTempFileToTable.append(tableName.toString());
 			sqlTempFileToTable.append(" FIELDS TERMINATED BY '");
 			sqlTempFileToTable.append(delimiterCharacter);
 			sqlTempFileToTable.append("' ENCLOSED BY '\"' ");
 			sqlTempFileToTable.append("LINES TERMINATED BY '\n' ");
 			sqlTempFileToTable.append("IGNORE 1 LINES;");
+			
+			try {
+				log.info("Creating temporary table: " + tableName);
+				session.createSQLQuery(sqlTempFileToTable.toString()).executeUpdate();
+				log.info("select count(*) from " + tableName);
+				rowCount = (Integer) session.createSQLQuery("SELECT count(*) from " + tableName.toString()).uniqueResult();
+				
+				log.info("SQL loadTempFileToDatabase SUCCEEDED");
+			}
+			catch(JDBCException e) {
+				log.error(e.getMessage());
+				log.error("SQL loadTempFileToDatabase FAILED");
+			}
+			finally {
+				session.flush();
+			}
 		}
+		log.info("Rowcount: " + rowCount);
+		
+		return rowCount;
 	}
 
-	public void createTemporaryTable(String temporaryTableName, List<String> columnNameList) {
+	/**
+	 * Create a temporary table to store data from an external file into
+	 * @param databaseName
+	 * @param temporaryTableName
+	 * @param columnNameList
+	 */
+	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList) {
 		if (temporaryTableName != null && !columnNameList.isEmpty()) {
 			Session session = getSession();
 			session.beginTransaction();
 			StringBuffer sqlCreateTemporyTable = new StringBuffer();
-			sqlCreateTemporyTable.append("CREATE TEMPORARY TABLE  ");
+			//sqlCreateTemporyTable.append("CREATE TEMPORARY TABLE ");
+			sqlCreateTemporyTable.append("CREATE TABLE ");
+			sqlCreateTemporyTable.append(databaseName);
+			sqlCreateTemporyTable.append(".");
 			sqlCreateTemporyTable.append(temporaryTableName);
-			sqlCreateTemporyTable.append("(");
+			sqlCreateTemporyTable.append(" (");
 
 			StringBuffer colNameAndType = new StringBuffer();
 
@@ -147,9 +184,18 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 
 			sqlCreateTemporyTable.append(colNameAndType);
 			sqlCreateTemporyTable.append(");");
-			session.createSQLQuery(sqlCreateTemporyTable.toString()).executeUpdate();
-			session.flush();
-			log.info("SQL createTemporaryTable SUCCEEDED");
+			
+			try {
+				session.createSQLQuery(sqlCreateTemporyTable.toString()).executeUpdate();
+				log.info("SQL createTemporaryTable SUCCEEDED");
+			}
+			catch(JDBCException e) {
+				log.error(e.getMessage());
+				log.info("SQL createTemporaryTable FAILED");
+			}
+			finally {
+				session.flush();
+			}
 		}
 	}
 

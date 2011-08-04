@@ -25,24 +25,27 @@ public interface ICSVLoaderService {
 	 *           The unique identifier of the table that contains the BLOB
 	 * @param temporaryFileName
 	 *           The full path name to write the contents of the BLOB to
-	 * @param delimiterCharacter
+	 * @param temporaryFileName
 	 *           The file field delimiter (comma, tab, pipe etc)
 	 */
 	public void writeBlobToTempFile(String databaseName, Long id, String temporaryFileName, char delimiterCharacter);
 	
 	/**
-	 * Load a temporary created file on the database server back into the database as new temporary table
+	 * Load the temporary created file back into the database, to temporary table, using the [LOAD DATA INFILE] SQL statement
 	 * @param temporaryFileName
+	 * @param databaseName
 	 * @param temporaryTableName
+	 * @return the number of rows in the table
 	 */
-	public void loadTempFileToDatabase(String temporaryFileName, String temporaryTableName);
+	public int loadTempFileToDatabase(String temporaryFileName, String databaseName, String temporaryTableName);
 	
 	/**
 	 * Creates a temporary table for the session
+	 * @param databaseName
 	 * @param temporaryTableName
 	 * @param columList
 	 */
-	public void createTemporaryTable(String temporaryTableName, List<String> columnNameList);
+	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList);
 
 	/**
 	 * Store a file as CSV in the database

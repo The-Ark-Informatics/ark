@@ -48,7 +48,6 @@ public class LoadCsvFileHelper {
 	 * @param databaseName The schema/database name to where the data resides
 	 */
 	public LoadCsvFileHelper(ICSVLoaderService iCSVLoaderService, String databaseName) {
-		setTemporaryFileName(createTemporaryFileName());
 		this.iCSVLoaderService = iCSVLoaderService;
 		this.databaseName = databaseName;
 	}
@@ -64,7 +63,6 @@ public class LoadCsvFileHelper {
 	 *           The file field delimiter (comma, tab, pipe etc)
 	 */
 	public LoadCsvFileHelper(ICSVLoaderService iCSVLoaderService, String databaseName, char delimiterCharacter) {
-		setTemporaryFileName(createTemporaryFileName());
 		this.iCSVLoaderService = iCSVLoaderService;
 		this.databaseName = databaseName;
 	}
@@ -78,7 +76,6 @@ public class LoadCsvFileHelper {
 	 *           The schema/database name to where the data resides
 	 */
 	public LoadCsvFileHelper(File csvFile, String databaseName) {
-		setTemporaryFileName(createTemporaryFileName());
 		this.csvFile = csvFile;
 		this.databaseName = databaseName;
 		this.columnNameList = getColumnsFromHeader();
@@ -115,17 +112,15 @@ public class LoadCsvFileHelper {
 	private void saveFileAsCsvBlob(InputStream inputStream, char delimiterCharacter) {
 		Long id;
 		try {
+			if(databaseName == null) {
+				databaseName = "study";
+			}
 			CsvBlob csvBlob = new CsvBlob();
 			inputStream.reset();
 			Blob blob = Hibernate.createBlob(inputStream);
-			csvBlob.setId(new Long(1));
 			csvBlob.setCsvBlob(blob);
 			id = iCSVLoaderService.createCsvBlob(csvBlob);
-			iCSVLoaderService.writeBlobToTempFile("study", id, createTemporaryFileName(), delimiterCharacter);
-			
-			this.temporaryTableName = "tmp_table";
-			
-			iCSVLoaderService.createTemporaryTable(temporaryTableName, this.columnNameList);
+			iCSVLoaderService.writeBlobToTempFile(databaseName, id, createTemporaryFileName(), delimiterCharacter);
 		}
 		catch (IOException e) {
 			log.error(e.getMessage());
@@ -133,6 +128,13 @@ public class LoadCsvFileHelper {
 		catch (Exception e) {
 			log.error(e.getMessage());
 		}
+	}
+	
+	public int createTemporaryTable() {
+		int rowCount = 0;
+		iCSVLoaderService.createTemporaryTable(databaseName, temporaryTableName, this.columnNameList);
+		rowCount = iCSVLoaderService.loadTempFileToDatabase(temporaryFileName, databaseName, temporaryTableName);
+		return rowCount;
 	}
 	
 	/**
@@ -254,9 +256,8 @@ public class LoadCsvFileHelper {
 	private List<String> getColumnsFromHeader(InputStream inputStream, char delimiterCharacter) {
 		List<String> columnsFromHeader = new ArrayList<String>(0);
 		try {
-			Charset charset = Charset.forName("ISO-8859-1");
 			inputStream.reset();
-			csvReader = new CsvReader(inputStream, delimiterCharacter, charset);
+			csvReader = new CsvReader(inputStream, delimiterCharacter, Charset.defaultCharset());
 			csvReader.readHeaders();
 			String[] headerArray = csvReader.getHeaders();
 			for (int i = 0; i < headerArray.length; i++) {

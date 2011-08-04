@@ -39,12 +39,12 @@ public class CSVLoaderServiceImpl implements ICSVLoaderService {
 		iCSVLoaderDao.writeBlobToTempFile(databaseName, id, temporaryFileName, delimiterCharacter);
 	}
 
-	public void loadTempFileToDatabase(String temporaryFileName, String temporaryTableName) {
-		iCSVLoaderDao.loadTempFileToDatabase(temporaryFileName, temporaryTableName);
+	public int loadTempFileToDatabase(String databaseName, String temporaryFileName, String temporaryTableName) {
+		return iCSVLoaderDao.loadTempFileToDatabase(databaseName, temporaryFileName, temporaryTableName);
 	}
 
-	public void createTemporaryTable(String temporaryTableName, List<String> columnNameList) {
-		iCSVLoaderDao.createTemporaryTable(temporaryTableName, columnNameList);
+	public void createTemporaryTable(String databaseName, String temporaryTableName, List<String> columnNameList) {
+		iCSVLoaderDao.createTemporaryTable(databaseName, temporaryTableName, columnNameList);
 	}
 
 	public Long createCsvBlob(CsvBlob csvBlob) {
