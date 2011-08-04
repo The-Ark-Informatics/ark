@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.service.ICSVLoaderService;
+import au.org.theark.core.util.LoadCsvFileHelper;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
@@ -42,6 +44,9 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_CSV_LOADER_SERVICE)
+	private ICSVLoaderService		iCSVLoaderService;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
 
@@ -112,6 +117,8 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 				target.addComponent(downloadValMsgButton);
 			}
 
+			 
+			
 			// Show file data
 			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
@@ -121,6 +128,9 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 			target.addComponent(form.getWizardPanelFormContainer());
+			
+			// test temp file/table creation
+			LoadCsvFileHelper loadCsvFileHelper = new LoadCsvFileHelper(containerForm.getModelObject().getFileUpload(), iCSVLoaderService, "study",  delimChar);
 		}
 		catch (NullPointerException npe) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
