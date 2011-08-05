@@ -3,6 +3,7 @@ package au.org.theark.core.dao;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 
@@ -78,14 +79,22 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			session.beginTransaction();
 			
 			StringBuffer sqlBlobToFile = new StringBuffer();
+			/*
 			sqlBlobToFile.append("SELECT csv_blob ");
-			sqlBlobToFile.append("INTO OUTFILE '");
-			sqlBlobToFile.append(temporaryFileName);
-			sqlBlobToFile.append("'");
-			sqlBlobToFile.append("FROM  study.csv_blob ");
+			sqlBlobToFile.append("FROM study.csv_blob ");
 			sqlBlobToFile.append("WHERE id = ");
 			sqlBlobToFile.append(id.intValue());
 			sqlBlobToFile.append(" ");
+			sqlBlobToFile.append("INTO OUTFILE '");
+			sqlBlobToFile.append(temporaryFileName);
+			sqlBlobToFile.append("' ");
+			
+			sqlBlobToFile.append("CALL ");
+			sqlBlobToFile.append(databaseName);
+			sqlBlobToFile.append(".");
+			sqlBlobToFile.append("export_csv_blob(");
+			sqlBlobToFile.append(id.intValue());
+			sqlBlobToFile.append(")");
 			
 			try {
 				log.info("Writing out file: " + temporaryFileName);
@@ -99,7 +108,8 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			}
 			finally {
 				session.flush();
-			}		
+			}
+			*/		
 		}
 	}
 
@@ -122,21 +132,22 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 			Session session = getSession();
 			session.beginTransaction();
 			StringBuffer sqlTempFileToTable = new StringBuffer();
-			sqlTempFileToTable.append("LOAD DATA INFILE '");
+			sqlTempFileToTable.append("LOAD DATA LOCAL INFILE '");
 			sqlTempFileToTable.append(temporaryFileName);
 			sqlTempFileToTable.append("' INTO TABLE ");
 			sqlTempFileToTable.append(tableName.toString());
 			sqlTempFileToTable.append(" FIELDS TERMINATED BY '");
 			sqlTempFileToTable.append(delimiterCharacter);
 			sqlTempFileToTable.append("' ENCLOSED BY '\"' ");
-			sqlTempFileToTable.append("LINES TERMINATED BY '\n' ");
+			sqlTempFileToTable.append("LINES TERMINATED BY '\\n' ");
 			sqlTempFileToTable.append("IGNORE 1 LINES;");
 			
 			try {
-				log.info("Creating temporary table: " + tableName);
+				log.info("Loading data into temporary table: " + tableName);
 				session.createSQLQuery(sqlTempFileToTable.toString()).executeUpdate();
 				log.info("select count(*) from " + tableName);
-				rowCount = (Integer) session.createSQLQuery("SELECT count(*) from " + tableName.toString()).uniqueResult();
+				BigInteger rowInteger = (BigInteger) session.createSQLQuery("SELECT count(*) from " + tableName.toString()).uniqueResult();
+				rowCount = rowInteger.intValue();
 				
 				log.info("SQL loadTempFileToDatabase SUCCEEDED");
 			}
@@ -163,9 +174,16 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 		if (temporaryTableName != null && !columnNameList.isEmpty()) {
 			Session session = getSession();
 			session.beginTransaction();
+			
+			StringBuffer sqlDropTemporyTable = new StringBuffer();
+			sqlDropTemporyTable.append("DROP TABLE ");
+			sqlDropTemporyTable.append(databaseName);
+			sqlDropTemporyTable.append(".");
+			sqlDropTemporyTable.append(temporaryTableName);
+			
 			StringBuffer sqlCreateTemporyTable = new StringBuffer();
 			//sqlCreateTemporyTable.append("CREATE TEMPORARY TABLE ");
-			sqlCreateTemporyTable.append("CREATE TABLE ");
+			sqlCreateTemporyTable.append("CREATE TEMPORARY TABLE ");
 			sqlCreateTemporyTable.append(databaseName);
 			sqlCreateTemporyTable.append(".");
 			sqlCreateTemporyTable.append(temporaryTableName);
@@ -184,6 +202,15 @@ public class CSVLoaderDao extends HibernateSessionDao implements ICSVLoaderDao {
 
 			sqlCreateTemporyTable.append(colNameAndType);
 			sqlCreateTemporyTable.append(");");
+			
+			try {
+				session.createSQLQuery(sqlDropTemporyTable.toString()).executeUpdate();
+				log.info("SQL dropTemporaryTable SUCCEEDED");
+			}
+			catch(JDBCException e) {
+				log.error(e.getMessage());
+				log.info("SQL dropTemporaryTable FAILED");
+			}
 			
 			try {
 				session.createSQLQuery(sqlCreateTemporyTable.toString()).executeUpdate();
