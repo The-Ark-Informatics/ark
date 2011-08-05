@@ -1,7 +1,10 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -30,7 +34,7 @@ public class CustomFieldDisplay implements Serializable{
 	private Boolean required;
 	private String requiredMessage;
 	private Long sequence;
-	
+	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	
 	public CustomFieldDisplay(){
 		
@@ -103,6 +107,20 @@ public class CustomFieldDisplay implements Serializable{
 	public void setSequence(Long sequence) {
 		this.sequence = sequence;
 	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	public Set<SubjectCustomFieldData> getSubjectCustomFieldData() {
+		return subjectCustomFieldData;
+	}
+
+
+	public void setSubjectCustomFieldData(
+			Set<SubjectCustomFieldData> subjectCustomFieldData) {
+		this.subjectCustomFieldData = subjectCustomFieldData;
+	}
+
+	
+	
 
 
 	
