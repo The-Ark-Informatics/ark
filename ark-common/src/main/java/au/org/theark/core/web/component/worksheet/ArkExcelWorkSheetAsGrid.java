@@ -58,6 +58,53 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private String								fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 	private int									rowsToDisplay					= au.org.theark.core.Constants.ROWS_PER_PAGE;
+	private AbstractBehavior				errorCellBehavior				= new AbstractBehavior() {
+																							/**
+		 * 
+		 */
+																							private static final long	serialVersionUID	= 7204106018358344579L;
+
+																							public void onComponentTag(Component component, ComponentTag tag) {
+																								super.onComponentTag(component, tag);
+																								tag.put("style", "background: red;");
+																							};
+																						};
+
+	private AbstractBehavior				warningCellBehavior			= new AbstractBehavior() {
+																							/**
+		 * 
+		 */
+																							private static final long	serialVersionUID	= 6075625860319512723L;
+
+																							public void onComponentTag(Component component, ComponentTag tag) {
+																								super.onComponentTag(component, tag);
+																								tag.put("style", "background: orange;");
+																							};
+																						};
+
+	private AbstractBehavior				updateCellBehavior			= new AbstractBehavior() {
+																							/**
+		 * 
+		 */
+																							private static final long	serialVersionUID	= -8113218633824905372L;
+
+																							public void onComponentTag(Component component, ComponentTag tag) {
+																								super.onComponentTag(component, tag);
+																								tag.put("style", "background: lightblue;");
+																							};
+																						};
+
+	private AbstractBehavior				insertCellBehavior			= new AbstractBehavior() {
+																							/**
+		 * 
+		 */
+																							private static final long	serialVersionUID	= 7204106018358344579L;
+
+																							public void onComponentTag(Component component, ComponentTag tag) {
+																								super.onComponentTag(component, tag);
+																								tag.put("style", "background: lightgreen;");
+																							};
+																						};
 
 	public ArkExcelWorkSheetAsGrid(String id) {
 		super(id);
@@ -250,40 +297,16 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 
 							ArkGridCell cell = new ArkGridCell(col, row);
 							if (errorCells.contains(cell)) {
-								item.add(new AbstractBehavior() {
-									@Override
-									public void onComponentTag(Component component, ComponentTag tag) {
-										super.onComponentTag(component, tag);
-										tag.put("style", "background: red;");
-									};
-								});
+								item.add(errorCellBehavior);
 							}
 							else if (warningCells.contains(cell)) {
-								item.add(new AbstractBehavior() {
-									@Override
-									public void onComponentTag(Component component, ComponentTag tag) {
-										super.onComponentTag(component, tag);
-										tag.put("style", "background: orange;");
-									};
-								});
+								item.add(warningCellBehavior);
 							}
 							else if (updateCells.contains(cell)) {
-								item.add(new AbstractBehavior() {
-									@Override
-									public void onComponentTag(Component component, ComponentTag tag) {
-										super.onComponentTag(component, tag);
-										tag.put("style", "background: lightblue;");
-									};
-								});
+								item.add(updateCellBehavior);
 							}
 							else if (insertCells.contains(cell)) {
-								item.add(new AbstractBehavior() {
-									@Override
-									public void onComponentTag(Component component, ComponentTag tag) {
-										super.onComponentTag(component, tag);
-										tag.put("style", "background: lightgreen;");
-									};
-								});
+								item.add(insertCellBehavior);
 							}
 						}
 					});
@@ -310,25 +333,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			 */
 			private void setRowCssStyle(Integer row, LoopItem item) {
 				if (updateRows.contains(row)) {
-					item.add(new AbstractBehavior() {
-						@Override
-						public void onComponentTag(Component component, ComponentTag tag) {
-							super.onComponentTag(component, tag);
-							// Light yellow for updates
-							tag.put("style", "background: lightblue;");
-
-						};
-					});
+					item.add(updateCellBehavior);
 				}
 				else {
-					item.add(new AbstractBehavior() {
-						@Override
-						public void onComponentTag(Component component, ComponentTag tag) {
-							super.onComponentTag(component, tag);
-							// Light green for inserts
-							tag.put("style", "background: lightgreen;");
-						};
-					});
+					item.add(insertCellBehavior);
 				}
 
 			}
