@@ -12,14 +12,17 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +67,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.model.study.entity.SubjectCustmFld;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.SubjectUidSequence;
@@ -1699,4 +1703,33 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			session.update(linkSubjectStudy);
 		}
 	}
+	
+
+	/**
+	 * Work in Progress
+	 */
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count){
+		
+		List<SubjectCustomFieldData> list = new ArrayList<SubjectCustomFieldData>();
+		
+		Criteria cfdCriteria = getSession().createCriteria(CustomFieldDisplay.class,"cfd");
+		
+		cfdCriteria.createAlias("subjectCustomFieldData", "scfd",Criteria.LEFT_JOIN);
+		
+		ProjectionList projectionList  = Projections.projectionList();
+		projectionList.add(Projections.property("scfd.id"), "id");
+		projectionList.add(Projections.property("scfd.linkSubjectStudy"), "linkSubjectStudy");
+		projectionList.add(Projections.property("cfd.id"), "customFieldDisplay.id");
+		projectionList.add(Projections.property("scfd.dataValue"), "dataValue");
+		projectionList.add(Projections.property("scfd.dateDataValue"), "dateDataValue");
+	
+		cfdCriteria.setProjection(projectionList);
+		cfdCriteria.setResultTransformer(Transformers.aliasToBean(SubjectCustomFieldData.class));
+		
+		list = cfdCriteria.list();
+		
+		return list;
+	}
+
+	
 }
