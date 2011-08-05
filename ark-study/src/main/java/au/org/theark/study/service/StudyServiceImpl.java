@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.util.file.File;
+import org.hibernate.Criteria;
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -841,6 +842,13 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count){
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
+		try {
+			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-1");
+			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, first, count);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//Testing
 		
 		
 		return customfieldDataList;
@@ -849,7 +857,15 @@ public class StudyServiceImpl implements IStudyService {
 	/**
 	 * 
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria) {
-		return 0;
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria) {
+		 int count = 0;
+		try {
+			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-1");//Testing
+			count =  studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
 	}
 }
