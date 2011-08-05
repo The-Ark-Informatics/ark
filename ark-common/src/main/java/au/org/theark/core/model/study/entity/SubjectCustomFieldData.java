@@ -1,6 +1,7 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import au.org.theark.core.Constants;
 
@@ -28,6 +31,7 @@ public class SubjectCustomFieldData implements Serializable{
 	private LinkSubjectStudy linkSubjectStudy;
 	private CustomFieldDisplay customFieldDisplay;
 	private String dataValue;
+	private Date dateDataValue;
 	
 	/**
 	 * Default Constructor
@@ -75,6 +79,16 @@ public class SubjectCustomFieldData implements Serializable{
 
 	public void setDataValue(String dataValue) {
 		this.dataValue = dataValue;
+	}
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_DATA_VALUE")
+	public Date getDateDataValue() {
+		return dateDataValue;
+	}
+
+	public void setDateDataValue(Date dateDataValue) {
+		this.dateDataValue = dateDataValue;
 	}
 	
 
