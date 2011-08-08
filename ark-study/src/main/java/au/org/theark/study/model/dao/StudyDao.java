@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,7 +13,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -52,7 +52,9 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1712,21 +1714,56 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		
 		List<SubjectCustomFieldData> list = new ArrayList<SubjectCustomFieldData>();
 		
-		Criteria cfdCriteria = getSession().createCriteria(CustomFieldDisplay.class,"cfd");
+		Criteria cfdCriteria = getSession().createCriteria(CustomFieldDisplay.class,"cfd");// Contains a collection of 	SubjectCustomFieldData
 		
-		cfdCriteria.createAlias("subjectCustomFieldData", "scfd",Criteria.LEFT_JOIN);
+		//Criteria cfdCriteria = getSession().createCriteria(SubjectCustomFieldData.class,"scfd");// Contains a collection of 	SubjectCustomFieldData
+		cfdCriteria.createAlias("subjectCustomFieldData", "scfd",Criteria.LEFT_JOIN);//Alias the collection and Left Join with it.
+		//cfdCriteria.createCriteria("customFieldDisplay", "cfd",Criteria.LEFT_JOIN);
 		
 		ProjectionList projectionList  = Projections.projectionList();
 		projectionList.add(Projections.property("scfd.id"), "id");
 		projectionList.add(Projections.property("scfd.linkSubjectStudy"), "linkSubjectStudy");
 		projectionList.add(Projections.property("cfd.id"), "customFieldDisplay.id");
-		projectionList.add(Projections.property("scfd.dataValue"), "dataValue");
-		projectionList.add(Projections.property("scfd.dateDataValue"), "dateDataValue");
-	
-		cfdCriteria.setProjection(projectionList);
-		cfdCriteria.setResultTransformer(Transformers.aliasToBean(SubjectCustomFieldData.class));
+		projectionList.add(Projections.property("cfd.customField"), "customFieldDisplay.customField");
+		projectionList.add(Projections.property("cfd.customFieldGroup"), "customFieldDisplay.customFieldGroup");
+		projectionList.add(Projections.property("cfd.required"), "customFieldDisplay.required");
+		projectionList.add(Projections.property("cfd.requiredMessage"), "customFieldDisplay.requiredMessage");
+		projectionList.add(Projections.property("cfd.sequence"), "customFieldDisplay.sequence");
 		
-		list = cfdCriteria.list();
+        projectionList.add(Projections.property("scfd.dataValue"), "dataValue");
+		projectionList.add(Projections.property("scfd.dateDataValue"), "dateDataValue");
+
+		cfdCriteria.setProjection(projectionList);
+		cfdCriteria.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP); //Transformers.aliasToBean(SubjectCustomFieldData.class));
+		
+		///Transformers.ALIAS_TO_ENTITY_MAP
+		
+		List listOfKeys = cfdCriteria.list();
+		
+		Iterator iterator  = listOfKeys.iterator();
+		while(iterator.hasNext()){
+			
+			Map map = (Map) iterator.next();
+			
+			SubjectCustomFieldData data = new SubjectCustomFieldData();
+			CustomFieldDisplay cfd = new CustomFieldDisplay();
+			
+			data.setId((Long) map.get("id"));
+			data.setLinkSubjectStudy((LinkSubjectStudy)map.get("linkSubjectStudy"));
+		
+			cfd.setId( (Long)map.get("customFieldDisplay.id"));
+			cfd.setRequired((Boolean) map.get("customFieldDisplay.required"));
+			cfd.setCustomField((CustomField) map.get("customFieldDisplay.customField"));
+			cfd.setCustomFieldGroup((CustomFieldGroup) map.get("customFieldDisplay.customFieldGroup"));
+			cfd.setRequiredMessage((String) map.get("customFieldDisplay.requiredMessage"));
+			cfd.setSequence( (Long) map.get("customFieldDisplay.sequence"));
+			data.setCustomFieldDisplay(cfd);
+			data.setDataValue( (String) map.get("dataValue"));
+			data.setDateDataValue( (Date) map.get("dateDataValue"));
+			list.add(data);
+			
+		}
+		
 		
 		return list;
 	}
