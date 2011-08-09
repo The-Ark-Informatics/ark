@@ -31,6 +31,7 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
@@ -844,7 +845,8 @@ public class StudyServiceImpl implements IStudyService {
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		try {
 			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-1");
-			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, first, count);
+			ArkModule arkModule = arkCommonService.getArkModuleById( new Long("3"));
+			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
 		} catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
