@@ -299,5 +299,5 @@ public interface IStudyDao {
 	
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria,ArkModule arkModule, int first, int count);
 }
