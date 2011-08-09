@@ -1710,16 +1710,16 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	/**
 	 * Work in Progress
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count){
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
 		List<SubjectCustomFieldData> list = new ArrayList<SubjectCustomFieldData>();
 		
 		Criteria cfdCriteria = getSession().createCriteria(CustomFieldDisplay.class,"cfd");// Contains a collection of 	SubjectCustomFieldData
-		
-		//Criteria cfdCriteria = getSession().createCriteria(SubjectCustomFieldData.class,"scfd");// Contains a collection of 	SubjectCustomFieldData
 		cfdCriteria.createAlias("subjectCustomFieldData", "scfd",Criteria.LEFT_JOIN);//Alias the collection and Left Join with it.
-		//cfdCriteria.createCriteria("customFieldDisplay", "cfd",Criteria.LEFT_JOIN);
+		cfdCriteria.createAlias("cfd.customField","customFieldAlias");
 		
+		cfdCriteria.add(Restrictions.eq("customFieldAlias.study", linkSubjectStudyCriteria.getStudy()));
+		cfdCriteria.add(Restrictions.eq("customFieldAlias.arkModule", arkModule));
 		ProjectionList projectionList  = Projections.projectionList();
 		projectionList.add(Projections.property("scfd.id"), "id");
 		projectionList.add(Projections.property("scfd.linkSubjectStudy"), "linkSubjectStudy");
@@ -1734,9 +1734,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		projectionList.add(Projections.property("scfd.dateDataValue"), "dateDataValue");
 
 		cfdCriteria.setProjection(projectionList);
-		cfdCriteria.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP); //Transformers.aliasToBean(SubjectCustomFieldData.class));
+		cfdCriteria.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
 		
-		///Transformers.ALIAS_TO_ENTITY_MAP
+		
 		
 		List listOfKeys = cfdCriteria.list();
 		
@@ -1749,8 +1749,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			CustomFieldDisplay cfd = new CustomFieldDisplay();
 			
 			data.setId((Long) map.get("id"));
+			
+			LinkSubjectStudy lss = (LinkSubjectStudy)map.get("linkSubjectStudy");
+			Long id  = (Long)lss.getId();
+			String uid  = lss.getSubjectUID();
 			data.setLinkSubjectStudy((LinkSubjectStudy)map.get("linkSubjectStudy"));
-		
 			cfd.setId( (Long)map.get("customFieldDisplay.id"));
 			cfd.setRequired((Boolean) map.get("customFieldDisplay.required"));
 			cfd.setCustomField((CustomField) map.get("customFieldDisplay.customField"));
