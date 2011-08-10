@@ -13,6 +13,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.StatelessSession;
 import org.hibernate.Transaction;
@@ -1713,63 +1714,38 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
 		List<SubjectCustomFieldData> list = new ArrayList<SubjectCustomFieldData>();
-		
-		Criteria cfdCriteria = getSession().createCriteria(CustomFieldDisplay.class,"cfd");// Contains a collection of 	SubjectCustomFieldData
-		cfdCriteria.createAlias("subjectCustomFieldData", "scfd",Criteria.LEFT_JOIN);//Alias the collection and Left Join with it.
-		cfdCriteria.createAlias("cfd.customField","customFieldAlias");
-		
-		cfdCriteria.add(Restrictions.eq("customFieldAlias.study", linkSubjectStudyCriteria.getStudy()));
-		cfdCriteria.add(Restrictions.eq("customFieldAlias.arkModule", arkModule));
-		ProjectionList projectionList  = Projections.projectionList();
-		projectionList.add(Projections.property("scfd.id"), "id");
-		projectionList.add(Projections.property("scfd.linkSubjectStudy"), "linkSubjectStudy");
-		projectionList.add(Projections.property("cfd.id"), "customFieldDisplay.id");
-		projectionList.add(Projections.property("cfd.customField"), "customFieldDisplay.customField");
-		projectionList.add(Projections.property("cfd.customFieldGroup"), "customFieldDisplay.customFieldGroup");
-		projectionList.add(Projections.property("cfd.required"), "customFieldDisplay.required");
-		projectionList.add(Projections.property("cfd.requiredMessage"), "customFieldDisplay.requiredMessage");
-		projectionList.add(Projections.property("cfd.sequence"), "customFieldDisplay.sequence");
-		
-        projectionList.add(Projections.property("scfd.dataValue"), "dataValue");
-		projectionList.add(Projections.property("scfd.dateDataValue"), "dateDataValue");
-
-		cfdCriteria.setProjection(projectionList);
-		cfdCriteria.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+	
+		StringBuffer sb = new StringBuffer();
+		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
+		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
+		sb.append( "  where cfd.customField.study.id = :studyId" );
+		sb.append(" and cfd.customField.arkModule.id = :arkModuleId");
 		
 		
-		
-		List listOfKeys = cfdCriteria.list();
-		
-		Iterator iterator  = listOfKeys.iterator();
-		while(iterator.hasNext()){
-			
-			Map map = (Map) iterator.next();
-			
-			SubjectCustomFieldData data = new SubjectCustomFieldData();
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
+		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
+		query.setParameter("arkModuleId", arkModule.getId());
+		//query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
 			CustomFieldDisplay cfd = new CustomFieldDisplay();
-			
-			data.setId((Long) map.get("id"));
-			
-			LinkSubjectStudy lss = (LinkSubjectStudy)map.get("linkSubjectStudy");
-			Long id  = (Long)lss.getId();
-			String uid  = lss.getSubjectUID();
-			data.setLinkSubjectStudy((LinkSubjectStudy)map.get("linkSubjectStudy"));
-			cfd.setId( (Long)map.get("customFieldDisplay.id"));
-			cfd.setRequired((Boolean) map.get("customFieldDisplay.required"));
-			cfd.setCustomField((CustomField) map.get("customFieldDisplay.customField"));
-			cfd.setCustomFieldGroup((CustomFieldGroup) map.get("customFieldDisplay.customFieldGroup"));
-			cfd.setRequiredMessage((String) map.get("customFieldDisplay.requiredMessage"));
-			cfd.setSequence( (Long) map.get("customFieldDisplay.sequence"));
-			data.setCustomFieldDisplay(cfd);
-			data.setDataValue( (String) map.get("dataValue"));
-			data.setDateDataValue( (Date) map.get("dateDataValue"));
-			list.add(data);
-			
+			SubjectCustomFieldData scfd = new SubjectCustomFieldData();
+			if(objects.length > 0 && objects.length >= 1){
+				
+					cfd = (CustomFieldDisplay)objects[0];
+					if(objects[1] != null){
+						scfd = (SubjectCustomFieldData)objects[1];
+					}else{
+						scfd.setCustomFieldDisplay(cfd);
+					}
+					list.add(scfd);	
+			}
 		}
-		
-		
+	
 		return list;
 	}
 
-	
+		
 }
