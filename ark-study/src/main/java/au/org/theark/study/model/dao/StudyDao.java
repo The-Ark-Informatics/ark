@@ -1711,7 +1711,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
-		List<SubjectCustomFieldData> list = new ArrayList<SubjectCustomFieldData>();
+		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 	
 		StringBuffer sb = new StringBuffer();
 		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
@@ -1740,11 +1740,50 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					}else{
 						scfd.setCustomFieldDisplay(cfd);
 					}
-					list.add(scfd);	
+					subjectCustomFieldDataList.add(scfd);	
 			}
 		}
+		
+		return subjectCustomFieldDataList;
+	}
 	
-		return list;
+	/**
+	 * Creates a new Subject Custom Field or updates it. This method will  Insert rows into SubjectCustomFieldData table 
+	 * only if there are rows of data. If there are fields that do not have data, the service will not insert them. If there was a save exception for one of the fields
+	 * the rest of the fields must be processed.
+	 * TODO: 
+	 * 1. Exception during save of a single SubjectCustomFieldData should not break the loop, the exception must be handled
+	 * 2. Exception during update, the data must be reverted to previous state and continue processing the rest of the list
+	 * 3. The List of failures, with Field ID must be reported to the caller and logged.
+	 * 
+	 */
+	public void  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
+		
+		Session session = getSession();
+		
+			int counter = 0;
+			for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
+				if( (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) && subjectCustomFieldData.getLinkSubjectStudy() != null) {
+					try{
+						session.saveOrUpdate(subjectCustomFieldData);	
+					}catch(Exception e){
+						log.debug("An Exception occured while trying to Save the SubjectCustomFieldData ID = " + subjectCustomFieldData.getId());
+						//A catch all for any type of exception that might occur during the Insert/Updates
+					}
+					
+					log.debug("SubjectCUstomFieldData persisted. ID = " + subjectCustomFieldData.getId());
+
+				}else{
+					log.debug("SubjectCUstomFieldData does not need to be persisted.");
+				}
+				
+				if ((counter++ % 50) == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
+					log.debug("Hit 50 row batch size, flushing and releasing memory");
+					session.flush();
+					session.clear();
+				}
+			}
+		
 	}
 
 		
