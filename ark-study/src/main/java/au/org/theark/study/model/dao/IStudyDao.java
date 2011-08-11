@@ -297,7 +297,7 @@ public interface IStudyDao {
 
 	public FileFormat getFileFormatByName(String fileFormatName);
 	
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule);
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria,ArkModule arkModule, int first, int count);
 }

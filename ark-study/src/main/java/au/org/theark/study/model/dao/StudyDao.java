@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,10 +19,8 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Example;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,9 +50,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -1684,10 +1679,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * The count can be based on CustomFieldDisplay only instead of a left join with it using
 	 * SubjectCustomFieldData
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria){
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
+		criteria.add(Restrictions.eq("cfield.arkModule", arkModule));
 		criteria.setProjection(Projections.rowCount());
 		Integer count = (Integer) criteria.uniqueResult();
 		return count.intValue();
@@ -1709,7 +1705,9 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	
 
 	/**
-	 * Work in Progress
+	 * <p>
+	 * Builds a HQL to Left Join wtih SubjectCustomFieldData and applies a condition using the WITH clause to get a sub-set for the given Subject
+	 * and then applies the restrictions on study and module.</p>
 	 */
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
@@ -1721,13 +1719,15 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append( "  where cfd.customField.study.id = :studyId" );
 		sb.append(" and cfd.customField.arkModule.id = :arkModuleId");
-		
+		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
 		query.setParameter("arkModuleId", arkModule.getId());
-		//query.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+		
 		List<Object[]> listOfObjects = query.list();
 		for (Object[] objects : listOfObjects) {
 			CustomFieldDisplay cfd = new CustomFieldDisplay();

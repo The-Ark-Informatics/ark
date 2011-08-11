@@ -17,6 +17,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
@@ -261,8 +262,8 @@ public interface IStudyService {
 
 	public FileFormat getFileFormatByName(String fileFormatName);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule,int first, int count);
 	
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkModule arkModule);
 			
 }
