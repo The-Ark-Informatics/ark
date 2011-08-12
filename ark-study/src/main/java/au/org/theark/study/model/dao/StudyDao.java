@@ -1743,7 +1743,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					subjectCustomFieldDataList.add(scfd);	
 			}
 		}
-		
 		return subjectCustomFieldDataList;
 	}
 	
@@ -1767,7 +1766,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 					try{
 						session.saveOrUpdate(subjectCustomFieldData);	
 					}catch(Exception e){
-						log.debug("An Exception occured while trying to Save the SubjectCustomFieldData ID = " + subjectCustomFieldData.getId());
+						log.error("An Exception occured while trying to Save the SubjectCustomFieldData ID = " + subjectCustomFieldData.getId());
 						//A catch all for any type of exception that might occur during the Insert/Updates
 					}
 					

@@ -265,5 +265,11 @@ public interface IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule,int first, int count);
 	
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkModule arkModule);
+	/**
+	 * Allows to Save(Insert) or Update  SubjectCustomFieldData. If there are SubjectCustomFieldData
+	 * with no data value then it will discard it from the save/update process.
+	 * @param subjectCustomFieldDataList
+	 */
+	public void  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList);
 			
 }

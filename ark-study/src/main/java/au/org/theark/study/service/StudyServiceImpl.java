@@ -841,7 +841,15 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+		try {
+			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-1");
+			arkModule = arkCommonService.getArkModuleById( new Long("2"));
+			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 		return customfieldDataList;
 	}
 	
@@ -850,6 +858,10 @@ public class StudyServiceImpl implements IStudyService {
 	 */
 	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule) {
 		return   studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkModule);
+	}
+	
+	public void  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
+		 studyDao.createOrUpdateCustomFields(subjectCustomFieldDataList);
 	}
 
 
