@@ -1764,6 +1764,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
 				if( (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) && subjectCustomFieldData.getLinkSubjectStudy() != null) {
 					try{
+						subjectCustomFieldData.getCustomFieldDisplay().getCustomField().setCustomFieldHasData(true);	// Set hasData flag for this custom field
 						session.saveOrUpdate(subjectCustomFieldData);	
 					}catch(Exception e){
 						log.error("An Exception occured while trying to Save the SubjectCustomFieldData ID = " + subjectCustomFieldData.getId());
@@ -1774,6 +1775,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 				}else{
 					log.debug("SubjectCUstomFieldData does not need to be persisted.");
+					//TODO: Need to perform a check whether there is any data associated with this customField and remove the hasData flag if necessary
 				}
 				
 				if ((counter++ % 50) == 0) { // 50, same as the JDBC batch size, flush a batch of inserts and release memory:
