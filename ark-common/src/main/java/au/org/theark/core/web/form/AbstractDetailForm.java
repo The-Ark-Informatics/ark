@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
@@ -56,6 +57,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 	// Use this for the model where WebMarkupContainers are set inside this VO
 	protected ArkCrudContainerVO	arkCrudContainerVO;
+	protected CompoundPropertyModel<T> cpModel;
 
 	/**
 	 * Constructor for AbstractDetailForm class
@@ -101,6 +103,23 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 		initialiseForm(true);// For CRUD VO Pattern
 	}
+	
+	/**
+	 * 
+	 * @param id
+	 * @param feedBackPanel
+	 * @param containerForm
+	 * @param arkCrudContainerVO
+	 */
+	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, CompoundPropertyModel<T> cpModel, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, cpModel);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.cpModel = cpModel;
+		this.feedBackPanel = feedBackPanel;
+//		setMultiPart(true);// Make sure this is required.
+
+		initialiseForm(true);// For CRUD VO Pattern
+	}
 
 	/**
 	 * Initialise method that is specific to classes that do not follow the ArkCrudContainerVO Pattern. The code related to each function has been
@@ -122,7 +141,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				}
 				else {
 					resultListContainer.setVisible(false); // Hide the Search Result List Panel via the WebMarkupContainer
-					detailPanelContainer.setVisible(false); // Hide the Detail Panle via the WebMarkupContainer
+					detailPanelContainer.setVisible(false); // Hide the Detail Panel via the WebMarkupContainer
 					target.addComponent(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
 					target.addComponent(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
 					onCancelPostProcess(target);
@@ -359,14 +378,18 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param isArkCrudContainerVoPattern
 	 */
 	protected void addComponentsToForm(boolean isArkCrudContainerVoPattern) {
-		arkCrudContainerVO.getEditButtonContainer().add(saveButton);
-		arkCrudContainerVO.getEditButtonContainer().add(cancelButton.setDefaultFormProcessing(false));
-		arkCrudContainerVO.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
+		// TODO: Changed from 'add' to 'addOrReplace' for components added to the editButtonContainer and viewButtonContainer
+		// to support instantiating the DetailForm more than once.  Need to fix this when revising the abstraction pattern.
+		// (both are only instantiated once in the top-level container as per original abstraction pattern and thus causes  
+		// issues for further re-instantiations of the DetailPanel/DetailForm).
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(saveButton);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(cancelButton.setDefaultFormProcessing(false));
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton.setDefaultFormProcessing(false));
 
-		arkCrudContainerVO.getViewButtonContainer().add(editButton);
-		arkCrudContainerVO.getViewButtonContainer().add(editCancelButton.setDefaultFormProcessing(false));
+		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
+		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editCancelButton.setDefaultFormProcessing(false));
 
-		arkCrudContainerVO.getDetailPanelFormContainer().add(selectModalWindow);
+		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(selectModalWindow);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 		add(arkCrudContainerVO.getViewButtonContainer());

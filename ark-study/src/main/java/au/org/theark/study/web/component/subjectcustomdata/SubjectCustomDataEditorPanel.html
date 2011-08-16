@@ -1,0 +1,35 @@
+<wicket:panel>
+	<form wicket:id="customDataEditorForm">
+		<div id="searchPanelBreaker">&nbsp;</div>
+		<div wicket:id="dataViewWMC">
+		    <table width="0%" cellspacing="0"></table>
+			<table width="100%" cellspacing="0" class="dataview">
+				<!-- Does not have header row -->
+				<!--  The Data Result Set -->
+				<tr wicket:id="subjectCustomDataList">
+					<td width="2%">&nbsp;</td>
+					<td width="5%">
+						<span wicket:id="index">1</span>
+					</td>
+					<td width="45%">
+						<span wicket:id="fieldLabel">100</span>
+					</td>
+					<td width="31%">
+						<div wicket:id="dataValueEntryPanel"></div>
+					</td>
+					<td width="15%">
+						<span wicket:id="unitLabel">years</span>
+					</td>
+					<td width="2%">&nbsp;</td>
+				</tr>
+			</table>
+			<table width="0%" cellspacing="0"></table>
+		</div>
+		<div wicket:id="buttonsPanelWMC">
+			<div wicket:id="buttonsPanel"></div>
+		</div>
+	</form>
+	<div id="searchPanelBreaker">
+		<span wicket:id="navigator" class="a"></span>
+	</div>
+</wicket:panel>

@@ -46,7 +46,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 	 * Constructor
 	 * 
 	 * @param id
-	 * @param model
+	 * @param criteriaModel
 	 */
 	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel) {
 		super(id, cpmModel);
