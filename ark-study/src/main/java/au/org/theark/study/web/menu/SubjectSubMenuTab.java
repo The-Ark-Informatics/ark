@@ -14,16 +14,17 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.study.web.component.address.AddressContainerPanel;
 import au.org.theark.study.web.component.consent.ConsentContainerPanel;
 import au.org.theark.study.web.component.correspondence.CorrespondenceContainerPanel;
-import au.org.theark.study.web.component.customfield.CustomFieldContainer;
 import au.org.theark.study.web.component.phone.PhoneContainerPanel;
 import au.org.theark.study.web.component.subject.SubjectContainer;
 import au.org.theark.study.web.component.subjectFile.SubjectFileContainerPanel;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadContainerPanel;
+import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataContainerPanel;
 
 /**
  * @author nivedann
@@ -54,6 +55,12 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_SUBJECT);
 		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
+		// TODO: testing only --- data belongs in the database and subsequently removed
+		ArkFunction customDataEditorFunction = new ArkFunction();
+		customDataEditorFunction.setName("testCustomDataEditor");
+		customDataEditorFunction.setResourceKey("tab.module.subject.subjectcustomdata");
+		arkFunctionList.add(customDataEditorFunction);
+		// ---
 
 		for (final ArkFunction menuArkFunction : arkFunctionList) {
 
@@ -96,10 +103,14 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new CorrespondenceContainerPanel(panelId);
 					}
-
-					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM)) {
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
-						panelToReturn = new CustomFieldContainer(panelId);
+//						panelToReturn = new CustomFieldContainer(panelId);
+						panelToReturn = new CustomFieldContainerPanel(panelId, arkContextMarkup, true);	// useCustomFieldDisplay = true
+					}
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)) {
+						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
+						panelToReturn = new SubjectCustomDataContainerPanel(panelId).initialisePanel();
 					}
 
 					return panelToReturn;

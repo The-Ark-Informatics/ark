@@ -250,7 +250,8 @@ public class Constants {
 	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION			= "LIMS_COLLECTION";
 	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN				= "BIOSPECIMEN";
 	public static final String	FUNCTION_KEY_VALUE_INVENTORY					= "INVENTORY";
-	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CUSTOM			= "SUBJECT_CUSTOM";
+	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD	= "SUBJECT_CUSTOM_FIELD";
+	public static final String	FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA		= "SUBJECT_CUSTOM_DATA";
 	public static final String	FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE	= "ROLE_POLICY_TEMPLATE";
 	public static final String	FUNCTION_KEY_VALUE_MODULE						= "MODULE";
 	public static final String	FUNCTION_KEY_VALUE_FUNCTION					= "FUNCTION";
