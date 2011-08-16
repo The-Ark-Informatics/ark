@@ -1,11 +1,14 @@
 package au.org.theark.study.web.component.subjectcustomdata.form;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.ArkFormVisitor;
@@ -14,6 +17,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectcustomdata.EditModeButtonsPanel;
 import au.org.theark.study.web.component.subjectcustomdata.IEditModeEventHandler;
 import au.org.theark.study.web.component.subjectcustomdata.IViewModeEventHandler;
+import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataEditorPanel;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataVO;
 import au.org.theark.study.web.component.subjectcustomdata.ViewModeButtonsPanel;
 
@@ -23,6 +27,8 @@ import au.org.theark.study.web.component.subjectcustomdata.ViewModeButtonsPanel;
  */
 @SuppressWarnings("serial")
 public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements IViewModeEventHandler, IEditModeEventHandler {
+
+	private static final Logger log = LoggerFactory.getLogger(CustomDataEditorForm.class);
 
 	private CompoundPropertyModel<SubjectCustomDataVO>			cpModel;
 
@@ -47,7 +53,14 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 	}
 
 	public CustomDataEditorForm initialiseForm() {
-		dataViewWMC = new WebMarkupContainer("dataViewWMC");
+		dataViewWMC = new WebMarkupContainer("dataViewWMC") {
+			// this WMC must have the visitor since the form itself isn't always repainted
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				visitChildren(formVisitor);	// automatically mark the required fields
+			}
+		};
 		dataViewWMC.setOutputMarkupId(true);
 		dataViewWMC.setEnabled(false);	//default to View mode
 		this.add(dataViewWMC);
@@ -90,14 +103,14 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 
 	@Override
 	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
-		this.info("Deleting the edit");
-		target.addComponent(feedbackPanel);
+		// Should never get here
+		log.debug("Internal error: arriving here at CustomDataEditorForm.onEditDelete() should be imposible");
 	}
 
 	@Override
 	public void onEditDeleteError(AjaxRequestTarget target, Form<?> form) {
-		this.error("Error occurred with deleting the edit");
-		target.addComponent(feedbackPanel);
+		// Should never get here
+		log.debug("Internal error: arriving here at CustomDataEditorForm.onEditDeleteError() should be imposible");
 	}
 
 	@Override
@@ -109,24 +122,28 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 
 	@Override
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
-		this.error("Error occurred with saving the edit");
 		target.addComponent(feedbackPanel);
+		target.addComponent(dataViewWMC);	// assumes each data entry field has a FeedbackBorder
 	}
 
 	@Override
 	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
+		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancel() should be imposible");
 	}
 
 	@Override
 	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
+		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancelError() should be imposible");
 	}
 
 	@Override
 	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
 		//put Edit mode buttons in
 		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		buttonsPanel.setDeleteButtonEnabled(false);	// delete button not used in data entry
+		buttonsPanel.setDeleteButtonVisible(false);
 		buttonsPanelWMC.addOrReplace(buttonsPanel);
 		dataViewWMC.setEnabled(true);	//allow fields to be edited
 		target.addComponent(dataViewWMC);
@@ -135,12 +152,6 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 
 	@Override
 	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
-	}
-	
-	@Override
-	protected void onBeforeRender() {
-		super.onBeforeRender();
-		visitChildren(formVisitor);	// automatically mark the required fields
 	}
 	
 }

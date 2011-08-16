@@ -141,10 +141,8 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					subjectCustomData.setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
 				}
 				CustomField cf = subjectCustomData.getCustomFieldDisplay().getCustomField();
-				//TODO: Remove this test code that sets the field label with numbering
-//				cf.setFieldLabel(cf.getFieldLabel() + (item.getIndex() + 1));
 				
-				Label indexLbl = new Label("index", item.getIndex() + ".");
+//				Label indexLbl = new Label("index", item.getIndex() + ".");
 				Label fieldLabelLbl; 
 				if (cf.getFieldLabel() != null) {
 					fieldLabelLbl = new Label("fieldLabel", cf.getFieldLabel());
@@ -278,7 +276,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					unitLabelLbl = new Label("unitLabel", "");
 				}
 				
-				item.add(indexLbl);
+//				item.add(indexLbl);
 				item.add(fieldLabelLbl);
 				item.add(dataValueEntryPanel);
 				item.add(unitLabelLbl);
