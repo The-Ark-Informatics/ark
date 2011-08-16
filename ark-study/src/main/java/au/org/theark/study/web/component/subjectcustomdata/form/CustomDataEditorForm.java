@@ -123,7 +123,6 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 	@Override
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
 		target.addComponent(feedbackPanel);
-		target.addComponent(dataViewWMC);	// assumes each data entry field has a FeedbackBorder
 	}
 
 	@Override
