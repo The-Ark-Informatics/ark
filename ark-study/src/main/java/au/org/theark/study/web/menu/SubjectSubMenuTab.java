@@ -55,12 +55,6 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 
 		ArkModule arkModule = iArkCommonService.getArkModuleByName(Constants.ARK_MODULE_SUBJECT);
 		List<ArkFunction> arkFunctionList = iArkCommonService.getModuleFunction(arkModule);// Gets a list of ArkFunctions for the given Module
-		// TODO: testing only --- data belongs in the database and subsequently removed
-		ArkFunction customDataEditorFunction = new ArkFunction();
-		customDataEditorFunction.setName("testCustomDataEditor");
-		customDataEditorFunction.setResourceKey("tab.module.subject.subjectcustomdata");
-		arkFunctionList.add(customDataEditorFunction);
-		// ---
 
 		for (final ArkFunction menuArkFunction : arkFunctionList) {
 
