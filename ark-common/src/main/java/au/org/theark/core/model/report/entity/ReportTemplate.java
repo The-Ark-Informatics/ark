@@ -96,7 +96,7 @@ public class ReportTemplate implements java.io.Serializable {
 		this.templatePath = templatePath;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "MODULE_ID")
 	public ArkModule getModule() {
 		return module;
@@ -106,7 +106,7 @@ public class ReportTemplate implements java.io.Serializable {
 		this.module = module;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "FUNCTION_ID")
 	public ArkFunction getFunction() {
 		return function;
