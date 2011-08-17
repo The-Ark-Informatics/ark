@@ -63,7 +63,7 @@ public class SubjectCustomDataContainerPanel extends Panel {
 	public SubjectCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
 		add(initialiseCustomDataEditorWMC());
-		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
+		if (!ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 			customDataEditorWMC.setVisible(false);
 		}
