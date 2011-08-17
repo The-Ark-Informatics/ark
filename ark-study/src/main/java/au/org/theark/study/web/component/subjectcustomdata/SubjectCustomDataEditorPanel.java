@@ -32,6 +32,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
@@ -78,7 +79,6 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	}
 	
 	public SubjectCustomDataEditorPanel initialisePanel() {
-//		fakeLoadFromHibernate();	//TODO: replace this with proper backend function
 		
 		initialiseDataView();
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
@@ -98,33 +98,50 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	}
 	
 	private void initialiseDataView() {
+		// TODO fix for READ permission check
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
+			// Data provider to get pageable results from backend
+			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData, IStudyService>(studyService) {
+				public int size() {
+					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
+					ArkModule arkModule = criteriaModel.getObject().getArkModule();
+	
+					return studyService.getSubjectCustomFieldDataCount(lss, arkModule);
+				}
+	
+				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
+					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
+					ArkModule arkModule = criteriaModel.getObject().getArkModule();
+	
+					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkModule, first, count);
+					cpModel.getObject().setSubjectCustomFieldDataList(subjectCustomDataList);
+					return cpModel.getObject().getSubjectCustomFieldDataList().iterator();
+				}
+			};
+			// Set the criteria for the data provider
+			scdDataProvider.setCriteriaModel(new LoadableDetachableModel<SubjectCustomDataVO>() {
+				@Override
+				protected SubjectCustomDataVO load() {
+					return cpModel.getObject();
+				}
+			});
+		}
+		else {
+			// Since module is not accessible, create a dummy dataProvider that returns nothing
+			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData, IStudyService>(null) {
 
-		// Data provider to paginate resultList
-		scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData, IStudyService>(studyService) {
-			public int size() {
-				LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
-				ArkModule arkModule = criteriaModel.getObject().getArkModule();
+				@Override
+				public Iterator<? extends SubjectCustomFieldData> iterator(int first, int count) {
+					return null;
+				}
 
-				return studyService.getSubjectCustomFieldDataCount(lss, arkModule);
-			}
-
-			public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
-				LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
-				ArkModule arkModule = criteriaModel.getObject().getArkModule();
-
-				List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkModule, first, count);
-				cpModel.getObject().setSubjectCustomFieldDataList(subjectCustomDataList);
-				return cpModel.getObject().getSubjectCustomFieldDataList().iterator();
-			}
-		};
-		// Set the criteria for the data provider
-		scdDataProvider.setCriteriaModel(new LoadableDetachableModel<SubjectCustomDataVO>() {
-			@Override
-			protected SubjectCustomDataVO load() {
-				return cpModel.getObject();
-			}
-		});
-
+				@Override
+				public int size() {
+					return 0;
+				}
+			};
+		}
+		
 		dataView = this.buildDataView(scdDataProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 	}

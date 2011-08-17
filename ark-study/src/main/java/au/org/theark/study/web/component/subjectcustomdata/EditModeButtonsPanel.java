@@ -5,6 +5,11 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import au.org.theark.core.Constants;
+import au.org.theark.core.security.ArkPermissionHelper;
 
 public class EditModeButtonsPanel extends Panel {
 
@@ -13,6 +18,8 @@ public class EditModeButtonsPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 1L;
 	
+	private static final Logger log = LoggerFactory.getLogger(EditModeButtonsPanel.class);
+
 	protected Button saveButton;
 	protected Button cancelButton;
 	protected Button deleteButton;
@@ -30,12 +37,27 @@ public class EditModeButtonsPanel extends Panel {
 		saveButton = new AjaxButton("save") {
 			
 			@Override
+			public boolean isVisible() {
+				// Ark-Security implemented
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+			}
+			
+			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				eventHandler.onEditSave(target, form);
+				// Make sure the button is visible and enabled before allowing it to proceed
+				if (saveButton.isVisible() && saveButton.isEnabled()) {
+					eventHandler.onEditSave(target, form);
+				}
+				else {
+					log.error("Illegal Save button submit: button is not enabled and/or not visible.");
+				}
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				if (!saveButton.isVisible() || !saveButton.isEnabled()) {
+					log.error("Illegal onError for Save button submit: button is not enabled and/or not visible.");	
+				}
 				eventHandler.onEditSaveError(target, form);
 			}
 		};
@@ -45,11 +67,20 @@ public class EditModeButtonsPanel extends Panel {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				eventHandler.onEditCancel(target, form);
+				// Make sure the button is visible and enabled before allowing it to proceed
+				if (cancelButton.isVisible() && cancelButton.isEnabled()) {
+					eventHandler.onEditCancel(target, form);
+				}
+				else {
+					log.error("Illegal Cancel button submit: button is not enabled and/or not visible.");
+				}
 			}
 			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				if (!cancelButton.isVisible() || !cancelButton.isEnabled()) {
+					log.error("Illegal onError for Cancel button submit: button is not enabled and/or not visible.");	
+				}
 				eventHandler.onEditCancelError(target, form);
 			}
 		};
@@ -59,12 +90,26 @@ public class EditModeButtonsPanel extends Panel {
 		deleteButton  = new AjaxButton("delete") {
 			
 			@Override
+			public boolean isVisible() {
+				// Ark-Security implemented
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+			}
+			
+			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				eventHandler.onEditDelete(target, form);
+				if (deleteButton.isVisible() && deleteButton.isEnabled()) {
+					eventHandler.onEditDelete(target, form);
+				}
+				else {
+					log.error("Illegal Delete button submit: button is not enabled and/or not visible.");
+				}
 			}
 			
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				if (!deleteButton.isVisible() || !deleteButton.isEnabled()) {
+					log.error("Illegal onError for Delete button submit: button is not enabled and/or not visible.");	
+				}
 				eventHandler.onEditDeleteError(target, form);
 			}
 		};

@@ -22,6 +22,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.study.service.IStudyService;
@@ -52,15 +53,20 @@ public class SubjectCustomDataContainerPanel extends Panel {
 	 */
 	public SubjectCustomDataContainerPanel(String id) {
 		super(id);
-
-		Subject currentUser = SecurityUtils.getSubject();
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+	/* This doesn't need to be done here assuming that it is already done via SubjectSubMenuTab's processAuthorizationCache(..) */
+//		Subject currentUser = SecurityUtils.getSubject();
+//		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+		
 		cpModel = new CompoundPropertyModel<SubjectCustomDataVO>(new SubjectCustomDataVO());		
 	}
 	
 	public SubjectCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
 		add(initialiseCustomDataEditorWMC());
+		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
+			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
+			customDataEditorWMC.setVisible(false);
+		}
 		return this;
 	}
 

@@ -84,7 +84,6 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 		return dataViewWMC;
 	}
 
-	@Override
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
 		this.info("Cancelling the edit");
 		target.addComponent(feedbackPanel);
@@ -95,49 +94,42 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 		target.addComponent(buttonsPanelWMC);
 	}
 
-	@Override
 	public void onEditCancelError(AjaxRequestTarget target, Form<?> form) {
-		this.info("Error occurred with cancelling the edit");
+		this.info("Error occurred with cancelling the edit.  If this persists, please contact your System Administrator.");
 		target.addComponent(feedbackPanel);
+		log.error("Unknown error: Couldn't cancel the edit.");
 	}
 
-	@Override
 	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
 		log.debug("Internal error: arriving here at CustomDataEditorForm.onEditDelete() should be imposible");
 	}
 
-	@Override
 	public void onEditDeleteError(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
 		log.debug("Internal error: arriving here at CustomDataEditorForm.onEditDeleteError() should be imposible");
 	}
 
-	@Override
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
 		studyService.createOrUpdateCustomFields(cpModel.getObject().getSubjectCustomFieldDataList());
 		this.info("Saved the edits");
 		target.addComponent(feedbackPanel);
 	}
 
-	@Override
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
 		target.addComponent(feedbackPanel);
 	}
-
-	@Override
+	
 	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
 		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancel() should be imposible");
 	}
 
-	@Override
 	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
 		// Should never get here
 		log.debug("Internal error: arriving here at CustomDataEditorForm.onViewCancelError() should be imposible");
 	}
 
-	@Override
 	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
 		//put Edit mode buttons in
 		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
@@ -149,8 +141,10 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 		target.addComponent(buttonsPanelWMC);
 	}
 
-	@Override
 	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
+		this.error("Couldn't go into edit mode.  If this persists, please contact your System Administrator.");
+		target.addComponent(feedbackPanel);
+		log.error("Unknown error: Couldn't go into edit mode.");
 	}
 	
 }
