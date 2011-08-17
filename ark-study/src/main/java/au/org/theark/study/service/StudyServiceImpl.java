@@ -841,30 +841,7 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		try {
-			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-3");
-			arkModule = arkCommonService.getArkModuleById( new Long("2"));
-			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
-			for (SubjectCustomFieldData subjectCustomFieldData : customfieldDataList) {
-				
-				if(subjectCustomFieldData.getId() == null){
-					subjectCustomFieldData.setLinkSubjectStudy(linkSubjectStudyCriteria);
-					subjectCustomFieldData.setDataValue("A test for insert");
-				}else{
-					//Test for delete
-					subjectCustomFieldData.setLinkSubjectStudy(linkSubjectStudyCriteria);
-					subjectCustomFieldData.setDataValue("Test for update");
-					boolean flag = subjectCustomFieldData.getDataValue().isEmpty();
-					System.out.println("Flag " + flag);
-				}
-			}
-			
-			createOrUpdateCustomFields(customfieldDataList);//Test for create or update or delete fields of data
-		} catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
+		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
 		return customfieldDataList;
 	}
 	
@@ -889,7 +866,10 @@ public class StudyServiceImpl implements IStudyService {
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
 
 				}else if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && ( ( subjectCustomFieldData.getDataValue() != null && !subjectCustomFieldData.getDataValue().isEmpty()  ) || subjectCustomFieldData.getDateDataValue() != null )  ) {
-				
+					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
+					if(subjectCustomFieldData.getErrorDataValue() != null){
+						subjectCustomFieldData.setErrorDataValue(null);
+					} 
 					studyDao.updateSubjectCustomFieldData(subjectCustomFieldData);
 				
 				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
