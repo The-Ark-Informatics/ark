@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -856,13 +857,23 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
 		
 		List<SubjectCustomFieldData> listOfExceptions = new ArrayList<SubjectCustomFieldData>();
-		
+		LinkSubjectStudy subject  = null;
+		ArkModule arkModule = null;
 		/* Iterate the list and call DAO to persist each Item */
 		for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
+			
+			if(subject == null){
+				subject = subjectCustomFieldData.getLinkSubjectStudy();	
+			}
+			if(arkModule == null){
+				arkModule = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getArkModule();
+			}
+			
 			try{
 			/* Insert the Field if it does not have a  ID and has the required fields */
 				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
-					
+					//Indicate that a CustomField attached to SubjectCustomFieldData is being used
+					subjectCustomFieldData.getCustomFieldDisplay().getCustomField().setCustomFieldHasData(true);
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
 
 				}else if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && ( ( subjectCustomFieldData.getDataValue() != null && !subjectCustomFieldData.getDataValue().isEmpty()  ) || subjectCustomFieldData.getDateDataValue() != null )  ) {
@@ -873,8 +884,13 @@ public class StudyServiceImpl implements IStudyService {
 					studyDao.updateSubjectCustomFieldData(subjectCustomFieldData);
 				
 				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
-					
+					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					CustomFieldDisplay cfd = subjectCustomFieldData.getCustomFieldDisplay();
 					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
+					subjectCustomFieldData = new SubjectCustomFieldData();
+					subjectCustomFieldData.setLinkSubjectStudy(subject);
+					subjectCustomFieldData.setCustomFieldDisplay(cfd);
+					
 				}
 			}catch(Exception someException){
 				listOfExceptions.add(subjectCustomFieldData);//Continue with rest of the list
