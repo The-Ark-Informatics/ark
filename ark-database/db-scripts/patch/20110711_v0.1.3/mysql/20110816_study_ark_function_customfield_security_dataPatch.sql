@@ -96,6 +96,11 @@ VALUES
 UPDATE `study`.`ark_role_policy_template` SET `ARK_FUNCTION_ID`=34 WHERE `ID`='69';
 
 -- Verify the updates have been correctly implemented in the database
+--                            | SUBJECT_CUSTOM_FIELD fn=11 | SUBJECT_CUSTOM_DATA fn=34
+-- ===========================+============================+===========================
+-- *Subject Admin* role=4     |       CRU                  |     CRUD
+-- *Subject Data Mgr* role=5  |        -                   |     CRUD
+-- *Subject Read-Only* role=6 |        -                   |      R
 SELECT * 
   FROM `study`.`ark_role_policy_template` arpt
  INNER JOIN `study`.`ark_function` af
