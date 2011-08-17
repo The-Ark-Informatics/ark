@@ -22,8 +22,11 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.report.entity.ReportTemplate;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.report.model.vo.ReportSelectVO;
 import au.org.theark.report.service.Constants;
@@ -113,12 +116,14 @@ public class ReportSelectPanel extends Panel {
 			protected void populateItem(final ListItem<ReportTemplate> item) {
 
 				ReportTemplate reportTemplate = item.getModelObject();
-
+				ArkModule module = reportTemplate.getModule();
+				ArkFunction function = reportTemplate.getFunction();
+				
 				/* The report module */
 				// TODO : will need to change to foreign key reference when new ARK security is implemented
 				if (reportTemplate.getModule() != null) {
 					// Add the study Component Key here
-					item.add(new Label("reportTemplate.module.name", reportTemplate.getModule().getName()));
+					item.add(new Label("reportTemplate.module.name", module.getName()));
 				}
 				else {
 					item.add(new Label("reportTemplate.module.name", ""));
@@ -126,11 +131,22 @@ public class ReportSelectPanel extends Panel {
 
 				// Perform security check upon selection of the report
 				Subject subject = SecurityUtils.getSubject();
+				String ldapUserName = subject.getPrincipal().toString();
 				boolean securityCheckOk = false;
 				try {
-					String userRole = iArkCommonService.getUserRole(subject.getPrincipal().toString(), reportTemplate.getFunction(), reportTemplate.getModule(), reportSelectCPM.getObject().getStudy());
-					if (userRole.length() > 0) {
+					String userRole = iArkCommonService.getUserRole(ldapUserName, function, module, reportSelectCPM.getObject().getStudy());
+					if (iArkCommonService.isSuperAdministator(ldapUserName, function, module)) {
+						// Super-Admins can do anything
 						securityCheckOk = true;
+					}
+					else {
+						if (userRole != null) {
+							java.util.Collection<String> userRolePermission = iArkCommonService.getArkRolePermission(function, userRole, module);
+							// Enforces that the arkRolePolicyTemplate contain a READ for this report function 
+							if (userRolePermission.contains(PermissionConstants.READ)) {
+								securityCheckOk = true;
+							}
+						}
 					}
 				}
 				catch (EntityNotFoundException e) {
