@@ -32,6 +32,7 @@ public class SubjectCustomFieldData implements Serializable{
 	private CustomFieldDisplay customFieldDisplay;
 	private String dataValue;
 	private Date dateDataValue;
+	private String errorDataValue;
 	
 	/**
 	 * Default Constructor
@@ -72,7 +73,7 @@ public class SubjectCustomFieldData implements Serializable{
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	@Column(name = "DATA_VALUE",length=2000)
+	@Column(name = "DATA_VALUE")
 	public String getDataValue() {
 		return dataValue;
 	}
@@ -89,6 +90,15 @@ public class SubjectCustomFieldData implements Serializable{
 
 	public void setDateDataValue(Date dateDataValue) {
 		this.dateDataValue = dateDataValue;
+	}
+
+	@Column(name = "ERROR_DATA_VALUE")
+	public String getErrorDataValue() {
+		return errorDataValue;
+	}
+
+	public void setErrorDataValue(String errorDataValue) {
+		this.errorDataValue = errorDataValue;
 	}
 	
 
