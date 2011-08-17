@@ -301,5 +301,13 @@ public interface IStudyDao {
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria,ArkModule arkModule, int first, int count);
 	
-	public void  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList);
+	/**
+	 * Create a single record of type SubjectCustomFieldData
+	 * @param subjectCustomFieldData
+	 */
+	public void createSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public void updateSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
 }

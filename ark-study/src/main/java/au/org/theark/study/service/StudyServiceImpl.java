@@ -841,7 +841,29 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+		try {
+			linkSubjectStudyCriteria = arkCommonService.getSubjectByUID("GGG-3");
+			arkModule = arkCommonService.getArkModuleById( new Long("2"));
+			customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+			for (SubjectCustomFieldData subjectCustomFieldData : customfieldDataList) {
+				
+				if(subjectCustomFieldData.getId() == null){
+					subjectCustomFieldData.setLinkSubjectStudy(linkSubjectStudyCriteria);
+					subjectCustomFieldData.setDataValue("A test for insert");
+				}else{
+					//Test for delete
+					subjectCustomFieldData.setLinkSubjectStudy(linkSubjectStudyCriteria);
+					subjectCustomFieldData.setDataValue("Test for update");
+					boolean flag = subjectCustomFieldData.getDataValue().isEmpty();
+					System.out.println("Flag " + flag);
+				}
+			}
+			
+			createOrUpdateCustomFields(customfieldDataList);//Test for create or update or delete fields of data
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	
 		return customfieldDataList;
 	}
@@ -853,8 +875,33 @@ public class StudyServiceImpl implements IStudyService {
 		return   studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkModule);
 	}
 	
-	public void  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
-		 studyDao.createOrUpdateCustomFields(subjectCustomFieldDataList);
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+	public List<SubjectCustomFieldData> createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
+		
+		List<SubjectCustomFieldData> listOfExceptions = new ArrayList<SubjectCustomFieldData>();
+		
+		/* Iterate the list and call DAO to persist each Item */
+		for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
+			try{
+			/* Insert the Field if it does not have a  ID and has the required fields */
+				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
+					
+					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
+
+				}else if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && ( ( subjectCustomFieldData.getDataValue() != null && !subjectCustomFieldData.getDataValue().isEmpty()  ) || subjectCustomFieldData.getDateDataValue() != null )  ) {
+				
+					studyDao.updateSubjectCustomFieldData(subjectCustomFieldData);
+				
+				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
+					
+					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
+				}
+			}catch(Exception someException){
+				listOfExceptions.add(subjectCustomFieldData);//Continue with rest of the list
+			}
+		}
+		
+		return listOfExceptions;
 	}
 
 
