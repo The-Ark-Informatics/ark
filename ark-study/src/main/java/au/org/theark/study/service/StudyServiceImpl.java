@@ -863,10 +863,6 @@ public class StudyServiceImpl implements IStudyService {
 			
 			
 			try{
-				
-				if( subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId().equals(new Long("8"))){
-					throw new Exception("Field cannot be updated");
-				}
 			/* Insert the Field if it does not have a  ID and has the required fields */
 				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
 					//Indicate that a CustomField attached to SubjectCustomFieldData is being used
