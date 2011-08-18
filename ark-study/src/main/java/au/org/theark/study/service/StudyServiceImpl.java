@@ -885,12 +885,7 @@ public class StudyServiceImpl implements IStudyService {
 				
 				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
-					CustomFieldDisplay cfd = subjectCustomFieldData.getCustomFieldDisplay();
 					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
-					subjectCustomFieldData = new SubjectCustomFieldData();
-					subjectCustomFieldData.setLinkSubjectStudy(subject);
-					subjectCustomFieldData.setCustomFieldDisplay(cfd);
-					
 				}
 			}catch(Exception someException){
 				listOfExceptions.add(subjectCustomFieldData);//Continue with rest of the list
