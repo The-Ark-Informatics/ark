@@ -41,7 +41,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
-import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -57,6 +57,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ConsentVO;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
@@ -840,7 +841,6 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
-		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
 		return customfieldDataList;
@@ -864,9 +864,15 @@ public class StudyServiceImpl implements IStudyService {
 			try{
 			/* Insert the Field if it does not have a  ID and has the required fields */
 				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
-					//Indicate that a CustomField attached to SubjectCustomFieldData is being used
-					subjectCustomFieldData.getCustomFieldDisplay().getCustomField().setCustomFieldHasData(true);
+		
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
+		
+					CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
+					customField.setCustomFieldHasData(true);
+					CustomFieldVO customFieldVO = new CustomFieldVO();
+					customFieldVO.setCustomField(customField);
+					
+					arkCommonService.updateCustomField(customFieldVO);
 
 				}else if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && ( ( subjectCustomFieldData.getDataValue() != null && !subjectCustomFieldData.getDataValue().isEmpty()  ) || subjectCustomFieldData.getDateDataValue() != null )  ) {
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
@@ -877,7 +883,17 @@ public class StudyServiceImpl implements IStudyService {
 				
 				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count  = studyDao.isCustomFieldUsed(subjectCustomFieldData);
+					CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
 					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
+					if(count <= 1){
+						//Then update the CustomField's hasDataFlag to false;
+						customField.setCustomFieldHasData(false);
+						CustomFieldVO customFieldVO = new CustomFieldVO();
+						customFieldVO.setCustomField(customField);
+						arkCommonService.updateCustomField(customFieldVO);
+						//Update it
+					}
 				}
 			}catch(Exception someException){
 				listOfExceptions.add(subjectCustomFieldData);//Continue with rest of the list
