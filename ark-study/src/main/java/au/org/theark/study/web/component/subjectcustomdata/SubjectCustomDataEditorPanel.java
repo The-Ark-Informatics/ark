@@ -102,6 +102,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData, IStudyService>(studyService) {
+				
 				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
 					ArkModule arkModule = criteriaModel.getObject().getArkModule();
@@ -129,13 +130,11 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		else {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
 			scdDataProvider = new ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData, IStudyService>(null) {
-
-				@Override
+				
 				public Iterator<? extends SubjectCustomFieldData> iterator(int first, int count) {
 					return null;
 				}
 
-				@Override
 				public int size() {
 					return 0;
 				}
