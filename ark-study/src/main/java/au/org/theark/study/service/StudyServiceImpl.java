@@ -843,6 +843,7 @@ public class StudyServiceImpl implements IStudyService {
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+		createOrUpdateCustomFields(customfieldDataList);
 		return customfieldDataList;
 	}
 	
@@ -857,19 +858,15 @@ public class StudyServiceImpl implements IStudyService {
 	public List<SubjectCustomFieldData> createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
 		
 		List<SubjectCustomFieldData> listOfExceptions = new ArrayList<SubjectCustomFieldData>();
-		LinkSubjectStudy subject  = null;
-		ArkModule arkModule = null;
 		/* Iterate the list and call DAO to persist each Item */
 		for (SubjectCustomFieldData subjectCustomFieldData : subjectCustomFieldDataList) {
 			
-			if(subject == null){
-				subject = subjectCustomFieldData.getLinkSubjectStudy();	
-			}
-			if(arkModule == null){
-				arkModule = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getArkModule();
-			}
 			
 			try{
+				
+				if( subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId().equals(new Long("8"))){
+					throw new Exception("Field cannot be updated");
+				}
 			/* Insert the Field if it does not have a  ID and has the required fields */
 				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
 					//Indicate that a CustomField attached to SubjectCustomFieldData is being used
