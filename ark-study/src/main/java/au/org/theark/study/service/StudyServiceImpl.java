@@ -843,7 +843,6 @@ public class StudyServiceImpl implements IStudyService {
 		
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
 		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
-		createOrUpdateCustomFields(customfieldDataList);
 		return customfieldDataList;
 	}
 	
