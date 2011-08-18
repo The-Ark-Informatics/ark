@@ -50,6 +50,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceModeType;
 import au.org.theark.core.model.study.entity.CorrespondenceOutcomeType;
 import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
@@ -1764,6 +1765,31 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 */
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData){
 		getSession().delete(subjectCustomFieldData);
+	}
+	
+	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData){
+		
+		CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
+		//The Study
+		Study subjectStudy = subjectCustomFieldData.getLinkSubjectStudy().getStudy();
+		ArkModule arkModule = customField.getArkModule();
+
+		StringBuffer stringBuffer = new StringBuffer();
+		
+		stringBuffer.append(" SELECT COUNT(*) FROM SubjectCustomFieldData AS scfd WHERE EXISTS ");
+		stringBuffer.append(" ( ");               
+		stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
+		stringBuffer.append(" AND cfd.customField.arkModule.id = :moduleId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
+		stringBuffer.append(" )");
+		
+		String theHQLQuery = stringBuffer.toString();
+		
+		Query query = getSession().createQuery(theHQLQuery);
+		query.setParameter("studyId", subjectStudy.getId());
+		query.setParameter("moduleId", arkModule.getId());
+		query.setParameter("customFieldDisplayId", subjectCustomFieldData.getCustomFieldDisplay().getId());
+		Long count = (Long) query.uniqueResult();
+		return count;
 	}
 	
 

@@ -310,4 +310,6 @@ public interface IStudyDao {
 	public void updateSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
 	
 	public void deleteSubjectCustomFieldData(SubjectCustomFieldData subjectCustomFieldData);
+	
+	public Long isCustomFieldUsed(SubjectCustomFieldData subjectCustomFieldData);
 }
