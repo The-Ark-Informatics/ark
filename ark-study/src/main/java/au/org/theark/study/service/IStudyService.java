@@ -270,6 +270,6 @@ public interface IStudyService {
 	 * with no data value then it will discard it from the save/update process.
 	 * @param subjectCustomFieldDataList
 	 */
-	public List<SubjectCustomFieldData>  createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList);
+	public List<SubjectCustomFieldData>  createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList);
 			
 }

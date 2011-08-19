@@ -854,7 +854,7 @@ public class StudyServiceImpl implements IStudyService {
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public List<SubjectCustomFieldData> createOrUpdateCustomFields(List<SubjectCustomFieldData> subjectCustomFieldDataList){
+	public List<SubjectCustomFieldData> createOrUpdateSubjectCustomFieldData(List<SubjectCustomFieldData> subjectCustomFieldDataList){
 		
 		List<SubjectCustomFieldData> listOfExceptions = new ArrayList<SubjectCustomFieldData>();
 		/* Iterate the list and call DAO to persist each Item */
@@ -866,8 +866,9 @@ public class StudyServiceImpl implements IStudyService {
 				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
 		
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
-		
-					CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
+					Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
+					
+					CustomField customField = arkCommonService.getCustomField(id);
 					customField.setCustomFieldHasData(true);
 					CustomFieldVO customFieldVO = new CustomFieldVO();
 					customFieldVO.setCustomField(customField);
@@ -884,15 +885,17 @@ public class StudyServiceImpl implements IStudyService {
 				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = studyDao.isCustomFieldUsed(subjectCustomFieldData);
-					CustomField customField = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
+					
 					studyDao.deleteSubjectCustomFieldData(subjectCustomFieldData);
 					if(count <= 1){
 						//Then update the CustomField's hasDataFlag to false;
+						Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
+						CustomField customField = arkCommonService.getCustomField(id);
 						customField.setCustomFieldHasData(false);
 						CustomFieldVO customFieldVO = new CustomFieldVO();
 						customFieldVO.setCustomField(customField);
-						arkCommonService.updateCustomField(customFieldVO);
-						//Update it
+						arkCommonService.updateCustomField(customFieldVO); //Update it
+						
 					}
 				}
 			}catch(Exception someException){
