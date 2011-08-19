@@ -122,7 +122,7 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
 				}
 				else {
-					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDataValue());					
+					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getTextDataValue());					
 				}
 			}
 		}
