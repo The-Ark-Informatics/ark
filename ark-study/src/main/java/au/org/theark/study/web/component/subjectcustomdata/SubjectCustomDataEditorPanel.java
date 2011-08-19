@@ -174,7 +174,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					DateDataEntryPanel dateDataEntryPanel = new DateDataEntryPanel("dataValueEntryPanel", 
 																new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 																new Model<String>(cf.getFieldLabel()));
-					dateDataEntryPanel.setBadDateStringModel(new PropertyModel<String>(item.getModel(), "dataValue"));
+					dateDataEntryPanel.setBadDateStringModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
 						IConverter dateConverter = dateDataEntryPanel.getDateConverter();
 						try {
@@ -221,7 +221,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 						// TODO: Do the encodedValues required more validation???
 						ChoiceRenderer<EncodedValueVO> ddcChoiceRender = new ChoiceRenderer<EncodedValueVO>("value", "key");
 						DropDownChoiceDataEntryPanel ddcPanel = 
-									new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "dataValue"), 
+									new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																					new Model<String>(cf.getFieldLabel()), choiceList, ddcChoiceRender);
 						if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
 							ddcPanel.setMissingValue(cf.getMissingValue());
@@ -235,7 +235,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 						if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
 							// Text data
 							TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
-																												new PropertyModel<String>(item.getModel(), "dataValue"), 
+																												new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																												new Model<String>(cf.getFieldLabel()));
 							if (requiredField != null && requiredField == true) {
 								 textDataEntryPanel.setRequired(true);
@@ -245,7 +245,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 						else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
 							// Number data
 							NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
-																														new PropertyModel<Double>(item.getModel(), "dataValue"), 
+																														new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
 																														new Model<String>(cf.getFieldLabel()));
 							if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
 								IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
