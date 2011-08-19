@@ -113,7 +113,7 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 	}
 
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
-		List<SubjectCustomFieldData> errorList = studyService.createOrUpdateCustomFields(cpModel.getObject().getSubjectCustomFieldDataList());
+		List<SubjectCustomFieldData> errorList = studyService.createOrUpdateSubjectCustomFieldData(cpModel.getObject().getSubjectCustomFieldDataList());
 		if (errorList.size() > 0) {
 			for (SubjectCustomFieldData subjectCustomFieldData : errorList) {
 				CustomField cf = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
