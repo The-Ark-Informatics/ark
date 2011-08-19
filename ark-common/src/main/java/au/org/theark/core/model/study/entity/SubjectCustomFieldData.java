@@ -30,9 +30,11 @@ public class SubjectCustomFieldData implements Serializable{
 	private Long id;
 	private LinkSubjectStudy linkSubjectStudy;
 	private CustomFieldDisplay customFieldDisplay;
-	private String dataValue;
+	private String textDataValue;
+	
 	private Date dateDataValue;
 	private String errorDataValue;
+	private Double numberDataValue;
 	
 	/**
 	 * Default Constructor
@@ -73,14 +75,6 @@ public class SubjectCustomFieldData implements Serializable{
 		this.customFieldDisplay = customFieldDisplay;
 	}
 
-	@Column(name = "DATA_VALUE")
-	public String getDataValue() {
-		return dataValue;
-	}
-
-	public void setDataValue(String dataValue) {
-		this.dataValue = dataValue;
-	}
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "DATE_DATA_VALUE")
@@ -99,6 +93,24 @@ public class SubjectCustomFieldData implements Serializable{
 
 	public void setErrorDataValue(String errorDataValue) {
 		this.errorDataValue = errorDataValue;
+	}
+	
+	@Column(name="NUMBER_DATA_VALUE")
+	public Double getNumberDataValue() {
+		return numberDataValue;
+	}
+
+	public void setNumberDataValue(Double numberDataValue) {
+		this.numberDataValue = numberDataValue;
+	}
+
+	@Column(name = "TEXT_DATA_VALUE")
+	public String getTextDataValue() {
+		return textDataValue;
+	}
+
+	public void setTextDataValue(String textDataValue) {
+		this.textDataValue = textDataValue;
 	}
 	
 
