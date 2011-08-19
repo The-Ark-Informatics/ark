@@ -1,6 +1,7 @@
 package au.org.theark.study.web.component.subjectcustomdata.form;
 
-import org.apache.wicket.Component;
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -10,6 +11,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IStudyService;
@@ -17,7 +20,6 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectcustomdata.EditModeButtonsPanel;
 import au.org.theark.study.web.component.subjectcustomdata.IEditModeEventHandler;
 import au.org.theark.study.web.component.subjectcustomdata.IViewModeEventHandler;
-import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataEditorPanel;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataVO;
 import au.org.theark.study.web.component.subjectcustomdata.ViewModeButtonsPanel;
 
@@ -111,8 +113,28 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 	}
 
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
-		studyService.createOrUpdateCustomFields(cpModel.getObject().getSubjectCustomFieldDataList());
-		this.info("Saved the edits");
+		List<SubjectCustomFieldData> errorList = studyService.createOrUpdateCustomFields(cpModel.getObject().getSubjectCustomFieldDataList());
+		if (errorList.size() > 0) {
+			for (SubjectCustomFieldData subjectCustomFieldData : errorList) {
+				CustomField cf = subjectCustomFieldData.getCustomFieldDisplay().getCustomField();
+				String fieldType = cf.getFieldType().getName();
+				if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
+					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDateDataValue());
+				}
+				else {
+					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + subjectCustomFieldData.getDataValue());					
+				}
+			}
+		}
+		else {
+			this.info("Succesfully saved all edits");
+		}
+		/*
+		 * Need to update the dataView, which forces a refresh of the model objects from backend.
+		 * This is because deleted fields still remain model, and are stale objects if we try to
+		 * use them for future saves.
+		 */
+		target.addComponent(dataViewWMC);
 		target.addComponent(feedbackPanel);
 	}
 
