@@ -174,7 +174,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					DateDataEntryPanel dateDataEntryPanel = new DateDataEntryPanel("dataValueEntryPanel", 
 																new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 																new Model<String>(cf.getFieldLabel()));
-					dateDataEntryPanel.setBadDateStringModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+					dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
 					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
 						IConverter dateConverter = dateDataEntryPanel.getDateConverter();
 						try {

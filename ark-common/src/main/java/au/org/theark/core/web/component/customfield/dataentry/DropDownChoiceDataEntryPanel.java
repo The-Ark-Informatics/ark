@@ -8,7 +8,9 @@ import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.util.string.Strings;
+import org.apache.wicket.validation.IValidator;
 
 /**
  * TextField based Data entry panel for numbers
@@ -22,13 +24,11 @@ import org.apache.wicket.util.string.Strings;
  * + Only the displayed choices (with their internal encoded "key" mapping) are needed, so it 
  *    relies an external conversion process for the CustomField's encodeValue attribute.
  */
-public class DropDownChoiceDataEntryPanel extends Panel {
+public class DropDownChoiceDataEntryPanel extends AbstractDataEntryPanel<EncodedValueVO> {
 	
 	private static final long	serialVersionUID	= 1L;
 	
-	protected IModel<String> dataValueModel;
-	protected IModel<String> fieldLabelModel;
-	protected IModel<EncodedValueVO> ddcValueModel;
+	protected IModel<String> underlyingDataModel;
 	protected DropDownChoice<EncodedValueVO>	dataValueDdc;
 	protected EncodedValueVO missingValueVo;
 
@@ -42,33 +42,27 @@ public class DropDownChoiceDataEntryPanel extends Panel {
 	 */
 	public DropDownChoiceDataEntryPanel(String id, IModel<String> dataModel, IModel<String> labelModel, 
 													List<EncodedValueVO> choiceList, ChoiceRenderer<EncodedValueVO> renderer) {
-		super(id);
+		super(id, labelModel);
 		missingValueVo = null;
-		dataValueModel = dataModel;
-		if (labelModel != null) {
-			fieldLabelModel = labelModel;
-		}
-		else {
-			fieldLabelModel = new Model<String>("(unknown label for dropdown field)");
-		}
-		
-		ddcValueModel = new IModel<EncodedValueVO>() {
+		underlyingDataModel = dataModel;
+		// Slightly tricky mapping from the EncodedVO's key to the underlying dataValue (i.e. a String) 
+		dataValueModel = new IModel<EncodedValueVO>() {
 
 			public EncodedValueVO getObject() {
 				EncodedValueVO object = null;
-				if (dataValueModel.getObject() != null) {
+				if (underlyingDataModel.getObject() != null) {
 					object = new EncodedValueVO();
-					object.setKey(dataValueModel.getObject());
+					object.setKey(underlyingDataModel.getObject());
 				}
 				return object;
 			}
 
 			public void setObject(EncodedValueVO object) {
 				if (object == null) {
-					dataValueModel.setObject(null);
+					underlyingDataModel.setObject(null);
 				}
 				else {
-					dataValueModel.setObject(object.getKey());
+					underlyingDataModel.setObject(object.getKey());
 				}
 			}
 
@@ -76,17 +70,12 @@ public class DropDownChoiceDataEntryPanel extends Panel {
 			}
 			
 		};
-		dataValueDdc = new DropDownChoice<EncodedValueVO>("ddcDataValue", ddcValueModel, choiceList, renderer);
+		dataValueDdc = new DropDownChoice<EncodedValueVO>("ddcDataValue", dataValueModel, choiceList, renderer);
 		dataValueDdc.setNullValid(true);	// nullValid allows you to set the "(no value)" option
 		dataValueDdc.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		this.add(dataValueDdc);
 	}
 
-	public void setRequired(boolean required) {
-		dataValueDdc.setRequired(required);
-		dataValueDdc.setNullValid(!required);	// if required is true, then it can not be nullValid
-	}
-	
 	public String getMissingValue() {
 		// can be used to determine if the missingValue was set ok by comparing getMissingValue() with
 		// the attempted setMissingValue(..)
@@ -137,6 +126,22 @@ public class DropDownChoiceDataEntryPanel extends Panel {
 			this.missingValueVo.setValue(option);
 		}
 		super.onBeforeRender();
+	}
+
+	@Override
+	public void setRequired(boolean required) {
+		dataValueDdc.setRequired(required);
+		dataValueDdc.setNullValid(!required);	// if required is true, then it can not be nullValid
+	}
+	
+	@Override
+	public void addValidator(IValidator<EncodedValueVO> aValidator) {
+		dataValueDdc.add(aValidator);
+	}
+
+	@Override
+	protected DataEntryType getDataEntryType() {
+		return DataEntryType.DROPDOWN;
 	}
 
 }

@@ -1,8 +1,6 @@
 package au.org.theark.core.web.component.customfield.dataentry;
 
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.FormComponentFeedbackBorder;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
@@ -11,12 +9,10 @@ import org.apache.wicket.validation.IValidator;
 /**
  * TextField based Data entry panel for numbers
  */
-public class NumberDataEntryPanel extends Panel {
+public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 	
 	private static final long	serialVersionUID	= 1L;
 	protected TextField<Double> dataValueTxtFld;
-	protected IModel<Double> dataValueModel;
-	protected IModel<String> fieldLabelModel;
 
 	/**
 	 * NumberDataEntryPanel Constructor
@@ -25,30 +21,31 @@ public class NumberDataEntryPanel extends Panel {
 	 * @param labelModel - field-specific String label model to be used for feedback
 	 */
 	public NumberDataEntryPanel(String id, IModel<Double> dataModel, IModel<String> labelModel) {
-		super(id);
+		super(id, labelModel);
 		dataValueModel = dataModel;
-		if (labelModel != null) {
-			fieldLabelModel = labelModel;
-		}
-		else {
-			fieldLabelModel = new Model<String>("(unknown label for number field)");
-		}
 		
 		dataValueTxtFld = new TextField<Double>("numberDataValue", dataValueModel, Double.class);
 		dataValueTxtFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		this.add(dataValueTxtFld);
 	}
 	
+	public IConverter getNumberConverter() {
+		return dataValueTxtFld.getConverter(dataValueTxtFld.getType());
+	}
+
+	@Override
 	public void setRequired(boolean required) {
 		dataValueTxtFld.setRequired(required);
 	}
 	
+	@Override
 	public void addValidator(IValidator<Double> aValidator) {
 		dataValueTxtFld.add(aValidator);
 	}
 
-	public IConverter getNumberConverter() {
-		return dataValueTxtFld.getConverter(dataValueTxtFld.getType());
+	@Override
+	protected DataEntryType getDataEntryType() {
+		return DataEntryType.NUMBER;
 	}
 
 }
