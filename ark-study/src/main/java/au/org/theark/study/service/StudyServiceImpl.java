@@ -863,7 +863,7 @@ public class StudyServiceImpl implements IStudyService {
 			
 			try{
 			/* Insert the Field if it does not have a  ID and has the required fields */
-				if(  subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && (subjectCustomFieldData.getDataValue() != null || subjectCustomFieldData.getDateDataValue() != null ) ) {
+				if( canInsert(subjectCustomFieldData)) {
 		
 					studyDao.createSubjectCustomFieldData(subjectCustomFieldData);
 					Long id = subjectCustomFieldData.getCustomFieldDisplay().getCustomField().getId();
@@ -875,14 +875,15 @@ public class StudyServiceImpl implements IStudyService {
 					
 					arkCommonService.updateCustomField(customFieldVO);
 
-				}else if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && ( ( subjectCustomFieldData.getDataValue() != null && !subjectCustomFieldData.getDataValue().isEmpty()  ) || subjectCustomFieldData.getDateDataValue() != null )  ) {
+				}else if(canUpdate(subjectCustomFieldData)){
+					
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
 					if(subjectCustomFieldData.getErrorDataValue() != null){
 						subjectCustomFieldData.setErrorDataValue(null);
 					} 
 					studyDao.updateSubjectCustomFieldData(subjectCustomFieldData);
 				
-				}else if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && ( subjectCustomFieldData.getDataValue() == null  || subjectCustomFieldData.getDataValue().isEmpty()   || subjectCustomFieldData.getDateDataValue() == null ) ){
+				}else if(canDelete(subjectCustomFieldData)){
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = studyDao.isCustomFieldUsed(subjectCustomFieldData);
 					
@@ -904,6 +905,83 @@ public class StudyServiceImpl implements IStudyService {
 		}
 		
 		return listOfExceptions;
+	}
+	
+	/**
+	 * In order to delete it must satisfy the following conditions
+	 * 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
+	 * 3. SubjectCustomFieldData.TextDataValue is NULL OR is EMPTY
+	 * 4. SubjectCustomFieldData.NumberDataValue is NULL
+	 * 5. SubjectCustomFieldData.DatewDataValue is NULL
+	 * When these conditiosn are satisfied this method will return Boolean TRUE
+	 * @param subjectCustomFieldData
+	 * @return
+	 */
+	private Boolean canDelete(SubjectCustomFieldData subjectCustomFieldData){
+		Boolean flag = false;
+		
+		if(subjectCustomFieldData.getId() != null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && 
+				( subjectCustomFieldData.getTextDataValue() == null  	||		
+				  subjectCustomFieldData.getTextDataValue().isEmpty()  	|| 
+				  subjectCustomFieldData.getNumberDataValue() == null 	||
+				  subjectCustomFieldData.getDateDataValue() == null ) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Update a SubjectCustomFieldData instance the following conditions must be met
+	 * 1. SubjectCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
+	 * 3. SubjectCustomFieldData.TextDataValue is NOT NULL AND NOT EMPTY OR
+	 * 4. SubjectCustomFieldData.NumberDataValue is NOT NULL
+	 * 5. SubjectCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param subjectCustomFieldData
+	 * @return
+	 */
+	private Boolean canUpdate(SubjectCustomFieldData subjectCustomFieldData){
+		Boolean flag = false;
+		
+		if(subjectCustomFieldData.getId() != null && subjectCustomFieldData.getLinkSubjectStudy() != null && 
+				(( subjectCustomFieldData.getTextDataValue() != null 	&& 
+				   !subjectCustomFieldData.getTextDataValue().isEmpty()) || 
+				   subjectCustomFieldData.getDateDataValue() != null  	|| 
+				   subjectCustomFieldData.getNumberDataValue() != null) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Insert a SubjectCustomFieldData instance the following conditions must be met.
+	 * 1. SubjectCustomFieldData must be a transient entity(Not yet associated with an ID/PK) AND
+	 * 2. SubjectCustomFieldData should have a valid Subject linked to it and must not be null AND
+	 * 3. SubjectCustomFieldData.TextDataValue is NOT NULL  OR
+	 * 4. SubjectCustomFieldData.NumberDataValue is NOT NULL OR
+	 * 5. SubjectCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param subjectCustomFieldData
+	 * @return
+	 */
+	private Boolean canInsert(SubjectCustomFieldData subjectCustomFieldData){
+		Boolean flag = false;
+		
+		if(subjectCustomFieldData.getId() == null &&  subjectCustomFieldData.getLinkSubjectStudy() != null && 
+				(		subjectCustomFieldData.getNumberDataValue() != null || 
+						subjectCustomFieldData.getTextDataValue() != null 	|| 
+						subjectCustomFieldData.getDateDataValue() != null )){
+			
+			flag=true;
+			
+		}
+		return flag;
 	}
 
 
