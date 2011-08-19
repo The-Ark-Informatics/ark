@@ -34,7 +34,7 @@ public class TextDataEntryPanel extends Panel {
 		
 		dataValueTxtFld = new TextField<String>("textDataValue", dataValueModel);
 		dataValueTxtFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
-		this.add(new FormComponentFeedbackBorder("border").add(dataValueTxtFld));
+		this.add(dataValueTxtFld);
 	}
 
 	public void setRequired(boolean required) {

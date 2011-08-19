@@ -26,7 +26,7 @@ public class DetailPanel extends Panel {
 	private ArkCrudContainerVO arkCrudContainerVO;
 
 	public DetailPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<CustomFieldVO> cpModel, ArkCrudContainerVO arkCrudContainerVO) {
-		super(id);
+		super(id, cpModel);
 		this.feedbackPanel = feedbackPanel;
 		this.cpModel = cpModel;
 		this.arkCrudContainerVO = arkCrudContainerVO;

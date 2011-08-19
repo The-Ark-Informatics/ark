@@ -19,7 +19,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
-import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.ArkDataProvider2;
 
 /**
  * @author elam
@@ -50,7 +50,7 @@ public class SearchResultListPanel extends Panel {
 		this.feedbackPanel = feedBackPanel;
 	}
 
-	public DataView<CustomField> buildDataView(ArkDataProvider<CustomField, IArkCommonService> subjectProvider) {
+	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField, IArkCommonService> subjectProvider) {
 
 		DataView<CustomField> studyCompDataView = new DataView<CustomField>("customFieldList", subjectProvider) {
 
@@ -73,52 +73,45 @@ public class SearchResultListPanel extends Panel {
 				// TODO when displaying text escape any special characters
 				// Field Type
 				if (field.getFieldType() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, field.getFieldType().getName()));// the ID here
-					// must match the
-					// ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, field.getFieldType().getName()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_FIELD_TYPE, ""));
 				}
 
 				// TODO when displaying text escape any special characters
 				// Description
 				if (field.getDescription() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, field.getDescription()));// the ID here must match
-					// the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, field.getDescription()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_DESCRIPTION, ""));
 				}
 
 				// TODO when displaying text escape any special characters
 				// Units
 				if (field.getUnitType() != null && field.getUnitType().getName() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));// the ID here must match the ones in
-					// mark-up
-				}
+					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, field.getUnitType().getName()));				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_UNIT_TYPE, ""));
 				}
 
 				// TODO when displaying text escape any special characters
 				// Min
 				if (field.getMinValue() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, field.getMinValue()));// the ID here must match the
-					// ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, field.getMinValue()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_MIN_VALUE, ""));
 				}
 
 				// TODO when displaying text escape any special characters
 				// Max
 				if (field.getMinValue() != null) {
-					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, field.getMaxValue()));// the ID here must match the
-					// ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, field.getMaxValue()));
 				}
 				else {
-					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(Constants.CUSTOMFIELD_MAX_VALUE, ""));
 				}
 
 				/* For the alternative stripes */

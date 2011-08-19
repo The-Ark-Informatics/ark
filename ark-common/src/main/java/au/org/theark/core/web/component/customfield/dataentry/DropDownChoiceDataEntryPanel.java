@@ -79,7 +79,7 @@ public class DropDownChoiceDataEntryPanel extends Panel {
 		dataValueDdc = new DropDownChoice<EncodedValueVO>("ddcDataValue", ddcValueModel, choiceList, renderer);
 		dataValueDdc.setNullValid(true);	// nullValid allows you to set the "(no value)" option
 		dataValueDdc.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
-		this.add(new FormComponentFeedbackBorder("border").add(dataValueDdc));
+		this.add(dataValueDdc);
 	}
 
 	public void setRequired(boolean required) {

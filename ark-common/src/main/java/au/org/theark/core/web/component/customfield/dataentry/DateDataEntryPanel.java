@@ -55,7 +55,7 @@ public class DateDataEntryPanel extends Panel {
 		badValueLbl = new Label("badValueLabel", badDataValueModel);
 		badValueLbl.setOutputMarkupId(true);
 		
-		this.add(new FormComponentFeedbackBorder("border").add(dataValueDateFld));
+		this.add(dataValueDateFld);
 		this.add(badValueLbl);
 	}
 	

@@ -15,6 +15,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -120,38 +121,37 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		// Due to ARK-108 :: No longer reset the VO onNew(..)
-//		CustomFieldVO fieldVo = getModelObject();
-//		fieldVo.getCustomField().setId(null); // must ensure Id is blank onNew
-
-		// Set study for the new field
-//		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-//		Study study = iArkCommonService.getStudy(studyId);
-//		fieldVo.getCustomField().setStudy(study);
-
+		target.addComponent(feedbackPanel);
+		// Instead of having to reset the criteria, we just copy the criteria across
 		CustomField cf = getModelObject().getCustomField();
 		CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		CustomField newCF = newModel.getObject().getCustomField();
 		// Copy all the customField attributes across from the SearchForm
+		newCF.setStudy(cf.getStudy());
+		newCF.setArkModule(cf.getArkModule());
 		newCF.setName(cf.getName());
 		newCF.setFieldType(cf.getFieldType());
 		newCF.setDescription(cf.getDescription());
-		newCF.setUnitType(cf.getUnitType());
+		/* 
+		 * NB: Do NOT copy unitType across because it is a Textfield on the SearchForm.
+		 * If you copy this through, then DetailForm will have transient error during onSave(..).
+		 * Also, if the user chooses fieldType==DATE, this and unitType is not a valid combination
+		 * (but unitTypeDdc will be disabled, so the user can't make it null for it to be valid).
+		 */
 		newCF.setMinValue(cf.getMinValue());
 		newCF.setMaxValue(cf.getMaxValue());
 		newModel.getObject().setUseCustomFieldDisplay(getModelObject().isUseCustomFieldDisplay());
-
+		
 		DetailPanel detailsPanel = new DetailPanel("detailsPanel", feedbackPanel, newModel, arkCrudContainerVO);
 		arkCrudContainerVO.getDetailPanelContainer().addOrReplace(detailsPanel);
 		
+		// Reset model's CF object (do NOT replace the CustomFieldVO in the model)
+		cf = new CustomField();
+		cf.setStudy(newCF.getStudy());
+		cf.setArkModule(newCF.getArkModule());
+		getModelObject().setCustomField(cf);
+		
 		preProcessDetailPanel(target, arkCrudContainerVO);
-	}
-	
-	@Override
-	protected void onBeforeRender() {
-		// Ensure that the UnitType object is instantiated for searches
-		getModelObject().getCustomField().setUnitType(new UnitType());
-		super.onBeforeRender();
 	}
 
 }

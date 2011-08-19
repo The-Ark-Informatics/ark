@@ -12,7 +12,8 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
-import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.form.ContainerForm;
 
 /**
@@ -47,7 +48,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	private IArkCommonService			iArkCommonService;
 
 	private DataView<CustomField>		dataView;
-	private ArkDataProvider<CustomField, IArkCommonService>	customFieldProvider;
+	private ArkDataProvider2<CustomField, CustomField, IArkCommonService>	customFieldProvider;
 
 	/**
 	 * @param id
@@ -55,10 +56,12 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	public CustomFieldContainerPanel(String id, WebMarkupContainer arkContextMarkup, boolean useCustomFieldDisplay) {
 
 		super(id, true);
-		this.arkContextMarkup = arkContextMarkup;
+		this.arkContextMarkup = arkContextMarkup;		
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
+		
+		prerenderContextCheck();
 		
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -66,8 +69,6 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 
-		prerenderContextCheck();
-		
 		add(containerForm);
 	}
 
@@ -90,12 +91,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			containerForm.getModelObject().getCustomField().setStudy(iArkCommonService.getStudy(sessionStudyId));
-		}
-
+	
 		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		searchPanel.initialisePanel();
@@ -119,27 +115,22 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		// Data providor to paginate resultList
-		customFieldProvider = new ArkDataProvider<CustomField, IArkCommonService>(iArkCommonService) {
+		customFieldProvider = new ArkDataProvider2<CustomField, CustomField, IArkCommonService>(iArkCommonService) {
 
 			public int size() {
-				return service.getCustomFieldCount(model.getObject());
+				return service.getCustomFieldCount(criteriaModel.getObject());
 			}
 
 			public Iterator<CustomField> iterator(int first, int count) {
 				List<CustomField> listSubjects = new ArrayList<CustomField>();
 				if (isActionPermitted()) {
-					listSubjects = service.searchPageableCustomFields(model.getObject(), first, count);
+					listSubjects = service.searchPageableCustomFields(criteriaModel.getObject(), first, count);
 				}
 				return listSubjects.iterator();
 			}
 		};
 		// Set the criteria for the data provider
-		customFieldProvider.setModel(new LoadableDetachableModel<CustomField>() {
-			@Override
-			protected CustomField load() {
-				return cpModel.getObject().getCustomField();
-			}
-		});
+		customFieldProvider.setCriteriaModel(new PropertyModel<CustomField>(cpModel, "customField"));
 
 		dataView = searchResultListPanel.buildDataView(customFieldProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
