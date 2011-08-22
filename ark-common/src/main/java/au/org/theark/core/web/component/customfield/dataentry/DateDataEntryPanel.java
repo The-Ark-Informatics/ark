@@ -35,11 +35,7 @@ public class DateDataEntryPanel extends AbstractDataEntryPanel<Date> {
 		dataValueDateFld.setLabel(fieldLabelModel);	// set the ${label} for feedback messages
 		dataValueDateFld.add(datePicker);
 
-		errorValueLbl = new Label("badValueLabel", errorDataValueModel);
-		errorValueLbl.setOutputMarkupId(true);
-		
 		this.add(dataValueDateFld);
-		this.add(errorValueLbl);
 	}
 	
 	public IConverter getDateConverter() {

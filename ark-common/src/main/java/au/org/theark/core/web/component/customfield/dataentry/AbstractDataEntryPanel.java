@@ -24,7 +24,7 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 	private static final Logger log = LoggerFactory.getLogger(AbstractDataEntryPanel.class);
 
 	protected IModel<T> dataValueModel;
-	protected IModel<String> errorDataValueModel;
+	protected IModel<String> errorDataLabelModel;
 	protected IModel<String> fieldLabelModel;
 	protected Label errorValueLbl;
 	
@@ -47,21 +47,26 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 			fieldLabelModel = new Model<String>("(unspecified label for date field)");
 		}
 		
-		errorDataValueModel = new Model<String>("");
+		errorDataLabelModel = new Model<String>("");
+		errorValueLbl = new Label("errorValueLabel", errorDataLabelModel);
+		errorValueLbl.setOutputMarkupId(true);
+		
+		this.add(errorValueLbl);
 	}
 
 	public void setErrorDataValueModel(IModel<String> errorDataStringModel) {
 		if (errorDataStringModel != null 
 				&& errorDataStringModel.getObject() != null && !errorDataStringModel.getObject().isEmpty()) {
-			errorDataValueModel = new StringResourceModel(getValidationErrorResourceKey(), this, 
-																		null, new Object[] { errorDataValueModel.getObject() });
+			errorDataLabelModel = new StringResourceModel(getValidationErrorResourceKey(), this, 
+																		null, new Object[] { errorDataStringModel.getObject() });
 		}
 		else {
-			errorDataValueModel = new Model<String>("");
+			errorDataLabelModel = new Model<String>("");
 		}
+		errorValueLbl.setDefaultModel(errorDataLabelModel);
 	}
 
-	protected String getValidationErrorResourceKey() {
+	private String getValidationErrorResourceKey() {
 		String typeRsrcKey = null;
 		switch(getDataEntryType()) {
 			case TEXT : typeRsrcKey = TEXT_VALIDATION_ERROR_RSRC_KEY;

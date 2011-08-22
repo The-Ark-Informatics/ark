@@ -157,7 +157,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -201,7 +202,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
@@ -227,7 +229,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.EDIT);
 			}
 		};
 
@@ -284,7 +287,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -310,7 +314,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
 		};
 
@@ -330,7 +335,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.EDIT);
+				// calling super.isVisible() will allow an external setVisible() to override visibility
+				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.EDIT);
 			}
 		};
 
