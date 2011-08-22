@@ -225,14 +225,6 @@ public class SearchResults extends Panel {
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 
-				Search searchPanel = (Search) searchPanelContainer.get("searchComponentPanel");
-				SearchForm sfs = (SearchForm) searchPanel.get("searchForm");
-				List<Country> countryList = iArkCommonService.getCountries();
-				if (subjectFromBackend.getLinkSubjectStudy().getCountry() == null) {
-					subjectFromBackend.getLinkSubjectStudy().setCountry(countryList.get(0));
-				}
-				sfs.updateDetailFormPrerender(subjectFromBackend.getLinkSubjectStudy());
-
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
 				viewButtonContainer.setEnabled(true);

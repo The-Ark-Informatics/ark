@@ -148,7 +148,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 			getModelObject().getLinkSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
 		}
-		updateDetailFormPrerender(getModelObject().getLinkSubjectStudy());
 
 		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
 
@@ -168,26 +167,6 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		}
 
 		preProcessDetailPanel(target);
-	}
-
-	public void updateDetailFormPrerender(LinkSubjectStudy linkSubjectStudy) {
-		List<CountryState> countryStateList = iArkCommonService.getStates(linkSubjectStudy.getCountry());
-		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get(Constants.COUNTRY_STATE_SELECTOR_WMC);
-		DropDownChoice<CountryState> stateChoice = (DropDownChoice<CountryState>) wmcStateSelector.get(Constants.SUBJECT_STATE);
-		TextField<String> otherState = (TextField<String>) wmcStateSelector.get(Constants.SUBJECT_OTHER_STATE);
-
-		if (countryStateList != null && countryStateList.size() > 0) {
-			stateChoice.getChoices().clear();
-			stateChoice.setChoices(countryStateList);
-			stateChoice.setVisible(true);
-			otherState.setVisible(false);
-		}
-		else {
-			// hide it
-			stateChoice.setVisible(false);
-			otherState.setVisible(true);
-		}
-
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {

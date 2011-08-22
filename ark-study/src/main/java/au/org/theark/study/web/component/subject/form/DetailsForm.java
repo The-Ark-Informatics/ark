@@ -85,26 +85,14 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	protected TextField<String>							heardAboutStudyTxtFld;
 	protected DropDownChoice<YesNo>						consentDownloadedChoice;
 
-	// Custom Fields and Consents at Subject Study Level
-	protected TextField<String>							amdrifIdTxtFld;
-	protected DateTextField									studyApproachDate;
-	protected TextField<Long>								yearOfFirstMamogramTxtFld;
-	protected TextField<String>							yearOfRecentMamogramTxtFld;
-	protected TextField<String>							totalNumberOfMamogramsTxtFld;
+	// Consents at Subject Study Level
 	protected DropDownChoice<YesNo>						consentToActiveContactDdc;
 	protected DropDownChoice<YesNo>						consentToUseDataDdc;
 	protected DropDownChoice<YesNo>						consentToPassDataGatheringDdc;
 
 	// Address Stuff comes here
-	protected TextField<String>							streetAddressTxtFld;
-	protected TextField<String>							cityTxtFld;
-	protected TextField<String>							postCodeTxtFld;
-	protected DropDownChoice<Country>					countryChoice;
-	protected DropDownChoice<CountryState>				stateChoice;
-	protected WebMarkupContainer							countryStateSelector;
 	protected TextField<String>							preferredEmailTxtFld;
 	protected TextField<String>							otherEmailTxtFld;
-	protected TextField<String>							otherState;
 
 	// Reference Data
 	protected DropDownChoice<TitleType>					titleTypeDdc;
@@ -151,11 +139,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		dobDatePicker.bind(dateOfBirthTxtFld);
 		dateOfBirthTxtFld.add(dobDatePicker);
 
-		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-		ArkDatePicker consentDatePicker = new ArkDatePicker();
-		consentDatePicker.bind(consentDateTxtFld);
-		consentDateTxtFld.add(consentDatePicker);
-
 		dateLastKnownAliveTxtFld = new DateTextField("linkSubjectStudy.person.dateLastKnownAlive", au.org.theark.core.Constants.DD_MM_YYYY);
 		ArkDatePicker dateLastKnownAlivePicker = new ArkDatePicker();
 		dateLastKnownAlivePicker.bind(dateLastKnownAliveTxtFld);
@@ -166,10 +149,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		ArkDatePicker dodDatePicker = new ArkDatePicker();
 		dodDatePicker.bind(dateOfDeathTxtFld);
 		dateOfDeathTxtFld.add(dodDatePicker);
-
-		List<YesNo> yesNoListSource = iArkCommonService.getYesNoList();
-		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
-		consentDownloadedChoice = new DropDownChoice<YesNo>(Constants.PERSON_CONSENT_DOWNLOADED, yesNoListSource, yesNoRenderer);
 
 		commentTxtAreaFld = new TextArea<String>(Constants.PERSON_COMMENT);
 
@@ -235,9 +214,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 			}
 		});
 
-		initCustomFields();
-		initialiseConsentStatusChoice();
-		initialiseConsentTypeChoice();
+		initConsentFields();
 		attachValidators();
 		addDetailFormComponents();
 
@@ -293,27 +270,16 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 			}
 		}
 	}
+	
+	private void initConsentFields() {
+		consentDateTxtFld = new DateTextField(Constants.PERSON_CONSENT_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
+		ArkDatePicker consentDatePicker = new ArkDatePicker();
+		consentDatePicker.bind(consentDateTxtFld);
+		consentDateTxtFld.add(consentDatePicker);
 
-	private void initCustomFields() {
-		amdrifIdTxtFld = new TextField<String>(Constants.SUBJECT_AMDRFID);
-
-		studyApproachDate = new DateTextField(Constants.SUBJECT_STUDY_APPROACH_DATE, au.org.theark.core.Constants.DD_MM_YYYY);
-
-		ArkDatePicker dobStudyApproachDatePicker = new ArkDatePicker();
-
-		dobStudyApproachDatePicker.bind(studyApproachDate);
-		studyApproachDate.add(dobStudyApproachDatePicker);
-
-		yearOfFirstMamogramTxtFld = new TextField<Long>(Constants.SUBJECT_YR_FIRST_MAMMOGRAM, Long.class);
-		yearOfRecentMamogramTxtFld = new TextField<String>(Constants.SUBJECT_YR_RECENT_MAMMOGRAM);
-		totalNumberOfMamogramsTxtFld = new TextField<String>(Constants.SUBJECT_TOTAL_MAMMOGRAM);
-
-		streetAddressTxtFld = new TextField<String>(Constants.SUBJECT_SITE_ADDRESS);
-		cityTxtFld = new TextField<String>(Constants.SUBJECT_CITY);
-		postCodeTxtFld = new TextField<String>(Constants.SUBJECT_POST_CODE);
-		otherState = new TextField<String>(Constants.SUBJECT_OTHER_STATE);
-		initialiseCountryDropDown();
-		initialiseCountrySelector();
+		List<YesNo> yesNoListSource = iArkCommonService.getYesNoList();
+		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
+		consentDownloadedChoice = new DropDownChoice<YesNo>(Constants.PERSON_CONSENT_DOWNLOADED, yesNoListSource, yesNoRenderer);
 
 		Collection<YesNo> yesNoList = iArkCommonService.getYesNoList();
 		ChoiceRenderer<YesNo> yesnoRenderer = new ChoiceRenderer<YesNo>(Constants.NAME, Constants.ID);
@@ -323,69 +289,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 
 		consentToPassDataGatheringDdc = new DropDownChoice<YesNo>(Constants.SUBJECT_CONSENT_PASSIVE_DATA_GATHER, (List) yesNoList, yesnoRenderer);
 
-	}
-
-	private void initialiseCountrySelector() {
-
-		countryStateSelector = new WebMarkupContainer("countryStateSelector");
-		countryStateSelector.setOutputMarkupPlaceholderTag(true);
-		// Get the value selected in Country
-		Country selectedCountry = countryChoice.getModelObject();
-
-		// If there is no country selected, back should default to current country and pull the states
-		List<CountryState> countryStateList = iArkCommonService.getStates(selectedCountry);
-		ChoiceRenderer<CountryState> defaultStateChoiceRenderer = new ChoiceRenderer<CountryState>("state", Constants.ID);
-		stateChoice = new DropDownChoice<CountryState>(Constants.SUBJECT_STATE, countryStateList, defaultStateChoiceRenderer);
-		// Add the Country State Dropdown into the WebMarkupContainer - countrySelector
-		countryStateSelector.add(stateChoice);
-		countryStateSelector.add(otherState);
-		if (countryStateList.size() > 0) {
-			otherState.setVisible(false);
-			stateChoice.setVisible(true);
-		}
-		else {
-			otherState.setVisible(true);
-			stateChoice.setVisible(false);
-		}
-	}
-
-	@SuppressWarnings("serial")
-	private void initialiseCountryDropDown() {
-
-		final List<Country> countryList = iArkCommonService.getCountries();
-		ChoiceRenderer<Country> defaultChoiceRenderer = new ChoiceRenderer<Country>(Constants.NAME, Constants.ID);
-
-		countryChoice = new DropDownChoice<Country>(Constants.SUBJECT_COUNTRY, countryList, defaultChoiceRenderer);
-		// Attach a behavior, so when it changes it does something
-		countryChoice.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				updateCountryStateChoices(countryChoice.getModelObject());
-				target.addComponent(countryStateSelector);
-			}
-		});
-
-	}
-
-	/**
-	 * A method that will refresh the choices in the State drop down choice based on what was selected in the Country Dropdown. It uses the country as
-	 * the argument and invokes the back-end to fetch relative states.
-	 */
-	private void updateCountryStateChoices(Country country) {
-
-		List<CountryState> countryStateList = iArkCommonService.getStates(country);
-		if (countryStateList != null && countryStateList.size() > 0) {
-			stateChoice.setVisible(true);
-			stateChoice.getChoices().clear();
-			stateChoice.setChoices(countryStateList);
-			otherState.setVisible(false);
-		}
-		else {
-			// hide it
-			stateChoice.setVisible(false);
-			otherState.setVisible(true);
-		}
-
+		initialiseConsentStatusChoice();
+		initialiseConsentTypeChoice();
 	}
 
 	public void addDetailFormComponents() {
@@ -418,17 +323,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		detailPanelFormContainer.add(wmcPreferredEmailContainer);
 		detailPanelFormContainer.add(otherEmailTxtFld);
 
-		// Add the supposed-to-be custom controls into the form container.
-		detailPanelFormContainer.add(amdrifIdTxtFld);
-		detailPanelFormContainer.add(studyApproachDate);
-		detailPanelFormContainer.add(yearOfFirstMamogramTxtFld);
-		detailPanelFormContainer.add(yearOfRecentMamogramTxtFld);
-		detailPanelFormContainer.add(totalNumberOfMamogramsTxtFld);
-		detailPanelFormContainer.add(streetAddressTxtFld);
-		detailPanelFormContainer.add(cityTxtFld);
-		detailPanelFormContainer.add(postCodeTxtFld);
-		detailPanelFormContainer.add(countryChoice);
-		detailPanelFormContainer.add(countryStateSelector);// This contains the drop-down for State
+		// Add consent fields into the form container.
 		detailPanelFormContainer.add(consentToActiveContactDdc);
 		detailPanelFormContainer.add(consentToUseDataDdc);
 		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
@@ -457,10 +352,6 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		subjectVO.getLinkSubjectStudy().setStudy(study);
 		containerForm.setModelObject(subjectVO);
-
-		stateChoice.setVisible(true);
-		otherState.setVisible(false);
-		target.addComponent(countryStateSelector);
 	}
 
 	/*
@@ -472,7 +363,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	protected void attachValidators() {
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
-		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+//		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate", this, null));
 		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum", this, null));
 		dateLastKnownAliveTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.person.dateLastKnownAlive.DateValidator.maximum", this, null));
