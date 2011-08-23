@@ -1,15 +1,21 @@
-/**
- * CustomField's DetailForm
+/*******************************************************************************
+ * Copyright (c) 2011  University of Western Australia. All rights reserved.
  * 
- * Follows a slightly different abstraction model again trying to improve
- * on top of the existing CRUD abstraction classes.  Of note:
- * - Receive a (compound property) model instead of the container form, 
- * which should make it lighter than passing the container form in.
- * - We do not have to pass in the container form's model/VO, but instead
- * this can use an independent model for an independent VO.
+ * This file is part of The Ark.
  * 
- * @auther elam
- */
+ * The Ark is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3
+ * of the License, or (at your option) any later version.
+ * 
+ * The Ark is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ ******************************************************************************/
 package au.org.theark.core.web.component.customfield.form;
 
 import java.util.Date;
@@ -58,7 +64,16 @@ import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel
 import au.org.theark.core.web.form.AbstractDetailForm;
 
 /**
- * @author elam
+ * CustomField's DetailForm
+ * 
+ * Follows a slightly different abstraction model again trying to improve
+ * on top of the existing CRUD abstraction classes.  Of note:
+ * - Receive a (compound property) model instead of the container form, 
+ * which should make it lighter than passing the container form in.
+ * - We do not have to pass in the container form's model/VO, but instead
+ * this can use an independent model for an independent VO.
+ * 
+ * @auther elam
  * 
  * Does not use the containerForm under the revised abstraction.
  */
