@@ -1,11 +1,34 @@
+#inventoryButtonPanel {
+	background-color: #EEEEEE;
+    border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+#inventoryPanelBreaker {
+	float: left;
+    width: 100%;
+}
+
+#inventoryPanelContent {
+	border: 1px solid #6F6F6F;
+    float: left;
+    width: 100%;
+}
+
 #inventoryContentZoneLeft {
 	float: left;
-	width: 25%;
+    margin-left: 10px;
+    width: 15%;
 }
 
 #inventoryContentZoneCenter {
-	margin: 0 auto;
-    width: 47%;
+	margin-left: auto;
+    margin-right: auto;
+    width: 65%;
 }
 
 #inventoryContentZoneRight {
