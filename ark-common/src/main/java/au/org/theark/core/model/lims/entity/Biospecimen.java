@@ -56,7 +56,7 @@ public class Biospecimen implements java.io.Serializable {
 	private Long						id;
 	private String						timestamp;
 	private BioCollection			bioCollection;
-	private String						biospecimenId;
+	private String						biospecimenUid;
 	private Study						study;
 	private Long						substudyId;
 	private LinkSubjectStudy		linkSubjectStudy;
@@ -68,7 +68,7 @@ public class Biospecimen implements java.io.Serializable {
 	private String						storedIn;
 	private Date						sampleTime;
 	private String						grade;
-	private InvCell					cell;
+	private InvCell					invCell;
 	private Long						depth;
 	private Date						sampleDate;
 	private Date						extractedTime;
@@ -98,21 +98,21 @@ public class Biospecimen implements java.io.Serializable {
 	public Biospecimen() {
 	}
 
-	public Biospecimen(Long id, String biospecimenId, InvCell cell, Long sampletypeId, BioSampletype sampleType) {
+	public Biospecimen(Long id, String biospecimenId, InvCell invCell, Long sampletypeId, BioSampletype sampleType) {
 		this.id = id;
-		this.biospecimenId = biospecimenId;
-		this.cell = cell;
+		this.biospecimenUid = biospecimenUid;
+		this.invCell = invCell;
 		this.sampleType = sampleType;
 	}
 
-	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenId, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentid, Long oldId,
-			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell cell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
+	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentid, Long oldId,
+			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
 			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, String units, String quality, Long withdrawn,
-			String status, String treatment, Set<InvCell> invCells, Set<BioTransaction> bioTransactions) {
+			String status, String treatment, Set<InvCell> invinvCells, Set<BioTransaction> bioTransactions) {
 		this.id = id;
 		this.bioCollection = bioCollection;
-		this.biospecimenId = biospecimenId;
+		this.biospecimenUid = biospecimenUid;
 		this.study = study;
 		this.substudyId = substudyId;
 		this.linkSubjectStudy = linkSubjectStudy;
@@ -124,7 +124,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.storedIn = storedIn;
 		this.sampleTime = sampleTime;
 		this.grade = grade;
-		this.cell = cell;
+		this.invCell = invCell;
 		this.depth = depth;
 		this.sampleDate = sampleDate;
 		this.extractedTime = extractedTime;
@@ -150,7 +150,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.status = status;
 		this.treatment = treatment;
 		/*
-		 * this.invCells = invCells; this.bioTransactions = bioTransactions;
+		 * this.invinvCells = invinvCells; this.bioTransactions = bioTransactions;
 		 */
 	}
 
@@ -185,12 +185,12 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	@Column(name = "BIOSPECIMEN_ID", nullable = false)
-	public String getBiospecimenId() {
-		return this.biospecimenId;
+	public String getBiospecimenUid() {
+		return this.biospecimenUid;
 	}
 
-	public void setBiospecimenId(String biospecimenId) {
-		this.biospecimenId = biospecimenId;
+	public void setBiospecimenUid(String biospecimenUid) {
+		this.biospecimenUid = biospecimenUid;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -297,12 +297,12 @@ public class Biospecimen implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CELL_ID")
-	public InvCell getCell() {
-		return this.cell;
+	public InvCell getinvCell() {
+		return this.invCell;
 	}
 
-	public void setCell(InvCell cell) {
-		this.cell = cell;
+	public void setinvCell(InvCell invCell) {
+		this.invCell = invCell;
 	}
 
 	@Column(name = "DEPTH")
