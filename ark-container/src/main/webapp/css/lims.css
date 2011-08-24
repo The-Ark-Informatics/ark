@@ -1,0 +1,39 @@
+#inventoryContentZoneLeft {
+	float: left;
+	width: 25%;
+}
+
+#inventoryContentZoneCenter {
+	margin: 0 auto;
+    width: 47%;
+}
+
+#inventoryContentZoneRight {
+	float: right;
+	width: 5%;
+}
+
+#gridBox {
+    margin-left: auto;
+    margin-right: auto;
+    width: 0;
+}
+
+table.gridBoxTable {
+	 border: 1px solid;
+	 border-collapse:collapse;
+}
+
+table.gridBoxTable th {
+    color: white;
+    font-weight: bold;
+    padding: 1px;
+}
+
+table.gridBoxTable td {
+    border: 1px solid black;
+}
+
+#gridBoxKeyContainer {
+    border: 1px solid black;
+}
