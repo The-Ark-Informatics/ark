@@ -207,13 +207,13 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 			if (containerForm.getModelObject().getBiospecimen().getId() == null) {
 				// Save
 				iLimsService.createBiospecimen(containerForm.getModelObject());
-				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was created successfully");
+				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 				processErrors(target);
 			}
 			else {
 				// Update
 				iLimsService.updateBiospecimen(containerForm.getModelObject());
-				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
+				this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 				processErrors(target);
 			}
 
@@ -256,7 +256,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
 		iLimsService.deleteBiospecimen(containerForm.getModelObject());
-		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
+		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
 
 		// Display delete confirmation message
 		target.addComponent(feedBackPanel);

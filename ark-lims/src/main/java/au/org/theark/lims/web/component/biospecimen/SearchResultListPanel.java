@@ -198,7 +198,7 @@ public class SearchResultListPanel extends Panel {
 
 		// Add the label for the link
 		// TODO when displaying text escape any special characters
-		Label nameLinkLabel = new Label("nameLbl", biospecimen.getBiospecimenId());
+		Label nameLinkLabel = new Label("nameLbl", biospecimen.getBiospecimenUid());
 		link.add(nameLinkLabel);
 		return link;
 	}
