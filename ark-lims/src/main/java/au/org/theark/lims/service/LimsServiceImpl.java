@@ -284,11 +284,30 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioCollectionDao.searchPageableBioCollections(bioCollectionCriteria, first, count);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.lims.service.ILimsService#getBiospecimenCount()
+	 */
 	public int getBiospecimenCount(Biospecimen biospecimenCriteria) {
 		return iBiospecimenDao.getBiospecimenCount(biospecimenCriteria);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.lims.service.ILimsService#searchPageableBiospecimens()
+	 */
 	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count) {
 		return iBiospecimenDao.searchPageableBiospecimens(biospecimenCriteria, first, count);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.lims.service.ILimsService#getBiospecimenByUid()
+	 */
+	public Biospecimen getBiospecimenByUid(String biospecimenUid) {
+		return iBiospecimenDao.getBiospecimenByUid(biospecimenUid);
 	}
 }

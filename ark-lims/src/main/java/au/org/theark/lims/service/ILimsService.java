@@ -231,4 +231,11 @@ public interface ILimsService {
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(Biospecimen biospecimenCriteria, int first, int count);
 
+	/**
+	 * Get a Biospecimen entity based on a specified BiospecimenUid
+	 * @param biospecimenUid
+	 * @return
+	 */
+	public Biospecimen getBiospecimenByUid(String biospecimenUid);
+
 }
