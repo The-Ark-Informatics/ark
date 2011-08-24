@@ -36,6 +36,7 @@ import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollection.BioCollectionContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
+import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.SubjectLimsContainerPanel;
 
 @SuppressWarnings("serial")
@@ -71,19 +72,20 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 	}
 
 	protected Panel buildPanels(final ArkFunction arkFunction, String panelId) {
-		Panel panelToReturn = null;// Set
+		Panel panelToReturn = null;
+		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 			panelToReturn = new SubjectLimsContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
-			processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
+			panelToReturn = new InventoryContainerPanel(panelId);
 		}
 		return panelToReturn;
 	}
