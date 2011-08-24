@@ -28,6 +28,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -47,6 +48,7 @@ public class InvCell implements java.io.Serializable {
 	private Long	rowno;
 	private Long	colno;
 	private String	status;
+	private Biospecimen biospecimen;
 
 	public InvCell() {
 	}
@@ -129,6 +131,21 @@ public class InvCell implements java.io.Serializable {
 
 	public void setStatus(String status) {
 		this.status = status;
+	}
+
+	/**
+	 * @return the biospecimen
+	 */
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "invCell") 
+	public Biospecimen getBiospecimen() {
+		return biospecimen;
+	}
+
+	/**
+	 * @param biospecimen the biospecimen to set
+	 */
+	public void setBiospecimen(Biospecimen biospecimen) {
+		this.biospecimen = biospecimen;
 	}
 
 }
