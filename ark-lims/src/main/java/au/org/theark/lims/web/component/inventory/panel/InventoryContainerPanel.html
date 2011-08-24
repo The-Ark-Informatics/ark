@@ -1,0 +1,39 @@
+<wicket:panel>
+	<!-- Content Zone -->
+	<div id="contentZone">
+		<div id="inventoryContentZoneLeft">
+			<!--	The TreeView of the Inventory-->
+			<div wicket:id="treeContainer">
+				<div wicket:id="treePanel">
+					[Tree Panel]
+				</div>
+			</div>
+		</div>
+		<form wicket:id="containerForm">
+			<div id="inventoryContentZoneRight">
+			</div>
+
+			<div id="inventoryContentZoneCenter">
+				<span wicket:id="feedbackMessage">
+					[Feedback Messages]
+				</span>
+		
+				<div id="detailPanelBreaker">
+					&nbsp;
+				</div>
+
+				<!--	The WebMarkupContainer that has the DetailPanel -->
+				<div wicket:id="detailContainer">
+					<div wicket:id="detailPanel">
+						[Detail Panel]
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<!--	Page right Zone -->
+	<div id="rightZone">
+		&nbsp;
+	</div>
+</wicket:panel>

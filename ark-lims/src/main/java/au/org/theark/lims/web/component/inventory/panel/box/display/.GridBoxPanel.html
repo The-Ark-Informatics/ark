@@ -1,0 +1,60 @@
+<wicket:panel>
+	<div id="gridBox">
+		<table class="gridBoxTable">
+			<!-- the Grid Heading -->
+			<tr>
+				<th>
+					&nbsp;
+				</th>
+				<th wicket:id="heading">
+					<label wicket:id="cellHead">
+						[Column Heading]
+					</label>
+				</th>
+			</tr>
+			<!-- the Grid Body -->
+			<tr wicket:id="rows">
+				<td align="center" valign="middle">
+					<!-- the Row Numbering Part -->
+					<label wicket:id="rowNo">
+						[RowNo]
+					</label>
+				</td>
+				<!-- the Cell	-->
+				<td wicket:id="cols" align="center" valign="middle">
+					<img wicket:id="cellIcon"/>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div wicket:id="gridBoxKeyContainer">
+		<table width="80%" border="0">
+			<tbody>
+				<tr>
+					<td>
+						KEY:
+					</td>
+					<td>
+						<img wicket:id="emptyCellIcon"/>
+					</td>
+					<td>
+						Indicates empty cell
+					</td>
+					<td>
+					</td>
+					<td>
+						<img wicket:id="usedCellIcon"/>
+					</td>
+					<td>
+						Indicates used cell
+					</td>
+					<td>
+					</td>
+					<td>
+						<input wicket:id="downloadGridBoxData" type="submit" wicket:message="value:button.downloadFile" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</wicket:panel>
