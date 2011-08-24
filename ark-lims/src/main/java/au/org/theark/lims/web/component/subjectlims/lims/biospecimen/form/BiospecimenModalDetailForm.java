@@ -111,7 +111,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
-		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenId");
+		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		quantityTxtFld = new TextField<String>("biospecimen.quantity");
@@ -185,13 +185,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			// Save
 			iLimsService.createBiospecimen(cpModel.getObject());
-			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was created successfully");
+			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 			processErrors(target);
 		}
 		else {
 			// Update
 			iLimsService.updateBiospecimen(cpModel.getObject());
-			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was updated successfully");
+			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 			processErrors(target);
 		}
 
@@ -207,7 +207,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
 		iLimsService.deleteBiospecimen(cpModel.getObject());
-		this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenId() + " was deleted successfully");
+		this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
 
 		onClose(target);
 	}

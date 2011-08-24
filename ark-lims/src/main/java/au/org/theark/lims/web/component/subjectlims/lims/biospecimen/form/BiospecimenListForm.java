@@ -297,7 +297,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				// au.org.theark.core.Constants.DD_MM_YYYY);
 
 				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
-				nameLblFld = new Label("biospecimen.biospecimenId", biospecimen.getBiospecimenId());
+				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
@@ -363,7 +363,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 						bioCollectionSelectdLimsVO.setBiospecimen(biospecimenSelected);
 
 						iLimsService.deleteBiospecimen(bioCollectionSelectdLimsVO);
-						this.info("Biospecimen " + biospecimenSelected.getBiospecimenId() + " was deleted successfully");
+						this.info("Biospecimen " + biospecimenSelected.getBiospecimenUid() + " was deleted successfully");
 
 						// Display delete confirmation message
 						target.addComponent(feedbackPanel);
@@ -403,7 +403,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 
 			// Create new BiospecimenUID
-			newModel.getObject().getBiospecimen().setBiospecimenId(UniqueIdGenerator.generateUniqueId());
+			newModel.getObject().getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
 
 			showModalWindow(target, newModel); // listDetailsForm);
 		}
