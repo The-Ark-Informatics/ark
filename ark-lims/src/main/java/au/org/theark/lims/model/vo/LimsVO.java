@@ -24,8 +24,11 @@ import java.util.ArrayList;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.InvTank;
+import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.vo.SubjectVO;
 
 public class LimsVO implements Serializable {
 	/**
@@ -36,6 +39,10 @@ public class LimsVO implements Serializable {
 	protected BioCollection							bioCollection;
 	protected Biospecimen							biospecimen;
 	protected BioTransaction						bioTransaction;
+	protected InvSite									invSite;
+	protected InvTank									invTank;
+	protected InvTray									invTray;
+	protected InvBox									invBox;
 
 	/** A List of bioCollection(s) for the linkSubjectStudy in context */
 	protected java.util.List<BioCollection>	bioCollectionList;
@@ -46,6 +53,9 @@ public class LimsVO implements Serializable {
 	/** A List of bioTransaction(s) for the biospecimen in context */
 	protected java.util.List<BioTransaction>	bioTransactionList;
 
+	/** A List of invSite(s) for the study in context */
+	protected java.util.List<InvSite>			invSiteList;
+
 	protected int										mode;
 
 	public LimsVO() {
@@ -55,6 +65,11 @@ public class LimsVO implements Serializable {
 		this.bioCollectionList = new ArrayList<BioCollection>();
 		this.biospecimenList = new ArrayList<Biospecimen>();
 		this.bioTransactionList = new ArrayList<BioTransaction>();
+		this.invSiteList = new ArrayList<InvSite>();
+		this.invSite = new InvSite();
+		this.invTank = new InvTank();
+		this.invTray = new InvTray();
+		this.invBox = new InvBox();
 	}
 
 	/**
@@ -118,6 +133,63 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
+	 * @return the invSite
+	 */
+	public InvSite getInvSite() {
+		return invSite;
+	}
+
+	/**
+	 * @param invSite
+	 *           the invSite to set
+	 */
+	public void setInvSite(InvSite invSite) {
+		this.invSite = invSite;
+	}
+
+	/**
+	 * @return the invTank
+	 */
+	public InvTank getInvTank() {
+		return invTank;
+	}
+
+	/**
+	 * @param invTank the invTank to set
+	 */
+	public void setInvTank(InvTank invTank) {
+		this.invTank = invTank;
+	}
+
+	/**
+	 * @return the invTray
+	 */
+	public InvTray getInvTray() {
+		return invTray;
+	}
+
+	/**
+	 * @param invTray the invTray to set
+	 */
+	public void setInvTray(InvTray invTray) {
+		this.invTray = invTray;
+	}
+
+	/**
+	 * @return the invBox
+	 */
+	public InvBox getInvBox() {
+		return invBox;
+	}
+
+	/**
+	 * @param invBox the invBox to set
+	 */
+	public void setInvBox(InvBox invBox) {
+		this.invBox = invBox;
+	}
+
+	/**
 	 * @return the bioCollectionCollection
 	 */
 	public java.util.List<BioCollection> getBioCollectionList() {
@@ -160,6 +232,21 @@ public class LimsVO implements Serializable {
 	 */
 	public void setBioTransactionList(java.util.List<BioTransaction> bioTransactionList) {
 		this.bioTransactionList = bioTransactionList;
+	}
+
+	/**
+	 * @return the invSiteList
+	 */
+	public java.util.List<InvSite> getInvSiteList() {
+		return invSiteList;
+	}
+
+	/**
+	 * @param invSiteList
+	 *           the invSiteList to set
+	 */
+	public void setInvSiteList(java.util.List<InvSite> invSiteList) {
+		this.invSiteList = invSiteList;
 	}
 
 	/**
