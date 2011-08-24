@@ -1,5 +1,5 @@
 /*
- * JavaScript to display a busy/lodaing indicator on the page when page loading is taking time
+ * JavaScript to display a busy/loading indicator on the page when page loading is taking time
  * Disables the entire page (via and overlay div tag), and displays a pop-up "Loading..." message
  * 
  * Note: HTML required as follows (at bottom of page):
