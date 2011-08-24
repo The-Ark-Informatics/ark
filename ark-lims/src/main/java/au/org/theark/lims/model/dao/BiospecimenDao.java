@@ -28,7 +28,6 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 
 @SuppressWarnings("unchecked")
@@ -56,8 +55,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		if (biospecimen.getId() != null)
 			criteria.add(Restrictions.eq("id", biospecimen.getId()));
 
-		if (biospecimen.getBiospecimenId() != null)
-			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenId()));
+		if (biospecimen.getBiospecimenUid() != null)
+			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
 
 		if (biospecimen.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
@@ -116,8 +115,8 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		if (biospecimen.getId() != null)
 			criteria.add(Restrictions.eq("id", biospecimen.getId()));
 
-		if (biospecimen.getBiospecimenId() != null)
-			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenId()));
+		if (biospecimen.getBiospecimenUid() != null)
+			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
 
 		if (biospecimen.getLinkSubjectStudy() != null)
 			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
@@ -138,4 +137,16 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 
 	}
 
+	public Biospecimen getBiospecimenByUid(String biospecimenUid) {
+		Biospecimen biospecimen = null;
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		criteria.add(Restrictions.eq("biospecimenUid", biospecimenUid));
+
+		List<Biospecimen> list = criteria.list();
+		if (list != null && list.size() > 0) {
+			biospecimen = list.get(0);
+		}
+
+		return biospecimen;
+	}
 }
