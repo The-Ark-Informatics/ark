@@ -42,13 +42,23 @@ span.requiredHint {
 }
 
 #detailsPanelBorder{
-	border-style: solid;
-	border-width: 1px;
-	border-color: #6F6F6F;
-	background-color:#EEEEEE;
-	float: left;
-	width: 100%;
-	height: 100%;
+	background-color: #EEEEEE;
+    border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
+    border-style: solid;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+#detailFormLabelBorder {
+    background-color: #EEEEEE;
+    border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
 }
 
 #listDetailsPanelBorder{
