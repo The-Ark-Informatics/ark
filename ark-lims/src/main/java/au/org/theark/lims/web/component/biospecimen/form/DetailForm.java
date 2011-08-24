@@ -77,7 +77,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	private int										mode;
 
 	private TextField<String>					idTxtFld;
-	private TextField<String>					biospecimenIdTxtFld;
+	private TextField<String>					biospecimenUidTxtFld;
 	private TextArea<String>					commentsTxtAreaFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
@@ -112,7 +112,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
-		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenId");
+		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		quantityTxtFld = new TextField<String>("biospecimen.quantity");
@@ -178,14 +178,14 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
-		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
+		biospecimenUidTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {
 		detailPanelFormContainer.add(idTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(biospecimenIdTxtFld.setEnabled(false));
+		detailPanelFormContainer.add(biospecimenUidTxtFld.setEnabled(false));
 		detailPanelFormContainer.add(commentsTxtAreaFld);
 		detailPanelFormContainer.add(sampleDateTxtFld);
 		detailPanelFormContainer.add(sampleTypeDdc);

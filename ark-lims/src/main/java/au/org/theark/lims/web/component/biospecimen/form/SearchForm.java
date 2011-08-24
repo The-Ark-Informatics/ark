@@ -68,7 +68,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private PageableListView<Biospecimen>	listView;
 	private CompoundPropertyModel<LimsVO>	cpmModel;
 	private TextField<String>					idTxtFld;
-	private TextField<String>					biospecimenIdTxtFld;
+	private TextField<String>					biospecimenUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	private DetailPanel							detailPanel;
@@ -127,7 +127,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	public void initialiseFieldForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
-		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenId");
+		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
@@ -150,7 +150,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	private void addFieldComponents() {
 		add(idTxtFld);
-		add(biospecimenIdTxtFld);
+		add(biospecimenUidTxtFld);
 		add(sampleDateTxtFld);
 		add(sampleTypeDdc);
 	}
