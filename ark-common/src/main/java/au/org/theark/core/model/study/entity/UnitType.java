@@ -39,12 +39,12 @@ import au.org.theark.core.model.Constants;
 public class UnitType implements Serializable{
 	
 	private Long		id;
-	private ArkModule	arkModule;
+	private ArkFunction	arkFunction;
 	private String		name;
 	private String		description;
 	
 	public UnitType(){
-		arkModule = new ArkModule();
+		arkFunction = new ArkFunction();
 	}
 	
 	@Id
@@ -58,13 +58,13 @@ public class UnitType implements Serializable{
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARK_MODULE_ID")
-	public ArkModule getArkModule() {
-		return arkModule;
+	@JoinColumn(name = "ARK_FUNCTION_ID")
+	public ArkFunction getArkFunction() {
+		return arkFunction;
 	}
 
-	public void setArkModule(ArkModule arkModule) {
-		this.arkModule = arkModule;
+	public void setArkFunction(ArkFunction arkFunction) {
+		this.arkFunction = arkFunction;
 	}
 	
 	@Column(name = "NAME", length = 45)

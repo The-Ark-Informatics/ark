@@ -30,6 +30,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
@@ -315,9 +316,9 @@ public interface IStudyDao {
 
 	public FileFormat getFileFormatByName(String fileFormatName);
 	
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria,ArkModule arkModule, int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 	
 	/**
 	 * Create a single record of type SubjectCustomFieldData

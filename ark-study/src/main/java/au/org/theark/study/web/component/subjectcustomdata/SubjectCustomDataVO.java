@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 
@@ -34,7 +34,7 @@ public class SubjectCustomDataVO implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 	
 	protected LinkSubjectStudy linkSubjectStudy;
-	protected ArkModule arkModule;
+	protected ArkFunction arkFunction;
 	protected List<SubjectCustomFieldData> subjectCustomFieldDataList;
 	
 	SubjectCustomDataVO() {
@@ -50,12 +50,12 @@ public class SubjectCustomDataVO implements Serializable {
 		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
-	public ArkModule getArkModule() {
-		return arkModule;
+	public ArkFunction getArkFunction() {
+		return arkFunction;
 	}
 
-	public void setArkModule(ArkModule arkModule) {
-		this.arkModule = arkModule;
+	public void setArkFunction(ArkFunction arkFunction) {
+		this.arkFunction = arkFunction;
 	}
 
 	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList() {

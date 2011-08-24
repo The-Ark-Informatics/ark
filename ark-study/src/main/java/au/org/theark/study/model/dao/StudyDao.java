@@ -55,6 +55,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ArkUserRole;
@@ -1698,11 +1699,11 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * The count can be based on CustomFieldDisplay only instead of a left join with it using
 	 * SubjectCustomFieldData
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule){
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction){
 		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
 		criteria.createAlias("customField", "cfield");
 		criteria.add(Restrictions.eq("cfield.study", linkSubjectStudyCriteria.getStudy()));
-		criteria.add(Restrictions.eq("cfield.arkModule", arkModule));
+		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
 		criteria.setProjection(Projections.rowCount());
 		Integer count = (Integer) criteria.uniqueResult();
 		return count.intValue();
@@ -1728,7 +1729,7 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	 * Builds a HQL to Left Join wtih SubjectCustomFieldData and applies a condition using the WITH clause to get a sub-set for the given Subject
 	 * and then applies the restrictions on study and module.</p>
 	 */
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
 		
 		List<SubjectCustomFieldData> subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 	
@@ -1737,13 +1738,13 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 		sb.append("LEFT JOIN cfd.subjectCustomFieldData as fieldList ");
 		sb.append(" with fieldList.linkSubjectStudy.id = :subjectId ");
 		sb.append( "  where cfd.customField.study.id = :studyId" );
-		sb.append(" and cfd.customField.arkModule.id = :arkModuleId");
+		sb.append(" and cfd.customField.arkFunction.id = :functionId");
 		sb.append(" order by cfd.sequence");
 		
 		Query query = getSession().createQuery(sb.toString());
 		query.setParameter("subjectId", linkSubjectStudyCriteria.getId());
 		query.setParameter("studyId", linkSubjectStudyCriteria.getStudy().getId());
-		query.setParameter("arkModuleId", arkModule.getId());
+		query.setParameter("functionId", arkFunction.getId());
 		query.setFirstResult(first);
 		query.setMaxResults(count);
 		
@@ -1795,21 +1796,21 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 			Long id  = subjectCustomFieldData.getLinkSubjectStudy().getId();
 			LinkSubjectStudy linkSubjectStudy = getLinkSubjectStudy(id);
 			Study subjectStudy = linkSubjectStudy.getStudy();
-			ArkModule arkModule = customField.getArkModule();
+			ArkFunction arkFunction = customField.getArkFunction();
 
 			StringBuffer stringBuffer = new StringBuffer();
 			
 			stringBuffer.append(" SELECT COUNT(*) FROM SubjectCustomFieldData AS scfd WHERE EXISTS ");
 			stringBuffer.append(" ( ");               
 			stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
-			stringBuffer.append(" AND cfd.customField.arkModule.id = :moduleId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
+			stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND scfd.customFieldDisplay.id = :customFieldDisplayId");
 			stringBuffer.append(" )");
 			
 			String theHQLQuery = stringBuffer.toString();
 			
 			Query query = getSession().createQuery(theHQLQuery);
 			query.setParameter("studyId", subjectStudy.getId());
-			query.setParameter("moduleId", arkModule.getId());
+			query.setParameter("functionId", arkFunction.getId());
 			query.setParameter("customFieldDisplayId", subjectCustomFieldData.getCustomFieldDisplay().getId());
 			count = (Long) query.uniqueResult();
 			

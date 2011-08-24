@@ -860,9 +860,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	protected Criteria buildGeneralCustomFieldCritera(CustomField customField) {
 		Criteria criteria = getSession().createCriteria(CustomField.class);
-		// Must be constrained on study and module
+		// Must be constrained on study and function
 		criteria.add(Restrictions.eq("study", customField.getStudy()));
-		criteria.add(Restrictions.eq("arkModule", customField.getArkModule()));
+		criteria.add(Restrictions.eq("arkFunction", customField.getArkFunction()));
 		
 		if (customField.getId() != null) {
 			criteria.add(Restrictions.eq("id", customField.getId()));
@@ -897,8 +897,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public int getCustomFieldCount(CustomField customFieldCriteria) {
-		// Handle for study or module not in context
-		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkModule() == null) {
+		// Handle for study or function not in context
+		if (customFieldCriteria.getStudy() == null || customFieldCriteria.getArkFunction() == null) {
 			return 0;
 		}
 		Criteria criteria = buildGeneralCustomFieldCritera(customFieldCriteria);
@@ -926,11 +926,11 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	protected Criteria buildGeneralUnitTypeCriteria(UnitType unitTypeCriteria) {
 		Criteria criteria = getSession().createCriteria(UnitType.class);
 		// Bring back units that are module-specific as well as the global unit types (null FK)
-		if (unitTypeCriteria.getArkModule() != null) {
-			criteria.add(Restrictions.or(Restrictions.isNull("arkModule"), Restrictions.eq("arkModule", unitTypeCriteria.getArkModule())));
+		if (unitTypeCriteria.getArkFunction() != null) {
+			criteria.add(Restrictions.or(Restrictions.isNull("arkFunction"), Restrictions.eq("arkFunction", unitTypeCriteria.getArkFunction())));
 		}
 		else {
-			criteria.add(Restrictions.isNull("arkModule"));
+			criteria.add(Restrictions.isNull("arkFunction"));
 		}
 		if (unitTypeCriteria.getName() != null) {
 			criteria.add(Restrictions.ilike("name", unitTypeCriteria.getName(), MatchMode.START));
@@ -1015,7 +1015,7 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Criteria criteria = stateLessSession.createCriteria(CustomField.class);
 		criteria.add(Restrictions.eq("name", customFieldName));
 		criteria.add(Restrictions.eq("study", study));
-		criteria.add(Restrictions.eq("arkModule", customFieldToUpdate.getArkModule()));
+		criteria.add(Restrictions.eq("arkFunction", customFieldToUpdate.getArkFunction()));
 		criteria.setMaxResults(1);
 		
 		CustomField existingField = (CustomField) criteria.uniqueResult();

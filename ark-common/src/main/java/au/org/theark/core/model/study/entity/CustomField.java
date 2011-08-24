@@ -51,7 +51,7 @@ public class CustomField implements Serializable {
 	private String	description;
 	private FieldType fieldType;
 	private Study study;
-	private ArkModule arkModule;
+	private ArkFunction arkFunction;
 	private UnitType unitType;
 	private String	minValue;
 	private String	maxValue;
@@ -166,13 +166,13 @@ public class CustomField implements Serializable {
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ARK_MODULE_ID", nullable = false)
-	public ArkModule getArkModule() {
-		return arkModule;
+	@JoinColumn(name = "ARK_FUNCTION_ID", nullable = false)
+	public ArkFunction getArkFunction() {
+		return arkFunction;
 	}
 
-	public void setArkModule(ArkModule arkModule) {
-		this.arkModule = arkModule;
+	public void setArkFunction(ArkFunction arkFunction) {
+		this.arkFunction = arkFunction;
 	}
 
 	@Column(name = "HAS_DATA", precision = 1, scale = 0)

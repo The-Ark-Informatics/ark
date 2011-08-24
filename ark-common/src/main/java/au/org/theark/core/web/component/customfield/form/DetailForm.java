@@ -241,7 +241,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	
 	private void initUnitTypeDdc() {
 		UnitType unitTypeCriteria = new UnitType();
-		unitTypeCriteria.setArkModule(cpModel.getObject().getCustomField().getArkModule());
+		unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
 		List<UnitType> unitTypeList = iArkCommonService.getUnitTypes(unitTypeCriteria);
 		// assumes that if the unit.name will appear within the unit.description 
 		ChoiceRenderer unitTypeRenderer = new ChoiceRenderer(Constants.UNITTYPE_DESCRIPTION, Constants.UNITTYPE_ID);
@@ -301,7 +301,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		fieldNameTxtFld.setRequired(true);
 		fieldTypeDdc.setRequired(true);
 		// TODO: Add correct validator, possibly custom with better validation message
-		fieldEncodedValuesTxtFld.add(new PatternValidator("(\\b[\\w]+=[\\w]+;)*")).setLabel(
+		fieldEncodedValuesTxtFld.add(new PatternValidator("(\\b[\\w]+=[^;]+;)*")).setLabel(
 				new StringResourceModel("customField.encodedValues.validation", this, new Model<String>("Encoded Value definition")));
 	}
 

@@ -46,7 +46,7 @@ import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
@@ -58,7 +58,6 @@ import au.org.theark.core.web.component.customfield.dataentry.DropDownChoiceData
 import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
 import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPanel;
 import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
-import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditorForm;
@@ -123,16 +122,16 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				
 				public int size() {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
-					ArkModule arkModule = criteriaModel.getObject().getArkModule();
+					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					return studyService.getSubjectCustomFieldDataCount(lss, arkModule);
+					return studyService.getSubjectCustomFieldDataCount(lss, arkFunction);
 				}
 	
 				public Iterator<SubjectCustomFieldData> iterator(int first, int count) {
 					LinkSubjectStudy lss = criteriaModel.getObject().getLinkSubjectStudy();
-					ArkModule arkModule = criteriaModel.getObject().getArkModule();
+					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkModule, first, count);
+					List<SubjectCustomFieldData> subjectCustomDataList = studyService.getSubjectCustomFieldDataList(lss, arkFunction, first, count);
 					cpModel.getObject().setSubjectCustomFieldDataList(subjectCustomDataList);
 					return cpModel.getObject().getSubjectCustomFieldDataList().iterator();
 				}
@@ -176,7 +175,6 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				}
 				CustomField cf = subjectCustomData.getCustomFieldDisplay().getCustomField();
 				
-//				Label indexLbl = new Label("index", item.getIndex() + ".");
 				Label fieldLabelLbl; 
 				if (cf.getFieldLabel() != null) {
 					fieldLabelLbl = new Label("fieldLabel", cf.getFieldLabel());
@@ -310,7 +308,6 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					unitLabelLbl = new Label("unitLabel", "");
 				}
 				
-//				item.add(indexLbl);
 				item.add(fieldLabelLbl);
 				item.add(dataValueEntryPanel);
 				item.add(unitLabelLbl);

@@ -48,7 +48,7 @@ import au.org.theark.core.exception.FileFormatException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.AuditHistory;
 import au.org.theark.core.model.study.entity.Consent;
@@ -858,17 +858,17 @@ public class StudyServiceImpl implements IStudyService {
 		return studyDao.getFileFormatByName(fileFormatName);
 	}
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule, int first, int count){
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count){
 		List<SubjectCustomFieldData> customfieldDataList = new ArrayList<SubjectCustomFieldData>();
-		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkModule,first, count);
+		customfieldDataList  = studyDao.getSubjectCustomFieldDataList(linkSubjectStudyCriteria, arkFunction, first, count);
 		return customfieldDataList;
 	}
 	
 	/**
 	 * 
 	 */
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule) {
-		return   studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkModule);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction) {
+		return   studyDao.getSubjectCustomFieldDataCount(linkSubjectStudyCriteria, arkFunction);
 	}
 	
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)

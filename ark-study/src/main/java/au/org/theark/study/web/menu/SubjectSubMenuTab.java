@@ -117,8 +117,9 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_FIELD)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
-//						panelToReturn = new CustomFieldContainer(panelId);
-						panelToReturn = new CustomFieldContainerPanel(panelId, arkContextMarkup, true);	// useCustomFieldDisplay = true
+						// useCustomFieldDisplay = true
+						panelToReturn = new CustomFieldContainerPanel(panelId, true, 
+														iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
 					}
 					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_CUSTOM_DATA)) {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);

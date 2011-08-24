@@ -27,6 +27,7 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.protocol.http.SecondLevelCacheSessionStore.ISerializationAwarePageStore;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -138,9 +139,10 @@ public class SubjectCustomDataContainerPanel extends Panel {
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
 				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-				cpModel.getObject().setArkModule(arkModule);
+//				cpModel.getObject().setArkModule(arkModule);
 				if (study != null && linkSubjectStudy != null && arkModule != null) {
 					contextLoaded = true;
+					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT));
 				}
 			}
 			catch (EntityNotFoundException e) {

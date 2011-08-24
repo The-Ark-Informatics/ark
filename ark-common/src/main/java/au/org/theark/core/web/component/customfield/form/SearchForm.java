@@ -97,7 +97,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 			protected Iterator getChoices(String input) {
 				UnitType unitTypeCriteria = new UnitType();
 				unitTypeCriteria.setName(input);
-				unitTypeCriteria.setArkModule(cpModel.getObject().getCustomField().getArkModule());
+				unitTypeCriteria.setArkFunction(cpModel.getObject().getCustomField().getArkFunction());
 				return iArkCommonService.getUnitTypeNames(unitTypeCriteria, 10).iterator();
 			}
 		};
@@ -146,7 +146,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		CustomField newCF = newModel.getObject().getCustomField();
 		// Copy all the customField attributes across from the SearchForm
 		newCF.setStudy(cf.getStudy());
-		newCF.setArkModule(cf.getArkModule());
+		newCF.setArkFunction(cf.getArkFunction());
 		newCF.setName(cf.getName());
 		newCF.setFieldType(cf.getFieldType());
 		newCF.setDescription(cf.getDescription());
@@ -166,7 +166,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		// Reset model's CF object (do NOT replace the CustomFieldVO in the model)
 		cf = new CustomField();
 		cf.setStudy(newCF.getStudy());
-		cf.setArkModule(newCF.getArkModule());
+		cf.setArkFunction(newCF.getArkFunction());
 		getModelObject().setCustomField(cf);
 		
 		preProcessDetailPanel(target, arkCrudContainerVO);

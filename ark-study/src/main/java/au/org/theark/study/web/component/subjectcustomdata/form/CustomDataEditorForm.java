@@ -145,7 +145,7 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 			}
 		}
 		else {
-			this.info("Succesfully saved all edits");
+			this.info("Successfully saved all edits");
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model objects from backend.

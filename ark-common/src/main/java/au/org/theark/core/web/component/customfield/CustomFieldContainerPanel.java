@@ -30,12 +30,12 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.Study;
@@ -46,7 +46,7 @@ import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.form.ContainerForm;
 
 /**
- * @author nivedann
+ * @author elam
  * 
  */
 @SuppressWarnings("unchecked")
@@ -57,7 +57,6 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	private static final long			serialVersionUID	= -1L;
 	private static final Logger		log					= LoggerFactory.getLogger(CustomFieldContainerPanel.class);
 	
-//	private DetailPanel					detailsPanel;
 	private ContainerForm				containerForm;
 
 	private WebMarkupContainer			arkContextMarkup;
@@ -69,14 +68,17 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	private ArkDataProvider2<CustomField, CustomField, IArkCommonService>	customFieldProvider;
 
 	/**
-	 * @param id
+	 * @param id - 
+	 * @param arkContextMarkup - 
+	 * @param useCustomFieldDisplay - enables saving of the VO's customFieldDisplay as well as the customField
+	 * @param associatedPrimaryFn - primary function that the customFields will belong to
 	 */
-	public CustomFieldContainerPanel(String id, WebMarkupContainer arkContextMarkup, boolean useCustomFieldDisplay) {
+	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
 
 		super(id, true);
-		this.arkContextMarkup = arkContextMarkup;		
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
+		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
 		cpModel.getObject().setUseCustomFieldDisplay(useCustomFieldDisplay);
 		
 		prerenderContextCheck();
@@ -88,6 +90,12 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		containerForm.add(initialiseSearchPanel());
 
 		add(containerForm);
+
+		if (associatedPrimaryFn == null) {
+			this.error("An internal error occurred.  Please report this to your System Administrator.");
+			log.error("Internal error: associatedPrimaryFn should never be null");
+			containerForm.setEnabled(false);
+		}
 	}
 
 	protected void prerenderContextCheck() {
@@ -103,13 +111,12 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 			
 			if (study != null && arkModule != null) {
 				cpModel.getObject().getCustomField().setStudy(study);
-				cpModel.getObject().getCustomField().setArkModule(arkModule);
+				// TODO: Maybe check that the primary function supplied is of the same module?
 			}
 		}
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-	
 		SearchPanel searchPanel = new SearchPanel("searchComponentPanel", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		searchPanel.initialisePanel();
@@ -118,10 +125,6 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-//		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-//				editButtonContainer, arkContextMarkup, containerForm);
-//		detailsPanel.initialisePanel();
 		Panel detailsPanel = new EmptyPanel("detailsPanel");
 		detailsPanel.setOutputMarkupPlaceholderTag(true);	//ensure this is replaceable
 		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
@@ -129,7 +132,6 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-
 		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		// Data providor to paginate resultList
@@ -164,9 +166,5 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
 		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
-
-	public void resetDataProvider() {
-	}
-
 
 }

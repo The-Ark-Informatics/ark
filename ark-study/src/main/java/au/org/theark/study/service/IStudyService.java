@@ -19,7 +19,6 @@
 package au.org.theark.study.service;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,7 +34,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Address;
-import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
@@ -280,9 +279,9 @@ public interface IStudyService {
 
 	public FileFormat getFileFormatByName(String fileFormatName);
 	
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkModule arkModule,int first, int count);
+	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList(LinkSubjectStudy linkSubjectStudyCriteria, ArkFunction arkFunction, int first, int count);
 	
-	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkModule arkModule);
+	public int getSubjectCustomFieldDataCount(LinkSubjectStudy criteria, ArkFunction arkFunction);
 	/**
 	 * Allows to Save(Insert) or Update  SubjectCustomFieldData. If there are SubjectCustomFieldData
 	 * with no data value then it will discard it from the save/update process.
