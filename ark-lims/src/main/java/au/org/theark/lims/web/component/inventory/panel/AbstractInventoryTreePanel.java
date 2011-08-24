@@ -28,8 +28,8 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.InventoryModel;
+import au.org.theark.lims.model.TreeNodeModel;
 import au.org.theark.lims.service.IInventoryService;
-import au.org.theark.lims.util.ModelBean;
 import au.org.theark.lims.web.Constants;
 
 public abstract class AbstractInventoryTreePanel extends Panel {
@@ -161,7 +161,7 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	private TreeModel convertToTreeModel(Study study) {
 		TreeModel model = null;
 		if (study != null) {
-			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new ModelBean(study.getName()));
+			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel(study.getName()));
 			add(rootNode, invSites);
 			model = new DefaultTreeModel(rootNode);
 		}
