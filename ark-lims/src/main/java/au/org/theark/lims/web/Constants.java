@@ -36,6 +36,7 @@ public class Constants {
 	public static final String	BIO_COLLECTION								= "BIO_COLLECTION";
 
 	public static final String	LIMS_SERVICE								= "limsService";
+	public static final String	LIMS_INVENTORY_SERVICE					= "limsInventoryService";
 
 	public static final String	ADMIN_TAB									= "Administration";
 	public static final String	STUDY_TAB									= "Study";
