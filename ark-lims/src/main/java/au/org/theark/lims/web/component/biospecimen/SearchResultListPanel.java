@@ -158,7 +158,7 @@ public class SearchResultListPanel extends Panel {
 	}
 
 	private AjaxLink buildLink(final Biospecimen biospecimen) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("biospecimen.biospecimenId") {
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("biospecimen.biospecimenUid") {
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Biospecimen biospecimenFromBackend = new Biospecimen();
