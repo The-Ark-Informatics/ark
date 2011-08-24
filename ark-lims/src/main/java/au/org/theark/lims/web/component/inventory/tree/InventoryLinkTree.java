@@ -75,13 +75,11 @@ public class InventoryLinkTree extends LinkTree {
 		this.containerForm = containerForm;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	protected Component newNodeComponent(String id, IModel model) {
-
 		// Override standard node creation so we can setup our own component
-		// This kind of blows since if the standard LinkTree implementation changes we
-		// may be hooped, pooched, or even twaddled
+		// This kind of blows if the standard LinkTree implementation changes
 		final LinkIconPanel panel = new LinkIconPanel(id, model, this) {
 			private static final long	serialVersionUID	= 1L;
 
@@ -91,6 +89,7 @@ public class InventoryLinkTree extends LinkTree {
 				InventoryLinkTree.this.onNodeLinkClicked(node, tree, target);
 			}
 
+			@Override
 			protected Component newContentComponent(String componentId, BaseTree tree, IModel model) {
 				return new Label(componentId, getNodeTextModel(model));
 			}
@@ -104,77 +103,10 @@ public class InventoryLinkTree extends LinkTree {
 					protected ResourceReference getImageResourceReference() {
 						return getIconResourceReference(model.getObject());
 					}
-
 				};
 			}
 
-			/**
-			 * Determine what icon to display on the node
-			 * 
-			 * @param object
-			 *           the referece object of the node
-			 * @return resourceReference to the icon for the node in question
-			 */
-			private ResourceReference getIconResourceReference(Object object) {
-				final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
-				ResourceReference resourceReference = STUDY_ICON;
-
-				if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
-					final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
-
-					if (inventoryModel.getObject() instanceof InvSite) {
-						resourceReference = SITE_ICON;
-					}
-					if (inventoryModel.getObject() instanceof InvTank) {
-						InvTank invTank = (InvTank) inventoryModel.getObject();
-						resourceReference = getTankIcon(invTank.getAvailable(), invTank.getCapacity());
-					}
-					if (inventoryModel.getObject() instanceof InvTray) {
-						InvTray invTray = (InvTray) inventoryModel.getObject();
-						resourceReference = getTankIcon(invTray.getAvailable(), invTray.getCapacity());
-					}
-					if (inventoryModel.getObject() instanceof InvBox) {
-						InvBox invBox = (InvBox) inventoryModel.getObject();
-						resourceReference = getBoxIcon(invBox.getAvailable(), invBox.getCapacity());
-					}
-				}
-				return resourceReference;
-			}
-
-			protected ResourceReference getTankIcon(float available, float capacity) {
-				float result = available / capacity;
-				
-				if (result == 0) {
-					return FULL_TANK_ICON;
-				}
-				else if ((result > 0) && (result < 0.5)) {
-					return YELLOW_TANK_ICON;
-				}
-				else if ((result >= 0.5) && (result < 1)) {
-					return GREEN_TANK_ICON;
-				}
-				else {
-					return EMPTY_TANK_ICON;
-				}
-			}
-
-			protected ResourceReference getBoxIcon(float available, float capacity) {
-				float result = available / capacity;
-				
-				if (result == 0) {
-					return FULL_BOX_ICON;
-				}
-				else if ((result > 0) && (result < 0.5)) {
-					return YELLOW_BOX_ICON;
-				}
-				else if ((result >= 0.5) && (result < 1)) {
-					return GREEN_BOX_ICON;
-				}
-				else {
-					return EMPTY_BOX_ICON;
-				}
-			}
-
+			@Override
 			protected void addComponents(final IModel model, final BaseTree tree) {
 				final BaseTree.ILinkCallback callback = new BaseTree.ILinkCallback() {
 					private static final long	serialVersionUID	= 1L;
@@ -200,7 +132,7 @@ public class InventoryLinkTree extends LinkTree {
 	/**
 	 * Expand or collapse a node if the user clicks on a node (in addition to the +/- signs)
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void onNodeLinkClicked(Object object, BaseTree tree, AjaxRequestTarget target) {
 		final TreeNode node = (TreeNode) object;
@@ -268,5 +200,85 @@ public class InventoryLinkTree extends LinkTree {
 		
 		target.addComponent(feedbackPanel);
 		target.addComponent(detailContainer);
+	}
+	
+	/**
+	 * Determine what icon to display on the node
+	 * 
+	 * @param object
+	 *           the reference object of the node
+	 * @return resourceReference to the icon for the node in question
+	 */
+	@SuppressWarnings("rawtypes")
+	private ResourceReference getIconResourceReference(Object object) {
+		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
+		ResourceReference resourceReference = STUDY_ICON;
+
+		if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
+			final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
+
+			if (inventoryModel.getObject() instanceof InvSite) {
+				resourceReference = SITE_ICON;
+			}
+			if (inventoryModel.getObject() instanceof InvTank) {
+				InvTank invTank = (InvTank) inventoryModel.getObject();
+				resourceReference = getTankIcon(invTank.getAvailable(), invTank.getCapacity());
+			}
+			if (inventoryModel.getObject() instanceof InvTray) {
+				InvTray invTray = (InvTray) inventoryModel.getObject();
+				resourceReference = getTankIcon(invTray.getAvailable(), invTray.getCapacity());
+			}
+			if (inventoryModel.getObject() instanceof InvBox) {
+				InvBox invBox = (InvBox) inventoryModel.getObject();
+				resourceReference = getBoxIcon(invBox.getAvailable(), invBox.getCapacity());
+			}
+		}
+		return resourceReference;
+	}
+
+	/**
+	 * Get the Tank/Site empty/half/nearly full/full icon, determined by the (available/capacity) ratio
+	 * @param available
+	 * @param capacity
+	 * @return
+	 */
+	protected ResourceReference getTankIcon(float available, float capacity) {
+		float result = available / capacity;
+		
+		if (result == 0) {
+			return FULL_TANK_ICON;
+		}
+		else if ((result > 0) && (result < 0.5)) {
+			return YELLOW_TANK_ICON;
+		}
+		else if ((result >= 0.5) && (result < 1)) {
+			return GREEN_TANK_ICON;
+		}
+		else {
+			return EMPTY_TANK_ICON;
+		}
+	}
+
+	/**
+	 * Get the Box empty/half/nearly full/full icon, determined by the (available/capacity) ratio
+	 * @param available
+	 * @param capacity
+	 * @return
+	 */
+	protected ResourceReference getBoxIcon(float available, float capacity) {
+		float result = available / capacity;
+		
+		if (result == 0) {
+			return FULL_BOX_ICON;
+		}
+		else if ((result > 0) && (result < 0.5)) {
+			return YELLOW_BOX_ICON;
+		}
+		else if ((result >= 0.5) && (result < 1)) {
+			return GREEN_BOX_ICON;
+		}
+		else {
+			return EMPTY_BOX_ICON;
+		}
 	}
 }
