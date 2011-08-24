@@ -180,7 +180,8 @@ public class SubjectCustomDataEditorPanel extends Panel {
 					fieldLabelLbl = new Label("fieldLabel", cf.getFieldLabel());
 				}
 				else {
-					fieldLabelLbl = new Label("fieldLabel", "");
+					// Defaults to name if no fieldLabel
+					fieldLabelLbl = new Label("fieldLabel", cf.getName());
 				}
 				Panel dataValueEntryPanel;
 				String fieldTypeName = cf.getFieldType().getName();
