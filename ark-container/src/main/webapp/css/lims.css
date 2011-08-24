@@ -54,9 +54,12 @@ table.gridBoxTable th {
 }
 
 table.gridBoxTable td {
-    border: 1px solid black;
+    padding: 2px;
 }
 
 #gridBoxKeyContainer {
     border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    width: 0;
 }
