@@ -24,6 +24,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
@@ -169,4 +170,28 @@ public interface IInventoryDao {
 	 * @return
 	 */
 	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox);
+
+	/**
+	 * Gets list of col/row types (Numberic or Alphabet)
+	 * @return
+	 */
+	public List<InvColRowType> getInvColRowTypes();
+
+	/**
+	 * Create a new InvCell entity
+	 * @param invCell
+	 */
+	public void createInvCell(InvCell invCell);
+	
+	/**
+	 * Update an InvCell entity
+	 * @param invCell
+	 */
+	public void updateInvCell(InvCell invCell);
+
+	/**
+	 * Delete an InvCell entity
+	 * @param invCell
+	 */
+	public void deleteInvCell(InvCell invCell);
 }

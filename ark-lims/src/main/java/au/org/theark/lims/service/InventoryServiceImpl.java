@@ -1,5 +1,6 @@
 package au.org.theark.lims.service;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -34,7 +36,25 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void createInvBox(LimsVO modelObject) {
-		iInventoryDao.createInvBox(modelObject.getInvBox());
+		// Set up box and cells
+		InvBox invBox = modelObject.getInvBox();
+		int capacity = invBox.getNoofcol() * invBox.getNoofrow();
+		invBox.setCapacity(capacity);
+		invBox.setAvailable(capacity);
+			
+		iInventoryDao.createInvBox(invBox);
+		
+		// Add cells for box
+		for (int row = 1; row < invBox.getNoofrow(); row++) {
+			for (int col = 1; col < invBox.getNoofcol(); col++) {
+				InvCell invCell = new InvCell();
+				invCell.setStatus("Empty");
+				invCell.setInvBox(invBox);
+				invCell.setColno(new Long(col));
+				invCell.setRowno(new Long(row));
+				createInvCell(invCell);
+			}
+		}
 	}
 
 	public void createInvSite(LimsVO modelObject) {
@@ -47,6 +67,10 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public void createInvTray(LimsVO modelObject) {
 		iInventoryDao.createInvTray(modelObject.getInvTray());
+	}
+	
+	public void createInvCell(InvCell invCell) {
+		iInventoryDao.createInvCell(invCell);
 	}
 
 	public void deleteInvBox(LimsVO modelObject) {
@@ -64,6 +88,10 @@ public class InventoryServiceImpl implements IInventoryService {
 	public void deleteInvTray(LimsVO modelObject) {
 		iInventoryDao.deleteInvTray(modelObject.getInvTray());
 	}
+	
+	public void deleteInvCell(InvCell invCell) {
+		iInventoryDao.deleteInvCell(invCell);
+	}
 
 	public InvSite getInvSite(Long id) {
 		return iInventoryDao.getInvSite(id);
@@ -74,7 +102,36 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvBox(LimsVO modelObject) {
+		// Update box and cells
+		InvBox invBox = modelObject.getInvBox();
+		int capacity = invBox.getNoofcol() * invBox.getNoofrow();
+		invBox.setCapacity(capacity);
+		invBox.setAvailable(capacity);
+		
 		iInventoryDao.updateInvBox(modelObject.getInvBox());
+		
+		// Remove previous cells
+		List<InvCell> invCellList = invBox.getInvCells();
+		for (Iterator<InvCell> iterator = invCellList.iterator(); iterator.hasNext();) {
+			InvCell invCell = (InvCell) iterator.next();
+			deleteInvCell(invCell);
+		}
+		
+		// Add cells for box
+		for (int row = 1; row <= invBox.getNoofrow(); row++) {
+			for (int col = 1; col <= invBox.getNoofcol(); col++) {
+				InvCell invCell = new InvCell();
+				invCell.setStatus("Empty");
+				invCell.setInvBox(invBox);
+				invCell.setColno(new Long(col));
+				invCell.setRowno(new Long(row));
+				createInvCell(invCell);
+			}
+		}
+	}
+	
+	public void updateInvCell(InvCell invCell) {
+		iInventoryDao.updateInvCell(invCell);
 	}
 
 	public void updateInvSite(LimsVO modelObject) {
@@ -103,5 +160,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox) {
 		return iInventoryDao.getCellAndBiospecimenListByBox(invBox);
+	}
+
+	public List<InvColRowType> getInvColRowTypes() {
+		return iInventoryDao.getInvColRowTypes();
 	}
 }

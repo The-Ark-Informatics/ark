@@ -33,6 +33,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
@@ -220,5 +221,23 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		
 		return invCellList;
+	}
+
+	public List<InvColRowType> getInvColRowTypes() {
+		Criteria criteria = getSession().createCriteria(InvColRowType.class);
+		List<InvColRowType> list = criteria.list();
+		return list;
+	}
+
+	public void createInvCell(InvCell invCell) {
+		getSession().save(invCell);
+	}
+	
+	public void updateInvCell(InvCell invCell) {
+		getSession().update(invCell);
+	}
+	
+	public void deleteInvCell(InvCell invCell) {
+		getSession().delete(invCell);
 	}
 }

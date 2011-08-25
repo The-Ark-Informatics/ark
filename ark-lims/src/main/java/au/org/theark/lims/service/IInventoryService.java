@@ -9,6 +9,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -159,4 +160,10 @@ public interface IInventoryService {
 	 * @return
 	 */
 	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox);
+
+	/**
+	 * Gets list of col/row types (Numberic or Alphabet)
+	 * @return
+	 */
+	public List<InvColRowType> getInvColRowTypes();
 }
