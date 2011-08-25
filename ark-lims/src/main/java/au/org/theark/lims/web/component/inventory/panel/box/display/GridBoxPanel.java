@@ -228,7 +228,7 @@ public class GridBoxPanel extends Panel {
 				rowLabel.add(new AbstractBehavior() {
 					public void onComponentTag(Component component, ComponentTag tag) {
 						super.onComponentTag(component, tag);
-						tag.put("style", "color: white; font-weight: bold; padding: 1px; background: none repeat scroll 0 0 #C3C3C3;");
+						tag.put("style", "background: none repeat scroll 0 0 #FFFFFF; color: black; font-weight: bold; padding: 1px;");
 					};
 				});
 				item.add(rowLabel);
