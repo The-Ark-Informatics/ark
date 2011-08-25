@@ -24,6 +24,7 @@ import java.util.List;
 import org.apache.wicket.extensions.markup.html.tabs.AbstractTab;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -31,6 +32,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
@@ -72,7 +74,7 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 	}
 
 	protected Panel buildPanels(final ArkFunction arkFunction, String panelId) {
-		Panel panelToReturn = null;
+		Panel panelToReturn = null;// Set
 		processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_LIMS, arkFunction);
 
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
@@ -86,6 +88,20 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_INVENTORY)) {
 			panelToReturn = new InventoryContainerPanel(panelId);
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD)) {
+			// useCustomFieldDisplay = true
+			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
+											iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD)) {
+			// useCustomFieldDisplay = true
+			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
+											iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+		}
+		else {
+			//TODO: This shouldn't happen when all functions have been implemented
+			panelToReturn = new EmptyPanel(panelId);
 		}
 		return panelToReturn;
 	}
