@@ -1,32 +1,38 @@
 <wicket:panel>
-	<div id="gridBox">
-		<table class="gridBoxTable">
-			<!-- the Grid Heading -->
-			<tr>
-				<th>
-					&nbsp;
-				</th>
-				<th wicket:id="heading">
-					<label wicket:id="cellHead">
-						[Column Heading]
-					</label>
-				</th>
-			</tr>
-			<!-- the Grid Body -->
-			<tr wicket:id="rows">
-				<td align="center" valign="middle">
-					<!-- the Row Numbering Part -->
-					<label wicket:id="rowNo">
-						[RowNo]
-					</label>
-				</td>
-				<!-- the Cell	-->
-				<td wicket:id="cols" align="center" valign="middle" width="15px" height="15px">
-					<img wicket:id="cellIcon" width="34" height="34"/>
-				</td>
-			</tr>
-		</table>
-	</div>
+	<table class="gridBoxTableContainer" width="100%" align="center">
+		<tr width="100%" align="center">
+			<td width="100%" align="center">
+				<div id="gridBox">
+					<table class="gridBoxTable">
+						<!-- the Grid Heading -->
+						<tr>
+							<th>
+								&nbsp;
+							</th>
+							<th wicket:id="heading">
+								<label wicket:id="cellHead">
+									[Column Heading]
+								</label>
+							</th>
+						</tr>
+						<!-- the Grid Body -->
+						<tr wicket:id="rows">
+							<td align="center" valign="middle">
+								<!-- the Row Numbering Part -->
+								<label wicket:id="rowNo">
+									[RowNo]
+								</label>
+							</td>
+							<!-- the Cell	-->
+							<td wicket:id="cols" align="center" valign="middle" width="15px" height="15px">
+								<img wicket:id="cellIcon" width="34" height="34"/>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</td>
+		</tr>
+	</table>
 	<br>
 	<div wicket:id="gridBoxKeyContainer" style="margin-left: auto; margin-right: auto; width: 100%; border: 1px solid;">
 		<table width="100%" border="0">
