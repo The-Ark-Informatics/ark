@@ -106,17 +106,21 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
 		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
 		colNoTypeDdc = new DropDownChoice<InvColRowType>("invBox.colnotype", (List<InvColRowType>) invColRowNoTypeList, invColRowTypeRenderer);
+		colNoTypeDdc.setNullValid(false);
 	}
 	
 	private void initRowNoTypeDdc() {
 		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
 		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
 		rowNoTypeDdc = new DropDownChoice<InvColRowType>("invBox.rownotype", (List<InvColRowType>) invColRowNoTypeList, invColRowTypeRenderer);
+		rowNoTypeDdc.setNullValid(false);
 	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invBox.name.required", this, new Model<String>("Name")));
+		colNoTypeDdc.setRequired(true);
+		rowNoTypeDdc.setRequired(true);
 	}
 
 	private void addComponents() {
