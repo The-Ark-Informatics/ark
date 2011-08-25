@@ -146,7 +146,7 @@ public class GridBoxPanel extends Panel {
 					@Override
 					public Serializable getObject() {
 						String label = new String();
-						String colNoType = invBox.getColnotype();
+						String colNoType = invBox.getColnotype().getName();
 						if (colNoType.equalsIgnoreCase("ALPHABET")) {
 							char character = (char) (col + 65);
 							label = new Character(character).toString();
@@ -180,7 +180,7 @@ public class GridBoxPanel extends Panel {
 				
 				// Create the row number/label
 				String label = new String();
-				String rowNoType = invBox.getRownotype();
+				String rowNoType = invBox.getRownotype().getName();
 				if (rowNoType.equalsIgnoreCase("ALPHABET")) {
 					char character = (char) (row + 65);
 					label = new Character(character).toString();
