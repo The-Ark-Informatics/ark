@@ -26,10 +26,8 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import jxl.Cell;
 import jxl.Sheet;
@@ -37,13 +35,12 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 import org.apache.wicket.markup.html.form.upload.FileUpload;
+import org.apache.wicket.util.file.Files;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
-import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
-import au.org.theark.core.model.study.entity.CsvBlob;
 import au.org.theark.core.service.ICSVLoaderService;
 
 import com.csvreader.CsvReader;
@@ -51,7 +48,7 @@ import com.csvreader.CsvReader;
 public class LoadCsvFileHelper {
 	private static final Logger	log						= LoggerFactory.getLogger(LoadCsvFileHelper.class);
 	private ICSVLoaderService		iCSVLoaderService;
-	
+
 	private File						csvFile;
 	private String						databaseName;
 	private char						delimiterCharacter	= Constants.DEFAULT_DELIMITER_CHARACTER;
@@ -62,19 +59,22 @@ public class LoadCsvFileHelper {
 
 	/**
 	 * Default constructor
-	 * @param iCSVLoaderService The service required for Hibernate access
-	 * @param databaseName The schema/database name to where the data resides
+	 * 
+	 * @param iCSVLoaderService
+	 *           The service required for Hibernate access
+	 * @param databaseName
+	 *           The schema/database name to where the data resides
 	 */
 	public LoadCsvFileHelper(ICSVLoaderService iCSVLoaderService, String databaseName) {
 		this.iCSVLoaderService = iCSVLoaderService;
 		this.databaseName = databaseName;
 	}
-	
+
 	/**
 	 * Constructor. Takes in a fileUpload as a parameter and attempts to load data into the database
 	 * 
-	 * @param iCSVLoaderService 
-	 * 			 The service required for Hibernate access
+	 * @param iCSVLoaderService
+	 *           The service required for Hibernate access
 	 * @param databaseName
 	 *           The schema/database name to where the data resides
 	 * @param delimiterCharacter
@@ -101,77 +101,63 @@ public class LoadCsvFileHelper {
 
 	/**
 	 * Convert the specified fileUpload to CSV format, and save as a CsvBlob
+	 * 
 	 * @param fileUpload
 	 * @param delimiterCharacter
 	 */
-	public void convertToCSVAndSave(FileUpload fileUpload, char delimiterCharacter) {
+	public void convertToCSVAndWriteToFile(FileUpload fileUpload, char delimiterCharacter) {
 		String filename = fileUpload.getClientFileName();
 		String fileFormat = filename.substring(filename.lastIndexOf('.') + 1).toUpperCase();
 		InputStream inputStream = null;
-		
+
 		try {
 			// If Excel, convert to CSV for validation
 			if (fileFormat.equalsIgnoreCase("XLS")) {
 				inputStream = convertXlsInputStreamToCsv(fileUpload.getInputStream());
 			}
-			else{
+			else {
 				inputStream = fileUpload.getInputStream();
 			}
-			inputStream.reset();
+			
+			writeToTempFile(inputStream);
 		}
 		catch (IOException e) {
-			log.error(e.getMessage());
+			log.error(".convertToCSVAndSave IOException: " + e.getMessage());
 		}
-		
+
 		this.columnNameList = getColumnsFromHeader(inputStream, delimiterCharacter);
-		saveFileAsCsvBlob(inputStream, delimiterCharacter);
 	}
 	
-	private void saveFileAsCsvBlob(InputStream inputStream, char delimiterCharacter) {
-		Long id;
-		try {
-			if(databaseName == null) {
-				databaseName = "study";
-			}
-			CsvBlob csvBlob = new CsvBlob();
-			inputStream.reset();
-			Blob blob = Hibernate.createBlob(inputStream);
-			csvBlob.setCsvBlob(blob);
-			id = iCSVLoaderService.createCsvBlob(csvBlob);
-			iCSVLoaderService.writeBlobToTempFile(databaseName, id, createTemporaryFileName(), delimiterCharacter);
+	/**
+	 * Saves this file upload to a given file on the server side.
+	 * 
+	 * @param inputStream
+	 *            The input stream
+	 * @throws IOException
+	 */
+	public void writeToTempFile(final InputStream inputStream) throws IOException
+	{
+		log.info("Writing to temp file: " + temporaryFileName + ".tmp");
+		File file = File.createTempFile(temporaryFileName, null);
+		int bufSize = 4096;
+		InputStream is = inputStream;
+		try
+		{
+			Files.writeTo(file, is, bufSize);
 		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		catch (Exception e) {
-			log.error(e.getMessage());
+		finally
+		{
+			is.close();
 		}
 	}
-	
+
 	public int createTemporaryTable() {
 		int rowCount = 0;
 		iCSVLoaderService.createTemporaryTable(databaseName, temporaryTableName, this.columnNameList);
 		rowCount = iCSVLoaderService.loadTempFileToDatabase(temporaryFileName, databaseName, temporaryTableName);
 		return rowCount;
 	}
-	
-	/**
-	 * Creates the full path name to the newly created temporary file on the database server
-	 */
-	private String createTemporaryFileName() {
-		StringBuffer temporaryFileName = new StringBuffer();
-		StringBuffer tempDir = new StringBuffer();
-		tempDir.append(System.getProperty("java.io.tmpdir"));
-		tempDir.append(File.separator);
 
-		String fileName = UUID.randomUUID().toString();
-
-		temporaryFileName.append(tempDir);
-		temporaryFileName.append(fileName);
-		temporaryFileName.append(".csv");
-		return (temporaryFileName.toString());
-	}
-	
 	/**
 	 * Converts an XLS inputStream to a CSV file
 	 * 
@@ -263,18 +249,17 @@ public class LoadCsvFileHelper {
 			}
 		}
 		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(".getColumnsFromHeader FileNotFoundException " + e.getMessage());
 		}
 		catch (IOException e) {
-			log.error(e.getMessage());
+			log.error(".getColumnsFromHeader IOException " + e.getMessage());
 		}
 		return columnsFromHeader;
 	}
-	
+
 	private List<String> getColumnsFromHeader(InputStream inputStream, char delimiterCharacter) {
 		List<String> columnsFromHeader = new ArrayList<String>(0);
 		try {
-			inputStream.reset();
 			csvReader = new CsvReader(inputStream, delimiterCharacter, Charset.defaultCharset());
 			csvReader.readHeaders();
 			String[] headerArray = csvReader.getHeaders();
@@ -283,13 +268,13 @@ public class LoadCsvFileHelper {
 			}
 		}
 		catch (FileNotFoundException e) {
-			log.error(e.getMessage());
+			log.error(".getColumnsFromHeader FileNotFoundException " + e.getMessage());
 		}
 		catch (IOException e) {
-			log.error(e.getMessage());
+			log.error(".getColumnsFromHeader IOException " + e.getMessage());
 		}
 		catch (NullPointerException e) {
-			log.error(e.getMessage());
+			log.error(".getColumnsFromHeader NullPointerException " + e.getMessage());
 		}
 		return columnsFromHeader;
 	}
