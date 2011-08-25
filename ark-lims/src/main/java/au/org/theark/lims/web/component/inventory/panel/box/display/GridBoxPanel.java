@@ -73,6 +73,7 @@ public class GridBoxPanel extends Panel {
 
 	private static final ResourceReference	EMPTY_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "emptyCell.gif");
 	private static final ResourceReference	USED_CELL_ICON			= new ResourceReference(GridBoxPanel.class, "usedCell.gif");
+	private static final ResourceReference	BARCODE_CELL_ICON = new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
@@ -336,6 +337,7 @@ public class GridBoxPanel extends Panel {
 
 		gridBoxKeyContainer.add(new Image("emptyCellIcon", EMPTY_CELL_ICON));
 		gridBoxKeyContainer.add(new Image("usedCellIcon", USED_CELL_ICON));
+		gridBoxKeyContainer.add(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
 
 		// Download file link button
 		gridBoxKeyContainer.add(buildDownloadButton());
