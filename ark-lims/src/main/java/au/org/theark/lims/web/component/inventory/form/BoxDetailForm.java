@@ -18,12 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -35,6 +35,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
@@ -65,8 +66,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>			availableTxtFld;
 	private TextField<String>			noOfColTxtFld;
 	private TextField<String>			noOfRowTxtFld;
-	private DropDownChoice<String>	colNoTypeDdc;
-	private DropDownChoice<String>	rowNoTypeDdc;
+	private DropDownChoice<InvColRowType>	colNoTypeDdc;
+	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
 
 	/**
 	 * 
@@ -85,21 +86,32 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld = new TextField<String>("invBox.id");
 		nameTxtFld = new TextField<String>("invBox.name");
 		capacityTxtFld = new TextField<String>("invBox.capacity");
+		capacityTxtFld.setEnabled(false);
 		availableTxtFld = new TextField<String>("invBox.available");
+		availableTxtFld.setEnabled(false);
 		noOfColTxtFld = new TextField<String>("invBox.noofcol");
 		noOfRowTxtFld = new TextField<String>("invBox.noofrow");
 		
-		List<String> choices = new ArrayList<String>(2);
-		choices.add("Numeric");
-		choices.add("Alphabet");
-		colNoTypeDdc = new DropDownChoice<String>("invBox.colnotype", choices);
-		rowNoTypeDdc = new DropDownChoice<String>("invBox.rownotype", choices);
+		initColNoTypeDdc();
+		initRowNoTypeDdc();
 		
 		attachValidators();
 		addComponents();
 		
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
+	}
+	
+	private void initColNoTypeDdc() {
+		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
+		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
+		colNoTypeDdc = new DropDownChoice<InvColRowType>("invBox.colnotype", (List<InvColRowType>) invColRowNoTypeList, invColRowTypeRenderer);
+	}
+	
+	private void initRowNoTypeDdc() {
+		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
+		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
+		rowNoTypeDdc = new DropDownChoice<InvColRowType>("invBox.rownotype", (List<InvColRowType>) invColRowNoTypeList, invColRowTypeRenderer);
 	}
 
 	protected void attachValidators() {
