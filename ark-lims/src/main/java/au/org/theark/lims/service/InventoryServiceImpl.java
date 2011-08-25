@@ -34,7 +34,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void createInvBox(LimsVO modelObject) {
-		//iInventoryDao.createInvBox(modelObject.getInvBox());
+		iInventoryDao.createInvBox(modelObject.getInvBox());
 	}
 
 	public void createInvSite(LimsVO modelObject) {
@@ -42,15 +42,15 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void createInvTank(LimsVO modelObject) {
-		//iInventoryDao.createInvBox(modelObject.getInvTank());
+		iInventoryDao.createInvTank(modelObject.getInvTank());
 	}
 
 	public void createInvTray(LimsVO modelObject) {
-		//iInventoryDao.createInvBox(modelObject.getInvTray());
+		iInventoryDao.createInvTray(modelObject.getInvTray());
 	}
 
 	public void deleteInvBox(LimsVO modelObject) {
-		//iInventoryDao.deleteInvBox(modelObject.getInvBox());
+		iInventoryDao.deleteInvBox(modelObject.getInvBox());
 	}
 
 	public void deleteInvSite(LimsVO modelObject) {
@@ -58,11 +58,11 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void deleteInvTank(LimsVO modelObject) {
-		//iInventoryDao.deleteInvTank(modelObject.getInvTank());
+		iInventoryDao.deleteInvTank(modelObject.getInvTank());
 	}
 
 	public void deleteInvTray(LimsVO modelObject) {
-		//iInventoryDao.deleteInvTray(modelObject.getInvTray());
+		iInventoryDao.deleteInvTray(modelObject.getInvTray());
 	}
 
 	public InvSite getInvSite(Long id) {
@@ -74,7 +74,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvBox(LimsVO modelObject) {
-		//iInventoryDao.updateInvBox(modelObject.getInvBox());
+		iInventoryDao.updateInvBox(modelObject.getInvBox());
 	}
 
 	public void updateInvSite(LimsVO modelObject) {
@@ -82,11 +82,11 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvTank(LimsVO modelObject) {
-		//iInventoryDao.updateInvTank(modelObject.getInvTank());
+		iInventoryDao.updateInvTank(modelObject.getInvTank());
 	}
 
 	public void updateInvTray(LimsVO modelObject) {
-		//iInventoryDao.updateInvTray(modelObject.getInvTray());
+		iInventoryDao.updateInvTray(modelObject.getInvTray());
 	}
 
 	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
@@ -99,5 +99,9 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public InvBox getInvBox(Long id) {
 		return iInventoryDao.getInvBox(id);
+	}
+
+	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox) {
+		return iInventoryDao.getCellAndBiospecimenListByBox(invBox);
 	}
 }

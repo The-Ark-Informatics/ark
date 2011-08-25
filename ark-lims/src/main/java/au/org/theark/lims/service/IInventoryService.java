@@ -152,4 +152,11 @@ public interface IInventoryService {
 	 * @return
 	 */
 	public InvBox getInvBox(Long id);
+	
+	/**
+	 * Get a list of cells and biospecimens for a specifed InvBox
+	 * @param invBox
+	 * @return
+	 */
+	public List<InvCell> getCellAndBiospecimenListByBox(InvBox invBox);
 }
