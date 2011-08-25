@@ -273,6 +273,10 @@ public class Constants {
 	public static final String	FUNCTION_KEY_VALUE_ROLE_POLICY_TEMPLATE	= "ROLE_POLICY_TEMPLATE";
 	public static final String	FUNCTION_KEY_VALUE_MODULE						= "MODULE";
 	public static final String	FUNCTION_KEY_VALUE_FUNCTION					= "FUNCTION";
+	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_FIELD	= "LIMS_COLLECTION_CUSTOM_FIELD";
+	public static final String	FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA	= "LIMS_COLLECTION_CUSTOM_DATA";
+	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_FIELD	= "BIOSPECIMEN_CUSTOM_FIELD";
+	public static final String	FUNCTION_KEY_VALUE_BIOSPECIMEN_CUSTOM_DATA	= "BIOSPECIMEN_CUSTOM_DATA";
 
 	/* Ark Module Keys */
 	public static final String	ARK_MODULE_KEY										= "MODULE_KEY";
