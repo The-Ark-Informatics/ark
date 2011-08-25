@@ -132,20 +132,14 @@ public class InvCell implements java.io.Serializable {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	/**
-	 * @return the biospecimen
-	 */
-	@OneToOne(fetch = FetchType.LAZY, mappedBy = "invCell") 
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BIOSPECIMEN_ID")
 	public Biospecimen getBiospecimen() {
-		return biospecimen;
+		return this.biospecimen;
 	}
 
-	/**
-	 * @param biospecimen the biospecimen to set
-	 */
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
-
 }

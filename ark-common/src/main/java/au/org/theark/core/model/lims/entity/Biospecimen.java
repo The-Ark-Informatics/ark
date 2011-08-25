@@ -68,7 +68,7 @@ public class Biospecimen implements java.io.Serializable {
 	private String						storedIn;
 	private Date						sampleTime;
 	private String						grade;
-	private InvCell					invCell;
+	//private InvCell					invCell;
 	private Long						depth;
 	private Date						sampleDate;
 	private Date						extractedTime;
@@ -101,7 +101,7 @@ public class Biospecimen implements java.io.Serializable {
 	public Biospecimen(Long id, String biospecimenId, InvCell invCell, Long sampletypeId, BioSampletype sampleType) {
 		this.id = id;
 		this.biospecimenUid = biospecimenUid;
-		this.invCell = invCell;
+		//this.invCell = invCell;
 		this.sampleType = sampleType;
 	}
 
@@ -124,7 +124,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.storedIn = storedIn;
 		this.sampleTime = sampleTime;
 		this.grade = grade;
-		this.invCell = invCell;
+		//this.invCell = invCell;
 		this.depth = depth;
 		this.sampleDate = sampleDate;
 		this.extractedTime = extractedTime;
@@ -293,16 +293,6 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setGrade(String grade) {
 		this.grade = grade;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "CELL_ID")
-	public InvCell getinvCell() {
-		return this.invCell;
-	}
-
-	public void setinvCell(InvCell invCell) {
-		this.invCell = invCell;
 	}
 
 	@Column(name = "DEPTH")
