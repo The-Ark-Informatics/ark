@@ -32,14 +32,14 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.web.component.button.EditModeButtonsPanel;
+import au.org.theark.core.web.component.button.IEditModeEventHandler;
+import au.org.theark.core.web.component.button.IViewModeEventHandler;
+import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subjectcustomdata.EditModeButtonsPanel;
-import au.org.theark.study.web.component.subjectcustomdata.IEditModeEventHandler;
-import au.org.theark.study.web.component.subjectcustomdata.IViewModeEventHandler;
 import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataVO;
-import au.org.theark.study.web.component.subjectcustomdata.ViewModeButtonsPanel;
 
 /**
  * @author elam
