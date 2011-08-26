@@ -19,7 +19,6 @@
 package au.org.theark.lims.web.component.subjectlims.subject;
 
 import java.text.SimpleDateFormat;
-import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -35,13 +34,14 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
-import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.lims.service.ILimsService;
+import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
@@ -71,9 +71,6 @@ public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
 
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService				iLimsService;
-
 	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
 			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
 
@@ -89,13 +86,13 @@ public class SearchResultListPanel extends Panel {
 		this.subjectContainerForm = containerForm;
 	}
 
-	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider) {
+	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService> subjectProvider) {
 
-		DataView<SubjectVO> studyCompDataView = new DataView<SubjectVO>("subjectList", subjectProvider) {
+		DataView<LinkSubjectStudy> studyCompDataView = new DataView<LinkSubjectStudy>("subjectList", subjectProvider) {
 
 			@Override
-			protected void populateItem(final Item<SubjectVO> item) {
-				LinkSubjectStudy subject = item.getModelObject().getLinkSubjectStudy();
+			protected void populateItem(final Item<LinkSubjectStudy> item) {
+				LinkSubjectStudy subject = item.getModelObject();
 				item.add(buildLink(item.getModelObject()));
 
 				StringBuffer sb = new StringBuffer();
@@ -115,31 +112,30 @@ public class SearchResultListPanel extends Panel {
 					sb.append(subject.getPerson().getLastName());
 				}
 
-				item.getModelObject().setSubjectFullName(sb.toString());
-				item.add(new Label(Constants.SUBJECT_FULL_NAME, item.getModelObject().getSubjectFullName()));
+				item.add(new Label(Constants.SUBJECT_FULL_NAME, sb.toString()));
 
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
-					item.add(new Label("linkSubjectStudy.person.preferredName", subject.getPerson().getPreferredName()));
+					item.add(new Label("person.preferredName", subject.getPerson().getPreferredName()));
 				}
 				else {
-					item.add(new Label("linkSubjectStudy.person.preferredName", ""));
+					item.add(new Label("person.preferredName", ""));
 				}
 
-				item.add(new Label("linkSubjectStudy.person.genderType.name", subject.getPerson().getGenderType().getName()));
+				item.add(new Label("person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
 				String dateOfBirth = "";
 				if (subject != null && subject.getPerson() != null && subject.getPerson().getDateOfBirth() != null) {
 					dateOfBirth = simpleDateFormat.format(subject.getPerson().getDateOfBirth());
-					item.add(new Label("linkSubjectStudy.person.dateOfBirth", dateOfBirth));
+					item.add(new Label("person.dateOfBirth", dateOfBirth));
 				}
 				else {
-					item.add(new Label("linkSubjectStudy.person.dateOfBirth", ""));
+					item.add(new Label("person.dateOfBirth", ""));
 				}
 
-				item.add(new Label("linkSubjectStudy.person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
+				item.add(new Label("person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
 
-				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
+				item.add(new Label("subjectStatus.name", subject.getSubjectStatus().getName()));
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 					@Override
@@ -152,31 +148,37 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 
-	private AjaxLink buildLink(final SubjectVO subject) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink(Constants.SUBJECT_UID) {
+	private AjaxLink buildLink(final LinkSubjectStudy subject) {
+		
+		ArkBusyAjaxLink link = new ArkBusyAjaxLink("subjectUID") {
+			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
+			
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				subject.getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
+				subject.setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 				// We specify the type of person here as Subject
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getLinkSubjectStudy().getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-
-				SubjectVO subjectFromBackend = new SubjectVO();
-				Collection<SubjectVO> subjects = iArkCommonService.getSubject(subject);
-				for (SubjectVO subjectVO2 : subjects) {
-					subjectFromBackend = subjectVO2;
-					break;
+				
+				try {
+					subjectFromBackend = iArkCommonService.getSubjectByUID(subject.getSubjectUID());
+				}
+				catch (EntityNotFoundException e) {
+					log.error(e.getMessage());
 				}
 
 				// Set SubjectUID into context
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getLinkSubjectStudy().getSubjectUID());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
 
-				subjectContainerForm.setModelObject(subjectFromBackend);
+				LimsSubjectVO subjectVo = new LimsSubjectVO();
+				subjectVo.setLinkSubjectStudy(subjectFromBackend);
+				subjectContainerForm.setModelObject(subjectVo);
+				
 				ContextHelper contextHelper = new ContextHelper();
-				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
-				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
+				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
+				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectUID(), arkContextMarkup);
 
 				detailPanelContainer.setVisible(true);
 				viewButtonContainer.setVisible(true);
@@ -206,7 +208,7 @@ public class SearchResultListPanel extends Panel {
 				}
 			}
 		};
-		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getLinkSubjectStudy().getSubjectUID());
+		Label nameLinkLabel = new Label(Constants.SUBJECT_KEY_LBL, subject.getSubjectUID());
 		link.add(nameLinkLabel);
 		return link;
 	}

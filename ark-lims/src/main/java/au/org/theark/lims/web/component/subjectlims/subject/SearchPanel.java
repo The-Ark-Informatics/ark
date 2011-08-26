@@ -24,14 +24,15 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.lims.model.vo.LimsSubjectVO;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;
 
 /**
- * @author nivedann
  * 
+ * @author cellis
+ *
  */
 public class SearchPanel extends Panel {
 
@@ -42,7 +43,7 @@ public class SearchPanel extends Panel {
 	private WebMarkupContainer				viewButtonContainer;
 	private WebMarkupContainer				editButtonContainer;
 	private WebMarkupContainer				detailFormContainer;
-	private PageableListView<SubjectVO>	listView;
+	private PageableListView<LimsSubjectVO>	listView;
 
 	/**
 	 * Constructor
@@ -59,7 +60,7 @@ public class SearchPanel extends Panel {
 	 * @param detailPanel
 	 * @param containerForm
 	 */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<SubjectVO> listView, WebMarkupContainer resultListContainer,
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<LimsSubjectVO> listView, WebMarkupContainer resultListContainer,
 			WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, DetailPanel detailPanel,
 			ContainerForm containerForm) {
 
@@ -75,7 +76,7 @@ public class SearchPanel extends Panel {
 
 	}
 
-	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm) {
+	public void initialisePanel(CompoundPropertyModel<LimsSubjectVO> subjectVoCpm) {
 
 		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer, detailFormContainer,
 				viewButtonContainer, editButtonContainer);
