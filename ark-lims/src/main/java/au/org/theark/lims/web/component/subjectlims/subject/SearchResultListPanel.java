@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
@@ -70,6 +71,9 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
+	
+	@SpringBean(name = "arkLdapRealm")
+	private ArkLdapRealm				realm;
 
 	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
 			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
@@ -148,18 +152,18 @@ public class SearchResultListPanel extends Panel {
 		return studyCompDataView;
 	}
 
+	/**
+	 * Builds the link for selection of subject (gets from database to ensure persistence)s
+	 * @param subject
+	 * @return
+	 */
 	private AjaxLink buildLink(final LinkSubjectStudy subject) {
-		
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("subjectUID") {
-			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
-			
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				// We specify the type of person here as Subject
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
-				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-				
+				LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
 				try {
+					
 					subjectFromBackend = iArkCommonService.getSubjectByUID(subject.getSubjectUID());
 				}
 				catch (EntityNotFoundException e) {
@@ -168,11 +172,21 @@ public class SearchResultListPanel extends Panel {
 
 				// Set SubjectUID into context
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
+				
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
+				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
+				
+				// Force clearing of Cache to re-load roles for the user for the study
+				realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 				LimsSubjectVO subjectVo = new LimsSubjectVO();
 				subjectVo.setLinkSubjectStudy(subjectFromBackend);
+				subjectVo.setStudy(subjectFromBackend.getStudy());
 				subjectContainerForm.setModelObject(subjectVo);
 				
+				// Set context items
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectUID(), arkContextMarkup);
