@@ -21,7 +21,6 @@ package au.org.theark.lims.web.menu;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -71,17 +70,11 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isAccessible() {
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				if (sessionStudyId == null) {
-					this.getPanel(au.org.theark.core.Constants.ARK_MODULE_LIMS).error(au.org.theark.core.Constants.NO_STUDY_IN_CONTEXT_MESSAGE);
-					return false;
-				}
-				else
-					return true;
+				return ArkPermissionHelper.isModuleFunctionAccessPermitted();
 			}
 
 			public boolean isVisible() {
-				return ArkPermissionHelper.isModuleAccessPermitted(au.org.theark.core.Constants.ARK_MODULE_LIMS);
+				return ArkPermissionHelper.isModuleFunctionAccessPermitted();
 			}
 		};
 	}
