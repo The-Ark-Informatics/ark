@@ -18,7 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -29,9 +33,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
@@ -84,7 +90,7 @@ public class LimsContainerPanel extends Panel {
 
 		this.add(containerForm);
 	}
-
+	
 	protected void prerenderContextCheck() {
 		// Get the Study and SubjectUID in Context
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
