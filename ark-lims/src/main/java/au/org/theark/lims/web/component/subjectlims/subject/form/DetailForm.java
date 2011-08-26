@@ -73,8 +73,6 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>						iArkCommonService;
 
-	private WebMarkupContainer								arkContextMarkupContainer;
-
 	protected TextField<String>							subjectUIDTxtFld;
 	protected TextField<String>							firstNameTxtFld;
 	protected TextField<String>							middleNameTxtFld;
@@ -123,11 +121,15 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
 
 		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-		this.arkContextMarkupContainer = arkContextContainer;
 		this.containerForm = containerForm;
 
 		// Disable editing of Subject details in LIMS
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public boolean isVisible() {
@@ -257,14 +259,17 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 	 */
 	protected void initialiseConsentStatusChoice() {
 		List<ConsentStatus> consentStatusList = iArkCommonService.getRecordableConsentStatus();
-		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
-		consentStatusChoice = new DropDownChoice(Constants.SUBJECT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentStatus> defaultChoiceRenderer = new ChoiceRenderer<ConsentStatus>(Constants.NAME, Constants.ID);
+		consentStatusChoice = new DropDownChoice<ConsentStatus>(Constants.SUBJECT_CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 	}
 
+	/**
+	 * Initialise the Consent Type Drop Down Choice Control
+	 */
 	protected void initialiseConsentTypeChoice() {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
-		consentTypeChoice = new DropDownChoice(Constants.SUBJECT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
+		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
+		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.SUBJECT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
 	}
 
 	// Death details dependent on Vital Status selected to "Deceased"
@@ -365,6 +370,7 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 	protected void attachValidators() {
 	}
 
+	@SuppressWarnings("unused")
 	private boolean validateCustomFields(Long fieldToValidate, String message, AjaxRequestTarget target) {
 		boolean validFlag = true;
 		Calendar calendar = Calendar.getInstance();
@@ -378,6 +384,7 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 		return validFlag;
 	}
 
+	@SuppressWarnings("unused")
 	private void saveUpdateProcess(LimsSubjectVO subjectVO, AjaxRequestTarget target) {
 		// Should never get here since edit should never be enabled for Subject Details via LIMS
 		log.error("Incorrect application workflow - tried to save/edit Subject Details via LIMS");
