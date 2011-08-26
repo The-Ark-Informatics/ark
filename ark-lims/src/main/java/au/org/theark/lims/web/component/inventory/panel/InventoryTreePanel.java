@@ -37,7 +37,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 
 		tree = new InventoryLinkTree("tree", createTreeModel(), feedbackPanel, detailContainer, containerForm);
 		//tree.getTreeState().collapseAll();
-		tree.setRootLess(false);
+		tree.setRootLess(true);
 		addComponents();
 	}
 

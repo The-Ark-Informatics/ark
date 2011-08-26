@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.InvColRowType;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -47,19 +46,17 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 3950256468509804325L;
+
 	private static Logger		log	= LoggerFactory.getLogger(BoxDetailForm.class);
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
-
-	private ContainerForm				fieldContainerForm;
-
-	private int								mode;
-
+	
 	private TextField<String>			idTxtFld;
 	private TextField<String>			nameTxtFld;
 	private TextField<String>			capacityTxtFld;
@@ -174,7 +171,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	protected void onDeleteConfirmed(AjaxRequestTarget target) {
 		iInventoryService.deleteInvBox(containerForm.getModelObject());
 		this.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
-
+		log.info("Box " + containerForm.getModelObject().getInvBox().getName() + " was deleted successfully");
 		// Display delete confirmation message
 		target.addComponent(feedbackPanel);
 

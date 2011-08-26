@@ -28,7 +28,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
@@ -70,8 +69,6 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
 
-	protected CompoundPropertyModel<T> cpModel;
-	
 	protected BaseTree 				tree;
 
 	/**
@@ -137,7 +134,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			@SuppressWarnings("unchecked")
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				boolean setFocusError = false;
-				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailPanel");
+				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailFormContainer");
 				for (Iterator iterator = wmc.iterator(); iterator.hasNext();) {
 					Component component = (Component) iterator.next();
 					if (component instanceof FormComponent) {
@@ -189,13 +186,10 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				deleteButton.setEnabled(true);
 				viewButtonContainer.setVisible(false);
 				editButtonContainer.setVisible(true);
-				
 				detailFormContainer.setEnabled(true);
-				
 				target.addComponent(viewButtonContainer);
 				target.addComponent(editButtonContainer);
 				target.addComponent(detailFormContainer);
-				target.addComponent(detailContainer);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {

@@ -18,10 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.model.lims.entity.InvTank;
-import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.model.lims.entity.InvTreeNode;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
@@ -49,9 +46,6 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 
 	private List<Study>					studyList			= new ArrayList<Study>(0);
 	private List<InvSite>				invSites				= new ArrayList<InvSite>(0);
-	private List<InvTank>				invTanks				= new ArrayList<InvTank>(0);
-	private List<InvTray>				invTrays				= new ArrayList<InvTray>(0);
-	private List<InvBox>					invBoxes				= new ArrayList<InvBox>(0);
 
 	protected ArkBusyAjaxButton		addSite;
 	protected ArkBusyAjaxButton		addTank;
@@ -86,81 +80,21 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 		studyList.add(study);
 
 		InvSite invSite = new InvSite();
-		invSite.setStudy(study);
 
 		try {
 			invSites = iInventoryService.searchInvSite(invSite);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
-			manualInventoryTreeTest();
 		}
 		invSite.setStudy(study);
 		return convertToTreeModel(studyList.get(0));
 	}
 
-	public void manualInventoryTreeTest() {
-		InvSite invSite = new InvSite();
-		invSite.setName("Site 1");
-		invSite.setStudy(study);
-
-		studyList.add(invSite.getStudy());
-
-		InvTank invTank = new InvTank();
-		invTank.setName("Green Tank 1");
-		invTank.setCapacity(10);
-		invTank.setAvailable(7);
-
-		InvTank invTank2 = new InvTank();
-		invTank2.setName("Empty Tank");
-		invTank2.setCapacity(10);
-		invTank2.setAvailable(10);
-
-		InvTank invTank3 = new InvTank();
-		invTank3.setName("Full Tank");
-		invTank3.setCapacity(10);
-		invTank3.setAvailable(0);
-
-		InvTank invTank4 = new InvTank();
-		invTank4.setName("Yellow Tank");
-		invTank4.setCapacity(10);
-		invTank4.setAvailable(4);
-
-		InvTray invTray = new InvTray();
-		invTray.setName("Green Tray 1");
-		invTray.setCapacity(10);
-		invTray.setAvailable(8);
-
-		InvBox invBox = new InvBox();
-		invBox.setName("Empty Box 1");
-		invBox.setCapacity(90);
-		invBox.setAvailable(90);
-
-		InvBox invBox2 = new InvBox();
-		invBox2.setName("Empty Box 2");
-		invBox2.setCapacity(90);
-		invBox2.setAvailable(50);
-
-		invSites.add(invSite);
-
-		invTanks.add(invTank);
-		invTanks.add(invTank2);
-		invTanks.add(invTank3);
-		invTanks.add(invTank4);
-
-		invTrays.add(invTray);
-
-		invBoxes.add(invBox);
-		invBoxes.add(invBox2);
-
-		invSite.setInvTanks(invTanks);
-		invTank.setInvTrays(invTrays);
-		invTray.setInvBoxes(invBoxes);
-	}
-
 	private TreeModel convertToTreeModel(Study study) {
 		TreeModel model = null;
 		if (study != null) {
+			// Default root node was Study
 			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel(study.getName()));
 			add(rootNode, invSites);
 			model = new DefaultTreeModel(rootNode);

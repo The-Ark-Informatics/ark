@@ -115,17 +115,55 @@
 
 				<div id="fldLabel">
 					<div class="label">
-						<label for="invBox.noofcol">
-							<wicket:message key="invBox.noofcol">
-								Columns:
-							</wicket:message>
-						</label>
+						<wicket:message key="invBox.noofcol">
+							Columns:
+						</wicket:message>
 					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
 						<input wicket:id="invBox.noofcol" type="text" />
 					</div>
+				</div>
+				
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<label for="invBox.noofrow">
+						<wicket:message key="invBox.noofrow">
+							Rows:
+						</wicket:message>
+					</label>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="invBox.noofrow" type="text" />
+					</div>
+				</div>
+
+				<div id="detailPanelContentRight">
+					&nbsp;
+				</div>
+				
+				<div id="detailPanelBreaker"> 
+					&nbsp;
+				</div>
+				
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<wicket:message key="invBox.colnotype">
+							Column Type:
+						</wicket:message>
+					</div>
+				</div>
+				
+				<div id="fldControl">
 					<div class="label">
 						<select wicket:id="invBox.colnotype">
 		       				<option>Numeric</option>
@@ -140,17 +178,13 @@
 
 				<div id="fldLabel">
 					<div class="label">
-						<label for="invBox.noofrow">
-							<wicket:message key="invBox.noofrow">
-								Rows:
-							</wicket:message>
-						</label>
+						<wicket:message key="invBox.rownotype">
+							Row Type:
+						</wicket:message>
 					</div>
 				</div>
+				
 				<div id="fldControl">
-					<div class="label">
-						<input wicket:id="invBox.noofrow" type="text" />
-					</div>
 					<div class="label">
 						<select wicket:id="invBox.rownotype">
 		       				<option>Numeric</option>

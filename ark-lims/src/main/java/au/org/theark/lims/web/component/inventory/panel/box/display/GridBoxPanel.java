@@ -45,6 +45,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.Loop;
+import org.apache.wicket.markup.html.list.Loop.LoopItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -60,6 +61,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.web.component.image.MouseOverImage;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
 
@@ -80,6 +82,10 @@ public class GridBoxPanel extends Panel {
 	private static final ResourceReference	EMPTY_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "emptyCell.gif");
 	private static final ResourceReference	USED_CELL_ICON			= new ResourceReference(GridBoxPanel.class, "usedCell.gif");
 	private static final ResourceReference	BARCODE_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
+	
+	private static final ResourceReference	SELECTED_EMPTY_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "selectedEmptyCell.gif");
+	private static final ResourceReference	SELECTED_USED_CELL_ICON			= new ResourceReference(GridBoxPanel.class, "selectedUsedCell.gif");
+	private static final ResourceReference	SELECTED_BARCODE_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "selectedBarcodeCell.gif");
 
 	private static final Logger				log						= LoggerFactory.getLogger(GridBoxPanel.class);
 
@@ -126,7 +132,9 @@ public class GridBoxPanel extends Panel {
 	 * @return
 	 */
 	@SuppressWarnings( { "unchecked" })
-	private Loop createHeadings(final InvBox invBox) {
+	private Loop createHeadings(final InvBox invBox) {		
+		final String colNoType = invBox.getColnotype().getName();
+		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofcol" value
 		return new Loop("heading", new PropertyModel(invBox, "noofcol")) {
 			/**
@@ -146,7 +154,6 @@ public class GridBoxPanel extends Panel {
 					@Override
 					public Serializable getObject() {
 						String label = new String();
-						String colNoType = invBox.getColnotype().getName();
 						if (colNoType.equalsIgnoreCase("ALPHABET")) {
 							char character = (char) (col + 65);
 							label = new Character(character).toString();
@@ -173,6 +180,9 @@ public class GridBoxPanel extends Panel {
 	 */
 	@SuppressWarnings( { "serial", "unchecked" })
 	private Loop createMainGrid(final InvBox invBox, final List<InvCell> invCellList) {
+		final String rowNoType = invBox.getRownotype().getName();
+		final int noOfCols = invBox.getNoofcol();
+		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofrow" value
 		Loop loop = new Loop("rows", new PropertyModel(invBox, "noofrow")) {
 			public void populateItem(LoopItem item) {
@@ -180,7 +190,7 @@ public class GridBoxPanel extends Panel {
 				
 				// Create the row number/label
 				String label = new String();
-				String rowNoType = invBox.getRownotype().getName();
+				
 				if (rowNoType.equalsIgnoreCase("ALPHABET")) {
 					char character = (char) (row + 65);
 					label = new Character(character).toString();
@@ -197,96 +207,123 @@ public class GridBoxPanel extends Panel {
 					};
 				});
 				item.add(rowLabel);
-
+				
 				// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to invBox "noofcol" value
 				item.add(new Loop("cols", new PropertyModel(invBox, "noofcol")) {
 					public void populateItem(LoopItem item) {
 						final int col = item.getIteration();
-						
-						final int index = (row * invBox.getNoofcol()) + col;
+						final int index = (row * noOfCols) + col;
 						
 						InvCell invCell = invCellList.get(index);
-						IModel<Biospecimen> biospecimenModel = new PropertyModel<Biospecimen>(invCell, "biospecimen");
 						
-						// Cell used/empty icon
-						Component cellIconComponent = cellIconComponent("cellIcon", biospecimenModel);
-
-						// tooltip of cell
-						StringBuffer stringBuffer = new StringBuffer();
-						stringBuffer.append("Column: ");
-						stringBuffer.append(col);
-						stringBuffer.append("\t");
-						stringBuffer.append("Row: ");
-						stringBuffer.append(row);
-						stringBuffer.append("\t");
-						stringBuffer.append("Status: ");
-
-						if (biospecimenModel.getObject() != null) {
-							stringBuffer.append("Used");
-							stringBuffer.append("\t");
-							stringBuffer.append("BiospecimenUID: ");
-							stringBuffer.append(biospecimenModel.getObject().getBiospecimenUid());
-							stringBuffer.append("\t");
-							stringBuffer.append("Sample Type: ");
-							stringBuffer.append(biospecimenModel.getObject().getSampleType().getName());
-							stringBuffer.append("\t");
-							stringBuffer.append("Quantity: ");
-							stringBuffer.append(biospecimenModel.getObject().getQuantity());
-						}
-						else {
-							stringBuffer.append("Empty");
-						}
-
-						String toolTip = stringBuffer.toString();
-						cellIconComponent.add(new AttributeModifier("showtooltip", true, new Model("true")));
-						cellIconComponent.add(new AttributeModifier("title", true, new Model(toolTip)));
-						cellIconComponent.add(new AbstractBehavior() {
-							public void onComponentTag(Component component, ComponentTag tag) {
-								super.onComponentTag(component, tag);
-								tag.put("style", "padding: 1px;");
-							};
-						});
+						// Cell used/empty/barcode icon ot the cell
+						Component cellIconComponent = cellIconComponent("cellIcon", invCell);
 						item.add(cellIconComponent);
-					}
-					// }
+						
+						// Add a toolTip
+						addToolTipToCell(item, invCell);	
+					}					
 				});
 			}
 		};
 		return loop;
 	}
+	
+	/**
+	 * Adds a ToolTip to the cell
+	 * @param item
+	 * @param invCell
+	 */
+	private void addToolTipToCell(LoopItem item, InvCell invCell) {
+		StringBuffer stringBuffer = new StringBuffer();
+		stringBuffer.append("Column: ");
+		stringBuffer.append(invCell.getColno());
+		stringBuffer.append("\t");
+		stringBuffer.append("Row: ");
+		stringBuffer.append(invCell.getRowno());
+		stringBuffer.append("\t");
+		stringBuffer.append("Status: ");
+
+		if (invCell.getBiospecimen() != null) {
+			stringBuffer.append("Used");
+			stringBuffer.append("\t");
+			stringBuffer.append("BiospecimenUID: ");
+			stringBuffer.append(invCell.getBiospecimen().getBiospecimenUid());
+			stringBuffer.append("\t");
+			stringBuffer.append("Sample Type: ");
+			stringBuffer.append(invCell.getBiospecimen().getSampleType().getName());
+			stringBuffer.append("\t");
+			stringBuffer.append("Quantity: ");
+			if(invCell.getBiospecimen().getQuantity() != null)
+				stringBuffer.append(invCell.getBiospecimen().getQuantity());
+			else {
+				stringBuffer.append("0");
+			}
+		}
+		else {
+			stringBuffer.append("Empty");
+		}
+
+		String toolTip = stringBuffer.toString();
+		item.add(new AttributeModifier("showtooltip", true, new Model<Boolean>(true)));
+		item.add(new AttributeModifier("title", true, new Model<String>(toolTip)));
+	}
 
 	/**
-	 * Creates the icon dislplayed at the cell in question
+	 * Creates the icon displayed at the cell in question. Automatically adds tooltip, and changes image when mouseover
 	 * @param componentId
-	 * @param biospecimenModel
+	 * @param invCell
 	 * @return
 	 */
-	protected Component cellIconComponent(String componentId, final IModel<Biospecimen> biospecimenModel) {
-		return new Image(componentId) {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected ResourceReference getImageResourceReference() {
-				return getIconResourceReference(biospecimenModel.getObject());
-			}
-
-		};
+	protected Component cellIconComponent(String componentId, final InvCell invCell) {
+		MouseOverImage image = new MouseOverImage(componentId, getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell.getId().toString());
+		return image;
 	}
 
 	/**
 	 * Determine what icon to display on the cell
 	 * 
-	 * @param object
-	 *           the referece object of the node
+	 * @param invCell
+	 *           the reference cell
 	 * @return resourceReference to the icon for the cell in question
 	 */
-	private ResourceReference getIconResourceReference(Object object) {
+	private ResourceReference getIconResourceReference(InvCell invCell) {
 		ResourceReference resourceReference = null;
-		if (object == null) {
+		Biospecimen biospecimen = invCell.getBiospecimen();
+		if (biospecimen == null) {
 			resourceReference = EMPTY_CELL_ICON;
 		}
 		else {
-			resourceReference = USED_CELL_ICON;
+			if(biospecimen.getBarcoded()) {
+				resourceReference = BARCODE_CELL_ICON;
+			}
+			else	{
+				resourceReference = USED_CELL_ICON;
+			}
+		}
+		return resourceReference;
+	}
+	
+	/**
+	 * Determine what icon to display on the cell onMouseover
+	 * 
+	 * @param invCell
+	 *           the reference cell
+	 * @return resourceReference to the icon for the cell in question
+	 */
+	private ResourceReference getIconOverResourceReference(InvCell invCell) {
+		ResourceReference resourceReference = null;
+		Biospecimen biospecimen = invCell.getBiospecimen();
+		if (biospecimen == null) {
+			resourceReference = SELECTED_EMPTY_CELL_ICON;
+		}
+		else {
+			if(biospecimen.getBarcoded()) {
+				resourceReference = SELECTED_BARCODE_CELL_ICON;
+			}
+			else	{
+				resourceReference = SELECTED_USED_CELL_ICON;
+			}
 		}
 		return resourceReference;
 	}
