@@ -51,7 +51,8 @@ import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 
 /**
- * @author nivedann
+ * 
+ * @author cellis
  * 
  */
 @SuppressWarnings("unchecked")
@@ -59,27 +60,26 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 	/**
 	 * 
 	 */
-	private static final long										serialVersionUID	= -2956968644138345497L;
-	private static final Logger									log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
-	private SearchPanel												searchPanel;
-	private SearchResultListPanel									searchResultsPanel;
-	private DetailPanel												detailsPanel;
-	private PageableListView<LimsSubjectVO>							pageableListView;
-	private ContainerForm											containerForm;
+	private static final long																			serialVersionUID	= -2956968644138345497L;
+	private static final Logger																		log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
+	private SearchPanel																					searchPanel;
+	private SearchResultListPanel																		searchResultsPanel;
+	private DetailPanel																					detailsPanel;
+	private PageableListView<LimsSubjectVO>														pageableListView;
+	private ContainerForm																				containerForm;
 
-	private WebMarkupContainer										arkContextMarkup;
+	private WebMarkupContainer																			arkContextMarkup;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService										iArkCommonService;
+	private IArkCommonService																			iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService												iLimsService;
-	
-	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
-	private ILimsSubjectService									iLimsSubjectService;
+	private ILimsService																					iLimsService;
 
-	private DataView<LinkSubjectStudy>									dataView;
-	//private ArkDataProvider<SubjectVO, IArkCommonService>	subjectProvider;
+	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
+	private ILimsSubjectService																		iLimsSubjectService;
+
+	private DataView<LinkSubjectStudy>																dataView;
 	private ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService>	subjectProvider;
 
 	/**
@@ -92,10 +92,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<LimsSubjectVO>(new LimsSubjectVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
-		
+
 		// Set study list user should see
 		containerForm.getModelObject().setStudyList(getStudyListForUser());
-		
+
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
@@ -170,81 +170,39 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 		searchResultsPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
 				editButtonContainer, arkContextMarkup, containerForm);
 
-		/* Restrict to subjects in current study in session
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if (sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-			linkSubjectStudy.setStudy(study);
-			containerForm.getModelObject().setLinkSubjectStudy(linkSubjectStudy);
-		}
-		*/
-
-		// Data providor to paginate resultList
-		/*
-		subjectProvider = new ArkDataProvider<SubjectVO, IArkCommonService>(iArkCommonService) {
-
-			/ * *
-			 * 
-			 * /
-			private static final long	serialVersionUID	= 1L;
-
-			public int size() {
-				int subjectCount = 0;
-				List<Study> studyList = getStudyListForUser();
-				for (Iterator<Study> iterator = studyList.iterator(); iterator.hasNext();) {
-					Study study = (Study) iterator.next();
-					SubjectVO subjectVo = model.getObject();
-					subjectVo.getLinkSubjectStudy().setStudy(study);
-					subjectCount = subjectCount + service.getStudySubjectCount(model.getObject()); 
-				}
-				
-				return subjectCount; 
-			}
-
-			public Iterator<SubjectVO> iterator(int first, int count) {
-				List<SubjectVO> listSubjects = new ArrayList<SubjectVO>();
-				if (isActionPermitted()) {
-					listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
-				}
-				return listSubjects.iterator();
-			}
-		};
-		*/
-		
 		subjectProvider = new ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService>(iLimsSubjectService) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
+
 			public int size() {
 				List<Study> studyList = new ArrayList<Study>(0);
-				
+
 				// Restrict search if Study selected in Search form
-				if(criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
+				if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
 					studyList.add(criteriaModel.getObject().getStudy());
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
 				}
-				
-				return service.getSubjectCount(criteriaModel.getObject(), studyList); 
+
+				return service.getSubjectCount(criteriaModel.getObject(), studyList);
 			}
 
 			public Iterator<LinkSubjectStudy> iterator(int first, int count) {
 				List<LinkSubjectStudy> listSubjects = new ArrayList<LinkSubjectStudy>(0);
-				
+
 				// Restrict search if Study selected in Search form
 				List<Study> studyList = new ArrayList<Study>(0);
-				if(criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
+				if (criteriaModel.getObject().getStudy() != null && criteriaModel.getObject().getStudy().getId() != null) {
 					studyList.add(criteriaModel.getObject().getStudy());
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
 				}
-				
+
 				if (isActionPermitted()) {
-					//listSubjects = iArkCommonService.searchPageableSubjects(model.getObject(), first, count);
 					listSubjects = iLimsSubjectService.searchPageableSubjects(criteriaModel.getObject(), studyList, first, count);
 				}
 				return listSubjects.iterator();
@@ -278,9 +236,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 	public void setContextUpdateLimsWMC(WebMarkupContainer limsContainerWMC) {
 		containerForm.setContextUpdateLimnsWMC(limsContainerWMC);
 	}
-	
+
 	/**
 	 * Returns a list of Studies the user is permitted to access
+	 * 
 	 * @return
 	 */
 	private List<Study> getStudyListForUser() {
@@ -297,5 +256,4 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 		}
 		return studyListForUser;
 	}
-
 }
