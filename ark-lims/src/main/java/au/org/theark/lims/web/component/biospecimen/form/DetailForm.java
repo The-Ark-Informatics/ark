@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -83,6 +84,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
 	private TextField<String>					quantityTxtFld;
+	private CheckBox								barcodedChkBox;
 
 	private WebMarkupContainer					arkContextMarkup;
 	private String									subjectUIDInContext;
@@ -123,6 +125,9 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 		initSampleTypeDdc();
 		initBioCollectionDdc();
+		
+		barcodedChkBox = new CheckBox("biospecimen.barcoded");
+		barcodedChkBox.setVisible(true);
 
 		attachValidators();
 		addComponents();
@@ -191,6 +196,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		detailPanelFormContainer.add(sampleTypeDdc);
 		detailPanelFormContainer.add(bioCollectionDdc);
 		detailPanelFormContainer.add(quantityTxtFld);
+		detailPanelFormContainer.add(barcodedChkBox);
 		add(detailPanelFormContainer);
 	}
 
