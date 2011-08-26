@@ -155,9 +155,6 @@ public class SearchResultListPanel extends Panel {
 			
 			@Override
 			public void onClick(AjaxRequestTarget target) {
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-				subject.setStudy(iArkCommonService.getStudy(sessionStudyId));
-
 				// We specify the type of person here as Subject
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
