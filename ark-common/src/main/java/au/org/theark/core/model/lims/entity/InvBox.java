@@ -140,7 +140,7 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 		this.noofcol = noofcol;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "COLNOTYPE_ID", nullable = false)
 	public InvColRowType getColnotype() {
 		return this.colnotype;
@@ -186,7 +186,7 @@ public class InvBox implements java.io.Serializable, InvTreeNode<InvCell> {
 		this.noofrow = noofrow;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "ROWNOTYPE_ID", nullable = false)
 	public InvColRowType getRownotype() {
 		return this.rownotype;

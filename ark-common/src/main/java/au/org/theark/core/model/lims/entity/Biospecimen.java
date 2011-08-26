@@ -68,7 +68,6 @@ public class Biospecimen implements java.io.Serializable {
 	private String						storedIn;
 	private Date						sampleTime;
 	private String						grade;
-	//private InvCell					invCell;
 	private Long						depth;
 	private Date						sampleDate;
 	private Date						extractedTime;
@@ -93,15 +92,15 @@ public class Biospecimen implements java.io.Serializable {
 	private Long						withdrawn;
 	private String						status;
 	private String						treatment;
+	private Boolean					barcoded;
 	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
 
 	public Biospecimen() {
 	}
 
-	public Biospecimen(Long id, String biospecimenId, InvCell invCell, Long sampletypeId, BioSampletype sampleType) {
+	public Biospecimen(Long id, String biospecimenUid, Long sampletypeId, BioSampletype sampleType) {
 		this.id = id;
 		this.biospecimenUid = biospecimenUid;
-		//this.invCell = invCell;
 		this.sampleType = sampleType;
 	}
 
@@ -109,7 +108,7 @@ public class Biospecimen implements java.io.Serializable {
 			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
 			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, String units, String quality, Long withdrawn,
-			String status, String treatment, Set<InvCell> invinvCells, Set<BioTransaction> bioTransactions) {
+			String status, String treatment, Boolean barcoded, Set<BioTransaction> bioTransactions) {
 		this.id = id;
 		this.bioCollection = bioCollection;
 		this.biospecimenUid = biospecimenUid;
@@ -124,7 +123,6 @@ public class Biospecimen implements java.io.Serializable {
 		this.storedIn = storedIn;
 		this.sampleTime = sampleTime;
 		this.grade = grade;
-		//this.invCell = invCell;
 		this.depth = depth;
 		this.sampleDate = sampleDate;
 		this.extractedTime = extractedTime;
@@ -149,9 +147,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.withdrawn = withdrawn;
 		this.status = status;
 		this.treatment = treatment;
-		/*
-		 * this.invinvCells = invinvCells; this.bioTransactions = bioTransactions;
-		 */
+		this.barcoded = barcoded;
 	}
 
 	@Id
@@ -514,6 +510,21 @@ public class Biospecimen implements java.io.Serializable {
 
 	public void setTreatment(String treatment) {
 		this.treatment = treatment;
+	}
+
+	/**
+	 * @return the barcoded
+	 */
+	@Column(name = "BARCODED")
+	public Boolean getBarcoded() {
+		return barcoded;
+	}
+
+	/**
+	 * @param barcoded the barcoded to set
+	 */
+	public void setBarcoded(Boolean barcoded) {
+		this.barcoded = barcoded;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
