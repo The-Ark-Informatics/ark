@@ -187,7 +187,7 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		
 		if(invBox == null) {
-			log.error("InvBox with ID " + id + "no longer in the database");
+			log.error("InvBox with ID " + id + "is no longer in the database");
 		}
 		return invBox;
 	}
@@ -239,5 +239,43 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	
 	public void deleteInvCell(InvCell invCell) {
 		getSession().delete(invCell);
+	}
+
+	public InvTank getInvTank(Long id) {
+		InvTank invTank = new InvTank();
+		Criteria criteria = getSession().createCriteria(InvTank.class);
+
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvTank> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invTank = (InvTank) list.get(0);
+		}
+		
+		if(invTank == null) {
+			log.error("InvTank with ID " + id + "is no longer in the database");
+		}
+		return invTank;
+	}
+
+	public InvTray getInvTray(Long id) {
+		InvTray invTray = new InvTray();
+		Criteria criteria = getSession().createCriteria(InvTray.class);
+
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvTray> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invTray = (InvTray) list.get(0);
+		}
+		
+		if(invTray == null) {
+			log.error("InvTray with ID " + id + "no longer in the database");
+		}
+		return invTray;
 	}
 }

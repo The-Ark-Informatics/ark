@@ -194,4 +194,18 @@ public interface IInventoryDao {
 	 * @param invCell
 	 */
 	public void deleteInvCell(InvCell invCell);
+
+	/**
+	 * Get an InvTank based on the specified id
+	 * @param id
+	 * @return
+	 */
+	public InvTank getInvTank(Long id);
+	
+	/**
+	 * Get an InvTray based on the specified id
+	 * @param id
+	 * @return
+	 */
+	public InvTray getInvTray(Long id);
 }

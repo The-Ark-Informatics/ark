@@ -11,6 +11,8 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.InvTank;
+import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
@@ -147,12 +149,7 @@ public interface IInventoryService {
 	 */
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell);
 
-	/**
-	 * Get an InvBox based on the id
-	 * @param invBox
-	 * @return
-	 */
-	public InvBox getInvBox(Long id);
+	
 	
 	/**
 	 * Get a list of cells and biospecimens for a specifed InvBox
@@ -166,4 +163,25 @@ public interface IInventoryService {
 	 * @return
 	 */
 	public List<InvColRowType> getInvColRowTypes();
+
+	/**
+	 * Get invTank by id
+	 * @param id
+	 * @return
+	 */
+	public InvTank getInvTank(Long id);
+	
+	/**
+	 * Get invTray by id
+	 * @param id
+	 * @return
+	 */
+	public InvTray getInvTray(Long id);
+	
+	/**
+	 * Get an InvBox based on the id
+	 * @param invBox
+	 * @return
+	 */
+	public InvBox getInvBox(Long id);
 }

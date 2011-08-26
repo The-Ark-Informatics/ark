@@ -13,6 +13,8 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
+import au.org.theark.core.model.lims.entity.InvTank;
+import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -164,5 +166,13 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public List<InvColRowType> getInvColRowTypes() {
 		return iInventoryDao.getInvColRowTypes();
+	}
+
+	public InvTank getInvTank(Long id) {
+		return iInventoryDao.getInvTank(id);
+	}
+
+	public InvTray getInvTray(Long id) {
+		return iInventoryDao.getInvTray(id);
 	}
 }
