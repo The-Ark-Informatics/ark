@@ -87,7 +87,7 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 		}
 
 		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
-			criteria.add(Restrictions.eq("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID()));
+			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
 
 		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
