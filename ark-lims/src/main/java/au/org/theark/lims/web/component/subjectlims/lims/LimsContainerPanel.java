@@ -30,20 +30,17 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollectionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.form.ContainerForm;
 
 /**
  * @author elam
+ * @author cellis
  * 
  */
-@SuppressWarnings("unchecked")
 public class LimsContainerPanel extends Panel {
 	/**
 	 * 
@@ -52,10 +49,7 @@ public class LimsContainerPanel extends Panel {
 	private static final Logger					log					= LoggerFactory.getLogger(LimsContainerPanel.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
-
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService								iLimsService;
+	private IArkCommonService<Void>				iArkCommonService;
 
 	protected LimsVO									limsVO				= new LimsVO();
 	protected CompoundPropertyModel<LimsVO>	cpModel;
@@ -63,11 +57,8 @@ public class LimsContainerPanel extends Panel {
 	protected FeedbackPanel							feedbackPanel;
 	protected WebMarkupContainer					arkContextMarkup;
 	protected ContainerForm							containerForm;
-	// protected WebMarkupContainer resultsListWMC;
 	protected Panel									collectionListPanel;
 	protected Panel									biospecimenListPanel;
-
-	// protected AbstractDetailModalWindow modalWindow;
 
 	public LimsContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
@@ -84,20 +75,17 @@ public class LimsContainerPanel extends Panel {
 
 		this.add(containerForm);
 	}
-	
+
 	protected void prerenderContextCheck() {
-		// Get the Study and SubjectUID in Context
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		// Get the SubjectUID in sontext
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
-		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+		if (sessionSubjectUID != null) {
 			LinkSubjectStudy linkSubjectStudy = null;
-			Study study = null;
 			boolean contextLoaded = false;
 			try {
-				study = iArkCommonService.getStudy(sessionStudyId);
 				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
-				if (study != null && linkSubjectStudy != null) {
+				if (linkSubjectStudy != null) {
 					contextLoaded = true;
 				}
 			}
@@ -116,7 +104,7 @@ public class LimsContainerPanel extends Panel {
 			}
 			else {
 				containerForm.info("Could not load subject in context - record is invalid (e.g. deleted)");
-				
+
 				collectionListPanel = new EmptyPanel("biocollectionListPanel");
 				collectionListPanel.setOutputMarkupId(true);
 				containerForm.add(collectionListPanel);
@@ -134,5 +122,4 @@ public class LimsContainerPanel extends Panel {
 		feedbackPanel.setOutputMarkupId(true);
 		return feedbackPanel;
 	}
-
 }
