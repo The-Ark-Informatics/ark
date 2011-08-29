@@ -344,18 +344,13 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
-		subjectUIDTxtFld.setEnabled(true);
-		LimsVO subjectVO = new LimsVO();
-
-		// Reset the SubjectVO (with study in context)
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		subjectVO.getLinkSubjectStudy().setStudy(study);
-		containerForm.setModelObject(subjectVO);
+		LimsVO limsVo = new LimsVO();
+		containerForm.setModelObject(limsVo);
 
 		// Refresh the contextUpdateTarget (remove)
 		if (containerForm.getContextUpdateLimsWMC() != null) {
 			Panel limsContainerPanel = new EmptyPanel("limsContainerPanel");
+			limsContainerPanel.setOutputMarkupPlaceholderTag(true);
 			containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
 			target.addComponent(containerForm.getContextUpdateLimsWMC());
 		}

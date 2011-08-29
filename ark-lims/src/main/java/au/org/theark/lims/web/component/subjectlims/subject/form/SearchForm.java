@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -154,16 +155,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
 
 		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-		}
+		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
 	}
@@ -213,6 +205,10 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		}
 		else {
 			studyList = cpmModel.getObject().getStudyList();
+			if(studyList.isEmpty()) {
+				log.error("StudyList is empty, shouldn't happen!");
+				studyList = getStudyListForUser();
+			}
 		}
 
 		int count = iLimsSubjectService.getSubjectCount(cpmModel.getObject(), studyList);
@@ -224,5 +220,28 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
 		target.addComponent(listContainer);// For ajax this is required so
 	}
-
+	
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	private List<Study> getStudyListForUser() {
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return studyListForUser;
+	}
 }

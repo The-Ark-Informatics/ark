@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -34,18 +33,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
@@ -73,9 +67,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService																			iArkCommonService;
 
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService																					iLimsService;
-
 	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
 	private ILimsSubjectService																		iLimsSubjectService;
 
@@ -94,7 +85,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		containerForm = new ContainerForm("containerForm", cpModel);
 
 		// Set study list user should see
-		containerForm.getModelObject().setStudyList(getStudyListForUser());
+		containerForm.getModelObject().setStudyList(containerForm.getStudyListForUser());
 
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseSearchResults());
@@ -182,6 +173,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
+					if(studyList.isEmpty()) {
+						studyList = containerForm.getStudyListForUser();
+					}
 				}
 
 				return service.getSubjectCount(criteriaModel.getObject(), studyList);
@@ -197,6 +191,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
+					if(studyList.isEmpty()) {
+						studyList = containerForm.getStudyListForUser();
+					}
 				}
 
 				if (isActionPermitted()) {
@@ -231,26 +228,6 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	public void setContextUpdateLimsWMC(WebMarkupContainer limsContainerWMC) {
-		containerForm.setContextUpdateLimnsWMC(limsContainerWMC);
-	}
-
-	/**
-	 * Returns a list of Studies the user is permitted to access
-	 * 
-	 * @return
-	 */
-	private List<Study> getStudyListForUser() {
-		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		return studyListForUser;
+		containerForm.setContextUpdateLimsWMC(limsContainerWMC);
 	}
 }
