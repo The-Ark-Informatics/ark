@@ -107,37 +107,34 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	}
 
 	protected void prerenderContextCheck() {
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
-		if ((sessionPersonId != null)) {
-			String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-			if (sessionPersonType.equals(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
-				Person person;
-				boolean contextLoaded = false;
-				try {
-					person = iLimsService.getPerson(sessionPersonId);
-					LimsVO limsVo = new LimsVO();
-					limsVo.getLinkSubjectStudy().setPerson(person);
-					limsVo.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(limsVo.getLinkSubjectStudy().getSubjectUID()));
-					containerForm.setModelObject(limsVo);
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			Study study = null;
+			boolean contextLoaded = false;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
+				if (study != null && linkSubjectStudy != null) {
 					contextLoaded = true;
+					cpModel.getObject().setStudy(study);
+					cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
 				}
-				catch (EntityNotFoundException e) {
-					log.error(e.getMessage());
-				}
-				catch (ArkSystemException e) {
-					log.error(e.getMessage());
-				}
+			}
+			catch (EntityNotFoundException e) {
+				log.error(e.getMessage());
+			}
 
-				if (contextLoaded) {
-					// Put into Detail View mode
-					searchPanelContainer.setVisible(false);
-					searchResultPanelContainer.setVisible(false);
-					detailPanelContainer.setVisible(true);
-					detailPanelFormContainer.setEnabled(false);
-					viewButtonContainer.setVisible(true);
-					editButtonContainer.setVisible(false);
-				}
+			if (contextLoaded) {
+				// Put into Detail View mode
+				searchPanelContainer.setVisible(false);
+				searchResultPanelContainer.setVisible(false);
+				detailPanelContainer.setVisible(true);
+				detailPanelFormContainer.setEnabled(false);
+				viewButtonContainer.setVisible(true);
+				editButtonContainer.setVisible(false);
 			}
 		}
 	}
