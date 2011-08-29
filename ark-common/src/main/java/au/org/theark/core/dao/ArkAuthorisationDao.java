@@ -844,6 +844,12 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		if(arkModule != null) {
 			criteria.add(Restrictions.eq("arkModule", arkModule));
 		}
+		else {
+			// If no arkModule supplied, return empty list
+			log.error("No arkModule supplied, returning emtpy study list");
+			return studyList;
+		}
+		
 		
 		// Restrict on study criteria (by default, NOT 'Archive' status)
 		Criteria studyCriteria = criteria.createCriteria("study");	
