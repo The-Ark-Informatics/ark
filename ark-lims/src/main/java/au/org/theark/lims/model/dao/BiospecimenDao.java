@@ -29,6 +29,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.lims.model.vo.LimsVO;
 
 @SuppressWarnings("unchecked")
 @Repository("biospecimenDao")
@@ -148,5 +149,61 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 
 		return biospecimen;
+	}
+
+	public int getBiospecimenCount(LimsVO limsVo) {
+		Criteria criteria = buildBiospecimenCriteria(limsVo);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
+	
+	protected Criteria buildBiospecimenCriteria(LimsVO limsVo) {
+		Criteria criteria = getSession().createCriteria(Biospecimen.class);
+		Biospecimen biospecimen = limsVo.getBiospecimen();
+		
+		// If study chosen, restrict otherwise restrict on users' studyList
+		if(limsVo.getStudy() != null && limsVo.getStudy().getId() != null) {
+			criteria.add(Restrictions.eq("study", limsVo.getStudy()));
+		}
+		else {
+			criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
+		}
+		
+		if (biospecimen.getId() != null) {
+			criteria.add(Restrictions.eq("id", biospecimen.getId()));
+		}
+
+		if (biospecimen.getBiospecimenUid() != null) {
+			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
+		}
+			
+		if (biospecimen.getLinkSubjectStudy() != null) {
+			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
+		}
+
+		if (biospecimen.getSampleType() != null) {
+			criteria.add(Restrictions.eq("sampleType", biospecimen.getSampleType()));
+		}
+		
+		if (biospecimen.getSampleDate() != null) {
+			criteria.add(Restrictions.eq("sampleDate", biospecimen.getSampleDate()));
+		}
+		
+		if (biospecimen.getQtyCollected() != null) {
+			criteria.add(Restrictions.eq("qtyCollected", biospecimen.getQtyCollected()));
+		}
+
+		return criteria;
+
+	}
+
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count) {
+		Criteria criteria = buildBiospecimenCriteria(limsVo);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<Biospecimen> list = criteria.list();
+
+		return list;
 	}
 }

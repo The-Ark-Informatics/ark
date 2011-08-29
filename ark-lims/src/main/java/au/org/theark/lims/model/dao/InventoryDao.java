@@ -38,6 +38,7 @@ import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
 
+@SuppressWarnings("unchecked")
 @Repository("inventoryDao")
 public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	private static final Logger				log						= LoggerFactory.getLogger(InventoryDao.class);
@@ -74,7 +75,6 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().delete(invTray);
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<InvSite> searchInvSite(InvSite invSite) throws ArkSystemException {
 		Criteria criteria = getSession().createCriteria(InvSite.class);
 
@@ -122,7 +122,6 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		getSession().update(invTray);
 	}
 
-	@SuppressWarnings("unchecked")
 	public InvSite getInvSite(Long id) {
 		InvSite invSite = new InvSite();
 		Criteria criteria = getSession().createCriteria(InvSite.class);
@@ -138,7 +137,6 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return invSite;
 	}
 
-	@SuppressWarnings("unchecked")
 	public InvCell getInvCell(InvBox invBox, int rowno, int colno) {
 		InvCell invCell = new InvCell();
 		Criteria criteria = getSession().createCriteria(InvSite.class);
@@ -157,7 +155,6 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return invCell;
 	}
 
-	@SuppressWarnings("unchecked")
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell) {
 		Biospecimen biospecimen = null;
 		Criteria criteria = getSession().createCriteria(Biospecimen.class);
@@ -277,5 +274,24 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 			log.error("InvTray with ID " + id + "no longer in the database");
 		}
 		return invTray;
+	}
+
+	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen) {
+		InvCell invCell = new InvCell();
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+
+		if (biospecimen != null) {
+			criteria.add(Restrictions.eq("biospecimen", biospecimen));
+		}
+
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invCell = (InvCell) list.get(0);
+		}
+		
+		if(invCell == null) {
+			log.error("InvCell with biospecimen " + biospecimen.getId() + "no longer in the database");
+		}
+		return invCell;
 	}
 }

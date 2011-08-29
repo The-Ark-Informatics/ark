@@ -23,6 +23,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.lims.model.vo.LimsVO;
 
 public interface IBiospecimenDao {
 	/**
@@ -89,5 +90,21 @@ public interface IBiospecimenDao {
 	 * @return
 	 */
 	public Biospecimen getBiospecimenByUid(String biospecimenUid);
+
+	/**
+	 * Get the Biospecimen count based on a LimsVO criteria
+	 * @param limsVo
+	 * @return
+	 */
+	public int getBiospecimenCount(LimsVO limsVo);
+
+	/**
+	 * Search Biospecimen based on a LimsVO criteria
+	 * @param limsVo
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
 }
