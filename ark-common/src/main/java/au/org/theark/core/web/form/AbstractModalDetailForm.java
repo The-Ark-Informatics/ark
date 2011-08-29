@@ -26,26 +26,25 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 
-import au.org.theark.core.Constants;
-import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.EditModeButtonsPanel;
+import au.org.theark.core.web.component.button.IEditModeEventHandler;
+import au.org.theark.core.web.component.button.IViewModeEventHandler;
+import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 
 /**
  * @author cellis
  * @param <T>
  * 
  */
-public abstract class AbstractModalDetailForm<T> extends Form<T> {
+public abstract class AbstractModalDetailForm<T> extends Form<T> implements IViewModeEventHandler, IEditModeEventHandler {
 	/**
 	 * 
 	 */
@@ -54,15 +53,13 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> {
 	protected FeedbackPanel					feedbackPanel;
 	protected CompoundPropertyModel<T>	cpModel;
 
-	protected AjaxButton						saveButton;
-	protected AjaxButton						closeButton;
-	protected AjaxButton						deleteButton;
-
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor				formVisitor			= new ArkFormVisitor();
 
 	// Use this for the model where WebMarkupContainers are set inside this VO
 	protected ArkCrudContainerVO			arkCrudContainerVo;
+
+	protected WebMarkupContainer			buttonsPanelWMC;
 
 	public AbstractModalDetailForm(String id, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVo, CompoundPropertyModel<T> cpModel) {
 		super(id, cpModel);
@@ -73,81 +70,27 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> {
 		initialiseForm();
 	}
 
+	private void initialiseViewButtonsPanel() {
+		ViewModeButtonsPanel buttonsPanel = new ViewModeButtonsPanel("buttonsPanel", this);
+		buttonsPanelWMC.addOrReplace(buttonsPanel);
+	}
+
 	/**
 	 * Initialise method that is specific to classes that follow the ArkCrudContainerVO Pattern. The code related to each function has been modularised
 	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
 	 * extend the classes.
 	 */
 	protected void initialiseForm() {
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -423605230448635419L;
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(target);
-				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				saveOnErrorProcess(target);
-			}
-		};
-
-		closeButton = new AjaxButton("close", new StringResourceModel("closeKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 5457464178392550628L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onClose(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-
-		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6596207763260166508L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onDeleteConfirmed(target, form);
-			}
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
-			}
-		};
-
-		// Override default settings as set in ArkCrudContainerVO
-		arkCrudContainerVo.getDetailPanelContainer().setEnabled(true);
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
+		buttonsPanelWMC = new WebMarkupContainer("buttonsPanelWMC");
+		buttonsPanelWMC.setOutputMarkupPlaceholderTag(true);
+		initialiseViewButtonsPanel();
 
 		addComponentsToForm();
 	}
 
 	protected void addComponentsToForm() {
-		arkCrudContainerVo.getEditButtonContainer().add(saveButton);
-		arkCrudContainerVo.getEditButtonContainer().add(closeButton.setDefaultFormProcessing(false));
-		arkCrudContainerVo.getEditButtonContainer().add(deleteButton.setDefaultFormProcessing(false));
-
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
-		add(arkCrudContainerVo.getEditButtonContainer());
+		addOrReplace(buttonsPanelWMC);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -188,11 +131,9 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> {
 	protected void onSavePostProcess(AjaxRequestTarget target) {
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
 
 		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
 		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
 	}
 
 	protected void disableModalDetailForm(Long sessionId, String errorMessage) {
@@ -238,4 +179,114 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> {
 	abstract protected void processErrors(AjaxRequestTarget target);
 
 	abstract protected boolean isNew();
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditCancel(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
+		initialiseViewButtonsPanel(); // put View mode buttons back
+		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
+		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
+		target.addComponent(buttonsPanelWMC);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditCancelError(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditCancelError(AjaxRequestTarget target, Form<?> form) {
+		processErrors(target);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditDelete(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
+		onDeleteConfirmed(target, form);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditDeleteError(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditDeleteError(AjaxRequestTarget target, Form<?> form) {
+		processErrors(target);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditSave(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
+		onSave(target);
+		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IEditModeEventHandler#onEditSaveError(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
+		saveOnErrorProcess(target);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IViewModeEventHandler#onViewCancel(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
+		onClose(target);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IViewModeEventHandler#onViewCancelError(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
+		processErrors(target);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IViewModeEventHandler#onViewEdit(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
+		// put Edit mode buttons in
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		buttonsPanelWMC.addOrReplace(buttonsPanel);
+		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
+
+		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
+		target.addComponent(buttonsPanelWMC);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.core.web.component.button.IViewModeEventHandler#onViewEditError(org.apache.wicket.ajax.AjaxRequestTarget,
+	 * org.apache.wicket.markup.html.form.Form)
+	 */
+	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
+		processErrors(target);
+	}
 }
