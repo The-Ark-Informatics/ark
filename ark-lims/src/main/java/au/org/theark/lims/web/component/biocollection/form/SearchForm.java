@@ -148,7 +148,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
 		LimsVO limsVo = getModelObject();
-		limsVo.setMode(au.org.theark.core.Constants.MODE_NEW);
 		limsVo.getBioCollection().setId(null); // must ensure Id is blank onNew
 
 		// Set study for the new collection
