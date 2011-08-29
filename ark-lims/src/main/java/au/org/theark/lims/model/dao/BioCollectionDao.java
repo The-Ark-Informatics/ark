@@ -18,9 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.StatelessSession;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.ProjectionList;
@@ -34,15 +36,20 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 
 @SuppressWarnings("unchecked")
 @Repository("bioCollectionDao")
 public class BioCollectionDao extends HibernateSessionDao implements IBioCollectionDao {
-	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException {
+	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
 		au.org.theark.core.model.lims.entity.BioCollection limsCollection = null;
 		Criteria criteria = getSession().createCriteria(BioCollection.class);
 		criteria.add(Restrictions.eq("id", id));
@@ -174,4 +181,103 @@ public class BioCollectionDao extends HibernateSessionDao implements IBioCollect
 
 		return criteria;
 	}
+	
+	/**
+	 * This count can be based on CustomFieldDisplay alone (i.e. does not need left join to BioCollectionCustomFieldData)
+	 */
+	public int getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.createAlias("customField", "cfield");
+		criteria.add(Restrictions.eq("cfield.study", bioCollectionCriteria.getStudy()));
+		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
+		criteria.setProjection(Projections.rowCount());
+		Integer count = (Integer) criteria.uniqueResult();
+		return count.intValue();
+	}
+	
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
+		
+		List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
+	
+		StringBuffer sb = new StringBuffer();
+		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.bioCollectionCustomFieldData as fieldList ");
+		sb.append(" with fieldList.bioCollection.id = :bioCollectionId ");
+		sb.append( "  where cfd.customField.study.id = :studyId" );
+		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		sb.append(" order by cfd.sequence");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("bioCollectionId", bioCollectionCriteria.getId());
+		query.setParameter("studyId", bioCollectionCriteria.getStudy().getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+		
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
+			CustomFieldDisplay cfd = new CustomFieldDisplay();
+			BioCollectionCustomFieldData bccfd = new BioCollectionCustomFieldData();
+			if(objects.length > 0 && objects.length >= 1){
+				
+					cfd = (CustomFieldDisplay)objects[0];
+					if(objects[1] != null){
+						bccfd = (BioCollectionCustomFieldData)objects[1];
+					}else{
+						bccfd.setCustomFieldDisplay(cfd);
+					}
+					bioCollectionCustomFieldDataList.add(bccfd);	
+			}
+		}
+		return bioCollectionCustomFieldDataList;
+	}
+	
+	public void createBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData) {
+		getSession().save(bioCollectionCFData);	
+	}
+
+	public void updateBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData) {
+		getSession().update(bioCollectionCFData);
+	}
+	
+	public void deleteBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData) {
+		getSession().delete(bioCollectionCFData);		
+	}
+
+	public Long isCustomFieldUsed(BioCollectionCustomFieldData bioCollectionCFData) {
+		Long count = new Long("0");
+		CustomField customField = bioCollectionCFData.getCustomFieldDisplay().getCustomField();
+		//The Study
+		
+		try {
+			
+			Long id  = bioCollectionCFData.getBioCollection().getId();
+			BioCollection bioCollection = getBioCollection(id);
+			Study subjectStudy = bioCollection.getStudy();
+			ArkFunction arkFunction = customField.getArkFunction();
+
+			StringBuffer stringBuffer = new StringBuffer();
+			
+			stringBuffer.append(" SELECT COUNT(*) FROM BioCollectionCustomFieldData AS bccfd WHERE EXISTS ");
+			stringBuffer.append(" ( ");               
+			stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
+			stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND bccfd.customFieldDisplay.id = :customFieldDisplayId");
+			stringBuffer.append(" )");
+			
+			String theHQLQuery = stringBuffer.toString();
+			
+			Query query = getSession().createQuery(theHQLQuery);
+			query.setParameter("studyId", subjectStudy.getId());
+			query.setParameter("functionId", arkFunction.getId());
+			query.setParameter("customFieldDisplayId", bioCollectionCFData.getCustomFieldDisplay().getId());
+			count = (Long) query.uniqueResult();
+			
+		} catch (EntityNotFoundException e) {
+			//The given BioCollection is not available, this should not happen since the person is editing custom fields for the LIMS collection
+			e.printStackTrace();
+		}
+			
+		return count;
+	}
+
 }

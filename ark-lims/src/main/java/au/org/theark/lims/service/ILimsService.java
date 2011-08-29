@@ -23,11 +23,14 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface ILimsService {
@@ -83,9 +86,8 @@ public interface ILimsService {
 	 *           the unique id of the BioCollection
 	 * @return BioCollection
 	 * @throws EntityNotFoundException
-	 * @throws ArkSystemException
 	 */
-	public au.org.theark.core.model.lims.entity.BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException;
+	public au.org.theark.core.model.lims.entity.BioCollection getBioCollection(Long id) throws EntityNotFoundException;
 
 	/**
 	 * Look up a LIMS biospecimen based on the supplied Long id that represents the primary key
@@ -237,5 +239,17 @@ public interface ILimsService {
 	 * @return
 	 */
 	public Biospecimen getBiospecimenByUid(String biospecimenUid);
+
+	public int getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction);
+	
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count);
+	
+	/**
+	 * Allows to Save(Insert) or Update  BioCollectionCustomFieldData. If there are BioCollectionCustomFieldData
+	 * with no data value then it will discard it from the save/update process.
+	 * @param bioCollectionCFDataList - List of BioCollectionCustomFieldData to commit to database.
+	 * @return a List of BioCollectionCustomFieldData that failed to save (Hibernate caught some exception).
+	 */
+	public List<BioCollectionCustomFieldData> createOrUpdateBioCollectionCustomFieldData(List<BioCollectionCustomFieldData> bioCollectionCFDataList);
 
 }

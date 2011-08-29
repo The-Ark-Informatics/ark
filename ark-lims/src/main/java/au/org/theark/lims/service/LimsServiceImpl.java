@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -30,11 +31,17 @@ import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
+import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
@@ -48,6 +55,8 @@ import au.org.theark.lims.model.vo.LimsVO;
 @Service(au.org.theark.lims.web.Constants.LIMS_SERVICE)
 public class LimsServiceImpl implements ILimsService {
 	private static Logger		log	= LoggerFactory.getLogger(LimsServiceImpl.class);
+
+	private IArkCommonService	arkCommonService;
 
 	private IStudyDao				iStudyDao;
 	private IBioCollectionDao	iBioCollectionDao;
@@ -115,7 +124,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#getBioCollection(au.org.theark.core.model.lims.entity.Collection)
 	 */
-	public BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException {
+	public BioCollection getBioCollection(Long id) throws EntityNotFoundException {
 		log.debug("Getting bioCollection: " + id.intValue());
 		return iBioCollectionDao.getBioCollection(id);
 	}
@@ -310,4 +319,151 @@ public class LimsServiceImpl implements ILimsService {
 	public Biospecimen getBiospecimenByUid(String biospecimenUid) {
 		return iBiospecimenDao.getBiospecimenByUid(biospecimenUid);
 	}
+	
+	public int getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction) {
+		return getBioCollectionCustomFieldDataCount(criteria, arkFunction);
+	}
+
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
+		List<BioCollectionCustomFieldData> customfieldDataList = new ArrayList<BioCollectionCustomFieldData>();
+		customfieldDataList  = iBioCollectionDao.getBioCollectionCustomFieldDataList(bioCollectionCriteria, arkFunction, first, count);
+		return customfieldDataList;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.lims.service.ILimsService#createOrUpdateBioCollectionCustomFieldData(List<BioCollectionCustomFieldData> bioCollectionCFDataList)
+	 */
+	public List<BioCollectionCustomFieldData> createOrUpdateBioCollectionCustomFieldData(List<BioCollectionCustomFieldData> bioCollectionCFDataList) {
+
+		List<BioCollectionCustomFieldData> listOfExceptions = new ArrayList<BioCollectionCustomFieldData>();
+		/* Iterate the list and call DAO to persist each Item */
+		for (BioCollectionCustomFieldData bioCollectionCFData : bioCollectionCFDataList) {
+			
+			
+			try{
+			/* Insert the Field if it does not have a  ID and has the required fields */
+				if( canInsert(bioCollectionCFData)) {
+		
+					iBioCollectionDao.createBioCollectionCustomFieldData(bioCollectionCFData);
+					Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();
+					
+					CustomField customField = arkCommonService.getCustomField(id);
+					customField.setCustomFieldHasData(true);
+					CustomFieldVO customFieldVO = new CustomFieldVO();
+					customFieldVO.setCustomField(customField);
+					
+					arkCommonService.updateCustomField(customFieldVO);
+
+				}else if(canUpdate(bioCollectionCFData)){
+					
+					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
+					if(bioCollectionCFData.getErrorDataValue() != null){
+						bioCollectionCFData.setErrorDataValue(null);
+					} 
+					iBioCollectionDao.updateBioCollectionCustomFieldData(bioCollectionCFData);
+				
+				}else if(canDelete(bioCollectionCFData)){
+					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count  = iBioCollectionDao.isCustomFieldUsed(bioCollectionCFData);
+					
+					iBioCollectionDao.deleteBioCollectionCustomFieldData(bioCollectionCFData);
+					if(count <= 1){
+						//Then update the CustomField's hasDataFlag to false;
+						Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
+						CustomField customField = arkCommonService.getCustomField(id);
+						customField.setCustomFieldHasData(false);
+						CustomFieldVO customFieldVO = new CustomFieldVO();
+						customFieldVO.setCustomField(customField);
+						arkCommonService.updateCustomField(customFieldVO); //Update it
+						
+					}
+				}
+			}catch(Exception someException){
+				listOfExceptions.add(bioCollectionCFData);//Continue with rest of the list
+			}
+		}
+		
+		return listOfExceptions;
+	}
+	
+	
+	/**
+	 * In order to delete it must satisfy the following conditions
+	 * 1. BioCollectionCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. BioCollectionCustomFieldData should have a valid BioCollection linked to it and must not be null AND
+	 * 3. BioCollectionCustomFieldData.TextDataValue is NULL OR is EMPTY
+	 * 4. BioCollectionCustomFieldData.NumberDataValue is NULL
+	 * 5. BioCollectionCustomFieldData.DatewDataValue is NULL
+	 * When these conditions are satisfied this method will return Boolean TRUE
+	 * @param subjectCustomFieldData
+	 * @return
+	 */
+	private Boolean canDelete(BioCollectionCustomFieldData bioCollectionCFData){
+		Boolean flag = false;
+		
+		if(bioCollectionCFData.getId() != null &&  bioCollectionCFData.getBioCollection() != null && 
+				( bioCollectionCFData.getTextDataValue() == null  	||		
+				  bioCollectionCFData.getTextDataValue().isEmpty()  	|| 
+				  bioCollectionCFData.getNumberDataValue() == null 	||
+				  bioCollectionCFData.getDateDataValue() == null ) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Update a BioCollectionCustomFieldData instance the following conditions must be met
+	 * 1. BioCollectionCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. BioCollectionCustomFieldData should have a valid BioCollection linked to it and must not be null AND
+	 * 3. BioCollectionCustomFieldData.TextDataValue is NOT NULL AND NOT EMPTY OR
+	 * 4. BioCollectionCustomFieldData.NumberDataValue is NOT NULL
+	 * 5. BioCollectionCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param bioCollectionCFData
+	 * @return
+	 */
+	private Boolean canUpdate(BioCollectionCustomFieldData bioCollectionCFData){
+		Boolean flag = false;
+		
+		if(bioCollectionCFData.getId() != null && bioCollectionCFData.getBioCollection() != null && 
+				(( bioCollectionCFData.getTextDataValue() != null 	&& 
+				   !bioCollectionCFData.getTextDataValue().isEmpty()) || 
+				   bioCollectionCFData.getDateDataValue() != null  	|| 
+				   bioCollectionCFData.getNumberDataValue() != null) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Insert a BioCollectionCustomFieldData instance the following conditions must be met.
+	 * 1. BioCollectionCustomFieldData must be a transient entity(Not yet associated with an ID/PK) AND
+	 * 2. BioCollectionCustomFieldData should have a valid BioCollection linked to it and must not be null AND
+	 * 3. BioCollectionCustomFieldData.TextDataValue is NOT NULL  OR
+	 * 4. BioCollectionCustomFieldData.NumberDataValue is NOT NULL OR
+	 * 5. BioCollectionCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param bioCollectionCFData
+	 * @return
+	 */
+	private Boolean canInsert(BioCollectionCustomFieldData bioCollectionCFData){
+		Boolean flag = false;
+		
+		if(bioCollectionCFData.getId() == null &&  bioCollectionCFData.getBioCollection() != null && 
+				(		bioCollectionCFData.getNumberDataValue() != null || 
+						bioCollectionCFData.getTextDataValue() != null 	|| 
+						bioCollectionCFData.getDateDataValue() != null )){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+
 }

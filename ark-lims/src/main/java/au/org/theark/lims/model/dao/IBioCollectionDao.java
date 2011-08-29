@@ -23,8 +23,10 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 
 public interface IBioCollectionDao {
@@ -36,7 +38,7 @@ public interface IBioCollectionDao {
 	 * @throws EntityNotFoundException
 	 * @throws ArkSystemException
 	 */
-	public au.org.theark.core.model.lims.entity.BioCollection getBioCollection(Long id) throws EntityNotFoundException, ArkSystemException;
+	public au.org.theark.core.model.lims.entity.BioCollection getBioCollection(Long id) throws EntityNotFoundException;
 
 	/**
 	 * Look up a List of LIMS Collection(s) based on the supplied limsCollection object
@@ -107,5 +109,17 @@ public interface IBioCollectionDao {
 	 * @return Collection of SubjectVO
 	 */
 	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
+
+	public int getBioCollectionCustomFieldDataCount(BioCollection bioCollectionCriteria, ArkFunction arkFunction);
+	
+	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count);
+
+	public void createBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData);
+
+	public void updateBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData);
+
+	public void deleteBioCollectionCustomFieldData(BioCollectionCustomFieldData bioCollectionCFData);
+
+	public Long isCustomFieldUsed(BioCollectionCustomFieldData bioCollectionCFData);
 
 }
