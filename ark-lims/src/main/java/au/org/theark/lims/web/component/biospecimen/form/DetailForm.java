@@ -144,8 +144,8 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	private void initBioCollectionDdc() {
 		// Get a list of collections for the subject in context by default
 		BioCollection bioCollection = new BioCollection();
-		bioCollection.setLinkSubjectStudy(containerForm.getModelObject().getBiospecimen().getLinkSubjectStudy());
-		bioCollection.setStudy(containerForm.getModelObject().getBiospecimen().getLinkSubjectStudy().getStudy());
+		bioCollection.setLinkSubjectStudy(containerForm.getModelObject().getLinkSubjectStudy());
+		bioCollection.setStudy(containerForm.getModelObject().getStudy());
 		try {
 			containerForm.getModelObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
