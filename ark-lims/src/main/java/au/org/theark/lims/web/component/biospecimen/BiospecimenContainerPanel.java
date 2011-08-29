@@ -18,11 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,11 +26,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
@@ -74,9 +65,6 @@ public class BiospecimenContainerPanel extends Panel {
 	public void initialisePanel() {
 		containerForm = new ContainerForm("containerForm", cpModel);
 		
-		// Set study list user should see
-		containerForm.getModelObject().setStudyList(getStudyListForUser());
-		
 		resultListContainer = initialiseSearchResultPanel();
 		
 		containerForm.add(initialiseFeedBackPanel());
@@ -109,26 +97,6 @@ public class BiospecimenContainerPanel extends Panel {
 		
 		resultListContainer.add(biospecimenListPanel);
 		return resultListContainer;
-	}
-	
-	/**
-	 * Returns a list of Studies the user is permitted to access
-	 * 
-	 * @return
-	 */
-	private List<Study> getStudyListForUser() {
-		List<Study> studyListForUser = new ArrayList<Study>(0);
-		try {
-			Subject currentUser = SecurityUtils.getSubject();
-			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
-			ArkUserVO arkUserVo = new ArkUserVO();
-			arkUserVo.setArkUserEntity(arkUser);
-			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		return studyListForUser;
 	}
 
 	/**
