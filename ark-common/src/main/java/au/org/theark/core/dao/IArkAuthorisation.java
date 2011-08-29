@@ -169,4 +169,6 @@ public interface IArkAuthorisation<T> {
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
 	
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
+	
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
 }

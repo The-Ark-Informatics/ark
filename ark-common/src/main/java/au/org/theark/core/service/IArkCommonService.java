@@ -468,4 +468,6 @@ public interface IArkCommonService<T> {
 	public List<ArkRolePolicyTemplate> getArkRolePolicyTemplate(ArkRole arkRole, ArkModule arkModule);
 
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
+	
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
 }

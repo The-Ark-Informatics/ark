@@ -639,7 +639,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study) {
 		return arkAuthorisationDao.getArkRoleListByUserAndStudy(arkUserVo, study);
 	}
+	
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
 		return arkAuthorisationDao.getStudyListForUser(arkUserVo);		
+	}
+	
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule){
+		return arkAuthorisationDao.getStudyListForUserAndModule(arkUserVo, arkModule);		
 	}
 }

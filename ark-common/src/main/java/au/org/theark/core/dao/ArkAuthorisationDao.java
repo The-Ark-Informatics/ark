@@ -825,4 +825,80 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return studyList;		
 		
 	}
+	
+	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule){
+		List<Study> studyList = new ArrayList<Study>(0);
+		Study searchStudy = arkUserVo.getStudy();
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		
+		try {
+			// Restrict by user if NOT Super Administrator
+			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
+			}
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		
+		if(arkModule != null) {
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+		}
+		
+		// Restrict on study criteria (by default, NOT 'Archive' status)
+		Criteria studyCriteria = criteria.createCriteria("study");	
+		
+		if (searchStudy.getId() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
+		}
+
+		if (searchStudy.getName() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.STUDY_NAME, searchStudy.getName(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getDateOfApplication() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.DATE_OF_APPLICATION, searchStudy.getDateOfApplication()));
+		}
+
+		if (searchStudy.getEstimatedYearOfCompletion() != null) {
+			studyCriteria.add(Restrictions.eq(Constants.EST_YEAR_OF_COMPLETION, searchStudy.getEstimatedYearOfCompletion()));
+		}
+
+		if (searchStudy.getChiefInvestigator() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.CHIEF_INVESTIGATOR, searchStudy.getChiefInvestigator(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getContactPerson() != null) {
+			studyCriteria.add(Restrictions.ilike(Constants.CONTACT_PERSON, searchStudy.getContactPerson(), MatchMode.ANYWHERE));
+		}
+
+		if (searchStudy.getStudyStatus() != null) {
+			studyCriteria.add(Restrictions.eq("studyStatus", searchStudy.getStudyStatus()));
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne("studyStatus", status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+		}
+		else {
+			try {
+				StudyStatus status = getStudyStatus("Archive");
+				studyCriteria.add(Restrictions.ne("studyStatus", status));
+			}
+			catch (StatusNotAvailableException notAvailable) {
+				log.error("Cannot look up and filter on archive status. Reference data could be missing");
+			}
+		}
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("study"), "study");
+		
+		criteria.setProjection(projectionList);
+		
+		studyList = criteria.list();
+		return studyList;		
+		
+	}
 }
