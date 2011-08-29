@@ -18,11 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -33,11 +29,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
@@ -108,33 +102,27 @@ public class LimsContainerPanel extends Panel {
 				}
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 
 			if (contextLoaded) {
 				BioCollectionListPanel biocollectionListPanel = new BioCollectionListPanel("biocollectionListPanel", feedbackPanel, cpModel);
 				collectionListPanel = biocollectionListPanel;
-				// collectionListPanel = new BioCollectionContainerPanel("biocollectionListPanel", arkContextMarkup);
-				// resultsListWMC.addOrReplace(collectionListPanel);
 				containerForm.add(collectionListPanel);
 
 				BiospecimenListPanel bioSpecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
 				biospecimenListPanel = bioSpecimenListPanel;
-				// biospecimenListPanel = new BiospecimenContainerPanel("biospecimenListPanel", arkContextMarkup);
-				// resultsListWMC.addOrReplace(biospecimenListPanel);
 				containerForm.add(biospecimenListPanel);
 			}
 			else {
 				containerForm.info("Could not load subject in context - record is invalid (e.g. deleted)");
+				
 				collectionListPanel = new EmptyPanel("biocollectionListPanel");
 				collectionListPanel.setOutputMarkupId(true);
-				// resultsListWMC.addOrReplace(collectionListPanel);
 				containerForm.add(collectionListPanel);
 
 				biospecimenListPanel = new EmptyPanel("biospecimenListPanel");
 				biospecimenListPanel.setOutputMarkupId(true);
-				// resultsListWMC.addOrReplace(biospecimenListPanel);
 				containerForm.add(biospecimenListPanel);
 			}
 		}
