@@ -51,7 +51,7 @@ public class ViewModeButtonsPanel extends Panel {
 	}
 
 	protected void initialisePanel() {
-		editButton = new AjaxButton("edit") {
+		editButton = new ArkAjaxButton("edit") {
 			
 			@Override
 			public boolean isVisible() {
@@ -80,7 +80,7 @@ public class ViewModeButtonsPanel extends Panel {
 		};
 		this.add(editButton);
 		
-		cancelButton = new AjaxButton("cancel") {
+		cancelButton = new ArkAjaxButton("cancel") {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {

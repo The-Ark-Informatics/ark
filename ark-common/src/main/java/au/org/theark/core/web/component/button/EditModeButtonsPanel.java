@@ -52,7 +52,7 @@ public class EditModeButtonsPanel extends Panel {
 	}
 
 	protected void initialisePanel() {
-		saveButton = new AjaxButton("save") {
+		saveButton = new ArkAjaxButton("save") {
 			
 			@Override
 			public boolean isVisible() {
@@ -81,7 +81,7 @@ public class EditModeButtonsPanel extends Panel {
 		};
 		this.add(saveButton);
 		
-		cancelButton = new AjaxButton("cancel") {
+		cancelButton = new ArkAjaxButton("cancel") {
 			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -105,7 +105,7 @@ public class EditModeButtonsPanel extends Panel {
 		cancelButton.setDefaultFormProcessing(false);
 		this.add(cancelButton);
 		
-		deleteButton  = new AjaxButton("delete") {
+		deleteButton  = new ArkAjaxButton("delete") {
 			
 			@Override
 			public boolean isVisible() {
