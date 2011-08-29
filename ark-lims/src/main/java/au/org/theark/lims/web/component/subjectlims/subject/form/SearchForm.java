@@ -65,24 +65,24 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 5853988156214275754L;
-	protected static final Logger					log					= LoggerFactory.getLogger(AbstractSearchForm.class);
+	private static final long					serialVersionUID	= 5853988156214275754L;
+	protected static final Logger				log					= LoggerFactory.getLogger(AbstractSearchForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>				iArkCommonService;
-	
-	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
-	private ILimsSubjectService									iLimsSubjectService;
+	private IArkCommonService<Void>			iArkCommonService;
 
-	private DropDownChoice<Study>					studyDdc;
-	private TextField<String>						subjectUIDTxtFld;
-	private TextField<String>						firstNameTxtFld;
-	private TextField<String>						middleNameTxtFld;
-	private TextField<String>						lastNameTxtFld;
-	private DropDownChoice<VitalStatus>			vitalStatusDdc;
-	private DropDownChoice<GenderType>			genderTypeDdc;
-	private DropDownChoice<SubjectStatus>		subjectStatusDdc;
-	private DateTextField							dateOfBirthTxtFld;
+	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
+	private ILimsSubjectService				iLimsSubjectService;
+
+	private DropDownChoice<Study>				studyDdc;
+	private TextField<String>					subjectUIDTxtFld;
+	private TextField<String>					firstNameTxtFld;
+	private TextField<String>					middleNameTxtFld;
+	private TextField<String>					lastNameTxtFld;
+	private DropDownChoice<VitalStatus>		vitalStatusDdc;
+	private DropDownChoice<GenderType>		genderTypeDdc;
+	private DropDownChoice<SubjectStatus>	subjectStatusDdc;
+	private DateTextField						dateOfBirthTxtFld;
 	private CompoundPropertyModel<LimsVO>	cpmModel;
 
 	/**
@@ -152,7 +152,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private void initStudyDdc() {
 		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
 		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
-		
+
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
@@ -164,7 +164,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
-		ChoiceRenderer studyRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
 		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
 	}
 
@@ -174,7 +174,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, "person");
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm, Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
-		ChoiceRenderer vitalStatusRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.VITAL_STATUS, vitalStatusPm, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
 	}
 
@@ -183,7 +183,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm, "subjectStatus");
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
-		ChoiceRenderer subjectStatusRenderer = new ChoiceRenderer(Constants.NAME, Constants.SUBJECT_STATUS_ID);
+		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME, Constants.SUBJECT_STATUS_ID);
 		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusPm, subjectStatusList, subjectStatusRenderer);
 	}
 
@@ -193,7 +193,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm, Constants.GENDER_TYPE);
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
-		ChoiceRenderer genderTypeRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		ChoiceRenderer<GenderType> genderTypeRenderer = new ChoiceRenderer<GenderType>(Constants.NAME, Constants.ID);
 		genderTypeDdc = new DropDownChoice<GenderType>(Constants.GENDER_TYPE, genderTypePm, (List<GenderType>) genderTypeList, genderTypeRenderer);
 	}
 
@@ -204,11 +204,11 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 		target.addComponent(feedbackPanel);
-		
+
 		List<Study> studyList = new ArrayList<Study>(0);
-		
+
 		// Restrict search if Study selected in Search form
-		if(cpmModel.getObject().getStudy() != null) {
+		if (cpmModel.getObject().getStudy() != null) {
 			studyList.add(cpmModel.getObject().getStudy());
 		}
 		else {
