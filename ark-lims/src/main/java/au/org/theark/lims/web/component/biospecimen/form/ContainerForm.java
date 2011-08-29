@@ -18,20 +18,71 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen.form;
 
-import org.apache.wicket.model.CompoundPropertyModel;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
+import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
- * @author nivedann
+ * @author cellis
  * 
  */
-@SuppressWarnings("serial")
 public class ContainerForm extends AbstractContainerForm<LimsVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2374830042908920298L;
+	private static final Logger	log						= LoggerFactory.getLogger(ContainerForm.class);
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>		iArkCommonService;
 
 	public ContainerForm(String id, CompoundPropertyModel<LimsVO> model) {
 		super(id, model);
 	}
-
+	
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	public List<Study> getStudyListForUser() {
+		List<Study> studyList = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyList = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+			getModelObject().setStudyList(studyList);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return studyList;
+	}
+	
+	@Override
+	protected void onBeforeRender() {
+		getModelObject().setStudyList(getStudyListForUser());
+		super.onBeforeRender();
+	}
 }
