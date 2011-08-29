@@ -39,7 +39,6 @@ import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
@@ -464,6 +463,14 @@ public class LimsServiceImpl implements ILimsService {
 			
 		}
 		return flag;
+	}
+
+	public int getBiospecimenCount(LimsVO limsVo) {
+		return iBiospecimenDao.getBiospecimenCount(limsVo);
+	}
+
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count) {
+		return iBiospecimenDao.searchPageableBiospecimens(limsVo, first, count);
 	}
 
 }

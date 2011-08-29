@@ -149,8 +149,6 @@ public interface IInventoryService {
 	 */
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell);
 
-	
-	
 	/**
 	 * Get a list of cells and biospecimens for a specifed InvBox
 	 * @param invBox
@@ -184,4 +182,17 @@ public interface IInventoryService {
 	 * @return
 	 */
 	public InvBox getInvBox(Long id);
+	
+	/**
+	 * Get an InvCell based on an Biospecimen
+	 * @param biospecimen
+	 * @return
+	 */
+	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen);
+	
+	/**
+	 * Update an InvCell
+	 * @param invCell to update
+	 */
+	public void updateInvCell(InvCell invCell);
 }

@@ -30,7 +30,6 @@ import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface ILimsService {
@@ -251,5 +250,21 @@ public interface ILimsService {
 	 * @return a List of BioCollectionCustomFieldData that failed to save (Hibernate caught some exception).
 	 */
 	public List<BioCollectionCustomFieldData> createOrUpdateBioCollectionCustomFieldData(List<BioCollectionCustomFieldData> bioCollectionCFDataList);
+
+	/**
+	 * Get the count of biospecimen(s) based on a LimsVO criteria
+	 * @param limsVo
+	 * @return
+	 */
+	public int getBiospecimenCount(LimsVO limsVo);
+
+	/**
+	 * Get a list of Biospecimen(s) based on a LimsVO criteria
+	 * @param limsVo
+	 * @param first
+	 * @param count
+	 * @return
+	 */
+	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
 
 }
