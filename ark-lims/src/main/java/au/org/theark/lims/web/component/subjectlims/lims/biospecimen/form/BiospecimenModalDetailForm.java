@@ -20,10 +20,10 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
 import java.util.List;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -42,7 +42,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -76,6 +75,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
 	private TextField<String>					quantityTxtFld;
+	private CheckBox								barcodedChkBox;
 
 	private ModalWindow							modalWindow;
 	
@@ -122,6 +122,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		initSampleTypeDdc();
 		initBioCollectionDdc();
+		
+		barcodedChkBox = new CheckBox("biospecimen.barcoded");
+		barcodedChkBox.setVisible(true);
 
 		attachValidators();
 		addComponents();
@@ -137,29 +140,20 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	}
 
 	private void initBioCollectionDdc() {
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		// Get a list of collections for the subject in context by default
+		BioCollection bioCollection = new BioCollection();
+		bioCollection.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
+		bioCollection.setStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy().getStudy());
+		try {
+			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
-		Study study = null;
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			study = iArkCommonService.getStudy(sessionStudyId);
-			// cpModel.getObject().getBioCollection().setStudy(study);
-
-			BioCollection criteria = new BioCollection();
-			criteria.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
-			criteria.setStudy(study);
-			try {
-				// bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
-				cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(criteria));
-
-				ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-				bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
-			}
-			catch (ArkSystemException e) {
-				log.error(e.getMessage());
-				this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
-			}
+			ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
 		}
-
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+			this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
+		}
 	}
 
 	protected void attachValidators() {
@@ -177,6 +171,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(quantityTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
