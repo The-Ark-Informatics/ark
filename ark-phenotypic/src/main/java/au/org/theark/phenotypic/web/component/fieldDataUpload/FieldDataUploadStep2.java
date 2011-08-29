@@ -18,11 +18,13 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.fieldDataUpload;
 
+
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
 
-import org.apache.commons.lang.time.StopWatch;
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.basic.MultiLineLabel;
 import org.apache.wicket.markup.html.form.Form;
@@ -32,13 +34,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.FileFormatException;
+import au.org.theark.core.model.pheno.entity.PhenoCollection;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.ICSVLoaderService;
-import au.org.theark.core.util.LoadCsvFileHelper;
 import au.org.theark.core.web.component.button.ArkDownloadAjaxButton;
 import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.core.web.form.AbstractWizardStepPanel;
+import au.org.theark.phenotypic.job.PhenoDataUploadExecutor;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -64,9 +68,9 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService				iPhenotypicService;
-	
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_CSV_LOADER_SERVICE)
-	private ICSVLoaderService		iCSVLoaderService;
+	private ICSVLoaderService				iCSVLoaderService;
 
 	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
 
@@ -138,44 +142,66 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 			}
 
 			// Show file data
-			inputStream = containerForm.getModelObject().getFileUpload().getInputStream();
 			FileUpload fileUpload = containerForm.getModelObject().getFileUpload();
-			inputStream.reset();
+
+			String currentUser = SecurityUtils.getSubject().getPrincipal().toString();
+			Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+			Study study = iArkCommonService.getStudy(sessionStudyId);
+			PhenoCollection phenoCollection = containerForm.getModelObject().getPhenoCollection();
+			File file = fileUpload.writeToTempFile();
+
+			// Save the Upload, for acces via background job
+			containerForm.getModelObject().getUpload().setUploadType("FIELD_DATA");
+			iPhenotypicService.createUpload(containerForm.getModelObject());
+			
+			Long uploadId = containerForm.getModelObject().getUpload().getId();
+			PhenoDataUploadExecutor phenoDataUploadExecutor = new PhenoDataUploadExecutor(iArkCommonService, iPhenotypicService, uploadId, currentUser, study, phenoCollection, file, delimChar);
+			try {
+				phenoDataUploadExecutor.run();
+			}
+			catch (Exception e) {
+				log.error(e.getMessage());
+			}
+
+			/*
+			StopWatch timer = new StopWatch();
+			// test temp file/table creation
+			LoadCsvFileHelper loadCsvFileHelper = new LoadCsvFileHelper(iCSVLoaderService, "study", delimChar);
+			DecimalFormat decimalFormat = new DecimalFormat("0.00");
+			timer.start();
+			log.info("Started loadCsvFileHelper ");
+			loadCsvFileHelper.setTemporaryTableName("tmp_table");
+			loadCsvFileHelper.setTemporaryFileName(Session.get().getId());
+			loadCsvFileHelper.convertToCSVAndWriteToFile(fileUpload, delimChar);
+			loadCsvFileHelper.createTemporaryTable();
+			timer.stop();
+			log.info("Finished loadCsvFileHelper ");
+			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
+			*/
+
+			inputStream = fileUpload.getInputStream();
 			ArkExcelWorkSheetAsGrid arkExcelWorkSheetAsGrid = new ArkExcelWorkSheetAsGrid("gridView", inputStream, fileFormat, delimChar, fileUpload, au.org.theark.core.Constants.ROWS_PER_PAGE);
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 			target.addComponent(form.getWizardPanelFormContainer());
-			
-			// test temp file/table creation
-			LoadCsvFileHelper loadCsvFileHelper = new LoadCsvFileHelper(iCSVLoaderService, "study",  delimChar);
-			//loadCsvFileHelper.setTemporaryTableName("tmp_table");
-			
-			StopWatch timer = new StopWatch();
-			DecimalFormat decimalFormat = new DecimalFormat("0.00");
-			timer.start();
-			log.info("Started loadCsvFileHelper ");
-			loadCsvFileHelper.setTemporaryTableName("tmp_table");
-			loadCsvFileHelper.setTemporaryFileName("/tmp/tempFile.csv");
-			loadCsvFileHelper.convertToCSVAndSave(containerForm.getModelObject().getFileUpload(), delimChar);
-			loadCsvFileHelper.createTemporaryTable();
-			timer.stop();
-			log.info("Finished loadCsvFileHelper ");
-			log.info("Total elapsed time: " + timer.getTime() + " ms or " + decimalFormat.format(timer.getTime() / 1000.0) + " s");
 		}
 		catch (NullPointerException npe) {
+			log.error("NullPointer " + npe.getMessage());
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
 		}
-		catch (IOException e) {
+		catch (IOException ioe) {
+			log.error("IOException " + ioe.getMessage());
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
 			target.addComponent(form.getWizardButtonContainer());
 		}
 		catch (FileFormatException ffe) {
+			log.error("FileFormatException " + ffe.getMessage());
 			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
