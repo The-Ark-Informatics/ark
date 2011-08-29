@@ -19,162 +19,122 @@
 package au.org.theark.lims.web.component.biospecimen;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
 
-public class BiospecimenContainerPanel extends AbstractContainerPanel<LimsVO> {
+/**
+ * 
+ * @author cellis
+ *
+ */
+public class BiospecimenContainerPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= 497103477949614175L;
-
-	private static final Logger				log					= LoggerFactory.getLogger(BiospecimenContainerPanel.class);
-
-	// Panels
-	private SearchPanel							searchComponentPanel;
-	private SearchResultListPanel				searchResultPanel;
-	private DetailPanel							detailPanel;
-	private PageableListView<Biospecimen>	listView;
-	private WebMarkupContainer					arkContextMarkup;
-
-	private ContainerForm						containerForm;
-
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService							iLimsService;
-
+	private static final long						serialVersionUID	= -1L;
+	private static final Logger					log					= LoggerFactory.getLogger(BiospecimenContainerPanel.class);
+	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
+	private IArkCommonService<Void>				iArkCommonService;
 
-	public BiospecimenContainerPanel(String id) {
-		super(id);
+	protected LimsVO									limsVO				= new LimsVO();
+	protected CompoundPropertyModel<LimsVO>	cpModel;
 
-		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-
-		initialiseMarkupContainers();
-
-		/* Bind the CPM to the Form */
-		containerForm = new ContainerForm("containerForm", cpModel);
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-
-		add(containerForm);
-	}
+	protected FeedbackPanel							feedbackPanel;
+	protected WebMarkupContainer					arkContextMarkup;
+	protected ContainerForm							containerForm;
+	protected WebMarkupContainer					resultListContainer;
+	protected Panel									biospecimenListPanel;
 
 	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
-
-		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		this.arkContextMarkup = arkContextMarkup;
+		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
+		initialisePanel();
+	}
 
-		initialiseMarkupContainers();
-
-		/* Bind the CPM to the Form */
+	public void initialisePanel() {
 		containerForm = new ContainerForm("containerForm", cpModel);
+		
+		// Set study list user should see
+		containerForm.getModelObject().setStudyList(getStudyListForUser());
+		
+		resultListContainer = initialiseSearchResultPanel();
+		
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
-
-		add(containerForm);
+		containerForm.add(resultListContainer);
+		this.add(containerForm);
 	}
-
-	protected WebMarkupContainer initialiseSearchResults() {
-
-		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
-				editButtonContainer, detailPanelFormContainer, arkContextMarkup);
-
-		iModel = new LoadableDetachableModel<Object>() {
-			private static final long	serialVersionUID	= 1L;
-
-			@Override
-			protected Object load() {
-				// Get a list of biospecimens for the study/subject in context by default
-				java.util.List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>();
-				Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-				if (sessionStudyId != null && sessionStudyId > 0) {
-					// Study in context
-					Study study = iArkCommonService.getStudy(sessionStudyId);
-					containerForm.getModelObject().getBiospecimen().setStudy(study);
-
-					try {
-						biospecimenList = iLimsService.searchBiospecimen(containerForm.getModelObject().getBiospecimen());
-					}
-					catch (ArkSystemException e) {
-						log.error(e.getMessage());
-					}
-				}
-
-				listView.removeAll();
-
-				// Set results into model
-				containerForm.getModelObject().setBiospecimenList(biospecimenList);
-
-				return containerForm.getModelObject().getBiospecimenList();
-			}
-		};
-
-		listView = searchResultPanel.buildPageableListView(iModel);
-		listView.setReuseItems(true);
-		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", listView) {
-			@Override
-			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(searchResultPanelContainer);
-			}
-		};
-		searchResultPanel.add(pageNavigator);
-		searchResultPanel.add(listView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+	
+	protected WebMarkupContainer initialiseFeedBackPanel() {
+		/* Feedback Panel */
+		feedbackPanel = new FeedbackPanel("feedbackMessage");
+		feedbackPanel.setOutputMarkupId(true);
+		return feedbackPanel;
 	}
-
-	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
-				detailPanelFormContainer, arkContextMarkup);
-		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
-	}
-
-	protected WebMarkupContainer initialiseSearchPanel() {
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			BioCollection bioCollection = new BioCollection();
-			bioCollection.setStudy(study);
-			containerForm.getModelObject().setBioCollection(bioCollection);
-		}
-
-		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-				viewButtonContainer, editButtonContainer, detailPanelFormContainer, arkContextMarkup);
+	
+	private WebMarkupContainer initialiseSearchPanel() {
+		WebMarkupContainer searchPanelContainer = new WebMarkupContainer("searchPanelContainer");
+		SearchPanel searchComponentPanel = new SearchPanel("searchPanel", feedbackPanel, resultListContainer, arkContextMarkup, containerForm);
 		searchComponentPanel.initialisePanel();
-
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
+	}
+	
+	private WebMarkupContainer initialiseSearchResultPanel() {
+		WebMarkupContainer resultListContainer = new WebMarkupContainer("resultListContainer");
+		resultListContainer.setOutputMarkupPlaceholderTag(true);
+		
+		BiospecimenListPanel biospecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
+		this.biospecimenListPanel = biospecimenListPanel;
+		
+		resultListContainer.add(biospecimenListPanel);
+		return resultListContainer;
+	}
+	
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	private List<Study> getStudyListForUser() {
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return studyListForUser;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog() {
+		return log;
 	}
 }

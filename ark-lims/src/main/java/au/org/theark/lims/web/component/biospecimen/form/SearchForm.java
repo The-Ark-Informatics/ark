@@ -18,10 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen.form;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -30,24 +32,26 @@ import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.biospecimen.DetailPanel;
 
 /**
  * @author cellis
@@ -58,39 +62,31 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	 * 
 	 */
 	private static final long					serialVersionUID	= 3103311665813442088L;
-
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService							iLimsService;
+	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
+	
+	@SpringBean(name = Constants.LIMS_SERVICE)
+	private ILimsService							iLimsService;
 
-	private PageableListView<Biospecimen>	listView;
 	private CompoundPropertyModel<LimsVO>	cpmModel;
+	
+	private DropDownChoice<Study>				studyDdc;
+	
 	private TextField<String>					idTxtFld;
 	private TextField<String>					biospecimenUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
-	private DetailPanel							detailPanel;
-	private Long									sessionStudyId;
+	private WebMarkupContainer					resultListContainer;
 	private WebMarkupContainer					arkContextMarkup;
-	private String									subjectUIDInContext;
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> model, PageableListView<Biospecimen> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
-		this.setCpmModel(model);
-		this.listView = listView;
-		this.setDetailPanel(detailPanel);
-		this.setArkContextMarkup(arkContextMarkup);
+	
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, WebMarkupContainer resultListContainer, WebMarkupContainer arkContextMarkup, FeedbackPanel feedbackPanel) {
+		super(id, compoundPropertyModel, feedbackPanel);
+		this.setCpmModel(compoundPropertyModel);
+		this.resultListContainer = resultListContainer;
 		initialiseFieldForm();
-
+		
 		// Override New button, disabling
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
 
@@ -107,26 +103,15 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			public boolean isVisible() {
 				return false;
 			}
-
-			@Override
-			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
-			}
 		};
 		addOrReplace(newButton);
 	}
 
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel) {
-		super(id, compoundPropertyModel);
-		this.setCpmModel(compoundPropertyModel);
-		initialiseFieldForm();
-	}
-
 	public void initialiseFieldForm() {
+		initStudyDdc();
+		
 		idTxtFld = new TextField<String>("biospecimen.id");
+		
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 
@@ -139,6 +124,25 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		addFieldComponents();
 	}
 
+	private void initStudyDdc() {
+		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
+		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
+
+		List<Study> studyListForUser = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);	
+	}
+
 	private void initSampleTypeDdc() {
 		CompoundPropertyModel<LimsVO> limsCpm = cpmModel;
 		PropertyModel<Biospecimen> biospecimenPm = new PropertyModel<Biospecimen>(limsCpm, "biospecimen");
@@ -149,6 +153,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	}
 
 	private void addFieldComponents() {
+		add(studyDdc);
 		add(idTxtFld);
 		add(biospecimenUidTxtFld);
 		add(sampleDateTxtFld);
@@ -157,53 +162,14 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		LimsVO limsVo = getModelObject();
-		limsVo.getBiospecimen().setId(null); // must ensure Id is blank onNew
-
-		// Set study for the new biospecimen
-		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		Study study = iArkCommonService.getStudy(sessionStudyId);
-		limsVo.getBiospecimen().setStudy(study);
-
-		setModelObject(limsVo);
-		preProcessDetailPanel(target);
+		// New not available from search form. Need a Subject/BioCollection in context
 	}
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.addComponent(feedbackPanel);
-
-		// Get a list of biospecimens for the study/subject in context by default
-		java.util.List<au.org.theark.core.model.lims.entity.Biospecimen> biospecimenList = new ArrayList<au.org.theark.core.model.lims.entity.Biospecimen>();
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			// Study in context
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			getModelObject().getBiospecimen().setStudy(study);
-
-			try {
-				// Set biospecimen into model
-				biospecimenList = iLimsService.searchBiospecimen(getModelObject().getBiospecimen());
-
-				if (biospecimenList != null && biospecimenList.size() == 0) {
-					this.info("Biospecimens with the specified criteria does not exist in the system.");
-					target.addComponent(feedbackPanel);
-				}
-			}
-			catch (ArkSystemException e) {
-				this.error(e.getMessage());
-			}
-		}
-
-		listView.removeAll();
-
-		// Set results into model
-		getModelObject().setBiospecimenList(biospecimenList);
-
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.addComponent(resultListContainer);
 	}
 
 	/**
@@ -219,21 +185,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	 */
 	public WebMarkupContainer getArkContextMarkup() {
 		return arkContextMarkup;
-	}
-
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
 	}
 
 	/**
