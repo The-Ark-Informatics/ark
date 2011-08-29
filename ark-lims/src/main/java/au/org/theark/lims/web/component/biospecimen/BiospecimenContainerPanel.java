@@ -22,11 +22,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenListPanel;
@@ -43,9 +41,6 @@ public class BiospecimenContainerPanel extends Panel {
 	private static final long						serialVersionUID	= -1L;
 	private static final Logger					log					= LoggerFactory.getLogger(BiospecimenContainerPanel.class);
 	
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>				iArkCommonService;
-
 	protected LimsVO									limsVO				= new LimsVO();
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
