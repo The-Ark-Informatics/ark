@@ -42,7 +42,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -52,6 +51,7 @@ import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 
 /**
+ * @author elam
  * @author cellis
  * 
  */
@@ -61,9 +61,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
 	private static final Logger				log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>			iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService							iLimsService;
@@ -96,15 +93,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
-		Biospecimen b = cpModel.getObject().getBiospecimen();
-		if (b.getId() != null) {
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		if (biospecimen.getId() != null) {
 			try {
-				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(b.getId()));
+				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(biospecimen.getId()));
 			}
 			catch (EntityNotFoundException e) {
 				// TODO Auto-generated catch block
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}		
 	}
@@ -226,5 +223,4 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			return false;
 		}
 	}
-
 }

@@ -33,7 +33,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.service.IArkCommonService;
@@ -49,7 +48,7 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "unused" })
+@SuppressWarnings ("unused")
 public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
@@ -211,6 +210,56 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		else {
 			return false;
 		}
+	}
+
+	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditCancelError(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditDeleteError(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
