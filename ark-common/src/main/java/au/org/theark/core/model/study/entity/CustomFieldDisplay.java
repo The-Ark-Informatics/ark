@@ -36,6 +36,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 
 /**
  * @author nivedann
@@ -53,7 +54,8 @@ public class CustomFieldDisplay implements Serializable{
 	private String requiredMessage;
 	private Long sequence;
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
-	
+	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
+		
 	public CustomFieldDisplay(){
 		
 	}
@@ -131,15 +133,18 @@ public class CustomFieldDisplay implements Serializable{
 		return subjectCustomFieldData;
 	}
 
-
-	public void setSubjectCustomFieldData(
-			Set<SubjectCustomFieldData> subjectCustomFieldData) {
+	public void setSubjectCustomFieldData(Set<SubjectCustomFieldData> subjectCustomFieldData) {
 		this.subjectCustomFieldData = subjectCustomFieldData;
 	}
 
 	
-	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	public Set<BioCollectionCustomFieldData> getBioCollectionCustomFieldData() {
+		return bioCollectionCustomFieldData;
+	}
 
+	public void setBioCollectionCustomFieldData(Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData) {
+		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
+	}
 
-	
 }

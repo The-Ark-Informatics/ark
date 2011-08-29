@@ -34,7 +34,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import au.org.theark.core.Constants;
+import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 /**
@@ -43,7 +43,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
  */
 
 @Entity
-@Table(name = "BIOCOLLECTION_CUSTOM_FIELD_DATA", schema = Constants.STUDY_SCHEMA)
+@Table(name = "biocollection_custom_field_data", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollectionCustomFieldData implements Serializable{
 	
 	private Long id;
@@ -62,8 +62,8 @@ public class BioCollectionCustomFieldData implements Serializable{
 	}
 
 	@Id
-	@SequenceGenerator(name = "subject_custom_field_data_generator", sequenceName = "SUBJECT_CUSTOM_FIELD_DATA_SEQ")
-	@GeneratedValue(strategy = GenerationType.AUTO, generator = "subject_custom_field_data_generator")
+	@SequenceGenerator(name = "biocollection_custom_field_data_generator", sequenceName = "BIOCOLLECTION_CUSTOM_FIELD_DATA_SEQ")
+	@GeneratedValue(strategy = GenerationType.AUTO, generator = "biocollection_custom_field_data_generator")
 	@Column(name = "ID", unique = true, nullable = false, precision = 22, scale = 0)
 	public Long getId() {
 		return id;
@@ -74,15 +74,15 @@ public class BioCollectionCustomFieldData implements Serializable{
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "BIOCOLLECTION_ID")
-	public void setBioCollection(BioCollection bioCollection) {
-		this.bioCollection = bioCollection;
-	}
-
+	@JoinColumn(name = "BIO_COLLECTION_ID")
 	public BioCollection getBioCollection() {
 		return bioCollection;
 	}
 	
+	public void setBioCollection(BioCollection bioCollection) {
+		this.bioCollection = bioCollection;
+	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "CUSTOM_FIELD_DISPLAY_ID")
 	public CustomFieldDisplay getCustomFieldDisplay() {
