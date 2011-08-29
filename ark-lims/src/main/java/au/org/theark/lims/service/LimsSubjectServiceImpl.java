@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.dao.ILimsSubjectDao;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 /**
  * @author cellis
@@ -53,14 +53,14 @@ public class LimsSubjectServiceImpl implements ILimsSubjectService  {
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.service.ILimsSubjectService#getSubjectCount(au.org.theark.core.vo.SubjectVO, java.util.List)
 	 */
-	public int getSubjectCount(LimsSubjectVO subjectVO, List<Study> studyList) {
+	public int getSubjectCount(LimsVO subjectVO, List<Study> studyList) {
 		return iLimsSubjectDao.getSubjectCount(subjectVO, studyList);
 	}
 
 	/* (non-Javadoc)
 	 * @see au.org.theark.lims.service.ILimsSubjectService#searchPageableSubjects(au.org.theark.core.vo.SubjectVO, java.util.List, int, int)
 	 */
-	public List<LinkSubjectStudy> searchPageableSubjects(LimsSubjectVO subjectVoCriteria, List<Study> studyList, int first, int count) {
-		return iLimsSubjectDao.searchPageableSubjects(subjectVoCriteria, studyList, first, count);
+	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count) {
+		return iLimsSubjectDao.searchPageableSubjects(limsVoCriteria, studyList, first, count);
 	}
 }

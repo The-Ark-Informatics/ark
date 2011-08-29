@@ -52,7 +52,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 
@@ -60,7 +60,7 @@ import au.org.theark.lims.web.Constants;
  * @author nivedann
  * 
  */
-public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
+public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 	/**
 	 * 
@@ -83,13 +83,13 @@ public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
 	private DropDownChoice<GenderType>			genderTypeDdc;
 	private DropDownChoice<SubjectStatus>		subjectStatusDdc;
 	private DateTextField							dateOfBirthTxtFld;
-	private CompoundPropertyModel<LimsSubjectVO>	cpmModel;
+	private CompoundPropertyModel<LimsVO>	cpmModel;
 
 	/**
 	 * @param id
 	 * @param cpmModel
 	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsSubjectVO> cpmModel, PageableListView<LimsSubjectVO> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> cpmModel, PageableListView<LimsVO> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
 			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailsContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
 			WebMarkupContainer editButtonContainer) {
 
@@ -150,7 +150,7 @@ public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
 	}
 
 	private void initStudyDdc() {
-		CompoundPropertyModel<LimsSubjectVO> limsSubjectCpm = cpmModel;
+		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
 		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
 		
 		List<Study> studyListForUser = new ArrayList<Study>(0);
@@ -169,7 +169,7 @@ public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
 	}
 
 	private void initVitalStatusDdc() {
-		CompoundPropertyModel<LimsSubjectVO> subjectCpm = cpmModel;
+		CompoundPropertyModel<LimsVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, "person");
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm, Constants.VITAL_STATUS);
@@ -179,7 +179,7 @@ public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
 	}
 
 	private void initSubjectStatusDdc() {
-		CompoundPropertyModel<LimsSubjectVO> subjectCpm = cpmModel;
+		CompoundPropertyModel<LimsVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm, "subjectStatus");
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
@@ -188,7 +188,7 @@ public class SearchForm extends AbstractSearchForm<LimsSubjectVO> {
 	}
 
 	private void initGenderTypeDdc() {
-		CompoundPropertyModel<LimsSubjectVO> subjectCpm = cpmModel;
+		CompoundPropertyModel<LimsVO> subjectCpm = cpmModel;
 		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, Constants.PERSON);
 		PropertyModel<GenderType> genderTypePm = new PropertyModel<GenderType>(personPm, Constants.GENDER_TYPE);

@@ -35,63 +35,63 @@ import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.PersonLastnameHistory;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 @Repository("limsSubjectDao")
 public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectDao {
 	/* (non-Javadoc)
-	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#getSubjectCount(au.org.theark.core.vo.SubjectVO, java.util.List)
+	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#getSubjectCount(au.org.theark.core.vo.LimsVO, java.util.List)
 	 */
-	public int getSubjectCount(LimsSubjectVO subjectVO, List<Study> studyList) {
-		Criteria criteria = buildGeneralSubjectCriteria(subjectVO, studyList);
+	public int getSubjectCount(LimsVO limsVo, List<Study> studyList) {
+		Criteria criteria = buildGeneralSubjectCriteria(limsVo, studyList);
 		criteria.setProjection(Projections.rowCount());
 		Integer totalCount = (Integer) criteria.uniqueResult();
 		return totalCount;
 	}
 
-	private Criteria buildGeneralSubjectCriteria(LimsSubjectVO subjectVO, List<Study> studyList) {
+	private Criteria buildGeneralSubjectCriteria(LimsVO limsVo, List<Study> studyList) {
 		Criteria criteria = getSession().createCriteria(LinkSubjectStudy.class);
 		criteria.createAlias("person", "p");
 		criteria.add(Restrictions.in("study", studyList));
 
-		if (subjectVO.getLinkSubjectStudy().getPerson() != null) {
+		if (limsVo.getLinkSubjectStudy().getPerson() != null) {
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getId() != null) {
-				criteria.add(Restrictions.eq("p.id", subjectVO.getLinkSubjectStudy().getPerson().getId()));
+			if (limsVo.getLinkSubjectStudy().getPerson().getId() != null) {
+				criteria.add(Restrictions.eq("p.id", limsVo.getLinkSubjectStudy().getPerson().getId()));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getFirstName() != null) {
-				criteria.add(Restrictions.ilike("p.firstName", subjectVO.getLinkSubjectStudy().getPerson().getFirstName(), MatchMode.ANYWHERE));
+			if (limsVo.getLinkSubjectStudy().getPerson().getFirstName() != null) {
+				criteria.add(Restrictions.ilike("p.firstName", limsVo.getLinkSubjectStudy().getPerson().getFirstName(), MatchMode.ANYWHERE));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getMiddleName() != null) {
-				criteria.add(Restrictions.ilike("p.middleName", subjectVO.getLinkSubjectStudy().getPerson().getMiddleName(), MatchMode.ANYWHERE));
+			if (limsVo.getLinkSubjectStudy().getPerson().getMiddleName() != null) {
+				criteria.add(Restrictions.ilike("p.middleName", limsVo.getLinkSubjectStudy().getPerson().getMiddleName(), MatchMode.ANYWHERE));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getLastName() != null) {
-				criteria.add(Restrictions.ilike("p.lastName", subjectVO.getLinkSubjectStudy().getPerson().getLastName(), MatchMode.ANYWHERE));
+			if (limsVo.getLinkSubjectStudy().getPerson().getLastName() != null) {
+				criteria.add(Restrictions.ilike("p.lastName", limsVo.getLinkSubjectStudy().getPerson().getLastName(), MatchMode.ANYWHERE));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth() != null) {
-				criteria.add(Restrictions.eq("p.dateOfBirth", subjectVO.getLinkSubjectStudy().getPerson().getDateOfBirth()));
+			if (limsVo.getLinkSubjectStudy().getPerson().getDateOfBirth() != null) {
+				criteria.add(Restrictions.eq("p.dateOfBirth", limsVo.getLinkSubjectStudy().getPerson().getDateOfBirth()));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getGenderType() != null) {
-				criteria.add(Restrictions.eq("p.genderType.id", subjectVO.getLinkSubjectStudy().getPerson().getGenderType().getId()));
+			if (limsVo.getLinkSubjectStudy().getPerson().getGenderType() != null) {
+				criteria.add(Restrictions.eq("p.genderType.id", limsVo.getLinkSubjectStudy().getPerson().getGenderType().getId()));
 			}
 
-			if (subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus() != null) {
-				criteria.add(Restrictions.eq("p.vitalStatus.id", subjectVO.getLinkSubjectStudy().getPerson().getVitalStatus().getId()));
+			if (limsVo.getLinkSubjectStudy().getPerson().getVitalStatus() != null) {
+				criteria.add(Restrictions.eq("p.vitalStatus.id", limsVo.getLinkSubjectStudy().getPerson().getVitalStatus().getId()));
 			}
 
 		}
 
-		if (subjectVO.getLinkSubjectStudy().getSubjectUID() != null && subjectVO.getLinkSubjectStudy().getSubjectUID().length() > 0) {
-			criteria.add(Restrictions.ilike("subjectUID", subjectVO.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
+		if (limsVo.getLinkSubjectStudy().getSubjectUID() != null && limsVo.getLinkSubjectStudy().getSubjectUID().length() > 0) {
+			criteria.add(Restrictions.ilike("subjectUID", limsVo.getLinkSubjectStudy().getSubjectUID(), MatchMode.ANYWHERE));
 		}
 
-		if (subjectVO.getLinkSubjectStudy().getSubjectStatus() != null) {
-			criteria.add(Restrictions.eq("subjectStatus", subjectVO.getLinkSubjectStudy().getSubjectStatus()));
+		if (limsVo.getLinkSubjectStudy().getSubjectStatus() != null) {
+			criteria.add(Restrictions.eq("subjectStatus", limsVo.getLinkSubjectStudy().getSubjectStatus()));
 			SubjectStatus subjectStatus = getSubjectStatus("Archive");
 			if (subjectStatus != null) {
 				criteria.add(Restrictions.ne("subjectStatus", subjectStatus));
@@ -109,10 +109,10 @@ public class LimsSubjectDao extends HibernateSessionDao implements ILimsSubjectD
 	}
 
 	/* (non-Javadoc)
-	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#searchPageableSubjects(au.org.theark.core.vo.SubjectVO, java.util.List, int, int)
+	 * @see au.org.theark.lims.model.dao.ILimsSubjectDao#searchPageableSubjects(au.org.theark.core.vo.LimsVO, java.util.List, int, int)
 	 */
-	public List<LinkSubjectStudy> searchPageableSubjects(LimsSubjectVO subjectVoCriteria, List<Study> studyList, int first, int count) {
-		Criteria criteria = buildGeneralSubjectCriteria(subjectVoCriteria, studyList);
+	public List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count) {
+		Criteria criteria = buildGeneralSubjectCriteria(limsVoCriteria, studyList);
 		criteria.setFirstResult(first);
 		criteria.setMaxResults(count);
 		List<LinkSubjectStudy> subjectList = criteria.list();

@@ -55,14 +55,14 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
 
 /**
  * @author cellis
  * 
  */
-public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
+public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	/**
 	 * 
@@ -345,7 +345,7 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 
 	protected void onCancel(AjaxRequestTarget target) {
 		subjectUIDTxtFld.setEnabled(true);
-		LimsSubjectVO subjectVO = new LimsSubjectVO();
+		LimsVO subjectVO = new LimsVO();
 
 		// Reset the SubjectVO (with study in context)
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -385,13 +385,13 @@ public class DetailForm extends AbstractDetailForm<LimsSubjectVO> {
 	}
 
 	@SuppressWarnings("unused")
-	private void saveUpdateProcess(LimsSubjectVO subjectVO, AjaxRequestTarget target) {
+	private void saveUpdateProcess(LimsVO subjectVO, AjaxRequestTarget target) {
 		// Should never get here since edit should never be enabled for Subject Details via LIMS
 		log.error("Incorrect application workflow - tried to save/edit Subject Details via LIMS");
 	}
 
 	@Override
-	protected void onSave(Form<LimsSubjectVO> containerForm, AjaxRequestTarget target) {
+	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
 		// Should never get here since edit should never be enabled for Subject Details via LIMS
 		log.error("Incorrect application workflow - tried to save/edit Subject Details via LIMS");
 	}

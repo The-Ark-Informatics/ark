@@ -22,7 +22,7 @@ import java.util.List;
 
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 public interface ILimsSubjectService {
 	/**
@@ -31,15 +31,15 @@ public interface ILimsSubjectService {
 	 * @param studyList
 	 * @return
 	 */
-	public abstract int getSubjectCount(LimsSubjectVO subjectVO, List<Study> studyList);
+	public abstract int getSubjectCount(LimsVO subjectVO, List<Study> studyList);
 
 	/**
 	 * Search for a Subject based on a SubjectVO criteria, and a list of Studies (user ha access to)
-	 * @param subjectVoCriteria
+	 * @param limsVoCriteria
 	 * @param studyList
 	 * @param first
 	 * @param count
 	 * @return
 	 */
-	public abstract List<LinkSubjectStudy> searchPageableSubjects(LimsSubjectVO subjectVoCriteria, List<Study> studyList, int first, int count);
+	public abstract List<LinkSubjectStudy> searchPageableSubjects(LimsVO limsVoCriteria, List<Study> studyList, int first, int count);
 }

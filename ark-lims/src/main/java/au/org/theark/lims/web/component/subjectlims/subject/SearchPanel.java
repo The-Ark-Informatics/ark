@@ -24,7 +24,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;
@@ -43,7 +43,7 @@ public class SearchPanel extends Panel {
 	private WebMarkupContainer				viewButtonContainer;
 	private WebMarkupContainer				editButtonContainer;
 	private WebMarkupContainer				detailFormContainer;
-	private PageableListView<LimsSubjectVO>	listView;
+	private PageableListView<LimsVO>	listView;
 
 	/**
 	 * Constructor
@@ -60,7 +60,7 @@ public class SearchPanel extends Panel {
 	 * @param detailPanel
 	 * @param containerForm
 	 */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<LimsSubjectVO> listView, WebMarkupContainer resultListContainer,
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<LimsVO> listView, WebMarkupContainer resultListContainer,
 			WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, DetailPanel detailPanel,
 			ContainerForm containerForm) {
 
@@ -76,9 +76,9 @@ public class SearchPanel extends Panel {
 
 	}
 
-	public void initialisePanel(CompoundPropertyModel<LimsSubjectVO> subjectVoCpm) {
+	public void initialisePanel(CompoundPropertyModel<LimsVO> limsVoCpm) {
 
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer, detailFormContainer,
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, limsVoCpm, listView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer, detailFormContainer,
 				viewButtonContainer, editButtonContainer);
 		add(searchStudyCompForm);
 

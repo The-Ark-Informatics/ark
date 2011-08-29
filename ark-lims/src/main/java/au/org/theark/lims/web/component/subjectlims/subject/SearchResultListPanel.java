@@ -41,7 +41,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
@@ -90,7 +90,7 @@ public class SearchResultListPanel extends Panel {
 		this.subjectContainerForm = containerForm;
 	}
 
-	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService> subjectProvider) {
+	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService> subjectProvider) {
 
 		DataView<LinkSubjectStudy> studyCompDataView = new DataView<LinkSubjectStudy>("subjectList", subjectProvider) {
 
@@ -181,10 +181,10 @@ public class SearchResultListPanel extends Panel {
 				// Force clearing of Cache to re-load roles for the user for the study
 				realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
-				LimsSubjectVO subjectVo = new LimsSubjectVO();
-				subjectVo.setLinkSubjectStudy(subjectFromBackend);
-				subjectVo.setStudy(subjectFromBackend.getStudy());
-				subjectContainerForm.setModelObject(subjectVo);
+				LimsVO limsVo = new LimsVO();
+				limsVo.setLinkSubjectStudy(subjectFromBackend);
+				limsVo.setStudy(subjectFromBackend.getStudy());
+				subjectContainerForm.setModelObject(limsVo);
 				
 				// Set context items
 				ContextHelper contextHelper = new ContextHelper();

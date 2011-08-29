@@ -22,18 +22,21 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 
 /**
- * @author nivedann
+ * @author cellis
  * 
  */
-@SuppressWarnings("serial")
-public class ContainerForm extends AbstractContainerForm<LimsSubjectVO> {
+public class ContainerForm extends AbstractContainerForm<LimsVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -3683292162832430593L;
 	protected WebMarkupContainer	contextUpdateLimsWMC	= null;
 
-	public ContainerForm(String id, CompoundPropertyModel<LimsSubjectVO> model) {
+	public ContainerForm(String id, CompoundPropertyModel<LimsVO> model) {
 		super(id, model);
 	}
 

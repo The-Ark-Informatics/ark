@@ -70,13 +70,6 @@ public class DetailPanel extends Panel {
 
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
-
-		// subContainerWebMarkupContainer = new WebMarkupContainer("subContainerWebMarkupContainer");
-		// subContainerWebMarkupContainer.setOutputMarkupPlaceholderTag(true);
-		// // SubContainer with child details
-		// subContainerPanel = new SubjectSubContainerPanel("subContainerPanel", arkContextContainer, containerForm, containerForm.getModelObject());
-		// subContainerWebMarkupContainer.add(subContainerPanel);
-		// add(subContainerWebMarkupContainer);
 	}
 
 	public DetailForm getDetailsForm() {

@@ -44,7 +44,7 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.lims.model.vo.LimsSubjectVO;
+import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
@@ -56,7 +56,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
  * 
  */
 @SuppressWarnings("unchecked")
-public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO> {
+public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	/**
 	 * 
 	 */
@@ -65,7 +65,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 	private SearchPanel																					searchPanel;
 	private SearchResultListPanel																		searchResultsPanel;
 	private DetailPanel																					detailsPanel;
-	private PageableListView<LimsSubjectVO>														pageableListView;
+	private PageableListView<LimsVO>														pageableListView;
 	private ContainerForm																				containerForm;
 
 	private WebMarkupContainer																			arkContextMarkup;
@@ -80,7 +80,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 	private ILimsSubjectService																		iLimsSubjectService;
 
 	private DataView<LinkSubjectStudy>																dataView;
-	private ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService>	subjectProvider;
+	private ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService>	subjectProvider;
 
 	/**
 	 * @param id
@@ -90,16 +90,16 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		/* Initialise the CPM */
-		cpModel = new CompoundPropertyModel<LimsSubjectVO>(new LimsSubjectVO());
+		cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
 
 		// Set study list user should see
 		containerForm.getModelObject().setStudyList(getStudyListForUser());
 
 		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
+		containerForm.add(initialiseDetailPanel());
 
 		prerenderContextCheck();
 
@@ -116,10 +116,10 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 				boolean contextLoaded = false;
 				try {
 					person = iLimsService.getPerson(sessionPersonId);
-					LimsSubjectVO limsSubjectVo = new LimsSubjectVO();
-					limsSubjectVo.getLinkSubjectStudy().setPerson(person);
-					limsSubjectVo.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(limsSubjectVo.getLinkSubjectStudy().getSubjectUID()));
-					containerForm.setModelObject(limsSubjectVo);
+					LimsVO limsVo = new LimsVO();
+					limsVo.getLinkSubjectStudy().setPerson(person);
+					limsVo.setLinkSubjectStudy(iArkCommonService.getSubjectByUID(limsVo.getLinkSubjectStudy().getSubjectUID()));
+					containerForm.setModelObject(limsVo);
 					contextLoaded = true;
 				}
 				catch (EntityNotFoundException e) {
@@ -170,7 +170,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsSubjectVO>
 		searchResultsPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
 				editButtonContainer, arkContextMarkup, containerForm);
 
-		subjectProvider = new ArkDataProvider2<LimsSubjectVO, LinkSubjectStudy, ILimsSubjectService>(iLimsSubjectService) {
+		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService>(iLimsSubjectService) {
 			/**
 			 * 
 			 */

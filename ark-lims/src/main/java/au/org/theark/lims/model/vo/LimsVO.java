@@ -20,6 +20,7 @@ package au.org.theark.lims.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioTransaction;
@@ -29,13 +30,15 @@ import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 
 public class LimsVO implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long						serialVersionUID	= 3823264588506863044L;
-	protected LinkSubjectStudy						LinkSubjectStudy;
+	protected Study									study;
+	protected LinkSubjectStudy						linkSubjectStudy;
 	protected BioCollection							bioCollection;
 	protected Biospecimen							biospecimen;
 	protected BioTransaction						bioTransaction;
@@ -45,58 +48,73 @@ public class LimsVO implements Serializable {
 	protected InvBox									invBox;
 
 	/** A List of bioCollection(s) for the linkSubjectStudy in context */
-	protected java.util.List<BioCollection>	bioCollectionList;
+	protected List<BioCollection>	bioCollectionList;
 
 	/** A List of biospecimen(s) for the linkSubjectStudy in context */
-	protected java.util.List<Biospecimen>		biospecimenList;
+	protected List<Biospecimen>		biospecimenList;
 
 	/** A List of bioTransaction(s) for the biospecimen in context */
-	protected java.util.List<BioTransaction>	bioTransactionList;
+	protected List<BioTransaction>	bioTransactionList;
 
 	/** A List of invSite(s) for the study in context */
-	protected java.util.List<InvSite>			invSiteList;
+	protected List<InvSite>			invSiteList;
 
-	protected int										mode;
+	/** A List of Study(s) for the user in context */
+	protected List<Study>			studyList;
 
 	public LimsVO() {
-		this.LinkSubjectStudy = new LinkSubjectStudy();
+		this.study = new Study();
+		this.linkSubjectStudy = new LinkSubjectStudy();
 		this.bioCollection = new BioCollection();
 		this.biospecimen = new Biospecimen();
-		this.bioCollectionList = new ArrayList<BioCollection>();
-		this.biospecimenList = new ArrayList<Biospecimen>();
-		this.bioTransactionList = new ArrayList<BioTransaction>();
-		this.invSiteList = new ArrayList<InvSite>();
 		this.invSite = new InvSite();
 		this.invTank = new InvTank();
 		this.invTray = new InvTray();
 		this.invBox = new InvBox();
+		this.bioCollectionList = new ArrayList<BioCollection>(0);
+		this.biospecimenList = new ArrayList<Biospecimen>(0);
+		this.bioTransactionList = new ArrayList<BioTransaction>(0);
+		this.invSiteList = new ArrayList<InvSite>(0);
+		this.studyList = new ArrayList<Study>(0);
+	}
+
+	/**
+	 * @return the study
+	 */
+	public Study getStudy() {
+		return study;
+	}
+
+	/**
+	 * @param study the study to set
+	 */
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 
 	/**
 	 * @return the linkSubjectStudy
 	 */
 	public LinkSubjectStudy getLinkSubjectStudy() {
-		return LinkSubjectStudy;
+		return linkSubjectStudy;
 	}
 
 	/**
-	 * @param linkSubjectStudy
-	 *           the linkSubjectStudy to set
+	 * @param linkSubjectStudy the linkSubjectStudy to set
 	 */
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
-		LinkSubjectStudy = linkSubjectStudy;
+		this.linkSubjectStudy = linkSubjectStudy;
 	}
 
 	/**
-	 * @return the limsCollection
+	 * @return the bioCollection
 	 */
 	public BioCollection getBioCollection() {
 		return bioCollection;
 	}
 
 	/**
-	 * @param bioCollection
-	 *           the bioCollection to set
+	 * @param bioCollection the bioCollection to set
 	 */
 	public void setBioCollection(BioCollection bioCollection) {
 		this.bioCollection = bioCollection;
@@ -110,8 +128,7 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param biospecimen
-	 *           the biospecimen to set
+	 * @param biospecimen the biospecimen to set
 	 */
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
@@ -125,8 +142,7 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param bioTransaction
-	 *           the bioTransaction to set
+	 * @param bioTransaction the bioTransaction to set
 	 */
 	public void setBioTransaction(BioTransaction bioTransaction) {
 		this.bioTransaction = bioTransaction;
@@ -140,8 +156,7 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @param invSite
-	 *           the invSite to set
+	 * @param invSite the invSite to set
 	 */
 	public void setInvSite(InvSite invSite) {
 		this.invSite = invSite;
@@ -190,78 +205,72 @@ public class LimsVO implements Serializable {
 	}
 
 	/**
-	 * @return the bioCollectionCollection
+	 * @return the bioCollectionList
 	 */
-	public java.util.List<BioCollection> getBioCollectionList() {
+	public List<BioCollection> getBioCollectionList() {
 		return bioCollectionList;
 	}
 
 	/**
-	 * @param bioCollectionList
-	 *           the bioCollectionList to set
+	 * @param bioCollectionList the bioCollectionList to set
 	 */
-	public void setBioCollectionList(java.util.List<BioCollection> bioCollectionList) {
+	public void setBioCollectionList(List<BioCollection> bioCollectionList) {
 		this.bioCollectionList = bioCollectionList;
 	}
 
 	/**
 	 * @return the biospecimenList
 	 */
-	public java.util.List<Biospecimen> getBiospecimenList() {
+	public List<Biospecimen> getBiospecimenList() {
 		return biospecimenList;
 	}
 
 	/**
-	 * @param biospecimenList
-	 *           the biospecimenList to set
+	 * @param biospecimenList the biospecimenList to set
 	 */
-	public void setBiospecimenList(java.util.List<Biospecimen> biospecimenList) {
+	public void setBiospecimenList(List<Biospecimen> biospecimenList) {
 		this.biospecimenList = biospecimenList;
 	}
 
 	/**
 	 * @return the bioTransactionList
 	 */
-	public java.util.List<BioTransaction> getBioTransactionList() {
+	public List<BioTransaction> getBioTransactionList() {
 		return bioTransactionList;
 	}
 
 	/**
-	 * @param bioTransactionList
-	 *           the bioTransactionList to set
+	 * @param bioTransactionList the bioTransactionList to set
 	 */
-	public void setBioTransactionList(java.util.List<BioTransaction> bioTransactionList) {
+	public void setBioTransactionList(List<BioTransaction> bioTransactionList) {
 		this.bioTransactionList = bioTransactionList;
 	}
 
 	/**
 	 * @return the invSiteList
 	 */
-	public java.util.List<InvSite> getInvSiteList() {
+	public List<InvSite> getInvSiteList() {
 		return invSiteList;
 	}
 
 	/**
-	 * @param invSiteList
-	 *           the invSiteList to set
+	 * @param invSiteList the invSiteList to set
 	 */
-	public void setInvSiteList(java.util.List<InvSite> invSiteList) {
+	public void setInvSiteList(List<InvSite> invSiteList) {
 		this.invSiteList = invSiteList;
 	}
 
 	/**
-	 * @return the mode
+	 * @return the studyList
 	 */
-	public int getMode() {
-		return mode;
+	public List<Study> getStudyList() {
+		return studyList;
 	}
 
 	/**
-	 * @param mode
-	 *           the mode to set
+	 * @param studyList the studyList to set
 	 */
-	public void setMode(int mode) {
-		this.mode = mode;
+	public void setStudyList(List<Study> studyList) {
+		this.studyList = studyList;
 	}
-
 }
