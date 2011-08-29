@@ -27,19 +27,15 @@ import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.protocol.http.SecondLevelCacheSessionStore.ISerializationAwarePageStore;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.Constants;
 
 /**
  * @author elam
@@ -47,14 +43,13 @@ import au.org.theark.study.web.Constants;
  */
 public class SubjectCustomDataContainerPanel extends Panel {
 
-	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm						realm;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService					iArkCommonService;
-
-	@SpringBean(name = Constants.STUDY_SERVICE)
-	private IStudyService							studyService;
+	protected IArkCommonService<Void>					iArkCommonService;
 	
 	protected CompoundPropertyModel<SubjectCustomDataVO> cpModel;
 

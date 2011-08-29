@@ -51,7 +51,6 @@ import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
 import au.org.theark.core.web.component.customfield.dataentry.DropDownChoiceDataEntryPanel;
@@ -77,9 +76,6 @@ public class SubjectCustomDataEditorPanel extends Panel {
 
 	private CompoundPropertyModel<SubjectCustomDataVO>			cpModel;
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
-	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 

@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.button.EditModeButtonsPanel;
 import au.org.theark.core.web.component.button.IEditModeEventHandler;
 import au.org.theark.core.web.component.button.IViewModeEventHandler;
@@ -52,9 +51,6 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 
 	private CompoundPropertyModel<SubjectCustomDataVO>			cpModel;
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
-	
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 	
@@ -149,8 +145,8 @@ public class CustomDataEditorForm extends Form<SubjectCustomDataVO> implements I
 		}
 		/*
 		 * Need to update the dataView, which forces a refresh of the model objects from backend.
-		 * This is because deleted fields still remain model, and are stale objects if we try to
-		 * use them for future saves.
+		 * This is because deleted fields still remain in the model, and are stale objects if we 
+		 * try to use them for future saves.
 		 */
 		target.addComponent(dataViewWMC);
 		target.addComponent(feedbackPanel);
