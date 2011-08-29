@@ -57,7 +57,7 @@ import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 
 /**
- * @author nivedann
+ * @author cellis
  * 
  */
 public class SearchForm extends AbstractSearchForm<LimsVO> {
@@ -66,7 +66,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	 * 
 	 */
 	private static final long					serialVersionUID	= 5853988156214275754L;
-	protected static final Logger				log					= LoggerFactory.getLogger(AbstractSearchForm.class);
+	protected static final Logger				log					= LoggerFactory.getLogger(SearchForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
