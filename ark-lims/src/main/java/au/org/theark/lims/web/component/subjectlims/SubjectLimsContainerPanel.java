@@ -25,9 +25,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.SubjectContainerPanel;
 
@@ -39,7 +36,8 @@ public class SubjectLimsContainerPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long		serialVersionUID	= -1L;
+	private static final long	serialVersionUID	= -2890453994817235963L;
+
 	private static final Logger	log					= LoggerFactory.getLogger(SubjectLimsContainerPanel.class);
 
 	private WebMarkupContainer		arkContextMarkup;
@@ -60,7 +58,6 @@ public class SubjectLimsContainerPanel extends Panel {
 		limsContainerWMC = new WebMarkupContainer("limsContainerWMC");
 		limsContainerWMC.setOutputMarkupPlaceholderTag(true);
 
-		// limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup);
 		limsContainerPanel = new EmptyPanel("limsContainerPanel");
 		limsContainerWMC.add(limsContainerPanel);
 		this.add(limsContainerWMC);
@@ -81,6 +78,13 @@ public class SubjectLimsContainerPanel extends Panel {
 			}
 		}
 		super.onBeforeRender();
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog() {
+		return log;
 	}
 
 }
