@@ -19,11 +19,9 @@
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -75,8 +73,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private ModalWindow					modalWindow;
 	private WebMarkupContainer			arkContextMarkup;
 
-	// private ListDetailPanel listDetailPanel;
-
 	/**
 	 * Constructor
 	 * 
@@ -95,27 +91,29 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	protected void refreshEntityFromBackend() {
 		// Get BioCollection entity fresh from backend
-		BioCollection bc = cpModel.getObject().getBioCollection();
-		if (bc.getId() != null) {
+		BioCollection bioCollection = cpModel.getObject().getBioCollection();
+		if (bioCollection.getId() != null) {
 			try {
-				cpModel.getObject().setBioCollection(iLimsService.getBioCollection(bc.getId()));
+				cpModel.getObject().setBioCollection(iLimsService.getBioCollection(bioCollection.getId()));
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 			catch (ArkSystemException e) {
-				// TODO Auto-generated catch block
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}		
 	}
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
+		
+		// bioCollection.name auto-generated, this read only
 		nameTxtFld = new TextField<String>("bioCollection.name");
+		nameTxtFld.setEnabled(false);
+		
 		commentsTxtAreaFld = new TextArea<String>("bioCollection.comments");
 		collectionDateTxtFld = new DateTextField("bioCollection.collectionDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		surgeryDateTxtFld = new DateTextField("bioCollection.surgeryDate", au.org.theark.core.Constants.DD_MM_YYYY);
