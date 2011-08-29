@@ -100,10 +100,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
 				log.error(e.getMessage());
 			}
-			catch (ArkSystemException e) {
-				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
-				log.error(e.getMessage());
-			}
 		}		
 	}
 
