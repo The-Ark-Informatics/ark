@@ -846,7 +846,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		}
 		else {
 			// If no arkModule supplied, return empty list
-			log.error("No arkModule supplied, returning emtpy study list");
+			log.error("No arkModule supplied, returning empty study list");
 			return studyList;
 		}
 		
