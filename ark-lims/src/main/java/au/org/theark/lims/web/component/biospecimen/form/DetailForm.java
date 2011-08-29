@@ -144,13 +144,13 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	private void initBioCollectionDdc() {
 		// Get a list of collections for the subject in context by default
 		BioCollection bioCollection = new BioCollection();
-		bioCollection.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
-		bioCollection.setStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy().getStudy());
+		bioCollection.setLinkSubjectStudy(containerForm.getModelObject().getBiospecimen().getLinkSubjectStudy());
+		bioCollection.setStudy(containerForm.getModelObject().getBiospecimen().getLinkSubjectStudy().getStudy());
 		try {
-			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
+			containerForm.getModelObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
 			ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
+			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", containerForm.getModelObject().getBioCollectionList(), bioCollectionRenderer);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
