@@ -46,7 +46,6 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -143,42 +142,20 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	}
 
 	private void initBioCollectionDdc() {
-		// Get a list of collections for the study/subject in context by default
-		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			containerForm.getModelObject().getBioCollection().setStudy(study);
-		}
-
-		subjectUIDInContext = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
-		// Subject in context
-		if (subjectUIDInContext != null && !subjectUIDInContext.isEmpty()) {
-			try {
-				// Subject in context
-				LinkSubjectStudy linkSubjectStudy = new LinkSubjectStudy();
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(subjectUIDInContext);
-				containerForm.getModelObject().getBioCollection().setLinkSubjectStudy(linkSubjectStudy);
-			}
-			catch (EntityNotFoundException e) {
-				log.error(e.getMessage());
-			}
-			catch (NullPointerException e) {
-				log.error(e.getMessage());
-			}
-		}
-
+		// Get a list of collections for the subject in context by default
+		BioCollection bioCollection = new BioCollection();
+		bioCollection.setLinkSubjectStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy());
+		bioCollection.setStudy(cpModel.getObject().getBiospecimen().getLinkSubjectStudy().getStudy());
 		try {
-			bioCollectionList = iLimsService.searchBioCollection(containerForm.getModelObject().getBioCollection());
+			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
+
+			ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
+			this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
 		}
-
-		ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-		bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", (List<BioCollection>) bioCollectionList, bioCollectionRenderer);
 	}
 
 	protected void attachValidators() {
