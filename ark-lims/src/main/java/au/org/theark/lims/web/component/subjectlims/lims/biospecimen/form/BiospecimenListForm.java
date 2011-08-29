@@ -41,18 +41,16 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
@@ -63,12 +61,13 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
  * @author cellis
  * 
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({ "unchecked"})
 public class BiospecimenListForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
 	private static final long									serialVersionUID	= 1L;
+	private static final Logger					log					= LoggerFactory.getLogger(BiospecimenListForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService									iArkCommonService;
@@ -86,13 +85,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	private Label													collectionLblFld;
 	private Label													commentsLblFld;
 	private Label													quantityLblFld;
-	// private BioCollectionListPanel bioCollectionListPanel;
 	private Panel													modalContentPanel;
 	protected AjaxButton											newButton;
 
 	protected WebMarkupContainer								dataViewListWMC;
 	private DataView<Biospecimen>								dataView;
-	private ArkDataProvider<Biospecimen, ILimsService>	biospecimenProvider;
+	private ArkDataProvider2<LimsVO, Biospecimen, ILimsService>	biospecimenProvider;
 
 	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, cpModel);
@@ -109,72 +107,42 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 		add(modalWindow);
 	}
-
-	@Override
-	public void onBeforeRender() {
-		// Reset the Biospecimen (for criteria) in LimsVO
-		// This prevents the manual modal "X" close button from not reseting the criteria
-		cpModel.getObject().setBiospecimen(new Biospecimen());
-
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
-
-		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
-			LinkSubjectStudy linkSubjectStudy = null;
-			Study study = null;
-			boolean contextLoaded = false;
-			try {
-				study = iArkCommonService.getStudy(sessionStudyId);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
-				if (study != null && linkSubjectStudy != null) {
-					contextLoaded = true;
-				}
-			}
-			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			if (contextLoaded) {
-				// Successfully loaded from backend
-				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
-				cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
-				cpModel.getObject().getBiospecimen().setStudy(study);
-			}
-		}
-		super.onBeforeRender();
-	}
-
+	
 	private void initialiseDataView() {
 		dataViewListWMC = new WebMarkupContainer("dataViewListWMC");
 		dataViewListWMC.setOutputMarkupId(true);
 		// Data provider to paginate resultList
-		biospecimenProvider = new ArkDataProvider<Biospecimen, ILimsService>(iLimsService) {
+		biospecimenProvider = new ArkDataProvider2<LimsVO, Biospecimen, ILimsService>(iLimsService) {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBiospecimenCount(model.getObject());
+				return service.getBiospecimenCount(criteriaModel.getObject());
 			}
 
 			public Iterator<Biospecimen> iterator(int first, int count) {
-				List<Biospecimen> listSubjects = new ArrayList<Biospecimen>();
+				List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					listSubjects = service.searchPageableBiospecimens(model.getObject(), first, count);
+					biospecimenList = service.searchPageableBiospecimens(criteriaModel.getObject(), first, count);
 				}
-				return listSubjects.iterator();
+				return biospecimenList.iterator();
 			}
 		};
 		// Set the criteria into the data provider's model
-		biospecimenProvider.setModel(new LoadableDetachableModel<Biospecimen>() {
-			@Override
-			protected Biospecimen load() {
-				return cpModel.getObject().getBiospecimen();
-			}
-		});
+		biospecimenProvider.setCriteriaModel(cpModel);
 
 		dataView = buildDataView(biospecimenProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.addComponent(dataViewListWMC);
@@ -188,29 +156,19 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	private void initialiseNewButton() {
 		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
-			/*
-			 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
-			 * check/call isVisible() and isEnabled(). Thus, it is best to keep the isVisible() and isEnabled() very light-weight (e.g. avoid hitting the
-			 * database to work this out)
+			/**
+			 * 
 			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public boolean isVisible() {
-				// // Needs CREATE permission AND a BioCollection to select from
-				// boolean hasBioCollections = false;
-				//
-				// hasBioCollections = iLimsService.hasBioCollections(cpModel.getObject().getLinkSubjectStudy());
-				//
-				// if(!hasBioCollections)
-				// {
-				// hasBioCollections = false;
-				// this.error("No Biospecimen Collections exist. Please create at least one Collection.");
-				// }
-				// else
-				// {
-				// hasBioCollections = true;
-				// }
-				// return (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && hasBioCollections);
-				return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
+				boolean isVisible = true;
+				
+				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && sessionSubjectUID != null);
+				
+				return isVisible;
 			}
 
 			@Override
@@ -228,9 +186,14 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	 * @param iModel
 	 * @return the pageableListView of BioCollection
 	 */
-	public DataView<Biospecimen> buildDataView(ArkDataProvider<Biospecimen, ILimsService> biospecimenProvider) {
+	public DataView<Biospecimen> buildDataView(ArkDataProvider2<LimsVO, Biospecimen, ILimsService> biospecimenProvider) {
 
 		DataView<Biospecimen> biospecimenDataView = new DataView<Biospecimen>("biospecimenList", biospecimenProvider) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final Item<Biospecimen> item) {
 				item.setOutputMarkupId(true);
@@ -238,45 +201,20 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				final Biospecimen biospecimen = item.getModelObject();
 
 				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
-				/*
-				 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
-				 * check/call isVisible() and isEnabled(). By avoiding the use of AjaxButtons when not required, no form submit is caused and thus less
-				 * processing is required.
-				 */
-				// AjaxButton listEditButton = new AjaxButton("listEditButton", new StringResourceModel("editKey", this, null)) {
-				// /**
-				// *
-				// */
-				// private static final long serialVersionUID = -6032731528995858376L;
-				//
-				// @Override
-				// protected void onSubmit(AjaxRequestTarget target,
-				// Form<?> form) {
-				// // Refresh any feedback
-				// target.addComponent(feedbackPanel);
-				//
-				// // // Set selected item into model.context, then show
-				// // modalWindow for editing
-				// // Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
-				// //
-				// Biospecimen b = (Biospecimen)(getParent().getDefaultModelObject());
-				// cpModel.getObject().setBiospecimen(b);
-				// showModalWindow(target, cpModel);
-				// }
-				//
-				// @Override
-				// public boolean isVisible()
-				// {
-				// return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
-				// }
-				// };
+				
 				AjaxLink listEditLink = new AjaxLink("listEditLink") {
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						Biospecimen b = (Biospecimen) (getParent().getDefaultModelObject());
+						Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
+						//TODO: use shared cpm?
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-						newModel.getObject().getBiospecimen().setId(b.getId());
+						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
 						showModalWindow(target, newModel);
 					}
 
@@ -286,15 +224,10 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					}
 				};
 
-				// listEditButton.setDefaultFormProcessing(false);
-				// rowEditWMC.add(listEditButton);
 				Label nameLinkLabel = new Label("lblEditLink", "Edit");
 				listEditLink.add(nameLinkLabel);
 				rowEditWMC.add(listEditLink);
 				item.add(rowEditWMC);
-
-				// SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				// au.org.theark.core.Constants.DD_MM_YYYY);
 
 				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
 				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
@@ -371,11 +304,17 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					}
 
 				};
+				
 				deleteButton.setDefaultFormProcessing(false);
 				rowDeleteWMC.add(deleteButton);
 				item.add(rowDeleteWMC);
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public String getObject() {
@@ -398,7 +337,6 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		if (hasBioCollections) {
 			// Set new Biospecimen into model, then show modalWindow to save
 			CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-			// newModel.getObject().setBiospecimen(new Biospecimen());
 			newModel.getObject().getBiospecimen().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 			newModel.getObject().getBiospecimen().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 
@@ -422,5 +360,18 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
+	
+	/**
+	 * @return the newButton
+	 */
+	public AjaxButton getNewButton() {
+		return newButton;
+	}
 
+	/**
+	 * @param newButton the newButton to set
+	 */
+	public void setNewButton(AjaxButton newButton) {
+		this.newButton = newButton;
+	}
 }
