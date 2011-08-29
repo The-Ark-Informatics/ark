@@ -19,7 +19,6 @@
 package au.org.theark.core.web.component.button;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -53,6 +52,11 @@ public class ViewModeButtonsPanel extends Panel {
 	protected void initialisePanel() {
 		editButton = new ArkAjaxButton("edit") {
 			
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public boolean isVisible() {
 				// Ark-Security implemented
@@ -82,6 +86,11 @@ public class ViewModeButtonsPanel extends Panel {
 		
 		cancelButton = new ArkAjaxButton("cancel") {
 			
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if (cancelButton.isVisible() && cancelButton.isEnabled()) {
