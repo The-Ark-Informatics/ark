@@ -2,7 +2,7 @@ USE lims;
 
 CREATE TABLE `lims`.`biocollection_custom_field_data` (
   `ID` int(11) NOT NULL auto_increment,
-  `BIOCOLLECTION_ID` int(11) NOT NULL,
+  `BIO_COLLECTION_ID` int(11) NOT NULL,
   `CUSTOM_FIELD_DISPLAY_ID` int(11) NOT NULL,
   `TEXT_DATA_VALUE` text,
   `DATE_DATA_VALUE` datetime default NULL,
