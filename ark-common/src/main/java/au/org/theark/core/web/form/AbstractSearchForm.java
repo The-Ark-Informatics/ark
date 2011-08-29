@@ -112,6 +112,12 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		initialiseForm(arkCrudContainerVO);
 	}
 
+	public AbstractSearchForm(String id, CompoundPropertyModel<T> cpmModel, FeedbackPanel feedbackPanel) {
+		super(id, cpmModel);
+		this.feedbackPanel = feedbackPanel;
+		initialiseForm();
+	}
+
 	protected void onReset() {
 		clearInput();
 		updateFormComponentModels();
