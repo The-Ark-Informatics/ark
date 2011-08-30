@@ -22,7 +22,7 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 
-/*
+/**
  * The ArkDataProvider2 is designed for use with Hibernate as the underlying data source
  * with the flexibility of the criteria being a different type to the return object.
  * Due to Hibernate's ability to lazy-load, it is:
@@ -30,8 +30,11 @@ import org.apache.wicket.model.LoadableDetachableModel;
  * - unnecessary to do anything on detach()
  *
  * @author elam
+
+ * @param <S> is the underlying Entity/VO type of the criteria
+ * @param <T> is the underlying Entity/VO type or the results returned 
  */
-public abstract class ArkDataProvider2<S, T, U> implements IDataProvider<T> {
+public abstract class ArkDataProvider2<S, T> implements IDataProvider<T> {
 
 	/**
 	 * 
@@ -39,11 +42,9 @@ public abstract class ArkDataProvider2<S, T, U> implements IDataProvider<T> {
 	private static final long	serialVersionUID	= 1L;
 
 	protected IModel<S>			criteriaModel;
-	protected transient U		service;
 
-	public ArkDataProvider2(U service) {
+	public ArkDataProvider2() {
 		super();
-		this.service = service;
 	}
 
 	public IModel<S> getCriteriaModel() {

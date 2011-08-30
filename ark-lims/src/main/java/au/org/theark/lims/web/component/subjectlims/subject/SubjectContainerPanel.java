@@ -71,7 +71,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private ILimsSubjectService																		iLimsSubjectService;
 
 	private DataView<LinkSubjectStudy>																dataView;
-	private ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService>	subjectProvider;
+	private ArkDataProvider2<LimsVO, LinkSubjectStudy>	subjectProvider;
 
 	/**
 	 * @param id
@@ -158,7 +158,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		searchResultsPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
 				editButtonContainer, arkContextMarkup, containerForm);
 
-		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService>(iLimsSubjectService) {
+		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 			/**
 			 * 
 			 */
@@ -178,7 +178,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 					}
 				}
 
-				return service.getSubjectCount(criteriaModel.getObject(), studyList);
+				return iLimsSubjectService.getSubjectCount(criteriaModel.getObject(), studyList);
 			}
 
 			public Iterator<LinkSubjectStudy> iterator(int first, int count) {

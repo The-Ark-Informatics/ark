@@ -36,6 +36,7 @@ import javax.persistence.TemporalType;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.ICustomFieldData;
 
 /**
  * @author elam
@@ -44,7 +45,7 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
 @Entity
 @Table(name = "biocollection_custom_field_data", schema = Constants.LIMS_TABLE_SCHEMA)
-public class BioCollectionCustomFieldData implements Serializable{
+public class BioCollectionCustomFieldData implements Serializable,  ICustomFieldData {
 	
 	/**
 	 * 

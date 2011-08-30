@@ -88,7 +88,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	protected WebMarkupContainer											dataViewListWMC;
 	private DataView<Biospecimen>											dataView;
-	private ArkDataProvider2<LimsVO, Biospecimen, ILimsService>	biospecimenProvider;
+	private ArkDataProvider2<LimsVO, Biospecimen>	biospecimenProvider;
 
 	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id, cpModel);
@@ -110,7 +110,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		dataViewListWMC = new WebMarkupContainer("dataViewListWMC");
 		dataViewListWMC.setOutputMarkupId(true);
 		// Data provider to paginate resultList
-		biospecimenProvider = new ArkDataProvider2<LimsVO, Biospecimen, ILimsService>(iLimsService) {
+		biospecimenProvider = new ArkDataProvider2<LimsVO, Biospecimen>() {
 
 			/**
 			 * 
@@ -118,13 +118,13 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			private static final long	serialVersionUID	= 1L;
 
 			public int size() {
-				return service.getBiospecimenCount(criteriaModel.getObject());
+				return iLimsService.getBiospecimenCount(criteriaModel.getObject());
 			}
 
 			public Iterator<Biospecimen> iterator(int first, int count) {
 				List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>();
 				if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
-					biospecimenList = service.searchPageableBiospecimens(criteriaModel.getObject(), first, count);
+					biospecimenList = iLimsService.searchPageableBiospecimens(criteriaModel.getObject(), first, count);
 				}
 				return biospecimenList.iterator();
 			}
@@ -184,7 +184,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	 * @param iModel
 	 * @return the pageableListView of BioCollection
 	 */
-	public DataView<Biospecimen> buildDataView(ArkDataProvider2<LimsVO, Biospecimen, ILimsService> biospecimenProvider) {
+	public DataView<Biospecimen> buildDataView(ArkDataProvider2<LimsVO, Biospecimen> biospecimenProvider) {
 
 		DataView<Biospecimen> biospecimenDataView = new DataView<Biospecimen>("biospecimenList", biospecimenProvider) {
 			/**

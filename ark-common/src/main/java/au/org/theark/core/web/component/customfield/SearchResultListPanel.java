@@ -68,7 +68,7 @@ public class SearchResultListPanel extends Panel {
 		this.feedbackPanel = feedBackPanel;
 	}
 
-	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField, IArkCommonService> subjectProvider) {
+	public DataView<CustomField> buildDataView(ArkDataProvider2<CustomField, CustomField> subjectProvider) {
 
 		DataView<CustomField> studyCompDataView = new DataView<CustomField>("customFieldList", subjectProvider) {
 

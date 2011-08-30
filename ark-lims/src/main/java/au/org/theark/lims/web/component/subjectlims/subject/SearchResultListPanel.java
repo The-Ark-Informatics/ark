@@ -90,7 +90,7 @@ public class SearchResultListPanel extends Panel {
 		this.subjectContainerForm = containerForm;
 	}
 
-	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy, ILimsSubjectService> subjectProvider) {
+	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy> subjectProvider) {
 
 		DataView<LinkSubjectStudy> studyCompDataView = new DataView<LinkSubjectStudy>("subjectList", subjectProvider) {
 

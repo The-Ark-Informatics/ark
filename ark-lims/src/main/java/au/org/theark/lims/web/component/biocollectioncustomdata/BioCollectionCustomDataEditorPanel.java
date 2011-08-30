@@ -18,45 +18,27 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biocollectioncustomdata;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.ConversionException;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.validation.validator.DateValidator;
-import org.apache.wicket.validation.validator.MaximumValidator;
-import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
-import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
-import au.org.theark.core.web.component.customfield.dataentry.DateDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.DropDownChoiceDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.EncodedValueVO;
-import au.org.theark.core.web.component.customfield.dataentry.NumberDataEntryPanel;
-import au.org.theark.core.web.component.customfield.dataentry.TextDataEntryPanel;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
 
@@ -81,7 +63,7 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 	
 	protected FeedbackPanel				feedbackPanel;
 	protected CustomDataEditorForm	customDataEditorForm;
-	protected ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData, ILimsService> scdDataProvider;
+	protected ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData> scdDataProvider;
 	protected DataView<BioCollectionCustomFieldData> dataView;
 
 	public BioCollectionCustomDataEditorPanel(String id, CompoundPropertyModel<BioCollectionCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {
@@ -114,20 +96,20 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		// TODO fix for READ permission check
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SEARCH)) {
 			// Data provider to get pageable results from backend
-			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData, ILimsService>(iLimsService) {
+			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData>() {
 				
 				public int size() {
 					BioCollection bc = criteriaModel.getObject().getBioCollection();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					return service.getBioCollectionCustomFieldDataCount(bc, arkFunction);
+					return iLimsService.getBioCollectionCustomFieldDataCount(bc, arkFunction);
 				}
 	
 				public Iterator<BioCollectionCustomFieldData> iterator(int first, int count) {
 					BioCollection bc = criteriaModel.getObject().getBioCollection();
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
-					List<BioCollectionCustomFieldData> bioCollectionCustomDataList = service.getBioCollectionCustomFieldDataList(bc, arkFunction, first, count);
+					List<BioCollectionCustomFieldData> bioCollectionCustomDataList = iLimsService.getBioCollectionCustomFieldDataList(bc, arkFunction, first, count);
 					cpModel.getObject().setBioCollectionCustomFieldDataList(bioCollectionCustomDataList);
 					return cpModel.getObject().getBioCollectionCustomFieldDataList().iterator();
 				}
@@ -137,7 +119,7 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		}
 		else {
 			// Since module is not accessible, create a dummy dataProvider that returns nothing
-			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData, ILimsService>(null) {
+			scdDataProvider = new ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData>() {
 				
 				public Iterator<? extends BioCollectionCustomFieldData> iterator(int first, int count) {
 					return null;
@@ -153,9 +135,9 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 	}
 	
-	public DataView<BioCollectionCustomFieldData> buildDataView(ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData, ILimsService> scdDataProvider2) {
+	public DataView<BioCollectionCustomFieldData> buildDataView(ArkDataProvider2<BioCollectionCustomDataVO, BioCollectionCustomFieldData> scdDataProvider2) {
 
-		DataView<BioCollectionCustomFieldData> bioCollectionCFDataDataView = new DataView<BioCollectionCustomFieldData>("bioCollectionCustomDataList", scdDataProvider2) {
+		DataView<BioCollectionCustomFieldData> bioCollectionCFDataDataView = new CustomDataEditorDataView<BioCollectionCustomFieldData>("bioCollectionCustomDataList", scdDataProvider2) {
 
 			@Override
 			protected void populateItem(final Item<BioCollectionCustomFieldData> item) {
@@ -164,145 +146,17 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 				if (bioCollectionCustomData.getBioCollection() == null) {
 					bioCollectionCustomData.setBioCollection(cpModel.getObject().getBioCollection());
 				}
-				CustomField cf = bioCollectionCustomData.getCustomFieldDisplay().getCustomField();
-				
-				Label fieldLabelLbl; 
-				if (cf.getFieldLabel() != null) {
-					fieldLabelLbl = new Label("fieldLabel", cf.getFieldLabel());
-				}
-				else {
-					// Defaults to name if no fieldLabel
-					fieldLabelLbl = new Label("fieldLabel", cf.getName());
-				}
-				Panel dataValueEntryPanel;
-				String fieldTypeName = cf.getFieldType().getName();
-				String encodedValues = cf.getEncodedValues();
-				Boolean requiredField = bioCollectionCustomData.getCustomFieldDisplay().getRequired();
-				if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-					DateDataEntryPanel dateDataEntryPanel = new DateDataEntryPanel("dataValueEntryPanel", 
-																new PropertyModel<Date>(item.getModel(), "dateDataValue"),
-																new Model<String>(cf.getFieldLabel()));
-					dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
-					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
-						IConverter dateConverter = dateDataEntryPanel.getDateConverter();
-						try {
-							Date minDate = (Date) dateConverter.convertToObject(cf.getMinValue(), getLocale());
-							dateDataEntryPanel.addValidator(DateValidator.minimum(minDate));
-						}
-						catch (ConversionException ce) {
-							// This should not occur because it means the data is corrupted on the backend database
-							log.error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
-							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-							customDataEditorForm.setEnabled(false);
-						}
-					}
-					if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
-						IConverter dateConverter = dateDataEntryPanel.getDateConverter();
-						try {
-							Date maxDate = (Date) dateConverter.convertToObject(cf.getMaxValue(), getLocale());
-							dateDataEntryPanel.addValidator(DateValidator.maximum(maxDate));
-						}
-						catch (ConversionException ce) {
-							// This should not occur because it means the data is corrupted on the backend database
-							log.error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
-							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-							customDataEditorForm.setEnabled(false);
-						}
-					}
-					if (requiredField != null && requiredField == true) {
-						dateDataEntryPanel.setRequired(true);
-					}
-					dataValueEntryPanel = dateDataEntryPanel;
-				}
-				else {
-					if (encodedValues != null && !encodedValues.isEmpty()) {
-						// The presence of encodedValues means it should be a DropDownChoice
-						List<String> encodeKeyValueList = Arrays.asList(encodedValues.split(";"));
-						List<EncodedValueVO> choiceList = new ArrayList();
-						for (String keyValue : encodeKeyValueList) {
-							String[] keyValueArray = keyValue.split("=");
-							EncodedValueVO encodedValueVo = new EncodedValueVO();
-							encodedValueVo.setKey(keyValueArray[0]);
-							encodedValueVo.setValue(keyValueArray[1]);
-							choiceList.add(encodedValueVo);
-						}
-						// TODO: Do the encodedValues required more validation???
-						ChoiceRenderer<EncodedValueVO> ddcChoiceRender = new ChoiceRenderer<EncodedValueVO>("value", "key");
-						DropDownChoiceDataEntryPanel ddcPanel = 
-									new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																					new Model<String>(cf.getFieldLabel()), choiceList, ddcChoiceRender);
-						if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
-							ddcPanel.setMissingValue(cf.getMissingValue());
-						}
-						if (requiredField != null && requiredField == true) {
-							ddcPanel.setRequired(true);
-						}
-						dataValueEntryPanel = ddcPanel;
-					}
-					else {
-						if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.CHARACTER_FIELD_TYPE_NAME)) {
-							// Text data
-							TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
-																												new PropertyModel<String>(item.getModel(), "textDataValue"), 
-																												new Model<String>(cf.getFieldLabel()));
-							if (requiredField != null && requiredField == true) {
-								 textDataEntryPanel.setRequired(true);
-							}
-							dataValueEntryPanel = textDataEntryPanel;
-						}
-						else if (fieldTypeName.equals(au.org.theark.core.web.component.customfield.Constants.NUMBER_FIELD_TYPE_NAME)) {
-							// Number data
-							NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
-																														new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
-																														new Model<String>(cf.getFieldLabel()));
-							if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
-								IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
-								try {
-									Double minNumber = (Double) doubleConverter.convertToObject(cf.getMinValue(), getLocale());
-									numberDataEntryPanel.addValidator(new MinimumValidator(minNumber));
-								}
-								catch (ConversionException ce) {
-									// This should not occur because it means the data is corrupted on the backend database
-									log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-									this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-									customDataEditorForm.setEnabled(false);
-								}
-							}
-							if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
-								IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
-								try {
-									Double maxNumber = (Double) doubleConverter.convertToObject(cf.getMaxValue(), getLocale());
-									numberDataEntryPanel.addValidator(new MaximumValidator(maxNumber));
-								}
-								catch (ConversionException ce) {
-									// This should not occur because it means the data is corrupted on the backend database
-									log.error("Unexpected error: customfield.maxValue is not in a valid number format");
-									this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-									customDataEditorForm.setEnabled(false);
-								}
-							}
-							if (requiredField != null && requiredField == true) {
-								numberDataEntryPanel.setRequired(true);
-							}
-							dataValueEntryPanel = numberDataEntryPanel;
-						}
-						else {
-							// TODO: Unknown type should display an UnsupportedValueEntryPanel
-							dataValueEntryPanel = new EmptyPanel("dataValueEntryPanel");
-						}
-					}
-				}
-				Label unitLabelLbl;
-				if (cf.getUnitType() != null && cf.getUnitType().getName() != null) {
-					unitLabelLbl = new Label("unitLabel", cf.getUnitType().getName());
-				}
-				else {
-					unitLabelLbl = new Label("unitLabel", "");
-				}
-				
-				item.add(fieldLabelLbl);
-				item.add(dataValueEntryPanel);
-				item.add(unitLabelLbl);
+				super.populateItem(item);
+			}
+
+			@Override
+			protected Form<?> getCustomDataEditorForm() {
+				return customDataEditorForm;
+			}
+
+			@Override
+			protected Logger getLog() {
+				return log;
 			}
 		};
 		return bioCollectionCFDataDataView;

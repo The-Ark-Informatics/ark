@@ -65,7 +65,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	private IArkCommonService			iArkCommonService;
 
 	private DataView<CustomField>		dataView;
-	private ArkDataProvider2<CustomField, CustomField, IArkCommonService>	customFieldProvider;
+	private ArkDataProvider2<CustomField, CustomField>	customFieldProvider;
 
 	/**
 	 * @param id - 
@@ -135,16 +135,16 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", cpModel, arkCrudContainerVO, feedBackPanel);
 
 		// Data providor to paginate resultList
-		customFieldProvider = new ArkDataProvider2<CustomField, CustomField, IArkCommonService>(iArkCommonService) {
+		customFieldProvider = new ArkDataProvider2<CustomField, CustomField>() {
 
 			public int size() {
-				return service.getCustomFieldCount(criteriaModel.getObject());
+				return iArkCommonService.getCustomFieldCount(criteriaModel.getObject());
 			}
 
 			public Iterator<CustomField> iterator(int first, int count) {
 				List<CustomField> listSubjects = new ArrayList<CustomField>();
 				if (isActionPermitted()) {
-					listSubjects = service.searchPageableCustomFields(criteriaModel.getObject(), first, count);
+					listSubjects = iArkCommonService.searchPageableCustomFields(criteriaModel.getObject(), first, count);
 				}
 				return listSubjects.iterator();
 			}

@@ -43,7 +43,12 @@ import au.org.theark.core.Constants;
 
 @Entity
 @Table(name = "SUBJECT_CUSTOM_FIELD_DATA", schema = Constants.STUDY_SCHEMA)
-public class SubjectCustomFieldData implements Serializable{
+public class SubjectCustomFieldData implements Serializable, ICustomFieldData {
+	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	
 	private Long id;
 	private LinkSubjectStudy linkSubjectStudy;
