@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -61,35 +60,34 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
  * @author cellis
  * 
  */
-@SuppressWarnings({ "unchecked"})
+@SuppressWarnings( { "unchecked" })
 public class BiospecimenListForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long									serialVersionUID	= 1L;
-	private static final Logger					log					= LoggerFactory.getLogger(BiospecimenListForm.class);
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService									iArkCommonService;
+	private static final long												serialVersionUID	= 1L;
+	private static final Logger											log					= LoggerFactory.getLogger(BiospecimenListForm.class);
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService											iLimsService;
+	private ILimsService														iLimsService;
 
-	protected CompoundPropertyModel<LimsVO>				cpModel;
-	protected FeedbackPanel										feedbackPanel;
-	protected AbstractDetailModalWindow						modalWindow;
+	protected CompoundPropertyModel<LimsVO>							cpModel;
+	protected FeedbackPanel													feedbackPanel;
+	protected AbstractDetailModalWindow									modalWindow;
 
-	private Label													idLblFld;
-	private Label													nameLblFld;
-	private Label													sampleTypeLblFld;
-	private Label													collectionLblFld;
-	private Label													commentsLblFld;
-	private Label													quantityLblFld;
-	private Panel													modalContentPanel;
-	protected AjaxButton											newButton;
+	private Label																idLblFld;
+	private Label																nameLblFld;
+	private Label																sampleTypeLblFld;
+	private Label																collectionLblFld;
+	private Label																commentsLblFld;
+	private Label																quantityLblFld;
+	private Label																unitsLblFld;
 
-	protected WebMarkupContainer								dataViewListWMC;
-	private DataView<Biospecimen>								dataView;
+	private Panel																modalContentPanel;
+	protected AjaxButton														newButton;
+
+	protected WebMarkupContainer											dataViewListWMC;
+	private DataView<Biospecimen>											dataView;
 	private ArkDataProvider2<LimsVO, Biospecimen, ILimsService>	biospecimenProvider;
 
 	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
@@ -107,7 +105,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 		add(modalWindow);
 	}
-	
+
 	private void initialiseDataView() {
 		dataViewListWMC = new WebMarkupContainer("dataViewListWMC");
 		dataViewListWMC.setOutputMarkupId(true);
@@ -164,10 +162,10 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			@Override
 			public boolean isVisible() {
 				boolean isVisible = true;
-				
+
 				String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 				isVisible = (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW) && sessionSubjectUID != null);
-				
+
 				return isVisible;
 			}
 
@@ -201,7 +199,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				final Biospecimen biospecimen = item.getModelObject();
 
 				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
-				
+
 				AjaxLink listEditLink = new AjaxLink("listEditLink") {
 
 					/**
@@ -212,7 +210,6 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					@Override
 					public void onClick(AjaxRequestTarget target) {
 						Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
-						//TODO: use shared cpm?
 						CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
 						showModalWindow(target, newModel);
@@ -240,6 +237,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					quantityLblFld = new Label("biospecimen.quantity", biospecimen.getQuantity().toString());
 				}
+				unitsLblFld = new Label("biospecimen.units", biospecimen.getUnits());
 
 				item.add(idLblFld);
 				item.add(nameLblFld);
@@ -247,10 +245,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(collectionLblFld);
 				item.add(commentsLblFld);
 				item.add(quantityLblFld);
+				item.add(unitsLblFld);
 
 				WebMarkupContainer rowDeleteWMC = new WebMarkupContainer("rowDeleteWMC", item.getModel());
 				AjaxButton deleteButton = new AjaxButton("listDeleteButton", new StringResourceModel(Constants.DELETE, this, null)) {
-					IModel							confirm				= new StringResourceModel("confirmDelete", this, null);
+					IModel confirm	= new StringResourceModel("confirmDelete", this, null);
 					/**
 					 * 
 					 */
@@ -304,7 +303,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 					}
 
 				};
-				
+
 				deleteButton.setDefaultFormProcessing(false);
 				rowDeleteWMC.add(deleteButton);
 				item.add(rowDeleteWMC);
@@ -360,7 +359,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
-	
+
 	/**
 	 * @return the newButton
 	 */
@@ -369,9 +368,17 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	/**
-	 * @param newButton the newButton to set
+	 * @param newButton
+	 *           the newButton to set
 	 */
 	public void setNewButton(AjaxButton newButton) {
 		this.newButton = newButton;
+	}
+
+	/**
+	 * @return the log
+	 */
+	public static Logger getLog() {
+		return log;
 	}
 }
