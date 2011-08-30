@@ -25,13 +25,34 @@ import org.apache.wicket.markup.html.form.Form;
  * IViewModeEventHandler is an interface for use with the ViewModeButtonsPanel
  * 
  * @author elam
+ * @author cellis
  */
 public interface IViewModeEventHandler {
-
-	void onViewEdit(AjaxRequestTarget target, Form<?> form);		//Edit button's onSubmit
-	void onViewCancel(AjaxRequestTarget target, Form<?> form);	//Cancel button's onSubmit
+	/**
+	 * Handle Edit button's onSubmit
+	 * @param target
+	 * @param form
+	 */
+	void onViewEdit(AjaxRequestTarget target, Form<?> form);
 	
-	void onViewEditError(AjaxRequestTarget target, Form<?> form);		//Edit button's onError
-	void onViewCancelError(AjaxRequestTarget target, Form<?> form);	//Cancel button's onError
-
+	/**
+	 * Handle Cancel button's onSubmit
+	 * @param target
+	 * @param form
+	 */
+	void onViewCancel(AjaxRequestTarget target, Form<?> form);
+	
+	/**
+	 * Handle Edit button's onError
+	 * @param target
+	 * @param form
+	 */
+	void onViewEditError(AjaxRequestTarget target, Form<?> form);
+	
+	/**
+	 * Handle Cancel button's onError
+	 * @param target
+	 * @param form
+	 */
+	void onViewCancelError(AjaxRequestTarget target, Form<?> form);
 }
