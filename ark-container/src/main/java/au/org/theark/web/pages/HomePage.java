@@ -58,7 +58,6 @@ public class HomePage extends BasePage {
 	private transient static Logger	log	= LoggerFactory.getLogger(HomePage.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private TabbedPanel					moduleTabbedPanel;
-	private Subject						currentUser;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
@@ -70,7 +69,7 @@ public class HomePage extends BasePage {
 	 *           Page parameters
 	 */
 	public HomePage(final PageParameters parameters) {
-		this.currentUser = SecurityUtils.getSubject();
+		Subject currentUser = SecurityUtils.getSubject();
 
 		if (currentUser.getPrincipal() != null) {
 			buildContextPanel();
@@ -108,14 +107,16 @@ public class HomePage extends BasePage {
 	protected void buildModuleTabs() {
 		List<ITab> moduleTabsList = new ArrayList<ITab>(0);
 		List<ArkModule> arkModuleList = new ArrayList<ArkModule>(0);
+		Subject currentUser = SecurityUtils.getSubject();
 		String ldapUserName = currentUser.getPrincipal().toString();
+		
 		MainTabProviderImpl studyMainTabProvider = null;
 
 		try {
 			ArkUser arkUser = iArkCommonService.getArkUser(ldapUserName);
 			arkModuleList = iArkCommonService.getArkModuleListByArkUser(arkUser);
-
-			for (ArkModule arkModule : arkModuleList) {
+			
+			for (ArkModule arkModule: arkModuleList) {
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_STUDY)) {
 					// Study
 					studyMainTabProvider = new MainTabProviderImpl(arkModule.getName());
@@ -158,7 +159,7 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
-
+				
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REPORTING)) {
 					// Reporting
 					ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl(arkModule.getName());
@@ -167,7 +168,7 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
-
+				
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_ADMIN)) {
 					// Admin
 					AdminTabProviderImpl adminTabProvider = new AdminTabProviderImpl(arkModule.getName());
@@ -181,12 +182,12 @@ public class HomePage extends BasePage {
 		catch (EntityNotFoundException e) {
 			log.error("ArkUser [" + ldapUserName + "] was not found!");
 			log.error(e.getMessage());
-
+			
 			// Study
 			studyMainTabProvider = new MainTabProviderImpl(au.org.theark.core.Constants.ARK_MODULE_STUDY);
 			// Pass in the Study logo mark up, to allow dynamic logo reference
 			moduleTabsList = studyMainTabProvider.buildTabs(this.studyNameMarkup, this.studyLogoMarkup, this.arkContextPanelMarkup);
-
+			
 			// Reporting
 			ReportTabProviderImpl reportTabProvider = new ReportTabProviderImpl(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
 			List<ITab> reportTabList = reportTabProvider.buildTabs();
