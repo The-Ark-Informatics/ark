@@ -93,7 +93,6 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		addOrReplace(buttonsPanelWMC);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
