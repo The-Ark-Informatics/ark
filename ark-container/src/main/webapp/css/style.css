@@ -48,13 +48,6 @@ body:before { /* thanks to Maleika (Kohoutec)*/
 	margin-bottom: 10px;
 }
 
-#actionButtons {
-	float: right;
-	width: 50%;
-	height: 5%;
-	padding-bottom: 10px;
-}
-
 #labelBold {
 	font-family: 'Lucida Sans', 'Helvetica', 'Sans-serif', 'sans';
 	font-weight: bold;
@@ -429,90 +422,6 @@ div.tabRowContent {
 	padding: 4px;
 }
 
-table.dataview {
-	margin-bottom: 10px;
-	border-bottom: 1px solid #6F6F6F;
-	font-size: 1em;
-	font-family: arial;
-}
-
-table.dataview caption {
-	text-align: left;
-}
-
-table.dataview tr {
-	padding-top: 2px;
-	padding-bottom: 2px;
-}
-
-table.dataview tr.even {
-	background-color: #EEEEEE;
-}
-
-table.dataview tr.odd {
-	background-color: #FFFFFF;
-}
-
-table.dataview tr td {
-	padding-left: 5px;
-	padding-right: 5px;
-}
-
-table.dataview tr th {
-	color: black;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 10px;
-	background-color: #C0C0C0;
-	border-bottom: 1px solid #6F6F6F;
-	border-top: 1px solid #6F6F6F;
-	text-align: left;
-	white-space: nowrap;
-	vertical-align: middle;
-}
-
-table.dataview tr th {
-	background-position: right;
-	background-repeat: no-repeat;
-}
-
-table.dataview tr th.wicket_orderDown {
-	background-color: #87cbff;
-	background-image: url(displaytag/img/arrow_down.png);
-}
-
-table.dataview tr th.wicket_orderUp {
-	background-color: #87cbff;
-	background-image: url(displaytag/img/arrow_up.png);
-}
-
-table.dataview tr th.wicket_orderNone {
-	background-image: url(displaytag/img/arrow_off.png);
-}
-
-table.dataview tr th a {
-	font-weight: normal;
-}
-
-table.dataview #message {
-	padding-left: 3px;
-}
-
-table.dataview caption {
-	padding-bottom: 2px;
-}
-
-table.palette td.header {
-	background-color: #C0C0C0;
-	border-bottom: 1px solid #6F6F6F;
-	border-top: 1px solid #6F6F6F;
-	font-size: 10pt;
-	font-weight: bold;
-	padding: 2px;
-	text-align: center;
-}
-
 /* TAB PANEL STYLES */
 div.tabpanel div.tab-row {
 	float: left;
@@ -842,10 +751,6 @@ wicket-ajax-indicator {
 	z-index: 1000;
 }
 
-table.dataview li {
-	margin-left: 1.5em;
-}
-
 div.wicket-aa {
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana;
 	font-size: 12px;
@@ -879,4 +784,10 @@ div.wicket-aa ul li.selected {
 
 .centreLabel {
     text-align: center;
+}
+
+#listPanelBorder {
+    border-color: #6F6F6F;
+    border-style: none solid solid;
+    border-width: 1px;
 }

@@ -37,9 +37,7 @@
 }
 
 #gridBox {
-    margin-left: auto;
-    margin-right: auto;
-    width: 0;
+    width: 100%;
 }
 
 table.gridBoxTable {
@@ -48,7 +46,8 @@ table.gridBoxTable {
 }
 
 table.gridBoxTable th {
-    color: white;
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: black;
     font-weight: bold;
     padding: 1px;
 }
