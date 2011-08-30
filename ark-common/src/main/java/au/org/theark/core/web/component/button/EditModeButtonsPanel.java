@@ -22,6 +22,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,19 +115,12 @@ public class EditModeButtonsPanel extends Panel {
 		cancelButton.setDefaultFormProcessing(false);
 		this.add(cancelButton);
 		
-		deleteButton  = new ArkAjaxButton("delete") {
-			
+		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
-			@Override
-			public boolean isVisible() {
-				// Ark-Security implemented
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
-			}
-			
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if (deleteButton.isVisible() && deleteButton.isEnabled()) {
@@ -136,15 +130,8 @@ public class EditModeButtonsPanel extends Panel {
 					log.error("Illegal Delete button submit: button is not enabled and/or not visible.");
 				}
 			}
-			
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				if (!deleteButton.isVisible() || !deleteButton.isEnabled()) {
-					log.error("Illegal onError for Delete button submit: button is not enabled and/or not visible.");	
-				}
-				eventHandler.onEditDeleteError(target, form);
-			}
 		};
+		
 		deleteButton.setDefaultFormProcessing(false);
 		this.add(deleteButton);
 	}
