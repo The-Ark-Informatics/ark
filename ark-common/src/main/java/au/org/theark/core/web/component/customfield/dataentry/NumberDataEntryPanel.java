@@ -20,12 +20,13 @@ package au.org.theark.core.web.component.customfield.dataentry;
 
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.util.convert.IConverter;
 import org.apache.wicket.validation.IValidator;
 
 /**
  * TextField based Data entry panel for numbers
+ * @author elam
+ * @author cellis
  */
 public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 	
@@ -65,5 +66,4 @@ public class NumberDataEntryPanel extends AbstractDataEntryPanel<Double> {
 	protected DataEntryType getDataEntryType() {
 		return DataEntryType.NUMBER;
 	}
-
 }
