@@ -85,6 +85,8 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 														new PropertyModel<Date>(item.getModel(), "dateDataValue"),
 														new Model<String>(cf.getFieldLabel()));
 			dateDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+			dateDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+
 			if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
 				IConverter dateConverter = dateDataEntryPanel.getDateConverter();
 				try {
@@ -133,6 +135,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				DropDownChoiceDataEntryPanel ddcPanel = 
 							new DropDownChoiceDataEntryPanel("dataValueEntryPanel", new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																			new Model<String>(cf.getFieldLabel()), choiceList, ddcChoiceRender);
+				ddcPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+				ddcPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+				
 				if (cf.getMissingValue() != null && !cf.getMissingValue().isEmpty()) {
 					ddcPanel.setMissingValue(cf.getMissingValue());
 				}
@@ -147,6 +152,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					TextDataEntryPanel textDataEntryPanel = new TextDataEntryPanel("dataValueEntryPanel", 
 																										new PropertyModel<String>(item.getModel(), "textDataValue"), 
 																										new Model<String>(cf.getFieldLabel()));
+					textDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+					textDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+										
 					if (requiredField != null && requiredField == true) {
 						 textDataEntryPanel.setRequired(true);
 					}
@@ -157,6 +165,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					NumberDataEntryPanel numberDataEntryPanel = new NumberDataEntryPanel("dataValueEntryPanel", 
 																												new PropertyModel<Double>(item.getModel(), "numberDataValue"), 
 																												new Model<String>(cf.getFieldLabel()));
+					numberDataEntryPanel.setErrorDataValueModel(new PropertyModel<String>(item.getModel(), "errorDataValue"));
+					numberDataEntryPanel.setUnitsLabelModel(new PropertyModel<String>(item.getModel(), "customFieldDisplay.customField.unitType.name"));
+										
 					if (cf.getMinValue() != null && !cf.getMinValue().isEmpty()) {
 						IConverter doubleConverter = numberDataEntryPanel.getNumberConverter();
 						try {
@@ -194,17 +205,9 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 				}
 			}
 		}
-		Label unitLabelLbl;
-		if (cf.getUnitType() != null && cf.getUnitType().getName() != null) {
-			unitLabelLbl = new Label("unitLabel", cf.getUnitType().getName());
-		}
-		else {
-			unitLabelLbl = new Label("unitLabel", "");
-		}
-		
+
 		item.add(fieldLabelLbl);
 		item.add(dataValueEntryPanel);
-		item.add(unitLabelLbl);
 	}
 
 	protected abstract Form<?> getCustomDataEditorForm();
