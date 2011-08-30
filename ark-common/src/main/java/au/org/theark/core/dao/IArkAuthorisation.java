@@ -171,4 +171,8 @@ public interface IArkAuthorisation<T> {
 	public List<Study> getStudyListForUser(ArkUserVO arkUserVo);
 	
 	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
+
+	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule);
+	
+	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
 }

@@ -907,4 +907,70 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return studyList;		
 		
 	}
+
+	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule) {
+		boolean hasModuleAccess = false;
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		
+		try {
+			// Restrict by user if NOT Super Administrator
+			if(!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				criteria.add(Restrictions.eq("arkUser", arkUser));
+			}
+			
+			// Restrict by arkModule
+			criteria.add(Restrictions.eq("arkModule", arkModule));
+			
+			List<?> list = criteria.list();
+			hasModuleAccess = (list.size() > 0);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		catch (NullPointerException e) {
+			log.error(e.getMessage());
+		}
+		
+		return hasModuleAccess;
+	}
+	
+	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser) {
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		
+		try {
+			// Restrict by user if NOT Super Administrator
+			if(!isUserAdminHelper(arkUser.getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				criteria.add(Restrictions.eq("arkUser", arkUser));
+			}
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		catch (NullPointerException e) {
+			log.error(e.getMessage());
+		}
+		
+		ProjectionList projectionList = Projections.projectionList();
+		projectionList.add(Projections.groupProperty("arkModule"), "arkModule");
+		
+		criteria.setProjection(projectionList);
+		criteria.addOrder(Order.asc("arkModule.id"));
+		
+		List<ArkModule> list = criteria.list();
+		
+		ArkModule lastArkModule = list.get(list.size()-1);
+		
+		// Add Reporting as a module to the list
+		ArkModule arkModule = getArkModuleByName(au.org.theark.core.Constants.ARK_MODULE_REPORTING);
+		
+		// Handle for Admin module (insert Report before it)
+		if(lastArkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_ADMIN)) {
+			list.add(list.size()-1, arkModule);
+		}
+		else {
+			list.add(arkModule);	
+		}
+		
+		return list;
+	}
 }

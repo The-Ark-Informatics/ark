@@ -470,4 +470,8 @@ public interface IArkCommonService<T> {
 	public List<ArkUserRole> getArkRoleListByUserAndStudy(ArkUserVO arkUserVo, Study study);
 	
 	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule);
+
+	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule);
+	
+	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
 }

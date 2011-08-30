@@ -647,4 +647,12 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public List<Study> getStudyListForUserAndModule(ArkUserVO arkUserVo, ArkModule arkModule){
 		return arkAuthorisationDao.getStudyListForUserAndModule(arkUserVo, arkModule);		
 	}
+
+	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule) {
+		return arkAuthorisationDao.arkUserHasModuleAccess(arkUser, arkModule);
+	}
+	
+	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser) {
+		return arkAuthorisationDao.getArkModuleListByArkUser(arkUser); 
+	}
 }
