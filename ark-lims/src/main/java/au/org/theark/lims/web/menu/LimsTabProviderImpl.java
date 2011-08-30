@@ -28,7 +28,6 @@ import org.apache.wicket.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
@@ -70,11 +69,12 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isAccessible() {
-				return ArkPermissionHelper.isModuleFunctionAccessPermitted();
+				return true;
 			}
 
 			public boolean isVisible() {
-				return ArkPermissionHelper.isModuleFunctionAccessPermitted();
+
+				return true;
 			}
 		};
 	}
