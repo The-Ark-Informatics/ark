@@ -139,6 +139,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(collectionDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
+		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -160,6 +161,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 				processErrors(target);
 			}
 		}
+
 		if (target != null) {
 			onSavePostProcess(target);
 		}
@@ -210,56 +212,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		else {
 			return false;
 		}
-	}
-
-	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onViewCancelError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditCancelError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditDelete(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditDeleteError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
