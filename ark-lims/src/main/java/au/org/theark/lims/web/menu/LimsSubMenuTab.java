@@ -37,6 +37,7 @@ import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biocollection.BioCollectionContainerPanel;
+import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.inventory.panel.InventoryContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.SubjectLimsContainerPanel;
@@ -98,6 +99,9 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			// useCustomFieldDisplay = true
 			panelToReturn = new CustomFieldContainerPanel(panelId, true, 
 											iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+		}
+		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION_CUSTOM_DATA)) {
+			panelToReturn = new BioCollectionCustomDataContainerPanel(panelId).initialisePanel();
 		}
 		else {
 			//TODO: This shouldn't happen when all functions have been implemented

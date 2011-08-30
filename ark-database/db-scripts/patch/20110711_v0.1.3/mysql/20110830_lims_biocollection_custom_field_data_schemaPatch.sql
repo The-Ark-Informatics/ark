@@ -8,3 +8,4 @@ ALTER TABLE `lims`.`biocollection_custom_field_data`
   REFERENCES `lims`.`collection` (`ID` )
   ON DELETE CASCADE
   ON UPDATE NO ACTION;
+

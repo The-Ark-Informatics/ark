@@ -49,6 +49,11 @@ import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 @Table(name = "biocollection_custom_field_data", schema = Constants.LIMS_TABLE_SCHEMA)
 public class BioCollectionCustomFieldData implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private Long id;
 	private BioCollection bioCollection;
 	private CustomFieldDisplay customFieldDisplay;

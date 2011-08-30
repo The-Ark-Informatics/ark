@@ -34,6 +34,7 @@ public class ArkFormVisitor implements IVisitor<Component>, Serializable {
 	 * 
 	 */
 	private static final long	serialVersionUID	= -1613309540699904032L;
+	
 	Set<Component>					visited				= new HashSet<Component>();
 
 	public Object component(Component component) {
