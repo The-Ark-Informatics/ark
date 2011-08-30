@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.form.FormComponent;
 import au.org.theark.core.web.behavior.ArkRequiredFieldHintBehavior;
 
 @SuppressWarnings("unchecked")
-public class ArkFormVisitor implements IVisitor, Serializable {
+public class ArkFormVisitor implements IVisitor<Component>, Serializable {
 	/**
 	 * 
 	 */

@@ -320,7 +320,7 @@ public class LimsServiceImpl implements ILimsService {
 	}
 	
 	public int getBioCollectionCustomFieldDataCount(BioCollection criteria, ArkFunction arkFunction) {
-		return getBioCollectionCustomFieldDataCount(criteria, arkFunction);
+		return iBioCollectionDao.getBioCollectionCustomFieldDataCount(criteria, arkFunction);
 	}
 
 	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList(BioCollection bioCollectionCriteria, ArkFunction arkFunction, int first, int count) {
@@ -341,9 +341,9 @@ public class LimsServiceImpl implements ILimsService {
 		for (BioCollectionCustomFieldData bioCollectionCFData : bioCollectionCFDataList) {
 			
 			
-			try{
+			try {
 			/* Insert the Field if it does not have a  ID and has the required fields */
-				if( canInsert(bioCollectionCFData)) {
+				if (canInsert(bioCollectionCFData)) {
 		
 					iBioCollectionDao.createBioCollectionCustomFieldData(bioCollectionCFData);
 					Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();
@@ -355,20 +355,22 @@ public class LimsServiceImpl implements ILimsService {
 					
 					arkCommonService.updateCustomField(customFieldVO);
 
-				}else if(canUpdate(bioCollectionCFData)){
+				}
+				else if (canUpdate(bioCollectionCFData)) {
 					
 					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
-					if(bioCollectionCFData.getErrorDataValue() != null){
+					if (bioCollectionCFData.getErrorDataValue() != null) {
 						bioCollectionCFData.setErrorDataValue(null);
 					} 
 					iBioCollectionDao.updateBioCollectionCustomFieldData(bioCollectionCFData);
 				
-				}else if(canDelete(bioCollectionCFData)){
+				}
+				else if (canDelete(bioCollectionCFData)) {
 					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
 					Long count  = iBioCollectionDao.isCustomFieldUsed(bioCollectionCFData);
 					
 					iBioCollectionDao.deleteBioCollectionCustomFieldData(bioCollectionCFData);
-					if(count <= 1){
+					if(count <= 1) {
 						//Then update the CustomField's hasDataFlag to false;
 						Long id = bioCollectionCFData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
 						CustomField customField = arkCommonService.getCustomField(id);
@@ -376,11 +378,12 @@ public class LimsServiceImpl implements ILimsService {
 						CustomFieldVO customFieldVO = new CustomFieldVO();
 						customFieldVO.setCustomField(customField);
 						arkCommonService.updateCustomField(customFieldVO); //Update it
-						
 					}
 				}
-			}catch(Exception someException){
+			}
+			catch (Exception someException) {
 				listOfExceptions.add(bioCollectionCFData);//Continue with rest of the list
+				someException.printStackTrace();
 			}
 		}
 		

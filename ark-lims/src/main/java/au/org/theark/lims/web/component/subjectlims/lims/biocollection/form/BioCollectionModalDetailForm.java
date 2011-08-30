@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -25,7 +26,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -43,6 +46,7 @@ import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 
 /**
  * @author cellis
@@ -71,6 +75,8 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private DateTextField				surgeryDateTxtFld;
 	private ModalWindow					modalWindow;
 	private WebMarkupContainer			arkContextMarkup;
+	private WebMarkupContainer 		bioCollectionCFDataEntryWMC;
+	private Panel 							bioCollectionCFDataEntryPanel;
 
 	/**
 	 * Constructor
@@ -102,6 +108,21 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		}		
 	}
 
+	private void initialiseBioCollectionCFDataEntry() {
+		BioCollection bioCollection = cpModel.getObject().getBioCollection();
+		if (bioCollection.getId() == null) {
+			// New BioCollection record, so BioCollection CF data entry is disallowed
+			bioCollectionCFDataEntryPanel = new EmptyPanel("bioCollectionCFDataEntryPanel");
+		}
+		else {
+			// Editing an existing record, CF data entry is ok
+			// Place the selected bioCollection in session context (CF data entry is relies on this context to work)
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.lims.web.Constants.BIO_COLLECTION, bioCollection.getId());
+			bioCollectionCFDataEntryPanel = new BioCollectionCustomDataContainerPanel("bioCollectionCFDataEntryPanel").initialisePanel();
+		}
+		bioCollectionCFDataEntryWMC.addOrReplace(bioCollectionCFDataEntryPanel);
+	}
+
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("bioCollection.id");
 		
@@ -120,6 +141,10 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		ArkDatePicker endDatePicker = new ArkDatePicker();
 		endDatePicker.bind(surgeryDateTxtFld);
 		surgeryDateTxtFld.add(endDatePicker);
+
+		bioCollectionCFDataEntryWMC = new WebMarkupContainer("bioCollectionCFDataEntryWMC");
+		bioCollectionCFDataEntryWMC.setOutputMarkupId(true);
+		initialiseBioCollectionCFDataEntry();
 
 		attachValidators();
 		addComponents();
@@ -141,6 +166,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		arkCrudContainerVo.getDetailPanelFormContainer().add(surgeryDateTxtFld);
 		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
+		add(bioCollectionCFDataEntryWMC);
 	}
 
 	@Override
@@ -161,8 +187,11 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 				processErrors(target);
 			}
 		}
+		// refresh the CF data entry panel
+		initialiseBioCollectionCFDataEntry();
 
 		if (target != null) {
+			target.addComponent(bioCollectionCFDataEntryWMC);
 			onSavePostProcess(target);
 		}
 	}

@@ -34,6 +34,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
 
@@ -74,6 +77,7 @@ public class BioCollectionCustomFieldData implements Serializable{
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.REMOVE, CascadeType.DELETE})
 	@JoinColumn(name = "BIO_COLLECTION_ID")
 	public BioCollection getBioCollection() {
 		return bioCollection;

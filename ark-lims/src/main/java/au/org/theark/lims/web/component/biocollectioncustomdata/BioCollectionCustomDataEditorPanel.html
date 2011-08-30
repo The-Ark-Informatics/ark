@@ -1,0 +1,44 @@
+<wicket:panel>
+	<div id="detailPanelBreaker">&nbsp;</div>
+	<form wicket:id="customDataEditorForm">
+		<div id="detailsPanelBorder">
+			<div id="detailPanelBreaker">&nbsp;</div>
+			<div wicket:id="dataViewWMC">
+			    <table width="0%" cellspacing="0"></table>
+				<table width="100%" cellspacing="0" class="dataview">
+					<!-- Does not have header row -->
+					<!--  The Data Result Set -->
+					<tr wicket:id="bioCollectionCustomDataList">
+						<td width="2%">&nbsp;</td>
+						<td width="45%">
+							<div class="label">
+								<span wicket:id="fieldLabel">100</span>
+							</div>
+							<div id="detailPanelBreaker">&nbsp;</div>
+						</td>
+						<td width="36%">
+							<div wicket:id="dataValueEntryPanel"></div>
+							<div id="detailPanelBreaker">&nbsp;</div>
+						</td>
+						<td width="15%">
+							<span wicket:id="unitLabel">years</span>
+							<div id="detailPanelBreaker">&nbsp;</div>
+						</td>
+						<td width="2%">&nbsp;</td>
+					</tr>
+				</table>
+				<table width="0%" cellspacing="0"></table>
+			</div>
+			<div wicket:id="buttonsPanelWMC">
+				<div wicket:id="buttonsPanel"></div>
+			</div>
+		</div>
+	</form>
+	<div id="detailPanel">
+		<span wicket:id="navigator" class="a"></span>
+		<div id="detailPanelBreaker"></div>
+		<div class="centreLabel">
+			<label for="warnSaveLabel"><wicket:message key="warnSaveLabel">Please "Save"!</wicket:message></label>
+		</div> 
+	</div>
+</wicket:panel>
