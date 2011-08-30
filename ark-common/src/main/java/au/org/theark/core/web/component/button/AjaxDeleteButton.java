@@ -63,6 +63,6 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 
 	@Override
 	public boolean isVisible() {
-		return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
+		return super.isVisible() && ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
 	}
 }
