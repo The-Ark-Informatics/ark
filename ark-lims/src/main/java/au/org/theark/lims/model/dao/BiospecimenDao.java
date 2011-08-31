@@ -170,16 +170,17 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
 		}
 		
+		// Restrict on linkSubjectStudy in the LimsVO
+		if (limsVo.getLinkSubjectStudy() != null) {
+			criteria.add(Restrictions.eq("linkSubjectStudy", limsVo.getLinkSubjectStudy()));
+		}
+		
 		if (biospecimen.getId() != null) {
 			criteria.add(Restrictions.eq("id", biospecimen.getId()));
 		}
 
 		if (biospecimen.getBiospecimenUid() != null) {
 			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
-		}
-			
-		if (biospecimen.getLinkSubjectStudy() != null) {
-			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
 		}
 
 		if (biospecimen.getSampleType() != null) {
