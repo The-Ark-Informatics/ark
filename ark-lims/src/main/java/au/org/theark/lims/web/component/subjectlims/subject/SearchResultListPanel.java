@@ -42,7 +42,6 @@ import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsSubjectService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
@@ -92,7 +91,7 @@ public class SearchResultListPanel extends Panel {
 
 	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy> subjectProvider) {
 
-		DataView<LinkSubjectStudy> studyCompDataView = new DataView<LinkSubjectStudy>("subjectList", subjectProvider) {
+		DataView<LinkSubjectStudy> linkSubjectStudyDataView = new DataView<LinkSubjectStudy>("subjectList", subjectProvider) {
 
 			@Override
 			protected void populateItem(final Item<LinkSubjectStudy> item) {
@@ -118,13 +117,6 @@ public class SearchResultListPanel extends Panel {
 
 				item.add(new Label(Constants.SUBJECT_FULL_NAME, sb.toString()));
 
-				if (subject != null && subject.getPerson() != null && subject.getPerson().getPreferredName() != null) {
-					item.add(new Label("person.preferredName", subject.getPerson().getPreferredName()));
-				}
-				else {
-					item.add(new Label("person.preferredName", ""));
-				}
-
 				item.add(new Label("person.genderType.name", subject.getPerson().getGenderType().getName()));
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -139,7 +131,12 @@ public class SearchResultListPanel extends Panel {
 
 				item.add(new Label("person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
 
-				item.add(new Label("subjectStatus.name", subject.getSubjectStatus().getName()));
+				if(subject.getConsentStatus() != null) {
+					item.add(new Label("consentStatus.name", subject.getConsentStatus().getName()));
+				}
+				else {
+					item.add(new Label("consentStatus.name", ""));
+				}
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 					@Override
@@ -149,7 +146,7 @@ public class SearchResultListPanel extends Panel {
 				}));
 			}
 		};
-		return studyCompDataView;
+		return linkSubjectStudyDataView;
 	}
 
 	/**

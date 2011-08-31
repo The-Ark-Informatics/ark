@@ -128,7 +128,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		add(middleNameTxtFld);
 		add(lastNameTxtFld);
 		add(vitalStatusDdc);
-		add(subjectStatusDdc);
 		add(genderTypeDdc);
 		add(dateOfBirthTxtFld);
 	}
