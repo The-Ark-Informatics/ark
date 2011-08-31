@@ -7,7 +7,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -20,9 +19,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTreeNode;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.model.TreeNodeModel;
@@ -39,12 +36,6 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService			iInventoryService;
 
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
-
-	protected Study							study					= null;
-
-	private List<Study>					studyList			= new ArrayList<Study>(0);
 	private List<InvSite>				invSites				= new ArrayList<InvSite>(0);
 
 	protected ArkBusyAjaxButton		addSite;
@@ -71,14 +62,6 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	 * @return New instance of tree model.
 	 */
 	protected TreeModel createTreeModel() {
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-
-		if (sessionStudyId != null && sessionStudyId > 0) {
-			study = iArkCommonService.getStudy(sessionStudyId);
-		}
-
-		studyList.add(study);
-
 		InvSite invSite = new InvSite();
 
 		try {
@@ -87,18 +70,15 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 		}
-		invSite.setStudy(study);
-		return convertToTreeModel(studyList.get(0));
+		return convertToTreeModel();
 	}
 
-	private TreeModel convertToTreeModel(Study study) {
+	private TreeModel convertToTreeModel() {
 		TreeModel model = null;
-		if (study != null) {
-			// Default root node was Study
-			DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel(study.getName()));
-			add(rootNode, invSites);
-			model = new DefaultTreeModel(rootNode);
-		}
+		// Default root node (set to not show)
+		DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(new TreeNodeModel("ROOT"));
+		add(rootNode, invSites);
+		model = new DefaultTreeModel(rootNode);
 		return model;
 	}
 
