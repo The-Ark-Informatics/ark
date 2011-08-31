@@ -46,8 +46,12 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.LinkSubjectStudy;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -65,29 +69,32 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long												serialVersionUID	= 1L;
-	private static final Logger											log					= LoggerFactory.getLogger(BiospecimenListForm.class);
+	private static final long								serialVersionUID	= 1L;
+	private static final Logger							log					= LoggerFactory.getLogger(BiospecimenListForm.class);
+
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>						iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService														iLimsService;
+	private ILimsService										iLimsService;
 
-	protected CompoundPropertyModel<LimsVO>							cpModel;
-	protected FeedbackPanel													feedbackPanel;
-	protected AbstractDetailModalWindow									modalWindow;
+	protected CompoundPropertyModel<LimsVO>			cpModel;
+	protected FeedbackPanel									feedbackPanel;
+	protected AbstractDetailModalWindow					modalWindow;
 
-	private Label																idLblFld;
-	private Label																nameLblFld;
-	private Label																sampleTypeLblFld;
-	private Label																collectionLblFld;
-	private Label																commentsLblFld;
-	private Label																quantityLblFld;
-	private Label																unitsLblFld;
+	private Label												idLblFld;
+	private Label												nameLblFld;
+	private Label												sampleTypeLblFld;
+	private Label												collectionLblFld;
+	private Label												commentsLblFld;
+	private Label												quantityLblFld;
+	private Label												unitsLblFld;
 
-	private Panel																modalContentPanel;
-	protected AjaxButton														newButton;
+	private Panel												modalContentPanel;
+	protected AjaxButton										newButton;
 
-	protected WebMarkupContainer											dataViewListWMC;
-	private DataView<Biospecimen>											dataView;
+	protected WebMarkupContainer							dataViewListWMC;
+	private DataView<Biospecimen>							dataView;
 	private ArkDataProvider2<LimsVO, Biospecimen>	biospecimenProvider;
 
 	public BiospecimenListForm(String id, FeedbackPanel feedbackPanel, AbstractDetailModalWindow modalWindow, CompoundPropertyModel<LimsVO> cpModel) {
@@ -104,6 +111,42 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		initialiseNewButton();
 
 		add(modalWindow);
+	}
+
+	@Override
+	public void onBeforeRender() {
+		// Reset the Biospecimen (for criteria) in LimsVO
+		// This prevents the manual modal "X" close button from not reseting the criteria
+		cpModel.getObject().setBiospecimen(new Biospecimen());
+
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
+
+		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
+			LinkSubjectStudy linkSubjectStudy = null;
+			Study study = null;
+			boolean contextLoaded = false;
+			try {
+				study = iArkCommonService.getStudy(sessionStudyId);
+				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
+				if (study != null && linkSubjectStudy != null) {
+					contextLoaded = true;
+				}
+			}
+			catch (EntityNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			if (contextLoaded) {
+				// Successfully loaded from backend
+				cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getBiospecimen().setLinkSubjectStudy(linkSubjectStudy);
+				cpModel.getObject().getBiospecimen().setStudy(study);
+			}
+		}
+
+		super.onBeforeRender();
 	}
 
 	private void initialiseDataView() {
@@ -249,7 +292,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 				WebMarkupContainer rowDeleteWMC = new WebMarkupContainer("rowDeleteWMC", item.getModel());
 				AjaxButton deleteButton = new AjaxButton("listDeleteButton", new StringResourceModel(Constants.DELETE, this, null)) {
-					IModel confirm	= new StringResourceModel("confirmDelete", this, null);
+					IModel							confirm				= new StringResourceModel("confirmDelete", this, null);
 					/**
 					 * 
 					 */
