@@ -153,21 +153,20 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 	}
 	
 	public void saveCustomData() {
-		List<BioCollectionCustomFieldData> errorList = iLimsService.createOrUpdateBioCollectionCustomFieldData(cpModel.getObject().getBioCollectionCustomFieldDataList());
-		if (errorList.size() > 0) {
-			for (BioCollectionCustomFieldData bioCollectionCustomFieldData : errorList) {
-				CustomField cf = bioCollectionCustomFieldData.getCustomFieldDisplay().getCustomField();
-				String fieldType = cf.getFieldType().getName();
-				if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
-					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getDateDataValue());
-				}
-				else {
-					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getTextDataValue());					
+		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
+			List<BioCollectionCustomFieldData> errorList = iLimsService.createOrUpdateBioCollectionCustomFieldData(cpModel.getObject().getBioCollectionCustomFieldDataList());
+			if (errorList.size() > 0) {
+				for (BioCollectionCustomFieldData bioCollectionCustomFieldData : errorList) {
+					CustomField cf = bioCollectionCustomFieldData.getCustomFieldDisplay().getCustomField();
+					String fieldType = cf.getFieldType().getName();
+					if (fieldType.equals(au.org.theark.core.web.component.customfield.Constants.DATE_FIELD_TYPE_NAME)) {
+						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getDateDataValue());
+					}
+					else {
+						this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + bioCollectionCustomFieldData.getTextDataValue());					
+					}
 				}
 			}
 		}
-//		else {
-//			this.info("Successfully saved all edits");
-//		}
 	}
 }
