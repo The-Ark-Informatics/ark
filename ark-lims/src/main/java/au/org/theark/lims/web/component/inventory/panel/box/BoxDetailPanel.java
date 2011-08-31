@@ -18,24 +18,27 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.panel.box;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.BaseTree;
 
 import au.org.theark.core.model.lims.entity.InvBox;
+import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
 
 @SuppressWarnings("serial")
 public class BoxDetailPanel extends Panel {
-	private FeedbackPanel		feedbackPanel;
-	private WebMarkupContainer	detailContainer;
-	private BoxDetailForm		detailForm;
-	private ContainerForm		containerForm;
-	private BaseTree 				tree;
-	private GridBoxPanel			gridBoxPanel;
+	private FeedbackPanel					feedbackPanel;
+	private WebMarkupContainer				detailContainer;
+	private BoxDetailForm					detailForm;
+	private ContainerForm					containerForm;
+	private BaseTree							tree;
+	private GridBoxPanel						gridBoxPanel;
+	private AbstractDetailModalWindow	modalWindow;
 
 	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree) {
 		super(id);
@@ -47,11 +50,27 @@ public class BoxDetailPanel extends Panel {
 	}
 
 	public void initialisePanel() {
+		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
+
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onCloseModalWindow(AjaxRequestTarget target) {
+				// What to do when modalWindow closed?
+			}
+		};
+		
+		add(modalWindow);
+		
 		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
+
 		InvBox invBox = containerForm.getModelObject().getInvBox();
-		gridBoxPanel = new GridBoxPanel("gridBoxPanel", invBox, invBox.getName());
+		gridBoxPanel = new GridBoxPanel("gridBoxPanel", invBox, invBox.getName(), modalWindow);
 		add(gridBoxPanel);
 	}
 
