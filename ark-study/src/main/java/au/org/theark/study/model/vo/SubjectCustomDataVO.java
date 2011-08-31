@@ -37,7 +37,7 @@ public class SubjectCustomDataVO implements Serializable {
 	protected ArkFunction arkFunction;
 	protected List<SubjectCustomFieldData> subjectCustomFieldDataList;
 	
-	SubjectCustomDataVO() {
+	public SubjectCustomDataVO() {
 		linkSubjectStudy = new LinkSubjectStudy();
 		subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 	}
