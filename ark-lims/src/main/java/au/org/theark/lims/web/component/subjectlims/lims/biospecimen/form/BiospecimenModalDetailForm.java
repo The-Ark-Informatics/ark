@@ -29,7 +29,9 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
@@ -42,13 +44,17 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
+import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
+import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
 
 /**
  * @author elam
@@ -61,6 +67,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	 */
 	private static final long					serialVersionUID	= 2727419197330261916L;
 	private static final Logger				log					= LoggerFactory.getLogger(BiospecimenModalDetailForm.class);
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService							iLimsService;
@@ -74,6 +82,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private TextField<String>					quantityTxtFld;
 	private CheckBox								barcodedChkBox;
 
+	private Panel 							biospecimenCFDataEntryPanel;
 	private ModalWindow							modalWindow;
 	
 	/**
@@ -106,6 +115,29 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}		
 	}
 
+	private boolean initialiseBiospecimenCFDataEntry() {
+		boolean replacePanel = false;
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		if (biospecimen.getId() == null) {
+			// New Biospecimen record, so Biospecimen CF data entry is disallowed
+			if (!(biospecimenCFDataEntryPanel instanceof EmptyPanel)) {
+				biospecimenCFDataEntryPanel = new EmptyPanel("biospecimenCFDataEntryPanel");
+				replacePanel = true;
+			}
+		}
+		else {
+			// Editing an existing record, CF data entry is ok
+			if (!(biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel)) {
+				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());		
+				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
+				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+				replacePanel = true;
+			}
+		}
+		return replacePanel;
+	}
+
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenUid");
@@ -123,6 +155,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
 
+		initialiseBiospecimenCFDataEntry();
+		
 		attachValidators();
 		addComponents();
 		
@@ -169,6 +203,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(quantityTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
+		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -185,6 +221,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 			processErrors(target);
+			if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
+				((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
+			}
+		}
+		// refresh the CF data entry panel (if necessary)
+		if (initialiseBiospecimenCFDataEntry() == true) {
+			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
 		}
 
 		onSavePostProcess(target);

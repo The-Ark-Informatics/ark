@@ -23,6 +23,8 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.lims.model.vo.LimsVO;
 
 public interface IBiospecimenDao {
@@ -106,5 +108,17 @@ public interface IBiospecimenDao {
 	 * @return
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
+
+	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
+	
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count);
+
+	public void createBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
+
+	public void updateBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
+
+	public void deleteBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
+
+	public Long isCustomFieldUsed(BiospecimenCustomFieldData biospecimanCFData);
 
 }

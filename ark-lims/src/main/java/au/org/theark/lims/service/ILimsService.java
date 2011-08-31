@@ -27,6 +27,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -266,5 +267,17 @@ public interface ILimsService {
 	 * @return
 	 */
 	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count);
+
+	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction);
+
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count);
+	
+	/**
+	 * Allows to Save(Insert) or Update  BiospecimenCustomFieldData. If there are BiospecimenCustomFieldData
+	 * with no data value then it will discard it from the save/update process.
+	 * @param biospecimenCFDataList - List of BiospecimenCustomFieldData to commit to database.
+	 * @return a List of BiospecimenCustomFieldData that failed to save (Hibernate caught some exception).
+	 */
+	public List<BiospecimenCustomFieldData> createOrUpdateBiospecimenCustomFieldData(List<BiospecimenCustomFieldData> biospecimenCFDataList);
 
 }

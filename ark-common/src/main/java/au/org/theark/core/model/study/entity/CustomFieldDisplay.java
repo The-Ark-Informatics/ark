@@ -37,6 +37,7 @@ import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 
 /**
  * @author nivedann
@@ -47,6 +48,11 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 @Table(name = "CUSTOM_FIELD_DISPLAY", schema = Constants.STUDY_SCHEMA)
 public class CustomFieldDisplay implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private Long id;
 	private CustomField customField;
 	private CustomFieldGroup customFieldGroup;
@@ -55,7 +61,9 @@ public class CustomFieldDisplay implements Serializable{
 	private Long sequence;
 	private Set<SubjectCustomFieldData> subjectCustomFieldData = new HashSet<SubjectCustomFieldData>();
 	private Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData = new HashSet<BioCollectionCustomFieldData>();
+	private Set<BiospecimenCustomFieldData> biospecimenCustomFieldData = new HashSet<BiospecimenCustomFieldData>();
 		
+
 	public CustomFieldDisplay(){
 		
 	}
@@ -145,6 +153,16 @@ public class CustomFieldDisplay implements Serializable{
 
 	public void setBioCollectionCustomFieldData(Set<BioCollectionCustomFieldData> bioCollectionCustomFieldData) {
 		this.bioCollectionCustomFieldData = bioCollectionCustomFieldData;
+	}
+
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldDisplay")
+	public Set<BiospecimenCustomFieldData> getBiospecimenCustomFieldData() {
+		return biospecimenCustomFieldData;
+	}
+
+	public void setBiospecimenCustomFieldData(Set<BiospecimenCustomFieldData> biospecimenCustomFieldData) {
+		this.biospecimenCustomFieldData = biospecimenCustomFieldData;
 	}
 
 }

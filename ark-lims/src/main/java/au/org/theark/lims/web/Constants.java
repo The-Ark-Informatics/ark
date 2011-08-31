@@ -34,6 +34,7 @@ public class Constants {
 
 	/* Session items */
 	public static final String	BIO_COLLECTION								= "BIO_COLLECTION";
+	public static final String	BIOSPECIMEN									= "BIOSPECIMEN";
 
 	public static final String	LIMS_SERVICE								= "limsService";
 	public static final String	LIMS_SUBJECT_SERVICE						= "limsSubjectService";
@@ -136,4 +137,5 @@ public class Constants {
 	public static final String	SUBJECT_CONSENT_PASSIVE_DATA_GATHER	= "linkSubjectStudy.consentToPassiveDataGathering";
 	public static final String	SUBJECT_AUTO_GENERATED					= "Auto-generated";
 	public static final String	SUBJECTUID_EXAMPLE						= "AAA-000000001";
+
 }

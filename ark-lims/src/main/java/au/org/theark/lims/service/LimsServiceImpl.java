@@ -35,6 +35,7 @@ import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -408,7 +409,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * 4. BioCollectionCustomFieldData.NumberDataValue is NULL
 	 * 5. BioCollectionCustomFieldData.DatewDataValue is NULL
 	 * When these conditions are satisfied this method will return Boolean TRUE
-	 * @param subjectCustomFieldData
+	 * @param bioCollectionCFData
 	 * @return
 	 */
 	private Boolean canDelete(BioCollectionCustomFieldData bioCollectionCFData){
@@ -485,4 +486,145 @@ public class LimsServiceImpl implements ILimsService {
 		return iBiospecimenDao.searchPageableBiospecimens(limsVo, first, count);
 	}
 
+	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
+		return iBiospecimenDao.getBiospecimenCustomFieldDataCount(biospecimenCriteria, arkFunction);
+	}
+
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count) {
+		List<BiospecimenCustomFieldData> customfieldDataList = new ArrayList<BiospecimenCustomFieldData>();
+		customfieldDataList  = iBiospecimenDao.getBiospecimenCustomFieldDataList(biospecimenCriteria, arkFunction, first, count);
+		return customfieldDataList;
+	}
+
+	public List<BiospecimenCustomFieldData> createOrUpdateBiospecimenCustomFieldData(List<BiospecimenCustomFieldData> biospecimenCFDataList) {
+		List<BiospecimenCustomFieldData> listOfExceptions = new ArrayList<BiospecimenCustomFieldData>();
+		/* Iterate the list and call DAO to persist each Item */
+		for (BiospecimenCustomFieldData biospecimanCFData : biospecimenCFDataList) {
+			
+			
+			try {
+			/* Insert the Field if it does not have a  ID and has the required fields */
+				if (canInsert(biospecimanCFData)) {
+		
+					iBiospecimenDao.createBiospecimenCustomFieldData(biospecimanCFData);
+					Long id = biospecimanCFData.getCustomFieldDisplay().getCustomField().getId();
+					
+					CustomField customField = arkCommonService.getCustomField(id);
+					customField.setCustomFieldHasData(true);
+					CustomFieldVO customFieldVO = new CustomFieldVO();
+					customFieldVO.setCustomField(customField);
+					
+					arkCommonService.updateCustomField(customFieldVO);
+
+				}
+				else if (canUpdate(biospecimanCFData)) {
+					
+					//If there was bad data uploaded and the user has now corrected it on the front end then set/blank out the error data value and updated the record.
+					if (biospecimanCFData.getErrorDataValue() != null) {
+						biospecimanCFData.setErrorDataValue(null);
+					} 
+					iBiospecimenDao.updateBiospecimenCustomFieldData(biospecimanCFData);
+				
+				}
+				else if (canDelete(biospecimanCFData)) {
+					//Check if the CustomField is used by anyone else and if not set the customFieldHasData to false;
+					Long count  = iBiospecimenDao.isCustomFieldUsed(biospecimanCFData);
+					
+					iBiospecimenDao.deleteBiospecimenCustomFieldData(biospecimanCFData);
+					if(count <= 1) {
+						//Then update the CustomField's hasDataFlag to false;
+						Long id = biospecimanCFData.getCustomFieldDisplay().getCustomField().getId();//Reload since the session was closed in the front end and the child objects won't be lazy loaded
+						CustomField customField = arkCommonService.getCustomField(id);
+						customField.setCustomFieldHasData(false);
+						CustomFieldVO customFieldVO = new CustomFieldVO();
+						customFieldVO.setCustomField(customField);
+						arkCommonService.updateCustomField(customFieldVO); //Update it
+					}
+				}
+			}
+			catch (Exception someException) {
+				listOfExceptions.add(biospecimanCFData);//Continue with rest of the list
+				someException.printStackTrace();
+			}
+		}
+		
+		return listOfExceptions;
+	}
+
+	/**
+	 * In order to delete it must satisfy the following conditions
+	 * 1. BiospecimenCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. BiospecimenCustomFieldData should have a valid Biospecimen linked to it and must not be null AND
+	 * 3. BiospecimenCustomFieldData.TextDataValue is NULL OR is EMPTY
+	 * 4. BiospecimenCustomFieldData.NumberDataValue is NULL
+	 * 5. BiospecimenCustomFieldData.DatewDataValue is NULL
+	 * When these conditions are satisfied this method will return Boolean TRUE
+	 * @param biospecimenCFData
+	 * @return
+	 */
+	private Boolean canDelete(BiospecimenCustomFieldData biospecimenCFData){
+		Boolean flag = false;
+		
+		if(biospecimenCFData.getId() != null &&  biospecimenCFData.getBiospecimen() != null && 
+				( biospecimenCFData.getTextDataValue() == null  	||		
+				  biospecimenCFData.getTextDataValue().isEmpty()  	|| 
+				  biospecimenCFData.getNumberDataValue() == null 	||
+				  biospecimenCFData.getDateDataValue() == null ) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Update a BioCollectionCustomFieldData instance the following conditions must be met
+	 * 1. BiospecimenCustomFieldData must be a persistent entity(with a valid primary key/ID) AND
+	 * 2. BiospecimenCustomFieldData should have a valid Biospecimen linked to it and must not be null AND
+	 * 3. BiospecimenCustomFieldData.TextDataValue is NOT NULL AND NOT EMPTY OR
+	 * 4. BiospecimenCustomFieldData.NumberDataValue is NOT NULL
+	 * 5. BiospecimenCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param biospecimenCFData
+	 * @return
+	 */
+	private Boolean canUpdate(BiospecimenCustomFieldData biospecimenCFData){
+		Boolean flag = false;
+		
+		if(biospecimenCFData.getId() != null && biospecimenCFData.getBiospecimen() != null && 
+				(( biospecimenCFData.getTextDataValue() != null 	&& 
+				   !biospecimenCFData.getTextDataValue().isEmpty()) || 
+				   biospecimenCFData.getDateDataValue() != null  	|| 
+				   biospecimenCFData.getNumberDataValue() != null) ){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
+	
+	/**
+	 * In order to Insert a BioCollectionCustomFieldData instance the following conditions must be met.
+	 * 1. BiospecimenCustomFieldData must be a transient entity(Not yet associated with an ID/PK) AND
+	 * 2. BiospecimenCustomFieldData should have a valid Biospecimen linked to it and must not be null AND
+	 * 3. BiospecimenCustomFieldData.TextDataValue is NOT NULL  OR
+	 * 4. BiospecimenCustomFieldData.NumberDataValue is NOT NULL OR
+	 * 5. BiospecimenCustomFieldData.DateDataValue is NOT NULL	
+	 * When these conditions are satisfied the method will return Boolean TRUE
+	 * @param biospecimenCFData
+	 * @return
+	 */
+	private Boolean canInsert(BiospecimenCustomFieldData biospecimenCFData){
+		Boolean flag = false;
+		
+		if(biospecimenCFData.getId() == null &&  biospecimenCFData.getBiospecimen() != null && 
+				(		biospecimenCFData.getNumberDataValue() != null || 
+						biospecimenCFData.getTextDataValue() != null 	|| 
+						biospecimenCFData.getDateDataValue() != null )){
+			
+			flag=true;
+			
+		}
+		return flag;
+	}
 }

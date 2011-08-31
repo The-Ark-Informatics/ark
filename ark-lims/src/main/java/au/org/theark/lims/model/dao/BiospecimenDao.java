@@ -18,9 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -28,7 +30,13 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.model.study.entity.CustomField;
+import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.lims.model.vo.LimsVO;
 
 @SuppressWarnings("unchecked")
@@ -207,4 +215,99 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 
 		return list;
 	}
+
+	public int getBiospecimenCustomFieldDataCount(Biospecimen biospecimenCriteria, ArkFunction arkFunction) {
+		Criteria criteria = getSession().createCriteria(CustomFieldDisplay.class);
+		criteria.createAlias("customField", "cfield");
+		criteria.add(Restrictions.eq("cfield.study", biospecimenCriteria.getStudy()));
+		criteria.add(Restrictions.eq("cfield.arkFunction", arkFunction));
+		criteria.setProjection(Projections.rowCount());
+		Integer count = (Integer) criteria.uniqueResult();
+		return count.intValue();
+	}
+
+	public List<BiospecimenCustomFieldData> getBiospecimenCustomFieldDataList(Biospecimen biospecimenCriteria, ArkFunction arkFunction, int first, int count) {
+		List<BiospecimenCustomFieldData> biospecimenCustomFieldDataList = new ArrayList<BiospecimenCustomFieldData>();
+		
+		StringBuffer sb = new StringBuffer();
+		sb.append(  " FROM  CustomFieldDisplay AS cfd ");
+		sb.append("LEFT JOIN cfd.biospecimenCustomFieldData as fieldList ");
+		sb.append(" with fieldList.biospecimen.id = :biospecimenId ");
+		sb.append( "  where cfd.customField.study.id = :studyId" );
+		sb.append(" and cfd.customField.arkFunction.id = :functionId");
+		sb.append(" order by cfd.sequence");
+		
+		Query query = getSession().createQuery(sb.toString());
+		query.setParameter("biospecimenId", biospecimenCriteria.getId());
+		query.setParameter("studyId", biospecimenCriteria.getStudy().getId());
+		query.setParameter("functionId", arkFunction.getId());
+		query.setFirstResult(first);
+		query.setMaxResults(count);
+		
+		List<Object[]> listOfObjects = query.list();
+		for (Object[] objects : listOfObjects) {
+			CustomFieldDisplay cfd = new CustomFieldDisplay();
+			BiospecimenCustomFieldData bscfd = new BiospecimenCustomFieldData();
+			if(objects.length > 0 && objects.length >= 1){
+				
+					cfd = (CustomFieldDisplay)objects[0];
+					if(objects[1] != null){
+						bscfd = (BiospecimenCustomFieldData)objects[1];
+					}else{
+						bscfd.setCustomFieldDisplay(cfd);
+					}
+					biospecimenCustomFieldDataList.add(bscfd);	
+			}
+		}
+		return biospecimenCustomFieldDataList;
+	}
+
+	public void createBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData) {
+		getSession().save(biospecimanCFData);	
+	}
+	
+	public void updateBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData) {
+		getSession().update(biospecimanCFData);		
+	}
+
+	public void deleteBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData) {
+		getSession().delete(biospecimanCFData);		
+	}
+
+	public Long isCustomFieldUsed(BiospecimenCustomFieldData biospecimanCFData) {
+		Long count = new Long("0");
+		CustomField customField = biospecimanCFData.getCustomFieldDisplay().getCustomField();
+		//The Study
+		
+		try {
+			
+			Long id  = biospecimanCFData.getBiospecimen().getId();
+			Biospecimen biospecimen = getBiospecimen(id);
+			Study subjectStudy = biospecimen.getStudy();
+			ArkFunction arkFunction = customField.getArkFunction();
+
+			StringBuffer stringBuffer = new StringBuffer();
+			
+			stringBuffer.append(" SELECT COUNT(*) FROM BiospecimenCustomFieldData AS bscfd WHERE EXISTS ");
+			stringBuffer.append(" ( ");               
+			stringBuffer.append(" SELECT cfd.id FROM  CustomFieldDisplay AS cfd  WHERE cfd.customField.study.id = :studyId");
+			stringBuffer.append(" AND cfd.customField.arkFunction.id = :functionId AND bscfd.customFieldDisplay.id = :customFieldDisplayId");
+			stringBuffer.append(" )");
+			
+			String theHQLQuery = stringBuffer.toString();
+			
+			Query query = getSession().createQuery(theHQLQuery);
+			query.setParameter("studyId", subjectStudy.getId());
+			query.setParameter("functionId", arkFunction.getId());
+			query.setParameter("customFieldDisplayId", biospecimanCFData.getCustomFieldDisplay().getId());
+			count = (Long) query.uniqueResult();
+			
+		} catch (EntityNotFoundException e) {
+			//The given Biospecimen is not available, this should not happen since the person is editing custom fields for the LIMS biospecimen
+			e.printStackTrace();
+		}
+			
+		return count;
+	}
+
 }
