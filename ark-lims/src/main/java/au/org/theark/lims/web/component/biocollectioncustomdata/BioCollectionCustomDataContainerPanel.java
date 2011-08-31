@@ -37,6 +37,7 @@ import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
 /**
@@ -50,9 +51,6 @@ public class BioCollectionCustomDataContainerPanel extends Panel {
 	 */
 	private static final long	serialVersionUID	= 1L;
 
-	@SpringBean(name = "arkLdapRealm")
-	private ArkLdapRealm						realm;
-	
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService			iArkCommonService;
 

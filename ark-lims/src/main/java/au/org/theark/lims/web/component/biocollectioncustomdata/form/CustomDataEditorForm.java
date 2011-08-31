@@ -36,8 +36,8 @@ import au.org.theark.core.web.component.button.IEditModeEventHandler;
 import au.org.theark.core.web.component.button.IViewModeEventHandler;
 import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 import au.org.theark.core.web.form.ArkFormVisitor;
+import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataVO;
 
 /**
  * @author elam

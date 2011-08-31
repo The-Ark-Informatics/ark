@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.MarkupContainer;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
@@ -97,7 +99,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					// This should not occur because it means the data is corrupted on the backend database
 					getLog().error("Unexpected error: customfield.minValue is not in the DD/MM/YYYY date format");
 					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-					getCustomDataEditorForm().setEnabled(false);
+					getParentContainer().setEnabled(false);
 				}
 			}
 			if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
@@ -110,7 +112,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 					// This should not occur because it means the data is corrupted on the backend database
 					getLog().error("Unexpected error: customfield.maxValue is not in the DD/MM/YYYY date format");
 					this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-					getCustomDataEditorForm().setEnabled(false);
+					getParentContainer().setEnabled(false);
 				}
 			}
 			if (requiredField != null && requiredField == true) {
@@ -178,7 +180,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
 							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-							getCustomDataEditorForm().setEnabled(false);
+							getParentContainer().setEnabled(false);
 						}
 					}
 					if (cf.getMaxValue() != null && !cf.getMaxValue().isEmpty()) {
@@ -191,7 +193,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 							// This should not occur because it means the data is corrupted on the backend database
 							getLog().error("Unexpected error: customfield.maxValue is not in a valid number format");
 							this.error("An unexpected error occurred loading the field validators from database.  Please contact your System Administrator.");
-							getCustomDataEditorForm().setEnabled(false);
+							getParentContainer().setEnabled(false);
 						}
 					}
 					if (requiredField != null && requiredField == true) {
@@ -210,7 +212,7 @@ public abstract class CustomDataEditorDataView<T extends ICustomFieldData> exten
 		item.add(dataValueEntryPanel);
 	}
 
-	protected abstract Form<?> getCustomDataEditorForm();
+	protected abstract WebMarkupContainer getParentContainer();
 	
 	protected abstract Logger getLog();
 	

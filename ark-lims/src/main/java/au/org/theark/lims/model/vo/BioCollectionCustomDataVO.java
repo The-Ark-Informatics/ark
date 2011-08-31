@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.lims.web.component.biocollectioncustomdata;
+package au.org.theark.lims.model.vo;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,7 +37,7 @@ public class BioCollectionCustomDataVO implements Serializable {
 	protected ArkFunction arkFunction;
 	protected List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList;
 	
-	BioCollectionCustomDataVO() {
+	public BioCollectionCustomDataVO() {
 		bioCollection = new BioCollection();
 		bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 	}
