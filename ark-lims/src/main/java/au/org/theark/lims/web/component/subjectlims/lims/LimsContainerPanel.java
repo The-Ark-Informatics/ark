@@ -77,7 +77,7 @@ public class LimsContainerPanel extends Panel {
 	}
 
 	protected void prerenderContextCheck() {
-		// Get the SubjectUID in sontext
+		// Get the SubjectUID in context
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
 		if (sessionSubjectUID != null) {
