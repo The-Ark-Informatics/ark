@@ -22,6 +22,14 @@ import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 
+/**
+ * Ark implementation of an AjaxLink that shows the Loading... "busy" indicator when clicked
+ *
+ * @author cellis
+ *
+ * @param <T>
+ *            type of model object
+ */
 public abstract class ArkBusyAjaxLink<T> extends AjaxLink<T> {
 	/**
 	 * 
@@ -33,6 +41,10 @@ public abstract class ArkBusyAjaxLink<T> extends AjaxLink<T> {
 	private String					setBusyIndicatorOff	= "document.getElementById('busyIndicator').style.display ='none'; " + "overlay = document.getElementById('overlay'); "
 																			+ "overlay.style.visibility = 'hidden';";
 
+	/**
+	 * Ark implementation of an AjaxLink that shows the Loading... "busy" indicator when clicked
+	 * @param id The non-null id of this component
+	 */
 	public ArkBusyAjaxLink(String id) {
 		super(id);
 		setOutputMarkupId(true);
