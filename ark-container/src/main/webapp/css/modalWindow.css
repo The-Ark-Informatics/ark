@@ -165,11 +165,10 @@ div.wicket-modal div.w_content_3 {
 }
 
 div.wicket-modal div.w_content {
-	width: 100%;
 	background-color: #EEEEEE;
+	width: 100%;
+	margin-top: 15px;
 }
-
-
 
 div.wicket-modal iframe {
 	width: 100%; 
@@ -266,4 +265,3 @@ div.wicket-modal div.w_silver a.w_close {
 	_background-image: url('frame-gray-1-ie.png');
 	*/
 }
-
