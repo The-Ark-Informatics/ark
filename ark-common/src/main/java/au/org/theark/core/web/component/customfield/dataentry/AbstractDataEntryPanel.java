@@ -147,7 +147,7 @@ public abstract class AbstractDataEntryPanel<T> extends Panel {
 	abstract public void addValidator(IValidator<T> aValidator);
 
 	/**
-	 * Override this to provide the error label with a type name to display
+	 * Override this method to provide the error label with a type name to display
 	 * @return the DataEntryType
 	 */
 	abstract protected DataEntryType getDataEntryType();

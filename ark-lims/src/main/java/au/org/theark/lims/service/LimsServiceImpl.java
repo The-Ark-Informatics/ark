@@ -63,6 +63,15 @@ public class LimsServiceImpl implements ILimsService {
 	private IBioTransactionDao	iBioTransactionDao;
 
 	/**
+	 * @param arkCommonService
+	 *           the arkCommonService to set
+	 */
+	@Autowired
+	public void setArkCommonService(IArkCommonService arkCommonService) {
+		this.arkCommonService = arkCommonService;
+	}
+	
+	/**
 	 * @param iStudyDao
 	 *           the iStudyDao to set
 	 */
