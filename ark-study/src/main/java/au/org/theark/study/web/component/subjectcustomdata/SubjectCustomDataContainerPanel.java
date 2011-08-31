@@ -36,6 +36,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.study.model.vo.SubjectCustomDataVO;
 
 /**
  * @author elam

@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +39,7 @@ import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.customfield.dataentry.CustomDataEditorDataView;
+import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditorForm;
@@ -48,7 +48,7 @@ import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditor
  * @author elam
  * 
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings({ "serial" })
 public class SubjectCustomDataEditorPanel extends Panel {
 
 	/**

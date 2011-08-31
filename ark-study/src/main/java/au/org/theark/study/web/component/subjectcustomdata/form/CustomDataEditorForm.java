@@ -36,9 +36,9 @@ import au.org.theark.core.web.component.button.IEditModeEventHandler;
 import au.org.theark.core.web.component.button.IViewModeEventHandler;
 import au.org.theark.core.web.component.button.ViewModeButtonsPanel;
 import au.org.theark.core.web.form.ArkFormVisitor;
+import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.subjectcustomdata.SubjectCustomDataVO;
 
 /**
  * @author elam
