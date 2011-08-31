@@ -21,14 +21,13 @@
 
 #inventoryContentZoneLeft {
 	float: left;
-    margin-left: 10px;
-    width: 15%;
+    margin-left: 3%;
+    width: 20%;
 }
 
 #inventoryContentZoneCenter {
 	margin-left: auto;
-    margin-right: auto;
-    width: 65%;
+    width: 75%;
 }
 
 #inventoryContentZoneRight {
