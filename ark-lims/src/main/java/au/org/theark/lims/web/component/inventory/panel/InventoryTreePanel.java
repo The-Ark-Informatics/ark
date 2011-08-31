@@ -65,9 +65,6 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddSiteSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		InvSite invSite = new InvSite();
-		containerForm.getModelObject().setInvSite(invSite);
-		
 		SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
 		detailPanel.initialisePanel();
 		
