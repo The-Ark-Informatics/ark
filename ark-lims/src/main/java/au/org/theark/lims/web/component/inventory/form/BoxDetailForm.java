@@ -50,19 +50,19 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 3950256468509804325L;
+	private static final long					serialVersionUID	= 3950256468509804325L;
 
-	private static Logger		log	= LoggerFactory.getLogger(BoxDetailForm.class);
+	private static Logger						log					= LoggerFactory.getLogger(BoxDetailForm.class);
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
-	
-	private TextField<String>			idTxtFld;
-	private TextField<String>			nameTxtFld;
-	private TextField<String>			capacityTxtFld;
-	private TextField<String>			availableTxtFld;
-	private TextField<String>			noOfColTxtFld;
-	private TextField<String>			noOfRowTxtFld;
+
+	private TextField<String>					idTxtFld;
+	private TextField<String>					nameTxtFld;
+	private TextField<String>					capacityTxtFld;
+	private TextField<String>					availableTxtFld;
+	private TextField<String>					noOfColTxtFld;
+	private TextField<String>					noOfRowTxtFld;
 	private DropDownChoice<InvColRowType>	colNoTypeDdc;
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
 
@@ -75,7 +75,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param tree
 	 */
 	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree) {
-
 		super(id, feedBackPanel, detailContainer, containerForm, tree);
 	}
 
@@ -88,24 +87,24 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		availableTxtFld.setEnabled(false);
 		noOfColTxtFld = new TextField<String>("invBox.noofcol");
 		noOfRowTxtFld = new TextField<String>("invBox.noofrow");
-		
+
 		initColNoTypeDdc();
 		initRowNoTypeDdc();
-		
+
 		attachValidators();
 		addComponents();
-		
+
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
-	
+
 	private void initColNoTypeDdc() {
 		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
 		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
 		colNoTypeDdc = new DropDownChoice<InvColRowType>("invBox.colnotype", (List<InvColRowType>) invColRowNoTypeList, invColRowTypeRenderer);
 		colNoTypeDdc.setNullValid(false);
 	}
-	
+
 	private void initRowNoTypeDdc() {
 		List<InvColRowType> invColRowNoTypeList = iInventoryService.getInvColRowTypes();
 		ChoiceRenderer<InvColRowType> invColRowTypeRenderer = new ChoiceRenderer<InvColRowType>(Constants.NAME, Constants.ID);
