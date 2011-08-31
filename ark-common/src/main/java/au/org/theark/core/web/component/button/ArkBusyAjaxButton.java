@@ -24,7 +24,10 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.model.IModel;
 
 /**
- * AjaxButton that disables whole web page, and re-enables once processing completed, also has an pop-up loading/busy indicator.
+ * Ark implementation of an AjaxButton that disables whole web page, and re-enables once processing completed, also has an pop-up loading/busy indicator.
+ *
+ * @author cellis
+ *
  */
 public abstract class ArkBusyAjaxButton extends AjaxButton {
 
@@ -38,11 +41,20 @@ public abstract class ArkBusyAjaxButton extends AjaxButton {
 	private String					setBusyIndicatorOff	= "document.getElementById('busyIndicator').style.display ='none'; " + "overlay = document.getElementById('overlay'); "
 																			+ "overlay.style.visibility = 'hidden';";
 
+	/**
+	 * Ark implementation of an AjaxButton that disables whole web page, and re-enables once processing completed, also has an pop-up loading/busy indicator.
+	 * @param id The non-null identifer of this component
+	 */
 	public ArkBusyAjaxButton(String id) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 	}
 
+	/**
+	 * Ark implementation of an AjaxButton that disables whole web page, and re-enables once processing completed, also has an pop-up loading/busy indicator.
+	 * @param id The non-null identifer of this component
+	 * @param model The model of this component
+	 */
 	public ArkBusyAjaxButton(String id, IModel<String> model) {
 		super(id, model, null);
 		setOutputMarkupPlaceholderTag(true);
