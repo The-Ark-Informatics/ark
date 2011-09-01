@@ -1,3 +1,5 @@
+USE study;
+
 -- Add Admin module
 INSERT INTO `study`.`ark_module` (`ID`, `NAME`) VALUES (7, 'Admin');
 
