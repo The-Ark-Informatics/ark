@@ -5,7 +5,7 @@ CREATE TABLE `unit` (
   `NAME` varchar(45) NOT NULL,
   `DESCRIPTION` varchar(45) default NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=MyInnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 Insert into `unit` (ID,NAME) values (1,'mm');
 Insert into `unit` (ID,NAME) values (2,'ug/L');
