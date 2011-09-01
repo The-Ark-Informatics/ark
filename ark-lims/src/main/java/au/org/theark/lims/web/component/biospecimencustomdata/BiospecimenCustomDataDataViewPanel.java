@@ -123,7 +123,7 @@ public class BiospecimenCustomDataDataViewPanel extends Panel {
 	
 	public DataView<BiospecimenCustomFieldData> buildDataView(ArkDataProvider2<BiospecimenCustomDataVO, BiospecimenCustomFieldData> scdDataProvider2) {
 
-		DataView<BiospecimenCustomFieldData> biospecimenCFDataDataView = new CustomDataEditorDataView<BiospecimenCustomFieldData>("bioCollectionCustomDataList", scdDataProvider2) {
+		DataView<BiospecimenCustomFieldData> biospecimenCFDataDataView = new CustomDataEditorDataView<BiospecimenCustomFieldData>("customDataList", scdDataProvider2) {
 
 			@Override
 			protected void populateItem(final Item<BiospecimenCustomFieldData> item) {

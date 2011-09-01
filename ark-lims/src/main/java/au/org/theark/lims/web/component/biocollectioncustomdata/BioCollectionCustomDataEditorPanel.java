@@ -22,16 +22,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
-import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
 
 
@@ -39,19 +33,15 @@ import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataE
  * @author elam
  * 
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings({ "serial" })
 public class BioCollectionCustomDataEditorPanel extends Panel {
 
 	/**
 	 * 
 	 */
 	private static final long		serialVersionUID	= -1L;
-	private static final Logger	log					= LoggerFactory.getLogger(BioCollectionCustomDataEditorPanel.class);
-
+	
 	private CompoundPropertyModel<BioCollectionCustomDataVO>			cpModel;
-
-	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	protected ILimsService					iLimsService;
 	
 	protected FeedbackPanel				feedbackPanel;
 	protected AbstractCustomDataEditorForm<BioCollectionCustomDataVO>	customDataEditorForm;

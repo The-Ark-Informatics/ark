@@ -25,10 +25,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
@@ -42,8 +39,6 @@ import au.org.theark.lims.service.ILimsService;
  */
 @SuppressWarnings("serial")
 public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BiospecimenCustomDataVO> {
-
-	private static final Logger log = LoggerFactory.getLogger(CustomDataEditorForm.class);
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService				iLimsService;
