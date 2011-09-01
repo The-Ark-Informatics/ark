@@ -25,9 +25,11 @@ import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.service.IMainTabProvider;
 import au.org.theark.core.web.component.ArkMainTab;
 
@@ -39,6 +41,9 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 	private transient static Logger	log					= LoggerFactory.getLogger(LimsTabProviderImpl.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private List<ITab>					moduleTabsList;
+	
+	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
+	private IArkCommonService<Void>	iArkCommonService;
 
 	public LimsTabProviderImpl(String panelId) {
 		super(panelId);
@@ -73,8 +78,8 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 			}
 
 			public boolean isVisible() {
-
-				return true;
+				int studyCount = iArkCommonService.getCountOfStudies();
+				return studyCount>0;
 			}
 		};
 	}
