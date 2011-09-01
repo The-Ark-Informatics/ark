@@ -41,7 +41,6 @@ public class BiospecimenListPanel extends Panel {
 	public BiospecimenListPanel(String id, FeedbackPanel feedbackPanel, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		this.feedbackPanel = feedbackPanel;
-		//this.cpModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		this.cpModel = cpModel;
 		initialisePanel();
 		setOutputMarkupPlaceholderTag(true);
