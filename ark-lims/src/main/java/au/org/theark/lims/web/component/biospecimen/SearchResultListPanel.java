@@ -74,7 +74,7 @@ public class SearchResultListPanel extends Panel {
 	/**
 	 * 
 	 * @param iModel
-	 * @return the pageableListView of Collection
+	 * @return the pageableListView of Biospecimen
 	 */
 	public PageableListView<Biospecimen> buildPageableListView(IModel iModel) {
 
