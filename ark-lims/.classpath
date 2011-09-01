@@ -5,5 +5,14 @@
 	<classpathentry including="**/*.java" kind="src" output="target/test-classes" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-admin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-container"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-database"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-geno"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-phenotypic"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-registry"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-report"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ark-study"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
