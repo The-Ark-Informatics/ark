@@ -20,7 +20,7 @@ ALTER TABLE `study`.`custom_field_group` ADD COLUMN `STUDY_ID` INT AFTER `DESCRI
 
 -- Make customFields associate with a primary arkFunction (e.g. Subject function) rather than the module.
 -- Allows support for CFs on any function and was required for LIMS (biocollection vs biospecimen).
-ALTER TABLE `study`.`custom_field` DROP FOREIGN KEY `FK_ARK_MODULE_ID` ;
+ALTER TABLE `study`.`custom_field` DROP FOREIGN KEY `FK_CUSTOM_FIELD_ARK_MODULE_ID` ;
 ALTER TABLE `study`.`custom_field` CHANGE COLUMN `ARK_MODULE_ID` `ARK_FUNCTION_ID` INT(11) NOT NULL  , 
   ADD CONSTRAINT `FK_CUSTOMFIELD_ARK_FUNCTION_ID`
   FOREIGN KEY (`ARK_FUNCTION_ID` )
