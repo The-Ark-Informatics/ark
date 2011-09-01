@@ -1,11 +1,11 @@
 USE lims;
 
 CREATE TABLE `unit` (
-  `id` int(11) NOT NULL auto_increment,
-  `name` varchar(45) NOT NULL,
-  `description` varchar(45) default NULL,
-  PRIMARY KEY  (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(45) NOT NULL,
+  `DESCRIPTION` varchar(45) default NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=MyInnoDB DEFAULT CHARSET=latin1;
 
 Insert into `unit` (ID,NAME) values (1,'mm');
 Insert into `unit` (ID,NAME) values (2,'ug/L');
