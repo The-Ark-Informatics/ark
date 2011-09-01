@@ -124,7 +124,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 	
 	public DataView<SubjectCustomFieldData> buildDataView(ArkDataProvider2<SubjectCustomDataVO, SubjectCustomFieldData> scdDataProvider2) {
 
-		DataView<SubjectCustomFieldData> studyCompDataView = new CustomDataEditorDataView<SubjectCustomFieldData>("customDataList", scdDataProvider2) {
+		DataView<SubjectCustomFieldData> subjectCFDataDataView = new CustomDataEditorDataView<SubjectCustomFieldData>("customDataList", scdDataProvider2) {
 
 			@Override
 			protected void populateItem(final Item<SubjectCustomFieldData> item) {
@@ -146,7 +146,7 @@ public class SubjectCustomDataDataViewPanel extends Panel {
 				return log;
 			}
 		};
-		return studyCompDataView;
+		return subjectCFDataDataView;
 	}
 	
 	public DataView<SubjectCustomFieldData> getDataView() {
