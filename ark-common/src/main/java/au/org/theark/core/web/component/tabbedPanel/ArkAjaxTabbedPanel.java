@@ -23,15 +23,13 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
-import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.extensions.ajax.markup.html.tabs.AjaxTabbedPanel;
 import org.apache.wicket.extensions.markup.html.tabs.ITab;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkMainTab;
 
 public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
@@ -41,12 +39,6 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 	private static final long	serialVersionUID		= -3340777937373315256L;
 	private transient Logger	log						= LoggerFactory.getLogger(ArkAjaxTabbedPanel.class);
 	protected List<ArkMainTab>	mainTabs;
-
-	protected String				setBusyIndicatorOn	= "document.getElementById('busyIndicator').style.display ='inline'; " + "overlay = document.getElementById('overlay'); "
-																			+ "overlay.style.visibility = 'visible';";
-
-	protected String				setBusyIndicatorOff	= "document.getElementById('busyIndicator').style.display ='none'; " + "overlay = document.getElementById('overlay'); "
-																			+ "overlay.style.visibility = 'hidden';";
 
 	public ArkAjaxTabbedPanel(String id, List<ITab> tabs) {
 		super(id, tabs);
@@ -63,9 +55,12 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	protected WebMarkupContainer newLink(final String linkId, final int index) {
-		return new AjaxFallbackLink(linkId) {
+		ArkBusyAjaxLink<String> tabLink = new ArkBusyAjaxLink<String>(linkId) {
+
+			/**
+			 * 
+			 */
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
@@ -79,28 +74,8 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 				}
 				onAjaxUpdate(target);
 			}
-
-			@Override
-			protected IAjaxCallDecorator getAjaxCallDecorator() {
-				return new AjaxPostprocessingCallDecorator(super.getAjaxCallDecorator()) {
-					private static final long	serialVersionUID	= 1L;
-
-					@Override
-					public CharSequence postDecorateScript(CharSequence script) {
-						return script + setBusyIndicatorOn;
-					}
-
-					@Override
-					public CharSequence postDecorateOnFailureScript(CharSequence script) {
-						return script + setBusyIndicatorOff;
-					}
-
-					@Override
-					public CharSequence postDecorateOnSuccessScript(CharSequence script) {
-						return script + setBusyIndicatorOff;
-					}
-				};
-			}
 		};
+		
+		return tabLink;
 	}
 }
