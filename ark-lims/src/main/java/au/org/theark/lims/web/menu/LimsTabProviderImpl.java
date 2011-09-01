@@ -79,7 +79,8 @@ public class LimsTabProviderImpl extends Panel implements IMainTabProvider {
 
 			public boolean isVisible() {
 				int studyCount = iArkCommonService.getCountOfStudies();
-				return studyCount>0;
+				boolean visible = (studyCount > 0);
+				return visible;
 			}
 		};
 	}
