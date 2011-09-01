@@ -12,8 +12,9 @@ http://www.cssstickyfooter.com
 /* must declare 0 margins on everything, also for main layout components use padding, not 
 vertical margins (top and bottom) to add spacing, else those margins get added to total height 
 and your footer gets pushed down a bit more, creating vertical scroll bars in the browser */
-html,body { /* 98% allows footer to be seen ok,at all times */
+html, body { /* 98% allows footer to be seen ok,at all times */
 	height: 98%;
+	overflow: auto;
 }
 
 #wrap {
