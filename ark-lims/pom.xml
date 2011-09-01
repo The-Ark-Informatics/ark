@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>au.org.theark.lims</groupId>
 	<artifactId>ark-lims</artifactId>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.4-SNAPSHOT</version>
 	<!-- TODO project name  -->
 	<packaging>jar</packaging>
 	<name>Ark LIMS</name>
@@ -19,8 +19,8 @@
 	</issueManagement>
 	<licenses>
 		<license>
-			<name>The Apache Software License, Version 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>GNU GENERAL PUBLIC LICENSE, Version 3.0</name>
+			<url>http://www.gnu.org/copyleft/gpl.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
