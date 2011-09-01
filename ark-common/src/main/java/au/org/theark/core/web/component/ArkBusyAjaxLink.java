@@ -35,11 +35,12 @@ public abstract class ArkBusyAjaxLink<T> extends AjaxLink<T> {
 	 * 
 	 */
 	private static final long	serialVersionUID		= 4139168862106185766L;
-	private String					setBusyIndicatorOn	= "document.getElementById('busyIndicator').style.display ='inline'; " + "overlay = document.getElementById('overlay'); "
-																			+ "overlay.style.visibility = 'visible';";
 
-	private String					setBusyIndicatorOff	= "document.getElementById('busyIndicator').style.display ='none'; " + "overlay = document.getElementById('overlay'); "
-																			+ "overlay.style.visibility = 'hidden';";
+	private String					setBusyIndicatorOn	= "overlay = document.getElementById('busyOverlay'); "
+																	+ "overlay.style.visibility = 'visible';";
+
+	private String					setBusyIndicatorOff	= "overlay = document.getElementById('busyOverlay'); "
+																	+ "overlay.style.visibility = 'hidden';";
 
 	/**
 	 * Ark implementation of an AjaxLink that shows the Loading... "busy" indicator when clicked
