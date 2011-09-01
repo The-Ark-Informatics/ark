@@ -29,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
+import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.component.biocollectioncustomdata.form.CustomDataEditorForm;
@@ -53,7 +54,7 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 	protected ILimsService					iLimsService;
 	
 	protected FeedbackPanel				feedbackPanel;
-	protected CustomDataEditorForm	customDataEditorForm;
+	protected AbstractCustomDataEditorForm<BioCollectionCustomDataVO>	customDataEditorForm;
 	protected BioCollectionCustomDataDataViewPanel dataViewPanel;
 
 	public BioCollectionCustomDataEditorPanel(String id, CompoundPropertyModel<BioCollectionCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {

@@ -33,7 +33,6 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;

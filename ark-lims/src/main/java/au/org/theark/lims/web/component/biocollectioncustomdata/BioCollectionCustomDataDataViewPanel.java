@@ -97,8 +97,8 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 					ArkFunction arkFunction = criteriaModel.getObject().getArkFunction();
 	
 					List<BioCollectionCustomFieldData> bioCollectionCustomDataList = iLimsService.getBioCollectionCustomFieldDataList(bc, arkFunction, first, count);
-					cpModel.getObject().setBioCollectionCustomFieldDataList(bioCollectionCustomDataList);
-					return cpModel.getObject().getBioCollectionCustomFieldDataList().iterator();
+					cpModel.getObject().setCustomFieldDataList(bioCollectionCustomDataList);
+					return cpModel.getObject().getCustomFieldDataList().iterator();
 				}
 			};
 			// Set the criteria for the data provider
@@ -154,7 +154,7 @@ public class BioCollectionCustomDataDataViewPanel extends Panel {
 	
 	public void saveCustomData() {
 		if (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.SAVE)) {
-			List<BioCollectionCustomFieldData> errorList = iLimsService.createOrUpdateBioCollectionCustomFieldData(cpModel.getObject().getBioCollectionCustomFieldDataList());
+			List<BioCollectionCustomFieldData> errorList = iLimsService.createOrUpdateBioCollectionCustomFieldData(cpModel.getObject().getCustomFieldDataList());
 			if (errorList.size() > 0) {
 				for (BioCollectionCustomFieldData bioCollectionCustomFieldData : errorList) {
 					CustomField cf = bioCollectionCustomFieldData.getCustomFieldDisplay().getCustomField();

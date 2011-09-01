@@ -19,14 +19,12 @@
 package au.org.theark.lims.model.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
-import au.org.theark.core.model.study.entity.ArkFunction;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
-public class BioCollectionCustomDataVO implements Serializable {
+public class BioCollectionCustomDataVO extends CustomDataVO<BioCollectionCustomFieldData> implements Serializable {
 
 	/**
 	 * 
@@ -34,12 +32,10 @@ public class BioCollectionCustomDataVO implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 	
 	protected BioCollection bioCollection;
-	protected ArkFunction arkFunction;
-	protected List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList;
 	
 	public BioCollectionCustomDataVO() {
+		super();
 		bioCollection = new BioCollection();
-		bioCollectionCustomFieldDataList = new ArrayList<BioCollectionCustomFieldData>();
 	}
 
 	public BioCollection getBioCollection() {
@@ -48,22 +44,6 @@ public class BioCollectionCustomDataVO implements Serializable {
 
 	public void setBioCollection(BioCollection bioCollection) {
 		this.bioCollection = bioCollection;
-	}
-
-	public ArkFunction getArkFunction() {
-		return arkFunction;
-	}
-
-	public void setArkFunction(ArkFunction arkFunction) {
-		this.arkFunction = arkFunction;
-	}
-
-	public List<BioCollectionCustomFieldData> getBioCollectionCustomFieldDataList() {
-		return bioCollectionCustomFieldDataList;
-	}
-
-	public void setBioCollectionCustomFieldDataList(List<BioCollectionCustomFieldData> bioCollectionCustomFieldDataList) {
-		this.bioCollectionCustomFieldDataList = bioCollectionCustomFieldDataList;
 	}
 
 }
