@@ -36,6 +36,7 @@ import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -45,6 +46,7 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.lims.model.dao.IBioCollectionDao;
 import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
+import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
@@ -57,11 +59,11 @@ public class LimsServiceImpl implements ILimsService {
 	private static Logger		log	= LoggerFactory.getLogger(LimsServiceImpl.class);
 
 	private IArkCommonService	arkCommonService;
-
 	private IStudyDao				iStudyDao;
 	private IBioCollectionDao	iBioCollectionDao;
 	private IBiospecimenDao		iBiospecimenDao;
 	private IBioTransactionDao	iBioTransactionDao;
+	private IInventoryDao 		iInventoryDao;
 
 	/**
 	 * @param arkCommonService
@@ -106,6 +108,15 @@ public class LimsServiceImpl implements ILimsService {
 	@Autowired
 	public void setiBioTransactionDao(IBioTransactionDao iBioTransactionDao) {
 		this.iBioTransactionDao = iBioTransactionDao;
+	}
+	
+	/**
+	 * @param iInventoryDao
+	 *           the iInventoryDao to set
+	 */
+	@Autowired
+	public void setiInventoryDao(IInventoryDao iInventoryDao) {
+		this.iInventoryDao = iInventoryDao;
 	}
 
 	/*
@@ -209,7 +220,15 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#deleteBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void deleteBiospecimen(LimsVO modelObject) {
-		iBiospecimenDao.deleteBiospecimen(modelObject.getBiospecimen());
+		log.debug("Deleting Biospecimen");
+		
+		// Need to set the InvCell reference to null (if it had one)
+		Biospecimen biospecimen = modelObject.getBiospecimen();
+		InvCell invCell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
+		invCell.setBiospecimen(null);
+		iInventoryDao.updateInvCell(invCell);
+		
+		iBiospecimenDao.deleteBiospecimen(biospecimen);
 	}
 
 	/*
