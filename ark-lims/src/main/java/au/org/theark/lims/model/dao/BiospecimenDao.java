@@ -30,7 +30,6 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.ArkFunction;
@@ -178,9 +177,12 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			criteria.add(Restrictions.in("study", limsVo.getStudyList()));	
 		}
 		
-		// Restrict on linkSubjectStudy in the LimsVO
-		if (limsVo.getLinkSubjectStudy() != null) {
+		// Restrict on linkSubjectStudy in the LimsVO (or biospecimen)
+		if (limsVo.getLinkSubjectStudy() != null && limsVo.getLinkSubjectStudy().getId() != null) {
 			criteria.add(Restrictions.eq("linkSubjectStudy", limsVo.getLinkSubjectStudy()));
+		}
+		else if (biospecimen.getLinkSubjectStudy() != null) {
+			criteria.add(Restrictions.eq("linkSubjectStudy", biospecimen.getLinkSubjectStudy()));
 		}
 		
 		if (biospecimen.getId() != null) {
@@ -188,7 +190,7 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 
 		if (biospecimen.getBiospecimenUid() != null) {
-			criteria.add(Restrictions.eq("biospecimenId", biospecimen.getBiospecimenUid()));
+			criteria.add(Restrictions.eq("biospecimenUid", biospecimen.getBiospecimenUid()));
 		}
 
 		if (biospecimen.getSampleType() != null) {
@@ -204,7 +206,6 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 
 		return criteria;
-
 	}
 
 	public List<Biospecimen> searchPageableBiospecimens(LimsVO limsVo, int first, int count) {
@@ -277,7 +278,6 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 	public Long isCustomFieldUsed(BiospecimenCustomFieldData biospecimanCFData) {
 		Long count = new Long("0");
 		CustomField customField = biospecimanCFData.getCustomFieldDisplay().getCustomField();
-		//The Study
 		
 		try {
 			
@@ -309,5 +309,4 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 			
 		return count;
 	}
-
 }
