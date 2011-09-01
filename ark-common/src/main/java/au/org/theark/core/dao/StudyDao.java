@@ -1037,7 +1037,8 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	
 	public int getCountOfStudies() {
 		int total = 0;
-		total = ((Long) getSession().createQuery("select count(*) from Study").iterate().next()).intValue();
+		Long longTotal = ((Long) getSession().createQuery("select count(*) from Study").iterate().next());
+		total = longTotal.intValue();
 		return total;
 	}
 }
