@@ -19,14 +19,12 @@
 package au.org.theark.study.model.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
+import au.org.theark.core.web.component.customfield.dataentry.CustomDataVO;
 
-public class SubjectCustomDataVO implements Serializable {
+public class SubjectCustomDataVO extends CustomDataVO<SubjectCustomFieldData> implements Serializable {
 
 	/**
 	 * 
@@ -34,12 +32,10 @@ public class SubjectCustomDataVO implements Serializable {
 	private static final long	serialVersionUID	= 1L;
 	
 	protected LinkSubjectStudy linkSubjectStudy;
-	protected ArkFunction arkFunction;
-	protected List<SubjectCustomFieldData> subjectCustomFieldDataList;
-	
+
 	public SubjectCustomDataVO() {
+		super();
 		linkSubjectStudy = new LinkSubjectStudy();
-		subjectCustomFieldDataList = new ArrayList<SubjectCustomFieldData>();
 	}
 
 	public LinkSubjectStudy getLinkSubjectStudy() {
@@ -48,22 +44,6 @@ public class SubjectCustomDataVO implements Serializable {
 
 	public void setLinkSubjectStudy(LinkSubjectStudy linkSubjectStudy) {
 		this.linkSubjectStudy = linkSubjectStudy;
-	}
-
-	public ArkFunction getArkFunction() {
-		return arkFunction;
-	}
-
-	public void setArkFunction(ArkFunction arkFunction) {
-		this.arkFunction = arkFunction;
-	}
-
-	public List<SubjectCustomFieldData> getSubjectCustomFieldDataList() {
-		return subjectCustomFieldDataList;
-	}
-
-	public void setSubjectCustomFieldDataList(List<SubjectCustomFieldData> subjectCustomDataList) {
-		this.subjectCustomFieldDataList = subjectCustomDataList;
 	}
 
 }
