@@ -14,6 +14,7 @@ vertical margins (top and bottom) to add spacing, else those margins get added t
 and your footer gets pushed down a bit more, creating vertical scroll bars in the browser */
 html,body { /* 98% allows footer to be seen ok,at all times */
 	height: 98%;
+	overflow:hidden;
 }
 
 #wrap {
@@ -738,17 +739,6 @@ wicket-ajax-indicator {
 	text-align: center;
 	top: 50%;
 	z-index: 1001;
-}
-
-#overlay {
-	height: 100%;
-	left: 0;
-	position: absolute;
-	text-align: center;
-	top: 0;
-	visibility: hidden;
-	width: 100%;
-	z-index: 1000;
 }
 
 div.wicket-aa {
