@@ -26,10 +26,35 @@
 		<link rel="stylesheet" type="text/css" href="css/customField.css"/>
 		<link rel="stylesheet" type="text/css" href="css/footer.css"/>
 		<link rel="stylesheet" type="text/css" href="css/sweetTitles.css" >
-		<script language="javascript" src="addEventJs.js"></script>
-		<script language="javascript" src="sweetTitles.js"></script>
+		<script language="javascript" src="js/addEventJs.js">
+		</script>
+		<script language="javascript" src="js/sweetTitles.js">
+		</script>
 	</head>
 	<body>
+		<!-- Overlay that blocks entire screen while waiting for load  -->
+		<div id="busyOverlay">
+			<div class="overlay-decorator">
+			</div>
+
+			<div class="overlay-wrap">
+				<div class="overlay">
+					<div class="dialog-decorator">
+					</div>
+					<div class="dialog-wrap">
+						<div class="dialog" id="dialog">
+							<div class="content">
+								<div id="busyIndicator">
+									<img height="16" width="16" src="images/indicator.gif">
+									Loading...
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	
 		<!-- Start div wrap -->
 		<div id="wrap">
 			<div class="mainheaderouter">
@@ -67,9 +92,19 @@
 							<!--	Login/Logout Welcome panel must be made a re-usable panel-->
 							<div id="welcomePanel">
 								<div id="welcomeMessage">
-									Welcome&nbsp;<a wicket:id="myDetailLink" href="#"><span wicket:id="loggedInUser" id="loggedInUser">[userId]</span></a>&nbsp;|&nbsp;<a wicket:id="ajaxLogoutLink" href="#">Logout</a>
+									Welcome&nbsp;
+									<a wicket:id="myDetailLink" href="#">
+										<span wicket:id="loggedInUser" id="loggedInUser">
+											[userId]
+										</span>
+									</a>
+									&nbsp;|&nbsp;
+									<a wicket:id="ajaxLogoutLink" href="#">
+										Logout
+									</a>
 								</div>
-								<div wicket:id="modalWindow"></div>
+								<div wicket:id="modalWindow">
+								</div>
 							</div>
 						</div>
 						<!-- End div header -->
@@ -95,6 +130,7 @@
 			<div class="push" />
 			<!-- End div wrap -->
 		</div>
+
 		<!--	Page footer -->
 		<div id="footer" class="footer">
 			<wicket:message key="page.version">
