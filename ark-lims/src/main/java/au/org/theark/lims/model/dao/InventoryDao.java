@@ -294,4 +294,23 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		return invCell;
 	}
+
+	public InvCell getInvCell(Long id) {
+		InvCell invCell = new InvCell();
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+
+		if (id != null) {
+			criteria.add(Restrictions.eq("id", id));
+		}
+
+		List<InvCell> list = criteria.list();
+		if(!list.isEmpty()){ 
+			invCell = (InvCell) list.get(0);
+		}
+		
+		if(invCell == null) {
+			log.error("InvTray with ID " + id + "no longer in the database");
+		}
+		return invCell;
+	}
 }

@@ -195,4 +195,11 @@ public interface IInventoryService {
 	 * @param invCell to update
 	 */
 	public void updateInvCell(InvCell invCell);
+
+	/**
+	 * Get an InvCell based on an id
+	 * @param id
+	 * @return
+	 */
+	public InvCell getInvCell(Long id);
 }

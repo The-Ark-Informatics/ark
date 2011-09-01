@@ -215,4 +215,11 @@ public interface IInventoryDao {
 	 * @return
 	 */
 	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen);
+
+	/**
+	 * Get an InvCell based on an id
+	 * @param id
+	 * @return
+	 */
+	public InvCell getInvCell(Long id);
 }

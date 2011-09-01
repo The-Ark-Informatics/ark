@@ -179,4 +179,8 @@ public class InventoryServiceImpl implements IInventoryService {
 	public InvCell getInvCellByBiospecimen(Biospecimen biospecimen) {
 		return iInventoryDao.getInvCellByBiospecimen(biospecimen);
 	}
+
+	public InvCell getInvCell(Long id) {
+		return iInventoryDao.getInvCell(id);
+	}
 }
