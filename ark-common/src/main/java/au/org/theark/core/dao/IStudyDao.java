@@ -383,4 +383,5 @@ public interface IStudyDao {
 	
 	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
 
+	public int getCountOfStudies();
 }
