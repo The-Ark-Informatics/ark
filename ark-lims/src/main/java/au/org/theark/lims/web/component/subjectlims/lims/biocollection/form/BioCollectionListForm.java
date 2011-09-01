@@ -45,6 +45,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
@@ -62,14 +64,16 @@ import au.org.theark.lims.web.component.subjectlims.lims.biocollection.BioCollec
 
 /**
  * @author cellis
+ * @author elam
  * 
  */
-@SuppressWarnings({ "unchecked", "rawtypes" })
+@SuppressWarnings({ "unchecked"})
 public class BioCollectionListForm extends Form<LimsVO> {
 	/**
 	 * 
 	 */
 	private static final long										serialVersionUID	= 1L;
+	private static final Logger									log					= LoggerFactory.getLogger(BioCollectionListForm.class);
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>								iArkCommonService;
@@ -113,10 +117,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 	@Override
 	public void onBeforeRender() {
-		// Reset the BioCollection (for criteria) in LimsVO
-		// This prevents the manual modal "X" close button from not reseting the criteria
-		cpModel.getObject().setBioCollection(new BioCollection());
-
+		// Get session data (used for subject search)
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
@@ -132,8 +133,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				}
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 
 			if (contextLoaded) {
@@ -153,6 +153,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		// Data provider to paginate resultList
 		bioColectionProvider = new ArkDataProvider<BioCollection, ILimsService>(iLimsService) {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			public int size() {
 				return service.getBioCollectionCount(model.getObject());
 			}
@@ -167,6 +172,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		};
 		// Set the criteria into the data provider's model
 		bioColectionProvider.setModel(new LoadableDetachableModel<BioCollection>() {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected BioCollection load() {
 				return cpModel.getObject().getBioCollection();
@@ -177,6 +187,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
 				target.addComponent(dataViewListWMC);
@@ -190,6 +205,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 	private void initialiseNewButton() {
 		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.NEW);
@@ -221,6 +241,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 	public DataView<BioCollection> buildDataView(ArkDataProvider<BioCollection, ILimsService> bioCollectionProvider) {
 
 		DataView<BioCollection> bioCollectionDataView = new DataView<BioCollection>("collectionList", bioCollectionProvider) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final Item<BioCollection> item) {
 				item.setOutputMarkupId(true);
@@ -228,37 +253,12 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				final BioCollection bioCollection = item.getModelObject();
 
 				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
-				/*
-				 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
-				 * check/call isVisible() and isEnabled(). By avoiding the use of AjaxButtons when not required, no form submit is caused and thus less
-				 * processing is required.
-				 */
-				// AjaxButton listEditButton = new AjaxButton("listEditButton", new StringResourceModel("editKey", this, null)) {
-				// /**
-				// *
-				// */
-				// private static final long serialVersionUID = -6032731528995858376L;
-				//
-				// @Override
-				// protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// // Refresh any feedback
-				// // target.addComponent(feedbackPanel);
-				//
-				// // // Set selected item into model.context, then show
-				// // modalWindow for editing
-				// // Form<LimsVO> listDetailsForm = (Form<LimsVO>) form;
-				// //
-				// BioCollection bc = (BioCollection)(getParent().getDefaultModelObject());
-				// cpModel.getObject().setBioCollection(bc);
-				// showModalWindow(target, cpModel);
-				// }
-				//
-				// @Override
-				// public boolean isVisible() {
-				// return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
-				// }
-				// };
 				AjaxLink listEditLink = new AjaxLink("listEditLink") {
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
@@ -274,11 +274,9 @@ public class BioCollectionListForm extends Form<LimsVO> {
 					}
 				};
 
-				// listEditButton.setDefaultFormProcessing(false);
 				Label nameLinkLabel = new Label("lblEditLink", "Edit");
 				listEditLink.add(nameLinkLabel);
 				rowEditWMC.add(listEditLink);
-				// rowEditWMC.add(listEditButton);
 				item.add(rowEditWMC);
 
 				SimpleDateFormat simpleDateFormat = new SimpleDateFormat(au.org.theark.core.Constants.DD_MM_YYYY);
@@ -315,17 +313,6 @@ public class BioCollectionListForm extends Form<LimsVO> {
 					 * 
 					 */
 					private static final long	serialVersionUID	= -585048033031888283L;
-
-					/*
-					 * When any AjaxButton in the form is clicked on, it eventually calls form.inputChanged(). This then goes through all its children to
-					 * check/call isVisible() and isEnabled(). Thus, it is best to keep the isVisible() and isEnabled() very light-weight (e.g. avoid
-					 * hitting the database to work this out)
-					 */
-					// @Override
-					// public boolean isEnabled() {
-					// final BioCollection bioCollectionSelected = (BioCollection)(getParent().getDefaultModelObject());
-					// return (!iLimsService.hasBiospecimens(bioCollectionSelected));
-					// }
 
 					@Override
 					public boolean isVisible() {
@@ -387,6 +374,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -405,14 +397,13 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 		// Set new BioCollection into model, then show modalWindow to save
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
-		// newModel.getObject().setBioCollection(new BioCollection());
 		newModel.getObject().getBioCollection().setLinkSubjectStudy(getModelObject().getLinkSubjectStudy());
 		newModel.getObject().getBioCollection().setStudy(getModelObject().getLinkSubjectStudy().getStudy());
 		
 		// Create new generated Collection Name
 		newModel.getObject().getBioCollection().setName(UniqueIdGenerator.generateUniqueId());
 		
-		showModalWindow(target, newModel); // listDetailsForm);
+		showModalWindow(target, newModel);
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
@@ -421,9 +412,6 @@ public class BioCollectionListForm extends Form<LimsVO> {
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Collection Detail");
 		modalWindow.setContent(modalContentPanel);
-		// modalWindow.setListDetailPanel(listDetailPanel);
-		// modalWindow.setListDetailForm(this);
 		modalWindow.show(target);
 	}
-
 }

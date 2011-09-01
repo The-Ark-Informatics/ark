@@ -115,10 +115,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	@Override
 	public void onBeforeRender() {
-		// Reset the Biospecimen (for criteria) in LimsVO
-		// This prevents the manual modal "X" close button from not reseting the criteria
-		cpModel.getObject().setBiospecimen(new Biospecimen());
-
+		// Get session data (used for subject search)
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
@@ -134,8 +131,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				}
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 
 			if (contextLoaded) {
