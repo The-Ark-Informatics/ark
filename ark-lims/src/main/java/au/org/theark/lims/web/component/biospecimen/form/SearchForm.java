@@ -42,6 +42,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
@@ -83,7 +84,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	
 	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, WebMarkupContainer resultListContainer, WebMarkupContainer arkContextMarkup, FeedbackPanel feedbackPanel) {
 		super(id, compoundPropertyModel, feedbackPanel);
-		this.setCpmModel(compoundPropertyModel);
+		this.cpmModel = compoundPropertyModel;
 		this.resultListContainer = resultListContainer;
 		initialiseFieldForm();
 		
@@ -125,16 +126,19 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	}
 
 	private void initStudyDdc() {
-		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
-		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
-
+		CompoundPropertyModel<LimsVO> limsCpm = cpmModel;
+		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsCpm, "study");
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		try {
 			Subject currentUser = SecurityUtils.getSubject();
 			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
 			ArkUserVO arkUserVo = new ArkUserVO();
 			arkUserVo.setArkUserEntity(arkUser);
-			studyListForUser = iArkCommonService.getStudyListForUser(arkUserVo);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyListForUser = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
@@ -169,6 +173,13 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
 		target.addComponent(feedbackPanel);
+		
+		int count = iLimsService.getBiospecimenCount(cpmModel.getObject());
+		if (count == 0) {
+			this.info("There are no Biospecimens with the specified criteria.");
+			target.addComponent(feedbackPanel);
+		}
+		
 		target.addComponent(resultListContainer);
 	}
 
