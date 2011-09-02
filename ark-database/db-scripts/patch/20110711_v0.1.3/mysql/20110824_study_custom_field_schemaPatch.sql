@@ -54,4 +54,5 @@ ALTER TABLE `study`.`unit_type` CHANGE COLUMN `ARK_MODULE_ID` `ARK_FUNCTION_ID` 
 -- Upgrade existing Subject unitType (there probably aren't many if any)
 UPDATE `study`.`unit_type`
   SET ARK_FUNCTION_ID = 5   -- 5 is the Subject function
-WHERE ARK_FUNCTION_ID = 2	-- 2 used to mean the Subject module
+WHERE ARK_FUNCTION_ID = 2;	-- 2 used to mean the Subject module
+
