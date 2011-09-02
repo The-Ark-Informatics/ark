@@ -190,9 +190,9 @@ public class SearchResults extends Panel {
 				// Get the Source Modules from database
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
 				
-				// Hide Report and Admin modules from "Available" view
+				// Hide Admin and Reporting modules from "Available" view
 				availableArkModules.remove(iArkCommonService.getArkModuleByName("Admin"));
-				availableArkModules.remove(iArkCommonService.getArkModuleByName("Report"));
+				availableArkModules.remove(iArkCommonService.getArkModuleByName("Reporting"));
 				
 				// Get the Modules for the Study from database
 				Collection<ArkModule> arkModulesLinkedToStudy = iArkCommonService.getArkModulesLinkedWithStudy(study);
