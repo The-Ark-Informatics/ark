@@ -9,14 +9,8 @@ INSERT INTO `study`.`ark_function` (`ID`, `NAME`, `DESCRIPTION`, `ARK_FUNCTION_T
 -- Add Admin module/function
 INSERT INTO `study`.`ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) VALUES (28, 7, 28, 1);
 
--- Super Administrator permissions for Admin module/function
-INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (142, 1, 7, 28, 1);
-INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (143, 1, 7, 28, 2);
-INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (144, 1, 7, 28, 3);
-INSERT INTO `study`.`ark_role_policy_template` (`ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `ARK_PERMISSION_ID`) VALUES (145, 1, 7, 28, 4);
-
 -- Add user/role
-INSERT INTO `study`.`ark_user_role` (`ID`, `ARK_USER_ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `STUDY_ID`) VALUES (105, 1, 1, 7, NULL);
+INSERT INTO `study`.`ark_user_role` (`ARK_USER_ID`, `ARK_ROLE_ID`, `ARK_MODULE_ID`, `STUDY_ID`) VALUES (1, 1, 7, NULL);
 
 -- Module and Function sub-menus as functions
 INSERT INTO `study`.`ark_function` (`ID`, `NAME`, `DESCRIPTION`, `ARK_FUNCTION_TYPE_ID`, `RESOURCE_KEY`) VALUES (29, 'MODULE', 'Allows CRUD operations on the ark_module table for the Ark application', 1, 'tab.module.admin.module');
