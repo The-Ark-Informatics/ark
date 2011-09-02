@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.subjectcustomdata.form;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -30,7 +29,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -45,13 +43,6 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<SubjectCu
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService studyService;
 	
-	protected FeedbackPanel	feedbackPanel;
-	protected WebMarkupContainer dataViewWMC;
-	protected WebMarkupContainer buttonsPanelWMC;
-	
-	// Add a visitor class for required field marking/validation/highlighting
-	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
-
 	public CustomDataEditorForm(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
 	}
