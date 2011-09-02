@@ -1,3 +1,8 @@
+/*
+ * Emergency data patch to fix functionality in ark-0.1.4-SNAPSHOT.war
+ * (i.e. these data patches do not require any code changes)
+ */
+
 USE study;
 
 -- Update all the so that the Description is actually populated (Fixes ARK-327)
