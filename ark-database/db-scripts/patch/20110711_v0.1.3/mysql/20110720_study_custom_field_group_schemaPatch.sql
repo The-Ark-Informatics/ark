@@ -1,8 +1,0 @@
-use study;
-CREATE  TABLE `study`.`custom_field_group` (
-  `ID` INT NOT NULL AUTO_INCREMENT ,
-  `NAME` VARCHAR(100) NOT NULL ,
-  `DESCRIPTION` VARCHAR(1000) NULL ,
-  PRIMARY KEY (`ID`) )
-ENGINE = InnoDB;
-
