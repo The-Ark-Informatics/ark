@@ -1,3 +1,8 @@
+/*
+ * Emergency data patch to fix functionality in ark-0.1.4-SNAPSHOT.war
+ * (i.e. these data patches do not require any code changes)
+ */
+
 USE study;
 
 -- Fix because LIMS Subject Detail tab was deleted by accident (ark_function_id=17, but this row had id=18)
