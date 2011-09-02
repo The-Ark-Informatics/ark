@@ -526,33 +526,26 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 	}
 
 	public void updateSubject(SubjectVO subjectVO) throws ArkUniqueException {
+		Session session = getSession();
+		Person person = subjectVO.getLinkSubjectStudy().getPerson();
+		session.update(person);// Update Person and associated Phones
 
-		// TODO: Needed?
-		if (true) {
-			Session session = getSession();
-			Person person = subjectVO.getLinkSubjectStudy().getPerson();
-			session.update(person);// Update Person and associated Phones
+		PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
+		String currentLastName = getCurrentLastname(person);
 
-			PersonLastnameHistory personLastNameHistory = new PersonLastnameHistory();
-			String currentLastName = getCurrentLastname(person);
-
-			if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
-				if (person.getLastName() != null) {
-					personLastNameHistory.setPerson(person);
-					personLastNameHistory.setLastName(person.getLastName());
-					session.save(personLastNameHistory);
-				}
+		if (currentLastName == null || (currentLastName != null && !currentLastName.equalsIgnoreCase(person.getLastName()))) {
+			if (person.getLastName() != null) {
+				personLastNameHistory.setPerson(person);
+				personLastNameHistory.setLastName(person.getLastName());
+				session.save(personLastNameHistory);
 			}
-
-			// Update subjectPreviousLastname
-			subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
-
-			LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
-			session.update(linkSubjectStudy);
 		}
-		else {
-			throw new ArkUniqueException("Subject UID must be unique");
-		}
+
+		// Update subjectPreviousLastname
+		subjectVO.setSubjectPreviousLastname(getPreviousLastname(person));
+
+		LinkSubjectStudy linkSubjectStudy = subjectVO.getLinkSubjectStudy();
+		session.update(linkSubjectStudy);
 	}
 
 	protected String getNextGeneratedSubjectUID(Study study) throws ArkSubjectInsertException {
