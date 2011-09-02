@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.StatusNotAvailableException;
 import au.org.theark.core.model.study.entity.AddressStatus;
@@ -61,8 +60,9 @@ import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.vo.SubjectVO;
 
 /**
+ * Interface that provides CRUD and accessor methods to Study entities 
  * @author nivedann
- * 
+ * @author cellis
  */
 public interface IStudyDao {
 
@@ -345,43 +345,146 @@ public interface IStudyDao {
 	 */
 	public List<ArkFunction> getModuleFunction(ArkModule arkModule);
 
+	/**
+	 * 
+	 * @return
+	 */
 	public List<PhoneStatus> getPhoneStatus();
 
+	/**
+	 * Returns true if the specified study has Subjects assigned
+	 * @param study
+	 * @return
+	 */
 	public Boolean studyHasSubjects(Study study);
 	
+	/**
+	 * Gets a List of Study's for the specified arkUser (also retricts on study.name)
+	 * @param arkUser
+	 * @param study
+	 * @return
+	 */
 	public List<Study> getStudiesForUser(ArkUser arkUser, Study study);
 	
+	/**
+	 * Gets the count of CustomFields based on the criteria
+	 * @param customFieldCriteria
+	 * @return
+	 */
 	public int getCustomFieldCount(CustomField customFieldCriteria);
 
+	/**
+	 * Search a on CustomField based on the criteria provided, limiting to the pageable amounts first and count
+	 * @param customFieldCriteria
+	 * @param first
+	 * @param count
+	 * @return
+	 */
 	public List<CustomField> searchPageableCustomFields(CustomField customFieldCriteria, int first, int count);
 
+	/**
+	 * Get a List of FieldTypes
+	 * @return
+	 */
 	public List<FieldType> getFieldTypes();
 	
+	/**
+	 * Get a List of UnitType.name(s), limited to the maxResults
+	 * @param unitTypeCriteria
+	 * @param maxResults
+	 * @return
+	 */
 	public List<String> getUnitTypeNames(UnitType unitTypeCriteria, int maxResults);
 	
+	/**
+	 * Get a list of UnitType(s) based on the criteria provided
+	 * @param unitTypeCriteria
+	 * @return
+	 */
 	public List<UnitType> getUnitTypes(UnitType unitTypeCriteria);
 
+	/**
+	 * Create a CustomField
+	 * @param customField
+	 * @throws ArkSystemException
+	 */
 	public void createCustomField(CustomField customField) throws  ArkSystemException;
 	
+	/**
+	 * Create a CustomFieldDisplay
+	 * @param customFieldDisplay
+	 * @throws ArkSystemException
+	 */
 	public void createCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
 	
-	public FieldType getFieldTypeById(Long fieldTpeId);
+	/**
+	 * Get a FieldType based on it's id
+	 * @param fieldTpeId
+	 * @return
+	 */
+	public FieldType getFieldTypeById(Long id);
 	
+	/**
+	 * Get a CustomField based on it's id
+	 * @param id
+	 * @return
+	 */
 	public CustomField getCustomField(Long id );
 	
+	/**
+	 * Get a CustomFieldDisplay based on the criteria provided
+	 * @param cfCriteria
+	 * @return
+	 */
 	public CustomFieldDisplay getCustomFieldDisplayByCustomField(CustomField cfCriteria);
 	
-	public CustomFieldDisplay getCustomFieldDisplay(Long id );
+	/**
+	 * Get a CustomFieldDisplay based on it's id
+	 * @param id
+	 * @return
+	 */
+	public CustomFieldDisplay getCustomFieldDisplay(Long id);
 	
+	/**
+	 * Update a CustomField
+	 * @param customField
+	 * @throws ArkSystemException
+	 */
 	public void updateCustomField(CustomField customField) throws  ArkSystemException;
 	
+	/**
+	 * Update a CustomFieldDisplay
+	 * @param customFieldDisplay
+	 * @throws ArkSystemException
+	 */
 	public void updateCustomFieldDisplay(CustomFieldDisplay customFieldDisplay) throws  ArkSystemException;
 	
+	/**
+	 * Delete a CustomField
+	 * @param customField
+	 * @throws ArkSystemException
+	 */
 	public void deleteCustomField(CustomField customField) throws ArkSystemException;
 	
+	/**
+	 * Delete a CustomFieldDisplay
+	 * @param customFieldDisplay
+	 * @throws ArkSystemException
+	 */
 	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
 	
+	/**
+	 * Determin if the CustomField is unique, based on the name, study and CustomField to update
+	 * @param customFieldName
+	 * @param study
+	 * @param customFieldToUpdate
+	 * @return true if the CustomField is unique
+	 */
 	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate);
 
+	/**
+	 * Get the total count of Studies 
+	 * @return the total count of Studies 
+	 */
 	public int getCountOfStudies();
 }
