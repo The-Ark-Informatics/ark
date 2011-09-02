@@ -35,7 +35,7 @@ ALTER TABLE `study`.`custom_field` CHANGE COLUMN `ARK_MODULE_ID` `ARK_FUNCTION_I
 -- Upgrade existing Subject customFields
 UPDATE `study`.`custom_field`
   SET ARK_FUNCTION_ID = 5   -- 5 is the Subject function
-WHERE ARK_FUNCTION_ID = 2	-- 2 used to mean the Subject module
+WHERE ARK_FUNCTION_ID = 2;	-- 2 used to mean the Subject module
 
 
 -- Make unitType also be associated with a primary arkFunction (rather than module)
