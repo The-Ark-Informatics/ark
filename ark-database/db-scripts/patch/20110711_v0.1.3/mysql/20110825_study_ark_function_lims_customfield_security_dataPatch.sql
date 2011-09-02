@@ -306,3 +306,4 @@ SELECT *
     ON ar.id = arpt.ark_role_id
  WHERE arpt.ark_function_id = 37
     OR arpt.ark_function_id = 38;
+    
