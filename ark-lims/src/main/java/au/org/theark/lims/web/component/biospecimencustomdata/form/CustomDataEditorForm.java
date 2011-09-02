@@ -42,9 +42,6 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<Biospecim
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService				iLimsService;
-	
-	// Add a visitor class for required field marking/validation/highlighting
-	protected ArkFormVisitor formVisitor = new ArkFormVisitor();
 
 	public CustomDataEditorForm(String id, CompoundPropertyModel<BiospecimenCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
