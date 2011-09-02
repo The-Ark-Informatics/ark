@@ -91,13 +91,12 @@ public interface IStudyDao {
 	public Study getStudy(Long id);
 
 	/**
-	 * An interace to return a StudyStatus entity by providing the status name.
+	 * Gets a StudyStatus entity by providing the status name.
 	 * 
 	 * @param statusName
 	 * @return
 	 * @throws StatusNotAvailableException
 	 */
-
 	public StudyStatus getStudyStatus(String statusName) throws StatusNotAvailableException;
 
 	/**
@@ -186,6 +185,11 @@ public interface IStudyDao {
 	 */
 	public List<Country> getCountries();
 
+	/**
+	 * Get a Country based on a countryCode
+	 * @param countryCode
+	 * @return
+	 */
 	public Country getCountry(String countryCode);
 
 	/**
@@ -244,18 +248,49 @@ public interface IStudyDao {
 	 */
 	public List<ConsentType> getConsentType();
 
+	/**
+	 * Get a List of ConsentAnswer(s)
+	 * @return
+	 */
 	public List<ConsentAnswer> getConsentAnswer();
 
+	/**
+	 * Get a List of YesNo(s)
+	 * @return
+	 */
 	public List<YesNo> getYesNoList();
 
+	/**
+	 * Create an AuditHistory
+	 * @param auditHistory
+	 */
 	public void createAuditHistory(AuditHistory auditHistory);
 
+	/**
+	 * Get a List of PersonContactMethod(s)
+	 * @return
+	 */
 	public List<PersonContactMethod> getPersonContactMethodList();
 
+	/**
+	 * Determine if the Person is consented to the studyComponent in the study
+	 * @param studyComponent
+	 * @param subject
+	 * @param study
+	 * @return
+	 */
 	public boolean isSubjectConsentedToComponent(StudyComp studyComponent, Person subject, Study study);
 
+	/**
+	 * Create a new LastNameHistory for the Person
+	 * @param person
+	 */
 	public void createPersonLastnameHistory(Person person);
 
+	/**
+	 * Update the Persons LastNameHistory
+	 * @param person
+	 */
 	public void updatePersonLastnameHistory(Person person);
 
 	/**
@@ -286,22 +321,65 @@ public interface IStudyDao {
 	 */
 	public List<PersonLastnameHistory> getLastnameHistory(Person person);
 
+	/**
+	 * Get a List of SubjectUidPadChar(s)
+	 * @return
+	 */
 	public List<SubjectUidPadChar> getListOfSubjectUidPadChar();
 
+	/**
+	 * Get an example of the SubjectUid for the study
+	 * @param study
+	 * @return
+	 */
 	public String getSubjectUidExample(Study study);
 
+	/**
+	 * Get a List of SubjectUidToken(s)
+	 * @return
+	 */
 	public List<SubjectUidToken> getListOfSubjectUidToken();
 
+	/**
+	 * Get a GenderType based on a name
+	 * @param name
+	 * @return
+	 */
 	public GenderType getGenderType(String name);
 
+	/**
+	 * Get a VitalStatus based on a name
+	 * @param name
+	 * @return
+	 */
 	public VitalStatus getVitalStatus(String name);
 
+	/**
+	 * Get a TitleType based on a name
+	 * @param name
+	 * @return
+	 */
 	public TitleType getTitleType(String name);
 
+	/**
+	 * Get a MaritalStatus based on a name
+	 * @param name
+	 * @return
+	 */
 	public MaritalStatus getMaritalStatus(String name);
 
+	/**
+	 * Get a PersonContactMethod based on a name
+	 * @param name
+	 * @return
+	 */
 	public PersonContactMethod getPersonContactMethod(String name);
 
+	/**
+	 * Get a SubjectStatus based on a name
+	 * @param name
+	 * @return
+	 */
 	public SubjectStatus getSubjectStatus(String name);
 
 	/**
@@ -346,7 +424,7 @@ public interface IStudyDao {
 	public List<ArkFunction> getModuleFunction(ArkModule arkModule);
 
 	/**
-	 * 
+	 * Get a List of PhoneStatus(s)
 	 * @return
 	 */
 	public List<PhoneStatus> getPhoneStatus();
