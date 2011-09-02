@@ -55,7 +55,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	
 	public SubjectCustomDataEditorPanel initialisePanel() {
 		
-		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(au.org.theark.core.Constants.ROWS_PER_PAGE);
+		dataViewPanel = new SubjectCustomDataDataViewPanel("dataViewPanel", cpModel).initialisePanel(null);
 
 		customDataEditorForm = new CustomDataEditorForm("customDataEditorForm", cpModel, feedbackPanel).initialiseForm();
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
@@ -65,7 +65,7 @@ public class SubjectCustomDataEditorPanel extends Panel {
 				target.addComponent(this);
 			}
 		};
-		pageNavigator.setOutputMarkupId(true);
+		pageNavigator.setVisible(false);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
 		this.add(customDataEditorForm);
 		this.add(pageNavigator);
