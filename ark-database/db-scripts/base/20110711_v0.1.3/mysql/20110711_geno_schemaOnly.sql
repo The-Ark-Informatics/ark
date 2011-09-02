@@ -101,7 +101,7 @@ CREATE TABLE `delimiter_type` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(50) NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -134,7 +134,7 @@ CREATE TABLE `file_format` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(50) NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -148,7 +148,7 @@ CREATE TABLE `import_type` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(50) NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
@@ -317,7 +317,7 @@ CREATE TABLE `status` (
   `ID` int(11) NOT NULL auto_increment,
   `NAME` varchar(50) NOT NULL,
   PRIMARY KEY  (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;
 
 --
