@@ -199,11 +199,6 @@
 		</dependency>
 
 		<!-- wicketstuff-dojo -->
-		<dependency>
-			<groupId>org.wicketstuff</groupId>
-			<artifactId>wicketstuff-dojo</artifactId>
-			<version>1.3.0-beta</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<resources>
