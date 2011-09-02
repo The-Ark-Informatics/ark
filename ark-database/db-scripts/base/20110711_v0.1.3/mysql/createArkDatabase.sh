@@ -1,11 +1,17 @@
 #! /bin/bash
 HOST_STRING=localhost
 USERNAME=arkadmin
-PASSWORD=# REPLACE WITH PASSWORD #
+PASSWORD=REPLACE
 VERSION=20110711
 
-echo "Creating schemas..."
+echo "Dropping/Creating schemas..."
 mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD<<EOFMYSQL
+DROP SCHEMA IF EXISTS pheno;
+DROP SCHEMA IF EXISTS geno;
+DROP SCHEMA IF EXISTS lims;
+DROP SCHEMA IF EXISTS reporting;
+DROP SCHEMA IF EXISTS study;
+
 CREATE SCHEMA IF NOT EXISTS study;
 CREATE SCHEMA IF NOT EXISTS pheno;
 CREATE SCHEMA IF NOT EXISTS geno;
@@ -27,3 +33,6 @@ mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD lims < "$CURRENT_DIR/$VERSION""_l
 mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD lims < "$CURRENT_DIR/$VERSION""_lims_dataOnly.sql"
 mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD reporting < "$CURRENT_DIR/$VERSION""_reporting_schemaOnly.sql"
 mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD reporting < "$CURRENT_DIR/$VERSION""_reporting_dataOnly.sql"
+
+echo "Creating default Super Administrator"
+mysql -h $HOST_STRING -u $USERNAME -p$PASSWORD reporting < "$CURRENT_DIR/$VERSION""_createSuperAdministrator.sql"
