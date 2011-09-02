@@ -6,3 +6,4 @@ CREATE TABLE `csv_blob` (
   `CSV_BLOB` longblob NOT NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Table containing BLOB references of CSV files for import/upl';
+
