@@ -964,9 +964,9 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	
-	public FieldType getFieldTypeById(Long fieldTpeId){
+	public FieldType getFieldTypeById(Long id){
 		Criteria criteria = getSession().createCriteria(FieldType.class);
-		criteria.add(Restrictions.eq("id", fieldTpeId));
+		criteria.add(Restrictions.eq("id", id));
 		criteria.setMaxResults(1);
 		return (FieldType)criteria.uniqueResult();
 	}
@@ -1009,7 +1009,6 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 	}
 	
 	public boolean isCustomFieldUnqiue(String customFieldName, Study study, CustomField customFieldToUpdate){
-		
 		boolean isUnique = true;
 		StatelessSession stateLessSession = getStatelessSession();
 		Criteria criteria = stateLessSession.createCriteria(CustomField.class);
