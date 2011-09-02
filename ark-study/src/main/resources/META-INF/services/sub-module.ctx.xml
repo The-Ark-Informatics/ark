@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-2.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="au.org.theark.study.model.dao"/> 
+    <context:component-scan base-package="au.org.theark.study.service"/>
+    <context:component-scan base-package="au.org.theark.study.web.component.site"/>
+    <context:component-scan base-package="au.org.theark.study.util"/>
+    
+    <!--  Ark Development LDAP --> 
+	<bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
+		<property name="ldapTemplate" ref="ldapTemplate" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
+		<property name="baseGroupDn" value="ou=groups"/>
+		<property name="baseModuleDn" value="ou=modules"/>
+		<property name="baseSiteDn" value="ou=sites"/>
+		<property name="baseDC" value="dc=ldapdevel,dc=wager,dc=org,dc=au" />
+	</bean>
+	
+	<!-- Ark Test LDAP
+    <bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
+    	<property name="ldapTemplate" ref="ldapTemplate" />
+		<property name="basePeopleDn" value="ou=arkUsers" />
+		<property name="baseGroupDn" value="ou=groups"/>
+		<property name="baseModuleDn" value="ou=modules"/>
+		<property name="baseDC" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
+    </bean>
+    -->
+</beans>

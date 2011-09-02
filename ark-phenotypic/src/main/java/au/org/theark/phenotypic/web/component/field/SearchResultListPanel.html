@@ -1,0 +1,87 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="6%">
+				<label for="fieldId">
+					<wicket:message	key="field.id">Field ID:</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="fieldName">
+					<wicket:message	key="field.name">Field Name:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldType">
+					<wicket:message	key="field.fieldType">Field Type:</wicket:message>
+				</label>
+			</th>
+			<th width="25%">
+				<label for="fieldDescription">
+					<wicket:message	key="field.description">Description:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldUnits">
+					<wicket:message	key="field.units">Units:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldMinValue">
+					<wicket:message	key="field.min">Min:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldMaxValue">
+					<wicket:message	key="field.max">Max:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="fieldMaxValue">
+					<wicket:message	key="field.missingValue">Missing Value:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="fieldList">
+			<td width="2%">&nbsp;</td>
+			<td width="6%">
+				<span wicket:id="field.id">100</span>
+			</td>
+			<td width="15%">
+			  <a href="#"wicket:id="field.name">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.fieldType">Field Type</span>
+			</td>
+			<td width="25%">
+				<span wicket:id="field.description">Description</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.units">Units</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.minValue">MinValue</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.maxValue">MaxValue</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="field.missingValue">MissingValue</span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="60%" colspan="7"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

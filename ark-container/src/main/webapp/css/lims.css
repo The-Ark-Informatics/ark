@@ -1,0 +1,77 @@
+#inventoryButtonPanel {
+	background-color: #EEEEEE;
+    border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
+    border-style: solid solid none;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+#inventoryPanelBreaker {
+	float: left;
+    width: 100%;
+}
+
+#inventoryPanelContent {
+	border: 1px solid #6F6F6F;
+    float: left;
+    width: 100%;
+}
+
+#inventoryContentZoneLeft {
+	float: left;
+    margin-left: 3%;
+    width: 20%;
+}
+
+#inventoryContentZoneCenter {
+	margin-left: auto;
+    width: 75%;
+}
+
+#inventoryContentZoneRight {
+	float: right;
+	width: 5%;
+}
+
+#gridBoxContent {
+    float: left;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    width: 100%;
+}
+
+#gridBoxKeyContainer {
+	border: 1px solid;
+	margin-top: 10px;
+    width: 100%;   
+}
+
+#gridBox {
+    width: 100%;
+}
+
+table.gridBoxTable {
+	 border: 1px solid;
+	 border-collapse:collapse;
+}
+
+table.gridBoxTable th {
+    background: none repeat scroll 0 0 #FFFFFF;
+    color: black;
+    font-weight: bold;
+    padding: 1px;
+}
+
+table.gridBoxTable td {
+    padding: 2px;
+}
+
+#gridBoxKeyContainer {
+    border: 1px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    width: 0;
+}

@@ -1,0 +1,64 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="col1">
+					<wicket:message	key="consentFile.id">Consent File ID:</wicket:message>
+				</label>
+			</th>
+			<th width="50%">
+				<label for="col2">
+					<wicket:message	key="consentFile.filename">Filename:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="col3">
+					<wicket:message	key="consentFile.userId">Uploaded By:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="col4">
+					&nbsp;
+				</label>
+			</th>
+			<th width="10%">
+				<label for="col5">
+					&nbsp;
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="resultList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="consentFile.id">Consent File ID</span>&nbsp;
+			</td>
+			<td width="50%">
+			  	<span wicket:id="consentFile.filename">Filename</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="consentFile.userId">Uploaded By</span>
+			</td>
+			<td width="10%">
+			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />
+			</td>
+			<td width="10%">
+				<input wicket:id="deleteFile" type="submit" wicket:message="value:button.deleteFile" />
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<!--  The navigation bar -->
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="96%" align="left" colspan="5"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

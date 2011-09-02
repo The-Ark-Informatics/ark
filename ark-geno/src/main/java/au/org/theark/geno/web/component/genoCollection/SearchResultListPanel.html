@@ -1,0 +1,112 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">
+		&nbsp;
+	</div>
+	<table width="0%" cellspacing="0">
+	</table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">
+				&nbsp;
+			</th>
+			<th width="5%">
+				<label for="id">
+					<wicket:message	key="collection.id">
+						Collection ID:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="name">
+					<wicket:message	key="collection.name">
+						Collection Name:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="status">
+					<wicket:message	key="collection.status">
+						Status:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="description">
+					<wicket:message	key="collection.description">
+						Description:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="startDate">
+					<wicket:message	key="collection.startDate">
+						Start Date:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="5%">
+				<label for="expiryDate">
+					<wicket:message	key="collection.expiryDate">
+						Expiry Date:
+					</wicket:message>
+				</label>
+			</th>
+			<th width="2%">
+				&nbsp;
+			</th>
+		</tr>
+		<!--	The Data Result Set -->
+		<tr wicket:id="collectionList">
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="5%">
+				<span wicket:id="genoCollection.id">
+					100
+				</span>
+			</td>
+			<td width="15%">
+				<a href="#"wicket:id="genoCollection.name">
+					<span wicket:id="nameLbl">
+						Name
+					</span>
+				</a>
+			</td>
+			<td width="10%">
+				<span wicket:id="genoCollection.status">
+					Status
+				</span>
+			</td>
+			<td width="10%">
+				<span wicket:id="genoCollection.description">
+					Description
+				</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="genoCollection.startDate">
+				</span>
+			</td>
+			<td width="5%">
+				<span wicket:id="genoCollection.expiryDate">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td width="2%">
+				&nbsp;
+			</td>
+			<td width="96%" colspan="6">
+				<span wicket:id="navigator" class="a">
+				</span>
+			</td>
+			<td width="2%">
+				&nbsp;
+			</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0">
+	</table>
+</wicket:panel>

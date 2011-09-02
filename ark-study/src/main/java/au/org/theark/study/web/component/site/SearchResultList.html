@@ -1,0 +1,54 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="25%"><label for="siteName">
+				<wicket:message	key="site.name">Site Name:</wicket:message></label>
+			</th>
+			<th width="45%">
+				<label for="siteDescription">
+					<wicket:message	key="site.description">Site Description</wicket:message>
+				</label>
+			</th>
+			<th width="15%">
+				<label for="siteContact">
+					<!-- 
+					<wicket:message	key="site.contact">Contact</wicket:message>
+					 -->
+				</label>
+			</th>
+				
+			<th width="15%">
+				<label for="siteAddress">
+					<!--
+					<wicket:message	key="site.postalAddress">Site Address:</wicket:message>
+					-->
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+
+		<tr wicket:id="siteVoList">
+			<td width="2%">&nbsp;</td>
+			<td width="25%">
+			  <a href="#"wicket:id="siteVo.siteName">
+			  	<span wicket:id="siteNameLbl">Sample Site</span>
+			  </a>
+			</td>
+			<td width="45%">
+				<span wicket:id="siteDescription">Description</span>
+			</td>
+			<td width="15%">&nbsp;</td>
+			<td width="15%">&nbsp;</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+			<td width="96%" colspan="4" align="left"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

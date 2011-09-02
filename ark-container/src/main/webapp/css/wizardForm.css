@@ -1,0 +1,140 @@
+.fieldset {
+	border: 1px solid #6F6F6F;
+}
+
+.legend {
+	background: #EEEEEE;
+	border: 1px solid #6F6F6F;
+	border: none;
+	padding: 2px 6px;
+	font-size: 1.1em;
+	font-weight: bold;
+}
+
+#wizardPanel {
+	float: left;
+	width: 100%;
+	height: 90%;
+}
+
+#wizardPanelMargin {
+	float: left;
+	height: 5%;
+	width: 5%;
+}
+
+#wizardFormContainer{
+	border-style: solid;
+	border-width: 1px;
+	border-color: #6F6F6F;
+	background-color:#EEEEEE;
+}
+
+#wizardPanelBorder{
+    background-color: #EEEEEE;
+    border-color: #6F6F6F;
+    border-style: solid;
+    border-width: 1px;
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+#wizardPanelContent {
+	border-style: solid;
+	border-width: 1px;
+	border-color: #6F6F6F;
+	background-color:#EEEEEE;
+	float: left;
+	width: 100%;
+	height: 100%;
+}
+
+#wizardPanelContentRight {
+	float: right;
+	height: 5%;
+	width: 5%;
+}
+
+#wizardPanelContentLeft {
+	float: left;
+	width: 5%;
+	height: 5%;
+}
+
+#wizardPanelBreaker {
+	float: left;
+	width: 100%;
+	height: 20%;
+}
+
+#wizardStepContent {
+    margin-right: auto;
+    padding-left: 5%;
+    padding-top: 1%;
+    width: 80%;
+}
+
+#wizardGridContent {
+	float: left;
+    margin-right: auto;
+    padding-left: 5%;
+    padding-top: 1%;
+    width: 80%;
+}
+
+.wicketExtensionsWizardButtonBar {
+	float: left;
+	height: 20%;
+	width: 100%;
+	border-top: solid;
+	border-top: 1px;
+	text-align: right;
+}
+
+.wicketExtensionsWizardButtonBar input {
+	width: 80px;
+}
+
+.wicketExtensionsWizardHeaderTitle {
+	margin: 10 5 10 15;
+	font-weight: bold;
+	padding-left: 5%;
+}
+
+.wicketExtensionsWizardHeaderSummary {
+	margin: 10 5 5 5;
+	font-style: italic;
+	padding-left: 5%;
+}
+
+#wizardErrorMessages {
+    border: 1px solid;
+    float: left;
+    height: 100px;
+    overflow: auto;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.wizardDataGrid {
+	 overflow: auto; 
+	 height: 200px; 
+	 width: 100%;
+}
+
+table.wizardDataGridTable {
+	 border-collapse:collapse;
+}
+
+table.wizardDataGridTable th {
+	background: none repeat scroll 0 0 #C3C3C3;
+    border: 1px solid black;
+    color: white;
+    font-weight: bold;
+    padding: 1px;
+}
+
+table.wizardDataGridTable td {
+    border: 1px solid black;
+}
