@@ -27,3 +27,4 @@ UPDATE `study`.`ark_function` SET `DESCRIPTION`='Allows CRUD operations on the a
 INSERT INTO `study`.`ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) VALUES (29, 7, 29, 1);
 INSERT INTO `study`.`ark_module_function` (`ID`, `ARK_MODULE_ID`, `ARK_FUNCTION_ID`, `FUNCTION_SEQUENCE`) VALUES (30, 7, 30, 2);
 UPDATE `study`.`ark_module_function` SET `FUNCTION_SEQUENCE`=3 WHERE `ID`='28';
+
