@@ -13,7 +13,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 /**
- * The link contnet of a GridCell, that opens a modalWindow to the Biospecimen reference in the cell
+ * The link content of a GridCell, that opens a modalWindow to the Biospecimen reference in the cell
  * 
  * @author cellis
  * 
