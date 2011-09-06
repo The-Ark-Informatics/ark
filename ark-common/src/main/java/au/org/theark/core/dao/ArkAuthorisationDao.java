@@ -445,18 +445,21 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	/**
 	 * Get a list of Modules that are linked to the study and then get the roles linked to each module A VO List of ArkModuleVO will contain the
 	 * ArkModule and a list of ArkRoles.
-	 * 
+	 * Note:This implementation will exclude Reporting Module from the list specifically.
 	 * @param study
-	 * @return Collection<ArkModuleVO>
+	 * @return Collection<ArkModuleVO> Minus the Reporting Module
 	 */
-	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study) {
+	public Collection<ArkModuleVO> getArkModulesAndRolesLinkedToStudy(Study study) {
 
+		ArkModule arkModuleToExclude  = getArkModuleByName(Constants.ARK_MODULE_REPORTING);
+		
 		Collection<LinkStudyArkModule> arkStudyLinkedModuleList = new ArrayList<LinkStudyArkModule>();
-
 		Collection<ArkModuleVO> arkModuleVOList = new ArrayList<ArkModuleVO>();
-
+		
 		Criteria criteria = getSession().createCriteria(LinkStudyArkModule.class);
+		
 		criteria.add(Restrictions.eq("study", study));
+		criteria.add(Restrictions.ne("arkModule", arkModuleToExclude));
 		arkStudyLinkedModuleList = criteria.list();
 
 		// For each one in the List get the associated Roles i.e for each module get the Roles
@@ -753,23 +756,15 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		return arkRolePolicyTemplateList;
 	}
 	
-	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
-		List<Study> studyList = new ArrayList<Study>(0);
-		Study searchStudy = arkUserVo.getStudy();
-		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
-		
-		try {
-			// Restrict by user if NOT Super Administrator
-			if(!isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
-				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
-			}
-		}
-		catch (EntityNotFoundException e) {
-			log.error(e.getMessage());
-		}
-		
-		// Restrict on study criteria (by default, NOT 'Archive' status)
-		Criteria studyCriteria = criteria.createCriteria("study");	
+	/**
+	 * A common method that can be used to apply a search filter on Study entity via a Criteria that is passed from the caller.
+	 * The Criteria's entity can be determined by the caller ( i.e can be Study.class or ArkUserRole.class), this is useful
+	 * when the ArkUser is a SuperAdministrator when we want all the studies to be displayed.In such a case the Criteria object
+	 * must be the Study entity to include all studies.
+	 * @param searchStudy
+	 * @param studyCriteria
+	 */
+	private void applyStudySearchCritiera(Study searchStudy,Criteria studyCriteria){
 		
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
@@ -815,13 +810,45 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			}
 		}
 		
+	}
+	/**
+	 * Invoke this mehod when the ArkUser is permitted(a Super Administrator) to view all studies.
+	 * @param searchStudy
+	 * @return List<Study>
+	 */
+	private List<Study> getAllStudies(Study searchStudy){
 		
-		ProjectionList projectionList = Projections.projectionList();
-		projectionList.add(Projections.groupProperty("study"), "study");
+		Criteria criteria = getSession().createCriteria(Study.class);
+		applyStudySearchCritiera(searchStudy, criteria);
+		return criteria.list();
+	}
+	
+	public List<Study> getStudyListForUser(ArkUserVO arkUserVo){
+		List<Study> studyList = new ArrayList<Study>(0);
+		Study searchStudy = arkUserVo.getStudy();
 		
-		criteria.setProjection(projectionList);
-		
-		studyList = criteria.list();
+		try {
+			
+			if( isUserAdminHelper(arkUserVo.getArkUserEntity().getLdapUserName(), RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR)){
+				
+				studyList = getAllStudies(arkUserVo.getStudy());//Get all Studies
+			}
+			else{
+				/* Get only the studies the ArkUser is linked to via the ArkUserRole */
+				Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+				Criteria studyCriteria = criteria.createCriteria("study");
+				applyStudySearchCritiera(searchStudy, studyCriteria);
+				ProjectionList projectionList = Projections.projectionList();
+				projectionList.add(Projections.groupProperty("study"), "study");
+				criteria.setProjection(projectionList);
+				studyList = criteria.list();
+				
+			}
+		} catch (EntityNotFoundException e1) {
+			log.error("The specified Ark User does not exist "  + arkUserVo.getArkUserEntity().getLdapUserName());
+			e1.printStackTrace();
+		}
+
 		return studyList;		
 		
 	}
