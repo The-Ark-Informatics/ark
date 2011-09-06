@@ -383,7 +383,7 @@ public interface IArkCommonService<T> {
 
 	public Collection<ArkModuleRole> getArkModuleAndLinkedRoles();
 
-	public Collection<ArkModuleVO> getArkModulesLinkedToStudy(Study study);
+	public Collection<ArkModuleVO> getArkModulesAndRolesLinkedToStudy(Study study);
 
 	public ArrayList<ArkRole> getArkRoleLinkedToModule(ArkModule arkModule);
 
