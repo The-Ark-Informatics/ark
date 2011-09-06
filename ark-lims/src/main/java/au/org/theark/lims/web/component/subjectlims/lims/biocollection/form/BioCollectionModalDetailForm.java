@@ -118,22 +118,12 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	private boolean initialiseBioCollectionCFDataEntry() {
 		boolean replacePanel = false;
 		BioCollection bioCollection = cpModel.getObject().getBioCollection();
-		if (bioCollection.getId() == null) {
-			// New BioCollection record, so BioCollection CF data entry is disallowed
-			if (!(bioCollectionCFDataEntryPanel instanceof EmptyPanel)) {
-				bioCollectionCFDataEntryPanel = new EmptyPanel("bioCollectionCFDataEntryPanel");
-				replacePanel = true;
-			}
-		}
-		else {
-			// Editing an existing record, CF data entry is ok
-			if (!(bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel)) {
-				CompoundPropertyModel<BioCollectionCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BioCollectionCustomDataVO>(new BioCollectionCustomDataVO());		
-				bioCFDataCpModel.getObject().setBioCollection(bioCollection);
-				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
-				bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
-				replacePanel = true;
-			}
+		if (!(bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel)) {
+			CompoundPropertyModel<BioCollectionCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BioCollectionCustomDataVO>(new BioCollectionCustomDataVO());		
+			bioCFDataCpModel.getObject().setBioCollection(bioCollection);
+			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION));
+			bioCollectionCFDataEntryPanel = new BioCollectionCustomDataDataViewPanel("bioCollectionCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+			replacePanel = true;
 		}
 		return replacePanel;
 	}
@@ -199,9 +189,9 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 			if (target != null) {
 				processErrors(target);
 			}
-			if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
-				((BioCollectionCustomDataDataViewPanel) bioCollectionCFDataEntryPanel).saveCustomData();
-			}
+		}
+		if (bioCollectionCFDataEntryPanel instanceof BioCollectionCustomDataDataViewPanel) {
+			((BioCollectionCustomDataDataViewPanel) bioCollectionCFDataEntryPanel).saveCustomData();
 		}
 		// refresh the CF data entry panel (if necessary)
 		if (initialiseBioCollectionCFDataEntry() == true) {
@@ -215,13 +205,6 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	@Override
 	protected void onClose(AjaxRequestTarget target) {
-		// Reset now handled for in BioCollectionListPanel.onBeforeRender()
-		// // Reset the BioCollection (for criteria) in LimsVO
-		// BioCollection resetBioCollection = new BioCollection();
-		// resetBioCollection.setLinkSubjectStudy(cpModel.getObject().getLinkSubjectStudy());
-		// resetBioCollection.setStudy(cpModel.getObject().getLinkSubjectStudy().getStudy());
-		// cpModel.getObject().setBioCollection(resetBioCollection);
-
 		target.addComponent(feedbackPanel);
 		modalWindow.close(target);
 	}

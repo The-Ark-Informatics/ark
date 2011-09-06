@@ -61,14 +61,7 @@
 						<!-- Repeated item row -->
 						<tr wicket:id="biospecimenList">
 							<td width="2%">
-								<span wicket:id="rowEditWMC">
-									<a href="#"wicket:id="listEditLink">
-										<span wicket:id="lblEditLink">
-											Edit
-										</span>
-									</a>
-									<!-- input wicket:id="listEditButton" type="submit" value="Edit"/ -->
-								</span>
+								&nbsp;
 							</td>
 							<td width="10%">
 								<span wicket:id="biospecimen.id">
@@ -76,7 +69,11 @@
 								</span>
 							</td>
 							<td width="10%">
-								<span wicket:id="biospecimen.biospecimenUid">
+								<span wicket:id="rowDetailsWMC">
+									<a href="#"wicket:id="listDetailsLink">
+										<span wicket:id="biospecimen.biospecimenUid">
+										</span>
+									</a>
 								</span>
 							</td>
 							<td width="20%">
@@ -98,9 +95,7 @@
 								</span>
 							</td>
 							<td width="2%">
-								<span wicket:id="rowDeleteWMC">
-									<input wicket:id="listDeleteButton" type="submit" value="Delete"/>
-								</span>
+								&nbsp;
 							</td>
 						</tr>
 					</tbody>

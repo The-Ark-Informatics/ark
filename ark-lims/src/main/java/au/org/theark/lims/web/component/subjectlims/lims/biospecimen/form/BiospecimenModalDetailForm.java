@@ -118,22 +118,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private boolean initialiseBiospecimenCFDataEntry() {
 		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if (biospecimen.getId() == null) {
-			// New Biospecimen record, so Biospecimen CF data entry is disallowed
-			if (!(biospecimenCFDataEntryPanel instanceof EmptyPanel)) {
-				biospecimenCFDataEntryPanel = new EmptyPanel("biospecimenCFDataEntryPanel");
-				replacePanel = true;
-			}
-		}
-		else {
-			// Editing an existing record, CF data entry is ok
-			if (!(biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel)) {
-				CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());		
-				bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
-				bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
-				biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
-				replacePanel = true;
-			}
+		if (!(biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel)) {
+			CompoundPropertyModel<BiospecimenCustomDataVO> bioCFDataCpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());		
+			bioCFDataCpModel.getObject().setBiospecimen(biospecimen);
+			bioCFDataCpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
+			biospecimenCFDataEntryPanel = new BiospecimenCustomDataDataViewPanel("biospecimenCFDataEntryPanel", bioCFDataCpModel).initialisePanel(null);
+			replacePanel = true;
 		}
 		return replacePanel;
 	}
@@ -221,9 +211,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			iLimsService.updateBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was updated successfully");
 			processErrors(target);
-			if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
-				((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
-			}
+		}
+		// Allow the Biospecimen custom data to be saved any time save is performed
+		if (biospecimenCFDataEntryPanel instanceof BiospecimenCustomDataDataViewPanel) {
+			((BiospecimenCustomDataDataViewPanel) biospecimenCFDataEntryPanel).saveCustomData();
 		}
 		// refresh the CF data entry panel (if necessary)
 		if (initialiseBiospecimenCFDataEntry() == true) {

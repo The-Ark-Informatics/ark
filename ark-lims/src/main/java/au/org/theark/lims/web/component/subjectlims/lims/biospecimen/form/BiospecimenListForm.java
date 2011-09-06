@@ -25,10 +25,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -40,7 +36,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -53,7 +48,9 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider2;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
@@ -91,7 +88,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	private Label												unitsLblFld;
 
 	private Panel												modalContentPanel;
-	protected AjaxButton										newButton;
+	protected ArkBusyAjaxButton							newButton;
 
 	protected WebMarkupContainer							dataViewListWMC;
 	private DataView<Biospecimen>							dataView;
@@ -192,7 +189,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	}
 
 	private void initialiseNewButton() {
-		newButton = new AjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
+		newButton = new ArkBusyAjaxButton("listNewButton", new StringResourceModel("listNewKey", this, null)) {
 			/**
 			 * 
 			 */
@@ -237,9 +234,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				// DO NOT store the item.getModelObject! Checking it is ok...
 				final Biospecimen biospecimen = item.getModelObject();
 
-				WebMarkupContainer rowEditWMC = new WebMarkupContainer("rowEditWMC", item.getModel());
-
-				AjaxLink listEditLink = new AjaxLink("listEditLink") {
+				WebMarkupContainer rowDetailsWMC = new WebMarkupContainer("rowDetailsWMC", item.getModel());
+				ArkBusyAjaxLink listDetailsLink = new ArkBusyAjaxLink("listDetailsLink") {
 
 					/**
 					 * 
@@ -253,20 +249,14 @@ public class BiospecimenListForm extends Form<LimsVO> {
 						newModel.getObject().getBiospecimen().setId(biospecimen.getId());
 						showModalWindow(target, newModel);
 					}
-
-					@Override
-					public boolean isVisible() {
-						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.EDIT);
-					}
 				};
 
-				Label nameLinkLabel = new Label("lblEditLink", "Edit");
-				listEditLink.add(nameLinkLabel);
-				rowEditWMC.add(listEditLink);
-				item.add(rowEditWMC);
-
 				idLblFld = new Label("biospecimen.id", String.valueOf(biospecimen.getId()));
+
 				nameLblFld = new Label("biospecimen.biospecimenUid", biospecimen.getBiospecimenUid());
+				listDetailsLink.add(nameLblFld);
+				rowDetailsWMC.add(listDetailsLink);				
+				
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
@@ -279,73 +269,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				unitsLblFld = new Label("biospecimen.units", biospecimen.getUnits());
 
 				item.add(idLblFld);
-				item.add(nameLblFld);
+				item.add(rowDetailsWMC);
 				item.add(sampleTypeLblFld);
 				item.add(collectionLblFld);
 				item.add(commentsLblFld);
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
-
-				WebMarkupContainer rowDeleteWMC = new WebMarkupContainer("rowDeleteWMC", item.getModel());
-				AjaxButton deleteButton = new AjaxButton("listDeleteButton", new StringResourceModel(Constants.DELETE, this, null)) {
-					IModel							confirm				= new StringResourceModel("confirmDelete", this, null);
-					/**
-					 * 
-					 */
-					private static final long	serialVersionUID	= -585048033031888283L;
-
-					@Override
-					public boolean isVisible() {
-						return ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE);
-					}
-
-					@Override
-					protected IAjaxCallDecorator getAjaxCallDecorator() {
-						return new AjaxPreprocessingCallDecorator(super.getAjaxCallDecorator()) {
-							private static final long	serialVersionUID	= 7495281332320552876L;
-
-							@Override
-							public CharSequence preDecorateScript(CharSequence script) {
-								StringBuffer sb = new StringBuffer();
-								sb.append("if(!confirm('");
-								sb.append(confirm.getObject());
-								sb.append("'))");
-								sb.append("{ ");
-								sb.append("	return false ");
-								sb.append("} else { ");
-								sb.append("	this.disabled = true;");
-								sb.append("};");
-								sb.append(script);
-								return sb;
-							}
-						};
-					}
-
-					@Override
-					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-						target.addComponent(form);
-						onDeleteConfirmed(target, form);
-					}
-
-					protected void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form) {
-						// Leave the cpModel's BioCollection as-is
-						LimsVO bioCollectionSelectdLimsVO = new LimsVO();
-						Biospecimen biospecimenSelected = (Biospecimen) (getParent().getDefaultModelObject());
-						bioCollectionSelectdLimsVO.setBiospecimen(biospecimenSelected);
-
-						iLimsService.deleteBiospecimen(bioCollectionSelectdLimsVO);
-						this.info("Biospecimen " + biospecimenSelected.getBiospecimenUid() + " was deleted successfully");
-
-						// Display delete confirmation message
-						target.addComponent(feedbackPanel);
-						target.addComponent(form);
-					}
-
-				};
-
-				deleteButton.setDefaultFormProcessing(false);
-				rowDeleteWMC.add(deleteButton);
-				item.add(rowDeleteWMC);
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 
@@ -397,27 +326,5 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		modalWindow.setTitle("Biospecimen Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
-	}
-
-	/**
-	 * @return the newButton
-	 */
-	public AjaxButton getNewButton() {
-		return newButton;
-	}
-
-	/**
-	 * @param newButton
-	 *           the newButton to set
-	 */
-	public void setNewButton(AjaxButton newButton) {
-		this.newButton = newButton;
-	}
-
-	/**
-	 * @return the log
-	 */
-	public static Logger getLog() {
-		return log;
 	}
 }
