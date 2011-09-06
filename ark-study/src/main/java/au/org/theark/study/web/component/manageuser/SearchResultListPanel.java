@@ -170,7 +170,7 @@ public class SearchResultListPanel extends Panel {
 	private void prePopulateForNewUser(ArkUserVO arkUserVOFromBackend) {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
-		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesAndRolesLinkedToStudy(study);
 
 		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
 			ArkUserRole arkUserRole = new ArkUserRole();
@@ -186,7 +186,7 @@ public class SearchResultListPanel extends Panel {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		// Get a List of ArkModules and associated ArkRoles linked to the study
-		Collection<ArkModuleVO> listOfModulesAndRolesForStudy = iArkCommonService.getArkModulesLinkedToStudy(study);
+		Collection<ArkModuleVO> listOfModulesAndRolesForStudy = iArkCommonService.getArkModulesAndRolesLinkedToStudy(study);
 		List<ArkUserRole> arkUserRoleListToAdd = new ArrayList<ArkUserRole>();
 
 		// Note:Ideally using a Hibernate Criteria we should be able to get a List of Modules
