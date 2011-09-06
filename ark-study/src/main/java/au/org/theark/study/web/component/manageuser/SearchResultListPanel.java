@@ -26,6 +26,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -39,6 +40,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
@@ -141,8 +143,24 @@ public class SearchResultListPanel extends Panel {
 					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 					arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
-					arkCrudContainerVO.getViewButtonContainer().setEnabled(true);// saveBtn
+					
+					try {
+						
+						String userName = containerForm.getModelObject().getArkUserEntity().getLdapUserName();
+						if(iArkCommonService.isSuperAdministrator(userName)){
+							AjaxButton editButton  = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
+							editButton.setEnabled(false);
+						}
+						else{
+							AjaxButton editButton  = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
+							editButton.setEnabled(true);
+						}
+					} catch (EntityNotFoundException e) {
+						e.printStackTrace();
+					}
+					
 					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+					
 					arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
 					target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
 					target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
