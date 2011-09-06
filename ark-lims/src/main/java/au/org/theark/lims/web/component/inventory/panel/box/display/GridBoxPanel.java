@@ -84,19 +84,29 @@ public class GridBoxPanel extends Panel {
 	private static final ResourceReference	BARCODE_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	
 	private AbstractDetailModalWindow		modalWindow;
+	private final InvBox	invBox;
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
 
 	public GridBoxPanel(String id, InvBox invBox, String exportXlsfileName, AbstractDetailModalWindow modalWindow) {
 		super(id);
+		setOutputMarkupPlaceholderTag(true);
+		
 		this.exportXlsFileName = exportXlsfileName;
 		if (this.exportXlsFileName == null) {
 			this.exportXlsFileName = "GridBoxData";
 		}
 		
 		this.modalWindow = modalWindow;
+		this.invBox = invBox;
+		
+	}
+	
+	@Override
+	protected void onBeforeRender() {
 		initialiseGrid(invBox);
+		super.onBeforeRender();
 	}
 
 	/**
@@ -114,12 +124,12 @@ public class GridBoxPanel extends Panel {
 			log.error("InvCell table is missing data for invBox.id " + invBox.getId());
 			this.error("InvCell table is missing data for invBox.id " + invBox.getId());
 			this.setVisible(false);
-			add(createHeadings(new InvBox()));
-			add(createMainGrid(new InvBox(), invCellList));
+			addOrReplace(createHeadings(new InvBox()));
+			addOrReplace(createMainGrid(new InvBox(), invCellList));
 		}
 		else {
-			add(createHeadings(invBox));
-			add(createMainGrid(invBox, invCellList));
+			addOrReplace(createHeadings(invBox));
+			addOrReplace(createMainGrid(invBox, invCellList));
 			initialiseGridKey(invCellList);
 		}
 	}
@@ -231,13 +241,13 @@ public class GridBoxPanel extends Panel {
 	private void initialiseGridKey(List<InvCell> invCellList) {
 		gridBoxKeyContainer.setOutputMarkupId(true);
 
-		gridBoxKeyContainer.add(new Image("emptyCellIcon", EMPTY_CELL_ICON));
-		gridBoxKeyContainer.add(new Image("usedCellIcon", USED_CELL_ICON));
-		gridBoxKeyContainer.add(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
+		gridBoxKeyContainer.addOrReplace(new Image("emptyCellIcon", EMPTY_CELL_ICON));
+		gridBoxKeyContainer.addOrReplace(new Image("usedCellIcon", USED_CELL_ICON));
+		gridBoxKeyContainer.addOrReplace(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
 
 		// Download file link button
-		gridBoxKeyContainer.add(buildDownloadButton(invCellList));
-		add(gridBoxKeyContainer);
+		gridBoxKeyContainer.addOrReplace(buildDownloadButton(invCellList));
+		addOrReplace(gridBoxKeyContainer);
 	}
 	
 	/**
