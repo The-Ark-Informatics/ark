@@ -225,9 +225,11 @@ public class LimsServiceImpl implements ILimsService {
 		// Need to set the InvCell reference to null (if it had one)
 		Biospecimen biospecimen = modelObject.getBiospecimen();
 		InvCell invCell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
-		invCell.setBiospecimen(null);
-		iInventoryDao.updateInvCell(invCell);
-		
+		if (invCell.getId() != null) {
+			// must be a real InvCell
+			invCell.setBiospecimen(null);
+			iInventoryDao.updateInvCell(invCell);
+		}
 		iBiospecimenDao.deleteBiospecimen(biospecimen);
 	}
 
