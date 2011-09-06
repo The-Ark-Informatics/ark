@@ -49,7 +49,10 @@ public class BoxDetailPanel extends Panel {
 		this.tree = tree;
 	}
 
-	public void initialisePanel() {
+	public void initialisePanel() {		
+		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree);
+		detailForm.initialiseDetailForm();
+
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
 			/**
@@ -59,19 +62,17 @@ public class BoxDetailPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				// What to do when modalWindow closed?
+				// Repaint gridBoxPanel
+				target.addComponent(gridBoxPanel);
 			}
 		};
 		
-		add(modalWindow);
-		
-		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree);
-		detailForm.initialiseDetailForm();
-		add(detailForm);
-
 		InvBox invBox = containerForm.getModelObject().getInvBox();
 		gridBoxPanel = new GridBoxPanel("gridBoxPanel", invBox, invBox.getName(), modalWindow);
+		
+		add(detailForm);
 		add(gridBoxPanel);
+		add(modalWindow);
 	}
 
 	public BoxDetailForm getDetailForm() {
