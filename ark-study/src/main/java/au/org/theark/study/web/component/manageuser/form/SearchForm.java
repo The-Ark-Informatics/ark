@@ -113,7 +113,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 	private void prePopulateArkUserRoleList() {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
-		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesLinkedToStudy(study);
+		Collection<ArkModuleVO> listArkModuleVO = iArkCommonService.getArkModulesAndRolesLinkedToStudy(study);
 
 		for (ArkModuleVO arkModuleVO : listArkModuleVO) {
 			ArkUserRole arkUserRole = new ArkUserRole();
