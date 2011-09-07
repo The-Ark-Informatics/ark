@@ -16,6 +16,13 @@
 					</wicket:message>
 				</label>
 			</th>
+			<th width="10%">
+				<label for="Id">
+					<wicket:message	key="study">
+						study
+					</wicket:message>
+				</label>
+			</th>
 			<th width="15%">
 				<label for="fullName">
 					<wicket:message	key="fullName">
@@ -61,11 +68,16 @@
 				&nbsp;
 			</td>
 			<td width="10%">
-				<a href="#"wicket:id="subjectUID">
+				<a href="#" wicket:id="subjectUID">
 					<span wicket:id="subjectKeyLbl">
 						UID500
 					</span>
 				</a>
+			</td>
+			<td width="10%">
+				<span wicket:id="studyLbl">
+					UID500
+				</span>
 			</td>
 			<td width="15%">
 				<span wicket:id="subjectFullName">
