@@ -44,8 +44,6 @@ import au.org.theark.core.exception.ArkSubjectInsertException;
 import au.org.theark.core.exception.ArkUniqueException;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
-import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.MaritalStatus;
 import au.org.theark.core.model.study.entity.PersonContactMethod;
@@ -376,6 +374,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		subjectUIDTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.uid.required", this, null));
 		dateOfBirthTxtFld.setLabel(new StringResourceModel("linkSubjectStudy.person.dateOfBirth.DateValidator.maximum", this, null));
 //		studyApproachDate.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.studyApproachDate.DateValidator.maximum", this, null));
+		subjectStatusDdc.setRequired(true).setLabel(new StringResourceModel("subject.status.required", this, null));
 		consentDateTxtFld.setLabel(new StringResourceModel("consentDate", this, null));
 		consentDateTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.consentDate.DateValidator.maximum", this, null));
 		dateLastKnownAliveTxtFld.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("linkSubjectStudy.person.dateLastKnownAlive.DateValidator.maximum", this, null));
@@ -453,8 +452,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	 */
 	@Override
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
-		boolean firstMammogramFlag = false;
-		boolean recentMamogramFlag = false;
+
 		target.addComponent(detailPanelContainer);
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -466,36 +464,8 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		else {
 
 			study = iArkCommonService.getStudy(studyId);
-			Long yearOfFirstMammogram = containerForm.getModelObject().getLinkSubjectStudy().getYearOfFirstMamogram();
-			Long yearOfRecentMammogram = containerForm.getModelObject().getLinkSubjectStudy().getYearOfRecentMamogram();
-			// validate if the fields were supplied
-			if (yearOfFirstMammogram != null) {
-				firstMammogramFlag = validateCustomFields(containerForm.getModelObject().getLinkSubjectStudy().getYearOfFirstMamogram(), "Year of Fist Mammogram cannot be in the future.", target);
-			}
-
-			if (yearOfRecentMammogram != null) {
-				recentMamogramFlag = validateCustomFields(containerForm.getModelObject().getLinkSubjectStudy().getYearOfRecentMamogram(), "Year of recent Mammogram cannot be in the future.", target);
-			}
-
-			// When both the year fields were supplied, save only if they are valid
-			if ((yearOfFirstMammogram != null && firstMammogramFlag) && (yearOfRecentMammogram != null && recentMamogramFlag)) {
-				saveUpdateProcess(containerForm.getModelObject(), target);
-			}
-			else if ((yearOfFirstMammogram != null && firstMammogramFlag) && (yearOfRecentMammogram == null)) {// when only yearOfFirstMammogram was
-																																				// supplied
-				saveUpdateProcess(containerForm.getModelObject(), target);
-			}
-			else if ((yearOfFirstMammogram == null) && (yearOfRecentMammogram != null && recentMamogramFlag)) {
-				saveUpdateProcess(containerForm.getModelObject(), target);
-			}
-			else if (yearOfFirstMammogram == null && yearOfRecentMammogram == null) {
-				// When other
-				saveUpdateProcess(containerForm.getModelObject(), target);
-			}
-
 			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
 			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
-
 			ContextHelper contextHelper = new ContextHelper();
 			contextHelper.resetContextLabel(target, arkContextMarkupContainer);
 			contextHelper.setStudyContextLabel(target, study.getName(), arkContextMarkupContainer);
