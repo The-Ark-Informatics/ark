@@ -154,12 +154,12 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected void onNew(AjaxRequestTarget target) {
 		// ARK-108:: no longer do full reset to VO
 		// Set a default Country on new when the Country field is empty
-		if (getModelObject().getLinkSubjectStudy().getCountry() == null) {
-			final List<Country> countryList = iArkCommonService.getCountries();
-			// getModelObject().getSubjectStudy().setCountry(countryList.get(0));
-
-			getModelObject().getLinkSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
-		}
+//		if (getModelObject().getLinkSubjectStudy().getCountry() == null) {
+//			final List<Country> countryList = iArkCommonService.getCountries();
+//			// getModelObject().getSubjectStudy().setCountry(countryList.get(0));
+//
+//			getModelObject().getLinkSubjectStudy().setCountry(iArkCommonService.getCountry(au.org.theark.core.Constants.DEFAULT_COUNTRY_CODE));
+//		}
 
 		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
 
