@@ -97,6 +97,9 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final Item<LinkSubjectStudy> item) {
 				LinkSubjectStudy subject = item.getModelObject();
 				item.add(buildLink(item.getModelObject()));
+				
+				Label studyLbl = new Label("studyLbl", subject.getStudy().getName());
+				item.add(studyLbl);
 
 				StringBuffer sb = new StringBuffer();
 				String firstName = subject.getPerson().getFirstName();
