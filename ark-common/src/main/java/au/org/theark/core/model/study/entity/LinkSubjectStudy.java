@@ -54,24 +54,13 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	private Person							person;
 	private String							subjectUID;
 	private String							otherState;
-	private Long							amdrfId;
 	private Date							studyApproachDate;
-	private Long							yearOfFirstMamogram;
-	private Long							yearOfRecentMamogram;
-	private Long							totalNumberOfMamograms;
-	private String							siteAddress;
-	private Country						country;
-	private CountryState					state;
-	private String							city;
-	private String							postCode;
 	private YesNo							consentToActiveContact;
 	private YesNo							consentToPassiveDataGathering;
 	private YesNo							consentToUseData;
-
 	private ConsentStatus				consentStatus;
 	private ConsentType					consentType;
 	private Date							consentDate;
-
 	private String							heardAboutStudy;
 	private String							comment;
 	private YesNo							consentDownloaded;
@@ -80,6 +69,28 @@ public class LinkSubjectStudy implements java.io.Serializable {
 	//private Set<SubjectCustFldDat>	subjectCustFldDats	= new HashSet<SubjectCustFldDat>(0);
 	private Set<SubjectCustomFieldData> subjectCustomFieldDataSet = new HashSet<SubjectCustomFieldData>();
 
+	
+	/** default constructor */
+	public LinkSubjectStudy() {
+		person = new Person();
+
+	}
+
+	/** minimal constructor */
+	public LinkSubjectStudy(Long id) {
+		this.id = id;
+	}
+
+	/** full constructor */
+	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
+		this.id = id;
+		this.study = study;
+		this.subjectStatus = subjectStatus;
+		this.person = person;
+		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
+		
+	}
+	
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "linkSubjectStudy")
 	public Set<SubjectCustomFieldData> getSubjectCustomFieldDataSet() {
@@ -143,102 +154,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.studyApproachDate = studyApproachDate;
 	}
 
-	@Column(name = "YEAR_OF_FIRST_MAMOGRAM", precision = 22, scale = 0)
-	public Long getYearOfFirstMamogram() {
-		return yearOfFirstMamogram;
-	}
-
-	public void setYearOfFirstMamogram(Long yearOfFirstMamogram) {
-		this.yearOfFirstMamogram = yearOfFirstMamogram;
-	}
-
-	@Column(name = "YEAR_OF_RECENT_MAMOGRAM", precision = 22, scale = 0)
-	public Long getYearOfRecentMamogram() {
-		return yearOfRecentMamogram;
-	}
-
-	public void setYearOfRecentMamogram(Long yearOfRecentMamogram) {
-		this.yearOfRecentMamogram = yearOfRecentMamogram;
-	}
-
-	@Column(name = "TOTAL_MAMOGRAMS", precision = 22, scale = 0)
-	public Long getTotalNumberOfMamograms() {
-		return totalNumberOfMamograms;
-	}
-
-	public void setTotalNumberOfMamograms(Long totalNumberOfMamograms) {
-		this.totalNumberOfMamograms = totalNumberOfMamograms;
-	}
-
-	@Column(name = "SITE_STREET_ADDRESS", length = 255)
-	public String getSiteAddress() {
-		return siteAddress;
-	}
-
-	public void setSiteAddress(String siteAddress) {
-		this.siteAddress = siteAddress;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "COUNTRY_ID")
-	public Country getCountry() {
-		return country;
-	}
-
-	public void setCountry(Country country) {
-		this.country = country;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "STATE_ID")
-	public CountryState getState() {
-		return state;
-	}
-
-	public void setState(CountryState state) {
-		this.state = state;
-	}
-
-	@Column(name = "SITE_CITY", length = 255)
-	public String getCity() {
-		return city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	@Column(name = "SITE_POST", length = 45)
-	public String getPostCode() {
-		return postCode;
-	}
-
-	public void setPostCode(String postCode) {
-		this.postCode = postCode;
-	}
-
-	// Constructors
-
-	/** default constructor */
-	public LinkSubjectStudy() {
-		person = new Person();
-
-	}
-
-	/** minimal constructor */
-	public LinkSubjectStudy(Long id) {
-		this.id = id;
-	}
-
-	/** full constructor */
-	public LinkSubjectStudy(Long id, Study study, SubjectStatus subjectStatus, Person person, Set<SubjectCustomFieldData> subjectCustomFieldDataSet) {
-		this.id = id;
-		this.study = study;
-		this.subjectStatus = subjectStatus;
-		this.person = person;
-		this.subjectCustomFieldDataSet = subjectCustomFieldDataSet;
-		
-	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
@@ -327,14 +242,6 @@ public class LinkSubjectStudy implements java.io.Serializable {
 		this.consents = consents;
 	}
 
-	@Column(name = "AMDRF_ID", precision = 22, scale = 0)
-	public Long getAmdrfId() {
-		return amdrfId;
-	}
-
-	public void setAmdrfId(Long amdrfId) {
-		this.amdrfId = amdrfId;
-	}
 
 	@Column(name = "HEARD_ABOUT_STUDY", length = 1000)
 	public String getHeardAboutStudy() {
