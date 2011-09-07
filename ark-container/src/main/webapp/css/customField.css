@@ -7,11 +7,6 @@
     width: 90%;
 }
 
-table.customFieldDataView {
-    font-family: arial;
-    font-size: 1em;
-}
-
 table.customFieldDataView caption {
 	text-align: left;
 }
