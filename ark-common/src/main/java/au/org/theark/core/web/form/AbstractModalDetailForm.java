@@ -75,7 +75,16 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		buttonsPanelWMC.addOrReplace(buttonsPanel);
 	}
 
+	private void initialiseEditButtonsPanel(boolean isNew) {
+		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
+		if (isNew) {
+			buttonsPanel.setDeleteButtonVisible(false);
+			buttonsPanel.setDeleteButtonEnabled(false);
+		}
+		buttonsPanelWMC.addOrReplace(buttonsPanel);
+	}
 	/**
+	 * 
 	 * Initialise method that is specific to classes that follow the ArkCrudContainerVO Pattern. The code related to each function has been modularised
 	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
 	 * extend the classes.
@@ -83,7 +92,14 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	protected void initialiseForm() {
 		buttonsPanelWMC = new WebMarkupContainer("buttonsPanelWMC");
 		buttonsPanelWMC.setOutputMarkupPlaceholderTag(true);
-		initialiseViewButtonsPanel();
+		if (isNew()) {
+			// ARK-333: Allow the form go straight into Edit mode for creating a New record
+			initialiseEditButtonsPanel(true);
+			arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
+		}
+		else {
+			initialiseViewButtonsPanel();
+		}
 
 		addComponentsToForm();
 	}
@@ -130,7 +146,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	protected void onSavePostProcess(AjaxRequestTarget target) {
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
-
+		initialiseEditButtonsPanel(false);	// restore the Delete button
+		target.addComponent(buttonsPanelWMC);
 		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
 		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
@@ -186,10 +203,16 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	 * org.apache.wicket.markup.html.form.Form)
 	 */
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
-		initialiseViewButtonsPanel(); // put View mode buttons back
-		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(buttonsPanelWMC);
+		if (isNew()) {
+			// ARK-333: If canceling the creation of a New record, then just close...
+			onClose(target);
+		}
+		else {
+			initialiseViewButtonsPanel(); // put View mode buttons back
+			arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
+			target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
+			target.addComponent(buttonsPanelWMC);			
+		}
 	}
 
 	/*
@@ -270,9 +293,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	 * org.apache.wicket.markup.html.form.Form)
 	 */
 	public void onViewEdit(AjaxRequestTarget target, Form<?> form) {
-		// put Edit mode buttons in
-		EditModeButtonsPanel buttonsPanel = new EditModeButtonsPanel("buttonsPanel", this);
-		buttonsPanelWMC.addOrReplace(buttonsPanel);
+		// switch from View mode buttons to Edit mode buttons 
+		initialiseEditButtonsPanel(false);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 
 		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
