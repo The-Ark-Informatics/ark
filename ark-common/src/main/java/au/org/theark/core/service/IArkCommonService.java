@@ -74,8 +74,6 @@ public interface IArkCommonService<T> {
 	// Get reference data etc.get study maybe required but sub-applications access a study via ETA Study module
 	public ArkUserVO getUser(String name) throws ArkSystemException;
 
-	public List<String> getUserRole(String userName) throws ArkSystemException;
-
 	public List<Study> getStudy(Study study);
 
 	public List<StudyStatus> getListOfStudyStatus();

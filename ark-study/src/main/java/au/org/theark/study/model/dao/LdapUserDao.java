@@ -49,6 +49,7 @@ import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Repository;
 
+import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.UserNameExistsException;
 import au.org.theark.core.security.PermissionConstants;
@@ -60,68 +61,9 @@ import au.org.theark.study.service.Constants;
 public class LdapUserDao implements ILdapUserDao {
 
 	static Logger			log	= LoggerFactory.getLogger(LdapUserDao.class);
-	// All these need to be auto injected by spring, this bean itself is a injected into the service
-	private LdapTemplate	ldapTemplate;
-
-	private String			baseModuleDn;
-	private String			baseGroupDn;
-	private String			basePeopleDn;
-	private String			baseSiteDn;
-
-	/**
-	 * A property that reflects the value of the LDAP paths defined in application context
-	 */
-	private String			baseDC;
-
-	public String getBaseSiteDn() {
-		return baseSiteDn;
-	}
-
-	public void setBaseSiteDn(String baseSiteDn) {
-		this.baseSiteDn = baseSiteDn;
-	}
-
-	public String getBaseModuleDn() {
-		return baseModuleDn;
-	}
-
-	public void setBaseModuleDn(String baseModuleDn) {
-		this.baseModuleDn = baseModuleDn;
-	}
-
-	public String getBaseGroupDn() {
-		return baseGroupDn;
-	}
-
-	public void setBaseGroupDn(String baseGroupDn) {
-		this.baseGroupDn = baseGroupDn;
-	}
-
-	public String getBasePeopleDn() {
-		return basePeopleDn;
-	}
-
-	public void setBasePeopleDn(String basePeopleDn) {
-		this.basePeopleDn = basePeopleDn;
-	}
-
-	public String getBaseDC() {
-		return baseDC;
-	}
-
-	public void setBaseDC(String baseDC) {
-		this.baseDC = baseDC;
-	}
-
-	public LdapTemplate getLdapTemplate() {
-		return ldapTemplate;
-	}
-
-	public void setLdapTemplate(LdapTemplate ldapTemplate) {
-		this.ldapTemplate = ldapTemplate;
-	}
 
 	private IStudyDao	studyDao;
+	private ArkLdapContextSource		ldapDataContextSource;
 
 	/* To access Hibernate Study Dao */
 	@Autowired
@@ -132,7 +74,16 @@ public class LdapUserDao implements ILdapUserDao {
 	public IStudyDao getStudyDao() {
 		return studyDao;
 	}
+	
+	public ArkLdapContextSource getLdapDataContextSource() {
+		return ldapDataContextSource;
+	}
 
+	@Autowired
+	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
+		this.ldapDataContextSource = ldapDataContextSource;
+	}
+	
 	/**
 	 * 
 	 */
@@ -144,11 +95,11 @@ public class LdapUserDao implements ILdapUserDao {
 			DirContextAdapter dirContextAdapter = new DirContextAdapter();
 			// Map the Front end values into LDAP Context
 			mapToContext(arkUserVO.getUserName(), arkUserVO.getFirstName(), arkUserVO.getLastName(), arkUserVO.getEmail(), arkUserVO.getPassword(), dirContextAdapter);
-			LdapName ldapName = new LdapName(basePeopleDn);
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 			ldapName.add(new Rdn(Constants.CN, arkUserVO.getUserName()));
 			Name nameObj = ldapName;
 			// Create the person in ArkUsers Group in LDAP
-			ldapTemplate.bind(nameObj, dirContextAdapter, null);
+			ldapDataContextSource.getLdapTemplate().bind(nameObj, dirContextAdapter, null);
 
 		}
 		catch (org.springframework.ldap.NameAlreadyBoundException nabe) {
@@ -178,7 +129,7 @@ public class LdapUserDao implements ILdapUserDao {
 	public void updateArkUser(ArkUserVO userVO) throws ArkSystemException {
 		try {
 			// Assuming that all validation is already done update the attributes in LDAP
-			LdapName ldapName = new LdapName(getBasePeopleDn());
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 			ldapName.add(new Rdn("cn", userVO.getUserName()));
 
 			BasicAttribute sn = new BasicAttribute("sn", userVO.getLastName());
@@ -192,10 +143,10 @@ public class LdapUserDao implements ILdapUserDao {
 			if (userVO.getPassword() != null && userVO.getPassword().length() > 0) {
 				BasicAttribute userPassword = new BasicAttribute("userPassword", new Sha256Hash(userVO.getPassword()).toHex());
 				ModificationItem itemPassword = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPassword);
-				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail, itemPassword });
+				ldapDataContextSource.getLdapTemplate().modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail, itemPassword });
 			}
 			else {
-				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail });
+				ldapDataContextSource.getLdapTemplate().modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail });
 			}
 
 		}
@@ -224,10 +175,10 @@ public class LdapUserDao implements ILdapUserDao {
 		ArkUserVO etaUserVO = null;
 		log.debug("\n getUser ");
 		try {
-			LdapName ldapName = new LdapName(basePeopleDn);
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 			ldapName.add(new Rdn("cn", username));
 			Name nameObj = (Name) ldapName;
-			etaUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new PersonContextMapper());
+			etaUserVO = (ArkUserVO) ldapDataContextSource.getLdapTemplate().lookup(nameObj, new PersonContextMapper());
 			log.debug("\n etauserVO " + etaUserVO);
 
 		}
@@ -240,7 +191,7 @@ public class LdapUserDao implements ILdapUserDao {
 	}
 
 	private String buildPersonDN(String userName) throws InvalidNameException {
-		LdapName ldapName = new LdapName(baseDC);
+		LdapName ldapName = new LdapName(ldapDataContextSource.getBaseLdapPathAsString());
 		ldapName.add(new Rdn("ou", "people"));
 		ldapName.add(new Rdn("cn", userName));
 		return ldapName.toString();
@@ -307,14 +258,14 @@ public class LdapUserDao implements ILdapUserDao {
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
 				&& securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
 
-			log.debug("getBaseDn() " + getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
+			log.debug("getBaseDn() " + ldapDataContextSource.getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
 			LdapName ldapName;
 			try {
 
 				AndFilter andFilter = new AndFilter();
 				andFilter.and(new EqualsFilter("objectClass", "person"));
 
-				ldapName = new LdapName(getBasePeopleDn());
+				ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 				// if userId was specified
 				/* User ID */
 				if (StringUtils.hasText(userCriteriaVO.getUserName())) {
@@ -339,7 +290,7 @@ public class LdapUserDao implements ILdapUserDao {
 					andFilter.and(new WhitespaceWildcardsFilter(Constants.EMAIL, userCriteriaVO.getEmail()));
 				}
 				/* Status is not defined as yet in the schema */
-				userList = ldapTemplate.search(getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
+				userList = ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
 				log.debug("Size of list " + userList.size());
 			}
 			catch (InvalidNameException ine) {
@@ -436,7 +387,7 @@ public class LdapUserDao implements ILdapUserDao {
 			}
 		}
 		// TODO NN User a light version of PersonContextMapper, dont need to map password details.
-		return ldapTemplate.search(getBasePeopleDn(), filter.encode(), new PersonContextMapper());
+		return ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), filter.encode(), new PersonContextMapper());
 	}
 
 	public List<ArkUserVO> searchUser(ArkUserVO userVO) throws ArkSystemException {
@@ -494,11 +445,11 @@ public class LdapUserDao implements ILdapUserDao {
 
 		log.debug("\n getUser ");
 		try {
-			LdapName ldapName = new LdapName(basePeopleDn);
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 			ldapName.add(new Rdn("cn", username));
 			Name nameObj = (Name) ldapName;
 
-			arkUserVO = (ArkUserVO) ldapTemplate.lookup(nameObj, new LitePersonContextMapper());
+			arkUserVO = (ArkUserVO) ldapDataContextSource.getLdapTemplate().lookup(nameObj, new LitePersonContextMapper());
 			log.debug("\n etauserVO " + arkUserVO);
 			if (arkUserVO.getUserName().equalsIgnoreCase(username)) {
 				isPresent = true;
@@ -528,14 +479,14 @@ public class LdapUserDao implements ILdapUserDao {
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
 				&& securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
 
-			log.debug("getBaseDn() " + getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
+			log.debug("getBaseDn() " + ldapDataContextSource.getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
 			LdapName ldapName;
 			try {
 
 				AndFilter andFilter = new AndFilter();
 				andFilter.and(new EqualsFilter("objectClass", "person"));
 
-				ldapName = new LdapName(getBasePeopleDn());
+				ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 				// if userId was specified
 				/* User ID */
 				if (StringUtils.hasText(arkUserName)) {
@@ -543,7 +494,7 @@ public class LdapUserDao implements ILdapUserDao {
 					andFilter.and(new EqualsFilter(Constants.CN, arkUserName));
 				}
 
-				userList = ldapTemplate.search(getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
+				userList = ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
 				log.debug("Size of list " + userList.size());
 			}
 			catch (InvalidNameException ine) {
@@ -563,7 +514,7 @@ public class LdapUserDao implements ILdapUserDao {
 		log.debug("update() invoked: Updating user details in LDAP");
 		try {
 			// Assuming that all validation is already done update the attributes in LDAP
-			LdapName ldapName = new LdapName(getBasePeopleDn());
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
 			ldapName.add(new Rdn("cn", userVO.getUserName()));
 
 			BasicAttribute sn = new BasicAttribute("sn", userVO.getLastName());
@@ -579,10 +530,10 @@ public class LdapUserDao implements ILdapUserDao {
 			if (userVO.isChangePassword()) {
 				BasicAttribute userPassword = new BasicAttribute("userPassword", new Sha256Hash(userVO.getPassword()).toHex());
 				ModificationItem itemPassword = new ModificationItem(DirContext.REPLACE_ATTRIBUTE, userPassword);
-				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail, itemPassword });
+				ldapDataContextSource.getLdapTemplate().modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail, itemPassword });
 			}
 			else {
-				ldapTemplate.modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail });
+				ldapDataContextSource.getLdapTemplate().modifyAttributes(ldapName, new ModificationItem[] { itemSn, itemGivenName, itemEmail });
 			}
 		}
 		catch (InvalidNameException ine) {
