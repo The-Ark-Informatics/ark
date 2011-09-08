@@ -51,9 +51,7 @@ public class UserServiceImpl implements IUserService {
 
 	static final Logger			log	= LoggerFactory.getLogger(UserServiceImpl.class);
 
-	private IStudyService		studyService;															// To gain access to Study Schema
 	private IArkCommonService	arkCommonService;
-
 	private IArkAuthorisation	arkAuthorisationService;
 
 	/* DAO to access database */
@@ -61,24 +59,6 @@ public class UserServiceImpl implements IUserService {
 
 	/* A DAO to access the LDAP */
 	private ILdapUserDao			iLdapUserDao;
-
-	public ILdapUserDao getiLdapPersonDao() {
-		return iLdapUserDao;
-	}
-
-	@Autowired
-	public void setiLdapPersonDao(ILdapUserDao iLdapPersonDao) {
-		this.iLdapUserDao = iLdapPersonDao;
-	}
-
-	@Autowired
-	public void setUserDAO(IUserDao userDAO) {
-		this.userDAO = userDAO;
-	}
-
-	public IUserDao getUserDAO() {
-		return userDAO;
-	}
 
 	public IArkCommonService getArkCommonService() {
 		return arkCommonService;
@@ -89,11 +69,6 @@ public class UserServiceImpl implements IUserService {
 		this.arkCommonService = arkCommonService;
 	}
 
-	@Autowired
-	public void setStudyService(IStudyService studyService) {
-		this.studyService = studyService;
-	}
-
 	public IArkAuthorisation getArkAuthorisationService() {
 		return arkAuthorisationService;
 	}
@@ -101,6 +76,24 @@ public class UserServiceImpl implements IUserService {
 	@Autowired
 	public void setArkAuthorisationService(IArkAuthorisation arkAuthorisationService) {
 		this.arkAuthorisationService = arkAuthorisationService;
+	}
+
+	@Autowired
+	public void setUserDAO(IUserDao userDAO) {
+		this.userDAO = userDAO;
+	}
+
+	public IUserDao getUserDAO() {
+		return userDAO;
+	}
+	
+	public ILdapUserDao getiLdapUserDao() {
+		return iLdapUserDao;
+	}
+
+	@Autowired
+	public void setiLdapUserDao(ILdapUserDao iLdapUserDao) {
+		this.iLdapUserDao = iLdapUserDao;
 	}
 
 	public Person createPerson(Person personEntity) {

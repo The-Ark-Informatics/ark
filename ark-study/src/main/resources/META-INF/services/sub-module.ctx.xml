@@ -15,23 +15,6 @@
     <context:component-scan base-package="au.org.theark.study.web.component.site"/>
     <context:component-scan base-package="au.org.theark.study.util"/>
     
-    <!--  Ark Development LDAP --> 
-	<bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
-		<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=arkUsers" />
-		<property name="baseGroupDn" value="ou=groups"/>
-		<property name="baseModuleDn" value="ou=modules"/>
-		<property name="baseSiteDn" value="ou=sites"/>
-		<property name="baseDC" value="dc=ldapdevel,dc=wager,dc=org,dc=au" />
-	</bean>
-	
-	<!-- Ark Test LDAP
-    <bean id="ldapUserDao" class="au.org.theark.study.model.dao.LdapUserDao">
-    	<property name="ldapTemplate" ref="ldapTemplate" />
-		<property name="basePeopleDn" value="ou=arkUsers" />
-		<property name="baseGroupDn" value="ou=groups"/>
-		<property name="baseModuleDn" value="ou=modules"/>
-		<property name="baseDC" value="dc=ldaparktest,dc=the-ark,dc=org,dc=au" />
-    </bean>
-    -->
+	<!-- All LDAP configurations have been centralised into application-context.xml -->
+
 </beans>

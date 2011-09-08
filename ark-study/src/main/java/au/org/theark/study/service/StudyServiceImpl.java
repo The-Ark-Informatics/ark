@@ -79,7 +79,6 @@ import au.org.theark.core.vo.CustomFieldVO;
 import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.vo.UploadVO;
-import au.org.theark.study.model.dao.ILdapUserDao;
 import au.org.theark.study.model.dao.IStudyDao;
 import au.org.theark.study.util.SubjectUploadValidator;
 import au.org.theark.study.util.SubjectUploader;
@@ -93,16 +92,6 @@ public class StudyServiceImpl implements IStudyService {
 
 	private IArkCommonService	arkCommonService;
 	private IStudyDao				studyDao;
-	private ILdapUserDao			iLdapUserDao;
-
-	public ILdapUserDao getiLdapUserDao() {
-		return iLdapUserDao;
-	}
-
-	@Autowired
-	public void setiLdapUserDao(ILdapUserDao iLdapUserDao) {
-		this.iLdapUserDao = iLdapUserDao;
-	}
 
 	/* To access Hibernate Study Dao */
 	@Autowired

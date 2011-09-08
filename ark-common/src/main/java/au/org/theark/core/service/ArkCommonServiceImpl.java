@@ -22,17 +22,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+
 import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ldap.core.ContextMapper;
+import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import au.org.theark.core.Constants;
+import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
-import au.org.theark.core.dao.ILdapPersonDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -97,7 +104,7 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	private IArkAuthorisation	arkAuthorisationDao;
 	private IStudyDao				studyDao;
-	private ILdapPersonDao		ldapInterface;
+	private ArkLdapContextSource		ldapDataContextSource;
 
 	public IArkAuthorisation getArkAuthorisationDao() {
 		return arkAuthorisationDao;
@@ -117,17 +124,50 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 		this.studyDao = studyDao;
 	}
 
+	public ArkLdapContextSource getLdapDataContextSource() {
+		return ldapDataContextSource;
+	}
+
 	@Autowired
-	public void setLdapInterface(ILdapPersonDao ldapInterface) {
-		this.ldapInterface = ldapInterface;
+	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
+		this.ldapDataContextSource = ldapDataContextSource;
 	}
 
-	public ArkUserVO getUser(String name) throws ArkSystemException {
-		return ldapInterface.getUser(name);
+	private static class PersonContextMapper implements ContextMapper {
+
+		public Object mapFromContext(Object ctx) {
+
+			DirContextAdapter context = (DirContextAdapter) ctx;
+
+			ArkUserVO etaUserVO = new ArkUserVO();
+			etaUserVO.setUserName(context.getStringAttribute("cn"));
+			etaUserVO.setFirstName(context.getStringAttribute("givenName"));
+			etaUserVO.setLastName(context.getStringAttribute("sn"));
+			etaUserVO.setEmail(context.getStringAttribute("mail"));
+			String ldapPassword = new String((byte[]) context.getObjectAttribute("userPassword"));
+			etaUserVO.setPassword(ldapPassword);
+			return etaUserVO;
+		}
 	}
 
-	public List<String> getUserRole(String userName) throws ArkSystemException {
-		return ldapInterface.getUserRole(userName);
+	public ArkUserVO getUser(String username) throws ArkSystemException {
+		ArkUserVO userVO = new ArkUserVO();
+		try {
+
+			LdapName ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
+			ldapName.add(new Rdn("cn", username));
+			Name nameObj = (Name) ldapName;
+
+			userVO = (ArkUserVO) ldapDataContextSource.getLdapTemplate().lookup(nameObj, new PersonContextMapper());
+
+		}
+		catch (InvalidNameException ne) {
+
+			throw new ArkSystemException("A System error has occured");
+
+		}
+
+		return userVO;
 	}
 
 	/*
@@ -659,4 +699,5 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public int getCountOfStudies() {
 		return studyDao.getCountOfStudies();
 	}
+
 }
