@@ -1,0 +1,136 @@
+<wicket:panel>
+	&nbsp;
+	<form wicket:id="biospecimenListForm">
+		<div id="listPanelBorder">
+			<div wicket:id="dataViewListWMC">
+				<table width="0%" cellspacing="0">
+				</table>
+				<table width="100%" cellspacing="0" class="dataview" border="0">
+					<!-- Header row -->
+					<tr>
+						<th width="2%">
+							&nbsp;
+						</th>
+						<th width="10%">
+							<label for="id">
+								<wicket:message	key="biospecimen.id">
+									Biospecimen ID:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="10%">
+							<label for="biospecimenId">
+								<wicket:message	key="biospecimen.biospecimenUid">
+									Biospecimen UID:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="20%">
+							<label for="sampleType">
+								<wicket:message	key="biospecimen.sampleType">
+									Sample Type:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="20%">
+							<label for="collection">
+								<wicket:message	key="biospecimen.bioCollection">
+									Collection:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="10%">
+							<label for="quantity">
+								<wicket:message	key="biospecimen.quantity">
+									Quantity:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="34%">
+							<label for="comments">
+								<wicket:message	key="biospecimen.comments">
+									Comments:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="2%">
+							&nbsp;
+						</th>
+					</tr>
+					<tbody>
+						<!-- Repeated item row -->
+						<tr wicket:id="biospecimenList">
+							<td width="2%">
+								<span wicket:id="rowEditWMC">
+									<a href="#"wicket:id="listEditLink">
+										<span wicket:id="lblEditLink">
+											Edit
+										</span>
+									</a>
+									<!-- input wicket:id="listEditButton" type="submit" value="Edit"/ -->
+								</span>
+							</td>
+							<td width="10%">
+								<span wicket:id="biospecimen.id">
+									ID
+								</span>
+							</td>
+							<td width="10%">
+								<span wicket:id="biospecimen.biospecimenUid">
+								</span>
+							</td>
+							<td width="20%">
+								<span wicket:id="biospecimen.sampleType.name">
+								</span>
+							</td>
+							<td width="20%">
+								<span wicket:id="biospecimen.bioCollection.name">
+								</span>
+							</td>
+							<td width="10%">
+								<span wicket:id="biospecimen.quantity">
+								</span>
+								<span wicket:id="biospecimen.units">
+								</span>
+							</td>
+							<td width="34%">
+								<span wicket:id="biospecimen.comments" type="text">
+								</span>
+							</td>
+							<td width="2%">
+								<span wicket:id="rowDeleteWMC">
+									<input wicket:id="listDeleteButton" type="submit" value="Delete"/>
+								</span>
+							</td>
+						</tr>
+					</tbody>
+					<tfoot>
+						<tr>
+							<td width="2%">
+								&nbsp;
+							</td>
+							<td width="96%" colspan="6">
+								<span wicket:id="navigator" class="a">
+								</span>
+							</td>
+							<td width="2%">
+								&nbsp;
+							</td>
+						</tr>
+					</tfoot>
+				</table>
+				<table width="0%" cellspacing="0">
+				</table>
+			</div>
+			<!-- New button row -->
+			<div id="buttons">
+				<input wicket:id="listNewButton" type="submit" value="New"/>
+			</div>
+			<!--	End listDetailsPanelBorder -->
+
+			<!--	The detailModalWindow for detail edit/add from listPanel -->
+			<div wicket:id="detailModalWindow">
+			</div>
+		</div>
+	</form>
+</wicket:panel>

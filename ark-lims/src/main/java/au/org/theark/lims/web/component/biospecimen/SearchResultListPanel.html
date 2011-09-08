@@ -1,0 +1,79 @@
+<wicket:panel>
+	<div id="searchPanelBreaker">&nbsp;</div>
+    <table width="0%" cellspacing="0"></table>
+	<table width="100%" cellspacing="0" class="dataview" border="0">
+		<tr>
+			<th width="2%">&nbsp;</th>
+			<th width="5%">
+				<label for="biospecimen.id">
+					<wicket:message	key="biospecimen.id">Biospecimen ID:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="biospecimen.biospecimenUid">
+					<wicket:message	key="biospecimen.biospecimenUid">Biospecimen UID:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="biospecimen.linkSubjectStudy">
+					<wicket:message	key="biospecimen.linkSubjectStudy">Subject UID:</wicket:message>
+				</label>
+			</th>
+			<th width="20%">
+				<label for="biospecimen.sampleType">
+					<wicket:message	key="biospecimen.sampleType">SampleType:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="biospecimen.bioCollection">
+					<wicket:message	key="biospecimen.bioCollection">Collection:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="biospecimen.sampleDate">
+					<wicket:message	key="biospecimen.sampleDate">Sample Date:</wicket:message>
+				</label>
+			</th>
+			<th width="10%">
+				<label for="biospecimen.quantity">
+					<wicket:message	key="biospecimen.quantity">Quantity:</wicket:message>
+				</label>
+			</th>
+			<th width="2%">&nbsp;</th>
+		</tr>
+		<!--  The Data Result Set -->
+		<tr wicket:id="collectionList">
+			<td width="2%">&nbsp;</td>
+			<td width="5%">
+				<span wicket:id="biospecimen.id">ID</span>
+			</td>
+			<td width="10%">
+			  <a href="#"wicket:id="biospecimen.biospecimenUid">
+			  	<span wicket:id="nameLbl">Name</span>
+			  </a>
+			</td>
+			<td width="20%">
+				<span wicket:id="biospecimen.linkSubjectStudy"></span>
+			</td>
+			<td width="20%">
+				<span wicket:id="biospecimen.sampleType"></span>
+			</td>
+			<td width="10%">
+				<span wicket:id="biospecimen.bioCollection"></span>
+			</td>
+			<td width="10%">
+				<span wicket:id="biospecimen.sampleDate"></span>
+			</td>
+			<td width="10%">
+				<span wicket:id="biospecimen.quantity"></span>
+			</td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td width="2%">&nbsp;</td>
+		 	<td width="96%" colspan="6"><span wicket:id="navigator" class="a"></span></td>
+			<td width="2%">&nbsp;</td>
+		</tr>
+	</table>
+	<table width="0%" cellspacing="0"></table>
+</wicket:panel>

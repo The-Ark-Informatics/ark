@@ -1,0 +1,61 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+
+			<div id="searchPanelContent">
+				
+				<div id="searchPanelBreaker">&nbsp;</div>				
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="fieldTitle"><wicket:message key="field.title">Field Title:</wicket:message></label>		
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label"> <!--  this will change to ID -->
+						<input wicket:id=customField.fieldTitle  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="fieldName"><wicket:message key="field.name">Field Name:</wicket:message></label>	
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="customField.name" type="text"></input>
+					</div>
+				</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				<div id="searchPanelBreaker">&nbsp;</div>		
+				<!--  Defines the location for buttons -->			
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">&nbsp;</div>
+				
+				<div id="fldControl">&nbsp;</div>
+				
+				<div id="panelMargin">&nbsp;</div>
+				
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

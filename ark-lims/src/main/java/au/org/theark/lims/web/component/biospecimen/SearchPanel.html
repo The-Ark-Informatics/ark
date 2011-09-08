@@ -1,0 +1,119 @@
+<wicket:panel>&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+		
+			<div id="searchPanelContent">
+			
+				<div id="searchPanelBreaker">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="study">
+							<wicket:message key="study">Study:</wicket:message>
+						</label>
+					</div>
+				</div>
+		
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="study">
+			       				<option>Study selection</option>
+			       		</select>
+		       		</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<!-- Empty -->
+					
+				<div id="searchPanelContentRight">&nbsp;</div>				
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+				
+				<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+		 				<label for="id"><wicket:message key="biospecimen.id">Biospecimen ID:</wicket:message></label>
+		 			</div> 
+		 		</div>
+		 		
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="biospecimen.id"  type="text" />
+					</div>
+				</div>
+				
+				<div  id="panelMargin">&nbsp;</div>
+				
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="name"><wicket:message key="biospecimen.biospecimenUid">Biospeciment UID:</wicket:message></label>
+		 			</div> 
+		 		</div> 			       			
+				
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="biospecimen.biospecimenUid"  type="text" />
+					</div>
+				</div>
+					
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+		       	
+		       	<div id="panelContentLeft">&nbsp;</div>
+				
+				<div id="fldLabel">
+					<div class="label">
+						<label for="biospecimen.sampleType">
+							<wicket:message key="biospecimen.sampleType">Sample Type:</wicket:message>
+						</label>
+					</div>
+				</div>
+				
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="biospecimen.sampleType">
+		       				<option>1</option>
+							<option>2</option>
+		       			</select>
+		       		</div>
+				</div>
+				       			
+		       	<div id="panelMargin">&nbsp;</div>
+						
+				<div id="fldLabel">
+		 			<div class="label">
+						<label for="biospecimen.sampleDate">
+							<wicket:message key="biospecimen.sampleDate">Sample Date:</wicket:message>
+						</label>
+		 			</div>
+		 		</div>
+		 		
+		 		<div id="fldControl">
+					<div class="label">
+						<input wicket:id="biospecimen.sampleDate"  type="text" maxLength="10"/>
+					</div>
+				</div>
+				
+				<div id="searchPanelContentRight">&nbsp;</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>		
+				<!--  Defines the location for buttons -->			
+				
+				<div id="actionButtons">&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
+					</div>
+				</div>
+				
+				<div id="searchPanelBreaker">&nbsp;</div>
+			</div>
+		</form>
+	</div>
+</wicket:panel>

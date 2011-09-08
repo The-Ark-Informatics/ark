@@ -1,0 +1,10 @@
+#buttons {
+	background-color: #EEEEEE;
+}
+
+#actionButtons {
+	float: right;
+	width: 50%;
+	height: 5%;
+	padding-bottom: 10px;
+}

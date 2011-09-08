@@ -1,0 +1,27 @@
+This is a java stand alone application. It must be built into a java archive using the following command
+This application is for a developer or installer to use the jar after its built and execute it.Some form of background knowledge to setting up
+a java environment is required.
+
+A.Configure and Package
+
+ 1. Make sure you provide the correct LDAP details in applicationContext.xml found in src/main/resources folder and also type in the right password for your environment 
+ 2. Once the configuration is complete within the project directory type in the command  mvn assembly:assembly [ this will package the application and its dependencies into a jar file refer to maven documentation for more details]
+ 3. Once it reports that it has built/packaged without errors navigate into your target folder
+ 4. You will see two jar files, the one we are going to use is "ark-user-account-0.0.1-SNAPSHOT-jar-with-dependencies.jar"
+ 5. You can either rename this ark-user-account-0.0.1-SNAPSHOT-jar-with-dependencies.jar to something like createaccount.jar for your convenience.
+
+To Create  a new user account type:
+
+
+B. Create an account using the application:
+ 
+ 1. Execute the following command  java -jar ark-user-account-0.0.1-SNAPSHOT-jar-with-dependencies.jar myaccount@ark.org.au SomePassw0rd FirstName LastName
+ 2. This should create an account with the specified username/password in the LDAP
+ 
+ 
+ References:
+ 
+ http://maven.apache.org/plugins/maven-assembly-plugin/
+ http://www.springone2gx.com/blog/scott_leberknight/2008/06/creating_executable_jars_using_the_maven_assembly_plugin
+ 
+  

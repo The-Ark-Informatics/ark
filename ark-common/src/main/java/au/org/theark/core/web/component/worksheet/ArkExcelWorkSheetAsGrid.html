@@ -1,0 +1,42 @@
+<wicket:panel>
+	<div id="wizardGridContent">Data Preview: (First <label wicket:id="rowsToDisplay">[rowsToDisplay]</label>)
+		<div class="wizardDataGrid">
+			<table class="wizardDataGridTable">
+				<!-- the Grid Heading -->
+				<tr>
+					<th>
+						<label>ROW</label>
+					</th>
+					<th wicket:id="heading">
+						<label wicket:id="cellHead">[Column Heading]</label>
+					</th>
+				</tr>
+				<!-- the Grid Body -->
+				<tr wicket:id="rows">
+					<td>
+						<!-- the Row Numbering Part -->
+						<label wicket:id="rowNo">[RowNo]</label>
+					</td>
+					<!-- the Cell Data Part -->
+					<td wicket:id="cols">
+						<label wicket:id="cellData">[CellData]</label>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div wicket:id="wizardDataGridKeyContainer">
+			<table width="80%" border="0">
+				<tbody>
+					<tr>
+						<td>KEY:</td>
+						<td style="background: red; width:10%;"></td><td>Indicates data in error</td>
+						<td style="background: orange; width:10%;"></td><td>Indicates data with a warning</td>
+						<td style="background: lightgreen; width:10%;"></td><td>Indicates data to insert</td><td></td>
+						<td style="background: lightblue; width:10%;"></td><td>Indicates data to update</td><td></td>
+						<td><input wicket:id="downloadGridData" type="submit" wicket:message="value:button.downloadFile" /></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</wicket:panel>

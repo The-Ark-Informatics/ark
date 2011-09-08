@@ -1,0 +1,89 @@
+#customFieldDataPanel {
+	border-top: 1px solid #6F6F6F;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    padding-top: 15px;
+    width: 90%;
+}
+
+table.customFieldDataView {
+    font-family: arial;
+    font-size: 1em;
+}
+
+table.customFieldDataView caption {
+	text-align: left;
+}
+
+table.customFieldDataView tr {
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+
+table.customFieldDataView tr.even {
+	background-color: #EEEEEE;
+}
+
+table.customFieldDataView tr.odd {
+	background-color: #FFFFFF;
+}
+
+table.customFieldDataView tr td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+table.customFieldDataView tr th {
+	color: black;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 10px;
+	background-color: #C0C0C0;
+	border-bottom: 1px solid #6F6F6F;
+	border-top: 1px solid #6F6F6F;
+	text-align: left;
+	white-space: nowrap;
+	vertical-align: middle;
+}
+
+table.customFieldDataView tr th {
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+table.customFieldDataView tr th.wicket_orderDown {
+	background-color: #87cbff;
+	background-image: url(displaytag/img/arrow_down.png);
+}
+
+table.customFieldDataView tr th.wicket_orderUp {
+	background-color: #87cbff;
+	background-image: url(displaytag/img/arrow_up.png);
+}
+
+table.customFieldDataView tr th.wicket_orderNone {
+	background-image: url(displaytag/img/arrow_off.png);
+}
+
+table.customFieldDataView tr th a {
+	font-weight: normal;
+}
+
+table.customFieldDataView #message {
+	padding-left: 3px;
+}
+
+table.customFieldDataView caption {
+	padding-bottom: 2px;
+}
+
+table.customFieldDataView li {
+	margin-left: 1.5em;
+}
+
+table.customFieldDataView tfoot {
+    background: none repeat scroll 0 0 #C0C0C0;
+    border-top: 1px solid;
+}
