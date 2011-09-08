@@ -77,14 +77,13 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
 			@Override
 			protected Object load() {
-				ArkUserVO arkUserVO = new ArkUserVO();
 				List<ArkUserVO> userResultList = new ArrayList<ArkUserVO>();
 				try {
 					Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 					if (isActionPermitted()) {
 						if (sessionStudyId != null && sessionStudyId > 0) {
 							// Search Users must list all the users from ArkUser Group and will include all users across studies.
-							userResultList = userService.searchUser(arkUserVO);
+							userResultList = userService.searchUser(containerForm.getModelObject());
 							containerForm.getModelObject().setUserList(userResultList);
 						}
 						pageableListView.removeAll();
