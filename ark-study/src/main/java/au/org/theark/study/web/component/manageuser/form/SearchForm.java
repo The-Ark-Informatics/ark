@@ -100,7 +100,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 				target.addComponent(feedbackPanel);
 			}
 
-			containerForm.getModelObject().setUserList(userResultList);
 			pageableListView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
