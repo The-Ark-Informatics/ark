@@ -311,9 +311,9 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		detailPanelFormContainer.add(subjectUIDTxtFld);
 		detailPanelFormContainer.add(titleTypeDdc);
 		detailPanelFormContainer.add(firstNameTxtFld);
-		detailPanelFormContainer.add(middleNameTxtFld);
+		//detailPanelFormContainer.add(middleNameTxtFld);
 		detailPanelFormContainer.add(lastNameTxtFld);
-		detailPanelFormContainer.add(preferredNameTxtFld);
+		//detailPanelFormContainer.add(preferredNameTxtFld);
 		detailPanelFormContainer.add(dateOfBirthTxtFld);
 		detailPanelFormContainer.add(vitalStatusDdc);
 
@@ -323,14 +323,14 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		detailPanelFormContainer.add(wmcDeathDetailsContainer);
 
 		detailPanelFormContainer.add(genderTypeDdc);
-		detailPanelFormContainer.add(subjectStatusDdc);
-		detailPanelFormContainer.add(maritalStatusDdc);
-		detailPanelFormContainer.add(personContactMethodDdc);
+		//detailPanelFormContainer.add(subjectStatusDdc);
+		//detailPanelFormContainer.add(maritalStatusDdc);
+		//detailPanelFormContainer.add(personContactMethodDdc);
 
 		// Preferred email becomes required when selected as preferred contact method
-		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
-		detailPanelFormContainer.add(wmcPreferredEmailContainer);
-		detailPanelFormContainer.add(otherEmailTxtFld);
+		//wmcPreferredEmailContainer.add(preferredEmailTxtFld);
+		//detailPanelFormContainer.add(wmcPreferredEmailContainer);
+		//detailPanelFormContainer.add(otherEmailTxtFld);
 	}
 
 	/*
