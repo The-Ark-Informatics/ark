@@ -59,7 +59,8 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	private IArkCommonService				iArkCommonService;
 
 	public StudyComponentContainerPanel(String id) {
-		super(id);
+		//super(id);
+		super(id,true);
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<StudyCompVo>(new StudyCompVo());
@@ -81,8 +82,8 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultPanel = new SearchResultList("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		
+		searchResultPanel = new SearchResultList("searchResults",arkCrudContainerVO,containerForm);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
@@ -112,18 +113,15 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-		detailsPanel = new Details("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailsPanel = new Details("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
 		detailsPanel.initialisePanel();
-		detailPanelContainer.add(detailsPanel);
-		return detailPanelContainer;
-
+		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
@@ -137,20 +135,17 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 			if (sessionStudyId != null && sessionStudyId > 0) {
 				resultList = studyService.searchStudyComp(studyCompVo.getStudyComponent());
 			}
-
 		}
 		catch (ArkSystemException e) {
 			this.error("A System error occured  while initializing Search Panel");
 		}
 
 		cpModel.getObject().setStudyCompList(resultList);
-
-		searchComponentPanel = new Search("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer,
-				viewButtonContainer, editButtonContainer, detailsPanel, containerForm);
-
+		searchComponentPanel = new Search("searchComponentPanel",arkCrudContainerVO,feedBackPanel,containerForm,pageableListView);
 		searchComponentPanel.initialisePanel(cpModel);
-		searchPanelContainer.add(searchComponentPanel);
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
+		
 	}
 
 }

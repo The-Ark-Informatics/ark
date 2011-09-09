@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.studycomponent.form;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,6 +36,7 @@ import au.org.theark.core.exception.EntityExistsException;
 import au.org.theark.core.exception.UnAuthorizedOperation;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.model.vo.StudyCompVo;
@@ -60,18 +60,24 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	private TextField<String>	componentNameTxtFld;
 	private TextArea<String>	componentDescription;
 	private TextArea<String>	keywordTxtArea;
+	
+	private FeedbackPanel feedBackPanel;
 
+	
 	/**
+	 * 
 	 * @param id
-	 * @param resultListContainer
-	 * @param detailPanelContainer
+	 * @param feedBackPanel
+	 * @param arkCrudContainerVO
+	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
+		
+		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+		this.feedBackPanel = feedBackPanel;
+		setMultiPart(false);
 	}
+	
 
 	public void initialiseDetailForm() {
 
@@ -86,13 +92,10 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	}
 
 	public void addDetailFormComponents() {
-
-		detailPanelFormContainer.add(componentIdTxtFld);
-		detailPanelFormContainer.add(componentIdTxtFld);
-		detailPanelFormContainer.add(componentNameTxtFld);
-		detailPanelFormContainer.add(componentDescription);
-		detailPanelFormContainer.add(keywordTxtArea);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(componentIdTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(componentNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(componentDescription);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(keywordTxtArea);
 	}
 
 	/*
@@ -128,7 +131,8 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	 */
 	@Override
 	protected void onSave(Form<StudyCompVo> containerForm, AjaxRequestTarget target) {
-		target.addComponent(detailPanelContainer);
+		
+		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
 		try {
 
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -149,7 +153,8 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 				processErrors(target);
 
 			}
-			onSavePostProcess(target);
+			
+			onSavePostProcess(target,arkCrudContainerVO);
 
 		}
 		catch (EntityExistsException e) {
@@ -185,7 +190,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			containerForm.setModelObject(studyCompVo);
 			selectModalWindow.close(target);
 			containerForm.info("The Study Component was deleted successfully.");
-			editCancelProcess(target);
+			editCancelProcess(target,true);
 		}
 		catch (UnAuthorizedOperation unAuthorisedexception) {
 			containerForm.error("You are not authorised to delete this study component.");

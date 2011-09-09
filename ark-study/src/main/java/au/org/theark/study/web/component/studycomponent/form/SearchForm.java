@@ -32,6 +32,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.StudyComp;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
@@ -42,7 +43,8 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class SearchForm extends AbstractSearchForm<StudyCompVo> {
-
+	
+	private ArkCrudContainerVO				arkCrudContainerVO;
 	private TextField<String>				studyCompIdTxtFld;
 	private TextField<String>				compNameTxtFld;
 	private TextArea<String>				descriptionTxtArea;
@@ -67,24 +69,25 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	}
 
 	/**
+	 * 
 	 * @param id
 	 * @param cpmModel
+	 * @param arkCrudContainerVO
+	 * @param feedBackPanel
+	 * @param listView
 	 */
-	public SearchForm(String id, CompoundPropertyModel<StudyCompVo> cpmModel, PageableListView<StudyComp> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailsContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		// super(id, cpmModel);
-		super(id, cpmModel, detailsContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+	public SearchForm(String id,CompoundPropertyModel<StudyCompVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<StudyComp> listView){
+		
+		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.feedbackPanel = feedBackPanel;
 		this.listView = listView;
+
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
-
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.",arkCrudContainerVO);
 	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -96,8 +99,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 		StudyCompVo studyCompVo = new StudyCompVo();
 		studyCompVo.setMode(Constants.MODE_NEW);
 		setModelObject(studyCompVo);
-		// processDetail(target);
-		preProcessDetailPanel(target);
+		preProcessDetailPanel(target,arkCrudContainerVO);
 
 	}
 
@@ -118,10 +120,12 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 				this.info("Study Component with the specified criteria does not exist in the system.");
 				target.addComponent(feedbackPanel);
 			}
+			
 			getModelObject().setStudyCompList(resultList);
 			listView.removeAll();
-			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-			target.addComponent(listContainer);// For ajax this is required so
+
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (ArkSystemException arkEx) {
 			this.error("A system error has occured. Please try after sometime.");
