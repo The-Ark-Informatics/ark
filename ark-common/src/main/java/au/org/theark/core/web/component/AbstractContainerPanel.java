@@ -85,9 +85,8 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 	// New constructor for newer ArkCrudContainerVO-based interfaces
 	public AbstractContainerPanel(String id, boolean useArkCrudContainerVO) {
 		super(id);
-//		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());// TODO(NN) Uncomment after the User management usecase is complete
+		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
 		if (useArkCrudContainerVO) {
 			initCrudContainerVO();
 		}
