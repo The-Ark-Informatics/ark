@@ -52,7 +52,7 @@ public class BioTransaction implements java.io.Serializable {
 	private Long			id;
 	private String			timestamp;
 	private Biospecimen	biospecimen;
-	private Long			deleted;
+	private Boolean		deleted;
 	private String			treatment;
 	private String			unit;
 	private Date			deliverydate;
@@ -78,7 +78,7 @@ public class BioTransaction implements java.io.Serializable {
 		this.quantity = quantity;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Long deleted, String treatment, String unit, Date deliverydate, String fixationtime, Date transactiondate,
+	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, String treatment, String unit, Date deliverydate, String fixationtime, Date transactiondate,
 			Long quantity, String owner, String reason, String status, String collaborator, String recorder, String destination, String action, String type) {
 		this.id = id;
 		this.biospecimen = biospecimen;
@@ -130,11 +130,11 @@ public class BioTransaction implements java.io.Serializable {
 	}
 
 	@Column(name = "DELETED")
-	public Long getDeleted() {
+	public Boolean getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Long deleted) {
+	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
 
