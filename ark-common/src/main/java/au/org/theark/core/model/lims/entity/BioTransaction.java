@@ -57,7 +57,7 @@ public class BioTransaction implements java.io.Serializable {
 	private String			unit;
 	private Date			deliverydate;
 	private String			fixationtime;
-	private Date			transactiondate;
+	private Date			transactionDate;
 	private Long			quantity;
 	private String			owner;
 	private String			reason;
@@ -71,14 +71,14 @@ public class BioTransaction implements java.io.Serializable {
 	public BioTransaction() {
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Date transactiondate, Long quantity) {
+	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Long quantity) {
 		this.id = id;
 		this.biospecimen = biospecimen;
-		this.transactiondate = transactiondate;
+		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, String treatment, String unit, Date deliverydate, String fixationtime, Date transactiondate,
+	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, String treatment, String unit, Date deliverydate, String fixationtime, Date transactionDate,
 			Long quantity, String owner, String reason, String status, String collaborator, String recorder, String destination, String action, String type) {
 		this.id = id;
 		this.biospecimen = biospecimen;
@@ -87,7 +87,7 @@ public class BioTransaction implements java.io.Serializable {
 		this.unit = unit;
 		this.deliverydate = deliverydate;
 		this.fixationtime = fixationtime;
-		this.transactiondate = transactiondate;
+		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 		this.owner = owner;
 		this.reason = reason;
@@ -177,12 +177,12 @@ public class BioTransaction implements java.io.Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TRANSACTIONDATE", nullable = false, length = 19)
-	public Date getTransactiondate() {
-		return this.transactiondate;
+	public Date getTransactionDate() {
+		return this.transactionDate;
 	}
 
-	public void setTransactiondate(Date transactiondate) {
-		this.transactiondate = transactiondate;
+	public void setTransactionDate(Date transactionDate) {
+		this.transactionDate = transactionDate;
 	}
 
 	@Column(name = "QUANTITY", nullable = false, precision = 22, scale = 0)

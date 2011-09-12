@@ -18,9 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.model.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -47,32 +50,53 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 
 		return bioTransaction;
 	}
-
-	public List<BioTransaction> searchBioTransaction(BioTransaction bioTransaction) throws ArkSystemException {
+	
+	private Criteria buildTransactionCriteria(BioTransaction bioTransaction) {
 		Criteria criteria = getSession().createCriteria(BioTransaction.class);
+		// All transactions must operate on a given biospecimen
+		criteria.add(Restrictions.eq("biospecimen", bioTransaction.getBiospecimen()));
+		
+		return criteria;
+	}
 
-		if (bioTransaction.getId() != null)
-			criteria.add(Restrictions.eq("id", bioTransaction.getId()));
+	public int getBioTransactionCount(BioTransaction bioTransaction) {
+		// Handle for biospecimen not in context
+		if (bioTransaction.getBiospecimen() == null) {
+			return 0;
+		}
+		Criteria criteria = buildTransactionCriteria(bioTransaction);
+		criteria.setProjection(Projections.rowCount());
+		
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
+	}
 
-		if (bioTransaction.getStudy() != null)
-			criteria.add(Restrictions.eq("study", bioTransaction.getStudy()));
-
-		if (bioTransaction.getBiospecimen() != null)
-			criteria.add(Restrictions.eq("biospecimen", bioTransaction.getBiospecimen()));
-
+	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count) {
+		// Handle for biospecimen not in context
+		if (bioTransaction.getBiospecimen() == null) {
+			return new ArrayList<BioTransaction>(0);
+		}
+		Criteria criteria = buildTransactionCriteria(bioTransaction);
+		// sort by most recent first
+		criteria.addOrder(Order.desc("transactionDate"));
+		criteria.addOrder(Order.desc("id"));
+		// support pageable results list
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		
 		List<BioTransaction> list = criteria.list();
 		return list;
 	}
 
-	public void createBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction) {
+	public void createBioTransaction(BioTransaction bioTransaction) {
 		getSession().save(bioTransaction);
 	}
 
-	public void deleteBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction) {
+	public void deleteBioTransaction(BioTransaction bioTransaction) {
 		getSession().delete(bioTransaction);
 	}
 
-	public void updateBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction biospecimen) {
+	public void updateBioTransaction(BioTransaction biospecimen) {
 		getSession().update(biospecimen);
 	}
 }

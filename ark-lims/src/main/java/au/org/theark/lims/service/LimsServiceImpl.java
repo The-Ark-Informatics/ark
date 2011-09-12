@@ -241,14 +241,23 @@ public class LimsServiceImpl implements ILimsService {
 	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException {
 		return iBioTransactionDao.getBioTransaction(id);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see au.org.theark.lims.service.ILimsService#getBioTransactionCount(Long)
+	 */
+	public int getBioTransactionCount(BioTransaction bioTransaction) {
+		return iBioTransactionDao.getBioTransactionCount(bioTransaction);
+	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see au.org.theark.lims.service.ILimsService#searchBioTransaction(BioTransaction)
+	 * @see au.org.theark.lims.service.ILimsService#searchPageableBioTransaction(Long)
 	 */
-	public List<BioTransaction> searchBioTransaction(BioTransaction bioTransaction) throws ArkSystemException {
-		return iBioTransactionDao.searchBioTransaction(bioTransaction);
+	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count) {
+		return iBioTransactionDao.searchPageableBioTransaction(bioTransaction, first, count);
 	}
 
 	/*
@@ -648,4 +657,5 @@ public class LimsServiceImpl implements ILimsService {
 		}
 		return flag;
 	}
+
 }
