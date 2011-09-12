@@ -125,7 +125,7 @@ public class BioTransaction implements java.io.Serializable {
 		return this.treatmentType;
 	}
 
-	public void setTreatment(TreatmentType treatment) {
+	public void setTreatmentType(TreatmentType treatment) {
 		this.treatmentType = treatment;
 	}
 
