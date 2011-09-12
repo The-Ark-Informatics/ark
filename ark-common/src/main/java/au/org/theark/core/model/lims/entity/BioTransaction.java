@@ -50,9 +50,7 @@ public class BioTransaction implements java.io.Serializable {
 	private static final long	serialVersionUID	= 1L;
 	
 	private Long				id;
-	private String				timestamp;
 	private Biospecimen		biospecimen;
-	private Boolean			deleted;
 	private TreatmentType	treatmentType;
 	private Date				transactionDate;
 	private Double				quantity;
@@ -69,11 +67,10 @@ public class BioTransaction implements java.io.Serializable {
 		this.quantity = quantity;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, TreatmentType treatmentType, Date transactionDate,
-			Double quantity, String reason, String recorder) {
+	public BioTransaction(Long id, Biospecimen biospecimen, TreatmentType treatmentType, Date transactionDate, Double quantity, 
+			String reason, String recorder) {
 		this.id = id;
 		this.biospecimen = biospecimen;
-		this.deleted = deleted;
 		this.treatmentType = treatmentType;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
@@ -92,15 +89,6 @@ public class BioTransaction implements java.io.Serializable {
 		this.id = id;
 	}
 
-	@Column(name = "TIMESTAMP", length = 55)
-	public String getTimestamp() {
-		return this.timestamp;
-	}
-
-	public void setTimestamp(String timestamp) {
-		this.timestamp = timestamp;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BIOSPECIMEN_ID")
 	public Biospecimen getBiospecimen() {
@@ -109,15 +97,6 @@ public class BioTransaction implements java.io.Serializable {
 
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
-	}
-
-	@Column(name = "DELETED")
-	public Boolean getDeleted() {
-		return this.deleted;
-	}
-
-	public void setDeleted(Boolean deleted) {
-		this.deleted = deleted;
 	}
 
 	@Column(name = "TREATMENT_TYPE_ID", nullable = false)
