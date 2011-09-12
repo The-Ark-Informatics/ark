@@ -214,14 +214,16 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		LimsVO limsVo = new LimsVO();
 		containerForm.setModelObject(limsVo);
 
-		java.util.List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>(0);
-		try {
-			biospecimenList = iLimsService.searchBiospecimen(limsVo.getBiospecimen());
-		}
-		catch (ArkSystemException e) {
-			this.error(e.getMessage());
-		}
-		containerForm.getModelObject().setBiospecimenList(biospecimenList);
+		// Switched to the new Biospecimen results list based on DataView/DataProvidor
+		// (i.e. does not use the SearchResultsListPanel in this package parent)
+//		java.util.List<Biospecimen> biospecimenList = new ArrayList<Biospecimen>(0);
+//		try {
+//			biospecimenList = iLimsService.searchBiospecimen(limsVo.getBiospecimen());
+//		}
+//		catch (ArkSystemException e) {
+//			this.error(e.getMessage());
+//		}
+//		containerForm.getModelObject().setBiospecimenList(biospecimenList);
 
 		// Enable New button now SubjectUID in context (from biospecimen selection)
 		WebMarkupContainer wmc = searchPanelContainer;

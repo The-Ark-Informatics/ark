@@ -36,34 +36,43 @@ public interface IBioTransactionDao {
 	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException;
 
 	/**
-	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction object
+	 * Count the LIMS BioTransaction(s) based on the supplied bioTransaction
 	 * 
 	 * @param bioTransaction
-	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
-	 * @throws EntityNotFoundException
-	 * @throws ArkSystemException
+	 * @return total count of transactions given the criteria 
 	 */
-	public List<au.org.theark.core.model.lims.entity.BioTransaction> searchBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction) throws ArkSystemException;
+	public int getBioTransactionCount(BioTransaction bioTransaction);
+
+	/**
+	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransactionCriteria
+	 * that supports results pagination
+	 * 
+	 * @param bioTransaction
+	 * @param first
+	 * @param count
+	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction> given the criteria
+	 */
+	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count);
 
 	/**
 	 * Create a LIMS BioTransaction based on the supplied bioTransaction
 	 * 
 	 * @param bioTransaction
 	 */
-	public void createBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction);
+	public void createBioTransaction(BioTransaction bioTransaction);
 
 	/**
 	 * Update a LIMS BioTransaction based on the supplied bioTransaction
 	 * 
 	 * @param bioTransaction
 	 */
-	public void updateBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction);
+	public void updateBioTransaction(BioTransaction bioTransaction);
 
 	/**
 	 * Delete a LIMS BioTransaction based on the supplied bioTransaction
 	 * 
 	 * @param bioTransaction
 	 */
-	public void deleteBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction);
+	public void deleteBioTransaction(BioTransaction bioTransaction);
 
 }

@@ -77,7 +77,7 @@ public interface ILimsService {
 	 * @return List of BioCollections
 	 * @throws ArkSystemException
 	 */
-	public List<au.org.theark.core.model.lims.entity.BioCollection> searchBioCollection(au.org.theark.core.model.lims.entity.BioCollection bioCollection) throws ArkSystemException;
+	public List<BioCollection> searchBioCollection(BioCollection bioCollection) throws ArkSystemException;
 
 	/**
 	 * Search the database for a BioCollection based on the supplied id
@@ -97,16 +97,6 @@ public interface ILimsService {
 	 * @throws EntityNotFoundException
 	 */
 	public Biospecimen getBiospecimen(Long id) throws EntityNotFoundException;
-
-	/**
-	 * Look up a List of LIMS Biospecimen(s) based on the supplied biospecimen object
-	 * 
-	 * @param biospecimen
-	 * @return List<au.org.theark.core.model.lims.entity.Biospecimen>
-	 * @throws EntityNotFoundException
-	 * @throws ArkSystemException
-	 */
-	public List<au.org.theark.core.model.lims.entity.Biospecimen> searchBiospecimen(au.org.theark.core.model.lims.entity.Biospecimen biospecimen) throws ArkSystemException;
 
 	/**
 	 * Create a LIMS biospecimen based on the supplied LimsVO
@@ -143,14 +133,21 @@ public interface ILimsService {
 	public BioTransaction getBioTransaction(Long id) throws EntityNotFoundException, ArkSystemException;
 
 	/**
-	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction object
+	 * Get count of the BioTransaction given the criteria
 	 * 
-	 * @param bioTransaction
-	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
-	 * @throws EntityNotFoundException
-	 * @throws ArkSystemException
+	 * @param BioTransaction
+	 *           criteria
+	 * @return counts
 	 */
-	public List<au.org.theark.core.model.lims.entity.BioTransaction> searchBioTransaction(au.org.theark.core.model.lims.entity.BioTransaction bioTransaction) throws ArkSystemException;
+	public int getBioTransactionCount(BioTransaction bioTransactionCriteria);
+
+	/**
+	 * Look up a List of LIMS BioTransaction(s) based on the supplied bioTransaction criteria
+	 * 
+	 * @param bioTransactionCriteria
+	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
+	 */
+	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransactionCriteria, int first, int count);
 
 	/**
 	 * Create a LIMS bioTransaction based on the supplied LimsVO
@@ -204,7 +201,7 @@ public interface ILimsService {
 	 *           criteria
 	 * @return counts
 	 */
-	public int getBioCollectionCount(BioCollection bioCollectionCriteria);
+	public int getBioCollectionCount(BioCollection bioCollection);
 
 	/**
 	 * A generic interface that will return a list BioCollections specified by a particular criteria, and a paginated reference point
@@ -213,7 +210,7 @@ public interface ILimsService {
 	 *           criteria
 	 * @return Collection of BioCollection
 	 */
-	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollectionCriteria, int first, int count);
+	public List<BioCollection> searchPageableBioCollections(BioCollection bioCollection, int first, int count);
 
 	/**
 	 * Get count of the Biospecimens given the criteria
