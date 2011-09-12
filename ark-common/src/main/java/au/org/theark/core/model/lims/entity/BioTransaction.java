@@ -49,54 +49,36 @@ public class BioTransaction implements java.io.Serializable {
 	 */
 	private static final long	serialVersionUID	= 1L;
 	
-	private Long			id;
-	private String			timestamp;
-	private Biospecimen	biospecimen;
-	private Boolean		deleted;
-	private String			treatment;
-	private String			unit;
-	private Date			deliverydate;
-	private String			fixationtime;
-	private Date			transactionDate;
-	private Long			quantity;
-	private String			owner;
-	private String			reason;
-	private String			status;
-	private String			collaborator;
-	private String			recorder;
-	private String			destination;
-	private String			action;
-	private String			type;
+	private Long				id;
+	private String				timestamp;
+	private Biospecimen		biospecimen;
+	private Boolean			deleted;
+	private TreatmentType	treatmentType;
+	private Date				transactionDate;
+	private Double				quantity;
+	private String				reason;
+	private String				recorder;
 
 	public BioTransaction() {
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Long quantity) {
+	public BioTransaction(Long id, Biospecimen biospecimen, TreatmentType treatmentType, Date transactionDate, Double quantity) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, String treatment, String unit, Date deliverydate, String fixationtime, Date transactionDate,
-			Long quantity, String owner, String reason, String status, String collaborator, String recorder, String destination, String action, String type) {
+	public BioTransaction(Long id, Biospecimen biospecimen, Boolean deleted, TreatmentType treatmentType, Date transactionDate,
+			Double quantity, String reason, String recorder) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.deleted = deleted;
-		this.treatment = treatment;
-		this.unit = unit;
-		this.deliverydate = deliverydate;
-		this.fixationtime = fixationtime;
+		this.treatmentType = treatmentType;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
-		this.owner = owner;
 		this.reason = reason;
-		this.status = status;
-		this.collaborator = collaborator;
 		this.recorder = recorder;
-		this.destination = destination;
-		this.action = action;
-		this.type = type;
 	}
 
 	@Id
@@ -138,45 +120,18 @@ public class BioTransaction implements java.io.Serializable {
 		this.deleted = deleted;
 	}
 
-	@Column(name = "TREATMENT")
-	public String getTreatment() {
-		return this.treatment;
+	@Column(name = "TREATMENT_TYPE_ID", nullable = false)
+	public TreatmentType getTreatmentType() {
+		return this.treatmentType;
 	}
 
-	public void setTreatment(String treatment) {
-		this.treatment = treatment;
+	public void setTreatment(TreatmentType treatment) {
+		this.treatmentType = treatment;
 	}
 
-	@Column(name = "UNIT", length = 50)
-	public String getUnit() {
-		return this.unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
-	}
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "DELIVERYDATE", length = 19)
-	public Date getDeliverydate() {
-		return this.deliverydate;
-	}
-
-	public void setDeliverydate(Date deliverydate) {
-		this.deliverydate = deliverydate;
-	}
-
-	@Column(name = "FIXATIONTIME", length = 50)
-	public String getFixationtime() {
-		return this.fixationtime;
-	}
-
-	public void setFixationtime(String fixationtime) {
-		this.fixationtime = fixationtime;
-	}
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TRANSACTIONDATE", nullable = false, length = 19)
+	@Column(name = "TRANSACTION_DATE", nullable = false, length = 19)
 	public Date getTransactionDate() {
 		return this.transactionDate;
 	}
@@ -185,22 +140,13 @@ public class BioTransaction implements java.io.Serializable {
 		this.transactionDate = transactionDate;
 	}
 
-	@Column(name = "QUANTITY", nullable = false, precision = 22, scale = 0)
-	public Long getQuantity() {
+	@Column(name = "QUANTITY", nullable = false)
+	public Double getQuantity() {
 		return this.quantity;
 	}
 
-	public void setQuantity(Long quantity) {
+	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
-	}
-
-	@Column(name = "OWNER")
-	public String getOwner() {
-		return this.owner;
-	}
-
-	public void setOwner(String owner) {
-		this.owner = owner;
 	}
 
 	@Column(name = "REASON", length = 65535)
@@ -212,24 +158,6 @@ public class BioTransaction implements java.io.Serializable {
 		this.reason = reason;
 	}
 
-	@Column(name = "STATUS", length = 50)
-	public String getStatus() {
-		return this.status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	@Column(name = "COLLABORATOR")
-	public String getCollaborator() {
-		return this.collaborator;
-	}
-
-	public void setCollaborator(String collaborator) {
-		this.collaborator = collaborator;
-	}
-
 	@Column(name = "RECORDER")
 	public String getRecorder() {
 		return this.recorder;
@@ -237,33 +165,6 @@ public class BioTransaction implements java.io.Serializable {
 
 	public void setRecorder(String recorder) {
 		this.recorder = recorder;
-	}
-
-	@Column(name = "DESTINATION")
-	public String getDestination() {
-		return this.destination;
-	}
-
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
-
-	@Column(name = "ACTION", length = 50)
-	public String getAction() {
-		return this.action;
-	}
-
-	public void setAction(String action) {
-		this.action = action;
-	}
-
-	@Column(name = "TYPE", length = 100)
-	public String getType() {
-		return this.type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 }
