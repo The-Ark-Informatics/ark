@@ -313,4 +313,49 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		}
 		return invCell;
 	}
+
+	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvBox.class);
+
+		if (invBox.getId() != null) {
+			criteria.add(Restrictions.eq("id", invBox.getId()));
+		}
+
+		if (invBox.getName() != null) {
+			criteria.add(Restrictions.eq("name", invBox.getName()));
+		}
+
+		List<InvBox> list = criteria.list();
+		return list;
+	}
+
+	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvTank.class);
+
+		if (invTank.getId() != null) {
+			criteria.add(Restrictions.eq("id", invTank.getId()));
+		}
+
+		if (invTank.getName() != null) {
+			criteria.add(Restrictions.eq("name", invTank.getName()));
+		}
+
+		List<InvTank> list = criteria.list();
+		return list;
+	}
+
+	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
+		Criteria criteria = getSession().createCriteria(InvTray.class);
+
+		if (invTray.getId() != null) {
+			criteria.add(Restrictions.eq("id", invTray.getId()));
+		}
+
+		if (invTray.getName() != null) {
+			criteria.add(Restrictions.eq("name", invTray.getName()));
+		}
+
+		List<InvTray> list = criteria.list();
+		return list;
+	}
 }
