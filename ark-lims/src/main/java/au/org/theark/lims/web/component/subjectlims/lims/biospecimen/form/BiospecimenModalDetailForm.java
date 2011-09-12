@@ -49,12 +49,12 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
-import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
+import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
 
 /**
  * @author elam
@@ -70,7 +70,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
-	@SpringBean(name = Constants.LIMS_SERVICE)
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService							iLimsService;
 
 	private TextField<String>					idTxtFld;
@@ -82,7 +82,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private TextField<String>					quantityTxtFld;
 	private CheckBox								barcodedChkBox;
 
-	private Panel 							biospecimenCFDataEntryPanel;
+	private Panel 									biospecimenCFDataEntryPanel;
 	private ModalWindow							modalWindow;
 	
 	/**
@@ -98,6 +98,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
+		
+		BiospecimenButtonsPanel buttonsPanel = new BiospecimenButtonsPanel("biospecimenButtonPanel", BiospecimenModalDetailForm.this, feedBackPanel);
+		buttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
+		addOrReplace(buttonsPanel);
 	}
 	
 	protected void refreshEntityFromBackend() {
