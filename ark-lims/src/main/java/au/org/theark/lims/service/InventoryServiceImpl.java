@@ -46,12 +46,21 @@ public class InventoryServiceImpl implements IInventoryService {
 			
 		iInventoryDao.createInvBox(invBox);
 		
+		createCellsForBox(invBox);
+	}
+
+	/**
+	 * Create cells for the box in question 
+	 * @param invBox
+	 */
+	private void createCellsForBox(InvBox invBox) {
 		// Add cells for box
-		for (int row = 1; row < invBox.getNoofrow(); row++) {
-			for (int col = 1; col < invBox.getNoofcol(); col++) {
+		for (int row = 1; row <= invBox.getNoofrow(); row++) {
+			for (int col = 1; col <= invBox.getNoofcol(); col++) {
 				InvCell invCell = new InvCell();
 				invCell.setStatus("Empty");
 				invCell.setInvBox(invBox);
+				
 				invCell.setColno(new Long(col));
 				invCell.setRowno(new Long(row));
 				createInvCell(invCell);
@@ -119,17 +128,7 @@ public class InventoryServiceImpl implements IInventoryService {
 			deleteInvCell(invCell);
 		}
 		
-		// Add cells for box
-		for (int row = 1; row <= invBox.getNoofrow(); row++) {
-			for (int col = 1; col <= invBox.getNoofcol(); col++) {
-				InvCell invCell = new InvCell();
-				invCell.setStatus("Empty");
-				invCell.setInvBox(invBox);
-				invCell.setColno(new Long(col));
-				invCell.setRowno(new Long(row));
-				createInvCell(invCell);
-			}
-		}
+		createCellsForBox(invBox);
 	}
 	
 	public void updateInvCell(InvCell invCell) {
@@ -182,5 +181,17 @@ public class InventoryServiceImpl implements IInventoryService {
 
 	public InvCell getInvCell(Long id) {
 		return iInventoryDao.getInvCell(id);
+	}
+
+	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException {
+		return iInventoryDao.searchInvBox(invBox);
+	}
+
+	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException {
+		return iInventoryDao.searchInvTank(invTank);
+	}
+
+	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
+		return iInventoryDao.searchInvTray(invTray);
 	}
 }

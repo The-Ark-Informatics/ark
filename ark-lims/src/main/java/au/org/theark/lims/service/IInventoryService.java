@@ -202,4 +202,28 @@ public interface IInventoryService {
 	 * @return
 	 */
 	public InvCell getInvCell(Long id);
+
+	/**
+	 * Search on a particular tank
+	 * @param invTank
+	 * @return a List of InvTank(s)
+	 * @throws ArkSystemException
+	 */
+	public List<InvTank> searchInvTank(InvTank invTank) throws ArkSystemException;
+	
+	/**
+	 * Search on a particular tray
+	 * @param invSite
+	 * @return a List of InvSite(s)
+	 * @throws ArkSystemException
+	 */
+	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException;
+	
+	/**
+	 * Search on a particular box
+	 * @param invBox
+	 * @return a List of InvBox(s)
+	 * @throws ArkSystemException
+	 */
+	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException;
 }
