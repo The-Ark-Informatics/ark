@@ -37,6 +37,7 @@ import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -656,6 +657,10 @@ public class LimsServiceImpl implements ILimsService {
 			
 		}
 		return flag;
+	}
+
+	public List<Unit> getUnits() {
+		return iBiospecimenDao.getUnits();
 	}
 
 }

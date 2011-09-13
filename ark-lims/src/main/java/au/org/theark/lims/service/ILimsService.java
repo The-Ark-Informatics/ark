@@ -28,6 +28,7 @@ import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
@@ -276,5 +277,11 @@ public interface ILimsService {
 	 * @return a List of BiospecimenCustomFieldData that failed to save (Hibernate caught some exception).
 	 */
 	public List<BiospecimenCustomFieldData> createOrUpdateBiospecimenCustomFieldData(List<BiospecimenCustomFieldData> biospecimenCFDataList);
+
+	/**
+	 * Gets a list of units
+	 * @return
+	 */
+	public List<Unit> getUnits();
 
 }
