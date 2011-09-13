@@ -521,7 +521,8 @@ public class Biospecimen implements java.io.Serializable {
 		this.barcoded = barcoded;
 	}
 	
-	@Column(name = "TREATMENT_TYPE_ID", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "TREATMENT_TYPE_ID")
 	public TreatmentType getTreatmentType() {
 		return this.treatmentType;
 	}
