@@ -214,6 +214,15 @@ public class LimsServiceImpl implements ILimsService {
 		BioTransaction bioTransaction = modelObject.getBioTransaction();
 		bioTransaction.setBiospecimen(biospecimen);
 		bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+		
+		if(bioTransaction.getQuantity() == null) {
+			if(biospecimen.getQuantity() != null ) {
+				bioTransaction.setQuantity(biospecimen.getQuantity());
+			}
+			else
+				bioTransaction.setQuantity(new Double(0));
+		}
+		
 		BioTransactionStatus initialStatus = getBioTransactionStatusByName(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY);
 		bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 		iBioTransactionDao.createBioTransaction(bioTransaction);
