@@ -35,6 +35,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.InvCell;
@@ -51,6 +52,7 @@ import au.org.theark.lims.model.dao.IBioTransactionDao;
 import au.org.theark.lims.model.dao.IBiospecimenDao;
 import au.org.theark.lims.model.dao.IInventoryDao;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.web.Constants;
 
 /**
  * @author cellis
@@ -212,6 +214,8 @@ public class LimsServiceImpl implements ILimsService {
 		BioTransaction bioTransaction = modelObject.getBioTransaction();
 		bioTransaction.setBiospecimen(biospecimen);
 		bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
+		BioTransactionStatus initialStatus = getBioTransactionStatusByName(Constants.BIOTRANSACTION_STATUS_INITIAL);
+		bioTransaction.setStatus(initialStatus);	//ensure that the initial transaction can be identified
 		iBioTransactionDao.createBioTransaction(bioTransaction);
 	}
 
@@ -674,6 +678,14 @@ public class LimsServiceImpl implements ILimsService {
 
 	public List<TreatmentType> getTreatmentTypes() {
 		return iBioTransactionDao.getTreatmentTypes();
+	}
+
+	public List<BioTransactionStatus> getBioTransactionStatusChoices() {
+		return iBioTransactionDao.getBioTransactionStatusChoices();
+	}
+
+	public BioTransactionStatus getBioTransactionStatusByName(String statusName) {
+		return iBioTransactionDao.getBioTransactionStatusByName(statusName);
 	}
 
 }

@@ -26,6 +26,7 @@ import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.TreatmentType;
@@ -290,5 +291,17 @@ public interface ILimsService {
 	 * @return
 	 */
 	public List<TreatmentType> getTreatmentTypes();
-
+	
+	/**
+	 * Get a List of BioTransaction Status that can be used for a dropdown choice (i.e. no Initial status)
+	 * @return
+	 */
+	public List<BioTransactionStatus> getBioTransactionStatusChoices();
+	
+	/**
+	 * Get a specific BioTransaction Status by name
+	 * @return
+	 */
+	public BioTransactionStatus getBioTransactionStatusByName(String statusName);
+	
 }
