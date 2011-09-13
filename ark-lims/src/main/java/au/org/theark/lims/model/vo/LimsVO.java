@@ -46,6 +46,8 @@ public class LimsVO implements Serializable {
 	protected InvTank									invTank;
 	protected InvTray									invTray;
 	protected InvBox									invBox;
+	/* A light weight VO that will represent a read only view of the location details of a Biospecimen */
+	protected BiospecimenLocationVO				biospecimenLocationVO;
 
 	/** A List of bioCollection(s) for the linkSubjectStudy in context */
 	protected List<BioCollection>	bioCollectionList;
@@ -273,5 +275,13 @@ public class LimsVO implements Serializable {
 	 */
 	public void setStudyList(List<Study> studyList) {
 		this.studyList = studyList;
+	}
+
+	public BiospecimenLocationVO getBiospecimenLocationVO() {
+		return biospecimenLocationVO;
+	}
+
+	public void setBiospecimenLocationVO(BiospecimenLocationVO biospecimenLocationVO) {
+		this.biospecimenLocationVO = biospecimenLocationVO;
 	}
 }
