@@ -19,6 +19,7 @@
 package au.org.theark.lims.service;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -207,8 +208,10 @@ public class LimsServiceImpl implements ILimsService {
 		Biospecimen biospecimen = modelObject.getBiospecimen();
 		iBiospecimenDao.createBiospecimen(biospecimen);
 		
-		BioTransaction bioTransaction = modelObject.getBioTransaction();
 		// Inheriently create a tranasaction for the initial quantity
+		BioTransaction bioTransaction = modelObject.getBioTransaction();
+		bioTransaction.setBiospecimen(biospecimen);
+		bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 		iBioTransactionDao.createBioTransaction(bioTransaction);
 	}
 
