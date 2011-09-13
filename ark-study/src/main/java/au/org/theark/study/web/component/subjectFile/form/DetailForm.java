@@ -48,6 +48,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
@@ -77,22 +78,11 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	private TextArea<String>						commentsTxtArea;
 
 	// private ConsentFileProgressBar uploadProgressBar;
-
-	/**
-	 * @param id
-	 * @param feedBackPanel
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailPanelFormContainer
-	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param containerForm
-	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<SubjectVO> containerForm) {
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	
+	
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,AbstractContainerForm<SubjectVO> containerForm){
+		
+		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -133,16 +123,16 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Add components
 		subjectFileIdTxtFld.setEnabled(false);
 		subjectFileIdTxtFld.setVisible(true);
-		detailPanelFormContainer.add(subjectFileIdTxtFld);
-		detailPanelFormContainer.add(fileSubjectFileField);
-		detailPanelFormContainer.add(studyComponentChoice);
-		detailPanelFormContainer.add(commentsTxtArea);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectFileIdTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileSubjectFileField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 
 		// TODO: AJAXify the form to show progress bar
 		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
-
-		add(detailPanelFormContainer);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	private void createDirectoryIfNeeded(String directoryName) {
@@ -200,7 +190,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				processErrors(target);
 			}
 
-			onSavePostProcess(target);
+			onSavePostProcess(target,arkCrudContainerVO);
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The record you tried to update is no longer available in the system");
@@ -209,9 +199,6 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		catch (ArkSystemException e) {
 			this.error(e.getMessage());
 			processErrors(target);
-		}
-		finally {
-			onSavePostProcess(target);
 		}
 	}
 

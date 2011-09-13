@@ -65,25 +65,13 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	public SubjectFileContainerPanel(String id) {
 
-		super(id);
+		super(id,true);
 		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
-		add(containerForm);
-	}
-
-	public SubjectFileContainerPanel(String id, SubjectVO subjectVo) {
-		super(id);
-		// Use consentVo in context from consent page
-		cpModel = new CompoundPropertyModel<SubjectVO>(subjectVo);
-		containerForm = new ContainerForm("containerForm", cpModel);
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel().setVisible(true));
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel().setVisible(false));
 		add(containerForm);
 	}
 
@@ -94,12 +82,11 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
-		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		
+		detailPanel = new  DetailPanel("detailsPanel",feedBackPanel,arkCrudContainerVO,containerForm);
+		detailPanel.initialisePanel();;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	/*
@@ -110,17 +97,15 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
 		// Get the Person in Context and determine the Person Type
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
+		//Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
 
 		// All the subject file items related to the subject if one found in session or an empty list
 		cpModel.getObject().setSubjectFileList(subjectFileList);
-		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchPanel = new SearchPanel("searchComponentPanel",feedBackPanel,arkCrudContainerVO,pageableListView);
 		searchPanel.initialisePanel(cpModel);
-		searchPanelContainer.add(searchPanel);
-
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer(); //searchPanelContainer;
 	}
 
 	/*
@@ -130,10 +115,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
-
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",arkCrudContainerVO,containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;
@@ -171,7 +153,9 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+		
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
+		
 	}
 }
