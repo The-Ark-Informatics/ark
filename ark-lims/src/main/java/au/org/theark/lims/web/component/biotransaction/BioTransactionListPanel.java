@@ -193,7 +193,7 @@ public class BioTransactionListPanel extends Panel {
 				};
 				rowDetailsWMC.add(rowDeleteLink);
 				if ((bioTransaction.getStatus() != null) 
-						&& (bioTransaction.getStatus().getName().equals(Constants.BIOTRANSACTION_STATUS_INITIAL))) {
+						&& (bioTransaction.getStatus().getName().equals(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY))) {
 					// do not allow the initial quantity to be deleted
 					rowDetailsWMC.setVisible(false);
 				}
