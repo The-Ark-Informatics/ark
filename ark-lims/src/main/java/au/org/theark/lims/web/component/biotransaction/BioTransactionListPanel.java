@@ -188,6 +188,8 @@ public class BioTransactionListPanel extends Panel {
 					public void onClick(AjaxRequestTarget target) {
 						BioTransaction bioTransaction = (BioTransaction) (getParent().getDefaultModelObject());
 						iLimsService.deleteBioTransaction(bioTransaction);
+						this.info("Successfully removed the transaction");
+						target.addComponent(dataViewListWMC);	//repaint the list
 					}
 
 				};

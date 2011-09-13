@@ -26,7 +26,7 @@ import org.apache.wicket.model.StringResourceModel;
 
 @SuppressWarnings( { "unchecked" })
 /**
- * @author cellis
+ * @author elam
  *
  */
 public abstract class AjaxConfirmLink<T> extends AjaxLink<T> {
@@ -49,7 +49,7 @@ public abstract class AjaxConfirmLink<T> extends AjaxLink<T> {
 
 			@Override
 			public CharSequence preDecorateScript(CharSequence script) {
-				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "} " + "else " + "{ " + "	return true; " + "};" + script;
+				return "if(!confirm('" + confirm.getObject() + "'))" + "{ " + "	return false " + "}; " + script;
 			}
 		};
 	}
