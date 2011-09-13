@@ -266,7 +266,12 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					quantityLblFld = new Label("biospecimen.quantity", biospecimen.getQuantity().toString());
 				}
-				unitsLblFld = new Label("biospecimen.units", biospecimen.getUnits());
+				if (biospecimen.getUnit() == null){
+					unitsLblFld = new Label("biospecimen.unit", "");
+				}
+				else {
+					unitsLblFld = new Label("biospecimen.unit", biospecimen.getUnit().getName());	
+				}
 
 				item.add(idLblFld);
 				item.add(rowDetailsWMC);

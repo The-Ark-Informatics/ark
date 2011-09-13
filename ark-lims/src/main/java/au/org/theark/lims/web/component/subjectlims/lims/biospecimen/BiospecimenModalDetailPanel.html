@@ -49,10 +49,20 @@
 								</wicket:message>
 							</label>
 						</div>
+						<div class="label">
+							<label for="name">
+								<wicket:message key="biospecimen.parentUid">
+									Parent UID:
+								</wicket:message>
+							</label>
+						</div>
 					</div>
 					<div id="fldControl">
 						<div class="label">
 							<input wicket:id="biospecimen.biospecimenUid" type="text" />
+						</div>
+						<div class="label">
+							<input wicket:id="biospecimen.parentUid" type="text" />
 						</div>
 					</div>
 
@@ -190,6 +200,14 @@
 					<div id="fldControl">
 						<div class="label">
 							<input wicket:id="biospecimen.quantity"	type="text" maxLength="10"/>
+							<select wicket:id="biospecimen.unit">
+								<option>
+									1
+								</option>
+								<option>
+									2
+								</option>
+							</select>
 						</div>
 					</div>
 
