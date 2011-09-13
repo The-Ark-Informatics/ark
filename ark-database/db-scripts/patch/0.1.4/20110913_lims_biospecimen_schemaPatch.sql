@@ -11,3 +11,6 @@ ALTER TABLE `lims`.`biospecimen` CHANGE COLUMN `TREATMENT` `TREATMENT_TYPE_ID` I
   ON DELETE NO ACTION
   ON UPDATE NO ACTION
 , ADD INDEX `fk_biospecimen_treatment_type_id` (`TREATMENT_TYPE_ID` ASC) ;
+
+-- quantity is sum of all transactions
+ALTER TABLE `lims`.`biospecimen` CHANGE COLUMN `QUANTITY` `QUANTITY` DOUBLE NULL DEFAULT NULL  ;
