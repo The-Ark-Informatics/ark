@@ -46,6 +46,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
@@ -54,31 +55,14 @@ import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 public class SearchResultListPanel extends Panel {
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
-
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
-
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 	private ContainerForm		containerForm;
 
-	/**
-	 * @param id
-	 */
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
+	
+	public SearchResultListPanel(String id,ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
 		super(id);
-		// TODO Auto-generated constructor stub
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkCrudContainerVO=arkCrudContainerVO;
 		this.containerForm = containerForm;
 	}
 
@@ -234,7 +218,9 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				target.addComponent(searchResultContainer);
+				//target.addComponent(searchResultContainer);
+				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+				
 				target.addComponent(containerForm);
 			}
 

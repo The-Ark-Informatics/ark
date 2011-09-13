@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -40,6 +39,7 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
@@ -69,23 +69,18 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected TextField<String>						subjectFileId;
 	protected TextField<String>						subjectFileName;
 	private DropDownChoice<StudyCompStatus>		studyComponentChoice;
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<SubjectVO> model, PageableListView<SubjectFile> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	
+	public SearchForm(String id,CompoundPropertyModel<SubjectVO> model,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<SubjectFile> listView ){
+		
+		super(id,model,feedBackPanel,arkCrudContainerVO);
 		this.cpmModel = model;
 		this.pageableListView = listView;
-
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.",arkCrudContainerVO);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -137,8 +132,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 			getModelObject().setSubjectFileList(subjectFileList);
 			pageableListView.removeAll();
-			listContainer.setVisible(true);
-			target.addComponent(listContainer);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
 
 		}
 		catch (EntityNotFoundException e) {
@@ -157,7 +152,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		getModelObject().getSubjectFile().setId(null); // only reset ID (not
 		// user definable)
 
-		preProcessDetailPanel(target);
+		preProcessDetailPanel(target,arkCrudContainerVO);
 	}
 
 }
