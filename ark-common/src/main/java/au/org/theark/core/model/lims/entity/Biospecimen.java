@@ -91,24 +91,26 @@ public class Biospecimen implements java.io.Serializable {
 	private String						quality;
 	private Long						withdrawn;
 	private String						status;
-	private String						treatment;
 	private Boolean					barcoded;
+	private TreatmentType			treatmentType;
+	
 	private Set<BioTransaction>	bioTransactions	= new HashSet<BioTransaction>(0);
 
 	public Biospecimen() {
 	}
 
-	public Biospecimen(Long id, String biospecimenUid, Long sampletypeId, BioSampletype sampleType) {
+	public Biospecimen(Long id, String biospecimenUid, Long sampletypeId, BioSampletype sampleType, TreatmentType treatmentType) {
 		this.id = id;
 		this.biospecimenUid = biospecimenUid;
 		this.sampleType = sampleType;
+		this.treatmentType = treatmentType;
 	}
 
 	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentUid, Long oldId,
 			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
 			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, Unit unit, String quality, Long withdrawn,
-			String status, String treatment, Boolean barcoded, Set<BioTransaction> bioTransactions) {
+			String status, Boolean barcoded, TreatmentType treatmentType, Set<BioTransaction> bioTransactions) {
 		this.id = id;
 		this.bioCollection = bioCollection;
 		this.biospecimenUid = biospecimenUid;
@@ -146,8 +148,8 @@ public class Biospecimen implements java.io.Serializable {
 		this.quality = quality;
 		this.withdrawn = withdrawn;
 		this.status = status;
-		this.treatment = treatment;
 		this.barcoded = barcoded;
+		this.treatmentType = treatmentType;
 	}
 
 	@Id
@@ -504,15 +506,6 @@ public class Biospecimen implements java.io.Serializable {
 		this.status = status;
 	}
 
-	@Column(name = "TREATMENT", length = 50)
-	public String getTreatment() {
-		return this.treatment;
-	}
-
-	public void setTreatment(String treatment) {
-		this.treatment = treatment;
-	}
-
 	/**
 	 * @return the barcoded
 	 */
@@ -526,6 +519,15 @@ public class Biospecimen implements java.io.Serializable {
 	 */
 	public void setBarcoded(Boolean barcoded) {
 		this.barcoded = barcoded;
+	}
+	
+	@Column(name = "TREATMENT_TYPE_ID", nullable = false)
+	public TreatmentType getTreatmentType() {
+		return this.treatmentType;
+	}
+
+	public void setTreatmentType(TreatmentType treatmentType) {
+		this.treatmentType = treatmentType;
 	}
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "biospecimen")
