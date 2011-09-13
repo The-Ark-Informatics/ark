@@ -18,9 +18,16 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -32,6 +39,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
@@ -61,6 +70,7 @@ public class TrayDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>			capacityTxtFld;
 	private TextField<String>			availableTxtFld;
 	private TextArea<String>			descriptionTxtAreaFld;
+	private DropDownChoice<InvTank>	invTankDdc;
 
 	/**
 	 * 
@@ -69,10 +79,10 @@ public class TrayDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param detailContainer
 	 * @param containerForm
 	 * @param tree
+	 * @param node 
 	 */
-	public TrayDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree) {
-
-		super(id, feedBackPanel, detailContainer, containerForm, tree);
+	public TrayDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
@@ -82,16 +92,33 @@ public class TrayDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		availableTxtFld = new TextField<String>("invTray.available");
 		descriptionTxtAreaFld = new TextArea<String>("invTray.description");
 		
+		initInvTankDdc();
+		
 		attachValidators();
 		addComponents();
 		
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}
+	
+	private void initInvTankDdc() {
+		List<InvTank> invTankList = new ArrayList<InvTank>(0);
+		InvTank InvTank = new InvTank();
+
+		try {
+			invTankList = iInventoryService.searchInvTank(InvTank);
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<InvTank> choiceRenderer = new ChoiceRenderer<InvTank>(Constants.NAME, Constants.ID);
+		invTankDdc = new DropDownChoice<InvTank>("invTray.invTank", (List<InvTank>) invTankList, choiceRenderer);
+	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTray.name.required", this, new Model<String>("Name")));
+		invTankDdc.setRequired(true).setLabel(new StringResourceModel("error.invTank.name.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {
@@ -100,6 +127,7 @@ public class TrayDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		detailFormContainer.add(capacityTxtFld);
 		detailFormContainer.add(availableTxtFld);
 		detailFormContainer.add(descriptionTxtAreaFld);
+		detailFormContainer.add(invTankDdc);
 		add(detailFormContainer);
 	}
 

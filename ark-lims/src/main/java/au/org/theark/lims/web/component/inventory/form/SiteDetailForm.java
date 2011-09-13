@@ -20,6 +20,8 @@ package au.org.theark.lims.web.component.inventory.form;
 
 import java.util.ArrayList;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -47,14 +49,14 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
+@SuppressWarnings( { "serial", "unused" })
 public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
-	private static Logger		log	= LoggerFactory.getLogger(SiteDetailForm.class);
+	private static Logger				log	= LoggerFactory.getLogger(SiteDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService					iInventoryService;
+	private IInventoryService			iInventoryService;
 
 	private ContainerForm				fieldContainerForm;
 
@@ -74,11 +76,12 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param detailContainer
 	 * @param detailPanel
 	 * @param containerForm
-	 * @param tree 
+	 * @param tree
+	 * @param node 
 	 */
-	public SiteDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree) {
+	public SiteDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 
-		super(id, feedBackPanel, detailContainer, containerForm, tree);
+		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
@@ -87,10 +90,10 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		contactTxtFld = new TextField<String>("invSite.contact");
 		addressTxtAreaFld = new TextArea<String>("invSite.address");
 		phoneTxtFld = new TextField<String>("invSite.phone");
-		
+
 		attachValidators();
 		addComponents();
-		
+
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
 	}

@@ -18,7 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -35,9 +39,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvColRowType;
+import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -65,7 +73,8 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextField<String>					noOfRowTxtFld;
 	private DropDownChoice<InvColRowType>	colNoTypeDdc;
 	private DropDownChoice<InvColRowType>	rowNoTypeDdc;
-
+	private DropDownChoice<InvTray>			invTrayDdc;
+	
 	/**
 	 * 
 	 * @param id
@@ -73,9 +82,10 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param detailContainer
 	 * @param containerForm
 	 * @param tree
+	 * @param node 
 	 */
-	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree) {
-		super(id, feedBackPanel, detailContainer, containerForm, tree);
+	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
@@ -88,6 +98,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		noOfColTxtFld = new TextField<String>("invBox.noofcol");
 		noOfRowTxtFld = new TextField<String>("invBox.noofrow");
 
+		initInvTrayDdc();
 		initColNoTypeDdc();
 		initRowNoTypeDdc();
 
@@ -96,6 +107,20 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
+	}
+	
+	private void initInvTrayDdc() {
+		List<InvTray> invTankList = new ArrayList<InvTray>(0);
+		InvTray invTray = new InvTray();
+
+		try {
+			invTankList = iInventoryService.searchInvTray(invTray);
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<InvTray> choiceRenderer = new ChoiceRenderer<InvTray>(Constants.NAME, Constants.ID);
+		invTrayDdc = new DropDownChoice<InvTray>("invBox.invTray", (List<InvTray>) invTankList, choiceRenderer);
 	}
 
 	private void initColNoTypeDdc() {
@@ -115,6 +140,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invBox.name.required", this, new Model<String>("Name")));
+		invTrayDdc.setRequired(true).setLabel(new StringResourceModel("error.invTray.name.required", this, new Model<String>("Name")));
 		colNoTypeDdc.setRequired(true);
 		rowNoTypeDdc.setRequired(true);
 	}
@@ -122,6 +148,7 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private void addComponents() {
 		detailFormContainer.add(idTxtFld.setEnabled(false));
 		detailFormContainer.add(nameTxtFld);
+		detailFormContainer.add(invTrayDdc);
 		detailFormContainer.add(capacityTxtFld);
 		detailFormContainer.add(availableTxtFld);
 		detailFormContainer.add(noOfColTxtFld);
@@ -131,8 +158,13 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		add(detailFormContainer);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
+		log.info("Old Parent: " + node.getParent().toString());
+		
+		TreeNode[] nodes = node.getPath();
+		
 		if (containerForm.getModelObject().getInvBox().getId() == null) {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
@@ -147,6 +179,20 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 
 		onSavePostProcess(target);
+		
+		InvBox invBox = iInventoryService.getInvBox(containerForm.getModelObject().getInvBox().getId());
+		// Set new path
+		
+		
+		node.setParent(new DefaultMutableTreeNode(new InventoryModel(invBox.getInvTray(), invBox.getInvTray().getNodeType())));
+		nodes = node.getPath();
+		for (TreeNode treeNode : nodes) {
+			tree.getTreeState().expandNode(treeNode);
+			tree.updateTree();
+		}
+		
+		tree.getTreeState().selectNode(node, true);
+		tree.updateTree();
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
