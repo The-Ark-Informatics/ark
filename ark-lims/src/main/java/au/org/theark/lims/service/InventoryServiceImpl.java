@@ -16,6 +16,7 @@ import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.lims.model.dao.IInventoryDao;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
@@ -194,4 +195,29 @@ public class InventoryServiceImpl implements IInventoryService {
 	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
 		return iInventoryDao.searchInvTray(invTray);
 	}
+	
+	/**
+	 * A wrapper implementation over getInvCellByBiospecimen(Biospecimen)
+	 */
+	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException{
+		InvCell cell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
+		InvBox box = cell.getInvBox();
+		InvTray tray = box.getInvTray();
+		InvTank tank = tray.getInvTank();
+		InvSite site = tank.getInvSite();
+		
+		BiospecimenLocationVO biospecimenLocationVO = new BiospecimenLocationVO();
+		if(cell != null){
+			biospecimenLocationVO.setIsAllocated(true);
+			biospecimenLocationVO.setBoxName(box.getName());
+			biospecimenLocationVO.setTrayName(tray.getName());
+			biospecimenLocationVO.setTankName(tank.getName());
+			biospecimenLocationVO.setSiteName(site.getName());
+			biospecimenLocationVO.setColumn(cell.getColno());
+			biospecimenLocationVO.setRow(cell.getRowno());
+		}
+		
+		return biospecimenLocationVO;
+	}
+	
 }
