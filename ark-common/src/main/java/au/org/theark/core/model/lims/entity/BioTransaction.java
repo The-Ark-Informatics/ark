@@ -49,33 +49,34 @@ public class BioTransaction implements java.io.Serializable {
 	 */
 	private static final long	serialVersionUID	= 1L;
 	
-	private Long				id;
-	private Biospecimen		biospecimen;
-	private TreatmentType	treatmentType;
-	private Date				transactionDate;
-	private Double				quantity;
-	private String				reason;
-	private String				recorder;
+	private Long						id;
+	private Biospecimen				biospecimen;
+	private Date						transactionDate;
+	private Double						quantity;
+	private String						reason;
+	private String						recorder;
+	private BioTransactionStatus	status;
+	private AccessRequest			accessRequest;
 
 	public BioTransaction() {
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, TreatmentType treatmentType, Date transactionDate, Double quantity) {
+	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 	}
 
-	public BioTransaction(Long id, Biospecimen biospecimen, TreatmentType treatmentType, Date transactionDate, Double quantity, 
-			String reason, String recorder) {
+	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity, 
+			String reason, String recorder, BioTransactionStatus status) {
 		this.id = id;
 		this.biospecimen = biospecimen;
-		this.treatmentType = treatmentType;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 		this.reason = reason;
 		this.recorder = recorder;
+		this.setStatus(status);
 	}
 
 	@Id
@@ -98,16 +99,6 @@ public class BioTransaction implements java.io.Serializable {
 	public void setBiospecimen(Biospecimen biospecimen) {
 		this.biospecimen = biospecimen;
 	}
-
-	@Column(name = "TREATMENT_TYPE_ID", nullable = false)
-	public TreatmentType getTreatmentType() {
-		return this.treatmentType;
-	}
-
-	public void setTreatmentType(TreatmentType treatment) {
-		this.treatmentType = treatment;
-	}
-
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TRANSACTION_DATE", nullable = false, length = 19)
@@ -144,6 +135,26 @@ public class BioTransaction implements java.io.Serializable {
 
 	public void setRecorder(String recorder) {
 		this.recorder = recorder;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STATUS_ID")
+	public void setStatus(BioTransactionStatus status) {
+		this.status = status;
+	}
+
+	public BioTransactionStatus getStatus() {
+		return status;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUEST_ID")
+	public void setAccessRequest(AccessRequest accessRequest) {
+		this.accessRequest = accessRequest;
+	}
+
+	public AccessRequest getAccessRequest() {
+		return accessRequest;
 	}
 
 }
