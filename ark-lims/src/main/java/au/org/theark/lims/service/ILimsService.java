@@ -149,7 +149,7 @@ public interface ILimsService {
 	 * @param bioTransactionCriteria
 	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction>
 	 */
-	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransactionCriteria, int first, int count);
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransactionCriteria, int first, int count);
 
 	/**
 	 * Create a LIMS bioTransaction based on the supplied LimsVO
@@ -170,10 +170,10 @@ public interface ILimsService {
 	/**
 	 * Delete a LIMS bioTransaction based on the supplied LimsVO
 	 * 
-	 * @param modelObject
+	 * @param bioTransaction
 	 *           the LimsVO object
 	 */
-	public void deleteBioTransaction(LimsVO modelObject);
+	public void deleteBioTransaction(BioTransaction bioTransaction);
 
 	/**
 	 * Get a list of all sampleTypes

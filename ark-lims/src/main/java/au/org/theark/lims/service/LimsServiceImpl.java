@@ -266,8 +266,8 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#searchPageableBioTransaction(Long)
 	 */
-	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count) {
-		return iBioTransactionDao.searchPageableBioTransaction(bioTransaction, first, count);
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count) {
+		return iBioTransactionDao.searchPageableBioTransactions(bioTransaction, first, count);
 	}
 
 	/*
@@ -284,8 +284,8 @@ public class LimsServiceImpl implements ILimsService {
 	 * 
 	 * @see au.org.theark.lims.service.ILimsService#deleteBioTransaction(au.org.theark.lims.model.vo.LimsVO)
 	 */
-	public void deleteBioTransaction(LimsVO modelObject) {
-		iBioTransactionDao.deleteBioTransaction(modelObject.getBioTransaction());
+	public void deleteBioTransaction(BioTransaction bioTransaction) {
+		iBioTransactionDao.deleteBioTransaction(bioTransaction);
 	}
 
 	/*

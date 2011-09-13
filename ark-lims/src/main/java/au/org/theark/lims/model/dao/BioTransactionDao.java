@@ -72,7 +72,7 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		return totalCount;
 	}
 
-	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count) {
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count) {
 		// Handle for biospecimen not in context
 		if (bioTransaction.getBiospecimen() == null) {
 			return new ArrayList<BioTransaction>(0);

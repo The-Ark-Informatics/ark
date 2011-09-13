@@ -53,7 +53,7 @@ public interface IBioTransactionDao {
 	 * @param count
 	 * @return List<au.org.theark.core.model.lims.entity.BioTransaction> given the criteria
 	 */
-	public List<BioTransaction> searchPageableBioTransaction(BioTransaction bioTransaction, int first, int count);
+	public List<BioTransaction> searchPageableBioTransactions(BioTransaction bioTransaction, int first, int count);
 
 	/**
 	 * Create a LIMS BioTransaction based on the supplied bioTransaction

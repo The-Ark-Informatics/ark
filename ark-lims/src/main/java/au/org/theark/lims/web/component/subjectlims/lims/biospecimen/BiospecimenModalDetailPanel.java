@@ -22,14 +22,9 @@ import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form.BiospecimenModalDetailForm;
 
 public class BiospecimenModalDetailPanel extends Panel {
@@ -37,9 +32,6 @@ public class BiospecimenModalDetailPanel extends Panel {
 	 * 
 	 */
 	private static final long						serialVersionUID	= 1755709689461138709L;
-
-	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService								iLimsService;
 
 	private FeedbackPanel							detailFeedbackPanel;
 	private ModalWindow								modalWindow;
