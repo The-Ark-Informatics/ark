@@ -61,7 +61,7 @@ public class Biospecimen implements java.io.Serializable {
 	private Long						substudyId;
 	private LinkSubjectStudy		linkSubjectStudy;
 	private Long						parentId;
-	private String						parentid;
+	private String						parentUid;
 	private Long						oldId;
 	private Long						deleted;
 	private String						otherid;
@@ -87,7 +87,7 @@ public class Biospecimen implements java.io.Serializable {
 	private String						protocol;
 	private Long						dnaBank;
 	private Long						quantity;
-	private String						units;
+	private Unit						unit;
 	private String						quality;
 	private Long						withdrawn;
 	private String						status;
@@ -104,10 +104,10 @@ public class Biospecimen implements java.io.Serializable {
 		this.sampleType = sampleType;
 	}
 
-	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentid, Long oldId,
+	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentUid, Long oldId,
 			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
-			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, String units, String quality, Long withdrawn,
+			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, Unit unit, String quality, Long withdrawn,
 			String status, String treatment, Boolean barcoded, Set<BioTransaction> bioTransactions) {
 		this.id = id;
 		this.bioCollection = bioCollection;
@@ -116,7 +116,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.substudyId = substudyId;
 		this.linkSubjectStudy = linkSubjectStudy;
 		this.parentId = parentId;
-		this.parentid = parentid;
+		this.parentUid = parentUid;
 		this.oldId = oldId;
 		this.deleted = deleted;
 		this.otherid = otherid;
@@ -142,7 +142,7 @@ public class Biospecimen implements java.io.Serializable {
 		this.protocol = protocol;
 		this.dnaBank = dnaBank;
 		this.quantity = quantity;
-		this.units = units;
+		this.unit = unit;
 		this.quality = quality;
 		this.withdrawn = withdrawn;
 		this.status = status;
@@ -228,12 +228,12 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	@Column(name = "PARENTID", length = 50)
-	public String getParentid() {
-		return this.parentid;
+	public String getParentUid() {
+		return this.parentUid;
 	}
 
-	public void setParentid(String parentid) {
-		this.parentid = parentid;
+	public void setParentUid(String parentUid) {
+		this.parentUid = parentUid;
 	}
 
 	@Column(name = "OLD_ID")
@@ -467,13 +467,14 @@ public class Biospecimen implements java.io.Serializable {
 		this.quantity = quantity;
 	}
 
-	@Column(name = "UNITS", length = 10)
-	public String getUnits() {
-		return this.units;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "UNIT_ID")
+	public Unit getUnit() {
+		return this.unit;
 	}
 
-	public void setUnits(String units) {
-		this.units = units;
+	public void setUnit(Unit unit) {
+		this.unit = unit;
 	}
 
 	@Column(name = "QUALITY", length = 100)
