@@ -84,7 +84,7 @@ public class GridBoxPanel extends Panel {
 	private static final ResourceReference	BARCODE_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	
 	private AbstractDetailModalWindow		modalWindow;
-	private final InvBox	invBox;
+	private InvBox	invBox;
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
@@ -100,12 +100,12 @@ public class GridBoxPanel extends Panel {
 		
 		this.modalWindow = modalWindow;
 		this.invBox = invBox;
-		
+		setVisible(invBox.getId() != null);
 	}
 	
 	@Override
 	protected void onBeforeRender() {
-		initialiseGrid(invBox);
+		initialiseGrid();
 		super.onBeforeRender();
 	}
 
@@ -113,8 +113,8 @@ public class GridBoxPanel extends Panel {
 	 * Initialises the grid to display for the InvBox in question
 	 * @param invBox
 	 */
-	private void initialiseGrid(InvBox invBox) {
-		invBox = iInventoryService.getInvBox(invBox.getId());
+	private void initialiseGrid() {
+		invBox = iInventoryService.getInvBox(this.invBox.getId());
 		List<InvCell> invCellList = new ArrayList<InvCell>(0);
 		invCellList = iInventoryService.getCellAndBiospecimenListByBox(invBox);
 		
@@ -141,7 +141,13 @@ public class GridBoxPanel extends Panel {
 	 */
 	@SuppressWarnings( { "unchecked" })
 	private Loop createHeadings(final InvBox invBox) {		
-		final String colNoType = invBox.getColnotype().getName();
+		String colRowNoType = "";
+		
+		if(invBox.getId() != null) {
+			colRowNoType = invBox.getColnotype().getName();
+		}
+		
+		final String colNoType = colRowNoType;
 		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofcol" value
 		return new Loop("heading", new PropertyModel(invBox, "noofcol")) {
@@ -188,7 +194,12 @@ public class GridBoxPanel extends Panel {
 	 */
 	@SuppressWarnings( { "serial", "unchecked" })
 	private Loop createMainGrid(final InvBox invBox, final List<InvCell> invCellList) {
-		final String rowNoType = invBox.getRownotype().getName();
+		String colRowNoType = "";
+		
+		if(invBox.getId() != null) {
+			colRowNoType = invBox.getRownotype().getName();
+		}
+		final String rowNoType = colRowNoType;
 		final int noOfCols = invBox.getNoofcol();
 		
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofrow" value

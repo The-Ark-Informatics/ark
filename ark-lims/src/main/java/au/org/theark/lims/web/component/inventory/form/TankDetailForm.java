@@ -18,10 +18,17 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.form;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -33,6 +40,8 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -45,14 +54,14 @@ import au.org.theark.lims.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
+@SuppressWarnings( { "serial", "unused" })
 public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
-	private static Logger		log	= LoggerFactory.getLogger(TankDetailForm.class);
+	private static Logger				log	= LoggerFactory.getLogger(TankDetailForm.class);
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService					iInventoryService;
+	private IInventoryService			iInventoryService;
 
 	private ContainerForm				fieldContainerForm;
 
@@ -65,6 +74,7 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	private TextArea<String>			lastservicenoteTxtAreaFld;
 	private DateTextField				decommissiondateDateTxtFld;
 	private TextArea<String>			descriptionTxtAreaFld;
+	private DropDownChoice<InvSite>	invSiteDdc;
 
 	/**
 	 * 
@@ -73,10 +83,11 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 * @param detailContainer
 	 * @param containerForm
 	 * @param tree
+	 * @param node 
 	 */
-	public TankDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree) {
+	public TankDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 
-		super(id, feedBackPanel, detailContainer, containerForm, tree);
+		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
 	}
 
 	public void initialiseDetailForm() {
@@ -87,21 +98,38 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		lastservicenoteTxtAreaFld = new TextArea<String>("invTank.lastservicenote");
 		decommissiondateDateTxtFld = new DateTextField("invTank.decommissiondate");
 		descriptionTxtAreaFld = new TextArea<String>("invTank.description");
-		
+
 		ArkDatePicker arkDatePicker = new ArkDatePicker();
 		arkDatePicker.bind(decommissiondateDateTxtFld);
 		decommissiondateDateTxtFld.add(arkDatePicker);
+
+		initSiteDdc();
 		
 		attachValidators();
 		addComponents();
-		
+
 		// Focus on Name
 		nameTxtFld.add(new ArkDefaultFormFocusBehavior());
+	}
+	
+	private void initSiteDdc() {
+		List<InvSite> invSiteList = new ArrayList<InvSite>(0);
+		InvSite invSite = new InvSite();
+
+		try {
+			invSiteList = iInventoryService.searchInvSite(invSite);
+		}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
+		}
+		ChoiceRenderer<InvSite> choiceRenderer = new ChoiceRenderer<InvSite>(Constants.NAME, Constants.ID);
+		invSiteDdc = new DropDownChoice<InvSite>("invTank.invSite", (List<InvSite>) invSiteList, choiceRenderer);
 	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTank.name.required", this, new Model<String>("Name")));
+		invSiteDdc.setRequired(true).setLabel(new StringResourceModel("error.invSite.name.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {
@@ -112,6 +140,7 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		detailFormContainer.add(lastservicenoteTxtAreaFld);
 		detailFormContainer.add(decommissiondateDateTxtFld);
 		detailFormContainer.add(descriptionTxtAreaFld);
+		detailFormContainer.add(invSiteDdc);
 		add(detailFormContainer);
 	}
 

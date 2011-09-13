@@ -20,7 +20,6 @@ package au.org.theark.lims.web.component.inventory.tree;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
@@ -229,11 +228,10 @@ public class InventoryLinkTree extends LinkTree {
 	 */
 	@Override
 	protected void onNodeLinkClicked(Object object, BaseTree tree, AjaxRequestTarget target) {
-		final TreeNode node = (TreeNode) object;
-		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
+		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) object;
 		
-		if (defaultMutableTreeNode.getUserObject() instanceof InventoryModel) {
-			final InventoryModel inventoryModel = (InventoryModel) defaultMutableTreeNode.getUserObject();
+		if (node.getUserObject() instanceof InventoryModel) {
+			final InventoryModel inventoryModel = (InventoryModel) node.getUserObject();
 
 			if (inventoryModel.getObject() instanceof InvSite) {
 				InvSite invSite = (InvSite) inventoryModel.getObject();
@@ -241,7 +239,7 @@ public class InventoryLinkTree extends LinkTree {
 				invSite = iInventoryService.getInvSite(invSite.getId());
 				containerForm.getModelObject().setInvSite(invSite);
 				
-				SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+				SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -252,7 +250,7 @@ public class InventoryLinkTree extends LinkTree {
 				
 				containerForm.getModelObject().setInvTank(invTank);
 				
-				TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+				TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -264,7 +262,7 @@ public class InventoryLinkTree extends LinkTree {
 				invTray = iInventoryService.getInvTray(invTray.getId());
 				containerForm.getModelObject().setInvTray(invTray);
 				
-				TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+				TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);
@@ -276,7 +274,7 @@ public class InventoryLinkTree extends LinkTree {
 				invBox = iInventoryService.getInvBox(invBox.getId());
 				containerForm.getModelObject().setInvBox(invBox);
 				
-				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+				BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, node);
 				detailPanel.initialisePanel();
 				
 				detailContainer.addOrReplace(detailPanel);

@@ -20,6 +20,8 @@ package au.org.theark.lims.web.component.inventory.form;
 
 import java.util.Iterator;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -70,7 +72,8 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
 
 	protected BaseTree 				tree;
-
+	protected DefaultMutableTreeNode node;
+	
 	/**
 	 * 
 	 * @param id
@@ -78,14 +81,17 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * @param detailContainer
 	 * @param containerForm
 	 * @param tree
+	 * @param node 
 	 */
-	public AbstractInventoryDetailForm(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, Form<T> containerForm, BaseTree tree) {
-		super(id);
+	public AbstractInventoryDetailForm(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, Form<T> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
+		super(id, containerForm.getModel());
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		this.tree = tree;
+		this.node = node;
 		setOutputMarkupPlaceholderTag(true);
+		setModelObject(containerForm.getModelObject());
 		initialiseForm();
 	}
 
@@ -127,8 +133,8 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
 				target.addComponent(detailContainer);
-				tree.updateTree(target);
-				target.addComponent(tree);
+				//tree.updateTree(target);
+				//target.addComponent(tree);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -237,7 +243,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		add(viewButtonContainer);
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
 		visitChildren(formVisitor);
@@ -313,6 +319,9 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		target.addComponent(detailFormContainer);
 		target.addComponent(viewButtonContainer);
 		target.addComponent(editButtonContainer);
+		
+		// Refresh tree panel
+		target.addComponent(tree.getParent());
 	}
 
 	/**

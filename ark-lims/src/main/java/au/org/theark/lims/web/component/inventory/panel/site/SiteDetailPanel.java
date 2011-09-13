@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.panel.site;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -28,23 +30,25 @@ import au.org.theark.lims.web.component.inventory.form.SiteDetailForm;
 
 @SuppressWarnings("serial")
 public class SiteDetailPanel extends Panel {
-	private FeedbackPanel		feedbackPanel;
-	private WebMarkupContainer	detailContainer;
-	private SiteDetailForm		detailForm;
-	private ContainerForm		containerForm;
-	private BaseTree 				tree;
+	private FeedbackPanel				feedbackPanel;
+	private WebMarkupContainer			detailContainer;
+	private SiteDetailForm				detailForm;
+	private ContainerForm				containerForm;
+	private BaseTree						tree;
+	private DefaultMutableTreeNode	node;
 
-	public SiteDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree) {
+	public SiteDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		this.tree = tree;
+		this.node = node;
 	}
 
 	public void initialisePanel() {
-		detailForm = new SiteDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree);
+		detailForm = new SiteDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}

@@ -18,6 +18,8 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.inventory.panel.box;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -37,20 +39,22 @@ public class BoxDetailPanel extends Panel {
 	private BoxDetailForm					detailForm;
 	private ContainerForm					containerForm;
 	private BaseTree							tree;
+	private DefaultMutableTreeNode		node;
 	private GridBoxPanel						gridBoxPanel;
 	private AbstractDetailModalWindow	modalWindow;
 
-	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree) {
+	public BoxDetailPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.feedbackPanel = feedbackPanel;
 		this.detailContainer = detailContainer;
 		this.containerForm = containerForm;
 		this.tree = tree;
+		this.node = node;
 	}
 
 	public void initialisePanel() {		
-		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree);
+		detailForm = new BoxDetailForm("detailForm", feedbackPanel, detailContainer, containerForm, tree, node);
 		detailForm.initialiseDetailForm();
 
 		modalWindow = new AbstractDetailModalWindow("detailModalWindow") {

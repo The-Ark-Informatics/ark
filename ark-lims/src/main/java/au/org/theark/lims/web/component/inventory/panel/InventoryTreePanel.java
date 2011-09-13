@@ -7,10 +7,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.html.tree.AbstractTree;
 import org.apache.wicket.markup.html.tree.BaseTree;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.lims.entity.InvSite;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.BoxDetailPanel;
@@ -30,9 +27,6 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	private FeedbackPanel		feedbackPanel;
 	private WebMarkupContainer	detailContainer;
 	private ContainerForm		containerForm;
-	
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService<Void>	iArkCommonService;
 
 	public InventoryTreePanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer detailContainer, ContainerForm containerForm) {
 		super(id);
@@ -45,15 +39,21 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		tree.setRootLess(true);
 		addComponents();
 	}
+	
+	@Override
+	protected void onBeforeRender() {
+		tree.setModelObject(createTreeModel());
+		super.onBeforeRender();
+	}
 
 	private void addComponents() {
-		treeForm.add(addSite);
-		treeForm.add(addTank);
-		treeForm.add(addTray);
-		treeForm.add(addBox);
+		treeForm.addOrReplace(addSite);
+		treeForm.addOrReplace(addTank);
+		treeForm.addOrReplace(addTray);
+		treeForm.addOrReplace(addBox);
 
-		add(treeForm);
-		add(tree);
+		addOrReplace(treeForm);
+		addOrReplace(tree);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddSiteSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+		SiteDetailPanel detailPanel = new SiteDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);
@@ -75,7 +75,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddTankSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+		TankDetailPanel detailPanel = new TankDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);
@@ -85,7 +85,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddTraySubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+		TrayDetailPanel detailPanel = new TrayDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);
@@ -95,7 +95,7 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 	public void onAddBoxSubmit(AjaxRequestTarget target) {
 		resetModel();
 		
-		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree);
+		BoxDetailPanel detailPanel = new BoxDetailPanel("detailPanel", feedbackPanel, detailContainer, containerForm, tree, null);
 		detailPanel.initialisePanel();
 		
 		refreshDetailPanel(target, detailPanel);
