@@ -29,7 +29,6 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -44,6 +43,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
 import au.org.theark.core.model.lims.entity.Biospecimen;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -74,12 +74,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private ILimsService							iLimsService;
 
 	private TextField<String>					idTxtFld;
-	private TextField<String>					biospecimenIdTxtFld;
+	private TextField<String>					biospecimenUidTxtFld;
+	private TextField<String>					parentUidTxtFld;
 	private TextArea<String>					commentsTxtAreaFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
 	private TextField<String>					quantityTxtFld;
+	private DropDownChoice<Unit>				unitDdc;
 	private CheckBox								barcodedChkBox;
 
 	private Panel 									biospecimenCFDataEntryPanel;
@@ -112,7 +114,6 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(biospecimen.getId()));
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
 				log.error(e.getMessage());
 			}
@@ -134,7 +135,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
-		biospecimenIdTxtFld = new TextField<String>("biospecimen.biospecimenUid");
+		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
+		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
 		quantityTxtFld = new TextField<String>("biospecimen.quantity");
@@ -145,6 +147,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		initSampleTypeDdc();
 		initBioCollectionDdc();
+		initUnitDdc();
 		
 		barcodedChkBox = new CheckBox("biospecimen.barcoded");
 		barcodedChkBox.setVisible(true);
@@ -160,8 +163,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	private void initSampleTypeDdc() {
 		List<BioSampletype> sampleTypeList = iLimsService.getBioSampleTypes();
-		ChoiceRenderer<BioSampletype> sampleTypeRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
-		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", (List<BioSampletype>) sampleTypeList, sampleTypeRenderer);
+		ChoiceRenderer<BioSampletype> choiceRenderer = new ChoiceRenderer<BioSampletype>(Constants.NAME, Constants.ID);
+		sampleTypeDdc = new DropDownChoice<BioSampletype>("biospecimen.sampleType", (List<BioSampletype>) sampleTypeList, choiceRenderer);
 	}
 
 	private void initBioCollectionDdc() {
@@ -172,30 +175,38 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		try {
 			cpModel.getObject().setBioCollectionList(iLimsService.searchBioCollection(bioCollection));
 
-			ChoiceRenderer<BioCollection> bioCollectionRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
-			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), bioCollectionRenderer);
+			ChoiceRenderer<BioCollection> choiceRenderer = new ChoiceRenderer<BioCollection>(Constants.NAME, Constants.ID);
+			bioCollectionDdc = new DropDownChoice<BioCollection>("biospecimen.bioCollection", cpModel.getObject().getBioCollectionList(), choiceRenderer);
 		}
 		catch (ArkSystemException e) {
 			log.error(e.getMessage());
 			this.error("Operation could not be performed - if this persists, contact your Administrator or Support");
 		}
 	}
+	
+	private void initUnitDdc() {
+		List<Unit> unitList = iLimsService.getUnits();
+		ChoiceRenderer<Unit> choiceRenderer = new ChoiceRenderer<Unit>(Constants.NAME, Constants.ID);
+		unitDdc = new DropDownChoice<Unit>("biospecimen.unit", (List<Unit>) unitList, choiceRenderer);
+	}
 
 	protected void attachValidators() {
 		idTxtFld.setRequired(true);
-		biospecimenIdTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
+		biospecimenUidTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {
 		arkCrudContainerVo.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
-		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenIdTxtFld.setEnabled(false));
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenUidTxtFld.setEnabled(false));
+		arkCrudContainerVo.getDetailPanelFormContainer().add(parentUidTxtFld.setEnabled(false));
 		arkCrudContainerVo.getDetailPanelFormContainer().add(commentsTxtAreaFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleDateTxtFld);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(quantityTxtFld);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(unitDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		

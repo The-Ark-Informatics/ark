@@ -175,6 +175,10 @@ public class BiospecimenButtonsPanel extends Panel {
 		this.add(aliquotButton);
 	}
 
+	/**
+	 * Clone all Biospecimen details to a new Biospecimen
+	 * @param target
+	 */
 	private void onClone(AjaxRequestTarget target) {
 		try {
 			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
@@ -183,6 +187,9 @@ public class BiospecimenButtonsPanel extends Panel {
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
 			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
+			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
+			limsVo.getBiospecimen().setQuantity(null);
+			limsVo.getBiospecimen().setComments("Clone of " + biospecimenUid);
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
@@ -200,6 +207,10 @@ public class BiospecimenButtonsPanel extends Panel {
 		}
 	}
 
+	/**
+	 * Process some, or all Biospecimen into a new Biospecimen
+	 * @param target
+	 */
 	private void onProcess(AjaxRequestTarget target) {
 		try {
 			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
@@ -208,6 +219,9 @@ public class BiospecimenButtonsPanel extends Panel {
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
 			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
+			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
+			limsVo.getBiospecimen().setQuantity(null);
+			limsVo.getBiospecimen().setComments("Sub-aliquot of " + biospecimenUid);
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was processed from " + biospecimenUid + " successfully");
@@ -225,6 +239,10 @@ public class BiospecimenButtonsPanel extends Panel {
 		}
 	}
 
+	/**
+	 * Aliquote a specified amount from a parent Biospecimen into a new child Biospecimen
+	 * @param target
+	 */
 	private void onAliquot(AjaxRequestTarget target) {
 		try {
 			LimsVO oldlimsVo = (LimsVO) biospecimenModalDetailForm.getModelObject();
@@ -233,6 +251,9 @@ public class BiospecimenButtonsPanel extends Panel {
 			PropertyUtils.copyProperties(limsVo, oldlimsVo);
 			limsVo.getBiospecimen().setId(null);
 			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
+			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
+			limsVo.getBiospecimen().setQuantity(null);
+			limsVo.getBiospecimen().setComments("Sub-aliquot of " + biospecimenUid);
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was aliquoted from " + biospecimenUid + " successfully");
