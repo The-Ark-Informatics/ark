@@ -173,7 +173,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		quantityTxtFld = new TextField<String>("bioTransaction.quantity");
+		quantityTxtFld = new TextField<String>("biospecimen.quantity");
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(sampleDateTxtFld);
@@ -241,7 +241,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 		
 		// Initial BioTransaction detail
-		quantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
+		quantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.quantity.required", this, new Model<String>("Name")));
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
 		treatmentTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.treatmentType.required", this, new Model<String>("Name")));
 	}
@@ -276,6 +276,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			iLimsService.createBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 			processErrors(target);
+			
+			// Disable initial transaction details
+			bioTransactionDetailWmc.setEnabled(false);
+			target.addComponent(bioTransactionDetailWmc);
 		}
 		else {
 			// Update
