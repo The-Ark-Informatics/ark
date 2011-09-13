@@ -151,7 +151,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		// Make sure the bioTransaction in the cpModel has the biospecimen in context
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
 		cpModel.getObject().getBioTransaction().setBiospecimen(biospecimen);
-		bioTransactionListPanel = new BioTransactionListPanel("bioTransactionListPanel", feedbackPanel, cpModel);
+		bioTransactionListPanel = new BioTransactionListPanel("bioTransactionListPanel", feedbackPanel, cpModel).initialisePanel();
 	}
 
 	public void initialiseDetailForm() {
