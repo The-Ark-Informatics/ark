@@ -59,7 +59,6 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
 		cpModel = new CompoundPropertyModel<ArkUserVO>(new ArkUserVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
-		initCrudContainerVO();// THe CRUD Container VO that will have all the WebMarkupContainers.This will be passed around to various panels
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseSearchResults());
