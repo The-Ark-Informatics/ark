@@ -214,65 +214,63 @@
 					</div>
 					
 					<div wicket:id="bioTransactionDetailWmc">
-						<div id="detailsPanelBorder">
-							<div id="panelContentLeft">
-								&nbsp;
+						<div id="panelContentLeft">
+							&nbsp;
+						</div>
+						
+						<div id="fldLabel">
+							<div class="label">
+								<label for="biospecimen.quantity">
+									<wicket:message key="biospecimen.quantity">
+										Quantity:
+									</wicket:message>
+								</label>
 							</div>
-							
-							<div id="fldLabel">
-								<div class="label">
-									<label for="biospecimen.quantity">
-										<wicket:message key="biospecimen.quantity">
-											Quantity:
-										</wicket:message>
-									</label>
-								</div>
+						</div>
+	
+						<div id="fldControl">
+							<div class="label">
+								<input wicket:id="bioTransaction.quantity"	type="text" maxLength="10"/>
+								<select wicket:id="biospecimen.unit">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+								</select>
 							</div>
-		
-							<div id="fldControl">
-								<div class="label">
-									<input wicket:id="bioTransaction.quantity"	type="text" maxLength="10"/>
-									<select wicket:id="biospecimen.unit">
-										<option>
-											1
-										</option>
-										<option>
-											2
-										</option>
-									</select>
-								</div>
+						</div>
+						
+						<div id="panelMargin">
+							&nbsp;
+						</div>
+	
+						<div id="fldLabel">
+							<div class="label">
+								<label for="biospecimen.treatmentType">
+									<wicket:message key="biospecimen.treatmentType">
+										Treatment:
+									</wicket:message>
+								</label>
 							</div>
-							
-							<div id="panelMargin">
-								&nbsp;
+						</div>
+	
+						<div id="fldControl">
+							<div class="label">
+								<select wicket:id="biospecimen.treatmentType">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+								</select>
 							</div>
-		
-							<div id="fldLabel">
-								<div class="label">
-									<label for="biospecimen.treatmentType">
-										<wicket:message key="biospecimen.treatmentType">
-											Treatment:
-										</wicket:message>
-									</label>
-								</div>
-							</div>
-		
-							<div id="fldControl">
-								<div class="label">
-									<select wicket:id="biospecimen.treatmentType">
-										<option>
-											1
-										</option>
-										<option>
-											2
-										</option>
-									</select>
-								</div>
-							</div>
-							
-							<div id="detailPanelContentRight">
-								&nbsp;
-							</div>
+						</div>
+						
+						<div id="detailPanelContentRight">
+							&nbsp;
 						</div>
 					</div>
 					
