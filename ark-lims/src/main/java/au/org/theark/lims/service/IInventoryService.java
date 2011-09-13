@@ -13,6 +13,7 @@ import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
 
 /**
@@ -226,4 +227,13 @@ public interface IInventoryService {
 	 * @throws ArkSystemException
 	 */
 	public List<InvBox> searchInvBox(InvBox invBox) throws ArkSystemException;
+	
+	/**
+	 * Returns a light weight VO that represents the location of the given biospecimen
+	 * @param biospecimen
+	 * @return
+	 * @throws ArkSystemException
+	 */
+	
+	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException;
 }
