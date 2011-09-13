@@ -24,6 +24,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.lims.model.vo.LimsVO;
 
@@ -120,5 +121,7 @@ public interface IBiospecimenDao {
 	public void deleteBiospecimenCustomFieldData(BiospecimenCustomFieldData biospecimanCFData);
 
 	public Long isCustomFieldUsed(BiospecimenCustomFieldData biospecimanCFData);
+
+	public List<Unit> getUnits();
 
 }

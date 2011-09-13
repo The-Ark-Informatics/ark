@@ -32,6 +32,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
+import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
@@ -308,5 +309,11 @@ public class BiospecimenDao extends HibernateSessionDao implements IBiospecimenD
 		}
 			
 		return count;
+	}
+
+	public List<Unit> getUnits() {
+		Criteria criteria = getSession().createCriteria(Unit.class);
+		List<Unit> list = criteria.list();
+		return list;
 	}
 }
