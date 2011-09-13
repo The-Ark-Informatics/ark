@@ -72,11 +72,11 @@ public class Unit implements java.io.Serializable {
 	}
 
 	@Column(name = "NAME", nullable = false)
-	public String getname() {
+	public String getName() {
 		return this.name;
 	}
 
-	public void setname(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
