@@ -69,14 +69,15 @@ public class BioTransaction implements java.io.Serializable {
 	}
 
 	public BioTransaction(Long id, Biospecimen biospecimen, Date transactionDate, Double quantity, 
-			String reason, String recorder, BioTransactionStatus status) {
+			String reason, String recorder, BioTransactionStatus status, AccessRequest accessRequest) {
 		this.id = id;
 		this.biospecimen = biospecimen;
 		this.transactionDate = transactionDate;
 		this.quantity = quantity;
 		this.reason = reason;
 		this.recorder = recorder;
-		this.setStatus(status);
+		this.status = status;
+		this.accessRequest = accessRequest;
 	}
 
 	@Id
@@ -139,22 +140,22 @@ public class BioTransaction implements java.io.Serializable {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STATUS_ID")
-	public void setStatus(BioTransactionStatus status) {
-		this.status = status;
-	}
-
 	public BioTransactionStatus getStatus() {
 		return status;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "REQUEST_ID")
-	public void setAccessRequest(AccessRequest accessRequest) {
-		this.accessRequest = accessRequest;
+	public void setStatus(BioTransactionStatus status) {
+		this.status = status;
 	}
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "REQUEST_ID")
 	public AccessRequest getAccessRequest() {
 		return accessRequest;
+	}
+
+	public void setAccessRequest(AccessRequest accessRequest) {
+		this.accessRequest = accessRequest;
 	}
 
 }

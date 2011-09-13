@@ -50,9 +50,10 @@ public class AccessRequest implements java.io.Serializable {
 	public AccessRequest() {
 	}
 
-	public AccessRequest(Long id, String name) {
+	public AccessRequest(Long id, String name, Date requestDate) {
 		this.id = id;
 		this.name = name;
+		this.requestDate = requestDate;
 	}
 
 	@Id
