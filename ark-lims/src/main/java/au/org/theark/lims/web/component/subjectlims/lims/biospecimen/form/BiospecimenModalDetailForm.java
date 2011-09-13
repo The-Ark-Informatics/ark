@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -147,11 +148,23 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		return replacePanel;
 	}
 	
-	private void initialiseBioTransactionListPanel() {
-		// Make sure the bioTransaction in the cpModel has the biospecimen in context
+	private boolean initialiseBioTransactionListPanel() {
+		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		cpModel.getObject().getBioTransaction().setBiospecimen(biospecimen);
-		bioTransactionListPanel = new BioTransactionListPanel("bioTransactionListPanel", feedbackPanel, cpModel).initialisePanel();
+		if (biospecimen.getId() == null) {
+			// Handle for new Biospecimen being created
+			bioTransactionListPanel = new EmptyPanel("bioTransactionListPanel");
+			replacePanel = true;
+		}
+		else {
+			if (!(bioTransactionListPanel instanceof BioTransactionListPanel)) {
+				// Make sure the bioTransaction in the cpModel has the biospecimen in context
+				cpModel.getObject().getBioTransaction().setBiospecimen(biospecimen);
+				bioTransactionListPanel = new BioTransactionListPanel("bioTransactionListPanel", feedbackPanel, cpModel).initialisePanel();
+				replacePanel = true;
+			}
+		}
+		return replacePanel;
 	}
 
 	public void initialiseDetailForm() {
@@ -277,6 +290,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		// refresh the CF data entry panel (if necessary)
 		if (initialiseBiospecimenCFDataEntry() == true) {
 			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(biospecimenCFDataEntryPanel);
+		}
+		// refresh the bio transactions (if necessary)
+		if (initialiseBioTransactionListPanel() == true) {
+			arkCrudContainerVo.getDetailPanelFormContainer().addOrReplace(bioTransactionListPanel);
 		}
 
 		onSavePostProcess(target);
