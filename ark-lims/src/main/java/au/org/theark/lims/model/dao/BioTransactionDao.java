@@ -31,7 +31,9 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.TreatmentType;
+import au.org.theark.lims.web.Constants;
 
 @SuppressWarnings("unchecked")
 @Repository("bioTransactionDao")
@@ -106,4 +108,20 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 		List<TreatmentType> list = criteria.list();
 		return list;
 	}
+
+	public List<BioTransactionStatus> getBioTransactionStatusChoices() {
+		Criteria criteria = getSession().createCriteria(BioTransactionStatus.class);
+		List<BioTransactionStatus> list = criteria.list();
+		// remove Initial status choice because this is reserved
+		criteria.add(Restrictions.ne("name", Constants.BIOTRANSACTION_STATUS_INITIAL));
+		return list;
+	}
+
+	public BioTransactionStatus getBioTransactionStatusByName(String statusName) {
+		Criteria criteria = getSession().createCriteria(BioTransactionStatus.class);
+		criteria.add(Restrictions.eq("name", statusName));
+		BioTransactionStatus result = (BioTransactionStatus) criteria.uniqueResult();
+		return result;
+	}
+
 }

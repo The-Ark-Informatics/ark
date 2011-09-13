@@ -23,6 +23,7 @@ import java.util.List;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.BioTransactionStatus;
 import au.org.theark.core.model.lims.entity.TreatmentType;
 
 public interface IBioTransactionDao {
@@ -77,9 +78,21 @@ public interface IBioTransactionDao {
 	public void deleteBioTransaction(BioTransaction bioTransaction);
 
 	/**
-	 * Get a list of treatment typess
+	 * Get a list of treatment types
 	 * @return
 	 */
 	public List<TreatmentType> getTreatmentTypes();
+
+	/**
+	 * Get a List of BioTransaction Status that can be used for a dropdown choice (i.e. no Initial status)
+	 * @return
+	 */
+	public List<BioTransactionStatus> getBioTransactionStatusChoices();
+
+	/**
+	 * Get a specific BioTransaction Status by name
+	 * @return
+	 */
+	public BioTransactionStatus getBioTransactionStatusByName(String statusName);
 
 }
