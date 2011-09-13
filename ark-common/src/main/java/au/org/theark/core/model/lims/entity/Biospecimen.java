@@ -86,7 +86,7 @@ public class Biospecimen implements java.io.Serializable {
 	private String						anticoag;
 	private String						protocol;
 	private Long						dnaBank;
-	private Long						quantity;
+	private Double						quantity;
 	private Unit						unit;
 	private String						quality;
 	private Long						withdrawn;
@@ -109,7 +109,7 @@ public class Biospecimen implements java.io.Serializable {
 	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentUid, Long oldId,
 			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
-			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Long quantity, Unit unit, String quality, Long withdrawn,
+			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Double quantity, Unit unit, String quality, Long withdrawn,
 			String status, Boolean barcoded, TreatmentType treatmentType, Set<BioTransaction> bioTransactions) {
 		this.id = id;
 		this.bioCollection = bioCollection;
@@ -461,11 +461,11 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	@Column(name = "QUANTITY")
-	public Long getQuantity() {
+	public Double getQuantity() {
 		return this.quantity;
 	}
 
-	public void setQuantity(Long quantity) {
+	public void setQuantity(Double quantity) {
 		this.quantity = quantity;
 	}
 
