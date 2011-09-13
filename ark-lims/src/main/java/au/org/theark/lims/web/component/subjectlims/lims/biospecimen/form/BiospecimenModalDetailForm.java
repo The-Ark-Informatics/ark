@@ -56,6 +56,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
+import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
 
 /**
@@ -91,6 +92,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DropDownChoice<TreatmentType>	treatmentTypeDdc;
 
 	private Panel									biospecimenCFDataEntryPanel;
+	private Panel									bioTransactionListPanel;
 	private ModalWindow							modalWindow;
 	
 	private WebMarkupContainer 				bioTransactionDetailWmc;
@@ -144,6 +146,13 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 		return replacePanel;
 	}
+	
+	private void initialiseBioTransactionListPanel() {
+		// Make sure the bioTransaction in the cpModel has the biospecimen in context
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		cpModel.getObject().getBioTransaction().setBiospecimen(biospecimen);
+		bioTransactionListPanel = new BioTransactionListPanel("bioTransactionListPanel", feedbackPanel, cpModel);
+	}
 
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
@@ -166,6 +175,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		barcodedChkBox.setVisible(true);
 
 		initialiseBiospecimenCFDataEntry();
+		initialiseBioTransactionListPanel();
 
 		attachValidators();
 		addComponents();
@@ -241,7 +251,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionDetailWmc);
 		
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
-
+		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
+		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
