@@ -31,6 +31,7 @@ import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioTransaction;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 
 @SuppressWarnings("unchecked")
 @Repository("bioTransactionDao")
@@ -98,5 +99,11 @@ public class BioTransactionDao extends HibernateSessionDao implements IBioTransa
 
 	public void updateBioTransaction(BioTransaction biospecimen) {
 		getSession().update(biospecimen);
+	}
+
+	public List<TreatmentType> getTreatmentTypes() {
+		Criteria criteria = getSession().createCriteria(TreatmentType.class);
+		List<TreatmentType> list = criteria.list();
+		return list;
 	}
 }

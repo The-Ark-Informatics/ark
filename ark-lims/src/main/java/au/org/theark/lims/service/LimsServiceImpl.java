@@ -37,6 +37,7 @@ import au.org.theark.core.model.lims.entity.BioTransaction;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.model.lims.entity.TreatmentType;
 import au.org.theark.core.model.lims.entity.Unit;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.CustomField;
@@ -203,7 +204,12 @@ public class LimsServiceImpl implements ILimsService {
 	 * @see au.org.theark.lims.service.ILimsService#createBiospecimen(au.org.theark.lims.model.vo.LimsVO)
 	 */
 	public void createBiospecimen(LimsVO modelObject) {
-		iBiospecimenDao.createBiospecimen(modelObject.getBiospecimen());
+		Biospecimen biospecimen = modelObject.getBiospecimen();
+		iBiospecimenDao.createBiospecimen(biospecimen);
+		
+		BioTransaction bioTransaction = modelObject.getBioTransaction();
+		// Inheriently create a tranasaction for the initial quantity
+		iBioTransactionDao.createBioTransaction(bioTransaction);
 	}
 
 	/*
@@ -661,6 +667,10 @@ public class LimsServiceImpl implements ILimsService {
 
 	public List<Unit> getUnits() {
 		return iBiospecimenDao.getUnits();
+	}
+
+	public List<TreatmentType> getTreatmentTypes() {
+		return iBioTransactionDao.getTreatmentTypes();
 	}
 
 }
