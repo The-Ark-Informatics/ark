@@ -189,6 +189,7 @@ public class BioTransactionListPanel extends Panel {
 						BioTransaction bioTransaction = (BioTransaction) (getParent().getDefaultModelObject());
 						iLimsService.deleteBioTransaction(bioTransaction);
 						this.info("Successfully removed the transaction");
+						target.addComponent(feedbackPanel);
 						target.addComponent(dataViewListWMC);	//repaint the list
 					}
 
