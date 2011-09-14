@@ -20,6 +20,11 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
 import java.util.List;
 
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
@@ -273,6 +278,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void onSave(AjaxRequestTarget target) {
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			// Save
+			
+			// Inital transaction detail
+			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+			cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+			
 			iLimsService.createBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 			processErrors(target);
