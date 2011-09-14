@@ -51,6 +51,16 @@ span.requiredHint {
     width: 100%;
 }
 
+#detailSectionBorder {
+    background-color: #EEEEEE;
+    border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
+    border-top: solid 1px;
+    border-bottom: solid 1px;
+    float: left;
+    width: 100%;
+    padding-top: 5px;
+}
+
 #detailFormLabelBorder {
     background-color: #EEEEEE;
     border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
