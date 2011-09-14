@@ -219,21 +219,21 @@ public class InventoryServiceImpl implements IInventoryService {
 			
 			String rowLabel = new String();
 			if (box.getRownotype().getName().equalsIgnoreCase("ALPHABET")) {
-				char character = (char) (cell.getRowno() + 65);
+				char character = (char) (cell.getRowno() + 64);
 				rowLabel = new Character(character).toString();
 			}
 			else {
-				rowLabel = new Integer(cell.getRowno().intValue()+1).toString();
+				rowLabel = new Integer(cell.getRowno().intValue()).toString();
 			}
 			biospecimenLocationVO.setRowLabel(rowLabel);
 			
 			String colLabel = new String();
 			if (box.getColnotype().getName().equalsIgnoreCase("ALPHABET")) {
-				char character = (char) (cell.getColno() + 65);
+				char character = (char) (cell.getColno() + 64);
 				colLabel = new Character(character).toString();
 			}
 			else {
-				colLabel = new Integer(cell.getColno().intValue()+1).toString();
+				colLabel = new Integer(cell.getColno().intValue()).toString();
 			}
 			biospecimenLocationVO.setColLabel(colLabel);
 		}
