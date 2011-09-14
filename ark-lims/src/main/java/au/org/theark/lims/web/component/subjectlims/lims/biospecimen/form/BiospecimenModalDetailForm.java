@@ -58,9 +58,12 @@ import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractModalDetailForm;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.biolocation.BiospecimenLocationPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
@@ -82,6 +85,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
 	private ILimsService							iLimsService;
 
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService iInventoryService;
+
+	
 	private TextField<String>					idTxtFld;
 	private TextField<String>					biospecimenUidTxtFld;
 	private TextField<String>					parentUidTxtFld;
@@ -99,6 +106,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	private Panel									biospecimenCFDataEntryPanel;
 	private Panel									bioTransactionListPanel;
+	private Panel									biospecimenLocationPanel;
 	private ModalWindow							modalWindow;
 	
 	private WebMarkupContainer 				bioTransactionDetailWmc;
@@ -172,6 +180,37 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		return replacePanel;
 	}
 
+	private boolean initialiseBiospecimentLocationPanel(){
+		
+		boolean replacePanel=true;
+		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		if( biospecimen.getId() == null){
+			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
+			replacePanel = true;
+		}else{
+			//
+			try {
+				
+				BiospecimenLocationVO vo = iInventoryService.locateBiospecimen(biospecimen);
+				cpModel.getObject().setBiospecimenLocationVO(vo);
+				
+				if(vo.getIsAllocated()){
+					biospecimenLocationPanel = new BiospecimenLocationPanel("biospecimenLocationPanel",cpModel);
+				}else{
+					biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
+				}
+				replacePanel=true;
+				
+			}
+			catch (ArkSystemException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return replacePanel;
+	}
+	
+	
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
@@ -194,6 +233,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
+		initialiseBiospecimentLocationPanel();
 
 		attachValidators();
 		addComponents();
@@ -270,6 +310,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
 		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
