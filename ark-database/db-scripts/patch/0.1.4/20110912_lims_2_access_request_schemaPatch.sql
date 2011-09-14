@@ -9,3 +9,9 @@ CREATE  TABLE `lims`.`access_request` (
   PRIMARY KEY (`ID`)
 )
 ENGINE = InnoDB;
+
+CREATE TABLE `access_request_status` (
+  `ID` int(11) NOT NULL auto_increment,
+  `NAME` varchar(100) NOT NULL,
+  PRIMARY KEY  (`ID`)
+) ENGINE=InnoDB;
