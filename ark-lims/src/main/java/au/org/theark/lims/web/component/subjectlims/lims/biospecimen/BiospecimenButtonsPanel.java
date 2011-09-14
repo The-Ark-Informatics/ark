@@ -122,7 +122,7 @@ public class BiospecimenButtonsPanel extends Panel {
 				// Ark-Security implemented
 				//return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 				//TODO: Implement process correctly
-				return false;
+				return super.isVisible() && false;
 			}
 
 			@Override
@@ -158,7 +158,7 @@ public class BiospecimenButtonsPanel extends Panel {
 				// Ark-Security implemented
 				//return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 				//TODO: Implement process correctly
-				return false;
+				return super.isVisible() && false;
 			}
 
 			@Override
@@ -197,10 +197,10 @@ public class BiospecimenButtonsPanel extends Panel {
 			limsVo.getBiospecimen().setId(null);
 			limsVo.getBiospecimen().setBiospecimenUid(UniqueIdGenerator.generateUniqueId());
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
-			limsVo.getBiospecimen().setQuantity(null);
 			limsVo.getBiospecimen().setComments("Clone of " + biospecimenUid);
 			
-			// Inital transaction detail
+			// Inital transaction detail (quantity grabbed from previous biospecimen)
+			limsVo.getBioTransaction().setId(null);
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 			
