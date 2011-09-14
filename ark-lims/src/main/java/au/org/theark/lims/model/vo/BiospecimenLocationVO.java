@@ -14,11 +14,11 @@ public class BiospecimenLocationVO implements Serializable{
 	protected String tankName;
 	protected String trayName;
 	protected String boxName;
-	protected Long row;//has rows and cols
+	protected Long row;//has rows and e;
 	protected Long column;
 	
 	public BiospecimenLocationVO(){
-		
+		isAllocated=false;
 	}
 	
 	public String getSiteName() {
