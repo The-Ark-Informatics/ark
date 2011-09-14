@@ -20,6 +20,11 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.mgt.SecurityManager;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ThreadContext;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Button;
@@ -115,7 +120,9 @@ public class BiospecimenButtonsPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				// Ark-Security implemented
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				//return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				//TODO: Implement process correctly
+				return false;
 			}
 
 			@Override
@@ -149,7 +156,9 @@ public class BiospecimenButtonsPanel extends Panel {
 			@Override
 			public boolean isVisible() {
 				// Ark-Security implemented
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				//return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
+				//TODO: Implement process correctly
+				return false;
 			}
 
 			@Override
@@ -190,6 +199,11 @@ public class BiospecimenButtonsPanel extends Panel {
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
 			limsVo.getBiospecimen().setQuantity(null);
 			limsVo.getBiospecimen().setComments("Clone of " + biospecimenUid);
+			
+			// Inital transaction detail
+			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+			
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
@@ -222,6 +236,11 @@ public class BiospecimenButtonsPanel extends Panel {
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
 			limsVo.getBiospecimen().setQuantity(null);
 			limsVo.getBiospecimen().setComments("Sub-aliquot of " + biospecimenUid);
+			
+			// Inital transaction detail
+			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+			
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was processed from " + biospecimenUid + " successfully");
@@ -254,6 +273,11 @@ public class BiospecimenButtonsPanel extends Panel {
 			limsVo.getBiospecimen().setParentId(oldlimsVo.getBiospecimen().getId());
 			limsVo.getBiospecimen().setQuantity(null);
 			limsVo.getBiospecimen().setComments("Sub-aliquot of " + biospecimenUid);
+			
+			// Inital transaction detail
+			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
+			
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was aliquoted from " + biospecimenUid + " successfully");
