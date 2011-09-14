@@ -233,7 +233,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		initialiseBiospecimenCFDataEntry();
 		initialiseBioTransactionListPanel();
-		//initialiseBiospecimentLocationPanel();
+		initialiseBiospecimentLocationPanel();
 
 		attachValidators();
 		addComponents();
@@ -310,7 +310,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
-	//	arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
+		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
 		
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
