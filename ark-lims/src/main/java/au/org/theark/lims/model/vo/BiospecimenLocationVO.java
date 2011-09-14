@@ -5,10 +5,15 @@ import java.io.Serializable;
 /**
  * Represents a Biospecimen's complete location details in one VO.
  * @author nivedan
+ * @author cellis
  *
  */
 public class BiospecimenLocationVO implements Serializable{
 		
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 	protected String siteName;
 	protected Boolean isAllocated;
 	protected String tankName;
@@ -16,6 +21,8 @@ public class BiospecimenLocationVO implements Serializable{
 	protected String boxName;
 	protected Long row;//has rows and e;
 	protected Long column;
+	protected String rowLabel;
+	protected String colLabel;
 	
 	public BiospecimenLocationVO(){
 		isAllocated=false;
@@ -77,6 +84,31 @@ public class BiospecimenLocationVO implements Serializable{
 		this.isAllocated = isAllocated;
 	}
 
-	
+	/**
+	 * @return the rowLabel
+	 */
+	public String getRowLabel() {
+		return rowLabel;
+	}
 
+	/**
+	 * @param rowLabel the rowLabel to set
+	 */
+	public void setRowLabel(String rowLabel) {
+		this.rowLabel = rowLabel;
+	}
+
+	/**
+	 * @return the colLabel
+	 */
+	public String getColLabel() {
+		return colLabel;
+	}
+
+	/**
+	 * @param colLabel the colLabel to set
+	 */
+	public void setColLabel(String colLabel) {
+		this.colLabel = colLabel;
+	}
 }

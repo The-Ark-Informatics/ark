@@ -52,13 +52,15 @@ span.requiredHint {
 }
 
 #detailSectionBorder {
-    background-color: #EEEEEE;
+	background-color: #EEEEEE;
+    border-bottom: 0 solid;
     border-color: -moz-use-text-color #6F6F6F -moz-use-text-color -moz-use-text-color;
-    border-top: solid 1px;
-    border-bottom: solid 1px;
+    border-top: 0 solid;
     float: left;
+    margin-top: 0;
+    padding-bottom: 10px;
+    padding-top: 10px;
     width: 100%;
-    padding-top: 5px;
 }
 
 #detailFormLabelBorder {
