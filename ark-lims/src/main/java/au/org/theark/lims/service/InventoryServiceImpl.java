@@ -201,13 +201,14 @@ public class InventoryServiceImpl implements IInventoryService {
 	 */
 	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException{
 		InvCell cell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
-		InvBox box = cell.getInvBox();
-		InvTray tray = box.getInvTray();
-		InvTank tank = tray.getInvTank();
-		InvSite site = tank.getInvSite();
-		
 		BiospecimenLocationVO biospecimenLocationVO = new BiospecimenLocationVO();
-		if(cell != null){
+		if(cell != null && cell.getId() != null){
+			InvBox box = cell.getInvBox();
+			InvTray tray = box.getInvTray();
+			InvTank tank = tray.getInvTank();
+			InvSite site = tank.getInvSite();
+			
+		
 			biospecimenLocationVO.setIsAllocated(true);
 			biospecimenLocationVO.setBoxName(box.getName());
 			biospecimenLocationVO.setTrayName(tray.getName());
@@ -215,6 +216,9 @@ public class InventoryServiceImpl implements IInventoryService {
 			biospecimenLocationVO.setSiteName(site.getName());
 			biospecimenLocationVO.setColumn(cell.getColno());
 			biospecimenLocationVO.setRow(cell.getRowno());
+	
+			
+			
 		}
 		
 		return biospecimenLocationVO;
