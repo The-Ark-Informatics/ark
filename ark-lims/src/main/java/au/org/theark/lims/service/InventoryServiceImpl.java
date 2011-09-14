@@ -44,14 +44,15 @@ public class InventoryServiceImpl implements IInventoryService {
 		int capacity = invBox.getNoofcol() * invBox.getNoofrow();
 		invBox.setCapacity(capacity);
 		invBox.setAvailable(capacity);
-			
+
 		iInventoryDao.createInvBox(invBox);
-		
+
 		createCellsForBox(invBox);
 	}
 
 	/**
-	 * Create cells for the box in question 
+	 * Create cells for the box in question
+	 * 
 	 * @param invBox
 	 */
 	private void createCellsForBox(InvBox invBox) {
@@ -61,7 +62,7 @@ public class InventoryServiceImpl implements IInventoryService {
 				InvCell invCell = new InvCell();
 				invCell.setStatus("Empty");
 				invCell.setInvBox(invBox);
-				
+
 				invCell.setColno(new Long(col));
 				invCell.setRowno(new Long(row));
 				createInvCell(invCell);
@@ -80,7 +81,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	public void createInvTray(LimsVO modelObject) {
 		iInventoryDao.createInvTray(modelObject.getInvTray());
 	}
-	
+
 	public void createInvCell(InvCell invCell) {
 		iInventoryDao.createInvCell(invCell);
 	}
@@ -100,7 +101,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	public void deleteInvTray(LimsVO modelObject) {
 		iInventoryDao.deleteInvTray(modelObject.getInvTray());
 	}
-	
+
 	public void deleteInvCell(InvCell invCell) {
 		iInventoryDao.deleteInvCell(invCell);
 	}
@@ -108,7 +109,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	public InvSite getInvSite(Long id) {
 		return iInventoryDao.getInvSite(id);
 	}
-	
+
 	public List<InvSite> searchInvSite(InvSite invSite) throws ArkSystemException {
 		return iInventoryDao.searchInvSite(invSite);
 	}
@@ -119,19 +120,19 @@ public class InventoryServiceImpl implements IInventoryService {
 		int capacity = invBox.getNoofcol() * invBox.getNoofrow();
 		invBox.setCapacity(capacity);
 		invBox.setAvailable(capacity);
-		
+
 		iInventoryDao.updateInvBox(modelObject.getInvBox());
-		
+
 		// Remove previous cells
 		List<InvCell> invCellList = invBox.getInvCells();
 		for (Iterator<InvCell> iterator = invCellList.iterator(); iterator.hasNext();) {
 			InvCell invCell = (InvCell) iterator.next();
 			deleteInvCell(invCell);
 		}
-		
+
 		createCellsForBox(invBox);
 	}
-	
+
 	public void updateInvCell(InvCell invCell) {
 		iInventoryDao.updateInvCell(invCell);
 	}
@@ -195,20 +196,19 @@ public class InventoryServiceImpl implements IInventoryService {
 	public List<InvTray> searchInvTray(InvTray invTray) throws ArkSystemException {
 		return iInventoryDao.searchInvTray(invTray);
 	}
-	
+
 	/**
 	 * A wrapper implementation over getInvCellByBiospecimen(Biospecimen)
 	 */
-	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException{
+	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException {
 		InvCell cell = iInventoryDao.getInvCellByBiospecimen(biospecimen);
 		BiospecimenLocationVO biospecimenLocationVO = new BiospecimenLocationVO();
-		if(cell != null && cell.getId() != null){
+		if (cell != null && cell.getId() != null) {
 			InvBox box = cell.getInvBox();
 			InvTray tray = box.getInvTray();
 			InvTank tank = tray.getInvTank();
 			InvSite site = tank.getInvSite();
-			
-		
+
 			biospecimenLocationVO.setIsAllocated(true);
 			biospecimenLocationVO.setBoxName(box.getName());
 			biospecimenLocationVO.setTrayName(tray.getName());
@@ -216,12 +216,28 @@ public class InventoryServiceImpl implements IInventoryService {
 			biospecimenLocationVO.setSiteName(site.getName());
 			biospecimenLocationVO.setColumn(cell.getColno());
 			biospecimenLocationVO.setRow(cell.getRowno());
-	
 			
+			String rowLabel = new String();
+			if (box.getRownotype().getName().equalsIgnoreCase("ALPHABET")) {
+				char character = (char) (cell.getRowno() + 65);
+				rowLabel = new Character(character).toString();
+			}
+			else {
+				rowLabel = new Integer(cell.getRowno().intValue()+1).toString();
+			}
+			biospecimenLocationVO.setRowLabel(rowLabel);
 			
+			String colLabel = new String();
+			if (box.getColnotype().getName().equalsIgnoreCase("ALPHABET")) {
+				char character = (char) (cell.getColno() + 65);
+				colLabel = new Character(character).toString();
+			}
+			else {
+				colLabel = new Integer(cell.getColno().intValue()+1).toString();
+			}
+			biospecimenLocationVO.setColLabel(colLabel);
 		}
-		
+
 		return biospecimenLocationVO;
 	}
-	
 }
