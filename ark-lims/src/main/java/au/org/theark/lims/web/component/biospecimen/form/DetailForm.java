@@ -18,13 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen.form;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -44,7 +42,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
 import au.org.theark.core.model.lims.entity.BioSampletype;
-import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -239,7 +236,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		target.addComponent(feedBackPanel);
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		iLimsService.deleteBiospecimen(containerForm.getModelObject());
 		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
 

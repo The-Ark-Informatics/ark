@@ -26,7 +26,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -405,11 +404,10 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	 * org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
 	 */
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// This should never happen for Subject Management because the Delete button
 		// should never be visible/disabled
 		log.error("Incorrect application workflow - tried to delete Subject via LIMS");
-		selectModalWindow.close(target);
 		onCancel(target);
 	}
 
