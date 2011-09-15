@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreeNode;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -40,12 +39,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
-import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvColRowType;
 import au.org.theark.core.model.lims.entity.InvTray;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractContainerForm;
-import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -86,6 +83,13 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	 */
 	public BoxDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer detailContainer, AbstractContainerForm<LimsVO> containerForm, BaseTree tree, DefaultMutableTreeNode node) {
 		super(id, feedBackPanel, detailContainer, containerForm, tree, node);
+	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		noOfColTxtFld.setEnabled(containerForm.getModelObject().getInvBox().getId() == null);
+		noOfRowTxtFld.setEnabled(containerForm.getModelObject().getInvBox().getId() == null);
 	}
 
 	public void initialiseDetailForm() {
@@ -161,10 +165,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
-		log.info("Old Parent: " + node.getParent().toString());
-		
-		TreeNode[] nodes = node.getPath();
-		
 		if (containerForm.getModelObject().getInvBox().getId() == null) {
 			// Save
 			iInventoryService.createInvBox(containerForm.getModelObject());
@@ -180,19 +180,18 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 		onSavePostProcess(target);
 		
-		InvBox invBox = iInventoryService.getInvBox(containerForm.getModelObject().getInvBox().getId());
-		// Set new path
-		
-		
-		node.setParent(new DefaultMutableTreeNode(new InventoryModel(invBox.getInvTray(), invBox.getInvTray().getNodeType())));
-		nodes = node.getPath();
-		for (TreeNode treeNode : nodes) {
-			tree.getTreeState().expandNode(treeNode);
+		//InvBox invBox = iInventoryService.getInvBox(containerForm.getModelObject().getInvBox().getId());
+		/* Set new path
+		List path = iInventoryService.getInventoryPathOfNode(containerForm.getModelObject().getInvBox());
+		for (Iterator iterator = path.iterator(); iterator.hasNext();) {
+			Object object = (Object) iterator.next();
+			tree.getTreeState().expandNode(object);
 			tree.updateTree();
 		}
 		
-		tree.getTreeState().selectNode(node, true);
+		tree.getTreeState().selectNode(containerForm.getModelObject().getInvBox(), true);
 		tree.updateTree();
+		*/
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
