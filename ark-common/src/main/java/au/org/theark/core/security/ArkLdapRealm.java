@@ -23,6 +23,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authc.credential.Sha256CredentialsMatcher;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -38,6 +39,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkUserVO;
@@ -72,12 +74,22 @@ public class ArkLdapRealm extends AuthorizingRealm {
 		try {
 			userVO = iArkCommonService.getUser(token.getUsername().trim());// Example to use core services to get user
 			if (userVO != null) {
+				//Check if the user is in the Ark Database
+				ArkUser arkUser = iArkCommonService.getArkUser(token.getUsername().trim());
+				//Also check if the Ark User is linked with any study and has roles if not stop the user from logging in until an administrator has set it up
+				if(!iArkCommonService.isArkUserLinkedToStudies(arkUser)){
+					throw  new UnknownAccountException("The user is not registered/linked with the  Ark Application. Please see your administrator");
+				}
+				
 				sai = new SimpleAuthenticationInfo(userVO.getUserName(), userVO.getPassword(), getName());
 			}
 		}
 		catch (ArkSystemException etaSystem) {
 			log.error("Exception occured while the Realm invoked Ldap Interface to look up person" + etaSystem.getMessage());
+		} catch (EntityNotFoundException e) {
+			throw new UnknownAccountException("The user is not registered with the  Ark Application. Please see your administrator");
 		}
+		
 		return sai;
 	}
 
