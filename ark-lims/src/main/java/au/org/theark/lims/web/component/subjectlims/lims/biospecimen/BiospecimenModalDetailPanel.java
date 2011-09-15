@@ -18,11 +18,6 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -82,5 +77,4 @@ public class BiospecimenModalDetailPanel extends Panel {
 	public void setModalWindow(ModalWindow modalWindow) {
 		this.modalWindow = modalWindow;
 	}
-
 }
