@@ -1,6 +1,6 @@
 package au.org.theark.lims.service;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,22 +115,7 @@ public class InventoryServiceImpl implements IInventoryService {
 	}
 
 	public void updateInvBox(LimsVO modelObject) {
-		// Update box and cells
-		InvBox invBox = modelObject.getInvBox();
-		int capacity = invBox.getNoofcol() * invBox.getNoofrow();
-		invBox.setCapacity(capacity);
-		invBox.setAvailable(capacity);
-
 		iInventoryDao.updateInvBox(modelObject.getInvBox());
-
-		// Remove previous cells
-		List<InvCell> invCellList = invBox.getInvCells();
-		for (Iterator<InvCell> iterator = invCellList.iterator(); iterator.hasNext();) {
-			InvCell invCell = (InvCell) iterator.next();
-			deleteInvCell(invCell);
-		}
-
-		createCellsForBox(invBox);
 	}
 
 	public void updateInvCell(InvCell invCell) {
@@ -239,5 +224,47 @@ public class InventoryServiceImpl implements IInventoryService {
 		}
 
 		return biospecimenLocationVO;
+	}
+
+	/**
+	 * Returns the current path (ie synced to database) to the node in question (box,tray,tank, or site)
+	 * @param node
+	 * @return List of objects (nodes) in the path order (site : tank : tray : box)
+	 */
+	public List<Object> getInventoryPathOfNode(Object node){
+		List<Object> path = new ArrayList<Object>(0);
+		if (node instanceof InvSite) {
+			InvSite invSite = (InvSite) node;
+			invSite = iInventoryDao.getInvSite(invSite.getId());
+			path.add(invSite);
+		}
+		if (node instanceof InvTank) {
+			InvTank invTank = (InvTank) node;
+			invTank = iInventoryDao.getInvTank(invTank.getId());
+			InvSite invSite = invTank.getInvSite();
+			path.add(invSite);
+			path.add(invTank);
+		}
+		if (node instanceof InvTray) {
+			InvTray invTray = (InvTray) node;
+			invTray = iInventoryDao.getInvTray(invTray.getId());
+			InvTank invTank = invTray.getInvTank();
+			InvSite invSite = invTank.getInvSite();
+			path.add(invSite);
+			path.add(invTank);
+			path.add(invTray);
+		}
+		if (node instanceof InvBox) {
+			InvBox invBox = (InvBox) node;
+			invBox = iInventoryDao.getInvBox(invBox.getId());
+			InvTray invTray = invBox.getInvTray();
+			InvTank invTank = invTray.getInvTank();
+			InvSite invSite = invTank.getInvSite();
+			path.add(invSite);
+			path.add(invTank);
+			path.add(invTray);
+			path.add(invBox);
+		}
+		return path;
 	}
 }

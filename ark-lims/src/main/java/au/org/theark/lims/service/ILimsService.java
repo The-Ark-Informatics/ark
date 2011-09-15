@@ -304,4 +304,10 @@ public interface ILimsService {
 	 */
 	public BioTransactionStatus getBioTransactionStatusByName(String statusName);
 	
+	/**
+	 * Get the sum of all transactions for a Biospecimens
+	 * @param biospecimen
+	 * @return
+	 */
+	public Double getQuantityAvailable(Biospecimen biospecimen);
 }
