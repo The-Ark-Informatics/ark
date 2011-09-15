@@ -27,6 +27,7 @@ import org.apache.wicket.model.StringResourceModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
 /**
  * Abstract class that extends AbstractDetailForm, for specific implementation for the UserDetailForm
@@ -91,7 +92,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			}
 		};
 
-		deleteButton = new AjaxButton(Constants.REMOVE, new StringResourceModel("removeUserKey", this, null)) {
+		deleteButton = new AjaxDeleteButton(Constants.REMOVE, new StringResourceModel("confirmRemove", this, null), new StringResourceModel("removeUserKey", this, null)) {
 			/**
 			 * 
 			 */
@@ -99,8 +100,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// target.addComponent(detailPanelContainer);
-				onDelete(containerForm, target);
+				onDeleteConfirmed(target, null); 
 			}
 
 			@Override
@@ -146,7 +146,6 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			}
 		};
 
-		selectModalWindow = initialiseModalWindow();
 
 		addComponentsToForm(true);
 	}
