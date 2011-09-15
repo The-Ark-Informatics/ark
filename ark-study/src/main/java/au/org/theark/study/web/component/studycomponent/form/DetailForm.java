@@ -183,12 +183,11 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			studyService.delete(containerForm.getModelObject().getStudyComponent());
 			StudyCompVo studyCompVo = new StudyCompVo();
 			containerForm.setModelObject(studyCompVo);
-			selectModalWindow.close(target);
 			containerForm.info("The Study Component was deleted successfully.");
 			editCancelProcess(target,true);
 		}

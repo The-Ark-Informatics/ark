@@ -302,7 +302,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 * org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
 	 */
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 
 		try {
 			studyService.delete(containerForm.getModelObject().getConsent());
@@ -315,8 +315,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		catch (ArkSystemException e) {
 			this.error("A system exception has occured during delete operation of the Consent");
 		}
-
-		selectModalWindow.close(target);
 		ConsentVO consentVO = new ConsentVO();
 		containerForm.setModelObject(consentVO);
 		onCancel(target);

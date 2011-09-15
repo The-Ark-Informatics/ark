@@ -486,10 +486,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	 * org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
 	 */
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
-		// This should never happen for Subject Management because the Delete button
-		// should never be visible/disabled
-		selectModalWindow.close(target);
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		onCancel(target);
 	}
 
