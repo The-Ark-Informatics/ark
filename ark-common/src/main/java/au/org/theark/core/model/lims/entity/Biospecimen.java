@@ -63,7 +63,7 @@ public class Biospecimen implements java.io.Serializable {
 	private Long						parentId;
 	private String						parentUid;
 	private Long						oldId;
-	private Long						deleted;
+	private Boolean					deleted;
 	private String						otherid;
 	private String						storedIn;
 	private Date						sampleTime;
@@ -107,7 +107,7 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	public Biospecimen(Long id, BioCollection bioCollection, String biospecimenUid, Study study, Long substudyId, LinkSubjectStudy linkSubjectStudy, Long parentId, String parentUid, Long oldId,
-			Long deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
+			Boolean deleted, String otherid, String storedIn, Date sampleTime, String grade, InvCell invCell, Long depth, Date sampleDate, Date extractedTime, String location, Long sampleTypeId,
 			BioSampletype sampleType, String samplesubtype, String subtypedesc, String species, Double qtyCollected, Date dateextracted, Double qtyRemoved, Double gestat, String comments,
 			Date datedistributed, String collaborator, Double dnaconc, Double purity, String anticoag, String protocol, Long dnaBank, Double quantity, Unit unit, String quality, Long withdrawn,
 			String status, Boolean barcoded, TreatmentType treatmentType, Set<BioTransaction> bioTransactions) {
@@ -248,11 +248,11 @@ public class Biospecimen implements java.io.Serializable {
 	}
 
 	@Column(name = "DELETED")
-	public Long getDeleted() {
+	public Boolean getDeleted() {
 		return this.deleted;
 	}
 
-	public void setDeleted(Long deleted) {
+	public void setDeleted(Boolean deleted) {
 		this.deleted = deleted;
 	}
 
