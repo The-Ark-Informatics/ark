@@ -262,7 +262,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		// Remove the Ark User from the Ark Database and his roles.
 		try {
 			userService.deleteArkUser(containerForm.getModelObject());
-			this.info(new StringResourceModel("user.deleted", this, null).getString());
+			this.info(new StringResourceModel("user.removed", this, null).getString());
 			editCancelProcess(target, true);
 		}
 		catch (EntityNotFoundException e) {
