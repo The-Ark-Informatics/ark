@@ -36,6 +36,7 @@ import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,7 @@ public class BioTransactionListPanel extends Panel {
 	protected FeedbackPanel									feedbackPanel;
 	private BioTransactionListForm						bioTransactionListForm;
 	
+	private Label												idLbl;
 	private Label												transactionDateLbl;
 	private Label												quantityLbl;
 	private Label												unitsLbl;
@@ -180,13 +182,13 @@ public class BioTransactionListPanel extends Panel {
 				final BioTransaction bioTransaction = item.getModelObject();
 
 				WebMarkupContainer rowDetailsWMC = new WebMarkupContainer("rowDetailsWMC", item.getModel());
-				AjaxConfirmLink<String> rowDeleteLink = new AjaxConfirmLink<String>("rowDeleteLink", 
-																											new Model<String>("Are you sure you wish to delete?"), 
-																											new Model<String>("Delete")) {
+				AjaxConfirmLink<BioTransaction> rowDeleteLink = new AjaxConfirmLink<BioTransaction>("rowDeleteLink", 
+																											new StringResourceModel("bioTransaction.confirmDelete", this, item.getModel()), 
+																											item.getModel()) {
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
-						BioTransaction bioTransaction = (BioTransaction) (getParent().getDefaultModelObject());
+						BioTransaction bioTransaction = getModelObject();
 						iLimsService.deleteBioTransaction(bioTransaction);
 						this.info("Successfully removed the transaction");
 						target.addComponent(feedbackPanel);
@@ -201,6 +203,7 @@ public class BioTransactionListPanel extends Panel {
 					rowDetailsWMC.setVisible(false);
 				}
 				
+				idLbl = new Label("bioTransaction.id", bioTransaction.getId().toString());
 				String dateOfTransaction = "";
 				if (bioTransaction.getTransactionDate() != null) {
 					dateOfTransaction = simpleDateFormat.format(bioTransaction.getTransactionDate());
@@ -233,6 +236,8 @@ public class BioTransactionListPanel extends Panel {
 				else {
 					requestLbl = new Label("bioTransaction.accessRequest.id", bioTransaction.getAccessRequest().getId().toString());		
 				}
+				
+				item.add(idLbl);
 				item.add(transactionDateLbl);
 				item.add(quantityLbl);
 				item.add(unitsLbl);
