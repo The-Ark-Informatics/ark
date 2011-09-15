@@ -25,7 +25,6 @@ import java.util.Iterator;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
@@ -179,7 +178,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// TODO:(CE) To handle Business and System Exceptions here
 		iPhenotypicService.deleteFieldData(containerForm.getModelObject().getFieldData());
 		this.info("Field data " + containerForm.getModelObject().getFieldData().getId() + " was deleted successfully");
@@ -190,9 +189,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-
-		// Close the confirm modal window
-		selectModalWindow.close(target);
 
 		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();

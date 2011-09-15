@@ -228,7 +228,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iPhenotypicService.deleteField(containerForm.getModelObject().getField());
 			this.info("Field " + containerForm.getModelObject().getField().getName() + " was deleted successfully");
@@ -247,8 +247,7 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
 
-		// Close the confirm modal window
-		selectModalWindow.close(target);
+		
 		// Move focus back to Search form
 		FieldVO fieldVo = new FieldVO();
 		containerForm.setModelObject(fieldVo);

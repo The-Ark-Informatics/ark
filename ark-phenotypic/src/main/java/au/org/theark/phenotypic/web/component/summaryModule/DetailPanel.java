@@ -99,7 +99,7 @@ public class DetailPanel extends Panel {
 			}
 
 			protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
-				selectModalWindow.show(target);
+				//selectModalWindow.show(target);
 				target.addComponent(selectModalWindow);
 			}
 
@@ -127,7 +127,7 @@ public class DetailPanel extends Panel {
 		};
 
 		detailForm.initialiseForm();
-		detailPanelFormContainer.add(initialiseModalWindow());
+		//detailPanelFormContainer.add(initialiseModalWindow());
 		add(detailForm);
 	}
 
