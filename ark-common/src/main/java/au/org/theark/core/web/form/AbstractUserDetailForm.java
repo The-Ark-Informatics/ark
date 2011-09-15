@@ -91,7 +91,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			}
 		};
 
-		deleteButton = new AjaxButton(Constants.DELETE, new StringResourceModel("deleteKey", this, null)) {
+		deleteButton = new AjaxButton(Constants.REMOVE, new StringResourceModel("removeUserKey", this, null)) {
 			/**
 			 * 
 			 */
