@@ -24,7 +24,6 @@ import java.sql.Blob;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -267,7 +266,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// required for file uploads
 		setMultiPart(true);
 
@@ -282,8 +281,6 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occurred, we will have someone contact you."); processFeedback(target); }
 
-		// Close the confirm modal window
-		selectModalWindow.close(target);
 		// Move focus back to Search form
 		ConsentVO consentVo = new ConsentVO();
 		setModelObject(consentVo);

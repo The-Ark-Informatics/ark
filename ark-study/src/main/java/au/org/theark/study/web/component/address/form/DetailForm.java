@@ -20,8 +20,6 @@ package au.org.theark.study.web.component.address.form;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -47,7 +45,6 @@ import au.org.theark.core.model.study.entity.AddressType;
 import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -267,7 +264,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 * org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow)
 	 */
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 
 			studyService.delete(containerForm.getModelObject().getAddress());
@@ -280,7 +277,6 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			// admin
 			e.printStackTrace();
 		}
-		selectModalWindow.close(target);
 		onCancel(target);
 	}
 

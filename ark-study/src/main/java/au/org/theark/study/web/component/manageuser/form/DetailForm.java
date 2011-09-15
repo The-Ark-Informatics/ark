@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -257,7 +256,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	}
 
 	@Override
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 
 		// Remove the Ark User from the Ark Database and his roles.
 		try {
@@ -271,7 +270,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		catch (ArkSystemException e) {
 			this.error(new StringResourceModel("ark.system.error", this, null).getString());
 		}
-		selectModalWindow.close(target);
 		onCancel(target);
 	}
 
