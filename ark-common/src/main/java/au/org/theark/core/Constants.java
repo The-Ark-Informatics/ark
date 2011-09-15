@@ -176,7 +176,7 @@ public class Constants {
 	public static final String	LAST													= "last";
 	public static final String	FINISH												= "finish";
 	public static final String	DONE													= "done";
-
+	public static final String  REMOVE												= "remove";
 	/* Delete confirmation */
 	public static final String	DELETE_CONFIRM_TITLE								= "Delete confirmation";
 	public static final String	DELETE_CONFIRM_MESSAGE							= "Are you sure you want to delete?";
