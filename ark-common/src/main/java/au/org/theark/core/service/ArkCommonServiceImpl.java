@@ -699,5 +699,8 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	public int getCountOfStudies() {
 		return studyDao.getCountOfStudies();
 	}
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser){
+		return arkAuthorisationDao.isArkUserLinkedToStudies(arkUser);
+	}
 
 }

@@ -474,4 +474,6 @@ public interface IArkCommonService<T> {
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
 	
 	public int getCountOfStudies();
+	
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser);
 }
