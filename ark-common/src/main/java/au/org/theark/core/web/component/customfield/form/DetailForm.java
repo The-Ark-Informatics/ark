@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -42,7 +41,6 @@ import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.PatternValidator;
-import org.joda.time.field.FieldUtils;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -387,7 +385,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		try {
 			iArkCommonService.deleteCustomField(getModelObject());
 			this.info("Field " + getModelObject().getCustomField().getName() + " was deleted successfully");
@@ -406,8 +404,6 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
 
-		// Close the confirm modal window
-		selectModalWindow.close(target);
 		// Move focus back to Search form
 		editCancelProcess(target, true);	//this ends up calling onCancel(target)
 	}

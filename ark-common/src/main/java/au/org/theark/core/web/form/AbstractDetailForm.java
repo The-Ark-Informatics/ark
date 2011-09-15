@@ -68,7 +68,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	protected AjaxButton				editButton;
 	protected AjaxButton				editCancelButton;
 
-	protected ModalWindow			selectModalWindow;
+	//protected ModalWindow			selectModalWindow;
 
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
@@ -215,7 +215,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onDeleteConfirmed(target, null, selectModalWindow);
+				onDeleteConfirmed(target, null);
 			}
 
 			@Override
@@ -267,7 +267,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			}
 		};
 
-		selectModalWindow = initialiseModalWindow();
+		//selectModalWindow = initialiseModalWindow();
 
 		addComponentsToForm();
 	}
@@ -327,7 +327,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onDeleteConfirmed(target, null, selectModalWindow);
+				onDeleteConfirmed(target, null);
 			}
 
 			@Override
@@ -372,9 +372,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				processErrors(target);
 			}
 		};
-
-		selectModalWindow = initialiseModalWindow();
-
 		addComponentsToForm(true);
 	}
 
@@ -382,7 +379,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * Add all the components to the Detail form
 	 */
 	protected void addComponentsToForm() {
-		detailPanelFormContainer.add(selectModalWindow);
 		add(detailPanelFormContainer);
 
 		editButtonContainer.add(saveButton);
@@ -413,7 +409,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
 		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editCancelButton.setDefaultFormProcessing(false));
 
-		arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(selectModalWindow);
+		//arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(selectModalWindow);
 
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 		add(arkCrudContainerVO.getViewButtonContainer());
@@ -626,17 +622,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	}
 	
 	/**
-	 * A helper method that handles the press of the Delete button, thus displaying a modal pop-up that required user selection
-	 * 
-	 * @param containerForm
-	 * @param target
-	 */
-	protected void onDelete(Form<T> containerForm, AjaxRequestTarget target) {
-		selectModalWindow.show(target);
-		target.addComponent(selectModalWindow);
-	}
-
-	/**
 	 * A helper method that handles the press of the Cancel button within the modal pop-up. ie Closes the modal pop-up
 	 * 
 	 * @param target
@@ -646,28 +631,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		selectModalWindow.close(target);
 	}
 
-	/**
-	 * A helper method that initialises the modal window for delete confirmation
-	 */
-	protected ModalWindow initialiseModalWindow() {
-		// The ModalWindow, showing some choices for the user to select.
-		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -1116985092871743122L;
-
-			protected void onSelect(AjaxRequestTarget target, String selection) {
-				onDeleteConfirmed(target, selection, selectModalWindow);
-			}
-
-			protected void onCancel(AjaxRequestTarget target) {
-				onDeleteCancel(target, selectModalWindow);
-			}
-		};
-
-		return selectModalWindow;
-	}
 
 	/**
 	 * Method that sub-classes may call to disable the entire Detail form, and display a reason
@@ -742,7 +705,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param selection
 	 * @param selectModalWindow
 	 */
-	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow);
+	abstract protected void onDeleteConfirmed(AjaxRequestTarget target, String selection);
 
 	/**
 	 * Abstract method for sub-classes to implement their own processing of any errors
