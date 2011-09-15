@@ -210,17 +210,16 @@ public class LimsServiceImpl implements ILimsService {
 		Biospecimen biospecimen = modelObject.getBiospecimen();
 		iBiospecimenDao.createBiospecimen(biospecimen);
 		
-		// Inheriently create a tranasaction for the initial quantity
+		// Inheriently create a transaction for the initial quantity
 		BioTransaction bioTransaction = modelObject.getBioTransaction();
 		bioTransaction.setBiospecimen(biospecimen);
 		bioTransaction.setTransactionDate(Calendar.getInstance().getTime());
 		
-		if(bioTransaction.getQuantity() == null) {
-			if(biospecimen.getQuantity() != null ) {
-				bioTransaction.setQuantity(biospecimen.getQuantity());
-			}
-			else
-				bioTransaction.setQuantity(new Double(0));
+		if(bioTransaction.getQuantity() != null ) {
+			bioTransaction.setQuantity(bioTransaction.getQuantity());
+		}
+		else {
+			bioTransaction.setQuantity(new Double(0));
 		}
 		
 		bioTransaction.setReason(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY);
@@ -699,4 +698,7 @@ public class LimsServiceImpl implements ILimsService {
 		return iBioTransactionDao.getBioTransactionStatusByName(statusName);
 	}
 
+	public Double getQuantityAvailable(Biospecimen biospecimen){
+		return iBiospecimenDao.getQuantityAvailable(biospecimen);
+	}
 }

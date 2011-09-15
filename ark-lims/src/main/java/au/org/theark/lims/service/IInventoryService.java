@@ -236,4 +236,11 @@ public interface IInventoryService {
 	 */
 	
 	public BiospecimenLocationVO locateBiospecimen(Biospecimen biospecimen) throws ArkSystemException;
+	
+	/**
+	 * Returns the current path (ie synced to database) to the node in question (box,tray,tank, or site)
+	 * @param node
+	 * @return List of objects (nodes) in the path order (site : tank : tray : box)
+	 */
+	public List<Object> getInventoryPathOfNode(Object node);
 }

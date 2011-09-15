@@ -124,4 +124,10 @@ public interface IBiospecimenDao {
 
 	public List<Unit> getUnits();
 
+	/**
+	 * Get the sum of all transactions for a Biospecimens
+	 * @param biospecimen
+	 * @return
+	 */
+	public Double getQuantityAvailable(Biospecimen biospecimen);
 }

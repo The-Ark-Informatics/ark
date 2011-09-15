@@ -42,10 +42,6 @@ import au.org.theark.core.model.lims.entity.InvTray;
 @Repository("inventoryDao")
 public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 	private static final Logger				log						= LoggerFactory.getLogger(InventoryDao.class);
-	
-	public void createInvBox(InvBox invBox) {
-		getSession().save(invBox);
-	}
 
 	public void createInvSite(InvSite invSite) {
 		getSession().save(invSite);
@@ -57,6 +53,10 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 
 	public void createInvTray(InvTray invTray) {
 		getSession().save(invTray);
+	}
+	
+	public void createInvBox(InvBox invBox) {
+		getSession().save(invBox);
 	}
 
 	public void deleteInvBox(InvBox invBox) {
@@ -106,20 +106,20 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 		return list;
 	}
 
-	public void updateInvBox(InvBox invBox) {
-		getSession().update(invBox);
-	}
-
 	public void updateInvSite(InvSite invSite) {
-		getSession().update(invSite);
+		getSession().merge(invSite);
 	}
 
 	public void updateInvTank(InvTank invTank) {
-		getSession().update(invTank);
+		getSession().merge(invTank);
 	}
 
 	public void updateInvTray(InvTray invTray) {
-		getSession().update(invTray);
+		getSession().merge(invTray);
+	}
+	
+	public void updateInvBox(InvBox invBox) {
+		getSession().merge(invBox);
 	}
 
 	public InvSite getInvSite(Long id) {
