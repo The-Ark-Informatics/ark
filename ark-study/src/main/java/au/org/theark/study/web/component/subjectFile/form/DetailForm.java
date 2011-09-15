@@ -191,6 +191,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 			}
 
 			onSavePostProcess(target,arkCrudContainerVO);
+			AjaxButton editButton = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
+			editButton.setEnabled(false);
+			
 		}
 		catch (EntityNotFoundException e) {
 			this.error("The record you tried to update is no longer available in the system");
