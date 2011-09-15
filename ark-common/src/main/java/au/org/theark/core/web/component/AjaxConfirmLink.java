@@ -36,9 +36,8 @@ public abstract class AjaxConfirmLink<T> extends AjaxLink<T> {
 	private static final long	serialVersionUID	= 8138160131842627124L;
 	private IModel<String>					confirm;
 	
-	public AjaxConfirmLink(String id, IModel<String> confirm, IModel label) {
-		super(id);
-		this.setModel(label);
+	public AjaxConfirmLink(String id, IModel<String> confirm, IModel<T> itemModel) {
+		super(id, itemModel);
 		this.confirm = confirm;
 	}
 
