@@ -260,6 +260,8 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				sampleTypeLblFld = new Label("biospecimen.sampleType.name", biospecimen.getSampleType().getName());
 				collectionLblFld = new Label("biospecimen.bioCollection.name", biospecimen.getBioCollection().getName());
 				commentsLblFld = new Label("biospecimen.comments", biospecimen.getComments());
+				
+				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));
 				if (biospecimen.getQuantity() == null) {
 					quantityLblFld = new Label("biospecimen.quantity", "0");
 				}

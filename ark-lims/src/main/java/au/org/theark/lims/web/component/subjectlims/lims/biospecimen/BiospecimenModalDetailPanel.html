@@ -222,27 +222,22 @@
 							</div>
 								
 							<div id="fldLabel">
-								<div class="label">
-									<label for="biospecimen.quantity">
-										<wicket:message key="biospecimen.quantity">
-											Quantity:
-										</wicket:message>
-									</label>
-								</div>
+								<label for="biospecimen.quantity">
+									<span wicket:id="biospecimen.quantity.label"></span>
+								</label>
 							</div>
 		
 							<div id="fldControl">
-								<div class="label">
-									<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="5"/>
-									<select wicket:id="biospecimen.unit">
-										<option>
-											1
-										</option>
-										<option>
-											2
-										</option>
-									</select>
-								</div>
+								<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="5"/>
+								<input wicket:id="bioTransaction.quantity" type="text" maxLength="10" size="5"/>
+								<select wicket:id="biospecimen.unit">
+									<option>
+										1
+									</option>
+									<option>
+										2
+									</option>
+								</select>
 							</div>
 							
 							<div id="panelMargin">
