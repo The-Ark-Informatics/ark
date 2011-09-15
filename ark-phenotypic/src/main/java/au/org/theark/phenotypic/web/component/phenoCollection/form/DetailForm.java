@@ -233,7 +233,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	/**
 	 * 
 	 */
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
 		// TODO:(CE) To handle Business and System Exceptions here
 		iPhenotypicService.deleteCollection(containerForm.getModelObject());
 		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
@@ -244,9 +244,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-
-		// Close the confirm modal window
-		selectModalWindow.close(target);
 		// Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
