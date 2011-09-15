@@ -22,7 +22,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -31,6 +30,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebResponse;
 
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 
 /**
@@ -98,7 +98,7 @@ public abstract class BasePage extends WebPage {
 			add(studyLogoMarkup);
 			add(productImage);
 
-			AjaxLink myDetailLink = new AjaxLink("myDetailLink") {
+			ArkBusyAjaxLink myDetailLink = new ArkBusyAjaxLink("myDetailLink") {
 
 				/**
 				 * 
@@ -126,7 +126,7 @@ public abstract class BasePage extends WebPage {
 			};
 			add(modalWindow);
 
-			AjaxLink link = new AjaxLink("ajaxLogoutLink") {
+			ArkBusyAjaxLink link = new ArkBusyAjaxLink("ajaxLogoutLink") {
 				/**
 				 * 
 				 */
