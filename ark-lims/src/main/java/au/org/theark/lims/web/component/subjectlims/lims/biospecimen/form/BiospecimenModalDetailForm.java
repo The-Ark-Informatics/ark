@@ -18,17 +18,15 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biospecimen.form;
 
+import java.text.NumberFormat;
 import java.util.List;
 
-import org.apache.shiro.subject.Subject;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -40,8 +38,12 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.IConverter;
+import org.apache.wicket.util.convert.converters.DoubleConverter;
+import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,9 +71,9 @@ import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
 
 /**
+ * Detail form for Biospecimen, as displayed within a modal window
  * @author elam
  * @author cellis
- * 
  */
 public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
@@ -96,13 +98,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
 	private DropDownChoice<BioCollection>	bioCollectionDdc;
-
+	private TextField<Double>					quantityTxtFld;
 	private CheckBox								barcodedChkBox;
 
 	// Initial BioTransaction details
-	private TextField<String>					quantityTxtFld;
+	private TextField<Double>					bioTransactionQuantityTxtFld;	
 	private DropDownChoice<Unit>				unitDdc;
 	private DropDownChoice<TreatmentType>	treatmentTypeDdc;
+	
+	private Label									quantityLbl;
 
 	private Panel									biospecimenCFDataEntryPanel;
 	private Panel									bioTransactionListPanel;
@@ -133,13 +137,26 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		buttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
 		addOrReplace(buttonsPanel);
 	}
+	
+	@Override
+	public void onBeforeRender() {
+		super.onBeforeRender();
+		quantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() != null);
+		bioTransactionQuantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() == null);
+		
+		setQuantityLabel();
+		bioTransactionDetailWmc.addOrReplace(quantityLbl);
+	}
 
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
+		
 		if (biospecimen.getId() != null) {
 			try {
-				cpModel.getObject().setBiospecimen(iLimsService.getBiospecimen(biospecimen.getId()));
+				biospecimen = iLimsService.getBiospecimen(biospecimen.getId());
+				biospecimen.setQuantity(iLimsService.getQuantityAvailable(biospecimen));
+				cpModel.getObject().setBiospecimen(biospecimen);
 			}
 			catch (EntityNotFoundException e) {
 				this.error("Can not edit this record - it has been invalidated (e.g. deleted)");
@@ -203,13 +220,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				
 			}
 			catch (ArkSystemException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 		return replacePanel;
 	}
-	
 	
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
@@ -217,7 +232,26 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
-		quantityTxtFld = new TextField<String>("biospecimen.quantity");
+		quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			public IConverter getConverter(Class<?> type) {
+				DoubleConverter doubleConverter = new DoubleConverter();
+				NumberFormat numberFormat = NumberFormat.getInstance();
+				numberFormat.setMinimumFractionDigits(1);
+				doubleConverter.setNumberFormat(getLocale(), numberFormat);
+				return doubleConverter;
+			}
+		};
+		
+		quantityTxtFld.setEnabled(false);
+		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity");
+		
+		setQuantityLabel();
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
 		startDatePicker.bind(sampleDateTxtFld);
@@ -240,6 +274,18 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		// Focus on Sample Type
 		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
+	}
+	
+	/**
+	 * Show differing quantity label dependant on new/existing biospecimen
+	 */
+	private void setQuantityLabel(){
+		if(cpModel.getObject().getBiospecimen().getId() == null) {
+			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.quantity"));
+		}
+		else {
+			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("biospecimen.quantity"));
+		}
 	}
 
 	private void initSampleTypeDdc() {
@@ -286,7 +332,9 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
 		
 		// Initial BioTransaction detail
-		quantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.quantity.required", this, new Model<String>("Name")));
+		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
+		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(Double.MIN_VALUE);
+		bioTransactionQuantityTxtFld.add(minQuantityValidator);
 		unitDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.unit.required", this, new Model<String>("Name")));
 		treatmentTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.treatmentType.required", this, new Model<String>("Name")));
 	}
@@ -301,8 +349,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
 		
+		// Quantity label depends on new/existing Biospecimen
+		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 		// initial BioTransaction detail
 		bioTransactionDetailWmc.add(quantityTxtFld);
+		bioTransactionDetailWmc.add(bioTransactionQuantityTxtFld);
 		bioTransactionDetailWmc.add(unitDdc);
 		bioTransactionDetailWmc.add(treatmentTypeDdc);
 		
@@ -327,9 +378,12 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			iLimsService.createBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 			processErrors(target);
-			
-			// Disable initial transaction details
+
+			// Disable initial transaction details, and hide inital quantity text box
 			bioTransactionDetailWmc.setEnabled(false);
+			bioTransactionQuantityTxtFld.setVisible(false);
+			quantityTxtFld.setVisible(true);
+			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
 			target.addComponent(bioTransactionDetailWmc);
 		}
 		else {
