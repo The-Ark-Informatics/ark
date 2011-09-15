@@ -23,7 +23,6 @@ import java.util.Iterator;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
@@ -67,8 +66,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	protected AjaxButton				deleteButton;
 	protected AjaxButton				editButton;
 	protected AjaxButton				editCancelButton;
-
-	//protected ModalWindow			selectModalWindow;
 
 	// Add a visitor class for required field marking/validation/highlighting
 	protected ArkFormVisitor		formVisitor			= new ArkFormVisitor();
@@ -266,8 +263,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				processErrors(target);
 			}
 		};
-
-		//selectModalWindow = initialiseModalWindow();
 
 		addComponentsToForm();
 	}
@@ -621,16 +616,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		target.addComponent(feedBackPanel);
 	}
 	
-	/**
-	 * A helper method that handles the press of the Cancel button within the modal pop-up. ie Closes the modal pop-up
-	 * 
-	 * @param target
-	 * @param selectModalWindow
-	 */
-	protected void onDeleteCancel(AjaxRequestTarget target, ModalWindow selectModalWindow) {
-		selectModalWindow.close(target);
-	}
-
 
 	/**
 	 * Method that sub-classes may call to disable the entire Detail form, and display a reason
