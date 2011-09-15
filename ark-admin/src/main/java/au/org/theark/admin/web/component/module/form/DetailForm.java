@@ -101,7 +101,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		containerForm.setModelObject(new AdminVO());
 	}
 
-	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection, ModalWindow selectModalWindow) {
+	protected void onDeleteConfirmed(AjaxRequestTarget target, String selectionO) {
 		// Delete
 		iAdminService.deleteArkModule(containerForm.getModelObject());
 
