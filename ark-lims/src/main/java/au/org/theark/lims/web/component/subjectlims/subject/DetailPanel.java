@@ -45,9 +45,6 @@ public class DetailPanel extends Panel {
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
 
-	// private WebMarkupContainer subContainerWebMarkupContainer;
-	// private SubjectSubContainerPanel subContainerPanel;
-
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
 
@@ -79,21 +76,4 @@ public class DetailPanel extends Panel {
 	public void setDetailsForm(DetailForm detailsForm) {
 		this.detailsForm = detailsForm;
 	}
-	//
-	// /**
-	// * @return the subContainerPanel
-	// */
-	// public SubjectSubContainerPanel getSubContainerPanel()
-	// {
-	// return subContainerPanel;
-	// }
-	//
-	// /**
-	// * @param subContainerPanel the subContainerPanel to set
-	// */
-	// public void setSubContainerPanel(SubjectSubContainerPanel subContainerPanel)
-	// {
-	// this.subContainerPanel = subContainerPanel;
-	// }
-
 }
