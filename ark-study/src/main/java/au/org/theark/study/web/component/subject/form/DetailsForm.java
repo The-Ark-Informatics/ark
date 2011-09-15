@@ -464,6 +464,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 		else {
 
 			study = iArkCommonService.getStudy(studyId);
+			saveUpdateProcess(containerForm.getModelObject(), target);
 			// String subjectPreviousLastname = iArkCommonService.getPreviousLastname(containerForm.getModelObject().getSubjectStudy().getPerson());
 			// containerForm.getModelObject().setSubjectPreviousLastname(subjectPreviousLastname);
 			ContextHelper contextHelper = new ContextHelper();
