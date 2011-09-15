@@ -11,8 +11,15 @@
 						<th width="2%">
 							&nbsp;
 						</th>
-						<th width="10%">
+						<th width="5%">
 							<label for="id">
+								<wicket:message	key="bioTransaction.id">
+									ID:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="10%">
+							<label for="transactionDate">
 								<wicket:message	key="bioTransaction.transactionDate">
 									Transaction date:
 								</wicket:message>
@@ -25,7 +32,7 @@
 								</wicket:message>
 							</label>
 						</th>
-						<th width="25%">
+						<th width="20%">
 							<label for="quantity">
 								<wicket:message	key="bioTransaction.reason">
 									Reason:
@@ -67,7 +74,7 @@
 						<td width="2%">
 							&nbsp;
 						</td>
-						<td width="96%" colspan="7">
+						<td width="96%" colspan="8">
 							<span wicket:id="navigator" class="a">
 							</span>
 						</td>
@@ -82,6 +89,10 @@
 						<td width="2%">
 							&nbsp;
 						</td>
+						<td width="5%">
+							<span wicket:id="bioTransaction.id">
+							</span>
+						</td>
 						<td width="10%">
 							<span wicket:id="bioTransaction.transactionDate">
 							</span>
@@ -92,7 +103,7 @@
 							<span wicket:id="bioTransaction.biospecimen.unit.name">
 							</span>
 						</td>
-						<td width="25%">
+						<td width="20%">
 							<span wicket:id="bioTransaction.reason">
 							</span>
 						</td>
