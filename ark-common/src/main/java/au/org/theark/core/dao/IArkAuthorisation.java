@@ -175,4 +175,6 @@ public interface IArkAuthorisation<T> {
 	public boolean arkUserHasModuleAccess(ArkUser arkUser, ArkModule arkModule);
 	
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
+	
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser);
 }

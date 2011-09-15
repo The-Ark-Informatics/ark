@@ -686,7 +686,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			session.delete(arkUserRole);
 		}
 
-		session.delete(arkUserVO.getArkUserEntity());
+		//session.delete(arkUserVO.getArkUserEntity());
 	}
 
 	
@@ -999,5 +999,19 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		}
 		
 		return list;
+	}
+	
+	public Boolean isArkUserLinkedToStudies(ArkUser arkUser){
+		
+		Boolean flag = false;
+		
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		criteria.add(Restrictions.eq("arkUser", arkUser));
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		if(totalCount > 0){
+			flag = true;
+		}
+		return flag;
 	}
 }
