@@ -210,20 +210,31 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 				}
 			}
 			if (saveOk) {
+				//TODO: With the current pattern we need to check if the person is Subject or Contact and based on that we need to attach it the right object(subject/contact)
 				// Ok to save...
-				LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);
-				if (containerForm.getModelObject().getPhone().getId() == null) {
-					studyService.create(containerForm.getModelObject().getPhone());
-					this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
-					processErrors(target);
-					// Call the create
+				String personType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+				
+				if(personType != null && personType.equalsIgnoreCase( au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
+					
+					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);//This is fetched basically to display the info message along with the Subject UID or Contact ID
+					if (containerForm.getModelObject().getPhone().getId() == null) {
+						studyService.create(containerForm.getModelObject().getPhone());
+						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						processErrors(target);
+						// Call the create
+					}
+					else {
+						studyService.update(containerForm.getModelObject().getPhone());
+						this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
+						processErrors(target);
+						// Update
+					}
+				}else if(personType != null && personType.equalsIgnoreCase( au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
+					//TODO: Contact Interface implementation
+					
+					
 				}
-				else {
-					studyService.update(containerForm.getModelObject().getPhone());
-					this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
-					processErrors(target);
-					// Update
-				}
+				
 				onSavePostProcess(target);
 			}
 			// Invoke backend to persist the phone
