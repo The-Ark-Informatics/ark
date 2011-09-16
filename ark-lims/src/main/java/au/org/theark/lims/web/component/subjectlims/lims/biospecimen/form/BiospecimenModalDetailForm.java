@@ -72,6 +72,7 @@ import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.Biospecimen
 
 /**
  * Detail form for Biospecimen, as displayed within a modal window
+ * 
  * @author elam
  * @author cellis
  */
@@ -88,9 +89,8 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private ILimsService							iLimsService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
-	private IInventoryService iInventoryService;
+	private IInventoryService					iInventoryService;
 
-	
 	private TextField<String>					idTxtFld;
 	private TextField<String>					biospecimenUidTxtFld;
 	private TextField<String>					parentUidTxtFld;
@@ -102,18 +102,19 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	private CheckBox								barcodedChkBox;
 
 	// Initial BioTransaction details
-	private TextField<Double>					bioTransactionQuantityTxtFld;	
+	private TextField<Double>					bioTransactionQuantityTxtFld;
 	private DropDownChoice<Unit>				unitDdc;
 	private DropDownChoice<TreatmentType>	treatmentTypeDdc;
-	
+
 	private Label									quantityLbl;
+	private Label									quantityNoteLbl;
 
 	private Panel									biospecimenCFDataEntryPanel;
 	private Panel									bioTransactionListPanel;
 	private Panel									biospecimenLocationPanel;
 	private ModalWindow							modalWindow;
-	
-	private WebMarkupContainer 				bioTransactionDetailWmc;
+
+	private WebMarkupContainer					bioTransactionDetailWmc;
 
 	/**
 	 * Constructor
@@ -128,7 +129,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		super(id, feedBackPanel, arkCrudContainerVo, cpModel);
 		this.modalWindow = modalWindow;
 		refreshEntityFromBackend();
-		
+
 		bioTransactionDetailWmc = new WebMarkupContainer("bioTransactionDetailWmc");
 		bioTransactionDetailWmc.setOutputMarkupPlaceholderTag(true);
 		bioTransactionDetailWmc.setEnabled(cpModel.getObject().getBiospecimen().getId() == null);
@@ -137,21 +138,17 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		buttonsPanel.setVisible(getModelObject().getBiospecimen().getId() != null);
 		addOrReplace(buttonsPanel);
 	}
-	
+
 	@Override
 	public void onBeforeRender() {
 		super.onBeforeRender();
-		quantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() != null);
-		bioTransactionQuantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() == null);
-		
 		setQuantityLabel();
-		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 	}
 
 	protected void refreshEntityFromBackend() {
 		// Get the Biospecimen entity fresh from backend
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		
+
 		if (biospecimen.getId() != null) {
 			try {
 				biospecimen = iLimsService.getBiospecimen(biospecimen.getId());
@@ -177,7 +174,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 		return replacePanel;
 	}
-	
+
 	private boolean initialiseBioTransactionListPanel() {
 		boolean replacePanel = false;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
@@ -197,27 +194,27 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		return replacePanel;
 	}
 
-	private boolean initialiseBiospecimentLocationPanel(){
-		
-		boolean replacePanel=true;
+	private boolean initialiseBiospecimentLocationPanel() {
+
+		boolean replacePanel = true;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if( biospecimen.getId() == null){
+		if (biospecimen.getId() == null) {
 			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
 			replacePanel = true;
-		}else{
-			//
+		}
+		else {
 			try {
-				
 				BiospecimenLocationVO vo = iInventoryService.locateBiospecimen(biospecimen);
 				cpModel.getObject().setBiospecimenLocationVO(vo);
-				
-				if(vo.getIsAllocated()){
-					biospecimenLocationPanel = new BiospecimenLocationPanel("biospecimenLocationPanel",cpModel);
-				}else{
+
+				if (vo.getIsAllocated()) {
+					biospecimenLocationPanel = new BiospecimenLocationPanel("biospecimenLocationPanel", cpModel);
+				}
+				else {
 					biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
 				}
-				replacePanel=true;
-				
+				replacePanel = true;
+
 			}
 			catch (ArkSystemException e) {
 				log.error(e.getMessage());
@@ -225,13 +222,15 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		}
 		return replacePanel;
 	}
-	
+
 	public void initialiseDetailForm() {
 		idTxtFld = new TextField<String>("biospecimen.id");
 		biospecimenUidTxtFld = new TextField<String>("biospecimen.biospecimenUid");
 		parentUidTxtFld = new TextField<String>("biospecimen.parentUid");
 		commentsTxtAreaFld = new TextArea<String>("biospecimen.comments");
 		sampleDateTxtFld = new DateTextField("biospecimen.sampleDate", au.org.theark.core.Constants.DD_MM_YYYY);
+		
+		
 		quantityTxtFld = new TextField<Double>("biospecimen.quantity") {
 			/**
 			 * 
@@ -247,10 +246,10 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 				return doubleConverter;
 			}
 		};
-		
+
 		quantityTxtFld.setEnabled(false);
 		bioTransactionQuantityTxtFld = new TextField<Double>("bioTransaction.quantity");
-		
+
 		setQuantityLabel();
 
 		ArkDatePicker startDatePicker = new ArkDatePicker();
@@ -275,17 +274,26 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		// Focus on Sample Type
 		sampleTypeDdc.add(new ArkDefaultFormFocusBehavior());
 	}
-	
+
 	/**
 	 * Show differing quantity label dependant on new/existing biospecimen
 	 */
-	private void setQuantityLabel(){
-		if(cpModel.getObject().getBiospecimen().getId() == null) {
+	private void setQuantityLabel() {
+		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("bioTransaction.quantity"));
 		}
 		else {
 			quantityLbl = new Label("biospecimen.quantity.label", new ResourceModel("biospecimen.quantity"));
 		}
+		
+		quantityNoteLbl = new Label("biospecimen.quantity.note", new ResourceModel("biospecimen.quantity.note"));
+		quantityNoteLbl.setVisible(getModelObject().getBiospecimen().getId() != null);
+		
+		quantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() != null);
+		bioTransactionQuantityTxtFld.setVisible(getModelObject().getBiospecimen().getId() == null);
+		
+		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
+		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 	}
 
 	private void initSampleTypeDdc() {
@@ -330,7 +338,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		biospecimenUidTxtFld.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.biospecimenId.required", this, new Model<String>("Name")));
 		sampleTypeDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.sampleType.required", this, new Model<String>("Name")));
 		bioCollectionDdc.setRequired(true).setLabel(new StringResourceModel("error.biospecimen.bioCollection.required", this, new Model<String>("Name")));
-		
+
 		// Initial BioTransaction detail
 		bioTransactionQuantityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.bioTransaction.quantity.required", this, new Model<String>("Name")));
 		MinimumValidator<Double> minQuantityValidator = new MinimumValidator<Double>(Double.MIN_VALUE);
@@ -348,21 +356,22 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 		arkCrudContainerVo.getDetailPanelFormContainer().add(sampleTypeDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioCollectionDdc);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(barcodedChkBox);
-		
+
 		// Quantity label depends on new/existing Biospecimen
+		bioTransactionDetailWmc.addOrReplace(quantityNoteLbl);
 		bioTransactionDetailWmc.addOrReplace(quantityLbl);
 		// initial BioTransaction detail
 		bioTransactionDetailWmc.add(quantityTxtFld);
 		bioTransactionDetailWmc.add(bioTransactionQuantityTxtFld);
 		bioTransactionDetailWmc.add(unitDdc);
 		bioTransactionDetailWmc.add(treatmentTypeDdc);
-		
+
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionDetailWmc);
-		
+
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenCFDataEntryPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(bioTransactionListPanel);
 		arkCrudContainerVo.getDetailPanelFormContainer().add(biospecimenLocationPanel);
-		
+
 		add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
@@ -370,11 +379,11 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 	protected void onSave(AjaxRequestTarget target) {
 		if (cpModel.getObject().getBiospecimen().getId() == null) {
 			// Save
-			
+
 			// Inital transaction detail
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
 			cpModel.getObject().getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
-			
+
 			iLimsService.createBiospecimen(cpModel.getObject());
 			this.info("Biospecimen " + cpModel.getObject().getBiospecimen().getBiospecimenUid() + " was created successfully");
 			processErrors(target);
