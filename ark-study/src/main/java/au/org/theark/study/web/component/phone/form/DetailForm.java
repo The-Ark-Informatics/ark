@@ -210,7 +210,6 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 				}
 			}
 			if (saveOk) {
-				//TODO: With the current pattern we need to check if the person is Subject or Contact and based on that we need to attach it the right object(subject/contact)
 				// Ok to save...
 				String personType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
 				
