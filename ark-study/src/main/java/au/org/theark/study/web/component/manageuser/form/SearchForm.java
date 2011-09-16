@@ -83,7 +83,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		this.feedbackPanel = feedbackPanel;
 
 		initialiseSearchForm();
-		attachValidators();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study.", arkCrudContainerVO);
@@ -139,13 +138,6 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		emailTxtField = new TextField<String>(Constants.EMAIL);
 	}
 
-	protected void attachValidators() {
-		emailTxtField.add(EmailAddressValidator.getInstance());
-		firstNameTxtField.add(StringValidator.lengthBetween(2, 100));
-		lastNameTxtField.add(StringValidator.lengthBetween(2, 50));
-		userNameTxtField.add(StringValidator.lengthBetween(2, 50));
-		userNameTxtField.add(EmailAddressValidator.getInstance());
-	}
 
 	private void addSearchComponentsToForm() {
 		add(emailTxtField);
