@@ -1,84 +1,75 @@
 #customFieldDataPanel {
-	border-top: 1px solid #6F6F6F;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10px;
-    padding-top: 15px;
-    width: 90%;
+border-top:1px solid #6F6F6F;
+margin-left:auto;
+margin-right:auto;
+margin-top:10px;
+padding-top:15px;
+width:90%;
 }
 
 table.customFieldDataView caption {
-	text-align: left;
+text-align:left;
+padding-bottom:2px;
 }
 
 table.customFieldDataView tr {
-	padding-top: 2px;
-	padding-bottom: 2px;
+padding-top:2px;
+padding-bottom:2px;
 }
 
 table.customFieldDataView tr.even {
-	background-color: #EEEEEE;
+background-color:#EEE;
 }
 
 table.customFieldDataView tr.odd {
-	background-color: #FFFFFF;
+background-color:#FFF;
 }
 
 table.customFieldDataView tr td {
-	padding-left: 5px;
-	padding-right: 5px;
+padding-left:5px;
+padding-right:5px;
 }
 
 table.customFieldDataView tr th {
-	color: black;
-	padding-top: 5px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 10px;
-	background-color: #C0C0C0;
-	border-bottom: 1px solid #6F6F6F;
-	border-top: 1px solid #6F6F6F;
-	text-align: left;
-	white-space: nowrap;
-	vertical-align: middle;
-}
-
-table.customFieldDataView tr th {
-	background-position: right;
-	background-repeat: no-repeat;
+color:#000;
+background-color:silver;
+border-bottom:1px solid #6F6F6F;
+border-top:1px solid #6F6F6F;
+text-align:left;
+white-space:nowrap;
+vertical-align:middle;
+background-position:right;
+background-repeat:no-repeat;
+padding:5px 10px 5px 5px;
 }
 
 table.customFieldDataView tr th.wicket_orderDown {
-	background-color: #87cbff;
-	background-image: url(displaytag/img/arrow_down.png);
+background-color:#87cbff;
+background-image:url(displaytag/img/arrow_down.png);
 }
 
 table.customFieldDataView tr th.wicket_orderUp {
-	background-color: #87cbff;
-	background-image: url(displaytag/img/arrow_up.png);
+background-color:#87cbff;
+background-image:url(displaytag/img/arrow_up.png);
 }
 
 table.customFieldDataView tr th.wicket_orderNone {
-	background-image: url(displaytag/img/arrow_off.png);
+background-image:url(displaytag/img/arrow_off.png);
 }
 
 table.customFieldDataView tr th a {
-	font-weight: normal;
+font-weight:400;
 }
 
 table.customFieldDataView #message {
-	padding-left: 3px;
-}
-
-table.customFieldDataView caption {
-	padding-bottom: 2px;
+padding-left:3px;
 }
 
 table.customFieldDataView li {
-	margin-left: 1.5em;
+margin-left:1.5em;
 }
 
 table.customFieldDataView tfoot {
-    background: none repeat scroll 0 0 #C0C0C0;
-    border-top: 1px solid;
+background:none repeat scroll 0 0 silver;
+border-top:1px solid;
 }
