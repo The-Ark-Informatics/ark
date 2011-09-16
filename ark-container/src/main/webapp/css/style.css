@@ -12,7 +12,7 @@ http://www.cssstickyfooter.com
 /* must declare 0 margins on everything, also for main layout components use padding, not 
 vertical margins (top and bottom) to add spacing, else those margins get added to total height 
 and your footer gets pushed down a bit more, creating vertical scroll bars in the browser */
-html, body { /* 98% allows footer to be seen ok,at all times */
+html,body { /* 98% allows footer to be seen ok,at all times */
 	height: 98%;
 	overflow: auto;
 }
@@ -714,7 +714,7 @@ div.ex {
 #note {
 	font-size: 7pt;
 	font-weight: bold;
-	width: 200px;
+	width: 100%;
 }
 
 wicket-ajax-indicator {
@@ -766,18 +766,18 @@ div.wicket-aa ul li.selected {
 }
 
 .hideShowPanel {
-    border: thin solid #6F6F6F;
-    margin-bottom: -1px;
-    margin-left: -1px;
-    margin-right: -1px;
+	border: thin solid #6F6F6F;
+	margin-bottom: -1px;
+	margin-left: -1px;
+	margin-right: -1px;
 }
 
 .centreLabel {
-    text-align: center;
+	text-align: center;
 }
 
 #listPanelBorder {
-    border-color: #6F6F6F;
-    border-style: none solid solid;
-    border-width: 1px;
+	border-color: #6F6F6F;
+	border-style: none solid solid;
+	border-width: 1px;
 }
