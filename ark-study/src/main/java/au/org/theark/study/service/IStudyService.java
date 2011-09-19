@@ -53,7 +53,6 @@ import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyUpload;
-import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.vo.ConsentVO;
@@ -165,7 +164,6 @@ public interface IStudyService {
 
 	public List<Consent> searchConsent(ConsentVO consentVO) throws EntityNotFoundException, ArkSystemException;
 
-	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld);
 
 	/**
 	 * 
