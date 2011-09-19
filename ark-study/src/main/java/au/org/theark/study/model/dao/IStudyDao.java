@@ -53,7 +53,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
-import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -199,8 +198,6 @@ public interface IStudyDao {
 	public List<Consent> searchConsent(Consent consent) throws EntityNotFoundException, ArkSystemException;
 
 	public List<Consent> searchConsent(ConsentVO consentVo) throws EntityNotFoundException, ArkSystemException;
-
-	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld);
 
 	/**
 	 * 
