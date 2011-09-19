@@ -18,14 +18,9 @@
  ******************************************************************************/
 package au.org.theark.core.model.study.entity;
 
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -43,7 +38,6 @@ public class DataType implements java.io.Serializable {
 	private Long						id;
 	private String						name;
 	private String						description;
-	private Set<SubjectCustmFld>	subjectCustmFlds	= new HashSet<SubjectCustmFld>(0);
 
 	// Constructors
 
@@ -58,11 +52,10 @@ public class DataType implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public DataType(Long id, String name, String description, Set<SubjectCustmFld> subjectCustmFlds) {
+	public DataType(Long id, String name, String description) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
-		this.subjectCustmFlds = subjectCustmFlds;
 	}
 
 	// Property accessors
@@ -92,15 +85,6 @@ public class DataType implements java.io.Serializable {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "dataType")
-	public Set<SubjectCustmFld> getSubjectCustmFlds() {
-		return this.subjectCustmFlds;
-	}
-
-	public void setSubjectCustmFlds(Set<SubjectCustmFld> subjectCustmFlds) {
-		this.subjectCustmFlds = subjectCustmFlds;
 	}
 
 }
