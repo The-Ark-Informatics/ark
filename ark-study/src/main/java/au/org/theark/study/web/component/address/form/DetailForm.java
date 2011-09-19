@@ -18,12 +18,12 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.address.form;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -36,6 +36,7 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.validator.DateValidator;
 import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -240,7 +241,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		postCodeTxtFld.setRequired(true).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code")));
 		postCodeTxtFld.add(StringValidator.maximumLength(10)).setLabel(new StringResourceModel("postcode", this, new Model<String>("Post Code Max Length")));
 		postCodeTxtFld.add(StringValidator.minimumLength(4));
-
+		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("error.study.date.max.range", this, null));
 		addressTypeChoice.setRequired(true).setLabel(new StringResourceModel("addressType", this, new Model<String>("Address Type")));
 		addressStatusChoice.setRequired(true).setLabel(new StringResourceModel("addressStatus", this, new Model<String>("Address Status")));
 		stateChoice.setRequired(true).setLabel(new StringResourceModel("state", this, new Model<String>("State")));
