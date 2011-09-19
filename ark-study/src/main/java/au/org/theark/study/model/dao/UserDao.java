@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
-import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -30,9 +29,7 @@ import org.springframework.stereotype.Repository;
 import au.org.theark.core.dao.HibernateSessionDao;
 import au.org.theark.core.exception.PersonNotFoundException;
 import au.org.theark.core.model.study.entity.ArkUser;
-import au.org.theark.core.model.study.entity.EtaUser;
 import au.org.theark.core.model.study.entity.Person;
-import au.org.theark.core.model.study.entity.StudyUpload;
 
 /**
  * 
@@ -42,23 +39,6 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 @Repository("userDao")
 public class UserDao extends HibernateSessionDao implements IUserDao {
 
-	public void createUser(EtaUser user) {
-
-		getSession().save(user);
-
-	}
-
-	public EtaUser getUser(Long userId) {
-		return (EtaUser) getSession().get(EtaUser.class, userId);
-	}
-
-	public EtaUser getUser(String userName) {
-		String query = "from EtaUser eu where eu.userName = :userName";
-		Session session = getSession();
-		EtaUser user = null;
-		user = (EtaUser) session.createQuery(query).setString("userName", userName).uniqueResult();
-		return user;
-	}
 
 	public Person createPerson(Person personEntity) {
 
