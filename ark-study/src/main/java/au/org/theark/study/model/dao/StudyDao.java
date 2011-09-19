@@ -84,7 +84,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyStatus;
 import au.org.theark.core.model.study.entity.StudyUpload;
-import au.org.theark.core.model.study.entity.SubjectCustmFld;
 import au.org.theark.core.model.study.entity.SubjectCustomFieldData;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.model.study.entity.SubjectStatus;
@@ -945,16 +944,6 @@ public class StudyDao extends HibernateSessionDao implements IStudyDao {
 
 		}
 		List<Consent> list = criteria.list();
-		return list;
-	}
-
-	public List<SubjectCustmFld> searchStudyFields(SubjectCustmFld subjectCustmFld) {
-
-		Criteria criteria = getSession().createCriteria(SubjectCustmFld.class);
-		if (subjectCustmFld != null) {
-
-		}
-		List<SubjectCustmFld> list = criteria.list();
 		return list;
 	}
 
