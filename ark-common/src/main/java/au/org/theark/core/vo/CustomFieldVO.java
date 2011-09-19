@@ -19,12 +19,9 @@
 package au.org.theark.core.vo;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
-import au.org.theark.core.model.study.entity.SubjectCustmFld;
 
 /**
  * @author nivedann
@@ -32,7 +29,6 @@ import au.org.theark.core.model.study.entity.SubjectCustmFld;
  */
 public class CustomFieldVO implements Serializable {
 
-	private SubjectCustmFld	subjectCustomField;//Old one will remove it (NN)
 	
 	private CustomField customField;
 	private CustomFieldDisplay customFieldDisplay;
@@ -41,18 +37,9 @@ public class CustomFieldVO implements Serializable {
 	
 	public CustomFieldVO() {
 		super();
-		subjectCustomField = new SubjectCustmFld();
 		customField = new CustomField();
 		customFieldDisplay = new CustomFieldDisplay();
 		useCustomFieldDisplay = false;
-	}
-
-	public SubjectCustmFld getSubjectCustomField() {
-		return subjectCustomField;
-	}
-
-	public void setSubjectCustomField(SubjectCustmFld subjectCustomField) {
-		this.subjectCustomField = subjectCustomField;
 	}
 
 	public CustomField getCustomField() {
