@@ -38,7 +38,6 @@ public class SubjectCustFldDat implements java.io.Serializable {
 	// Fields
 
 	private Long					id;
-	private SubjectCustmFld		subjectCustmFld;
 	private LinkSubjectStudy	linkSubjectStudy;
 	private String					fieldData;
 
@@ -54,9 +53,8 @@ public class SubjectCustFldDat implements java.io.Serializable {
 	}
 
 	/** full constructor */
-	public SubjectCustFldDat(Long id, SubjectCustmFld subjectCustmFld, LinkSubjectStudy linkSubjectStudy, String fieldData) {
+	public SubjectCustFldDat(Long id, LinkSubjectStudy linkSubjectStudy, String fieldData) {
 		this.id = id;
-		this.subjectCustmFld = subjectCustmFld;
 		this.linkSubjectStudy = linkSubjectStudy;
 		this.fieldData = fieldData;
 	}
@@ -70,16 +68,6 @@ public class SubjectCustFldDat implements java.io.Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SUBJECT_CUSTM_FLD_ID")
-	public SubjectCustmFld getSubjectCustmFld() {
-		return this.subjectCustmFld;
-	}
-
-	public void setSubjectCustmFld(SubjectCustmFld subjectCustmFld) {
-		this.subjectCustmFld = subjectCustmFld;
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
