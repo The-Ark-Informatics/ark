@@ -53,8 +53,6 @@ public class SubjectVO implements Serializable {
 	/** A List of Email account linked to this person/subject */
 	protected Collection<EmailAccount>				emailAccountList;
 
-	protected Collection<StudyConsentQuestion>	consentQuestions;
-
 	/** A List of Files linked to this person/subject */
 	protected Collection<SubjectFile>				subjectFileList;
 
