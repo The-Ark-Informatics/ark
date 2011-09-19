@@ -76,7 +76,6 @@ public class Study implements java.io.Serializable {
 	private Set<LinkStudySubstudy>		linkStudySubstudiesForid		= new HashSet<LinkStudySubstudy>(0);
 	private Set<LinkStudyStudysite>		linkStudyStudysites				= new HashSet<LinkStudyStudysite>(0);
 	private Set<StudyComp>					studyComps							= new HashSet<StudyComp>(0);
-	private Set<SubjectCustmFld>			subjectCustmFlds					= new HashSet<SubjectCustmFld>(0);
 	private Set<LinkSubjectStudycomp>	linkSubjectStudycomps			= new HashSet<LinkSubjectStudycomp>(0);
 	private Set<LinkSubjectStudy>			linkSubjectStudies				= new HashSet<LinkSubjectStudy>(0);
 	private Set<LinkSubjectContact>		linkSubjectContacts				= new HashSet<LinkSubjectContact>(0);
@@ -98,7 +97,7 @@ public class Study implements java.io.Serializable {
 	public Study(Long id, StudyStatus studyStatus, String name, String description, Date dateOfApplication, Long estimatedYearOfCompletion, String chiefInvestigator, String coInvestigator,
 			Boolean autoGenerateSubjectUid, Long subjectUIdStart, String subjectIdPrefix, String contactPerson, String contactPersonPhone, String ldapGroupName, Boolean autoConsent,
 			String subStudyBiospecimenPrefix, String filename, SubjectUidToken subjectIdToken, SubjectUidPadChar subjectUIdPadChar, Set<LinkStudySubstudy> linkStudySubstudiesForid,
-			Set<LinkStudyStudysite> linkStudyStudysites, Set<StudyComp> studyComps, Set<SubjectCustmFld> subjectCustmFlds, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
+			Set<LinkStudyStudysite> linkStudyStudysites, Set<StudyComp> studyComps, Set<LinkSubjectStudycomp> linkSubjectStudycomps,
 			Set<LinkSubjectStudy> linkSubjectStudies, Set<LinkSubjectContact> linkSubjectContacts, Set<LinkStudyStudycomp> linkStudyStudycomps, Set<LinkStudySubstudy> linkStudySubstudiesForSubid) {
 		this.id = id;
 		this.studyStatus = studyStatus;
@@ -122,7 +121,6 @@ public class Study implements java.io.Serializable {
 		this.linkStudySubstudiesForid = linkStudySubstudiesForid;
 		this.linkStudyStudysites = linkStudyStudysites;
 		this.studyComps = studyComps;
-		this.subjectCustmFlds = subjectCustmFlds;
 		this.linkSubjectStudycomps = linkSubjectStudycomps;
 		this.linkSubjectStudies = linkSubjectStudies;
 		this.linkSubjectContacts = linkSubjectContacts;
@@ -315,15 +313,6 @@ public class Study implements java.io.Serializable {
 
 	public void setStudyComps(Set<StudyComp> studyComps) {
 		this.studyComps = studyComps;
-	}
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
-	public Set<SubjectCustmFld> getSubjectCustmFlds() {
-		return this.subjectCustmFlds;
-	}
-
-	public void setSubjectCustmFlds(Set<SubjectCustmFld> subjectCustmFlds) {
-		this.subjectCustmFlds = subjectCustmFlds;
 	}
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "study")
