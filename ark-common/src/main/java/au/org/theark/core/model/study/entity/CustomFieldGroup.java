@@ -48,10 +48,16 @@ import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 @Table(name = "CUSTOM_FIELD_GROUP", schema = Constants.STUDY_SCHEMA)
 public class CustomFieldGroup implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private Long	id;
 	private String	name;
 	private String	description;
 	private Study study;
+	private Boolean published;
 	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
 	
 	/**
@@ -91,16 +97,6 @@ public class CustomFieldGroup implements Serializable{
 		this.description = description;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldGroup")
-	public Set<PhenotypicCollection> getPhenotypicCollection() {
-		return phenotypicCollection;
-	}
-
-	public void setPhenotypicCollection(
-			Set<PhenotypicCollection> phenotypicCollection) {
-		this.phenotypicCollection = phenotypicCollection;
-	}
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	public Study getStudy() {
@@ -110,7 +106,24 @@ public class CustomFieldGroup implements Serializable{
 	public void setStudy(Study study) {
 		this.study = study;
 	}
-	
-	
+
+	@Column(name = "PUBLISHED")
+	public Boolean getPublished() {
+		return published;
+	}
+
+	public void setPublished(Boolean published) {
+		this.published = published;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldGroup")
+	public Set<PhenotypicCollection> getPhenotypicCollection() {
+		return phenotypicCollection;
+	}
+
+	public void setPhenotypicCollection(
+			Set<PhenotypicCollection> phenotypicCollection) {
+		this.phenotypicCollection = phenotypicCollection;
+	}
 
 }
