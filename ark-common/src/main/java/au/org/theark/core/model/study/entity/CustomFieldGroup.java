@@ -29,6 +29,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -49,6 +51,7 @@ public class CustomFieldGroup implements Serializable{
 	private Long	id;
 	private String	name;
 	private String	description;
+	private Study study;
 	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
 	
 	/**
@@ -96,6 +99,16 @@ public class CustomFieldGroup implements Serializable{
 	public void setPhenotypicCollection(
 			Set<PhenotypicCollection> phenotypicCollection) {
 		this.phenotypicCollection = phenotypicCollection;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "STUDY_ID")
+	public Study getStudy() {
+		return study;
+	}
+
+	public void setStudy(Study study) {
+		this.study = study;
 	}
 	
 	
