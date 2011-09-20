@@ -8,3 +8,7 @@ ALTER TABLE `study`.`custom_field_group` ADD COLUMN `STUDY_ID` INT NULL  AFTER `
 , ADD INDEX `FK_CUSTOM_FIELD_GROUP_STUDY_ID` (`STUDY_ID` ASC) ;
 
 
+ALTER TABLE `study`.`custom_field_group` CHANGE COLUMN `STUDY_ID` `STUDY_ID` INT(11) NOT NULL  ;
+
+
+
