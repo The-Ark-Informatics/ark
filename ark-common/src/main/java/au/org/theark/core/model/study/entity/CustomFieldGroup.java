@@ -19,16 +19,22 @@
 package au.org.theark.core.model.study.entity;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import au.org.theark.core.model.Constants;
+import au.org.theark.core.model.pheno.entity.PhenotypicCollection;
 
 /**
  * @author nivedann
@@ -43,6 +49,7 @@ public class CustomFieldGroup implements Serializable{
 	private Long	id;
 	private String	name;
 	private String	description;
+	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
 	
 	/**
 	 * 
@@ -79,6 +86,16 @@ public class CustomFieldGroup implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "customFieldGroup")
+	public Set<PhenotypicCollection> getPhenotypicCollection() {
+		return phenotypicCollection;
+	}
+
+	public void setPhenotypicCollection(
+			Set<PhenotypicCollection> phenotypicCollection) {
+		this.phenotypicCollection = phenotypicCollection;
 	}
 	
 	
