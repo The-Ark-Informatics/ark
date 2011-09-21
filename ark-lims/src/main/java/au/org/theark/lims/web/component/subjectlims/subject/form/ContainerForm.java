@@ -94,12 +94,6 @@ public class ContainerForm extends AbstractContainerForm<LimsVO> {
 	
 	@Override
 	protected void onBeforeRender() {
-		// Set study in context back to limsVo.study
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		if(sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			getModelObject().setStudy(study);
-		}
 		getModelObject().setStudyList(getStudyListForUser());
 		super.onBeforeRender();
 	}
