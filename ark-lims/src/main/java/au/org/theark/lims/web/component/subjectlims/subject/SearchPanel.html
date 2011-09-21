@@ -1,83 +1,149 @@
 <wicket:panel>
-&nbsp;
+	&nbsp;
 	<!-- Start of searchPanelContainer-->
 	<div id="searchPanelContainer">
 		<form wicket:id="searchForm">
 			<div id="searchPanelContent">
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
 				<div id="fldLabel">
 					<div class="label">
 						<label for="study">
-							<wicket:message key="study">Study:</wicket:message>
+							<wicket:message key="study">
+								Study:
+							</wicket:message>
 						</label>
 					</div>
 				</div>
-		
+
 				<div id="fldControl">
 					<div class="label">
 						<select wicket:id="study">
-			       				<option>Study selection</option>
-			       		</select>
-		       		</div>
+							<option>
+								Study selection
+							</option>
+						</select>
+					</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
 				<!-- Empty -->
-				
-				<div id="searchPanelContentRight">&nbsp;</div>
-			
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
 				<div id="fldLabel">
-					<div class="label"><label for="subjectId"><wicket:message key="subjectUID">Subject UID:</wicket:message></label></div>
+					<div class="label">
+						<label for="subjectId">
+							<wicket:message key="subjectUID">
+								Subject UID:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
-		
+
 				<div id="fldControl">
-					<div class="label"><input wicket:id="linkSubjectStudy.subjectUID" type="text" /></div>
+					<div class="label">
+						<input wicket:id="linkSubjectStudy.subjectUID" type="text" />
+					</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
-					<div class="label"><label for="firstName"><wicket:message key="firstName">First Name:</wicket:message></label></div>
+					<div class="label">
+						<label for="firstName">
+							<wicket:message key="firstName">
+								First Name:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
-			
+
 				<div id="fldControl">
-					<div class="label"><input wicket:id="linkSubjectStudy.person.firstName" type="text" /></div>
+					<div class="label">
+						<input wicket:id="linkSubjectStudy.person.firstName" type="text" />
+					</div>
 				</div>
-				
-				<div id="searchPanelContentRight">&nbsp;</div>
-			
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
-			
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
-					<div class="label"><label for="middleName"> <wicket:message key="middleName">Middle Name:</wicket:message> </label></div>
+					<div class="label">
+						<label for="middleName">
+							<wicket:message key="middleName">
+								Middle Name:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
 				<div id="fldControl">
-					<div class="label"><input wicket:id="linkSubjectStudy.person.middleName" type="text" /></div>
+					<div class="label">
+						<input wicket:id="linkSubjectStudy.person.middleName" type="text" />
+					</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
-					<div class="label"><label for="lastName"> <wicket:message key="lastName">Last Name:</wicket:message> </label></div>
+					<div class="label">
+						<label for="lastName">
+							<wicket:message key="lastName">
+								Last Name:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
 				<div id="fldControl">
-					<div class="label"><input wicket:id="linkSubjectStudy.person.lastName" type="text" /></div>
-				</div>	
-			
-				<div id="searchPanelContentRight">&nbsp;</div>
-				
-				<div id="searchPanelBreaker">&nbsp;</div>
-				<div id="panelContentLeft">&nbsp;</div>
-			
+					<div class="label">
+						<input wicket:id="linkSubjectStudy.person.lastName" type="text" />
+					</div>
+				</div>
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
 					<div class="label">
 						<label for="dateOfBirth">
-							<wicket:message key="dateOfBirth">Date Of Birth:</wicket:message>
+							<wicket:message key="dateOfBirth">
+								Date Of Birth:
+							</wicket:message>
 						</label>
 					</div>
 				</div>
@@ -86,57 +152,101 @@
 						<input wicket:id="linkSubjectStudy.person.dateOfBirth" maxLength="10"/>
 					</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
-					<div class="label"><label for="vitalStatus"> <wicket:message key="vitalStatus">Vital Status:</wicket:message> </label></div>
+					<div class="label">
+						<label for="vitalStatus">
+							<wicket:message key="vitalStatus">
+								Vital Status:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
 						<select wicket:id="vitalStatus">
-		       				<option>Alive</option>
-							<option>Deceased</option>
-		       			</select>
-		       		</div>
+							<option>
+								Alive
+							</option>
+							<option>
+								Deceased
+							</option>
+						</select>
+					</div>
 				</div>
-					
-				<div id="searchPanelContentRight">&nbsp;</div>
-			
-				<div id="searchPanelBreaker">&nbsp;</div>
-				
-				<div id="panelContentLeft">&nbsp;</div>
-			
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
 				<div id="fldLabel">
-					<div class="label"><label for="genderType"> <wicket:message key="gender">Gender:</wicket:message> </label></div>
+					<div class="label">
+						<label for="genderType">
+							<wicket:message key="gender">
+								Gender:
+							</wicket:message>
+						</label>
+					</div>
 				</div>
 				<div id="fldControl">
 					<div class="label">
 						<select wicket:id="genderType">
-		       				<option>Male</option>
-							<option>Female</option>
-		       			</select>
-		       		</div>
+							<option>
+								Male
+							</option>
+							<option>
+								Female
+							</option>
+						</select>
+					</div>
 				</div>
-			
-				<div id="panelMargin">&nbsp;</div>
-			
-				<!-- Empty -->
-			
-				<div id="searchPanelContentRight">&nbsp;</div>
 
-				<div id="searchPanelBr"></div>
-				
-				<!--  Defines the location for buttons -->			
-				<div id="panelContentLeft">&nbsp;</div>
-				<div id="fldLabel">&nbsp;</div>
-				<div id="fldControl">&nbsp;</div>
-				<div id="panelMargin">&nbsp;</div>
-				<div id="actionButtons">&nbsp;
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<!-- Empty -->
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+
+				<div id="searchPanelBreaker">
+				</div>
+
+				<!--	Defines the location for buttons -->
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
 					<div>
-						<input wicket:id="search" type="submit" wicket:message="value:button.search" />&nbsp;
-						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />&nbsp;
-						<input wicket:id="new" type="submit" wicket:message="value:button.new" />						
+						<input wicket:id="search" type="submit" wicket:message="value:button.search" />
+						&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:button.reset" />
+						&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:button.new" />
 					</div>
 				</div>
 			</div>
