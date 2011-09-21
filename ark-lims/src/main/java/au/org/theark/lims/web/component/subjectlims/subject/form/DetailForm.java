@@ -18,11 +18,13 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.subject.form;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -40,6 +42,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.EntityNotFoundException;
+import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.ConsentStatus;
 import au.org.theark.core.model.study.entity.ConsentType;
 import au.org.theark.core.model.study.entity.GenderType;
@@ -51,6 +56,7 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -348,8 +354,9 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		// Set study in context back to limsVo.study
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {
-			Study study = iArkCommonService.getStudy(sessionStudyId);
-			limsVo.setStudy(study);
+			//Study study = iArkCommonService.getStudy(sessionStudyId);
+			//limsVo.setStudy(study);
+			//limsVo.setStudyList(getStudyListForUser());	
 			containerForm.setModelObject(limsVo);
 
 			// Refresh the contextUpdateTarget (remove)
@@ -433,5 +440,29 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	public void setSubjectUIDTxtFld(TextField<String> subjectUIDTxtFld) {
 		this.subjectUIDTxtFld = subjectUIDTxtFld;
+	}
+	
+	/**
+	 * Returns a list of Studies the user is permitted to access
+	 * 
+	 * @return
+	 */
+	public List<Study> getStudyListForUser() {
+		List<Study> studyList = new ArrayList<Study>(0);
+		try {
+			Subject currentUser = SecurityUtils.getSubject();
+			ArkUser arkUser = iArkCommonService.getArkUser(currentUser.getPrincipal().toString());
+			ArkUserVO arkUserVo = new ArkUserVO();
+			arkUserVo.setArkUserEntity(arkUser);
+			
+			Long sessionArkModuleId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.ARK_MODULE_KEY);
+			ArkModule arkModule = null;
+			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
+			studyList = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
+		}
+		catch (EntityNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		return studyList;
 	}
 }

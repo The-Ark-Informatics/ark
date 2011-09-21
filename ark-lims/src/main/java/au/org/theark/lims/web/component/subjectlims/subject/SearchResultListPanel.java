@@ -214,6 +214,7 @@ public class SearchResultListPanel extends Panel {
 				// Refresh the contextUpdateTarget (add)
 				if (subjectContainerForm.getContextUpdateLimsWMC() != null) {
 					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup);
+					subjectContainerForm.getContextUpdateLimsWMC().setVisible(true);
 					subjectContainerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
 					target.addComponent(subjectContainerForm.getContextUpdateLimsWMC());
 				}

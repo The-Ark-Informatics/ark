@@ -22,6 +22,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.lims.web.component.subjectlims.lims.LimsContainerPanel;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
 import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
 
@@ -44,6 +45,9 @@ public class DetailPanel extends Panel {
 	private WebMarkupContainer	editButtonContainer;
 	private WebMarkupContainer	arkContextContainer;
 	private ContainerForm		containerForm;
+	
+	private WebMarkupContainer		limsContainerWMC;
+	private Panel						limsContainerPanel;
 
 	public DetailPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchResultPanelContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
 			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
@@ -67,6 +71,13 @@ public class DetailPanel extends Panel {
 
 		detailsForm.initialiseDetailForm();
 		add(detailsForm);
+		
+		limsContainerWMC = new WebMarkupContainer("limsContainerWMC");
+		limsContainerWMC.setOutputMarkupPlaceholderTag(true);
+
+		limsContainerPanel = new LimsContainerPanel("limsContainerPanel");
+		limsContainerWMC.add(limsContainerPanel);
+		this.add(limsContainerWMC);
 	}
 
 	public DetailForm getDetailsForm() {

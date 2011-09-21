@@ -84,17 +84,10 @@ public class ContainerForm extends AbstractContainerForm<LimsVO> {
 			ArkModule arkModule = null;
 			arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
 			studyList = iArkCommonService.getStudyListForUserAndModule(arkUserVo, arkModule);
-			getModelObject().setStudyList(studyList);
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 		}
 		return studyList;
-	}
-	
-	@Override
-	protected void onBeforeRender() {
-		getModelObject().setStudyList(getStudyListForUser());
-		super.onBeforeRender();
 	}
 }
