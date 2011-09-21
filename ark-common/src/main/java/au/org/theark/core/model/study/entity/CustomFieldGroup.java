@@ -58,6 +58,7 @@ public class CustomFieldGroup implements Serializable{
 	private String	description;
 	private Study study;
 	private Boolean published;
+	private ArkFunction arkFunction;
 	private Set<PhenotypicCollection> phenotypicCollection = new HashSet<PhenotypicCollection>();
 	
 	/**
@@ -124,6 +125,16 @@ public class CustomFieldGroup implements Serializable{
 	public void setPhenotypicCollection(
 			Set<PhenotypicCollection> phenotypicCollection) {
 		this.phenotypicCollection = phenotypicCollection;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ARK_FUNCTION_ID")
+	public ArkFunction getArkFunction() {
+		return arkFunction;
+	}
+
+	public void setArkFunction(ArkFunction arkFunction) {
+		this.arkFunction = arkFunction;
 	}
 
 }
