@@ -82,7 +82,6 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private TextField<String>					lastNameTxtFld;
 	private DropDownChoice<VitalStatus>		vitalStatusDdc;
 	private DropDownChoice<GenderType>		genderTypeDdc;
-	private DropDownChoice<SubjectStatus>	subjectStatusDdc;
 	private DateTextField						dateOfBirthTxtFld;
 	private CompoundPropertyModel<LimsVO>	cpmModel;
 
@@ -152,16 +151,26 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private void initStudyDdc() {
 		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
 		PropertyModel<Study> studyPm = new PropertyModel<Study>(limsSubjectCpm, "study");
-
 		List<Study> studyListForUser = new ArrayList<Study>(0);
 		studyListForUser = getStudyListForUser();
 		ChoiceRenderer<Study> studyRenderer = new ChoiceRenderer<Study>(Constants.NAME, Constants.ID);
-		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer);
+		studyDdc = new DropDownChoice<Study>("study", studyPm, (List<Study>) studyListForUser, studyRenderer){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
+			@Override
+			protected void onBeforeRender() {
+				super.onBeforeRender();
+				this.setChoices(getStudyListForUser());
+			}
+		};
 	}
 
 	private void initVitalStatusDdc() {
-		CompoundPropertyModel<LimsVO> subjectCpm = cpmModel;
-		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
+		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(limsSubjectCpm, "linkSubjectStudy");
 		PropertyModel<Person> personPm = new PropertyModel<Person>(linkSubjectStudyPm, "person");
 		PropertyModel<VitalStatus> vitalStatusPm = new PropertyModel<VitalStatus>(personPm, Constants.VITAL_STATUS);
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
@@ -170,12 +179,12 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	}
 
 	private void initSubjectStatusDdc() {
-		CompoundPropertyModel<LimsVO> subjectCpm = cpmModel;
-		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(subjectCpm, "linkSubjectStudy");
+		CompoundPropertyModel<LimsVO> limsSubjectCpm = cpmModel;
+		PropertyModel<LinkSubjectStudy> linkSubjectStudyPm = new PropertyModel<LinkSubjectStudy>(limsSubjectCpm, "linkSubjectStudy");
 		PropertyModel<SubjectStatus> subjectStatusPm = new PropertyModel<SubjectStatus>(linkSubjectStudyPm, "subjectStatus");
 		List<SubjectStatus> subjectStatusList = iArkCommonService.getSubjectStatus();
 		ChoiceRenderer<SubjectStatus> subjectStatusRenderer = new ChoiceRenderer<SubjectStatus>(Constants.NAME, Constants.SUBJECT_STATUS_ID);
-		subjectStatusDdc = new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusPm, subjectStatusList, subjectStatusRenderer);
+		new DropDownChoice<SubjectStatus>(Constants.SUBJECT_STATUS, subjectStatusPm, subjectStatusList, subjectStatusRenderer);
 	}
 
 	private void initGenderTypeDdc() {

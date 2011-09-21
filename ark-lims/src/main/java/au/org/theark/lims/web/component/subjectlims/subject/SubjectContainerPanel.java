@@ -54,23 +54,23 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	/**
 	 * 
 	 */
-	private static final long																			serialVersionUID	= -2956968644138345497L;
-	private static final Logger																		log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
-	private SearchPanel																					searchPanel;
-	private SearchResultListPanel																		searchResultsPanel;
-	private DetailPanel																					detailsPanel;
-	private PageableListView<LimsVO>														pageableListView;
-	private ContainerForm																				containerForm;
+	private static final long									serialVersionUID	= -2956968644138345497L;
+	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
+	private SearchPanel											searchPanel;
+	private SearchResultListPanel								searchResultsPanel;
+	private DetailPanel											detailsPanel;
+	private PageableListView<LimsVO>							pageableListView;
+	private ContainerForm										containerForm;
 
-	private WebMarkupContainer																			arkContextMarkup;
+	private WebMarkupContainer									arkContextMarkup;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService																			iArkCommonService;
+	private IArkCommonService									iArkCommonService;
 
 	@SpringBean(name = Constants.LIMS_SUBJECT_SERVICE)
-	private ILimsSubjectService																		iLimsSubjectService;
+	private ILimsSubjectService								iLimsSubjectService;
 
-	private DataView<LinkSubjectStudy>																dataView;
+	private DataView<LinkSubjectStudy>						dataView;
 	private ArkDataProvider2<LimsVO, LinkSubjectStudy>	subjectProvider;
 
 	/**
@@ -173,7 +173,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
-					if(studyList.isEmpty()) {
+					if (studyList.isEmpty()) {
 						studyList = containerForm.getStudyListForUser();
 					}
 				}
@@ -191,7 +191,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 				}
 				else {
 					studyList = criteriaModel.getObject().getStudyList();
-					if(studyList.isEmpty()) {
+					if (studyList.isEmpty()) {
 						studyList = containerForm.getStudyListForUser();
 					}
 				}
