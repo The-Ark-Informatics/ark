@@ -1,116 +1,170 @@
 <wicket:panel>
-&nbsp;
-     	<div id="searchPanelContainer">
-			
-			<form wicket:id="searchForm">
-		  		<div id="searchPanelContent">
-					<div id="searchPanelBreaker">&nbsp;</div>				
-					<div id="panelContentLeft">&nbsp;</div>
-					<div id="fldLabel">
-		 				<div class="label">
-		 					<label for="studyKey"><wicket:message key="study.study.Id">Study Id:</wicket:message></label>
-		 				</div> 
-		 			</div>
-						
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="study.id"  type="text" />
-						</div>
-					</div>
-						
-		       		<div  id="panelMargin">&nbsp;</div>
-		       		
-		       		<div id="fldLabel">
-		 				<div class="label">
-		 					<label for="studyName">
-									<wicket:message key="study.studyName">Study Name:</wicket:message>
-							</label>
-		 				</div> 
-		 			</div> 			       			
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="study.name"  type="text" />
-						</div>
-					</div>
-					
-					<div id="searchPanelContentRight">&nbsp;</div>
-					<div id="searchPanelBreaker">&nbsp;</div>		
-		       		<div id="panelContentLeft">&nbsp;</div>
-		       			
-					<div id="fldLabel">
-						<div class="label">
-		       					<label for="status">
-		       						<wicket:message key="study.studyStatus">Study Status:</wicket:message>
-		       					</label>
-		       			</div>
-		       		</div>
-					<div id="fldControl">
-		       				<div class="label">
-		       					 <select wicket:id="studyChoice">
-		       					 	<option>Active</option>
-									<option>EOI</option>
-		       					 </select>
-		       				</div>
-		       		</div>
-			       		       			
-		       		<div id="panelMargin">&nbsp;</div>
-						
-					<div id="fldLabel">
-						<div class="label">
-							<label for="email"><wicket:message key="study.dateOfApplication">Date of Application:</wicket:message></label>
-						</div>
-					</div>
-						
-					<div id="fldControl">
-						<div class="label">
-							<input wicket:id="study.dateOfApplication" type="text" maxLength="10"/>
-						</div>
-					</div>
-				
-					<div id="searchPanelContentRight">&nbsp;</div>
-					<div id="searchPanelBreaker">&nbsp;</div>		
-		       		<div id="panelContentLeft">&nbsp;</div>
-		       		<div id="fldLabel">
-						<div class="label">
-		       					<label for="contact">
-		       						<wicket:message key="study.contact">Principal Contact:</wicket:message>
-		       					</label>
-		       			</div>
-		       		</div>
-					<div id="fldControl">
-		       				<div class="label">
-		       					<input wicket:id="study.contactPerson"  type="text" />
-		       				</div>
-		       		</div>
-		       		<div id="panelMargin">&nbsp;</div>
-		       		
-		       		<div id="fldLabel">
-						<div class="label">
-							&nbsp;
-						</div>
-					</div>
-					<div id="fldControl">
-						<div class="label">
-							&nbsp;
-						</div>
-					</div>
-		       		
-					<div id="searchPanelBr"></div>	
-		
-					<!--  Defines the location for buttons -->			
-					<div id="panelContentLeft">&nbsp;</div>
-					<div id="fldLabel">&nbsp;</div>
-					<div id="fldControl">&nbsp;</div>
-					<div id="panelMargin">&nbsp;</div>
-					<div id="actionButtons">&nbsp;
-					<div>
-							<input wicket:id="search" type="submit" wicket:message="value:page.search" />&nbsp;
-							<input wicket:id="reset" type="submit" wicket:message="value:study.search.reset.button" />&nbsp;
-							<input wicket:id="new" type="submit" wicket:message="value:page.new" />
-					</div>
-					</div>
-					<div id="searchPanelBreaker">&nbsp;</div>
+	&nbsp;
+	<div id="searchPanelContainer">
+		<form wicket:id="searchForm">
+			<div id="searchPanelContent">
+				<div id="searchPanelBreaker">
+					&nbsp;
 				</div>
-			</form>
-       </div><!-- Container-->
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="studyKey">
+							<wicket:message key="study.study.Id">
+								Study Id:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="study.id"	type="text" />
+					</div>
+				</div>
+
+				<div	id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="studyName">
+							<wicket:message key="study.studyName">
+								Study Name:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="study.name"	type="text" />
+					</div>
+				</div>
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="status">
+							<wicket:message key="study.studyStatus">
+								Study Status:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<select wicket:id="studyChoice">
+							<option>
+								Active
+							</option>
+							<option>
+								EOI
+							</option>
+						</select>
+					</div>
+				</div>
+
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						<label for="email">
+							<wicket:message key="study.dateOfApplication">
+								Date of Application:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="study.dateOfApplication" type="text" maxLength="10"/>
+					</div>
+				</div>
+
+				<div id="searchPanelContentRight">
+					&nbsp;
+				</div>
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					<div class="label">
+						<label for="contact">
+							<wicket:message key="study.contact">
+								Principal Contact:
+							</wicket:message>
+						</label>
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						<input wicket:id="study.contactPerson"	type="text" />
+					</div>
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+
+				<div id="fldLabel">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+				<div id="fldControl">
+					<div class="label">
+						&nbsp;
+					</div>
+				</div>
+
+				<div id="searchPanelBreaker">
+				</div>
+
+				<!--	Defines the location for buttons -->
+				<div id="panelContentLeft">
+					&nbsp;
+				</div>
+				<div id="fldLabel">
+					&nbsp;
+				</div>
+				<div id="fldControl">
+					&nbsp;
+				</div>
+				<div id="panelMargin">
+					&nbsp;
+				</div>
+				<div id="actionButtons">
+					&nbsp;
+					<div>
+						<input wicket:id="search" type="submit" wicket:message="value:page.search" />
+						&nbsp;
+						<input wicket:id="reset" type="submit" wicket:message="value:study.search.reset.button" />
+						&nbsp;
+						<input wicket:id="new" type="submit" wicket:message="value:page.new" />
+					</div>
+				</div>
+				<div id="searchPanelBreaker">
+					&nbsp;
+				</div>
+			</div>
+		</form>
+	</div>
+	<!-- Container-->
 </wicket:panel>
