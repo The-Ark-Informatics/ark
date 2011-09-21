@@ -165,5 +165,61 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 		}
 		return flag;
 	}
+	
+	/**
+	 * @return the searchPanelContainer
+	 */
+	public WebMarkupContainer getSearchPanelContainer() {
+		return searchPanelContainer;
+	}
+
+	/**
+	 * @param searchPanelContainer the searchPanelContainer to set
+	 */
+	public void setSearchPanelContainer(WebMarkupContainer searchPanelContainer) {
+		this.searchPanelContainer = searchPanelContainer;
+	}
+
+	/**
+	 * @return the searchResultPanelContainer
+	 */
+	public WebMarkupContainer getSearchResultPanelContainer() {
+		return searchResultPanelContainer;
+	}
+
+	/**
+	 * @param searchResultPanelContainer the searchResultPanelContainer to set
+	 */
+	public void setSearchResultPanelContainer(WebMarkupContainer searchResultPanelContainer) {
+		this.searchResultPanelContainer = searchResultPanelContainer;
+	}
+
+	/**
+	 * @return the detailPanelContainer
+	 */
+	public WebMarkupContainer getDetailPanelContainer() {
+		return detailPanelContainer;
+	}
+
+	/**
+	 * @param detailPanelContainer the detailPanelContainer to set
+	 */
+	public void setDetailPanelContainer(WebMarkupContainer detailPanelContainer) {
+		this.detailPanelContainer = detailPanelContainer;
+	}
+
+	/**
+	 * @return the wizardPanelContainer
+	 */
+	public WebMarkupContainer getWizardPanelContainer() {
+		return wizardPanelContainer;
+	}
+
+	/**
+	 * @param wizardPanelContainer the wizardPanelContainer to set
+	 */
+	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer) {
+		this.wizardPanelContainer = wizardPanelContainer;
+	}
 
 }
