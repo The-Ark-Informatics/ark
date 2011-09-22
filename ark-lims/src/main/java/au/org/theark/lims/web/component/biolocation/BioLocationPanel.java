@@ -13,7 +13,7 @@ import au.org.theark.lims.model.vo.LimsVO;
  * @author cellis
  * 
  */
-public class BiospecimenLocationPanel extends Panel {
+public class BioLocationPanel extends Panel {
 	/**
 	 * 
 	 */
@@ -26,7 +26,7 @@ public class BiospecimenLocationPanel extends Panel {
 	private Label										rowLbl;
 	private Label										cellLbl;
 
-	public BiospecimenLocationPanel(String id, CompoundPropertyModel<LimsVO> cpModel) {
+	public BioLocationPanel(String id, CompoundPropertyModel<LimsVO> cpModel) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
 		this.cpModel = cpModel;
