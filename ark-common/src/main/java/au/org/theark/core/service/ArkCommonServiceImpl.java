@@ -62,6 +62,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkStudyArkModule;
@@ -701,6 +702,15 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	}
 	public Boolean isArkUserLinkedToStudies(ArkUser arkUser){
 		return arkAuthorisationDao.isArkUserLinkedToStudies(arkUser);
+	}
+	
+	
+	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count){
+		return  studyDao.getCustomFieldGroups(customFieldGroup, first, count);
+	}
+	
+	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup){
+		return studyDao.getCustomFieldGroupCount(customFieldGroup);
 	}
 
 }
