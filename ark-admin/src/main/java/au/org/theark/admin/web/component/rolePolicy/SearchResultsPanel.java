@@ -96,7 +96,12 @@ public class SearchResultsPanel extends Panel {
 						item.get("arkUpdatePermission").setEnabled(true);
 						item.get("arkDeletePermission").setEnabled(true);
 						item.get("rowSaveWMC").setVisible(true);
-						target.addComponent(item);
+						target.add(item);
+					}
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						// TODO Auto-generated method stub
 					}
 				};
 				listEditButton.setDefaultFormProcessing(false);
@@ -139,15 +144,20 @@ public class SearchResultsPanel extends Panel {
 					@Override
 					protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 						onSave(target, arkRoleModuleFunctionVo);
-						target.addComponent(SearchResultsPanel.this);
-						target.addComponent(feedbackPanel);
+						target.add(SearchResultsPanel.this);
+						target.add(feedbackPanel);
+					}
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						// TODO Auto-generated method stub
 					}
 				};
 				rowSaveWMC.add(listSaveButton);
 				rowSaveWMC.setVisible(false);
 				item.add(rowSaveWMC);
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					/**
 					 * 
 					 */
