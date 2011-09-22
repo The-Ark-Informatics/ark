@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -58,17 +59,17 @@ public abstract class ArkBusyAjaxLink<T> extends AjaxLink<T> {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
-			public CharSequence postDecorateScript(CharSequence script) {
+			public CharSequence postDecorateScript(Component component, CharSequence script) {
 				return script + setBusyIndicatorOn;
 			}
 
 			@Override
-			public CharSequence postDecorateOnFailureScript(CharSequence script) {
+			public CharSequence postDecorateOnFailureScript(Component component, CharSequence script) {
 				return script + setBusyIndicatorOff;
 			}
 
 			@Override
-			public CharSequence postDecorateOnSuccessScript(CharSequence script) {
+			public CharSequence postDecorateOnSuccessScript(Component component, CharSequence script) {
 				return script + setBusyIndicatorOff;
 			}
 		};
