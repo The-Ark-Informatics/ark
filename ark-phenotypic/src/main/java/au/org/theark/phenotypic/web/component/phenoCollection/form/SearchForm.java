@@ -162,7 +162,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -176,12 +176,12 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 
 		if (phenoCollectionCollection != null && phenoCollectionCollection.size() == 0) {
 			this.info("Phenotypic Collections with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.add(listContainer);// For ajax this is required so
 	}
 
 	/**

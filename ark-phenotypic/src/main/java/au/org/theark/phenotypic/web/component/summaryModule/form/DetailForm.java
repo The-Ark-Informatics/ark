@@ -22,7 +22,6 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -80,12 +79,13 @@ public class DetailForm extends Form<PhenoCollectionVO> {
 		this.detailFormContainer = detailFormContainer;
 
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT, new StringResourceModel("editKey", this, null)) {
-
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onEdit(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
+				target.add(detailPanelContainer);
 			}
 
+			@Override
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
@@ -96,6 +96,11 @@ public class DetailForm extends Form<PhenoCollectionVO> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onCancel(target);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				processErrors(target);
+			}
 		};
 
 		cancelButton = new AjaxButton(au.org.theark.core.Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
@@ -104,26 +109,34 @@ public class DetailForm extends Form<PhenoCollectionVO> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onCancel(target);
 			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				processErrors(target);
+			}
 		};
 
 		saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
-
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
+				target.add(detailPanelContainer);
 			}
 
+			@Override
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
 
 		deleteButton = new AjaxButton(au.org.theark.core.Constants.DELETE, new StringResourceModel("deleteKey", this, null)) {
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onDelete(phenoCollectionContainerForm.getModelObject(), target);
-				target.addComponent(detailPanelContainer);
+				target.add(detailPanelContainer);
 			}
 
+			@Override
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}

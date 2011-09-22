@@ -133,7 +133,7 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	@SuppressWarnings("rawtypes")

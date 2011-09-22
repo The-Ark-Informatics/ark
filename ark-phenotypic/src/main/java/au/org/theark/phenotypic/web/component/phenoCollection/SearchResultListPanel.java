@@ -154,7 +154,7 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				/* For the alternative stripes */
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -189,11 +189,11 @@ public class SearchResultListPanel extends Panel {
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
 
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailsPanelContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(searchResultContainer);
+				target.add(detailsPanelContainer);
+				target.add(searchPanelContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 			}
 		};
 

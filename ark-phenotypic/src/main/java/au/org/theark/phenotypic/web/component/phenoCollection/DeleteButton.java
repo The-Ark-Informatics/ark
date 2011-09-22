@@ -22,6 +22,8 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.StringResourceModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
@@ -31,6 +33,7 @@ public class DeleteButton extends AjaxDeleteButton {
 	 * 
 	 */
 	private static final long	serialVersionUID	= 6715945954180081192L;
+	private transient Logger	log					= LoggerFactory.getLogger(DeleteButton.class);
 
 	DeleteButton(final PhenoCollection phenoCollection, Component component) {
 		// Properties contains:
@@ -42,5 +45,10 @@ public class DeleteButton extends AjaxDeleteButton {
 
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+	}
+
+	@Override
+	protected void onError(AjaxRequestTarget target, Form<?> form) {
+		log.error("onError called when DeleteButton pressed");
 	}
 }

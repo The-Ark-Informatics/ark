@@ -127,10 +127,10 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
-				target.addComponent(form.getWizardButtonContainer());
+				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
 				addOrReplace(downloadValMsgButton);
-				target.addComponent(downloadValMsgButton);
+				target.add(downloadValMsgButton);
 			}
 
 			// Show file data
@@ -141,26 +141,26 @@ public class FieldUploadStep2 extends AbstractWizardStepPanel {
 			arkExcelWorkSheetAsGrid.setOutputMarkupId(true);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
-			target.addComponent(form.getWizardPanelFormContainer());
+			target.add(form.getWizardPanelFormContainer());
 
 		}
 		catch (NullPointerException npe) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 		catch (IOException e) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 		catch (FileFormatException ffe) {
 			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 	}
 

@@ -43,4 +43,9 @@ public class DeleteButton extends AjaxDeleteButton {
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 	}
+
+	@Override
+	protected void onError(AjaxRequestTarget target, Form<?> form) {
+		log.error("onError called when DeleteButton pressed");
+	}
 }

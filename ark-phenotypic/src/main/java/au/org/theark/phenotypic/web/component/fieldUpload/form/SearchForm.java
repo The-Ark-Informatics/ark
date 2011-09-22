@@ -147,7 +147,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		// Set study in context
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -161,14 +161,14 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 
 		if (uploadCollection != null && uploadCollection.size() == 0) {
 			this.info("Uploads with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		getModelObject().setUploadCollection(uploadCollection);
 
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);
+		target.add(listContainer);
 	}
 
 	@Override
@@ -187,10 +187,10 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		wizardContainer.setVisible(true);
 		wizardContainer.setEnabled(true);
 
-		target.addComponent(listContainer);
-		target.addComponent(searchMarkupContainer);
-		target.addComponent(detailFormCompContainer);
-		target.addComponent(wizardContainer);
+		target.add(listContainer);
+		target.add(searchMarkupContainer);
+		target.add(detailFormCompContainer);
+		target.add(wizardContainer);
 	}
 
 }

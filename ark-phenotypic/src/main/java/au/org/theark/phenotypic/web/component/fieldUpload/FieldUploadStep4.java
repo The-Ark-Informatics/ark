@@ -87,7 +87,7 @@ public class FieldUploadStep4 extends AbstractWizardStepPanel {
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		initialiseDetailForm();
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
-		target.addComponent(form.getArkExcelWorkSheetAsGrid());
+		target.add(form.getArkExcelWorkSheetAsGrid());
 	}
 
 	@Override

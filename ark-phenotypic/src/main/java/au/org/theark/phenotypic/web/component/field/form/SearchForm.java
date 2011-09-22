@@ -115,7 +115,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(sessionStudyId);
@@ -126,12 +126,12 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 
 		if (fieldCollection != null && fieldCollection.size() == 0) {
 			this.info("Fields with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		getModelObject().setFieldCollection(fieldCollection);
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);
+		target.add(listContainer);
 	}
 
 	// Reset button implemented in AbstractSearchForm
