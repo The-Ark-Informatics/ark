@@ -1060,7 +1060,10 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		
 		if (customFieldGroup.getName() != null) {
 			criteria.add(Restrictions.ilike("name", customFieldGroup.getName(), MatchMode.ANYWHERE));
+		}
 		
+		if(customFieldGroup.getPublished() != null){
+			criteria.add(Restrictions.eq("published", customFieldGroup.getPublished()));
 		}
 		return criteria;
 		
