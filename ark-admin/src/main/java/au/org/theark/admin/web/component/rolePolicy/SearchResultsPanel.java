@@ -101,7 +101,7 @@ public class SearchResultsPanel extends Panel {
 
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						// TODO Auto-generated method stub
+						log.error("onError called when listEditButton pressed");
 					}
 				};
 				listEditButton.setDefaultFormProcessing(false);
@@ -150,7 +150,7 @@ public class SearchResultsPanel extends Panel {
 
 					@Override
 					protected void onError(AjaxRequestTarget target, Form<?> form) {
-						// TODO Auto-generated method stub
+						log.error("onError called when listSaveButton pressed");
 					}
 				};
 				rowSaveWMC.add(listSaveButton);
