@@ -40,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import au.org.theark.core.Constants;
 import au.org.theark.core.dao.ArkLdapContextSource;
 import au.org.theark.core.dao.IArkAuthorisation;
+import au.org.theark.core.dao.ICustomFieldDao;
 import au.org.theark.core.dao.IStudyDao;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.ArkUniqueException;
@@ -104,8 +105,10 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	private static Logger		log	= LoggerFactory.getLogger(ArkCommonServiceImpl.class);
 	
 	private IArkAuthorisation	arkAuthorisationDao;
+	private ICustomFieldDao		customFieldDao;
 	private IStudyDao				studyDao;
 	private ArkLdapContextSource		ldapDataContextSource;
+
 
 	public IArkAuthorisation getArkAuthorisationDao() {
 		return arkAuthorisationDao;
@@ -711,6 +714,14 @@ public class ArkCommonServiceImpl<T> implements IArkCommonService {
 	
 	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup){
 		return studyDao.getCustomFieldGroupCount(customFieldGroup);
+	}
+
+	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException {
+		return customFieldDao.getFieldByNameAndStudyAndFunction(fieldName, study, arkFunction);
+	}
+
+	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException {
+		return customFieldDao.getFieldTypeByName(typeName);
 	}
 
 }

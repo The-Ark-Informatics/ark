@@ -486,4 +486,9 @@ public interface IArkCommonService<T> {
 	 * @return
 	 */
 	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
+
+	public CustomField getFieldByNameAndStudyAndFunction(String fieldName, Study study, ArkFunction arkFunction) throws EntityNotFoundException;
+
+	public FieldType getFieldTypeByName(String typeName) throws EntityNotFoundException;
+
 }
