@@ -27,6 +27,15 @@ font-weight:700;
 padding:2px 6px;
 }
 
+.detailsPanelBorder {
+background-color:#EEE;
+border-style:solid;
+border-width:1px;
+float:left;
+height:100%;
+width:100%;
+}
+
 #detailPanel {
 float:left;
 width:100%;
