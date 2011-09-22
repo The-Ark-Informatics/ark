@@ -130,6 +130,14 @@ public class EditModeButtonsPanel extends Panel {
 					log.error("Illegal Delete button submit: button is not enabled and/or not visible.");
 				}
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				if (!deleteButton.isVisible() || !deleteButton.isEnabled()) {
+					log.error("Illegal onError for Delete button submit: button is not enabled and/or not visible.");	
+				}
+				eventHandler.onEditDeleteError(target, form);
+			}
 		};
 		
 		deleteButton.setDefaultFormProcessing(false);
