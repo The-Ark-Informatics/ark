@@ -27,12 +27,25 @@
 		<!--  WICKET DEPENDENCIES -->
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
+			<artifactId>wicket-core</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-datetime</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket-spring</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
 
@@ -46,13 +59,6 @@
 			<groupId>wicket-tree</groupId>
 			<artifactId>wicket-tree</artifactId>
 			<version>0.4.4</version>
-		</dependency>
-
-		<!-- DatePicker -->
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-datetime</artifactId>
-			<version>1.4.9</version>
 		</dependency>
 
 		<dependency>
@@ -77,12 +83,6 @@
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-ehcache</artifactId>
 			<version>${shiro.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-spring</artifactId>
-			<version>${wicket.version}</version>
 		</dependency>
 
 		<dependency>
@@ -258,7 +258,7 @@
 		</plugins>
 	</build>
 	<properties>
-		<wicket.version>1.4.9</wicket.version>
+		<wicket.version>1.5.0</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<shiro.version>1.1.0</shiro.version>
 		<ark.version>0.1.4-SNAPSHOT</ark.version>
