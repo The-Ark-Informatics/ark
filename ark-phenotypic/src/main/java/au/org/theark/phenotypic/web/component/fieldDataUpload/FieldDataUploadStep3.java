@@ -113,7 +113,7 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 				else {
 					wizardForm.getNextButton().setEnabled(false);
 				}
-				target.addComponent(wizardForm.getWizardButtonContainer());
+				target.add(wizardForm.getWizardButtonContainer());
 			}
 		});
 
@@ -126,7 +126,7 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 				else {
 					wizardForm.getNextButton().setEnabled(false);
 				}
-				target.addComponent(wizardForm.getWizardButtonContainer());
+				target.add(wizardForm.getWizardButtonContainer());
 			}
 		});
 
@@ -170,7 +170,7 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 
 		if (validationMessage != null && validationMessage.length() > 0) {
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 		else {
 			String filename = containerForm.getModelObject().getFileUpload().getClientFileName();
@@ -206,28 +206,28 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 				form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 
 				// Repaint
-				target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
-				target.addComponent(form.getWizardPanelFormContainer());
+				target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+				target.add(form.getWizardPanelFormContainer());
 
 				if (updateCells.isEmpty()) {
 					containerForm.getModelObject().setUpdateChkBox(true);
 					updateExistingDataContainer.setVisible(false);
-					target.addComponent(updateExistingDataContainer);
+					target.add(updateExistingDataContainer);
 				}
 
 				if (warningCells.isEmpty()) {
 					containerForm.getModelObject().setOverrideDataValidationChkBox(true);
 					overrideDataValidationContainer.setVisible(false);
-					target.addComponent(overrideDataValidationContainer);
+					target.add(overrideDataValidationContainer);
 				}
 
 				if (!errorCells.isEmpty()) {
 					overrideDataValidationContainer.setVisible(false);
-					target.addComponent(overrideDataValidationContainer);
+					target.add(overrideDataValidationContainer);
 					updateExistingDataContainer.setVisible(false);
-					target.addComponent(updateExistingDataContainer);
+					target.add(updateExistingDataContainer);
 					form.getNextButton().setEnabled(false);
-					target.addComponent(form.getWizardButtonContainer());
+					target.add(form.getWizardButtonContainer());
 				}
 			}
 			catch (IOException e1) {
@@ -241,10 +241,10 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
-				target.addComponent(form.getWizardButtonContainer());
+				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
 				addOrReplace(downloadValMsgButton);
-				target.addComponent(downloadValMsgButton);
+				target.add(downloadValMsgButton);
 			}
 		}
 	}

@@ -33,14 +33,16 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.resource.StringResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
-import au.org.theark.core.model.pheno.entity.FieldUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
@@ -175,7 +177,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDeleteButton(upload));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -198,7 +200,14 @@ public class SearchResultListPanel extends Panel {
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				
+				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
+				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
+				resourceStreamRequestHandler.setFileName(upload.getFilename());
+				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
+			   
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
+				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
 
 			};
 		};
@@ -222,7 +231,17 @@ public class SearchResultListPanel extends Panel {
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				
+				StringResourceStream stream = new StringResourceStream(new String(data), "text/csv");
+				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
+				resourceStreamRequestHandler.setFileName(upload.getFilename());
+				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
+				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when buildDownloadButton pressed");
 			};
 		};
 
@@ -246,7 +265,12 @@ public class SearchResultListPanel extends Panel {
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				
+				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
+				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
+				resourceStreamRequestHandler.setFileName("uploadReport" + upload.getId());
+				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
+				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
 
@@ -269,7 +293,17 @@ public class SearchResultListPanel extends Panel {
 				catch (SQLException e) {
 					log.error(e.getMessage());
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				
+				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
+				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
+				resourceStreamRequestHandler.setFileName("uploadReport" + upload.getId());
+				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
+				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when buildDownloadReportButton pressed");
 			};
 		};
 
@@ -303,8 +337,8 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Update the result panel and containerForm (for feedBack message)
-				target.addComponent(searchResultContainer);
-				target.addComponent(containerForm);
+				target.add(searchResultContainer);
+				target.add(containerForm);
 			}
 		};
 

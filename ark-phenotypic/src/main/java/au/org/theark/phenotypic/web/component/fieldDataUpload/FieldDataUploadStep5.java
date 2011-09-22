@@ -51,7 +51,7 @@ public class FieldDataUploadStep5 extends AbstractWizardStepPanel {
 	public void handleWizardState(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		if (this.containerForm.getModelObject().getValidationMessages() != null) {
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 	}
 }

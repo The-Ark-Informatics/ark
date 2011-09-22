@@ -21,10 +21,8 @@ package au.org.theark.phenotypic.web.component.phenoCollection.form;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.extensions.markup.html.form.palette.Palette;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -40,6 +38,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
@@ -62,6 +62,9 @@ import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
  */
 @SuppressWarnings( { "serial", "unchecked", "unused" })
 public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
+	
+	private transient Logger	log					= LoggerFactory.getLogger(DetailForm.class);
+	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
 
@@ -142,6 +145,11 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 			public boolean isVisible() {
 				return (ArkPermissionHelper.isActionPermitted(au.org.theark.core.Constants.DELETE));
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError called when clearCollectionButton pressed");
+			}
 		};
 
 		// Initialise Drop Down Choices
@@ -161,8 +169,9 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		PropertyModel<Collection<Field>> availableModPm = new PropertyModel<Collection<Field>>(cpm, "fieldsAvailable");
 
 		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, au.org.theark.core.Constants.ROWS_PER_PAGE, false) {
+			
 			@Override
-			public ResourceReference getCSS() {
+			protected org.apache.wicket.request.resource.ResourceReference getCSS() {
 				return null;
 			}
 
@@ -219,7 +228,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	public AjaxButton getDeleteButton() {
@@ -239,7 +248,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
 		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {

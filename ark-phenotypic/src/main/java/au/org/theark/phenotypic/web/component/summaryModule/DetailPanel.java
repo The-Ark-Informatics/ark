@@ -93,14 +93,14 @@ public class DetailPanel extends Panel {
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(feedBackPanel);
-				target.addComponent(detailsContainer);
+				target.add(searchPanelContainer);
+				target.add(feedBackPanel);
+				target.add(detailsContainer);
 			}
 
 			protected void onDelete(PhenoCollectionVO collectionVo, AjaxRequestTarget target) {
 				//selectModalWindow.show(target);
-				target.addComponent(selectModalWindow);
+				target.add(selectModalWindow);
 			}
 
 			// On click of Edit button, allow form to be editable
@@ -111,18 +111,18 @@ public class DetailPanel extends Panel {
 				detailForm.getDeleteButton().setEnabled(true);
 				detailForm.getDeleteButton().setVisible(true);
 
-				target.addComponent(feedBackPanel);
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(feedBackPanel);
+				target.add(detailPanelFormContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 			}
 
 			protected void processFeedback(AjaxRequestTarget target) {
-				target.addComponent(feedBackPanel);
+				target.add(feedBackPanel);
 			}
 
 			protected void processErrors(AjaxRequestTarget target) {
-				target.addComponent(feedBackPanel);
+				target.add(feedBackPanel);
 			}
 		};
 
@@ -138,9 +138,9 @@ public class DetailPanel extends Panel {
 		editButtonContainer.setVisible(false);
 		detailPanelFormContainer.setEnabled(false);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
+		target.add(feedBackPanel);
+		target.add(viewButtonContainer);
+		target.add(editButtonContainer);
 	}
 
 	private ModalWindow initialiseModalWindow() {
@@ -160,7 +160,7 @@ public class DetailPanel extends Panel {
 				}
 
 				// Display delete confirmation message
-				target.addComponent(feedBackPanel);
+				target.add(feedBackPanel);
 
 				// TODO Implement Exceptions in PhentoypicService
 				// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
@@ -175,8 +175,8 @@ public class DetailPanel extends Panel {
 				containerForm.setModelObject(collectionVo);
 				searchPanelContainer.setVisible(true);
 				detailsContainer.setVisible(false);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(detailsContainer);
+				target.add(searchPanelContainer);
+				target.add(detailsContainer);
 			}
 
 			protected void onCancel(AjaxRequestTarget target) {
@@ -191,9 +191,9 @@ public class DetailPanel extends Panel {
 				detailForm.getDeleteButton().setEnabled(true);
 				detailForm.getDeleteButton().setVisible(true);
 
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(detailPanelFormContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 			}
 		};
 		return selectModalWindow;

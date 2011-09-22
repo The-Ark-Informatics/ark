@@ -32,6 +32,8 @@ import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldData;
@@ -54,6 +56,7 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	 * 
 	 */
 	private static final long									serialVersionUID	= 4602216854250133940L;
+	protected transient Logger									log = LoggerFactory.getLogger(SearchForm.class);
 
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService									iPhenotypicService;
@@ -106,6 +109,11 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				super.onSubmit();
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("onError when newButton pressed");
 			}
 		};
 		addOrReplace(newButton);
@@ -164,17 +172,17 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		FieldData searchFieldData = getModelObject().getFieldData();
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 		int count = iPhenotypicService.getStudyFieldDataCount(getModelObject());
 		if (count == 0) {
 			this.info("There are no field data records with the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		listContainer.setVisible(true);
-		target.addComponent(listContainer);
+		target.add(listContainer);
 	}
 
 	@Override
