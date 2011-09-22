@@ -120,7 +120,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 	protected void onReset(AjaxRequestTarget target, Form<?> form) {
 		clearInput();
 		updateFormComponentModels();
-		target.addComponent(form);
+		target.add(form);
 	}
 
 	protected void initialiseForm() {
@@ -143,7 +143,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -162,6 +162,12 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onReset(target, form);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO On Error
+				
+			}
 		};
 
 		newButton = new ArkBusyAjaxButton(Constants.NEW) {
@@ -176,7 +182,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 				AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
 				if (ajaxButton != null) {
 					ajaxButton.setEnabled(false);
-					target.addComponent(ajaxButton);
+					target.add(ajaxButton);
 				}
 				// Call abstract method
 				onNew(target);
@@ -189,7 +195,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -216,7 +222,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -229,6 +235,12 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onReset(target, form);				
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO 
+				
 			}
 		};
 
@@ -245,7 +257,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("delete");
 				if (ajaxButton != null) {
 					ajaxButton.setEnabled(false);
-					target.addComponent(ajaxButton);
+					target.add(ajaxButton);
 				}
 				// Call abstract method
 				onNew(target);
@@ -258,7 +270,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -279,12 +291,12 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		searchMarkupContainer.setVisible(false);
 		detailFormCompContainer.setEnabled(true);
 
-		target.addComponent(detailPanelContainer);
-		target.addComponent(listContainer);
-		target.addComponent(searchMarkupContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
-		target.addComponent(detailFormCompContainer);
+		target.add(detailPanelContainer);
+		target.add(listContainer);
+		target.add(searchMarkupContainer);
+		target.add(viewButtonContainer);
+		target.add(editButtonContainer);
+		target.add(detailFormCompContainer);
 	}
 
 	/**
@@ -303,13 +315,13 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
-		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
 
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
-		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getViewButtonContainer());
+		target.add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
 	/**
