@@ -95,6 +95,12 @@ public abstract class AbstractListDetailForm<T> extends Form<T> {
 				// Sub class to implement New button press
 				onNew(target, containerForm);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 		newButton.setDefaultFormProcessing(false);

@@ -23,13 +23,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.Component.IVisitor;
 import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 
 import au.org.theark.core.web.behavior.ArkRequiredFieldHintBehavior;
 
 @SuppressWarnings("unchecked")
-public class ArkFormVisitor implements IVisitor<Component>, Serializable {
+public class ArkFormVisitor implements IVisitor<Component,Void>, Serializable {
 	/**
 	 * 
 	 */
@@ -37,7 +38,9 @@ public class ArkFormVisitor implements IVisitor<Component>, Serializable {
 	
 	Set<Component>					visited				= new HashSet<Component>();
 
-	public Object component(Component component) {
+
+	public void component(final Component component, final IVisit<Void> visit) {
+				
 		if (!visited.contains(component)) {
 			visited.add(component);
 			if (component instanceof FormComponent) {
@@ -47,6 +50,5 @@ public class ArkFormVisitor implements IVisitor<Component>, Serializable {
 				component.add(new ArkRequiredFieldHintBehavior());
 			}
 		}
-		return IVisitor.CONTINUE_TRAVERSAL;
 	}
 }
