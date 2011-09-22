@@ -65,7 +65,7 @@ import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.biolocation.BiospecimenLocationPanel;
+import au.org.theark.lims.web.component.biolocation.BioLocationDetailPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataDataViewPanel;
 import au.org.theark.lims.web.component.biotransaction.BioTransactionListPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenButtonsPanel;
@@ -198,28 +198,17 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 		boolean replacePanel = true;
 		Biospecimen biospecimen = cpModel.getObject().getBiospecimen();
-		if (biospecimen.getId() == null) {
-			biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
+		
+		try {
+			BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+			cpModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
+			biospecimenLocationPanel = new BioLocationDetailPanel("biospecimenLocationPanel", cpModel);
 			replacePanel = true;
 		}
-		else {
-			try {
-				BiospecimenLocationVO vo = iInventoryService.locateBiospecimen(biospecimen);
-				cpModel.getObject().setBiospecimenLocationVO(vo);
-
-				if (vo.getIsAllocated()) {
-					biospecimenLocationPanel = new BiospecimenLocationPanel("biospecimenLocationPanel", cpModel);
-				}
-				else {
-					biospecimenLocationPanel = new EmptyPanel("biospecimenLocationPanel");
-				}
-				replacePanel = true;
-
-			}
-			catch (ArkSystemException e) {
-				log.error(e.getMessage());
-			}
+		catch (ArkSystemException e) {
+			log.error(e.getMessage());
 		}
+		
 		return replacePanel;
 	}
 
