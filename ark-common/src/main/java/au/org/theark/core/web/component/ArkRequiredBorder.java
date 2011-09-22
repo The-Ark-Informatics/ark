@@ -19,20 +19,21 @@
 package au.org.theark.core.web.component;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.markup.html.border.MarkupComponentBorder;
+import org.apache.wicket.markup.html.border.BorderBehavior;
 import org.apache.wicket.markup.html.form.FormComponent;
 
-public class ArkRequiredBorder extends MarkupComponentBorder {
+public class ArkRequiredBorder extends BorderBehavior {
 	/**
 	 * 
 	 */
 	private static final long	serialVersionUID	= -1568367562733328792L;
 
-	public void renderAfter(Component component) {
+	@Override
+	public void afterRender(Component component) {
 		try {
 			FormComponent<?> fc = (FormComponent<?>) component;
 			if (fc.isRequired()) {
-				super.renderAfter(component);
+				super.afterRender(component);
 			}
 		}
 		catch (ClassCastException cce) {
