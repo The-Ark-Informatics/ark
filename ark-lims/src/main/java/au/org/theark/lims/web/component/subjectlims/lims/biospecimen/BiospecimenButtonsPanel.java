@@ -20,12 +20,8 @@ package au.org.theark.lims.web.component.subjectlims.lims.biospecimen;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -202,6 +198,7 @@ public class BiospecimenButtonsPanel extends Panel {
 			// Inital transaction detail (quantity grabbed from previous biospecimen)
 			limsVo.getBioTransaction().setId(null);
 			org.apache.shiro.subject.Subject currentUser = SecurityUtils.getSubject();
+			limsVo.getBioTransaction().setQuantity(oldlimsVo.getBiospecimen().getQuantity());
 			limsVo.getBioTransaction().setRecorder(currentUser.getPrincipal().toString());
 			
 			iLimsService.createBiospecimen(limsVo);
