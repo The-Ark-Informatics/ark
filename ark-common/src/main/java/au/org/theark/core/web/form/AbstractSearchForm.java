@@ -21,7 +21,6 @@ package au.org.theark.core.web.form;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -51,7 +50,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 	private static final long		serialVersionUID	= -408051334961302312L;
 	protected AjaxButton				searchButton;
 	protected AjaxButton				newButton;
-	protected Button					resetButton;
+	protected AjaxButton				resetButton;
 	protected WebMarkupContainer	viewButtonContainer;
 	protected WebMarkupContainer	editButtonContainer;
 	protected WebMarkupContainer	detailPanelContainer;
@@ -118,9 +117,10 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 		initialiseForm();
 	}
 
-	protected void onReset() {
+	protected void onReset(AjaxRequestTarget target, Form<?> form) {
 		clearInput();
 		updateFormComponentModels();
+		target.addComponent(form);
 	}
 
 	protected void initialiseForm() {
@@ -147,19 +147,20 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			}
 		};
 
-		resetButton = new Button(Constants.RESET) {
+		resetButton = new AjaxButton(Constants.RESET) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= -6785467702774902246L;
 
-			public void onSubmit() {
-				onReset();
-			}
-
 			@Override
 			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.SEARCH);
+			}
+
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onReset(target, form);
 			}
 		};
 
@@ -219,14 +220,15 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			}
 		};
 
-		resetButton = new Button(Constants.RESET) {
+		resetButton = new AjaxButton(Constants.RESET) {
 			/**
 			 * 
 			 */
 			private static final long	serialVersionUID	= 5818909400695185935L;
 
-			public void onSubmit() {
-				onReset();
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				onReset(target, form);				
 			}
 		};
 
