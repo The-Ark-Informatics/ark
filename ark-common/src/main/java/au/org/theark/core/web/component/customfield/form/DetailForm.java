@@ -133,9 +133,11 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 			cfdFromBackend = iArkCommonService.getCustomFieldDisplayByCustomField(cfFromBackend);
 			getModelObject().setCustomFieldDisplay(cfdFromBackend);
 		}
-		// Ensure the customFieldDisplay.require is never NULL
-		if (getModelObject().getCustomFieldDisplay().getRequired() == null) {
-			getModelObject().getCustomFieldDisplay().setRequired(false);
+		if (getModelObject().isUseCustomFieldDisplay() == true) {
+			// Ensure the customFieldDisplay.require is never NULL
+			if (getModelObject().getCustomFieldDisplay().getRequired() == null) {
+				getModelObject().getCustomFieldDisplay().setRequired(false);
+			}
 		}
 	}
 
@@ -320,6 +322,10 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		customFieldDisplayDetailWMC.add(customFieldDisplayPositionPanel);
 		customFieldDisplayDetailWMC.add(fieldDisplayRequiredChkBox);
 //		customFieldDisplayDetailWMC.add(fieldDisplayRequireMsgTxtAreaFld);
+		// Only show these fields if necessary...
+		if (getModelObject().isUseCustomFieldDisplay() == false) {
+			customFieldDisplayDetailWMC.setVisible(false);
+		}
 		
 		// TODO: This 'addOrReplace' (instead of just 'add') is a temporary workaround due to the 
 		// detailPanelFormContainer being initialised only once at the top-level container panel. 
