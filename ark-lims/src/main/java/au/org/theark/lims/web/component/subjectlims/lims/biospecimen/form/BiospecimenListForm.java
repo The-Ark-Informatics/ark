@@ -387,4 +387,18 @@ public class BiospecimenListForm extends Form<LimsVO> {
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
+
+	/**
+	 * @return the newButton
+	 */
+	public ArkBusyAjaxButton getNewButton() {
+		return newButton;
+	}
+
+	/**
+	 * @param newButton the newButton to set
+	 */
+	public void setNewButton(ArkBusyAjaxButton newButton) {
+		this.newButton = newButton;
+	}
 }

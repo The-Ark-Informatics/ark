@@ -65,4 +65,18 @@ public class BiospecimenListPanel extends Panel {
 		listDetailForm.initialiseForm();
 		add(listDetailForm);
 	}
+
+	/**
+	 * @return the listDetailForm
+	 */
+	public BiospecimenListForm getListDetailForm() {
+		return listDetailForm;
+	}
+
+	/**
+	 * @param listDetailForm the listDetailForm to set
+	 */
+	public void setListDetailForm(BiospecimenListForm listDetailForm) {
+		this.listDetailForm = listDetailForm;
+	}
 }
