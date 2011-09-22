@@ -78,7 +78,6 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 		super(id);
 		Subject currentUser = SecurityUtils.getSubject();
 		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-		currentUser.hasRole("Administrator");
 		initialiseMarkupContainers();
 	}
 
