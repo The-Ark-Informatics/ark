@@ -1,10 +1,13 @@
 <wicket:panel>
 	&nbsp;
-	<!--	Page Left Zone -->
+	<!-- Page Left Zone -->
 	<div id="leftZone">
 		&nbsp;
 	</div>
-
+	<!-- Page right Zone -->
+	<div id="rightZone">
+		&nbsp;
+	</div>
 	<!-- Content Zone -->
 	<div id="contentZone">
 		<span wicket:id="detailFeedback">
@@ -13,7 +16,7 @@
 			<div id="detailsPanelBorder">
 				<div wicket:id="detailFormContainer">
 					<div id="detailPanelBreaker">
-							&nbsp;
+						&nbsp;
 					</div>
 
 					<!-- Row 1 ID and Name-->
@@ -203,33 +206,31 @@
 					<div id="fldControl">
 						<input type="checkbox" wicket:id="biospecimen.barcoded"/>
 					</div>
-					
+
 					<div id="panelMargin">
 						&nbsp;
 					</div>
 
-					<!-- Empty -->
-
-					<div id="detailPanelBreaker">
-						&nbsp;
-					</div>
-
-					<div id="detailPanelBreaker">
+					<div id="detailSectionBorder">
 						<!-- Initial Biospecimen transaction detail -->
 						<div wicket:id="bioTransactionDetailWmc">
 							<div id="panelContentLeft">
 								&nbsp;
 							</div>
-								
+
 							<div id="fldLabel">
 								<label for="biospecimen.quantity">
-									<span wicket:id="biospecimen.quantity.label">[Quantity]</span>
+									<span wicket:id="biospecimen.quantity.label">
+										[Quantity]
+									</span>
 								</label>
 								<div class="label">
-									<span id="note" wicket:id="biospecimen.quantity.note">[Note replaced from properties]</span>
+									<span id="note" wicket:id="biospecimen.quantity.note">
+										[Note replaced from properties]
+									</span>
 								</div>
 							</div>
-		
+
 							<div id="fldControl">
 								<input wicket:id="biospecimen.quantity" type="text" maxLength="10" size="5"/>
 								<input wicket:id="bioTransaction.quantity" type="text" maxLength="10" size="5"/>
@@ -242,11 +243,11 @@
 									</option>
 								</select>
 							</div>
-							
+
 							<div id="panelMargin">
 								&nbsp;
 							</div>
-		
+
 							<div id="fldLabel">
 								<div class="label">
 									<label for="biospecimen.treatmentType">
@@ -256,7 +257,7 @@
 									</label>
 								</div>
 							</div>
-		
+
 							<div id="fldControl">
 								<div class="label">
 									<select wicket:id="biospecimen.treatmentType">
@@ -269,32 +270,32 @@
 									</select>
 								</div>
 							</div>
-							
+
 							<div id="detailPanelContentRight">
 								&nbsp;
 							</div>
 						</div>
 					</div>
-					
-					<!--  Biospecimen Location NN IN progress -->
-					<div id="detailPanelBreaker">
-						<div id="detailSectionBorder">
-						  <div wicket:id="biospecimenLocationPanel"></div>
-						</div>
-					</div>
-					
-					<div id="detailPanelBreaker">
-						<div id="customFieldDataPanel">
-							<!-- Biospecimen custom field data entry -->
-							<div wicket:id="biospecimenCFDataEntryPanel"></div>
+
+					<div id="detailSectionBorder">
+						<div wicket:id="biospecimenLocationPanel">
 						</div>
 					</div>
 
-					<div id="detailPanelBreaker">
-						<!-- Biospecimen transaction detail -->
-						<div wicket:id="bioTransactionListPanel"></div>
+					<div id="detailSectionBorder">
+						<div id="customFieldDataPanel">
+							<!-- Biospecimen custom field data entry -->
+							<div wicket:id="biospecimenCFDataEntryPanel">
+							</div>
+						</div>
 					</div>
-					
+
+					<div id="detailPanel">
+						<!-- Biospecimen transaction detail -->
+						<div wicket:id="bioTransactionListPanel">
+						</div>
+					</div>
+
 				</div>
 				<!-- detailFormContainer end-->
 
@@ -304,24 +305,18 @@
 						<div wicket:id="buttonsPanel">
 						</div>
 					</div>
-					
-					<div id="detailPanelBreaker">
+
+					<div id="detailSectionBorder">
 						<!-- Process/Clone/Aliquot Buttons -->
-						<div wicket:id="biospecimenButtonPanel">[Process] | [Clone] | [Aliquot]</div>
+						<div wicket:id="biospecimenButtonPanel">
+							[Process] | [Clone] | [Aliquot]
+						</div>
 					</div>
 				</div>
 				<!--	End buttons -->
-				<div id="detailPanelBreaker">
-					&nbsp;
-				</div>
 			</div>
 		</form>
 		<br>
-		&nbsp;
-	</div>
-
-	<!--	Page right Zone -->
-	<div id="rightZone">
 		&nbsp;
 	</div>
 </wicket:panel>
