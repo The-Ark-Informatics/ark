@@ -62,6 +62,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -1039,5 +1040,40 @@ public class StudyDao<T> extends HibernateSessionDao implements IStudyDao {
 		Long longTotal = ((Long) getSession().createQuery("select count(*) from Study").iterate().next());
 		total = longTotal.intValue();
 		return total;
+	}
+	
+	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup, int first, int count){
+	
+		Criteria criteria = buildGenericCustomFieldGroupCriteria(customFieldGroup);
+		criteria.setFirstResult(first);
+		criteria.setMaxResults(count);
+		List<CustomFieldGroup> list = (List<CustomFieldGroup>)criteria.list();
+		return list;
+	}
+	
+	private Criteria buildGenericCustomFieldGroupCriteria(CustomFieldGroup customFieldGroup){
+		
+		Criteria criteria = getSession().createCriteria(CustomFieldGroup.class);
+		
+		criteria.add(Restrictions.eq("study", customFieldGroup.getStudy()));
+		criteria.add(Restrictions.eq("arkFunction", customFieldGroup.getArkFunction()));
+		
+		if (customFieldGroup.getName() != null) {
+			criteria.add(Restrictions.ilike("name", customFieldGroup.getName(), MatchMode.ANYWHERE));
+		
+		}
+		return criteria;
+		
+	}
+	
+	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup) {
+		// Handle for study or function not in context
+		if (customFieldGroup.getStudy() == null || customFieldGroup.getArkFunction() == null) {
+			return 0;
+		}
+		Criteria criteria = buildGenericCustomFieldGroupCriteria(customFieldGroup);
+		criteria.setProjection(Projections.rowCount());
+		Integer totalCount = (Integer) criteria.uniqueResult();
+		return totalCount;
 	}
 }

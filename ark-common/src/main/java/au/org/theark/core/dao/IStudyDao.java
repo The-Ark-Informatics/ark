@@ -37,6 +37,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.CustomFieldDisplay;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -552,7 +553,7 @@ public interface IStudyDao {
 	public void deleteCustomDisplayField(CustomFieldDisplay customFieldDisplay) throws ArkSystemException;
 	
 	/**
-	 * Determin if the CustomField is unique, based on the name, study and CustomField to update
+	 * Determine if the CustomField is unique, based on the name, study and CustomField to update
 	 * @param customFieldName
 	 * @param study
 	 * @param customFieldToUpdate
@@ -565,4 +566,15 @@ public interface IStudyDao {
 	 * @return the total count of Studies 
 	 */
 	public int getCountOfStudies();
+	
+	/**
+	 * Look up and return a list of CustomFieldGroup entities that match the search criteria. The mandatory parameters
+	 * for the search are Study and ArkFunction. This must be set in the CustomFieldGroup instance that is passed to the service.
+	 * @param customFieldGroup
+	 * @return
+	 */
+	public List<CustomFieldGroup> getCustomFieldGroups(CustomFieldGroup customFieldGroup,int first, int count);
+	
+	
+	public int getCustomFieldGroupCount(CustomFieldGroup customFieldGroup);
 }
