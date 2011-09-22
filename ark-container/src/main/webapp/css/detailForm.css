@@ -52,13 +52,12 @@ border-width:1px;
 
 #detailSectionBorder {
 background-color:#EEE;
-border-bottom:0 solid;
 border-top:1px solid;
+float:left;
+margin:10px auto auto;
 padding-bottom:10px;
 padding-top:10px;
-width:90%;
-border-color:0 #6F6F6F 0 0;
-margin:10px auto auto;
+width:100%;
 }
 
 #detailFormLabelBorder {
@@ -80,7 +79,7 @@ width:5%;
 #detailPanelBreaker {
 float:left;
 width:100%;
-height:20%;
+height:10px;
 }
 
 #summaryPanelBorder {
