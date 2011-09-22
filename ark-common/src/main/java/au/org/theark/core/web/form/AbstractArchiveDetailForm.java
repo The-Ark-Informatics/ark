@@ -53,7 +53,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 	protected ArkCrudContainerVO	crudVO;
 
 	// Add a visitor class for required field marking/validation/highlighting
-	ArkFormVisitor						formVisitor			= new ArkFormVisitor();
+	ArkFormVisitor	formVisitor = new ArkFormVisitor();
 
 	public void onBeforeRender() {
 		super.onBeforeRender();
@@ -118,14 +118,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		crudVO.getSearchPanelContainer().setVisible(false);
 		crudVO.getEditButtonContainer().setVisible(false);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(crudVO.getSearchPanelContainer());
-		target.addComponent(crudVO.getSearchResultPanelContainer());
-		target.addComponent(crudVO.getDetailPanelContainer());
-		target.addComponent(crudVO.getDetailPanelFormContainer());
+		target.add(feedBackPanel);
+		target.add(crudVO.getSearchPanelContainer());
+		target.add(crudVO.getSearchResultPanelContainer());
+		target.add(crudVO.getDetailPanelContainer());
+		target.add(crudVO.getDetailPanelFormContainer());
 
-		target.addComponent(crudVO.getViewButtonContainer());
-		target.addComponent(crudVO.getEditButtonContainer());
+		target.add(crudVO.getViewButtonContainer());
+		target.add(crudVO.getEditButtonContainer());
 	}
 
 	/**
@@ -158,11 +158,16 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 				else {
 					crudVO.getSearchResultPanelContainer().setVisible(false);// Hide the Search Result List Panel via the WebMarkupContainer
 					crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
-					target.addComponent(crudVO.getDetailPanelContainer());// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-					target.addComponent(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered
-																									// using Ajax
+					target.add(crudVO.getDetailPanelContainer());
+					target.add(crudVO.getSearchResultPanelContainer());// Attach the resultListContainer WebMarkupContainer to be re-rendered
 					onCancelPostProcess(target);
 				}
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 
@@ -175,7 +180,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.addComponent(crudVO.getDetailPanelContainer());
+				target.add(crudVO.getDetailPanelContainer());
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -212,9 +217,9 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 				crudVO.getEditButtonContainer().setVisible(true);
 				crudVO.getDetailPanelFormContainer().setEnabled(true);
 
-				target.addComponent(crudVO.getViewButtonContainer());
-				target.addComponent(crudVO.getEditButtonContainer());
-				target.addComponent(crudVO.getDetailPanelFormContainer());
+				target.add(crudVO.getViewButtonContainer());
+				target.add(crudVO.getEditButtonContainer());
+				target.add(crudVO.getDetailPanelFormContainer());
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -251,10 +256,10 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		crudVO.getDetailPanelContainer().setVisible(false);// Hide the Detail Panle via the WebMarkupContainer
 		crudVO.getSearchPanelContainer().setVisible(true);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(crudVO.getSearchPanelContainer());
-		target.addComponent(crudVO.getDetailPanelContainer());
-		target.addComponent(crudVO.getSearchResultPanelContainer());
+		target.add(feedBackPanel);
+		target.add(crudVO.getSearchPanelContainer());
+		target.add(crudVO.getDetailPanelContainer());
+		target.add(crudVO.getSearchResultPanelContainer());
 		onCancel(target);
 	}
 
@@ -277,14 +282,14 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 		crudVO.getDetailPanelFormContainer().setEnabled(false);
 		crudVO.getViewButtonContainer().setEnabled(true);
 
-		target.addComponent(crudVO.getSearchResultPanelContainer());
-		target.addComponent(crudVO.getDetailPanelContainer());
-		target.addComponent(crudVO.getDetailPanelFormContainer());
-		target.addComponent(crudVO.getSearchPanelContainer());
-		target.addComponent(crudVO.getViewButtonContainer());
-		target.addComponent(crudVO.getEditButtonContainer());
+		target.add(crudVO.getSearchResultPanelContainer());
+		target.add(crudVO.getDetailPanelContainer());
+		target.add(crudVO.getDetailPanelFormContainer());
+		target.add(crudVO.getSearchPanelContainer());
+		target.add(crudVO.getViewButtonContainer());
+		target.add(crudVO.getEditButtonContainer());
 
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 }
