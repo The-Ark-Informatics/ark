@@ -26,6 +26,7 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -41,6 +42,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
@@ -51,10 +53,13 @@ import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
+import au.org.theark.lims.model.vo.BiospecimenLocationVO;
 import au.org.theark.lims.model.vo.LimsVO;
+import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.util.UniqueIdGenerator;
 import au.org.theark.lims.web.Constants;
+import au.org.theark.lims.web.component.biolocation.BioLocationPanel;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 /**
@@ -74,6 +79,9 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService										iLimsService;
+	
+	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService								iInventoryService;
 
 	protected CompoundPropertyModel<LimsVO>			cpModel;
 	protected FeedbackPanel									feedbackPanel;
@@ -83,9 +91,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 	private Label												nameLblFld;
 	private Label												sampleTypeLblFld;
 	private Label												collectionLblFld;
-	private Label												commentsLblFld;
 	private Label												quantityLblFld;
 	private Label												unitsLblFld;
+	private Label												commentsLblFld;
+	private Label												locationLbl;
+	private ArkBusyAjaxLink									locationLink;
 
 	private Panel												modalContentPanel;
 	protected ArkBusyAjaxButton							newButton;
@@ -274,6 +284,48 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				else {
 					unitsLblFld = new Label("biospecimen.unit", biospecimen.getUnit().getName());	
 				}
+				
+				try {
+					locationLbl = new Label("biospecimen.location", "view");
+					locationLink = new ArkBusyAjaxLink("biospecimen.location.link"){
+
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
+						@Override
+						public void onClick(AjaxRequestTarget target) {
+							Biospecimen biospecimen = (Biospecimen) (getParent().getDefaultModelObject());
+							CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
+							newModel.getObject().getBiospecimen().setId(biospecimen.getId());
+							BiospecimenLocationVO biospecimenLocationVo;
+							try {
+								biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
+								modalContentPanel = new BioLocationPanel("content", newModel);
+								modalContentPanel.add(new SimpleAttributeModifier("class", "detailsPanelBorder"));
+								// Set the modalWindow title and content
+								modalWindow.setTitle("Biospecimen Location Detail");
+								modalWindow.setContent(modalContentPanel);
+								modalWindow.show(target);
+							}
+							catch (ArkSystemException e) {
+								log.error(e.getMessage());
+							}
+						}
+					};
+					
+					locationLink.add(locationLbl);
+					
+					BiospecimenLocationVO biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
+					if(!biospecimenLocationVo.getIsAllocated()) {
+						locationLink.setVisible(false);
+					}
+				}
+				catch (ArkSystemException e) {
+					log.error(e.getMessage());
+				}
 
 				item.add(idLblFld);
 				item.add(rowDetailsWMC);
@@ -282,6 +334,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(commentsLblFld);
 				item.add(quantityLblFld);
 				item.add(unitsLblFld);
+				item.add(locationLink);
 
 				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
 

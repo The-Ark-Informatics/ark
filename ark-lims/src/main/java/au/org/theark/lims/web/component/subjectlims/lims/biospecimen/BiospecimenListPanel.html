@@ -46,10 +46,17 @@
 								</wicket:message>
 							</label>
 						</th>
-						<th width="34%">
+						<th width="24%">
 							<label for="comments">
 								<wicket:message	key="biospecimen.comments">
 									Comments:
+								</wicket:message>
+							</label>
+						</th>
+						<th width="10%">
+							<label for="location">
+								<wicket:message	key="biospecimen.location">
+									Location:
 								</wicket:message>
 							</label>
 						</th>
@@ -90,9 +97,16 @@
 								<span wicket:id="biospecimen.unit">
 								</span>
 							</td>
-							<td width="34%">
+							<td width="24%">
 								<span wicket:id="biospecimen.comments" type="text">
 								</span>
+							</td>
+							<td width="10%">
+								<a href="#"wicket:id="biospecimen.location.link">
+									<span wicket:id="biospecimen.location" type="text">
+										[view]
+									</span>
+								</a>
 							</td>
 							<td width="2%">
 								&nbsp;
@@ -104,7 +118,7 @@
 							<td width="2%">
 								&nbsp;
 							</td>
-							<td width="96%" colspan="6">
+							<td width="96%" colspan="7">
 								<span wicket:id="navigator" class="a">
 								</span>
 							</td>
