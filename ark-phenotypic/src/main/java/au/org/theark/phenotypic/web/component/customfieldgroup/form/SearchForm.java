@@ -1,13 +1,18 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup.form;
 
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CustomFieldGroupVO;
@@ -24,6 +29,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private TextField<String> groupNameTxtFld;
+	private DropDownChoice<YesNo> publishedStatusChoice;
 	
 	
 	/**
@@ -43,7 +49,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	 */
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		// TODO Auto-generated method stub
+		// TODO NN
 		
 	}
 
@@ -57,7 +63,8 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		getModelObject().getCustomFieldGroup().setStudy(study);
 		
-		int count = 0;//TODOGet the count of records that match the search criteria
+		int count = iArkCommonService.getCustomFieldGroupCount(getModelObject().getCustomFieldGroup());
+
 		if (count <= 0) {
 			this.info("Fields with the specified criteria does not exist in the system.");
 			target.addComponent(feedbackPanel);
@@ -68,11 +75,14 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 	
 	protected void initialiseSearchForm(){
 		groupNameTxtFld = new TextField<String>("customFieldGroup.name");
-		//Add the Published Field in as a radio or drop down
+		List<YesNo> yesNoListSource = iArkCommonService.getYesNoList();
+		ChoiceRenderer<YesNo> yesNoRenderer = new ChoiceRenderer<YesNo>("name", "id");
+		publishedStatusChoice = new DropDownChoice<YesNo>("customFieldGroup.published", (List) yesNoListSource, yesNoRenderer);
 	}
 	
 	protected void addSearchComponentsToForm() {
 		add(groupNameTxtFld);
+		add(publishedStatusChoice);
 	}
 
 }

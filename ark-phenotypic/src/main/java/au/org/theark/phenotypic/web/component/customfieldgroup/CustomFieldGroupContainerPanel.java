@@ -1,19 +1,29 @@
 package au.org.theark.phenotypic.web.component.customfieldgroup;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apache.shiro.SecurityUtils;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.model.study.entity.ArkModule;
+import au.org.theark.core.model.study.entity.CustomFieldGroup;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.CustomFieldGroupVO;
 import au.org.theark.core.web.component.AbstractContainerPanel;
+import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.phenotypic.web.component.customfieldgroup.form.ContainerForm;
 
 /**
@@ -29,7 +39,8 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 	
 	private ContainerForm containerForm;
 	
-	
+	private ArkDataProvider2 arkDataProvider;
+	private DataView<CustomFieldGroup> dataView;
 	
 	/**
 	 * Constructor that uses the ArkCrudContainerVO
@@ -47,7 +58,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 		containerForm = new ContainerForm("containerForm",cpModel);
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseDetailPanel());
-		//containerForm.add(initialiseSearchResults());
+		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
@@ -94,8 +105,41 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 	 */
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		SearchResultListPanel searchResultListPanel = new SearchResultListPanel("searchResults", cpModel, arkCrudContainerVO, feedBackPanel);
+
+		// Data providor to paginate resultList
+		arkDataProvider = new ArkDataProvider2<CustomFieldGroup, CustomFieldGroup>() {
+
+			public int size() {
+				return iArkCommonService.getCustomFieldGroupCount(criteriaModel.getObject());
+			}
+
+			public Iterator<CustomFieldGroup> iterator(int first, int count) {
+				List<CustomFieldGroup> listSubjects = new ArrayList<CustomFieldGroup>();
+				if (isActionPermitted()) {
+					listSubjects = iArkCommonService.getCustomFieldGroups(criteriaModel.getObject(), first, count);
+				}
+				return listSubjects.iterator();
+			}
+		};
+		
+		// Set the criteria for the data provider
+		arkDataProvider.setCriteriaModel(new PropertyModel<CustomFieldGroup>(cpModel, "customFieldGroup"));
+
+		dataView = searchResultListPanel.buildDataView(arkDataProvider);
+		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
+
+		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
+			@Override
+			protected void onAjaxEvent(AjaxRequestTarget target) {
+				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+			}
+		};
+		searchResultListPanel.add(pageNavigator);
+		searchResultListPanel.add(dataView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 	
 	protected WebMarkupContainer initialiseFeedBackPanel() {
