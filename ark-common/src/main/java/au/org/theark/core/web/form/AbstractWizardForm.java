@@ -27,8 +27,6 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AttributeAppender;
-import org.apache.wicket.behavior.IBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -79,8 +77,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	private AjaxLink						cancelLink;
 	private AjaxButton					finishButton;
 
-	protected IBehavior					buttonStyleBehavior;
-
 	private boolean						cancelled			= false;
 
 	// Add a visitor class for required field marking/validation/highlighting
@@ -97,8 +93,6 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 	public AbstractWizardForm(String id, IModel model) {
 		super(id, model);
-
-		buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
 		setOutputMarkupId(true);
 		setMultiPart(true);
 		initialiseForm();
@@ -125,8 +119,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		this.searchPanelContainer = searchPanelContainer;
 		this.wizardPanelFormContainer = wizardPanelFormContainer;
 		this.containerForm = containerForm;
-
-		buttonStyleBehavior = new AttributeAppender("class", new Model("ui-corner-all"), " ");
+	
 		setOutputMarkupId(true);
 		setMultiPart(true);
 		initialiseForm();
@@ -143,21 +136,14 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		previousLink.setEnabled(false);
 		previousLink.setOutputMarkupId(true);
 		previousLink.setOutputMarkupPlaceholderTag(true);
-		previousLink.add(buttonStyleBehavior);
-
 		// next button
 		nextButton = createNext();
 		nextButton.setOutputMarkupId(true);
 		nextButton.setOutputMarkupPlaceholderTag(true);
-		nextButton.add(buttonStyleBehavior);
-
 		// cancel button
 		cancelLink = createCancel();
-		cancelLink.add(buttonStyleBehavior);
-
 		// finish button
 		finishButton = createFinish();
-		finishButton.add(buttonStyleBehavior);
 		finishButton.setVisible(true);
 		finishButton.setEnabled(false);
 		finishButton.setOutputMarkupId(true);
@@ -234,10 +220,10 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		wizardPanelContainer.setVisible(true);
 		resultListContainer.setVisible(true);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(wizardPanelContainer);
-		target.addComponent(wizardPanelFormContainer);
-		target.addComponent(resultListContainer);
+		target.add(feedBackPanel);
+		target.add(wizardPanelContainer);
+		target.add(wizardPanelFormContainer);
+		target.add(resultListContainer);
 	}
 
 	private AjaxButton createNext() {
@@ -322,8 +308,8 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		finishButton.setEnabled(false);
 
 		searchPanelContainer.setVisible(true);
-		target.addComponent(wizardButtonContainer);
-		target.addComponent(resultListContainer);
+		target.add(wizardButtonContainer);
+		target.add(resultListContainer);
 		onFinish(target, form);
 	}
 
@@ -349,7 +335,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 
 		// Make search results hidden until finish or cancel
 		resultListContainer.setVisible(false);
-		target.addComponent(resultListContainer);
+		target.add(resultListContainer);
 
 		AbstractWizardForm.this.gotoNext(target);
 	}
@@ -373,9 +359,9 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 		finishButton.setEnabled(false);
 		resultListContainer.setVisible(true);
 
-		target.addComponent(wizardPanelFormContainer);
-		target.addComponent(wizardButtonContainer);
-		target.addComponent(resultListContainer);
+		target.add(wizardPanelFormContainer);
+		target.add(wizardButtonContainer);
+		target.add(resultListContainer);
 
 		onCancel(target);
 	}
@@ -407,13 +393,13 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 				cancelLink.setEnabled(false);
 				finishButton.setEnabled(true);
 				arkExcelWorkSheetAsGrid.setEnabled(false);
-				target.addComponent(arkExcelWorkSheetAsGrid);
+				target.add(arkExcelWorkSheetAsGrid);
 			}
 
-			target.addComponent(wizardButtonContainer);
+			target.add(wizardButtonContainer);
 		}
-		target.addComponent(wmc);
-		target.addComponent(feedBackPanel);
+		target.add(wmc);
+		target.add(feedBackPanel);
 
 	}
 
@@ -434,8 +420,8 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 			previous.onStepInPrevious(this, target);
 			previous.handleWizardState(this, target);
 		}
-		target.addComponent(wmc);
-		target.addComponent(feedBackPanel);
+		target.add(wmc);
+		target.add(feedBackPanel);
 	}
 
 	public HistoryAjaxBehavior getHistoryAjaxBehavior() {

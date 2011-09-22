@@ -69,6 +69,12 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 					editCancelProcessForUpdate(target);
 				}
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
@@ -84,7 +90,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -106,6 +112,12 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			@Override
 			public boolean isVisible() {
 				return ArkPermissionHelper.isActionPermitted(Constants.DELETE);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 

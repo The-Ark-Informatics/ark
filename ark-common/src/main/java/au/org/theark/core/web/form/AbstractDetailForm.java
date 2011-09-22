@@ -157,10 +157,16 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				else {
 					resultListContainer.setVisible(false); // Hide the Search Result List Panel via the WebMarkupContainer
 					detailPanelContainer.setVisible(false); // Hide the Detail Panel via the WebMarkupContainer
-					target.addComponent(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-					target.addComponent(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
+					target.add(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
+					target.add(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
 					onCancelPostProcess(target);
 				}
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 
@@ -178,7 +184,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.addComponent(detailPanelContainer);
+				target.add(detailPanelContainer);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -220,6 +226,12 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				// calling super.isVisible() will allow an external setVisible() to override visibility
 				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
@@ -233,9 +245,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				viewButtonContainer.setVisible(false);
 				editButtonContainer.setVisible(true);
 				detailPanelFormContainer.setEnabled(true);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
-				target.addComponent(detailPanelFormContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
+				target.add(detailPanelFormContainer);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -290,6 +302,12 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 					editCancelProcessForUpdate(target);
 				}
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 
 		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
@@ -306,11 +324,14 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
-			public void onError(AjaxRequestTarget target, Form<?> form) {
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> arg1) {
+				// TODO Auto-generated method stub
 				saveOnErrorProcess(target);
+				
 			}
 		};
 
@@ -330,6 +351,13 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 				// calling super.isVisible() will allow an external setVisible() to override visibility
 				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
 		};
 
 		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
@@ -428,8 +456,8 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	protected void editCancelProcessForUpdate(AjaxRequestTarget target) {
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		onCancelPostProcess(target, true);
 	}
 
@@ -475,9 +503,9 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
-		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVO.getViewButtonContainer());
+		target.add(arkCrudContainerVO.getEditButtonContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	/**
@@ -494,13 +522,13 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		searchPanelContainer.setVisible(false);
 		editButtonContainer.setVisible(false);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(detailPanelFormContainer);
-		target.addComponent(editButtonContainer);
+		target.add(feedBackPanel);
+		target.add(searchPanelContainer);
+		target.add(detailPanelContainer);
+		target.add(resultListContainer);
+		target.add(viewButtonContainer);
+		target.add(detailPanelFormContainer);
+		target.add(editButtonContainer);
 	}
 
 	/**
@@ -519,14 +547,14 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(feedBackPanel);
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 
-		target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-		target.addComponent(arkCrudContainerVO.getEditButtonContainer());
+		target.add(arkCrudContainerVO.getViewButtonContainer());
+		target.add(arkCrudContainerVO.getEditButtonContainer());
 	}
 
 	/**
@@ -539,10 +567,10 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		detailPanelContainer.setVisible(false);
 		searchPanelContainer.setVisible(true);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(resultListContainer);
+		target.add(feedBackPanel);
+		target.add(searchPanelContainer);
+		target.add(detailPanelContainer);
+		target.add(resultListContainer);
 		onCancel(target);
 	}
 
@@ -557,10 +585,10 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
 
-		target.addComponent(feedBackPanel);
-		target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(feedBackPanel);
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		onCancel(target);
 	}
 
@@ -580,12 +608,12 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		searchPanelContainer.setVisible(false);
 		editButtonContainer.setVisible(false);
 
-		target.addComponent(resultListContainer);
-		target.addComponent(detailPanelContainer);
-		target.addComponent(detailPanelFormContainer);
-		target.addComponent(searchPanelContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
+		target.add(resultListContainer);
+		target.add(detailPanelContainer);
+		target.add(detailPanelFormContainer);
+		target.add(searchPanelContainer);
+		target.add(viewButtonContainer);
+		target.add(editButtonContainer);
 	}
 
 	/**
@@ -607,13 +635,13 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		crudVO.getDetailPanelFormContainer().setEnabled(false);
 		crudVO.getViewButtonContainer().setEnabled(true);
 
-		target.addComponent(crudVO.getSearchResultPanelContainer());
-		target.addComponent(crudVO.getDetailPanelContainer());
-		target.addComponent(crudVO.getDetailPanelFormContainer());
-		target.addComponent(crudVO.getSearchPanelContainer());
-		target.addComponent(crudVO.getViewButtonContainer());
-		target.addComponent(crudVO.getEditButtonContainer());
-		target.addComponent(feedBackPanel);
+		target.add(crudVO.getSearchResultPanelContainer());
+		target.add(crudVO.getDetailPanelContainer());
+		target.add(crudVO.getDetailPanelFormContainer());
+		target.add(crudVO.getSearchPanelContainer());
+		target.add(crudVO.getViewButtonContainer());
+		target.add(crudVO.getEditButtonContainer());
+		target.add(feedBackPanel);
 	}
 	
 
