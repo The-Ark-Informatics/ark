@@ -19,10 +19,10 @@
 package au.org.theark.core.web.behavior;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.IHeaderResponse;
 
-public class ArkDefaultFormFocusBehavior extends AbstractBehavior {
+public class ArkDefaultFormFocusBehavior extends Behavior {
 	/**
 	 * 
 	 */
@@ -35,7 +35,7 @@ public class ArkDefaultFormFocusBehavior extends AbstractBehavior {
 	}
 
 	public void renderHead(IHeaderResponse iHeaderResponse) {
-		super.renderHead(iHeaderResponse);
-		iHeaderResponse.renderOnLoadJavascript("document.getElementById('" + component.getMarkupId() + "').focus();");
+		super.renderHead(component,iHeaderResponse);
+		iHeaderResponse.renderOnLoadJavaScript("document.getElementById('" + component.getMarkupId() + "').focus();");
 	}
 }
