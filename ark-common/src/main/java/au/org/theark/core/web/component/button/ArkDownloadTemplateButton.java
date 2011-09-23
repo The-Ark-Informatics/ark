@@ -31,7 +31,7 @@ import org.apache.wicket.util.io.ByteArrayOutputStream;
 
 import au.org.theark.core.util.ArkSheetMetaData;
 
-public class ArkDownloadTemplateButton extends AjaxButton {
+public abstract class ArkDownloadTemplateButton extends AjaxButton {
 
 	/**
 	 * 
@@ -119,7 +119,7 @@ public class ArkDownloadTemplateButton extends AjaxButton {
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		byte[] data = writeOutXlsFileToBytes();
 		if (data != null) {
-			getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, templateFilename + ".xls"));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("application/vnd.ms-excel", data, templateFilename + ".xls"));
 		}
 	}
 
