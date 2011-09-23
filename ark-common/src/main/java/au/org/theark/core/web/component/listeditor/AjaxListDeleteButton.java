@@ -53,14 +53,8 @@ public abstract class AjaxListDeleteButton extends AjaxEditorButton {
 		getEditor().remove(getItem());
 
 		// only repaint ListDetailForm
-		target.addComponent(form);
+		target.add(form);
 		onDeleteConfirmed(target, form);
-	}
-
-	@Override
-	protected void onError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		super.onError(target, form);
 	}
 
 	protected abstract void onDeleteConfirmed(AjaxRequestTarget target, Form<?> form);
