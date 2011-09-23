@@ -28,7 +28,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.Loop;
-import org.apache.wicket.markup.html.list.Loop.LoopItem;
+import org.apache.wicket.markup.html.list.LoopItem;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
@@ -73,7 +73,7 @@ public class DynamicTabbedPanel extends Panel {
 
 			@Override
 			protected void populateItem(final LoopItem item) {
-				final int index = item.getIteration(); // .getIndex();
+				final int index = item.getIndex();
 				final ITab tab = tabModel.getObject().get(index);
 
 				final WebMarkupContainer titleLink = newLink("link", index);
@@ -123,7 +123,7 @@ public class DynamicTabbedPanel extends Panel {
 			@Override
 			protected void onComponentTag(final ComponentTag tag) {
 				super.onComponentTag(tag);
-				String cssClass = (String) tag.getString("class");
+				String cssClass = (String) tag.getAttribute("class");
 				if (cssClass == null) {
 					cssClass = " ";
 				}
@@ -136,10 +136,6 @@ public class DynamicTabbedPanel extends Panel {
 					cssClass += " last";
 				}
 				tag.put("class", cssClass.trim());
-			}
-
-			private int getIndex() {
-				return tabIndex;
 			}
 
 			@Override
