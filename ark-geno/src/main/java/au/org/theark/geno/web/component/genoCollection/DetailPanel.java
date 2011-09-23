@@ -18,14 +18,12 @@
  ******************************************************************************/
 package au.org.theark.geno.web.component.genoCollection;
 
-import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.extensions.yui.calendar.DatePicker;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -94,7 +92,7 @@ public class DetailPanel extends Panel {
 		private AjaxButton editButton;
 		private AjaxButton editCancelButton;
 
-		private ModalWindow selectModalWindow;
+		
 		
 		private TextField<String> idTxtFld;
 		private TextField<String> nameTxtFld;
@@ -172,6 +170,12 @@ public class DetailPanel extends Panel {
 					genoCollectionContainerPanel.showSearch(target);
 					onCancel(target);//Invoke a onCancel() that the sub-class can use to build anything more specific
 				}
+
+				@Override
+				protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+					// TODO Auto-generated method stub
+					
+				}
 			};
 			
 			saveButton = new AjaxButton(au.org.theark.core.Constants.SAVE, new StringResourceModel("saveKey", this, null))
@@ -240,14 +244,12 @@ public class DetailPanel extends Panel {
 																editButton,
 																editCancelButton);
 
-			selectModalWindow = initialiseModalWindow();
+			//selectModalWindow = initialiseModalWindow();
 
 			addComponentsToForm();
 		}
 		
 		protected void addComponentsToForm(){
-			
-			detailPanelFormContainer.add(selectModalWindow);
 			add(detailPanelFormContainer);
 
 			editButtonContainer.add(saveButton);
@@ -289,8 +291,7 @@ public class DetailPanel extends Panel {
 		}
 		
 		protected void showConfirmModalWindow(AjaxRequestTarget target){
-			selectModalWindow.show(target);
-			target.addComponent(selectModalWindow);
+	
 		}
 		
 		protected void onSave(Form<GenoCollectionVO> containerForm, AjaxRequestTarget target)
@@ -358,23 +359,5 @@ public class DetailPanel extends Panel {
 			selectModalWindow.close(target);
 		}
 		
-		protected ModalWindow initialiseModalWindow(){
-		
-			// The ModalWindow, showing some choices for the user to select.
-			selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow"){
-
-				protected void onSelect(AjaxRequestTarget target, String selection){
-					onDeleteConfirmed(target,selection, selectModalWindow);
-			    }
-		
-			    protected void onCancel(AjaxRequestTarget target){
-			    	onDeleteCancel(target,selectModalWindow);
-			    }
-			};
-			
-			return selectModalWindow;
-
-		}
-
 	}
 }

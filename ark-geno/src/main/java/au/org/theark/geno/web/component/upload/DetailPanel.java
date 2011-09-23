@@ -47,7 +47,6 @@ import au.org.theark.core.model.geno.entity.FileFormat;
 import au.org.theark.core.model.geno.entity.GenoCollection;
 import au.org.theark.core.model.geno.entity.UploadCollection;
 import au.org.theark.core.security.ArkSecurityManager;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.service.IGenoService;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;
@@ -103,8 +102,6 @@ public class DetailPanel extends Panel {
 		private AjaxButton editButton;
 		private AjaxButton editCancelButton;
 
-		private ModalWindow selectModalWindow;
-		
 		private TextField<String> idTxtFld;
 		private FileUploadField fileUploadField;
 		private DropDownChoice<FileFormat> fileFormatDdc;
@@ -165,6 +162,12 @@ public class DetailPanel extends Panel {
 					uploadContainerPanel.showSearch(target);
 					onCancel(target);//Invoke a onCancel() that the sub-class can use to build anything more specific
 				}
+
+				@Override
+				protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+					// TODO Auto-generated method stub
+					
+				}
 				
 			};
 			
@@ -185,7 +188,7 @@ public class DetailPanel extends Panel {
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 					uploadContainerPanel.refreshDetail(target);
-					showConfirmModalWindow(target);
+					//TODO Show Modal Window To Confirm
 				}
 				
 				public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -226,14 +229,11 @@ public class DetailPanel extends Panel {
 																editButton,
 																editCancelButton);
 
-			selectModalWindow = initialiseModalWindow();
-
 			addComponentsToForm();
 		}
 		
 		protected void addComponentsToForm(){
 			
-			detailPanelFormContainer.add(selectModalWindow);
 			add(detailPanelFormContainer);
 
 			editButtonContainer.add(saveButton);
@@ -282,11 +282,6 @@ public class DetailPanel extends Panel {
 															(List) delimiterTypeCollection, delimiterTypeRenderer);
 		}
 
-		protected void showConfirmModalWindow(AjaxRequestTarget target){
-			selectModalWindow.show(target);
-			target.addComponent(selectModalWindow);
-		}
-		
 		private void createDirectoryIfNeeded(String directoryName)
 		{
 		  File theDir = new File(directoryName);
@@ -406,23 +401,6 @@ public class DetailPanel extends Panel {
 			selectModalWindow.close(target);
 		}
 		
-		protected ModalWindow initialiseModalWindow(){
-		
-			// The ModalWindow, showing some choices for the user to select.
-			selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow"){
-
-				protected void onSelect(AjaxRequestTarget target, String selection){
-					onDeleteConfirmed(target,selection, selectModalWindow);
-			    }
-		
-			    protected void onCancel(AjaxRequestTarget target){
-			    	onDeleteCancel(target,selectModalWindow);
-			    }
-			};
-			
-			return selectModalWindow;
-
-		}
 
 	}
 }
