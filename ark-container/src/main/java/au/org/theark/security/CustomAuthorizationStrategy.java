@@ -27,6 +27,7 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.Component;
 import org.apache.wicket.authorization.Action;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
+import org.apache.wicket.request.component.IRequestableComponent;
 
 import au.org.theark.core.security.SecurityConstraint;
 import au.org.theark.core.security.ShiroAction;
@@ -49,8 +50,7 @@ public class CustomAuthorizationStrategy implements IAuthorizationStrategy{
 	}
 
 	
-	
-	public <T extends Component> boolean isInstantiationAuthorized(Class<T> componentClass) {
+	public <T extends IRequestableComponent> boolean isInstantiationAuthorized(final Class<T> componentClass) {
 		SecurityConstraint securityConstraint =  checkInvalidInstantiation(componentClass);
 		 if(securityConstraint != null){
 			 return false;
@@ -131,7 +131,7 @@ public class CustomAuthorizationStrategy implements IAuthorizationStrategy{
 	 * @param componentClass
 	 * @return
 	 */
-	  public <T extends Component> SecurityConstraint checkInvalidInstantiation( final Class<T> componentClass )
+	  public <T extends IRequestableComponent> SecurityConstraint checkInvalidInstantiation( final Class<T> componentClass )
 	  {
 	  	SecurityConstraint securityConstraint = null;//combination of action and things like is user authenticated, etc...
 
