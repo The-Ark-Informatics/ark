@@ -20,10 +20,11 @@ package au.org.theark.core.web.form;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.IHeaderResponse;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.request.resource.IResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,21 +41,37 @@ public abstract class HistoryAjaxBehavior extends AbstractDefaultAjaxBehavior {
 	private static final String	HISTORY_ITEM_PARAM	= "hiId";
 
 	@Override
-	public final CharSequence getCallbackUrl(final boolean onlyTargetActivePage) {
-		return super.getCallbackUrl(onlyTargetActivePage) + "&" + HISTORY_ITEM_PARAM + "=' + HistoryManager.getHistoryItem()";
+	public final CharSequence getCallbackUrl() {
+		return super.getCallbackUrl() + "&" + HISTORY_ITEM_PARAM + "=' + HistoryManager.getHistoryItem()";
 	}
 
 	@Override
-	public void renderHead(final IHeaderResponse response) {
-		response.renderCSSReference(new ResourceReference(HistoryAjaxBehavior.class, "history-manager-iframe.css"));
+	public void renderHead(Component component, final IHeaderResponse headerResponse) {
+		
+		
+		org.apache.wicket.request.resource.ResourceReference wicketRequestResource = new org.apache.wicket.request.resource.ResourceReference(HistoryAjaxBehavior.class,"history-manager-iframe.css"){
+
+			@Override
+			public IResource getResource() {
+				// TODO Auto-generated method stub
+				return null; //"history-manager-iframe.css";
+			}
+			
+		};
+		
+		headerResponse.renderCSSReference(wicketRequestResource);
+		
+		Response wicketResponse  = headerResponse.getResponse();
+		//new ResourceReference(HistoryAjaxBehavior.class, "history-manager-iframe.css")
+		//headerResponse.renderCSSReference();
 		// conflicts with the jquery imported by the base page
 		// response.renderJavascriptReference(new ResourceReference(HistoryAjaxBehavior.class, "jquery.js"));
-		response.renderJavascriptReference(new ResourceReference(HistoryAjaxBehavior.class, "history-manager.js"));
+		//headerResponse.renderJavascriptReference(new ResourceReference(HistoryAjaxBehavior.class, "history-manager.js"));
 
 		/*
 		 * Save the callback URL to this behavior to call it on back/forward button clicks
 		 */
-		response.renderJavascript("var notifyBackButton = function() { wicketAjaxGet('" + getCallbackUrl(false) + ", null, null, function() {return true;}.bind(this)); }", "history-manager-url");
+		//headerResponse.renderJavascript("var notifyBackButton = function() { wicketAjaxGet('" + getCallbackUrl(false) + ", null, null, function() {return true;}.bind(this)); }", "history-manager-url");
 	}
 
 	@Override
@@ -83,7 +100,8 @@ public abstract class HistoryAjaxBehavior extends AbstractDefaultAjaxBehavior {
 	 */
 	public void registerAjaxEvent(final AjaxRequestTarget target, final Component component) {
 		if (RequestCycle.get().getRequest().getParameter(HistoryAjaxBehavior.HISTORY_ITEM_PARAM) == null) {
-			target.appendJavascript("HistoryManager.addHistoryEntry('" + component.getId() + "');");
+			//target.appendJavascript("HistoryManager.addHistoryEntry('" + component.getId() + "');");
+		
 		}
 	}
 }
