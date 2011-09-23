@@ -100,7 +100,7 @@ public class BioTransactionListPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.addComponent(panelToRepaint);
+				target.add(panelToRepaint);
 			}
 
 		};
@@ -151,7 +151,7 @@ public class BioTransactionListPanel extends Panel {
 
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(dataViewListWMC);
+				target.add(dataViewListWMC);
 			}
 		};
 		dataViewListWMC.add(pageNavigator);
@@ -191,8 +191,8 @@ public class BioTransactionListPanel extends Panel {
 						BioTransaction bioTransaction = getModelObject();
 						iLimsService.deleteBioTransaction(bioTransaction);
 						this.info("Successfully removed the transaction");
-						target.addComponent(feedbackPanel);
-						target.addComponent(dataViewListWMC);	//repaint the list
+						target.add(feedbackPanel);
+						target.add(dataViewListWMC);	//repaint the list
 					}
 
 				};

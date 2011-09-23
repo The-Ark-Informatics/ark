@@ -62,8 +62,8 @@ public class BioCollectionCustomDataEditorPanel extends Panel {
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataViewPanel.getDataView()) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(customDataEditorForm.getDataViewWMC());
-				target.addComponent(this);
+				target.add(customDataEditorForm.getDataViewWMC());
+				target.add(this);
 			}
 		};
 		pageNavigator.setOutputMarkupId(true);

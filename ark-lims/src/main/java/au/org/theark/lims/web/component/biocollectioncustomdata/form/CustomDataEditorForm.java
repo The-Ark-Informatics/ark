@@ -68,7 +68,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BioCollec
 		 * This is because deleted fields still remain in the model, and are stale objects if we 
 		 * try to use them for future saves.
 		 */
-		target.addComponent(dataViewWMC);
-		target.addComponent(feedbackPanel);
+		target.add(dataViewWMC);
+		target.add(feedbackPanel);
 	}
 }

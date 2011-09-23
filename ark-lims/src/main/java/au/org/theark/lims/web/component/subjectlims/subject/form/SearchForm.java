@@ -114,8 +114,16 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				super.onSubmit();
+				// Should never get here since New button should never be enabled for Subject Details via LIMS
+				log.error("Incorrect application workflow - tried to create new Subject via LIMS");
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// Should never get here since New button should never be enabled for Subject Details via LIMS
+				log.error("Incorrect application workflow - tried to create new Subject via LIMS and error occurred");
+			}
+
 		};
 		addOrReplace(newButton);
 	}
@@ -203,7 +211,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		List<Study> studyList = new ArrayList<Study>(0);
 
@@ -222,11 +230,11 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 		int count = iLimsSubjectService.getSubjectCount(cpmModel.getObject(), studyList);
 		if (count == 0) {
 			this.info("There are no subjects with the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.add(listContainer);// For ajax this is required so
 	}
 	
 	/**

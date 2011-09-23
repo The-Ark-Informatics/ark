@@ -42,7 +42,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converters.DoubleConverter;
+import org.apache.wicket.util.convert.converter.DoubleConverter;
 import org.apache.wicket.validation.validator.MinimumValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -226,13 +226,14 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			 */
 			private static final long	serialVersionUID	= 1L;
 
+			@SuppressWarnings("unchecked")
 			@Override
-			public IConverter getConverter(Class<?> type) {
+			public <C> IConverter<C> getConverter(Class<C> type) {
 				DoubleConverter doubleConverter = new DoubleConverter();
 				NumberFormat numberFormat = NumberFormat.getInstance();
 				numberFormat.setMinimumFractionDigits(1);
 				doubleConverter.setNumberFormat(getLocale(), numberFormat);
-				return doubleConverter;
+				return (IConverter<C>) doubleConverter;
 			}
 		};
 
@@ -382,7 +383,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 			bioTransactionQuantityTxtFld.setVisible(false);
 			quantityTxtFld.setVisible(true);
 			quantityTxtFld.setModelObject(bioTransactionQuantityTxtFld.getModelObject());
-			target.addComponent(bioTransactionDetailWmc);
+			target.add(bioTransactionDetailWmc);
 		}
 		else {
 			// Update
@@ -408,7 +409,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	@Override
 	protected void onClose(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		modalWindow.close(target);
 	}
 
@@ -422,7 +423,7 @@ public class BiospecimenModalDetailForm extends AbstractModalDetailForm<LimsVO> 
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 	/*

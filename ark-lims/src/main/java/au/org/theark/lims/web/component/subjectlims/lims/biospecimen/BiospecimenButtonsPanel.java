@@ -204,8 +204,8 @@ public class BiospecimenButtonsPanel extends Panel {
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was cloned from " + biospecimenUid + " successfully");
-			target.addComponent(feedbackPanel);
-			target.addComponent(biospecimenModalDetailForm);
+			target.add(feedbackPanel);
+			target.add(biospecimenModalDetailForm);
 		}
 		catch (IllegalAccessException e) {
 			log.error(e.getMessage());
@@ -241,8 +241,8 @@ public class BiospecimenButtonsPanel extends Panel {
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was processed from " + biospecimenUid + " successfully");
-			target.addComponent(feedbackPanel);
-			target.addComponent(biospecimenModalDetailForm);
+			target.add(feedbackPanel);
+			target.add(biospecimenModalDetailForm);
 		}
 		catch (IllegalAccessException e) {
 			log.error(e.getMessage());
@@ -278,8 +278,8 @@ public class BiospecimenButtonsPanel extends Panel {
 			iLimsService.createBiospecimen(limsVo);
 			biospecimenModalDetailForm.setModelObject(limsVo);
 			this.info("Biospecimen " + limsVo.getBiospecimen().getBiospecimenUid() + " was aliquoted from " + biospecimenUid + " successfully");
-			target.addComponent(feedbackPanel);
-			target.addComponent(biospecimenModalDetailForm);
+			target.add(feedbackPanel);
+			target.add(biospecimenModalDetailForm);
 		}
 		catch (IllegalAccessException e) {
 			log.error(e.getMessage());

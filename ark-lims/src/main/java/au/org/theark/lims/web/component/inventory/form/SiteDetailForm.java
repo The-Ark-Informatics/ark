@@ -146,7 +146,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 	public AjaxButton getDeleteButton() {
@@ -162,7 +162,7 @@ public class SiteDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		this.info("Site " + containerForm.getModelObject().getInvSite().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		// Move focus back to Search form
 		LimsVO limsVo = new LimsVO();

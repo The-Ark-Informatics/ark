@@ -24,7 +24,6 @@ import javax.swing.tree.TreeModel;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -35,6 +34,8 @@ import org.apache.wicket.markup.html.tree.LinkIconPanel;
 import org.apache.wicket.markup.html.tree.LinkTree;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.InvBox;
@@ -57,17 +58,17 @@ public class InventoryLinkTree extends LinkTree {
 	 */
 	private static final long					serialVersionUID	= -3736908668279170191L;
 
-	private static final ResourceReference	STUDY_ICON			= new ResourceReference(InventoryLinkTree.class, "study.gif");
-	private static final ResourceReference	SITE_ICON			= new ResourceReference(InventoryLinkTree.class, "site.gif");
-	private static final ResourceReference	EMPTY_TANK_ICON	= new ResourceReference(InventoryLinkTree.class, "empty_tank.gif");
-	private static final ResourceReference	GREEN_TANK_ICON	= new ResourceReference(InventoryLinkTree.class, "green_tank.gif");
-	private static final ResourceReference	YELLOW_TANK_ICON	= new ResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
-	private static final ResourceReference	FULL_TANK_ICON		= new ResourceReference(InventoryLinkTree.class, "full_tank.gif");
+	private static final PackageResourceReference	STUDY_ICON			= new PackageResourceReference(InventoryLinkTree.class, "study.gif");
+	private static final PackageResourceReference	SITE_ICON			= new PackageResourceReference(InventoryLinkTree.class, "site.gif");
+	private static final PackageResourceReference	EMPTY_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "empty_tank.gif");
+	private static final PackageResourceReference	GREEN_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "green_tank.gif");
+	private static final PackageResourceReference	YELLOW_TANK_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_tank.gif");
+	private static final PackageResourceReference	FULL_TANK_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_tank.gif");
 
-	private static final ResourceReference	EMPTY_BOX_ICON		= new ResourceReference(InventoryLinkTree.class, "empty_box.gif");
-	private static final ResourceReference	GREEN_BOX_ICON		= new ResourceReference(InventoryLinkTree.class, "green_box.gif");
-	private static final ResourceReference	YELLOW_BOX_ICON	= new ResourceReference(InventoryLinkTree.class, "yellow_box.gif");
-	private static final ResourceReference	FULL_BOX_ICON		= new ResourceReference(InventoryLinkTree.class, "full_box.gif");
+	private static final PackageResourceReference	EMPTY_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "empty_box.gif");
+	private static final PackageResourceReference	GREEN_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "green_box.gif");
+	private static final PackageResourceReference	YELLOW_BOX_ICON	= new PackageResourceReference(InventoryLinkTree.class, "yellow_box.gif");
+	private static final PackageResourceReference	FULL_BOX_ICON		= new PackageResourceReference(InventoryLinkTree.class, "full_box.gif");
 	
 	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
 	private IInventoryService					iInventoryService;
@@ -295,8 +296,8 @@ public class InventoryLinkTree extends LinkTree {
 		tree.getTreeState().selectNode(node, true);
 		tree.updateTree(target);
 		
-		target.addComponent(feedbackPanel);
-		target.addComponent(detailContainer);
+		target.add(feedbackPanel);
+		target.add(detailContainer);
 	}
 	
 	/**

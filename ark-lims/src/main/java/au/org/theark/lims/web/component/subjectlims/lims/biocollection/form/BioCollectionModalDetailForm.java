@@ -205,7 +205,7 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 
 	@Override
 	protected void onClose(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		modalWindow.close(target);
 	}
 
@@ -219,13 +219,13 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 		}
 		else {
 			this.error("Biospecimen collection " + cpModel.getObject().getBioCollection().getName() + " can not be deleted because there are biospecimens attached");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 	}
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 	/*

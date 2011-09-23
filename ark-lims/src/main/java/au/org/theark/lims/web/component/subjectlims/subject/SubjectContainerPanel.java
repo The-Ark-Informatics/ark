@@ -215,7 +215,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(searchResultPanelContainer);
+				target.add(searchResultPanelContainer);
 			}
 		};
 		searchResultsPanel.add(pageNavigator);

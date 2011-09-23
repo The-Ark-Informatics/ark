@@ -164,11 +164,11 @@ public class SearchResultListPanel extends Panel {
 				viewButtonContainer.setEnabled(true);
 				editButtonContainer.setVisible(false);
 
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailsPanelContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(searchResultContainer);
+				target.add(detailsPanelContainer);
+				target.add(searchPanelContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 			}
 		};
 

@@ -108,8 +108,14 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onAddSiteSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Site button");
 			}
 
 		};
@@ -126,8 +132,14 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onAddTankSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Tank button");
 			}
 
 		};
@@ -144,8 +156,14 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onAddTraySubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Tray button");
 			}
 
 		};
@@ -162,8 +180,14 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
 			}
 
+			@Override
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onAddBoxSubmit(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to process Add Box button");	
 			}
 
 		};
@@ -196,4 +220,5 @@ public abstract class AbstractInventoryTreePanel extends Panel {
 	 * @param target
 	 */
 	public abstract void onAddBoxSubmit(AjaxRequestTarget target);
+	
 }

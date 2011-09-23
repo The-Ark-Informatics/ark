@@ -190,7 +190,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(dataViewListWMC);
+				target.add(dataViewListWMC);
 			}
 		};
 		dataViewListWMC.add(pageNavigator);
@@ -219,6 +219,11 @@ public class BioCollectionListForm extends Form<LimsVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onNew(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to proceed with New BioCollection");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -293,7 +298,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 				item.add(surgeryDateLblFld);
 				item.add(commentsLblFld);
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
 					/**
 					 * 
@@ -314,7 +319,7 @@ public class BioCollectionListForm extends Form<LimsVO> {
 
 	protected void onNew(AjaxRequestTarget target) {
 		// refresh the feedback messages
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		// Set new BioCollection into model, then show modalWindow to save
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());

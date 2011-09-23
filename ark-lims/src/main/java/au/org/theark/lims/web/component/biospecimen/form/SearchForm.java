@@ -104,6 +104,12 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			public boolean isVisible() {
 				return false;
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO: Fix hardcoded message::
+				log.error("Error occured on the click of the New Biospecimen AjaxButton");
+			}
 		};
 		addOrReplace(newButton);
 	}
@@ -172,15 +178,15 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		
 		int count = iLimsService.getBiospecimenCount(cpmModel.getObject());
 		if (count == 0) {
 			this.info("There are no Biospecimens with the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		
-		target.addComponent(resultListContainer);
+		target.add(resultListContainer);
 	}
 
 	/**

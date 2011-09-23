@@ -204,19 +204,19 @@ public class SearchResultListPanel extends Panel {
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailPanelContainer);
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(searchResultContainer);
+				target.add(detailPanelContainer);
+				target.add(detailPanelFormContainer);
+				target.add(searchPanelContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 
 				// Refresh the contextUpdateTarget (add)
 				if (subjectContainerForm.getContextUpdateLimsWMC() != null) {
 					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup);
 					subjectContainerForm.getContextUpdateLimsWMC().setVisible(true);
 					subjectContainerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
-					target.addComponent(subjectContainerForm.getContextUpdateLimsWMC());
+					target.add(subjectContainerForm.getContextUpdateLimsWMC());
 				}
 			}
 		};
