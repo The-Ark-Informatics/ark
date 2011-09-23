@@ -31,7 +31,7 @@ public class ArkWebApplication extends BaseApplication{
 	public void init(){
 		log.info("In Constructor of ArkApplication");
 		super.init();
-		addComponentInstantiationListener(new SpringComponentInjector(this,context(),true));
+		getComponentInstantiationListeners().add(new SpringComponentInjector(this,context(),true));
 	}
 	
 	@Override
