@@ -20,7 +20,7 @@ package au.org.theark.core.util;
 
 import java.awt.image.BufferedImage;
 
-import org.apache.wicket.markup.html.image.resource.DynamicImageResource;
+import org.apache.wicket.request.resource.DynamicImageResource;
 
 public class ImageResource extends DynamicImageResource {
 
@@ -41,24 +41,26 @@ public class ImageResource extends DynamicImageResource {
 		this.image = toImageData(image);
 	}
 
+	/**
+	 * 1 day!
+	 */
+	protected int getCacheDuration() {
+
+		return 3600 * 24;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.apache.wicket.request.resource.DynamicImageResource#getImageData(org.apache.wicket.request.resource.IResource.Attributes)
+	 */
 	@Override
-	protected byte[] getImageData() {
+	protected byte[] getImageData(Attributes attributes) {
+		
 		if (image != null) {
 			return image;
 		}
 		else {
 			return new byte[0];
 		}
-
-	}
-
-	/**
-	 * 1 day!
-	 */
-	@Override
-	protected int getCacheDuration() {
-
-		return 3600 * 24;
 	}
 
 }
