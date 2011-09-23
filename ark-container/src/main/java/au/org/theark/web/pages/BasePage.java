@@ -151,13 +151,11 @@ public abstract class BasePage extends WebPage {
 		}
 	}
 
-	@Override
-	protected void configureResponse() {
-		super.configureResponse();
-		WebResponse response = getWebRequestCycle().getWebResponse();
-		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
-		response.setHeader("Expires", "-1");
-		response.setHeader("Pragma", "no-cache");
+	protected void configureResponse(final org.apache.wicket.request.http.WebResponse webResponse) {
+		super.configureResponse(webResponse);
+		webResponse.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
+		webResponse.setHeader("Expires", "-1");
+		webResponse.setHeader("Pragma", "no-cache");
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target) {
