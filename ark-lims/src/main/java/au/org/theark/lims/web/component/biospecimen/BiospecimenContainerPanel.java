@@ -110,6 +110,12 @@ public class BiospecimenContainerPanel extends Panel {
 			public boolean isVisible() {
 				return false;
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO: Fix hardcoded message::
+				log.error("Error occured on the click of the New Biospecimen AjaxButton");
+			}
 			
 		};
 		biospecimenListPanel.getListDetailForm().setNewButton(newButton);

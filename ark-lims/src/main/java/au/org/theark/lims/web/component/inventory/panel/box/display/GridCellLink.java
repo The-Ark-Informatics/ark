@@ -1,9 +1,9 @@
 package au.org.theark.lims.web.component.inventory.panel.box.display;
 
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.request.resource.ResourceReference;
 
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;

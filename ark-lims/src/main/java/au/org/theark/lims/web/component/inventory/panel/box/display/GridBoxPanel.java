@@ -34,21 +34,22 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.list.Loop;
+import org.apache.wicket.markup.html.list.LoopItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
@@ -59,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -79,9 +81,9 @@ public class GridBoxPanel extends Panel {
 	private WebMarkupContainer					gridBoxKeyContainer	= new WebMarkupContainer("gridBoxKeyContainer");
 	public String									exportXlsFileName;
 
-	private static final ResourceReference	EMPTY_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "emptyCell.gif");
-	private static final ResourceReference	USED_CELL_ICON			= new ResourceReference(GridBoxPanel.class, "usedCell.gif");
-	private static final ResourceReference	BARCODE_CELL_ICON		= new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
+	private static final PackageResourceReference	EMPTY_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "emptyCell.gif");
+	private static final PackageResourceReference	USED_CELL_ICON			= new PackageResourceReference(GridBoxPanel.class, "usedCell.gif");
+	private static final PackageResourceReference	BARCODE_CELL_ICON		= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
 	
 	private AbstractDetailModalWindow		modalWindow;
 	private InvBox	invBox;
@@ -157,7 +159,7 @@ public class GridBoxPanel extends Panel {
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
 			public void populateItem(LoopItem item) {
-				final int col = item.getIteration();
+				final int col = item.getIndex();
 
 				IModel<String> colModel = new Model() {
 					/**
@@ -205,7 +207,7 @@ public class GridBoxPanel extends Panel {
 		// Outer Loop instance, using a PropertyModel to bind the Loop iteration to invBox "noofrow" value
 		Loop loop = new Loop("rows", new PropertyModel(invBox, "noofrow")) {
 			public void populateItem(LoopItem item) {
-				final int row = item.getIteration();
+				final int row = item.getIndex();
 				
 				// Create the row number/label
 				String label = new String();
@@ -219,7 +221,8 @@ public class GridBoxPanel extends Panel {
 				}
 
 				Label rowLabel = new Label("rowNo", new Model(label));
-				rowLabel.add(new AbstractBehavior() {
+				rowLabel.add(new Behavior() {
+					@Override
 					public void onComponentTag(Component component, ComponentTag tag) {
 						super.onComponentTag(component, tag);
 						tag.put("style", "background: none repeat scroll 0 0 #FFFFFF; color: black; font-weight: bold; padding: 1px;");
@@ -230,7 +233,7 @@ public class GridBoxPanel extends Panel {
 				// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to invBox "noofcol" value
 				item.add(new Loop("cols", new PropertyModel(invBox, "noofcol")) {
 					public void populateItem(LoopItem item) {
-						final int col = item.getIteration();
+						final int col = item.getIndex();
 						final int index = (row * noOfCols) + col;
 						
 						InvCell invCell = invCellList.get(index);
@@ -323,8 +326,8 @@ public class GridBoxPanel extends Panel {
 				String filename = exportXlsFileName + ".xls";
 				if (data != null) {
 					log.info("Writing out XLS to client");
-					au.org.theark.core.util.ByteDataRequestTarget requestTarget = new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, filename);
-					getRequestCycle().setRequestTarget(requestTarget);
+					ByteDataResourceRequestHandler handler = new ByteDataResourceRequestHandler("application/vnd.ms-excel", data, filename);
+					getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
 				}
 
 				//TODO: Remove when working
@@ -342,6 +345,12 @@ public class GridBoxPanel extends Panel {
 				catch (IOException e) {
 					log.error(e.getMessage());
 				}
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				log.error("Error occurred in AjaxButton downloadGridBoxData.onError(..)");
+				this.error("Error occurred in processing the download of grid box data");
 			};
 		};
 

@@ -228,12 +228,12 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		SearchForm searchForm = (SearchForm) searchPanel.get("searchForm");
 		AjaxButton newButton = searchForm.getNewButton();
 		newButton.setEnabled(true);
-		// target.addComponent(newButton);
+		// target.add(newButton);
 	}
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
@@ -241,7 +241,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		this.info("Biospecimen " + containerForm.getModelObject().getBiospecimen().getBiospecimenUid() + " was deleted successfully");
 
 		// Display delete confirmation message
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 
 		// Move focus back to Search form
 		LimsVO limsVo = new LimsVO();

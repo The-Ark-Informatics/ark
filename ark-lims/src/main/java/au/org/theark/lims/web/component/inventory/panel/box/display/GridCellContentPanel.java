@@ -2,10 +2,11 @@ package au.org.theark.lims.web.component.inventory.panel.box.display;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
@@ -18,12 +19,12 @@ public class GridCellContentPanel extends Panel {
 	 */
 	private static final long					serialVersionUID				= 435929363844198235L;
 
-	private static final ResourceReference	EMPTY_CELL_ICON				= new ResourceReference(GridCellContentPanel.class, "emptyCell.gif");
-	private static final ResourceReference	USED_CELL_ICON					= new ResourceReference(GridCellContentPanel.class, "usedCell.gif");
-	private static final ResourceReference	BARCODE_CELL_ICON				= new ResourceReference(GridBoxPanel.class, "barcodeCell.gif");
-	private static final ResourceReference	SELECTED_EMPTY_CELL_ICON	= new ResourceReference(GridCellContentPanel.class, "selectedEmptyCell.gif");
-	private static final ResourceReference	SELECTED_USED_CELL_ICON		= new ResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
-	private static final ResourceReference	SELECTED_BARCODE_CELL_ICON	= new ResourceReference(GridCellContentPanel.class, "selectedBarcodeCell.gif");
+	private static final PackageResourceReference	EMPTY_CELL_ICON				= new PackageResourceReference(GridCellContentPanel.class, "emptyCell.gif");
+	private static final PackageResourceReference	USED_CELL_ICON					= new PackageResourceReference(GridCellContentPanel.class, "usedCell.gif");
+	private static final PackageResourceReference	BARCODE_CELL_ICON				= new PackageResourceReference(GridBoxPanel.class, "barcodeCell.gif");
+	private static final PackageResourceReference	SELECTED_EMPTY_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedEmptyCell.gif");
+	private static final PackageResourceReference	SELECTED_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
+	private static final PackageResourceReference	SELECTED_BARCODE_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedBarcodeCell.gif");
 
 	/**
 	 * A representation of a cell contained within in a GridBox
@@ -84,8 +85,8 @@ public class GridCellContentPanel extends Panel {
 		}
 
 		String toolTip = stringBuffer.toString();
-		this.add(new AttributeModifier("showtooltip", true, new Model<Boolean>(true)));
-		this.add(new AttributeModifier("title", true, new Model<String>(toolTip)));
+		this.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
+		this.add(new AttributeModifier("title", new Model<String>(toolTip)));
 	}
 	
 	/**

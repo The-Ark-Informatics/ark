@@ -111,11 +111,17 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				if (isNew()) {
 					// On Cancel from new, simply hide the detailPanel/Container
 					detailContainer.setVisible(false);
-					target.addComponent(detailContainer);
+					target.add(detailContainer);
 				}
 				else {
 					onCancelPostProcess(target);
 				}
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 
@@ -132,9 +138,9 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.addComponent(detailContainer);
+				target.add(detailContainer);
 				//tree.updateTree(target);
-				//target.addComponent(tree);
+				//target.add(tree);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -169,16 +175,22 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onDeleteConfirmed(target);
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 				detailContainer.setVisible(false);
-				target.addComponent(detailContainer);
+				target.add(detailContainer);
 				tree.updateTree(target);
-				target.addComponent(tree);
+				target.add(tree);
 			}
 
 			@Override
 			public boolean isVisible() {
 				return (ArkPermissionHelper.isActionPermitted(Constants.DELETE) && !isNew());
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				
 			}
 		};
 
@@ -193,9 +205,9 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 				viewButtonContainer.setVisible(false);
 				editButtonContainer.setVisible(true);
 				detailFormContainer.setEnabled(true);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
-				target.addComponent(detailFormContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
+				target.add(detailFormContainer);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -292,11 +304,11 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		detailFormContainer.setEnabled(false);
 		editButtonContainer.setVisible(false);
 
-		target.addComponent(feedbackPanel);
-		target.addComponent(detailFormContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
-		target.addComponent(detailContainer);
+		target.add(feedbackPanel);
+		target.add(detailFormContainer);
+		target.add(viewButtonContainer);
+		target.add(editButtonContainer);
+		target.add(detailContainer);
 	}
 
 	/**
@@ -315,13 +327,13 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		
 		editButtonContainer.setVisible(false);
 
-		target.addComponent(detailContainer);
-		target.addComponent(detailFormContainer);
-		target.addComponent(viewButtonContainer);
-		target.addComponent(editButtonContainer);
+		target.add(detailContainer);
+		target.add(detailFormContainer);
+		target.add(viewButtonContainer);
+		target.add(editButtonContainer);
 		
 		// Refresh tree panel
-		target.addComponent(tree.getParent());
+		target.add(tree.getParent());
 	}
 
 	/**

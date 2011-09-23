@@ -137,7 +137,7 @@ public class BioCollectionContainerPanel extends AbstractContainerPanel<LimsVO> 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", listView) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(searchResultPanelContainer);
+				target.add(searchResultPanelContainer);
 			}
 		};
 		searchResultPanel.add(pageNavigator);

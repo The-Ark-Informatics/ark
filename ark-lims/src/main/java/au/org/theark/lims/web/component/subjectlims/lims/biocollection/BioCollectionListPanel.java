@@ -53,7 +53,7 @@ public class BioCollectionListPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				target.addComponent(panelToRepaint);
+				target.add(panelToRepaint);
 			}
 
 		};

@@ -26,7 +26,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -189,7 +188,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(dataViewListWMC);
+				target.add(dataViewListWMC);
 			}
 		};
 		dataViewListWMC.add(pageNavigator);
@@ -218,6 +217,11 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onNew(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Unable to proceed with New Biospecimen");
 			}
 		};
 		newButton.setDefaultFormProcessing(false);
@@ -304,7 +308,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 								biospecimenLocationVo = iInventoryService.locateBiospecimen(biospecimen);
 								newModel.getObject().setBiospecimenLocationVO(biospecimenLocationVo);
 								modalContentPanel = new BioLocationPanel("content", newModel);
-								modalContentPanel.add(new SimpleAttributeModifier("class", "detailsPanelBorder"));
+								modalContentPanel.add(new AttributeModifier("class", "detailsPanelBorder"));
 								// Set the modalWindow title and content
 								modalWindow.setTitle("Biospecimen Location Detail");
 								modalWindow.setContent(modalContentPanel);
@@ -336,7 +340,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 				item.add(unitsLblFld);
 				item.add(locationLink);
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 
 					/**
 					 * 
@@ -376,7 +380,7 @@ public class BiospecimenListForm extends Form<LimsVO> {
 			this.error("No Biospecimen Collections exist. Please create at least one Collection.");
 		}
 		// refresh the feedback messages
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {

@@ -182,7 +182,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	public AjaxButton getDeleteButton() {
@@ -198,7 +198,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		this.info("Biospecimen collection " + containerForm.getModelObject().getBioCollection().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 
 		// Move focus back to Search form
 		LimsVO limsVo = new LimsVO();

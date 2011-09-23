@@ -143,6 +143,12 @@ public class BioTransactionListForm extends Form<LimsVO> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onNew(target);
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO: Fix hardcoded message::
+				log.error("Error occured on the click of the New BioTransaction AjaxButton");
+			}
 		};
 		newButton.setDefaultFormProcessing(false);
 
@@ -158,7 +164,7 @@ public class BioTransactionListForm extends Form<LimsVO> {
 		showModalWindow(target, newModel);
 
 		// refresh the feedback messages
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 

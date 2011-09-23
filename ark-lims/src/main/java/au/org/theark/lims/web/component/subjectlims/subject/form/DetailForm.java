@@ -146,6 +146,12 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
 				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS");
 			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// Should never get here since Edit button should never be enabled for Subject Details via LIMS
+				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS and error occurred");
+			}
 		};
 		this.viewButtonContainer.addOrReplace(editButton);
 	}
@@ -210,7 +216,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				setDeathDetailsContainer();
-				target.addComponent(wmcDeathDetailsContainer);
+				target.add(wmcDeathDetailsContainer);
 			}
 		});
 
@@ -249,7 +255,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				setPreferredEmailContainer();
-				target.addComponent(wmcPreferredEmailContainer);
+				target.add(wmcPreferredEmailContainer);
 			}
 		});
 
@@ -345,7 +351,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -364,7 +370,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 				Panel limsContainerPanel = new EmptyPanel("limsContainerPanel");
 				limsContainerPanel.setOutputMarkupPlaceholderTag(true);
 				containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
-				target.addComponent(containerForm.getContextUpdateLimsWMC());
+				target.add(containerForm.getContextUpdateLimsWMC());
 			}
 		}
 	}

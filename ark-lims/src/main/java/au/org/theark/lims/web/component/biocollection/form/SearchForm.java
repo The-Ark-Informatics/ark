@@ -105,7 +105,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 			@Override
 			protected void onError(final AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 		};
 		addOrReplace(newButton);
@@ -162,7 +162,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		// Refresh the FB panel if there was an old message from previous search result
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 
 		// Get a list of collections for the study/subject in context by default
 		java.util.List<au.org.theark.core.model.lims.entity.BioCollection> bioCollectionList = new ArrayList<au.org.theark.core.model.lims.entity.BioCollection>();
@@ -183,12 +183,12 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 
 		if (bioCollectionList != null && bioCollectionList.size() == 0) {
 			this.info("Collections with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		getModelObject().setBioCollectionList(bioCollectionList);
 		listView.removeAll();
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.add(listContainer);// For ajax this is required so
 	}
 
 	/**

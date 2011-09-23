@@ -118,8 +118,8 @@ public class InventoryTreePanel extends AbstractInventoryTreePanel {
 		detailContainer.addOrReplace(detailPanel);
 		detailContainer.setVisible(true);
 		
-		target.addComponent(feedbackPanel);
-		target.addComponent(detailContainer);
-		target.addComponent(detailPanel);
+		target.add(feedbackPanel);
+		target.add(detailContainer);
+		target.add(detailPanel);
 	}
 }
