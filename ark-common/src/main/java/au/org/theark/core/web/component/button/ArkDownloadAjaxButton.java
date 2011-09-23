@@ -29,7 +29,7 @@ import org.apache.wicket.util.io.ByteArrayOutputStream;
 
 import au.org.theark.core.util.ArkSheetMetaData;
 
-public class ArkDownloadAjaxButton extends AjaxButton {
+public abstract class ArkDownloadAjaxButton extends AjaxButton {
 
 	/**
 	 * 
@@ -70,10 +70,11 @@ public class ArkDownloadAjaxButton extends AjaxButton {
 	@Override
 	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 		if (fileType.equalsIgnoreCase("TXT") || fileType.equalsIgnoreCase("CSV")) {
-			getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", body.getBytes(), filename + "." + fileType));
+			
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("text/plain", body.getBytes(), filename + "." + fileType));
 		}
 		else if (fileType.equalsIgnoreCase("XLS")) {
-			getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", writeOutXlsFileToBytes(xlsHeader), filename + "." + fileType));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("application/vnd.ms-excel", writeOutXlsFileToBytes(xlsHeader), filename + "." + fileType));
 		}
 	}
 
@@ -106,4 +107,5 @@ public class ArkDownloadAjaxButton extends AjaxButton {
 		}
 		return bytes;
 	}
+
 }
