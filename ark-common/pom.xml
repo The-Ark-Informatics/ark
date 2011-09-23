@@ -30,6 +30,16 @@
 			<artifactId>wicket-core</artifactId>
 			<version>${wicket.version}</version>
 		</dependency>
+		<!-- 
+		
+		<dependency>
+    		<groupId>org.apache.wicket</groupId>
+   			<artifactId>wicket</artifactId>
+    		<version>1.4.18</version>
+		</dependency>
+ -->
+		
+		
 		
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
@@ -58,7 +68,7 @@
 		<dependency>
 			<groupId>wicket-tree</groupId>
 			<artifactId>wicket-tree</artifactId>
-			<version>0.4.4</version>
+			<version>0.5.0</version>
 		</dependency>
 
 		<dependency>
@@ -184,13 +194,13 @@
 			<version>2.6.10</version>
 		</dependency>
 
-		<!--  WiQuery -->
+		<!--  WiQuery 
 		<dependency>
 			<groupId>org.odlabs.wiquery</groupId>
 			<artifactId>wiquery</artifactId>
 			<version>1.2.3</version>
 		</dependency>
-
+		-->
 		<!--  Quartz (Job scheduling) -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -264,11 +274,13 @@
 		<ark.version>0.1.4-SNAPSHOT</ark.version>
 	</properties>
 	<repositories>
+		<!-- 
 		<repository>
 			<id>wiquery</id>
 			<name>wiquery wicket components</name>
 			<url>http://wiquery.googlecode.com/svn/repo/</url>
 		</repository>
+		 
 		<repository>
 			<id>visural-common</id>
 			<name>visural-common</name>
@@ -279,6 +291,7 @@
 			<name>visural-wicket</name>
 			<url>http://visural-wicket.googlecode.com/svn/trunk/visural-wicket/maven/</url>
 		</repository>
+		-->
 		<repository>
 			<id>wicket-tree</id>
 			<name>Wicket-tree Repository</name>
@@ -289,10 +302,12 @@
 			<name>Wicket Stuff Repo</name>
 			<url>http://wicketstuff.org/maven/repository</url>
 		</repository>
+		<!-- 
 		<repository>
 			<id>thirdparty-releases</id>
 			<name>JBoss Thirdparty Releases</name>
 			<url>https://repository.jboss.org/nexus/content/repositories/thirdparty-releases</url>
 		</repository>
+		 -->
 	</repositories>
 </project>
