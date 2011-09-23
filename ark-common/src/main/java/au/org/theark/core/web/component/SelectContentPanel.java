@@ -41,15 +41,32 @@ public abstract class SelectContentPanel extends Panel {
 		form.add(deleteMessage);
 
 		form.add(new AjaxButton(Constants.OK) {
-			protected void onSubmit(AjaxRequestTarget target, Form form) {
+			
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> arg1) {
+				// TODO Auto-generated method stub
 				onSelect(target, new String("OK pressed"));
 			}
+			
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+			}
+	
 		});
 
 		// Add a cancel / close button.
 		form.add(new AjaxButton(Constants.CANCEL) {
-			public void onSubmit(AjaxRequestTarget target, Form form) {
+			
+			@Override
+			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onCancel(target);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 
