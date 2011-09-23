@@ -1,9 +1,9 @@
 package au.org.theark.core.web.component.image;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.LoadableDetachableModel;
+import org.apache.wicket.request.resource.ResourceReference;
 
 /**
  * Mouse-over image. Takes 2 image resource-references: one for initial image, second for mouseover image. 
@@ -30,27 +30,27 @@ public class MouseOverImage extends Image {
 		mMouseoverImage = mouseoverImage;
 		mImageAltText = imageAltText;
 		
-		add(new AttributeModifier("onmouseover", null, true, new LoadableDetachableModel<String>() {
+		add(new AttributeModifier("onmouseover",  new LoadableDetachableModel<String>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected String load() {
-				return "this.src='" + urlFor(mMouseoverImage) + "';";
+				return "this.src='" + urlFor(mMouseoverImage,null) + "';";
 			}
 
 		}));
 		
-		add(new AttributeModifier("onmouseout", null, true, new LoadableDetachableModel<String>() {
+		add(new AttributeModifier("onmouseout", new LoadableDetachableModel<String>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected String load() {
-				return "this.src='" + urlFor(mImage) + "';";
+				return "this.src='" + urlFor(mImage,null) + "';";
 			}
 
 		}));
 		
-		add(new AttributeModifier("alt", null, true, new LoadableDetachableModel<String>() {
+		add(new AttributeModifier("alt",  new LoadableDetachableModel<String>() {
 			private static final long	serialVersionUID	= 1L;
 
 			@Override
