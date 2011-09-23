@@ -40,12 +40,14 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.list.Loop;
+import org.apache.wicket.markup.html.list.LoopItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -76,48 +78,48 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	private String								fileFormat;
 	private WebMarkupContainer				wizardDataGridKeyContainer	= new WebMarkupContainer("wizardDataGridKeyContainer");
 	private int									rowsToDisplay					= au.org.theark.core.Constants.ROWS_PER_PAGE;
-	private AbstractBehavior				errorCellBehavior				= new AbstractBehavior() {
+	private Behavior				errorCellBehavior				= new Behavior() {
 																							/**
 		 * 
 		 */
 																							private static final long	serialVersionUID	= 7204106018358344579L;
-
+																							@Override
 																							public void onComponentTag(Component component, ComponentTag tag) {
 																								super.onComponentTag(component, tag);
 																								tag.put("style", "background: red;");
 																							};
 																						};
 
-	private AbstractBehavior				warningCellBehavior			= new AbstractBehavior() {
+	private Behavior				warningCellBehavior			= new Behavior() {
 																							/**
 		 * 
 		 */
 																							private static final long	serialVersionUID	= 6075625860319512723L;
-
+																							@Override
 																							public void onComponentTag(Component component, ComponentTag tag) {
 																								super.onComponentTag(component, tag);
 																								tag.put("style", "background: orange;");
 																							};
 																						};
 
-	private AbstractBehavior				updateCellBehavior			= new AbstractBehavior() {
+	private Behavior				updateCellBehavior			= new Behavior() {
 																							/**
 		 * 
 		 */
 																							private static final long	serialVersionUID	= -8113218633824905372L;
-
+																							@Override
 																							public void onComponentTag(Component component, ComponentTag tag) {
 																								super.onComponentTag(component, tag);
 																								tag.put("style", "background: lightblue;");
 																							};
 																						};
 
-	private AbstractBehavior				insertCellBehavior			= new AbstractBehavior() {
+	private Behavior				insertCellBehavior			= new Behavior() {
 																							/**
 		 * 
 		 */
 																							private static final long	serialVersionUID	= 7204106018358344579L;
-
+																							@Override
 																							public void onComponentTag(Component component, ComponentTag tag) {
 																								super.onComponentTag(component, tag);
 																								tag.put("style", "background: lightgreen;");
@@ -247,7 +249,7 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			private static final long	serialVersionUID	= -7027878243061138904L;
 
 			public void populateItem(LoopItem item) {
-				final int col = item.getIteration();
+				final int col = item.getIndex();
 
 				/*
 				 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance which gets
@@ -277,10 +279,14 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 	 */
 	@SuppressWarnings( { "serial", "unchecked" })
 	private Loop createMainGrid() {
+		
 		// We create a Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "rows" value
 		return new Loop("rows", new PropertyModel(sheetMetaData, "rows")) {
+			
+			@Override
 			public void populateItem(LoopItem item) {
-				final int row = item.getIteration();
+				
+				final int row = item.getIndex();
 
 				if (!insertRows.isEmpty() || !updateRows.isEmpty()) {
 					setRowCssStyle(row, item);
@@ -291,9 +297,10 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 					item.add(new Label("rowNo", new Model(String.valueOf(row))));
 
 					// We create an inner Loop instance and uses PropertyModel to bind the Loop iteration to ExcelMetaData "cols" value
-					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols")) {
+					item.add(new Loop("cols", new PropertyModel<Integer>(sheetMetaData, "cols")) {
+						@Override
 						public void populateItem(LoopItem item) {
-							final int col = item.getIteration();
+							final int col = item.getIndex();
 							/*
 							 * this model used for Label component gets data from cell instance Because we are interacting directly with the sheet instance
 							 * which gets updated each time we upload a new Excel File, the value for each cell is automatically updated
@@ -333,9 +340,11 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 					item.add(new Label("rowNo", new Model("")));
 					item.setVisible(false);
 					item.add(new Loop("cols", new PropertyModel(sheetMetaData, "cols")) {
-						public void populateItem(LoopItem item) {
+						@Override
+						protected void populateItem(LoopItem item) {
 							Label cellData = new Label("cellData", new Model(""));
 							item.add(cellData);
+							
 						}
 					});
 					item.setVisible(false);
@@ -473,8 +482,13 @@ public class ArkExcelWorkSheetAsGrid extends Panel {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				byte[] data = writeOutValidationXlsFileToBytes();
 				if (data != null) {
-					getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, "DataValidationFile.xls"));
+					getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("application/vnd.ms-excel", data, "DataValidationFile.xls"));
 				}
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("An error occured while downloading. Please contact Administrator");
 			};
 		};
 
