@@ -37,8 +37,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.visit.IVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class LoginPage<T> extends WebPage
 	public void onBeforeRender()
 	{
 		super.onBeforeRender();
-		visitChildren(formVisitor);
+		visitChildren();
 	}
 
 	/**
@@ -106,10 +107,10 @@ public class LoginPage<T> extends WebPage
 	}
 
 	@Override
-	protected void configureResponse()
+	protected void configureResponse(final org.apache.wicket.request.http.WebResponse webResponse)
 	{
-		super.configureResponse();
-		WebResponse response = getWebRequestCycle().getWebResponse();
+		super.configureResponse((org.apache.wicket.request.http.WebResponse)RequestCycle.get().getResponse());
+		org.apache.wicket.request.http.WebResponse response = (org.apache.wicket.request.http.WebResponse)RequestCycle.get().getResponse();
 		response.setHeader("Cache-Control", "no-cache, max-age=0,must-revalidate, no-store");
 		response.setHeader("Expires", "-1");
 		response.setHeader("Pragma", "no-cache");
@@ -160,7 +161,7 @@ public class LoginPage<T> extends WebPage
 				@Override
 				protected void onError(AjaxRequestTarget target, Form<?> form)
 				{
-					target.addComponent(feedBackPanel);
+					target.add(feedBackPanel);
 				}
 			};
 			addComponentsToForm();
@@ -197,7 +198,7 @@ public class LoginPage<T> extends WebPage
 				error(errMessage);
 			}
 
-			target.addComponent(feedBackPanel);
+			target.add(feedBackPanel);
 			return false;
 		}
 	}
