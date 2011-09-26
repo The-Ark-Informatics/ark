@@ -72,7 +72,14 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_CSV_LOADER_SERVICE)
 	private ICSVLoaderService				iCSVLoaderService;
 
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
+	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt"){
+
+		@Override
+		protected void onError(AjaxRequestTarget target, Form<?> form) {
+			this.error("An error occured during download. Contact Administrator");
+		}
+		
+	};
 
 	public FieldDataUploadStep2(String id) {
 		super(id);
@@ -136,7 +143,14 @@ public class FieldDataUploadStep2 extends AbstractWizardStepPanel {
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
-				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt"){
+
+					@Override
+					protected void onError(AjaxRequestTarget target,Form<?> form) {
+						this.error("There was an error while Downloading. Please contact Administrator");
+					}
+					
+				};
 				addOrReplace(downloadValMsgButton);
 				target.add(downloadValMsgButton);
 			}

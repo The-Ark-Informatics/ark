@@ -65,7 +65,12 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 	private CheckBox							overrideDataValidationChkBox;
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
+	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt"){
+		@Override
+		protected void onError(AjaxRequestTarget target, Form<?> form) {
+			this.error("An error occured during donwnload. Please contact Administrator");
+		}
+	};
 
 	/**
 	 * Construct.
@@ -242,7 +247,12 @@ public class FieldDataUploadStep3 extends AbstractWizardStepPanel {
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
-				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt"){
+					@Override
+					protected void onError(AjaxRequestTarget target,Form<?> form) {
+						this.error("An error occured during donwnload. Please contact Administrator");
+					}
+				};
 				addOrReplace(downloadValMsgButton);
 				target.add(downloadValMsgButton);
 			}
