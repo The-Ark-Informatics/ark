@@ -27,7 +27,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -46,6 +45,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.PermissionConstants;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
@@ -130,7 +130,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDeleteButton(subjectFile, downloadButton));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -154,7 +154,7 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, subjectFile.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("", data, subjectFile.getFilename()));
 
 			};
 		};
@@ -179,7 +179,13 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, subjectFile.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("", data, subjectFile.getFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Download request could not be fulfilled.");
+				// TODO: Improve msg?
 			};
 		};
 
@@ -234,6 +240,12 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				return flag;
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected error: Delete request could not be fulfilled.");
+				// TODO: Improve msg?
 			}
 		};
 
