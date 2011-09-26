@@ -202,7 +202,12 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("", data, correspondences.getAttachmentFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("", data, correspondences.getAttachmentFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("There was an error while downloading file.Please contact Administrator");
 			};
 		};
 
