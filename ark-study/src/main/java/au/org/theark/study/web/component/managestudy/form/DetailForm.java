@@ -30,7 +30,6 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormChoiceComponentUpdatingBehavior;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -56,6 +55,7 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
@@ -368,7 +368,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 		arkModulePalette = new Palette("selectedArkModules", selectedModPm, availableModulesPm, renderer, au.org.theark.study.web.Constants.PALETTE_ROWS, false) {
 			@Override
-			public ResourceReference getCSS() {
+			protected ResourceReference getCSS() {
 				return null;
 			}
 		};
@@ -490,9 +490,9 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	@Override
 	protected void attachValidators() {
-		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", null, new Model<String>("Study Name")));
+		studyNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.name.required", this,new Model<String>("Study Name")));
 		// TODO Have to stop the validator posting the content with the error message
-		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded", null, new Model<String>("Study Synopsis")));
+		studyDescriptionTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("study.description.length.exceeded", this,new Model<String>("Study Synopsis")));
 		studyStatusDpChoices.setRequired(true).setLabel(new StringResourceModel("error.study.status.required", this, new Model<String>("Status")));
 
 		// Max dateOfApplicationDp can be only today
