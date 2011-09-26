@@ -24,13 +24,13 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Page;
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebResponse;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 @SuppressWarnings("unchecked")
 public class LogoutPage<T> extends WebPage
@@ -48,7 +48,7 @@ public class LogoutPage<T> extends WebPage
 
 		System.out.println("\n Constructor LogoutPage(final PageParameters param)");
 
-		String page = parameters.getString(REDIRECT_PAGE);
+		String page = parameters.get(REDIRECT_PAGE).toString();
 
 		Class<? extends Page> pageClass;
 
