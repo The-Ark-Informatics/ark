@@ -26,7 +26,7 @@ import org.apache.wicket.model.StringResourceModel;
 import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
-public class DeleteButton extends AjaxDeleteButton {
+public abstract class DeleteButton extends AjaxDeleteButton {
 
 	/**
 	 * 
