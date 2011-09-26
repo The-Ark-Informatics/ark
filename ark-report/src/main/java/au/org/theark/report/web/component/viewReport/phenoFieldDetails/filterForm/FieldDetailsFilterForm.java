@@ -159,7 +159,7 @@ public class FieldDetailsFilterForm extends AbstractReportFilterForm<FieldDetail
 		if (reportResource != null) {
 			reportOutputPanel.setReportResource(reportResource);
 			reportOutputPanel.setVisible(true);
-			target.addComponent(reportOutputPanel);
+			target.add(reportOutputPanel);
 		}
 	}
 

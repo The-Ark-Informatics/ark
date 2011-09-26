@@ -164,7 +164,7 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 		if (reportResource != null) {
 			reportOutputPanel.setReportResource(reportResource);
 			reportOutputPanel.setVisible(true);
-			target.addComponent(reportOutputPanel);
+			target.add(reportOutputPanel);
 		}
 	}
 

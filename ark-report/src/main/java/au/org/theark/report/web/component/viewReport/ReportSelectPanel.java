@@ -235,7 +235,7 @@ public class ReportSelectPanel extends Panel {
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
 						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
 						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				}
@@ -250,7 +250,7 @@ public class ReportSelectPanel extends Panel {
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
 						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
 						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				}
@@ -265,7 +265,7 @@ public class ReportSelectPanel extends Panel {
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
 						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
 						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				}
@@ -280,7 +280,7 @@ public class ReportSelectPanel extends Panel {
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
 						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
 						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				}
@@ -295,14 +295,14 @@ public class ReportSelectPanel extends Panel {
 						reportContainerVO.getSelectedReportPanel().replaceWith(selectedReportPanel);
 						reportContainerVO.setSelectedReportPanel(selectedReportPanel);
 						selectedReportPanel.initialisePanel(reportContainerVO.getFeedbackPanel(), reportTemplate);
-						target.addComponent(reportContainerVO.getSelectedReportContainerWMC());
+						target.add(reportContainerVO.getSelectedReportContainerWMC());
 						this.info(reportTemplate.getName() + " template selected.");
 					}
 				}
 				else {
 					this.error("System error: " + reportTemplate.getName() + " has no implementation or has been deprecated.");
 				}
-				target.addComponent(reportContainerVO.getFeedbackPanel());
+				target.add(reportContainerVO.getFeedbackPanel());
 			}
 		};
 
