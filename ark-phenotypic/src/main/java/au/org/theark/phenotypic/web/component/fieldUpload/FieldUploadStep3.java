@@ -66,7 +66,14 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 	private WebMarkupContainer				updateExistingDataContainer;
 	private CheckBox							updateChkBox;
 
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
+	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+
+		@Override
+		protected void onError(AjaxRequestTarget target, Form<?> form) {
+			this.error("Unexpected Error: Download request could not be processed");
+		}
+		
+	};
 
 	/**
 	 * Construct.
@@ -236,7 +243,14 @@ public class FieldUploadStep3 extends AbstractWizardStepPanel {
 		if (validationMessage != null && validationMessage.length() > 0) {
 			form.getNextButton().setEnabled(false);
 			target.add(form.getWizardButtonContainer());
-			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					this.error("Unexpected Error: Download request could not be processed");
+				}
+				
+			};
 			addOrReplace(downloadValMsgButton);
 			target.add(downloadValMsgButton);
 		}
