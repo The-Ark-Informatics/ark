@@ -40,7 +40,6 @@ import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
-import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
 import au.org.theark.report.web.menu.ReportTabProviderImpl;
 import au.org.theark.study.web.menu.MainTabProviderImpl;
 
@@ -142,6 +141,7 @@ public class HomePage extends BasePage {
 				}
 				*/
 				
+				/* Removed Dependency on Registry 
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)) {
 					// Registry
 					RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl(arkModule.getName());
@@ -150,6 +150,7 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(tab);
 					}
 				}
+				*/
 
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_LIMS)) {
 					// LIMS
