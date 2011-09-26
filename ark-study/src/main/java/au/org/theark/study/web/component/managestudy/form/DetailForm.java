@@ -218,7 +218,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidPrefix = subjectUidPrefixTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 			}
 		});
 
@@ -247,7 +247,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidStart = subjectUidStartTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 			}
 		});
 
@@ -282,7 +282,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				if (autoGenerateSubjectUId) {
 					subjectUidContainer.setEnabled(true);
 				}
-				target.addComponent(subjectUidContainer);
+				target.add(subjectUidContainer);
 			}
 		});
 		autoGenSubIdChkBox.setOutputMarkupId(true);
@@ -297,7 +297,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 				if (autoGenerateSubjectUId) {
 					subjectUidContainer.setEnabled(true);
 				}
-				target.addComponent(subjectUidContainer);
+				target.add(subjectUidContainer);
 			}
 		});
 
@@ -314,7 +314,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyCrudVO.getStudyLogoUploadContainer().setOutputMarkupPlaceholderTag(true);
 
 		// fileUpload for logo
-		fileUploadField = new FileUploadField(Constants.STUDY_FILENAME, new Model<FileUpload>());
+		fileUploadField = new FileUploadField(Constants.STUDY_FILENAME);
 		studyCrudVO.getStudyLogoUploadContainer().add(fileUploadField);
 
 		// Set maximum logo image size to 100K
@@ -327,7 +327,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
 
 		attachValidators();
-		addComponents();
+		adds();
 	}
 
 	public String getSubjectUidExample() {
@@ -390,7 +390,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidToken = containerForm.getModelObject().getStudy().getSubjectUidToken().getName();
 				subjectUidExampleTxt = getSubjectUidExample();
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 			}
 		});
 	}
@@ -404,12 +404,12 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidPadChar = containerForm.getModelObject().getStudy().getSubjectUidPadChar().getName();
 				subjectUidExampleTxt = getSubjectUidExample();
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 			}
 		});
 	}
 
-	private void addComponents() {
+	private void adds() {
 		studyCrudVO.getDetailPanelFormContainer().add(studyIdTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyNameTxtFld);
 		studyCrudVO.getDetailPanelFormContainer().add(studyDescriptionTxtArea);
@@ -541,7 +541,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			// Create
 			studyService.createStudy(studyModel);
 			subjectUidExampleTxt = getSubjectUidExample();
-			target.addComponent(subjectUidExampleLbl);
+			target.add(subjectUidExampleLbl);
 			this.info("Study: " + studyModel.getStudy().getName().toUpperCase() + " has been saved.");
 			onSavePostProcess(target, studyCrudVO);
 			studyCrudVO.getSummaryContainer().setVisible(true);// added as part of refactoring
@@ -552,7 +552,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			// studyService.updateStudy(studyModel.getStudy(), studyModel.getLmcSelectedApps());
 			// subjectUidExampleTxt = iArkCommonService.getSubjectUidExample(containerForm.getModelObject().getStudy());
 			subjectUidExampleTxt = getSubjectUidExample();
-			target.addComponent(subjectUidExampleLbl);
+			target.add(subjectUidExampleLbl);
 			// this.info("Update of Study is under work in progress. The modules are maintained in database instead of LDAP.This feature will be in very soon.");
 			this.info("Update of Study: " + studyModel.getStudy().getName().toUpperCase() + " was Successful.");
 			onSavePostProcess(target, studyCrudVO);
@@ -572,8 +572,8 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		StudyHelper studyHelper = new StudyHelper();
 		studyHelper.setStudyLogo(studyModel.getStudy(), target, studyCrudVO.getStudyNameMarkup(), studyCrudVO.getStudyLogoMarkup());
 		studyHelper.setStudyLogoImage(studyModel.getStudy(), "study.studyLogoImage", studyCrudVO.getStudyLogoImageContainer());
-		target.addComponent(studyCrudVO.getDetailPanelContainer());
-		target.addComponent(studyCrudVO.getStudyLogoMarkup());
+		target.add(studyCrudVO.getDetailPanelContainer());
+		target.add(studyCrudVO.getStudyLogoMarkup());
 	}
 
 	@Override
@@ -640,7 +640,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	/*
