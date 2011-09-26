@@ -18,16 +18,11 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.viewReport;
 
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.link.ResourceLink;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 import org.wicketstuff.jasperreports.JRResource;
-
-import au.org.theark.report.model.vo.ReportSelectVO;
 
 public class ReportOutputPanel extends Panel {
 
@@ -37,8 +32,6 @@ public class ReportOutputPanel extends Panel {
 	private static final long		serialVersionUID	= 1L;
 
 	public AbstractLink				downloadReportLink;
-	public AjaxButton					downloadReportButton;
-	public Form<ReportSelectVO>	downloadReportForm;
 
 	public ReportOutputPanel(String id) {
 		super(id);
@@ -48,8 +41,6 @@ public class ReportOutputPanel extends Panel {
 		downloadReportLink = new ExternalLink("linkToReport", "", "");
 		downloadReportLink.setOutputMarkupPlaceholderTag(true); // allow link to be replaced even when invisible
 		add(downloadReportLink);
-		CompoundPropertyModel<ReportSelectVO> cpModel = new CompoundPropertyModel<ReportSelectVO>(new ReportSelectVO());
-		downloadReportForm = new Form<ReportSelectVO>("downloadReportForm", cpModel);
 
 		this.setVisible(false); // start off invisible
 	}
