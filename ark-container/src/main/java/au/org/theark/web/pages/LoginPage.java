@@ -51,6 +51,11 @@ import au.org.theark.core.web.form.ArkFormVisitor;
 
 public class LoginPage<T> extends WebPage
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private transient Logger log = LoggerFactory.getLogger(LoginPage.class);
 
 	private FeedbackPanel feedBackPanel	= new FeedbackPanel("feedbackMessage");
