@@ -93,7 +93,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		ConsentFile consentFile = new ConsentFile();
 		Collection<ConsentFile> consentFileList = new ArrayList<ConsentFile>();
 
@@ -111,13 +111,13 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 			if (consentFileList != null && consentFileList.size() == 0) {
 				this.info("There are no consent files for the specified criteria.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			getModelObject().setConsentFileList(consentFileList);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);
-			target.addComponent(listContainer);
+			target.add(listContainer);
 
 		}
 		catch (EntityNotFoundException e) {

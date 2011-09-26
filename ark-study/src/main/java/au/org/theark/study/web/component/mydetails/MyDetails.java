@@ -90,7 +90,7 @@ public class MyDetails extends Panel {
 			}
 
 			protected void processFeedback(AjaxRequestTarget target, FeedbackPanel feedbackPanel) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			protected void onCancel(AjaxRequestTarget target) {

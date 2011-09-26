@@ -256,12 +256,12 @@ public class SearchResults extends Panel {
 				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailPanelContainer);
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(searchResultContainer);
+				target.add(detailPanelContainer);
+				target.add(detailPanelFormContainer);
+				target.add(searchPanelContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 
 			}
 		};

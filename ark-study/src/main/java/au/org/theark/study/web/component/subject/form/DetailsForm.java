@@ -186,7 +186,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				setDeathDetailsContainer();
-				target.addComponent(wmcDeathDetailsContainer);
+				target.add(wmcDeathDetailsContainer);
 			}
 		});
 
@@ -220,7 +220,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				// Check what was selected and then toggle
 				setPreferredEmailContainer();
-				target.addComponent(wmcPreferredEmailContainer);
+				target.add(wmcPreferredEmailContainer);
 			}
 		});
 
@@ -350,7 +350,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -453,7 +453,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	@Override
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 
-		target.addComponent(detailPanelContainer);
+		target.add(detailPanelContainer);
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {

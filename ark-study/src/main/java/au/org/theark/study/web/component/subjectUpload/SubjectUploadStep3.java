@@ -94,7 +94,7 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 				else {
 					wizardForm.getNextButton().setEnabled(false);
 				}
-				target.addComponent(wizardForm.getWizardButtonContainer());
+				target.add(wizardForm.getWizardButtonContainer());
 			}
 		});
 
@@ -157,19 +157,19 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 
 			// Repaint
-			target.addComponent(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
-			target.addComponent(form.getWizardPanelFormContainer());
+			target.add(arkExcelWorkSheetAsGrid.getWizardDataGridKeyContainer());
+			target.add(form.getWizardPanelFormContainer());
 
 			if (updateRows.isEmpty()) {
 				updateExistingDataContainer.setVisible(false);
-				target.addComponent(updateExistingDataContainer);
+				target.add(updateExistingDataContainer);
 			}
 
 			if (!errorCells.isEmpty()) {
 				updateExistingDataContainer.setVisible(false);
-				target.addComponent(updateExistingDataContainer);
+				target.add(updateExistingDataContainer);
 				form.getNextButton().setEnabled(false);
-				target.addComponent(form.getWizardButtonContainer());
+				target.add(form.getWizardButtonContainer());
 			}
 		}
 		catch (IOException e) {
@@ -183,10 +183,10 @@ public class SubjectUploadStep3 extends AbstractWizardStepPanel {
 
 		if (validationMessage != null && validationMessage.length() > 0) {
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 			downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
 			addOrReplace(downloadValMsgButton);
-			target.addComponent(downloadValMsgButton);
+			target.add(downloadValMsgButton);
 		}
 	}
 

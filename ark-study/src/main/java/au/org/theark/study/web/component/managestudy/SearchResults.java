@@ -180,13 +180,13 @@ public class SearchResults extends Panel {
 					}
 				}
 
-				target.addComponent(autoSubjectUidcontainer);
-				target.addComponent(subjectUidcontainer);
+				target.add(autoSubjectUidcontainer);
+				target.add(subjectUidcontainer);
 
 				// Example auto-generated SubjectUID
 				Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
 				subjectUidExampleLbl.setDefaultModelObject(studyContainerForm.getModelObject().getSubjectUidExample());
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 
 				// Get the Source Modules from database
 				Collection<ArkModule> availableArkModules = iArkCommonService.getEntityList(ArkModule.class);
@@ -225,22 +225,22 @@ public class SearchResults extends Panel {
 				contextHelper.resetContextLabel(target, studyCrudContainerVO.getArkContextMarkup());
 				contextHelper.setStudyContextLabel(target, searchStudy.getName(), studyCrudContainerVO.getArkContextMarkup());
 
-				target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
-				target.addComponent(studyCrudContainerVO.getSearchPanelContainer());
-				target.addComponent(studyCrudContainerVO.getDetailPanelContainer());
-				target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
-				target.addComponent(studyCrudContainerVO.getViewButtonContainer());
-				target.addComponent(studyCrudContainerVO.getEditButtonContainer());
-				target.addComponent(studyCrudContainerVO.getSummaryContainer());
-				target.addComponent(studyCrudContainerVO.getDetailPanelFormContainer());
+				target.add(studyCrudContainerVO.getStudyLogoImageContainer());
+				target.add(studyCrudContainerVO.getSearchPanelContainer());
+				target.add(studyCrudContainerVO.getDetailPanelContainer());
+				target.add(studyCrudContainerVO.getSearchResultPanelContainer());
+				target.add(studyCrudContainerVO.getViewButtonContainer());
+				target.add(studyCrudContainerVO.getEditButtonContainer());
+				target.add(studyCrudContainerVO.getSummaryContainer());
+				target.add(studyCrudContainerVO.getDetailPanelFormContainer());
 
 				// Refresh base container form to remove any feedBack messages
-				target.addComponent(studyContainerForm);
+				target.add(studyContainerForm);
 
 				// Refresh main tabs based on study selection
 				TabbedPanel moduleTabbedPanelRef = moduleTabbedPanel;
 
-				target.addComponent(moduleTabbedPanel);
+				target.add(moduleTabbedPanel);
 			}
 
 		};

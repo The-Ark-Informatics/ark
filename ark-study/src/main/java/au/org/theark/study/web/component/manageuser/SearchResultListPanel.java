@@ -118,7 +118,7 @@ public class SearchResultListPanel extends Panel {
 					if (!arkUserVOFromBackend.isArkUserPresentInDatabase()) {
 
 						containerForm.info(new StringResourceModel("user.not.linked.to.study", this, null).getString());
-						target.addComponent(feedbackPanel);
+						target.add(feedbackPanel);
 						arkUserVOFromBackend.setChangePassword(true);
 						arkUserVOFromBackend.getArkUserEntity().setLdapUserName(arkUserVo.getUserName());
 						prePopulateForNewUser(arkUserVOFromBackend);
@@ -162,20 +162,20 @@ public class SearchResultListPanel extends Panel {
 					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 					
 					arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
-					target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
-					target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
-					target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-					target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-					target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-					target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-					target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-					target.addComponent(feedbackPanel);
+					target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
+					target.add(arkCrudContainerVO.getSearchPanelContainer());
+					target.add(arkCrudContainerVO.getDetailPanelContainer());
+					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+					target.add(arkCrudContainerVO.getViewButtonContainer());
+					target.add(arkCrudContainerVO.getEditButtonContainer());
+					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+					target.add(feedbackPanel);
 					// Set the MODE here.Since the User Details are from LDAP we don't have a entity that we can use to check for a mode
 					containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				}
 				catch (ArkSystemException e) {
 					containerForm.error(new StringResourceModel("ark.system.error", this, null).getString());
-					target.addComponent(feedbackPanel);
+					target.add(feedbackPanel);
 				}
 			}
 		};

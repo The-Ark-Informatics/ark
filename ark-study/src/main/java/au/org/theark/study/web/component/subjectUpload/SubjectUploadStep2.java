@@ -122,7 +122,7 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			form.getWizardPanelFormContainer().addOrReplace(arkExcelWorkSheetAsGrid);
 			form.setArkExcelWorkSheetAsGrid(arkExcelWorkSheetAsGrid);
 			form.getWizardPanelFormContainer().addOrReplace(wizardDataGridKeyContainer);
-			target.addComponent(form.getWizardPanelFormContainer());
+			target.add(form.getWizardPanelFormContainer());
 
 			containerForm.getModelObject().setValidationMessages(validationMessages);
 			validationMessage = containerForm.getModelObject().getValidationMessagesAsString();
@@ -130,23 +130,23 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
-				target.addComponent(form.getWizardButtonContainer());
+				target.add(form.getWizardButtonContainer());
 				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
 				addOrReplace(downloadValMsgButton);
-				target.addComponent(downloadValMsgButton);
+				target.add(downloadValMsgButton);
 			}
 		}
 		catch (IOException e) {
 			validationMessage = "Error attempting to display the file. Please check the file and try again.";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 		catch (FileFormatException ffe) {
 			validationMessage = "Error uploading file. You can only upload files of type: CSV (comma separated values), TXT (text), or XLS (Microsoft Excel file)";
 			addOrReplace(new MultiLineLabel("multiLineLabel", validationMessage));
 			form.getNextButton().setEnabled(false);
-			target.addComponent(form.getWizardButtonContainer());
+			target.add(form.getWizardButtonContainer());
 		}
 	}
 

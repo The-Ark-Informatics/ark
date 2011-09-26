@@ -129,13 +129,13 @@ public class SearchResultList extends Panel {
 				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 		
-				target.addComponent(arkCrudContainerVO.getSearchPanelContainer());
-				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
-				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
-				target.addComponent(arkCrudContainerVO.getViewButtonContainer());
-				target.addComponent(arkCrudContainerVO.getEditButtonContainer());
-				target.addComponent(arkCrudContainerVO.getDetailPanelFormContainer());
-				target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 				
 			}
 		};

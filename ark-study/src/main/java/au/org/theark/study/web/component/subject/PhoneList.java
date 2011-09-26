@@ -95,8 +95,8 @@ public class PhoneList extends Panel {
 				phoneDetailPanelContainer.setVisible(true);
 				phoneListPanelContainer.setVisible(false);
 
-				target.addComponent(phoneDetailPanelContainer);
-				target.addComponent(phoneListPanelContainer);
+				target.add(phoneDetailPanelContainer);
+				target.add(phoneListPanelContainer);
 
 			}
 		};

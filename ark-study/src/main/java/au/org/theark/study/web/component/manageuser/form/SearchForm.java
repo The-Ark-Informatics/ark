@@ -96,12 +96,12 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 
 			if (userResultList != null && userResultList.size() == 0) {
 				this.info("User(s) with the specified criteria does not exist in the system. Please refine your search filter.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			pageableListView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (ArkSystemException e) {
 			this.error("A System Error has occured. Please contact support");
@@ -127,7 +127,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
 		preProcessDetailPanel(target, arkCrudContainerVO);
-		target.addComponent(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
+		target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
 	}
 
 	protected void initialiseSearchForm() {

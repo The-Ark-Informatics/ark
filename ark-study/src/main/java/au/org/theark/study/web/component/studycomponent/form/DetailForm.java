@@ -132,7 +132,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	@Override
 	protected void onSave(Form<StudyCompVo> containerForm, AjaxRequestTarget target) {
 		
-		target.addComponent(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
 		try {
 
 			Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -179,7 +179,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 
 	}
 

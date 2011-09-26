@@ -105,7 +105,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		SubjectFile subjectFile = new SubjectFile();
 		subjectFile = getModelObject().getSubjectFile();
 		Collection<SubjectFile> subjectFileList = new ArrayList<SubjectFile>();
@@ -118,7 +118,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		}
 		catch (EntityNotFoundException e1) {
 			this.error("There is no subject in context.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		try {
@@ -127,13 +127,13 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 			if (subjectFileList != null && subjectFileList.size() == 0) {
 				this.info("There are no subject files for the specified criteria.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			getModelObject().setSubjectFileList(subjectFileList);
 			pageableListView.removeAll();
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 
 		}
 		catch (EntityNotFoundException e) {

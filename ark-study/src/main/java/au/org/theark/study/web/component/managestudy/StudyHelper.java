@@ -64,8 +64,8 @@ public class StudyHelper implements Serializable {
 			studyLogoMarkup.setVisible(false);
 		}
 
-		target.addComponent(studyNameMarkup);
-		target.addComponent(studyLogoMarkup);
+		target.add(studyNameMarkup);
+		target.add(studyLogoMarkup);
 	}
 
 	@SuppressWarnings({ "unchecked", "serial" })
@@ -113,7 +113,7 @@ public class StudyHelper implements Serializable {
 	public void setStudyContextLabel(AjaxRequestTarget target, String studyName, WebMarkupContainer arkContextMarkup) {
 		studyLabel = new Label("studyLabel", new Model("Study: " + studyName));
 		arkContextMarkup.addOrReplace(studyLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 }

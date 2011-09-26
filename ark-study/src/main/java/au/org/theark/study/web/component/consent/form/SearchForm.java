@@ -164,7 +164,7 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
@@ -195,13 +195,13 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 			if (consentList != null && consentList.size() == 0) {
 				this.info("There are no consents for the specified criteria.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			getModelObject().setConsentList(consentList);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);
-			target.addComponent(listContainer);
+			target.add(listContainer);
 
 		}
 		catch (EntityNotFoundException e) {

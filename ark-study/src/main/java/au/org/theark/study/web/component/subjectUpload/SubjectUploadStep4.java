@@ -68,16 +68,16 @@ public class SubjectUploadStep4 extends AbstractWizardStepPanel {
 	@Override
 	public void onStepInNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		form.getNextButton().setEnabled(true);
-		target.addComponent(form.getNextButton());
+		target.add(form.getNextButton());
 
 		form.getArkExcelWorkSheetAsGrid().setVisible(false);
-		target.addComponent(form.getArkExcelWorkSheetAsGrid());
+		target.add(form.getArkExcelWorkSheetAsGrid());
 	}
 
 	@Override
 	public void onStepOutNext(AbstractWizardForm<?> form, AjaxRequestTarget target) {
 		form.getNextButton().setEnabled(false);
-		target.addComponent(form.getNextButton());
+		target.add(form.getNextButton());
 
 		// Filename seems to be lost from model when moving between steps in wizard
 		containerForm.getModelObject().getUpload().setFilename(wizardForm.getFileName());

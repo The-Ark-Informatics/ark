@@ -252,7 +252,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	public AjaxButton getDeleteButton() {
@@ -275,7 +275,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		// this.info("Consent file " + containerForm.getModelObject().getConsentFile().getFilename() + " was deleted successfully");
 
 		// Display delete confirmation message
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
 		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {

@@ -229,7 +229,7 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 			protected void onUpdate(AjaxRequestTarget target) {
 				String subjectUidtToken = subjectUidTokenTxtFld.getDefaultModelObjectAsString();
 				subjectUidExampleTxt = getSubjectUidExample();
-				target.addComponent(subjectUidExampleLbl);
+				target.add(subjectUidExampleLbl);
 			}
 		});
 		subjectUidTokenTxtFld.setVisible(false);
