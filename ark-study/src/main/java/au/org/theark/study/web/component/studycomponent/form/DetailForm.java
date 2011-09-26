@@ -108,8 +108,8 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 		componentNameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.study.component.name.required", componentNameTxtFld, new Model<String>("Study Component Name")));
 		componentNameTxtFld.add(StringValidator.lengthBetween(3, 100)).setLabel(
 				new StringResourceModel("error.study.component.name.length", componentNameTxtFld, new Model<String>("Study Component Name")));
-		componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", null, new Model<String>("Description")));
-		keywordTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.study.component.keywords.length", null, new Model<String>("Keywords")));
+		componentDescription.add(StringValidator.lengthBetween(5, 500)).setLabel(new StringResourceModel("error.study.component.description.length", this, new Model<String>("Description")));
+		keywordTxtArea.add(StringValidator.lengthBetween(1, 255)).setLabel(new StringResourceModel("error.study.component.keywords.length", this, new Model<String>("Keywords")));
 	}
 
 	/*
