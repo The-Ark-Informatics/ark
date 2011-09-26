@@ -106,12 +106,26 @@ public class SearchResultListPanel extends Panel {
 				fieldDataTemplate[i++] = fpc.getField().getName();
 			}
 
-			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "FieldDataUpload", fieldDataTemplate);
+			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "FieldDataUpload", fieldDataTemplate){
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					this.error("An error occured. Please contact Administrator");
+				}
+				
+			};
 			add(downloadTemplateButton);
 		}
 		else {
 			String[] fieldDataTemplate = new String[0];
-			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", null, fieldDataTemplate);
+			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", null, fieldDataTemplate){
+
+				@Override
+				protected void onError(AjaxRequestTarget target, Form<?> form) {
+					this.error("An error occured. Please contact Administrator");
+				}
+				
+			};
 			add(downloadTemplateButton);
 		}
 	}
