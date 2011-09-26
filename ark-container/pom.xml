@@ -62,11 +62,13 @@
 		 -->
 		 
 		<!-- Ark Registry Module -->
+		<!--
 		<dependency>
 			<groupId>au.org.theark.registry</groupId>
 			<artifactId>ark-registry</artifactId>
 			<version>${ark-registry.version}</version>
 		</dependency>
+		-->
 		
 		<!-- Ark LIMS Module -->
 		<dependency>
