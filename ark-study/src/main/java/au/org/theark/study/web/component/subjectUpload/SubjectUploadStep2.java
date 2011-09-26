@@ -53,7 +53,14 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService				iArkCommonService;
 
-	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt");
+	private ArkDownloadAjaxButton			downloadValMsgButton	= new ArkDownloadAjaxButton("downloadValMsg", null, null, "txt") {
+
+		@Override
+		protected void onError(AjaxRequestTarget target, Form<?> form) {
+			this.error("Unexpected Error: Download request could not be processed");
+		}
+		
+	};
 
 	public SubjectUploadStep2(String id) {
 		super(id);
@@ -131,7 +138,15 @@ public class SubjectUploadStep2 extends AbstractWizardStepPanel {
 			if (validationMessage != null && validationMessage.length() > 0) {
 				form.getNextButton().setEnabled(false);
 				target.add(form.getWizardButtonContainer());
-				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt");
+				downloadValMsgButton = new ArkDownloadAjaxButton("downloadValMsg", "ValidationMessage", validationMessage, "txt") {
+
+					@Override
+					protected void onError(AjaxRequestTarget target, Form<?> form) {
+						this.error("Unexpected Error: Download request could not be processed");
+						// TODO Auto-generated method stub
+					}
+					
+				};
 				addOrReplace(downloadValMsgButton);
 				target.add(downloadValMsgButton);
 			}

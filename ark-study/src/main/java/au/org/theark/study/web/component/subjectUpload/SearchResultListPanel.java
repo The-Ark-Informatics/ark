@@ -45,6 +45,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.study.service.IStudyService;
@@ -83,7 +84,15 @@ public class SearchResultListPanel extends Panel {
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
 
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS);
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS) {
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not proceed with download of the template.");
+				// TODO Auto-generated method stub				
+			}
+			
+		};
 		add(downloadTemplateButton);
 	}
 
@@ -181,7 +190,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDeleteButton(upload));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -205,7 +214,7 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
 		};
@@ -230,7 +239,13 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process download request");
+				// TODO Auto-generated method stub
 			};
 		};
 
@@ -256,7 +271,7 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
 
@@ -280,7 +295,13 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process download upload report request");
+				// TODO Auto-generated method stub				
 			};
 		};
 
@@ -318,6 +339,12 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				return flag;
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Could not process delete request");
+				// TODO Auto-generated method stub		
 			}
 
 		};
