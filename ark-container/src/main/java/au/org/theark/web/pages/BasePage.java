@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebResponse;
 
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
