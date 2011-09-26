@@ -36,7 +36,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.visit.IVisitor;
@@ -141,9 +140,7 @@ public class LoginPage<T> extends WebPage
 			// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
 			super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 
-			//submitButton = new ArkIndicatingAjaxButton("submitBtn", new StringResourceModel("page.signIn", new Model(), null))
 			submitButton = new ArkIndicatingAjaxButton("submitBtn")
-			
 			{
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
