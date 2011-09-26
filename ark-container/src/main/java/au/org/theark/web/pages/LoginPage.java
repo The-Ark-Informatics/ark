@@ -141,7 +141,9 @@ public class LoginPage<T> extends WebPage
 			// Pass in the Model to the Form so the IFormSubmitListener can set the Model Object with values that were submitted.
 			super(id, new CompoundPropertyModel<ArkUserVO>(new ArkUserVO()));
 
-			submitButton = new ArkIndicatingAjaxButton("submitBtn", new StringResourceModel("submit", null))
+			//submitButton = new ArkIndicatingAjaxButton("submitBtn", new StringResourceModel("page.signIn", new Model(), null))
+			submitButton = new ArkIndicatingAjaxButton("submitBtn")
+			
 			{
 				@Override
 				protected void onSubmit(AjaxRequestTarget target, Form<?> form)
@@ -166,6 +168,7 @@ public class LoginPage<T> extends WebPage
 			};
 			addComponentsToForm();
 		}
+		
 
 		public final boolean authenticate(AjaxRequestTarget target, ArkUserVO user)
 		{
