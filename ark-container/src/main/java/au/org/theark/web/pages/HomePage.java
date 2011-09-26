@@ -38,7 +38,6 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
-import au.org.theark.geno.web.menu.GenoTabProviderImpl;
 import au.org.theark.lims.web.menu.LimsTabProviderImpl;
 import au.org.theark.phenotypic.web.menu.PhenotypicTabProviderImpl;
 import au.org.theark.registry.web.menu.RegistryTabProviderImpl;
@@ -132,7 +131,7 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(itab);
 					}
 				}
-
+				/* Removed Dependency on Geno 
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_GENOTYPIC)) {
 					// Genotypic
 					GenoTabProviderImpl genoTabs = new GenoTabProviderImpl(arkModule.getName());
@@ -141,7 +140,8 @@ public class HomePage extends BasePage {
 						moduleTabsList.add(itab);
 					}
 				}
-
+				*/
+				
 				if (arkModule.getName().equalsIgnoreCase(au.org.theark.core.Constants.ARK_MODULE_REGISTRY)) {
 					// Registry
 					RegistryTabProviderImpl registryTabProvider = new RegistryTabProviderImpl(arkModule.getName());
