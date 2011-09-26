@@ -123,7 +123,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDeleteButton(consentFile));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -147,7 +147,7 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, consentFile.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new au.org.theark.core.util.ByteDataResourceRequestHandler("text/plain", data, consentFile.getFilename()));
 
 			};
 		};
@@ -172,7 +172,13 @@ public class SearchResultListPanel extends Panel {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, consentFile.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent((new au.org.theark.core.util.ByteDataResourceRequestHandler("text/plain", data, consentFile.getFilename())));
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				// TODO Auto-generated method stub
+				
 			};
 		};
 
@@ -207,8 +213,14 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Consent file " + consentFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				target.addComponent(searchResultContainer);
-				target.addComponent(containerForm);
+				target.add(searchResultContainer);
+				target.add(containerForm);
+			}
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("An error occured whil deleteting the consent file" );
+				
 			}
 		};
 
