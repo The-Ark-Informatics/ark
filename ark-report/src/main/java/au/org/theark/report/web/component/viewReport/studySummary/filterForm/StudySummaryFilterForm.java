@@ -159,12 +159,12 @@ public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericRepo
 		if (reportResource != null) {
 			reportOutputPanel.setReportResource(reportResource);
 			reportOutputPanel.setVisible(true);
-			target.addComponent(reportOutputPanel);
+			target.add(reportOutputPanel);
 		}
 	}
 
 	protected void onErrorProcess(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 
 	@Override

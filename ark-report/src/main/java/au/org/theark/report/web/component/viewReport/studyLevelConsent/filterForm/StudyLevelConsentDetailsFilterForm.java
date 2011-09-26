@@ -136,7 +136,7 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		if (reportResource != null) {
 			reportOutputPanel.setReportResource(reportResource);
 			reportOutputPanel.setVisible(true);
-			target.addComponent(reportOutputPanel);
+			target.add(reportOutputPanel);
 		}
 	}
 

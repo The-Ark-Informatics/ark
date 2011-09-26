@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.report.web.component.viewReport.form;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
@@ -83,7 +84,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	private void initialiseComponents() {
 		generateButton = new ArkBusyAjaxButton(Constants.GENERATE_BUTTON, new StringResourceModel("generateKey", this, null)) {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 				onGenerateProcess(target);
 			}
 
@@ -97,7 +98,7 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 					private static final long	serialVersionUID	= 1L;
 
 					@Override
-					public CharSequence postDecorateScript(CharSequence script) {
+					public CharSequence postDecorateScript(Component component, CharSequence script) {
 						return script + "wicketHide('" + reportOutputPanel.getMarkupId() + "');";
 					}
 				};
@@ -133,6 +134,6 @@ public abstract class AbstractReportFilterForm<T extends GenericReportViewVO> ex
 	protected abstract void onGenerateProcess(AjaxRequestTarget target);
 
 	protected void onErrorProcess(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 }
