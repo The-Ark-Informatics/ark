@@ -19,14 +19,12 @@
 package au.org.theark.study.web.component.consentFile;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 
-public class DeleteButton extends AjaxDeleteButton {
+public abstract class DeleteButton extends AjaxDeleteButton {
 
 	/**
 	 * 
@@ -41,16 +39,4 @@ public class DeleteButton extends AjaxDeleteButton {
 				new StringResourceModel(au.org.theark.study.web.Constants.DELETE, component, null));
 	}
 
-	@Override
-	protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-	}
-
-	/* (non-Javadoc)
-	 * @see org.apache.wicket.ajax.markup.html.form.AjaxButton#onError(org.apache.wicket.ajax.AjaxRequestTarget, org.apache.wicket.markup.html.form.Form)
-	 */
-	@Override
-	protected void onError(AjaxRequestTarget target, Form<?> form) {
-		// TODO Auto-generated method stub
-		
-	}
 }
