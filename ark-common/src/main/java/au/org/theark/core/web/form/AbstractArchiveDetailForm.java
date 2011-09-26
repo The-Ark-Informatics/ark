@@ -31,7 +31,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.security.PermissionConstants;
@@ -148,7 +147,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 	@SuppressWarnings("serial")
 	protected void initialiseForm() {
 
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
+		cancelButton = new AjaxButton(Constants.CANCEL) {
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -171,7 +170,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 			}
 		};
 
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
+		saveButton = new AjaxButton(Constants.SAVE) {
 
 			@Override
 			public boolean isVisible() {
@@ -205,7 +204,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 			}
 		};
 
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
+		editButton = new AjaxButton("edit") {
 
 			@Override
 			public boolean isVisible() {
@@ -227,7 +226,7 @@ public abstract class AbstractArchiveDetailForm<T> extends Form<T> {
 			}
 		};
 
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
+		editCancelButton = new AjaxButton("editCancel") {
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				editCancelProcess(target);
 			}
