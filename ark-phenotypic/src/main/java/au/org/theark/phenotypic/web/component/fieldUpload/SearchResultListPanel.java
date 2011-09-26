@@ -79,7 +79,14 @@ public class SearchResultListPanel extends Panel {
 		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.setDetailPanel(detail);
 
-		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER);
+		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER) {
+
+			@Override
+			protected void onError(AjaxRequestTarget target, Form<?> form) {
+				this.error("Unexpected Error: Download request could not be processed");
+			}
+			
+		};
 		add(downloadTemplateButton);
 	}
 

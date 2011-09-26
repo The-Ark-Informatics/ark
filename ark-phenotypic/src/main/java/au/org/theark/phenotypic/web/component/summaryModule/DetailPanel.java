@@ -143,62 +143,6 @@ public class DetailPanel extends Panel {
 		target.add(editButtonContainer);
 	}
 
-	private ModalWindow initialiseModalWindow() {
-		// The ModalWindow, showing some choices for the user to select.
-		selectModalWindow = new au.org.theark.core.web.component.SelectModalWindow("modalwindow") {
-
-			protected void onSelect(AjaxRequestTarget target, String selection) {
-				try {
-					iPhenotypicService.deleteCollection(containerForm.getModelObject().getPhenoCollection());
-					this.info("Collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
-				}
-				catch (ArkSystemException e) {
-					this.error(e.getMessage());
-				}
-				catch (EntityCannotBeRemoved e) {
-					this.error(e.getMessage());
-				}
-
-				// Display delete confirmation message
-				target.add(feedBackPanel);
-
-				// TODO Implement Exceptions in PhentoypicService
-				// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-				// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-				// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-
-				// Close the confirm modal window
-				close(target);
-
-				// Move focus back to Search form
-				PhenoCollectionVO collectionVo = new PhenoCollectionVO();
-				containerForm.setModelObject(collectionVo);
-				searchPanelContainer.setVisible(true);
-				detailsContainer.setVisible(false);
-				target.add(searchPanelContainer);
-				target.add(detailsContainer);
-			}
-
-			protected void onCancel(AjaxRequestTarget target) {
-				// Handle Cancel action
-				// Close the confirm modal window
-				close(target);
-
-				// Go back into Edit mode (and remove feedback, if straight after "New")
-				detailPanelFormContainer.setEnabled(true);
-				editButtonContainer.setVisible(true);
-				viewButtonContainer.setVisible(false);
-				detailForm.getDeleteButton().setEnabled(true);
-				detailForm.getDeleteButton().setVisible(true);
-
-				target.add(detailPanelFormContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
-			}
-		};
-		return selectModalWindow;
-	}
-
 	public DetailForm getDetailForm() {
 		return detailForm;
 	}
