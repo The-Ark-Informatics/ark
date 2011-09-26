@@ -106,7 +106,7 @@ public class PhoneDetail extends Panel {
 			}
 
 			protected void processFeedback(AjaxRequestTarget target) {
-				target.addComponent(feedBackPanel);
+				target.add(feedBackPanel);
 			}
 		};
 

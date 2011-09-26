@@ -114,8 +114,8 @@ public class PhoneForm extends Form {
 		// subjectContainerForm.getModelObject().setPhone(new Phone());
 		phoneListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
-		target.addComponent(phoneListContainer);
-		target.addComponent(detailPanelContainer);
+		target.add(phoneListContainer);
+		target.add(detailPanelContainer);
 	}
 
 	protected void onPhoneAdd(SubjectVO subjectVO, AjaxRequestTarget target) {
@@ -126,8 +126,8 @@ public class PhoneForm extends Form {
 		pageableListView.removeAll();
 		phoneListContainer.setVisible(true);
 		detailPanelContainer.setVisible(false);
-		target.addComponent(phoneListContainer);
-		target.addComponent(detailPanelContainer);
+		target.add(phoneListContainer);
+		target.add(detailPanelContainer);
 		// Add the item into a list
 		// Close the the detail panel
 		// Refresh the List view
@@ -138,7 +138,7 @@ public class PhoneForm extends Form {
 	}
 
 	protected void processFeedback(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	public void initialiseForm() {

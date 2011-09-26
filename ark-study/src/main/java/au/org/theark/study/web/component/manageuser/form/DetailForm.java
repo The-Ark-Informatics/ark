@@ -204,7 +204,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				userNameTxtField.setEnabled(false);
 				onSavePostProcess(target, arkCrudContainerVO);
 				this.info(new StringResourceModel("user.saved", this, null).getString());
-				target.addComponent(feedBackPanel);
+				target.add(feedBackPanel);
 
 			}
 			catch (UserNameExistsException e) {
@@ -236,12 +236,12 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			}
 		}
 
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 
 	}
 

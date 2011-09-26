@@ -167,7 +167,7 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 
@@ -177,22 +177,22 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 			Collection<Correspondences> correspondenceList = studyService.getPersonCorrespondenceList(sessionPersonId, correspondence);
 			if (correspondenceList != null && correspondenceList.size() == 0) {
 				this.info("Fields with the specified criteria do not exist in the system.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			getModelObject().setCorrespondenceList(correspondenceList);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);
-			target.addComponent(listContainer);
+			target.add(listContainer);
 
 		}
 		catch (EntityNotFoundException ex) {
 			this.warn("There are no correspondences available for the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 		catch (ArkSystemException ex) {
 			this.error("The Ark application has encountered a system error.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 	}
 

@@ -397,7 +397,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	/*

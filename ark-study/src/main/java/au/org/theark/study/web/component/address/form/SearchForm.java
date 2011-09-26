@@ -147,7 +147,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());
-				target.addComponent(countryStateSelector);
+				target.add(countryStateSelector);
 			}
 		});
 	}
@@ -171,7 +171,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		String sessionPersonType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);// Subject or
@@ -195,23 +195,23 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			Collection<Address> addressList = studyService.getPersonAddressList(sessionPersonId, address);
 			if (addressList != null && addressList.size() == 0) {
 				this.info("Fields with the specified criteria does not exist in the system.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 
 			getModelObject().setAddresses(addressList);
 			pageableListView.removeAll();
 			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-			target.addComponent(listContainer);
+			target.add(listContainer);
 
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
 			this.warn("There are no addresses available for the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 
 		}
 		catch (ArkSystemException arkException) {
 			this.error("The Ark Application has encountered a system error.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 	}

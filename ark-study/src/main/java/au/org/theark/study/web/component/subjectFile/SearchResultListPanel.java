@@ -202,7 +202,7 @@ public class SearchResultListPanel extends Panel {
 					try {
 						// TODO: implement disabling of other buttons on row when buttons clicked once
 						downloadButton.setEnabled(false);
-						target.addComponent(downloadButton);
+						target.add(downloadButton);
 						studyService.delete(subjectFile);
 					}
 					catch (ArkSystemException e) {
@@ -218,10 +218,10 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				//target.addComponent(searchResultContainer);
-				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+				//target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				
-				target.addComponent(containerForm);
+				target.add(containerForm);
 			}
 
 			@Override

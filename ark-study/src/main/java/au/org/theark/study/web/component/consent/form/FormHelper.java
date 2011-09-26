@@ -41,10 +41,10 @@ public class FormHelper {
 			wmcPlain.setVisible(false);
 			wmcRequested.setVisible(false);
 			wmcCompleted.setVisible(false);
-			target.addComponent(wmcPlain);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcCompleted);
+			target.add(wmcPlain);
+			target.add(wmcRecieved);
+			target.add(wmcRequested);
+			target.add(wmcCompleted);
 		}
 		else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_REQUESTED))) {
 
@@ -52,10 +52,10 @@ public class FormHelper {
 			wmcPlain.setVisible(false);
 			wmcRecieved.setVisible(false);
 			wmcCompleted.setVisible(false);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcPlain);
-			target.addComponent(wmcCompleted);
+			target.add(wmcRecieved);
+			target.add(wmcRequested);
+			target.add(wmcPlain);
+			target.add(wmcCompleted);
 		}
 		else if ((statusName.equalsIgnoreCase(Constants.STUDY_STATUS_COMPLETED))) {
 
@@ -63,10 +63,10 @@ public class FormHelper {
 			wmcPlain.setVisible(false);
 			wmcRecieved.setVisible(false);
 			wmcRequested.setVisible(false);
-			target.addComponent(wmcCompleted);
-			target.addComponent(wmcRecieved);
-			target.addComponent(wmcRequested);
-			target.addComponent(wmcPlain);
+			target.add(wmcCompleted);
+			target.add(wmcRecieved);
+			target.add(wmcRequested);
+			target.add(wmcPlain);
 		}
 		else {
 			setDatePickerDefaultMarkup(target, wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
@@ -79,10 +79,10 @@ public class FormHelper {
 		wmcRecieved.setVisible(false);
 		wmcRequested.setVisible(false);
 		wmcCompleted.setVisible(false);
-		target.addComponent(wmcCompleted);
-		target.addComponent(wmcRecieved);
-		target.addComponent(wmcRequested);
-		target.addComponent(wmcPlain);
+		target.add(wmcCompleted);
+		target.add(wmcRecieved);
+		target.add(wmcRequested);
+		target.add(wmcPlain);
 	}
 
 }

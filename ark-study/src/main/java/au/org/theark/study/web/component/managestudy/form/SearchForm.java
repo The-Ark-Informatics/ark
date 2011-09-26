@@ -134,17 +134,17 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 			if (studyListForUser.size() == 0) {
 				containerForm.getModelObject().setStudyList(studyListForUser);
 				this.info("There are no records that matched your query. Please modify your filter");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 			containerForm.getModelObject().setStudyList(studyListForUser);
 			studyCrudContainerVO.getPageableListView().removeAll();
 			studyCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-			target.addComponent(studyCrudContainerVO.getSearchResultPanelContainer());
+			target.add(studyCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException e) {
 			log.error(e.getMessage());
 			this.error("There are no records that matched your query. Please modify your filter");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 	}
 
@@ -171,7 +171,7 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 
 		// Hide Summary details on new
 		studyCrudContainerVO.getSummaryContainer().setVisible(false);
-		target.addComponent(studyCrudContainerVO.getSummaryContainer());
+		target.add(studyCrudContainerVO.getSummaryContainer());
 
 		// Show upload item for new Study
 		studyCrudContainerVO.getStudyLogoMarkup().setVisible(true);
@@ -182,9 +182,9 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		studyHelper.setStudyLogo(containerForm.getModelObject().getStudy(), target, studyCrudContainerVO.getStudyNameMarkup(), studyCrudContainerVO.getStudyLogoMarkup());
 		studyHelper.setStudyLogoImage(containerForm.getModelObject().getStudy(), "study.studyLogoImage", studyCrudContainerVO.getStudyLogoImageContainer());
 
-		target.addComponent(studyCrudContainerVO.getStudyLogoMarkup());
-		target.addComponent(studyCrudContainerVO.getStudyLogoUploadContainer());
-		target.addComponent(studyCrudContainerVO.getStudyLogoImageContainer());
+		target.add(studyCrudContainerVO.getStudyLogoMarkup());
+		target.add(studyCrudContainerVO.getStudyLogoUploadContainer());
+		target.add(studyCrudContainerVO.getStudyLogoImageContainer());
 
 		// Clear context items
 		ContextHelper contextHelper = new ContextHelper();
@@ -206,11 +206,11 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		containerForm.getModelObject().setSubjectUidExample(Constants.SUBJECTUID_EXAMPLE);
 		Label subjectUidExampleLbl = detailForm.getSubjectUidExampleLbl();
 		subjectUidExampleLbl.setDefaultModelObject(containerForm.getModelObject().getSubjectUidExample());
-		target.addComponent(subjectUidExampleLbl);
+		target.add(subjectUidExampleLbl);
 
 		autoSubjectUidcontainer.setEnabled(true);
 		subjectUidcontainer.setEnabled(false);
-		target.addComponent(subjectUidcontainer);
+		target.add(subjectUidcontainer);
 
 		preProcessDetailPanel(target, studyCrudContainerVO);
 	}

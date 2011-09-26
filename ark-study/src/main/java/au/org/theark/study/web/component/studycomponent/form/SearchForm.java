@@ -110,21 +110,21 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		try {
 
 			List<StudyComp> resultList = studyService.searchStudyComp(getModelObject().getStudyComponent());
 
 			if (resultList != null && resultList.size() == 0) {
 				this.info("Study Component with the specified criteria does not exist in the system.");
-				target.addComponent(feedbackPanel);
+				target.add(feedbackPanel);
 			}
 			
 			getModelObject().setStudyCompList(resultList);
 			listView.removeAll();
 
 			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
-			target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (ArkSystemException arkEx) {
 			this.error("A system error has occured. Please try after sometime.");

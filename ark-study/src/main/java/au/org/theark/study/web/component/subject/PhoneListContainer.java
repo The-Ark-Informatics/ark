@@ -68,7 +68,7 @@ public class PhoneListContainer extends Panel {
 	private void onAddPhone(SubjectVO subjectVO, AjaxRequestTarget target) {
 		System.out.println("onAddPhone Invoked");
 		phoneDetailPanelContainer.setVisible(true);
-		target.addComponent(phoneDetailPanelContainer);
+		target.add(phoneDetailPanelContainer);
 	}
 
 	/**

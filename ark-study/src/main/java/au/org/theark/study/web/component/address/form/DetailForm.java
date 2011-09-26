@@ -184,7 +184,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 			@Override
 			protected void onUpdate(AjaxRequestTarget target) {
 				updateCountryStateChoices(countryChoice.getModelObject());
-				target.addComponent(countryStateSelector);
+				target.add(countryStateSelector);
 			}
 		});
 	}
@@ -341,7 +341,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 
 	}
 

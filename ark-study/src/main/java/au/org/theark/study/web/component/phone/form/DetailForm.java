@@ -256,7 +256,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	 */
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	/*

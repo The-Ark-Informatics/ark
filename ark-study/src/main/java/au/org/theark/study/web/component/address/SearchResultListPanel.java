@@ -166,12 +166,12 @@ public class SearchResultListPanel extends Panel {
 				SearchForm searchForm = (SearchForm) ((SearchPanel) searchPanelContainer.get("searchComponentPanel")).get("searchForm");
 				searchForm.updateDetailFormPrerender(address);
 
-				target.addComponent(searchResultContainer);
-				target.addComponent(detailPanelContainer);
-				target.addComponent(detailPanelFormContainer);
-				target.addComponent(searchPanelContainer);
-				target.addComponent(viewButtonContainer);
-				target.addComponent(editButtonContainer);
+				target.add(searchResultContainer);
+				target.add(detailPanelContainer);
+				target.add(detailPanelFormContainer);
+				target.add(searchPanelContainer);
+				target.add(viewButtonContainer);
+				target.add(editButtonContainer);
 			}
 
 		};

@@ -162,12 +162,12 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
 			getModelObject().getLinkSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
 			subjectUIDTxtFld.setEnabled(false);
-			target.addComponent(subjectUIDTxtFld);
+			target.add(subjectUIDTxtFld);
 		}
 		else {
 			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
 			subjectUIDTxtFld.setEnabled(true);
-			target.addComponent(subjectUIDTxtFld);
+			target.add(subjectUIDTxtFld);
 		}
 
 		preProcessDetailPanel(target);
@@ -175,18 +175,18 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 	protected void onSearch(AjaxRequestTarget target) {
 
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 
 		int count = iArkCommonService.getStudySubjectCount(cpmModel.getObject());
 		if (count == 0) {
 			this.info("There are no subjects with the specified criteria.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(listContainer);// For ajax this is required so
+		target.add(listContainer);// For ajax this is required so
 	}
 
 }

@@ -304,8 +304,8 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
 
 				// Update the result panel and contianerForm (for feedBack message)
-				target.addComponent(searchResultContainer);
-				target.addComponent(containerForm);
+				target.add(searchResultContainer);
+				target.add(containerForm);
 			}
 
 			@Override
