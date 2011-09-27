@@ -19,7 +19,6 @@
 package au.org.theark.admin.web.component.module.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -94,7 +93,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.creatOrUpdateArkModule(containerForm.getModelObject());
 
 		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was created/updated successfully.");
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -106,11 +105,11 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.deleteArkModule(containerForm.getModelObject());
 
 		this.info("Ark Module: " + containerForm.getModelObject().getArkModule().getName() + " was deleted successfully.");
-		editCancelProcess(target, true);
+		editCancelProcess(target);
 	}
 
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected boolean isNew() {
