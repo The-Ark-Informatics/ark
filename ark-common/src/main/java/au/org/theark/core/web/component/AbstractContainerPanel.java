@@ -51,89 +51,26 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 	private ArkLdapRealm						realm;
 
 	protected FeedbackPanel					feedBackPanel;
-
 	protected ArkCrudContainerVO			arkCrudContainerVO;
-	/* Web Markup Containers */
-	protected WebMarkupContainer			searchPanelContainer;
-	protected WebMarkupContainer			searchResultPanelContainer;
-	protected WebMarkupContainer			detailPanelContainer;
-	protected WebMarkupContainer			detailPanelFormContainer;
-
-	protected WebMarkupContainer			wizardPanelContainer;
-	protected WebMarkupContainer			wizardPanelFormContainer;
-
-	protected WebMarkupContainer			viewButtonContainer;
-	protected WebMarkupContainer			editButtonContainer;
-
 	protected IModel<Object>				iModel;
 	protected CompoundPropertyModel<T>	cpModel;
 
 	protected PageableListView<T>			myListView;
 
 	/**
+	 * 
 	 * @param id
 	 */
 	public AbstractContainerPanel(String id) {
-
 		super(id);
 		Subject currentUser = SecurityUtils.getSubject();
 		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-		initialiseMarkupContainers();
-	}
-
-	// New constructor for newer ArkCrudContainerVO-based interfaces
-	public AbstractContainerPanel(String id, boolean useArkCrudContainerVO) {
-		super(id);
-		Subject currentUser = SecurityUtils.getSubject();
-		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-		if (useArkCrudContainerVO) {
-			initCrudContainerVO();
-		}
+		initCrudContainerVO();
 	}
 
 	public void initCrudContainerVO() {
 
 		arkCrudContainerVO = new ArkCrudContainerVO();
-
-	}
-
-	public void initialiseMarkupContainers() {
-
-		searchPanelContainer = new WebMarkupContainer("searchContainer");
-		searchPanelContainer.setOutputMarkupPlaceholderTag(true);
-
-		detailPanelContainer = new WebMarkupContainer("detailContainer");
-		detailPanelContainer.setOutputMarkupPlaceholderTag(true);
-		detailPanelContainer.setVisible(false);
-
-		// Contains the controls of the details
-		detailPanelFormContainer = new WebMarkupContainer("detailFormContainer");
-		detailPanelFormContainer.setOutputMarkupPlaceholderTag(true);
-		detailPanelFormContainer.setEnabled(false);
-
-		wizardPanelContainer = new WebMarkupContainer("wizardContainer");
-		wizardPanelContainer.setOutputMarkupPlaceholderTag(true);
-		wizardPanelContainer.setVisible(true);
-
-		// Contains the controls of the Wizard
-		wizardPanelFormContainer = new WebMarkupContainer("wizardFormContainer");
-		wizardPanelFormContainer.setOutputMarkupPlaceholderTag(true);
-		wizardPanelFormContainer.setEnabled(true);
-
-		// The wrapper for ResultsList panel that will contain a ListView
-		searchResultPanelContainer = new WebMarkupContainer("resultListContainer");
-		searchResultPanelContainer.setOutputMarkupPlaceholderTag(true);
-		searchResultPanelContainer.setVisible(true);
-
-		/* Defines a Read-Only Mode */
-		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
-		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
-		viewButtonContainer.setVisible(false);
-
-		/* Defines a edit mode */
-		editButtonContainer = new WebMarkupContainer("editButtonContainer");
-		editButtonContainer.setOutputMarkupPlaceholderTag(true);
-		editButtonContainer.setVisible(false);
 
 	}
 
@@ -165,60 +102,5 @@ public abstract class AbstractContainerPanel<T> extends Panel {
 		return flag;
 	}
 	
-	/**
-	 * @return the searchPanelContainer
-	 */
-	public WebMarkupContainer getSearchPanelContainer() {
-		return searchPanelContainer;
-	}
-
-	/**
-	 * @param searchPanelContainer the searchPanelContainer to set
-	 */
-	public void setSearchPanelContainer(WebMarkupContainer searchPanelContainer) {
-		this.searchPanelContainer = searchPanelContainer;
-	}
-
-	/**
-	 * @return the searchResultPanelContainer
-	 */
-	public WebMarkupContainer getSearchResultPanelContainer() {
-		return searchResultPanelContainer;
-	}
-
-	/**
-	 * @param searchResultPanelContainer the searchResultPanelContainer to set
-	 */
-	public void setSearchResultPanelContainer(WebMarkupContainer searchResultPanelContainer) {
-		this.searchResultPanelContainer = searchResultPanelContainer;
-	}
-
-	/**
-	 * @return the detailPanelContainer
-	 */
-	public WebMarkupContainer getDetailPanelContainer() {
-		return detailPanelContainer;
-	}
-
-	/**
-	 * @param detailPanelContainer the detailPanelContainer to set
-	 */
-	public void setDetailPanelContainer(WebMarkupContainer detailPanelContainer) {
-		this.detailPanelContainer = detailPanelContainer;
-	}
-
-	/**
-	 * @return the wizardPanelContainer
-	 */
-	public WebMarkupContainer getWizardPanelContainer() {
-		return wizardPanelContainer;
-	}
-
-	/**
-	 * @param wizardPanelContainer the wizardPanelContainer to set
-	 */
-	public void setWizardPanelContainer(WebMarkupContainer wizardPanelContainer) {
-		this.wizardPanelContainer = wizardPanelContainer;
-	}
 
 }
