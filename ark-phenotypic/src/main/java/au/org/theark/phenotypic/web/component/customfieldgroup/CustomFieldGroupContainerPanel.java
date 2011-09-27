@@ -49,7 +49,7 @@ public class CustomFieldGroupContainerPanel extends AbstractContainerPanel<Custo
 	 */
 	public CustomFieldGroupContainerPanel(String id,boolean useArkCrudContainerVO, ArkFunction associatedPrimaryFn) {
 
-		super(id, useArkCrudContainerVO);
+		super(id);
 		cpModel = new CompoundPropertyModel<CustomFieldGroupVO>( new CustomFieldGroupVO());
 		cpModel.getObject().getCustomFieldGroup().setArkFunction(associatedPrimaryFn);//The AssociatedPrimaryFunction is passed in for Pheno it will be DataDictionary
 		
