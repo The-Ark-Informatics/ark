@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -45,14 +44,19 @@ import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.address.DetailPanel;
 
 public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
+
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8154756272240757773L;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService											studyService;
@@ -60,7 +64,8 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService										iArkCommonService;
 
-	private DetailPanel												detailPanel;
+	protected CompoundPropertyModel<CorrespondenceVO>	cpmModel;
+
 	private PageableListView<Correspondences>					pageableListView;
 
 	private DropDownChoice<CorrespondenceStatusType>		statusTypeChoice;
@@ -73,16 +78,13 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 	private DropDownChoice<CorrespondenceOutcomeType>		outcomeTypeChoice;
 	private TextArea<String>										detailsTxtArea;
 
-	public SearchForm(String id, CompoundPropertyModel<CorrespondenceVO> model, PageableListView<Correspondences> listView, FeedbackPanel feedbackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedbackPanel);
+	public SearchForm(String id, CompoundPropertyModel<CorrespondenceVO> model, PageableListView<Correspondences> listView, FeedbackPanel feedBackPanel,
+			ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, model, feedBackPanel, arkCrudContainerVO);
 		this.pageableListView = listView;
 		initialiseSearchForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a subject or contact.");
-
 	}
 
 	private void initialiseSearchForm() {
@@ -182,9 +184,9 @@ public class SearchForm extends AbstractSearchForm<CorrespondenceVO> {
 
 			getModelObject().setCorrespondenceList(correspondenceList);
 			pageableListView.removeAll();
-			listContainer.setVisible(true);
-			target.add(listContainer);
-
+			
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException ex) {
 			this.warn("There are no correspondences available for the specified criteria.");

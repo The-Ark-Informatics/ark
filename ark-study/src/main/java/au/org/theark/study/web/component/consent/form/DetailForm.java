@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -49,10 +48,10 @@ import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -62,6 +61,11 @@ import au.org.theark.study.web.Constants;
  * 
  */
 public class DetailForm extends AbstractDetailForm<ConsentVO> {
+
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService					iArkCommonService;
@@ -89,22 +93,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	protected WebMarkupContainer					wmcCompleted;
 	protected DropDownChoice<YesNo>				consentDownloadedDdc;
 
-	/**
-	 * @param id
-	 * @param feedBackPanel
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailPanelFormContainer
-	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param containerForm
-	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<ConsentVO> containerForm) {
-
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
 	public void initialiseDetailForm() {
@@ -167,20 +157,20 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	}
 
 	public void addDetailFormComponents() {
-		detailPanelFormContainer.add(consentedBy);
-		detailPanelFormContainer.add(consentedDatePicker);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedBy);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentedDatePicker);
 
-		detailPanelFormContainer.add(wmcPlain);
-		detailPanelFormContainer.add(wmcRecieved);
-		detailPanelFormContainer.add(wmcRequested);
-		detailPanelFormContainer.add(wmcCompleted);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPlain);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRecieved);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcRequested);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcCompleted);
 
-		detailPanelFormContainer.add(studyComponentChoice);
-		detailPanelFormContainer.add(studyComponentStatusChoice);
-		detailPanelFormContainer.add(consentStatusChoice);
-		detailPanelFormContainer.add(consentTypeChoice);
-		detailPanelFormContainer.add(commentTxtArea);
-		detailPanelFormContainer.add(consentDownloadedDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(studyComponentStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedDdc);
 
 	}
 

@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.study.entity.StudyUpload;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 import au.org.theark.study.web.component.subjectUpload.form.SearchForm;
@@ -35,37 +36,24 @@ import au.org.theark.study.web.component.subjectUpload.form.SearchForm;
  */
 @SuppressWarnings("serial")
 public class SearchPanel extends Panel {
+	
+	private ArkCrudContainerVO					arkCrudContainerVO;
 	private FeedbackPanel						feedBackPanel;
-	private WebMarkupContainer					searchMarkupContainer;
-	private WebMarkupContainer					listContainer;
-	private WebMarkupContainer					wizardContainer;
 	private PageableListView<StudyUpload>	listView;
 	private ContainerForm						containerForm;
-	private WizardPanel							wizardPanel;
-	private WebMarkupContainer					viewButtonContainer;
-	private WebMarkupContainer					editButtonContainer;
-	private WebMarkupContainer					wizardPanelFormContainer;
+
 
 	/* Constructor */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<StudyUpload> listView, WebMarkupContainer resultListContainer,
-			WebMarkupContainer wizardPanelContainer, WizardPanel wizard, ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer,
-			WebMarkupContainer wizardPanelFormContainer) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<StudyUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
-		this.wizardContainer = wizardPanelContainer;
-		this.wizardPanel = wizard;
 		this.containerForm = containerForm;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.wizardPanelFormContainer = wizardPanelFormContainer;
-		listContainer = resultListContainer;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<UploadVO>) containerForm.getModel(), listView, feedBackPanel, wizardPanel, listContainer,
-				searchMarkupContainer, wizardContainer, wizardPanelFormContainer, viewButtonContainer, editButtonContainer);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<UploadVO>) containerForm.getModel(), listView, feedBackPanel, arkCrudContainerVO);
 		add(searchForm);
 	}
 }

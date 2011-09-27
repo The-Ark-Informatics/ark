@@ -22,13 +22,11 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
 
-import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep1;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep2;
 import au.org.theark.study.web.component.subjectUpload.SubjectUploadStep3;
@@ -40,33 +38,20 @@ import au.org.theark.study.web.component.subjectUpload.WizardPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class WizardForm extends AbstractWizardForm<UploadVO> {
-	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
-	private IStudyService		studyService;
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 
 	private File					file;
 	private String					fileName;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param wizardStep
-	 * @param listContainer
-	 * @param wizardContainer
-	 * @param containerForm
-	 * @param wizardButtonContainer
-	 * @param wizardFormContainer
-	 * @param searchPanelContainer
-	 */
-	public WizardForm(String id, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer, WebMarkupContainer wizardContainer, Form<UploadVO> containerForm,
-			WebMarkupContainer wizardButtonContainer, WebMarkupContainer wizardFormContainer, WebMarkupContainer searchPanelContainer) {
-		super(id, feedBackPanel, listContainer, wizardContainer, wizardFormContainer, searchPanelContainer, containerForm);
+	public WizardForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		// TODO: Fix the AbstractWizardForm to use ArkCrudContainerVO
+		super(id, feedBackPanel, arkCrudContainerVO.getSearchResultPanelContainer(),
+				arkCrudContainerVO.getWizardPanelContainer(), arkCrudContainerVO.getWizardPanelFormContainer(), 
+				arkCrudContainerVO.getSearchPanelContainer(), containerForm);
 	}
 
 	public void initialiseDetailForm() {

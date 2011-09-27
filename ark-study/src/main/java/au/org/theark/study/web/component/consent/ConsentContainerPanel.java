@@ -84,11 +84,10 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	/*
@@ -126,10 +125,9 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 
 			// All the phone items related to the person if one found in session or an empty list
 			cpModel.getObject().setConsentList(consentList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-					viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
-			searchPanelContainer.add(searchPanel);
+			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
@@ -140,7 +138,7 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 			containerForm.error("A System error/exception has occured. Please contact Support.");
 		}
 
-		return searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	/*
@@ -151,8 +149,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
+		// TODO: Should eventually remove containerForm and instead pass over the cpModel
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;
@@ -197,8 +195,8 @@ public class ConsentContainerPanel extends AbstractContainerPanel<ConsentVO> {
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 
 	}
 

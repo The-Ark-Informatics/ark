@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
@@ -46,6 +47,7 @@ import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.study.service.IStudyService;
@@ -61,28 +63,16 @@ public class SearchResultListPanel extends Panel {
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
-	private WebMarkupContainer	detailsPanelContainer;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private WebMarkupContainer	feedBackPanel;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private DetailPanel			detailPanel;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer feedBackPanel, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
-			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+
+	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedBackPanel = feedBackPanel;
-		this.containerForm = studyCompContainerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.setDetailPanel(detail);
+		this.containerForm = containerForm;
 
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS) {
 
@@ -325,7 +315,7 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Data Upload file " + upload.getFilename() + " was deleted successfully.");
 
 				// Update the result panel and contianerForm (for feedBack message)
-				target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				target.add(containerForm);
 			}
 
@@ -356,18 +346,4 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
-	}
 }
