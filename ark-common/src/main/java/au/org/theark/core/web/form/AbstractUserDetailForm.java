@@ -63,7 +63,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if (isNew()) {
-					editCancelProcess(target, true);
+					editCancelProcess(target);
 				}
 				else {
 					editCancelProcessForUpdate(target);
@@ -150,7 +150,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target, true);
+				editCancelProcess(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
@@ -159,7 +159,7 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 		};
 
 
-		addComponentsToForm(true);
+		addComponentsToForm();
 	}
 
 	/**
