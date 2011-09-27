@@ -124,12 +124,12 @@ public class ArkCrudContainerVO implements Serializable {
 		getEditButtonContainer().setVisible(false);
 
 		// Refresh the markup containers
-		target.addComponent(getSearchResultPanelContainer());
-		target.addComponent(getDetailPanelContainer());
-		target.addComponent(getDetailPanelFormContainer());
-		target.addComponent(getSearchPanelContainer());
-		target.addComponent(getViewButtonContainer());
-		target.addComponent(getEditButtonContainer());
+		target.add(getSearchResultPanelContainer());
+		target.add(getDetailPanelContainer());
+		target.add(getDetailPanelFormContainer());
+		target.add(getSearchPanelContainer());
+		target.add(getViewButtonContainer());
+		target.add(getEditButtonContainer());
 	}
 
 	/**
@@ -146,12 +146,12 @@ public class ArkCrudContainerVO implements Serializable {
 		getEditButtonContainer().setVisible(true);
 
 		// Refresh the markup containers
-		target.addComponent(getSearchResultPanelContainer());
-		target.addComponent(getDetailPanelContainer());
-		target.addComponent(getDetailPanelFormContainer());
-		target.addComponent(getSearchPanelContainer());
-		target.addComponent(getViewButtonContainer());
-		target.addComponent(getEditButtonContainer());
+		target.add(getSearchResultPanelContainer());
+		target.add(getDetailPanelContainer());
+		target.add(getDetailPanelFormContainer());
+		target.add(getSearchPanelContainer());
+		target.add(getViewButtonContainer());
+		target.add(getEditButtonContainer());
 	}
 
 	/**
@@ -169,12 +169,12 @@ public class ArkCrudContainerVO implements Serializable {
 		getEditButtonContainer().setVisible(false);
 
 		// Refresh the markup containers
-		target.addComponent(getSearchResultPanelContainer());
-		target.addComponent(getDetailPanelContainer());
-		target.addComponent(getDetailPanelFormContainer());
-		target.addComponent(getSearchPanelContainer());
-		target.addComponent(getViewButtonContainer());
-		target.addComponent(getEditButtonContainer());
+		target.add(getSearchResultPanelContainer());
+		target.add(getDetailPanelContainer());
+		target.add(getDetailPanelFormContainer());
+		target.add(getSearchPanelContainer());
+		target.add(getViewButtonContainer());
+		target.add(getEditButtonContainer());
 	}
 
 	/**
