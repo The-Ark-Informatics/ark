@@ -69,7 +69,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		super(id, feedbackPanel, containerForm, arkCrudContainerVo);
 		this.containerForm = containerForm;
 		arkCrudContainerVO = arkCrudContainerVo;
-		setMultiPart(true);
+		setMultiPart(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -128,7 +128,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.creatOrUpdateArkFunction(containerForm.getModelObject());
 
 		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was created/updated successfully.");
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -140,11 +140,11 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.deleteArkFunction(containerForm.getModelObject());
 
 		this.info("Ark Function: " + containerForm.getModelObject().getArkFunction().getName() + " was deleted successfully.");
-		editCancelProcess(target, true);
+		editCancelProcess(target);
 	}
 
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected boolean isNew() {
