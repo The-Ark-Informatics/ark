@@ -212,6 +212,6 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		subjectUidcontainer.setEnabled(false);
 		target.add(subjectUidcontainer);
 
-		preProcessDetailPanel(target, studyCrudContainerVO);
+		preProcessDetailPanel(target);
 	}
 }

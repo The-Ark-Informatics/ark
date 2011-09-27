@@ -65,7 +65,7 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	 */
 	public SubjectFileContainerPanel(String id) {
 
-		super(id,true);
+		super(id);
 		cpModel = new CompoundPropertyModel<SubjectVO>(new SubjectVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());

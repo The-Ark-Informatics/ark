@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -54,6 +53,7 @@ import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -122,10 +122,9 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 
 	protected Study											study;
 
-	public DetailsForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
+	public DetailsForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkupContainer = arkContextContainer;
 	}
 
@@ -305,42 +304,42 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 
 	public void addDetailFormComponents() {
 
-		detailPanelFormContainer.add(subjectUIDTxtFld);
-		detailPanelFormContainer.add(titleTypeDdc);
-		detailPanelFormContainer.add(firstNameTxtFld);
-		detailPanelFormContainer.add(middleNameTxtFld);
-		detailPanelFormContainer.add(lastNameTxtFld);
-		detailPanelFormContainer.add(previousLastNameTxtFld);
-		detailPanelFormContainer.add(preferredNameTxtFld);
-		detailPanelFormContainer.add(dateOfBirthTxtFld);
-		detailPanelFormContainer.add(dateLastKnownAliveTxtFld);
-		detailPanelFormContainer.add(commentTxtAreaFld);
-		detailPanelFormContainer.add(heardAboutStudyTxtFld);
-		detailPanelFormContainer.add(vitalStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectUIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(middleNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(previousLastNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateOfBirthTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateLastKnownAliveTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(heardAboutStudyTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(vitalStatusDdc);
 
 		// Death details only be edited when vital status set to deceased
 		wmcDeathDetailsContainer.add(dateOfDeathTxtFld);
 		wmcDeathDetailsContainer.add(causeOfDeathTxtFld);
-		detailPanelFormContainer.add(wmcDeathDetailsContainer);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcDeathDetailsContainer);
 
-		detailPanelFormContainer.add(genderTypeDdc);
-		detailPanelFormContainer.add(subjectStatusDdc);
-		detailPanelFormContainer.add(maritalStatusDdc);
-		detailPanelFormContainer.add(personContactMethodDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(genderTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(maritalStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(personContactMethodDdc);
 
 		// Preferred email becomes required when selected as preferred contact method
 		wmcPreferredEmailContainer.add(preferredEmailTxtFld);
-		detailPanelFormContainer.add(wmcPreferredEmailContainer);
-		detailPanelFormContainer.add(otherEmailTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcPreferredEmailContainer);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(otherEmailTxtFld);
 
 		// Add consent fields into the form container.
-		detailPanelFormContainer.add(consentToActiveContactDdc);
-		detailPanelFormContainer.add(consentToUseDataDdc);
-		detailPanelFormContainer.add(consentToPassDataGatheringDdc);
-		detailPanelFormContainer.add(consentStatusChoice);
-		detailPanelFormContainer.add(consentTypeChoice);
-		detailPanelFormContainer.add(consentDateTxtFld);
-		detailPanelFormContainer.add(consentDownloadedChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToActiveContactDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToUseDataDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentToPassDataGatheringDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentDownloadedChoice);
 	}
 
 	/*
@@ -453,7 +452,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 	@Override
 	protected void onSave(Form<SubjectVO> containerForm, AjaxRequestTarget target) {
 
-		target.add(detailPanelContainer);
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
 
 		Long studyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if (studyId == null) {
@@ -475,7 +474,7 @@ public class DetailsForm extends AbstractDetailForm<SubjectVO> {
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, containerForm.getModelObject().getLinkSubjectStudy().getPerson().getId());
 			// We specify the type of person here as Subject
 			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-			detailPanelContainer.setVisible(true);
+			arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
 		}
 	}
 

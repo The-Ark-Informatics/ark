@@ -154,7 +154,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 
 			}
 			
-			onSavePostProcess(target,arkCrudContainerVO);
+			onSavePostProcess(target);
 
 		}
 		catch (EntityExistsException e) {
@@ -189,7 +189,7 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 			StudyCompVo studyCompVo = new StudyCompVo();
 			containerForm.setModelObject(studyCompVo);
 			containerForm.info("The Study Component was deleted successfully.");
-			editCancelProcess(target,true);
+			editCancelProcess(target);
 		}
 		catch (UnAuthorizedOperation unAuthorisedexception) {
 			containerForm.error("You are not authorised to delete this study component.");

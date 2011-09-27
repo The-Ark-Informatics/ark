@@ -23,7 +23,6 @@ import java.util.Collection;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -35,6 +34,7 @@ import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.model.study.entity.ConsentFile;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
@@ -67,12 +67,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<ConsentVO> model, PageableListView<ConsentFile> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+	public SearchForm(String id, CompoundPropertyModel<ConsentVO> model, ArkCrudContainerVO arkCrudContainerVO,PageableListView<ConsentFile> listView, FeedbackPanel feedBackPanel) {
+		super(id, model, feedBackPanel,arkCrudContainerVO);
 		this.cpmModel = model;
 		this.pageableListView = listView;
 		initialiseSearchForm();
@@ -116,8 +112,8 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 			getModelObject().setConsentFileList(consentFileList);
 			pageableListView.removeAll();
-			listContainer.setVisible(true);
-			target.add(listContainer);
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 
 		}
 		catch (EntityNotFoundException e) {

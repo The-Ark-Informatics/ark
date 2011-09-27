@@ -20,7 +20,6 @@ package au.org.theark.study.web.component.subject;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
@@ -37,10 +36,10 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
@@ -48,7 +47,6 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.DetailsForm;
-import au.org.theark.study.web.component.subject.form.SearchForm;
 
 /**
  * @author nivedann
@@ -61,34 +59,21 @@ public class SearchResults extends Panel {
 	 * 
 	 */
 	private static final long	serialVersionUID	= -8517602411833622907L;
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 	private WebMarkupContainer	arkContextMarkup;
 	private ContainerForm		subjectContainerForm;
-
+	private ArkCrudContainerVO arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
 
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
-	public SearchResults(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
+	public SearchResults(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id);
-
-		this.detailPanelContainer = detailPanelContainer;
 		this.subjectContainerForm = containerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.arkContextMarkup = arkContextMarkup;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public DataView<SubjectVO> buildDataView(ArkDataProvider<SubjectVO, IArkCommonService> subjectProvider) {
@@ -143,7 +128,7 @@ public class SearchResults extends Panel {
 
 				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS,  new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -206,7 +191,7 @@ public class SearchResults extends Panel {
 
 				item.add(new Label("linkSubjectStudy.subjectStatus.name", subject.getSubjectStatus().getName()));
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS,  new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -243,25 +228,26 @@ public class SearchResults extends Panel {
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getLinkSubjectStudy().getSubjectUID(), arkContextMarkup);
 
-				detailPanelContainer.setVisible(true);
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				editButtonContainer.setVisible(false);
+				
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 				// Always disable subjectUID
-				Details details = (Details) detailPanelContainer.get("detailsPanel");
+				Details details = (Details) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
 				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 
-				target.add(searchResultContainer);
-				target.add(detailPanelContainer);
-				target.add(detailPanelFormContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
 
 			}
 		};

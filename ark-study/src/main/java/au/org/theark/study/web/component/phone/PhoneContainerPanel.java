@@ -83,12 +83,10 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	 */
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel,arkCrudContainerVO, containerForm);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	/*
@@ -122,10 +120,9 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 
 			// All the phone items related to the person if one found in session or an empty list
 			cpModel.getObject().setPhoneList(personPhoneList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-					viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+			searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel,pageableListView);
 			searchPanel.initialisePanel(cpModel);
-			searchPanelContainer.add(searchPanel);
+			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
@@ -136,7 +133,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 			// Logged by the back end. Report this to the user
 		}
 
-		return searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	/*
@@ -147,8 +144,7 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults",arkCrudContainerVO, containerForm);
 		iModel = new LoadableDetachableModel<Object>() {
 
 			private static final long	serialVersionUID	= 1L;
@@ -181,9 +177,8 @@ public class PhoneContainerPanel extends AbstractContainerPanel<PhoneVO> {
 		PagingNavigator pageNavigator = new PagingNavigator("phoneNavigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
-
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 }

@@ -85,7 +85,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study.", arkCrudContainerVO);
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study.");
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		containerForm.getModelObject().setMode(Constants.MODE_NEW);
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
-		preProcessDetailPanel(target, arkCrudContainerVO);
+		preProcessDetailPanel(target);
 		target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
 	}
 

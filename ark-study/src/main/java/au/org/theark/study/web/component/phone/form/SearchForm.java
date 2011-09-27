@@ -38,9 +38,12 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Phone;
 import au.org.theark.core.model.study.entity.PhoneType;
+import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
+import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.phone.DetailPanel;
@@ -66,31 +69,13 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 	private TextField<String>					areaCodeTxtFld;
 	private TextField<String>					phoneNumberTxtFld;
 	private DropDownChoice<PhoneType>		phoneTypeChoice;
-
-	public SearchForm(String id, CompoundPropertyModel<PhoneVO> model, PageableListView<Phone> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-		this.cpmModel = model;
-		this.pageableListView = listView;
-		initialiseSearchForm();
-		addSearchComponentsToForm();
-		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<PhoneVO> model, PageableListView<Phone> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
-		this.cpmModel = model;
-		this.pageableListView = listView;
+	private ArkCrudContainerVO				arkCrudContainerVO;
+	
+	
+	public SearchForm(String id, CompoundPropertyModel<PhoneVO> cpmModel,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<Phone> listView){
+		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.feedbackPanel = feedBackPanel;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
@@ -153,9 +138,8 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 
 			getModelObject().setPhoneList(phones);
 			pageableListView.removeAll();
-			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-			target.add(listContainer);
-
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
 			this.warn("There are no phone items available for the specified criteria.");

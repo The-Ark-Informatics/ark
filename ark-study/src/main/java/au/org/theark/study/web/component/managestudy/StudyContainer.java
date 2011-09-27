@@ -70,7 +70,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	 */
 	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup) {
 
-		super(id, true);
+		super(id);
 		cpModel = new CompoundPropertyModel<StudyModelVO>(new StudyModelVO());
 		// Create the form that will hold the other controls
 		containerForm = new Container("containerForm", cpModel);
@@ -99,7 +99,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	 * @param moduleTabbedPanel
 	 */
 	public StudyContainer(String id, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup, WebMarkupContainer arkContextMarkup, TabbedPanel moduleTabbedPanel) {
-		super(id, true);
+		super(id);
 		this.moduleTabbedPanel = moduleTabbedPanel;
 
 		cpModel = new CompoundPropertyModel<StudyModelVO>(new StudyModelVO());

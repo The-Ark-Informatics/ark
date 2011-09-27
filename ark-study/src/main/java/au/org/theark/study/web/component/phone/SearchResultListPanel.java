@@ -21,7 +21,6 @@ package au.org.theark.study.web.component.phone;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
@@ -30,6 +29,7 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.Phone;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.phone.form.ContainerForm;
@@ -40,31 +40,26 @@ import au.org.theark.study.web.component.phone.form.ContainerForm;
  */
 public class SearchResultListPanel extends Panel {
 
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 	private ContainerForm		containerForm;
-
+	protected ArkCrudContainerVO arkCrudContainerVO;
+	
 	/**
+	 * 
 	 * @param id
+	 * @param arkCrudContainerVO
+	 * @param containerForm
 	 */
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
 		super(id);
-		// TODO Auto-generated constructor stub
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 	}
-
+	
+	/**
+	 * 
+	 * @param iModel
+	 * @return
+	 */
 	public PageableListView<Phone> buildPageableListView(IModel iModel) {
 
 		PageableListView<Phone> pageableListView = new PageableListView<Phone>(Constants.PHONE_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
@@ -96,7 +91,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("phoneType.name", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class",  new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -116,20 +111,22 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 
 				containerForm.getModelObject().setPhone(phone);
-				detailPanelContainer.setVisible(true);
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				editButtonContainer.setVisible(false);
-
-				target.add(searchResultContainer);
-				target.add(detailPanelContainer);
-				target.add(detailPanelFormContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+		
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
 		};

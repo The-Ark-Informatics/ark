@@ -55,7 +55,7 @@ public class UserContainerPanel extends AbstractContainerPanel<ArkUserVO> {
 
 	public UserContainerPanel(String id) {
 
-		super(id, true);
+		super(id);
 
 		cpModel = new CompoundPropertyModel<ArkUserVO>(new ArkUserVO());
 		containerForm = new ContainerForm("containerForm", cpModel);

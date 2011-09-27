@@ -59,7 +59,7 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	private IArkCommonService				iArkCommonService;
 
 	public StudyComponentContainerPanel(String id) {
-		super(id,true);
+		super(id);
 
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<StudyCompVo>(new StudyCompVo());
