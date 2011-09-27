@@ -248,7 +248,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		}
 
 		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was created/updated successfully.");
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
@@ -260,11 +260,11 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 		iAdminService.deleteArkRolePolicyTemplate(containerForm.getModelObject());
 
 		this.info("Ark Role Policy for Function: " + containerForm.getModelObject().getArkRolePolicyTemplate().getArkFunction().getName() + " was deleted successfully.");
-		editCancelProcess(target, true);
+		editCancelProcess(target);
 	}
 
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	protected boolean isNew() {
