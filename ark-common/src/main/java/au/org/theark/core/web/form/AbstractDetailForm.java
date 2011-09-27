@@ -34,7 +34,6 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
-import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 
 /**
  * <p>
@@ -52,12 +51,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * 
 	 */
 	private static final long		serialVersionUID	= -1818001425244673832L;
-	protected WebMarkupContainer	resultListContainer;
-	protected WebMarkupContainer	detailPanelContainer;
-	protected WebMarkupContainer	searchPanelContainer;
-	protected WebMarkupContainer	viewButtonContainer;
-	protected WebMarkupContainer	editButtonContainer;
-	protected WebMarkupContainer	detailPanelFormContainer;
 	protected FeedbackPanel			feedBackPanel;
 	protected Form<T>					containerForm;
 
@@ -75,34 +68,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	protected CompoundPropertyModel<T> cpModel;
 
 	/**
-	 * Constructor for AbstractDetailForm class
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailPanelFormContainer
-	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param containerForm
-	 */
-	public AbstractDetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, Form<T> containerForm) {
-		super(id);
-		this.resultListContainer = resultListContainer;
-		this.detailPanelContainer = detailPanelContainer;
-		this.feedBackPanel = feedBackPanel;
-		this.searchPanelContainer = searchPanelContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.containerForm = containerForm;
-
-		initialiseForm();
-	}
-
-	/**
 	 * 
 	 * @param id
 	 * @param feedBackPanel
@@ -115,8 +80,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedBackPanel;
 		setMultiPart(true);// Make sure this is required.
-
-		initialiseForm(true);// For CRUD VO Pattern
+		initialiseForm();
 	}
 	
 	/**
@@ -131,16 +95,15 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.cpModel = cpModel;
 		this.feedBackPanel = feedBackPanel;
-//		setMultiPart(true);// Make sure this is required.
-
-		initialiseForm(true);// For CRUD VO Pattern
+		initialiseForm();
 	}
 
 	/**
-	 * Initialise method that is specific to classes that do not follow the ArkCrudContainerVO Pattern. The code related to each function has been
-	 * modularised into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate
-	 * them when they extend the classes.
+	 * Initialise method that is specific to classes that follow the CrudContainerVO Pattern. The code related to each function has been modularised
+	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
+	 * extend the classes.
 	 * 
+	 * @param isArkCrudContainerVOPattern
 	 */
 	protected void initialiseForm() {
 		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
@@ -153,150 +116,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				if (isNew()) {
 					editCancelProcess(target);
-				}
-				else {
-					resultListContainer.setVisible(false); // Hide the Search Result List Panel via the WebMarkupContainer
-					detailPanelContainer.setVisible(false); // Hide the Detail Panel via the WebMarkupContainer
-					target.add(detailPanelContainer);// Attach the Detail WebMarkupContainer to be re-rendered using Ajax
-					target.add(resultListContainer);// Attach the resultListContainer WebMarkupContainer to be re-rendered using Ajax
-					onCancelPostProcess(target);
-				}
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-
-		saveButton = new ArkBusyAjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -423605230448635419L;
-
-			@Override
-			public boolean isVisible() {
-				// calling super.isVisible() will allow an external setVisible() to override visibility
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(containerForm, target);
-				target.add(detailPanelContainer);
-			}
-
-			@SuppressWarnings("unchecked")
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				boolean setFocusError = false;
-				WebMarkupContainer wmc = (WebMarkupContainer) form.get("detailFormContainer");
-				for (Iterator iterator = wmc.iterator(); iterator.hasNext();) {
-					Component component = (Component) iterator.next();
-					if (component instanceof FormComponent) {
-						FormComponent formComponent = (FormComponent) component;
-
-						if (!formComponent.isValid()) {
-							if (!setFocusError) {
-								// Place focus on field in error (for the first field in error)
-								target.focusComponent(formComponent);
-								setFocusError = true;
-							}
-						}
-					}
-				}
-
-				processErrors(target);
-			}
-		};
-
-		deleteButton = new AjaxDeleteButton(Constants.DELETE, new StringResourceModel("confirmDelete", this, null), new StringResourceModel(Constants.DELETE, this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 4005032637149080009L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onDeleteConfirmed(target, null);
-			}
-
-			@Override
-			public boolean isVisible() {
-				// calling super.isVisible() will allow an external setVisible() to override visibility
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.DELETE);
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6282464357368710796L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				deleteButton.setEnabled(true);
-				viewButtonContainer.setVisible(false);
-				editButtonContainer.setVisible(true);
-				detailPanelFormContainer.setEnabled(true);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
-				target.add(detailPanelFormContainer);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-
-			@Override
-			public boolean isVisible() {
-				// calling super.isVisible() will allow an external setVisible() to override visibility
-				return super.isVisible() && ArkPermissionHelper.isActionPermitted(Constants.EDIT);
-			}
-		};
-
-		editCancelButton = new ArkBusyAjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 5457464178392550628L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-
-		addComponentsToForm();
-	}
-
-	/**
-	 * Initialise method that is specific to classes that follow the CrudContainerVO Pattern. The code related to each function has been modularised
-	 * into protected methods, this is to provide the subclasses to refer to the protected methods without having to re-create/duplicate them when they
-	 * extend the classes.
-	 * 
-	 * @param isArkCrudContainerVOPattern
-	 */
-	protected void initialiseForm(Boolean isArkCrudContainerVOPattern) {
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 1684005199059571017L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if (isNew()) {
-					editCancelProcess(target, true);
 				}
 				else {
 					editCancelProcessForUpdate(target);
@@ -388,31 +207,14 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 			private static final long	serialVersionUID	= 5457464178392550628L;
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target, true);
+				editCancelProcess(target);
 			}
 
 			public void onError(AjaxRequestTarget target, Form<?> form) {
 				processErrors(target);
 			}
 		};
-		addComponentsToForm(true);
-	}
-
-	/**
-	 * Add all the components to the Detail form
-	 */
-	protected void addComponentsToForm() {
-		add(detailPanelFormContainer);
-
-		editButtonContainer.add(saveButton);
-		editButtonContainer.add(cancelButton.setDefaultFormProcessing(false));
-		editButtonContainer.add(deleteButton.setDefaultFormProcessing(false));
-
-		viewButtonContainer.add(editButton);
-		viewButtonContainer.add(editCancelButton.setDefaultFormProcessing(false));
-
-		add(editButtonContainer);
-		add(viewButtonContainer);
+		addComponentsToForm();
 	}
 
 	/**
@@ -420,7 +222,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * 
 	 * @param isArkCrudContainerVoPattern
 	 */
-	protected void addComponentsToForm(boolean isArkCrudContainerVoPattern) {
+	protected void addComponentsToForm() {
 		// TODO: Changed from 'add' to 'addOrReplace' for components added to the editButtonContainer and viewButtonContainer
 		// to support instantiating the DetailForm more than once.  Need to fix this when revising the abstraction pattern.
 		// (both are only instantiated once in the top-level container as per original abstraction pattern and thus causes  
@@ -458,7 +260,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
 		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		target.add(arkCrudContainerVO.getDetailPanelContainer());
-		onCancelPostProcess(target, true);
+		onCancelPostProcess(target);
 	}
 
 	/**
@@ -508,28 +310,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
-	/**
-	 * Method to handle Cancel action when in Edit mode, disabling the Detail form, and hiding the "edit" button container
-	 * 
-	 * @param target
-	 */
-	protected void onCancelPostProcess(AjaxRequestTarget target) {
-		detailPanelContainer.setVisible(true);
-		viewButtonContainer.setVisible(true);
-		viewButtonContainer.setEnabled(true);
-		detailPanelFormContainer.setEnabled(false);
-		resultListContainer.setVisible(false);
-		searchPanelContainer.setVisible(false);
-		editButtonContainer.setVisible(false);
-
-		target.add(feedBackPanel);
-		target.add(searchPanelContainer);
-		target.add(detailPanelContainer);
-		target.add(resultListContainer);
-		target.add(viewButtonContainer);
-		target.add(detailPanelFormContainer);
-		target.add(editButtonContainer);
-	}
 
 	/**
 	 * Method to handle Cancel action when in Edit mode, disabling the Detail form, and hiding the "edit" button container Overloaded
@@ -538,7 +318,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param target
 	 * @param isArkCrudContainerVOPattern
 	 */
-	protected void onCancelPostProcess(AjaxRequestTarget target, Boolean isArkCrudContainerVOPattern) {
+	protected void onCancelPostProcess(AjaxRequestTarget target) {
 		arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 		arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
@@ -558,29 +338,12 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	}
 
 	/**
-	 * Method to handle the EditCancel/New Search action, hiding the Detail form/panel and showing the Search/Results panels
-	 * 
-	 * @param target
-	 */
-	protected void editCancelProcess(AjaxRequestTarget target) {
-		resultListContainer.setVisible(true);
-		detailPanelContainer.setVisible(false);
-		searchPanelContainer.setVisible(true);
-
-		target.add(feedBackPanel);
-		target.add(searchPanelContainer);
-		target.add(detailPanelContainer);
-		target.add(resultListContainer);
-		onCancel(target);
-	}
-
-	/**
 	 * Method to handle the EditCancel/New Search action, hiding the Detail form/panel and showing the Search/Results panels Overloaded method for
 	 * sub-classes that implement the ArkCrudContainerVO pattern
 	 * 
 	 * @param target
 	 */
-	protected void editCancelProcess(AjaxRequestTarget target, boolean isArkCrudContainerVoPattern) {
+	protected void editCancelProcess(AjaxRequestTarget target) {
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
 		arkCrudContainerVO.getDetailPanelContainer().setVisible(false);
 		arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
@@ -595,77 +358,30 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	/**
 	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
 	 * implementation.Once the user has pressed Save either to create a new entity or update, invoking this method will place the new/edited record
-	 * panel in View/Read only mode.
-	 * 
+	 * panel in View/Read only mode. Overloaded method for sub-classes that implement the ArkCrudContainerVO pattern
 	 * @param target
 	 */
 	protected void onSavePostProcess(AjaxRequestTarget target) {
-		detailPanelContainer.setVisible(true);
-		viewButtonContainer.setVisible(true);
-		viewButtonContainer.setEnabled(true);
-		detailPanelFormContainer.setEnabled(false);
-		resultListContainer.setVisible(false);
-		searchPanelContainer.setVisible(false);
-		editButtonContainer.setVisible(false);
-
-		target.add(resultListContainer);
-		target.add(detailPanelContainer);
-		target.add(detailPanelFormContainer);
-		target.add(searchPanelContainer);
-		target.add(viewButtonContainer);
-		target.add(editButtonContainer);
-	}
-
-	/**
-	 * A helper method that will allow the toggle of panels and buttons. This method can be invoked by sub-classes as part of the onSave()
-	 * implementation.Once the user has pressed Save either to create a new entity or update, invoking this method will place the new/edited record
-	 * panel in View/Read only mode. Overloaded method for sub-classes that implement the ArkCrudContainerVO pattern
-	 * TODO: NN Redo this method. It is not necessary to pass in ArkCrudContainerVO. This class already has a reference
-	 * @param target
-	 */
-	protected void onSavePostProcess(AjaxRequestTarget target, ArkCrudContainerVO crudVO) {
 		// Visibility
-		crudVO.getDetailPanelContainer().setVisible(true);
-		crudVO.getViewButtonContainer().setVisible(true);
-		crudVO.getSearchResultPanelContainer().setVisible(false);
-		crudVO.getSearchPanelContainer().setVisible(false);
-		crudVO.getEditButtonContainer().setVisible(false);
+		arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+		arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 		// Enable
-		crudVO.getDetailPanelFormContainer().setEnabled(false);
-		crudVO.getViewButtonContainer().setEnabled(true);
+		arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+		arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
 
-		target.add(crudVO.getSearchResultPanelContainer());
-		target.add(crudVO.getDetailPanelContainer());
-		target.add(crudVO.getDetailPanelFormContainer());
-		target.add(crudVO.getSearchPanelContainer());
-		target.add(crudVO.getViewButtonContainer());
-		target.add(crudVO.getEditButtonContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getViewButtonContainer());
+		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(feedBackPanel);
 	}
 	
-
-	/**
-	 * Method that sub-classes may call to disable the entire Detail form, and display a reason
-	 * 
-	 * @param sessionId
-	 * @param errorMessage
-	 */
-	protected void disableDetailForm(Long sessionId, String errorMessage) {
-		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
-			if (sessionId == null) {
-				detailPanelContainer.setEnabled(false);
-				this.error(errorMessage);
-			}
-			else {
-				detailPanelContainer.setEnabled(true);
-			}
-		}
-		else {
-			detailPanelContainer.setEnabled(false);
-			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
-		}
-	}
 
 	/**
 	 * Method that sub-classes may call to disable the entire Detail form, and display a reason Overloaded method for those sub-classes that implement
@@ -675,7 +391,7 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 	 * @param errorMessage
 	 * @param arkCrudContainerVO
 	 */
-	protected void disableDetailForm(Long sessionId, String errorMessage, ArkCrudContainerVO arkCrudContainerVO) {
+	protected void disableDetailForm(Long sessionId, String errorMessage) {
 		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			if (sessionId == null) {
 				arkCrudContainerVO.getDetailPanelContainer().setEnabled(false);
