@@ -48,9 +48,9 @@ import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -84,21 +84,17 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected TextField<String>				otherState;
 
 	/**
+	 * 
 	 * @param id
 	 * @param feedBackPanel
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailPanelFormContainer
-	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
+	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<AddressVO> containerForm) {
-
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+		
+		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+		this.feedBackPanel = feedBackPanel;
+		setMultiPart(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -121,18 +117,18 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	}
 
 	public void addDetailFormComponents() {
-		detailPanelFormContainer.add(streetAddressTxtFld);
-		detailPanelFormContainer.add(cityTxtFld);
-		detailPanelFormContainer.add(postCodeTxtFld);
-		detailPanelFormContainer.add(countryChoice);
-		detailPanelFormContainer.add(countryStateSelector);// This contains the drop-down for State
-		detailPanelFormContainer.add(addressTypeChoice);
-		detailPanelFormContainer.add(addressStatusChoice);
-		detailPanelFormContainer.add(dateReceivedDp);
-		detailPanelFormContainer.add(commentsTxtArea);
-		detailPanelFormContainer.add(preferredMailingAddressChkBox);
-		detailPanelFormContainer.add(sourceTxtFld);
-		detailPanelFormContainer.add(addressLineOneTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(streetAddressTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(cityTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(postCodeTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(countryChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(countryStateSelector);// This contains the drop-down for State
+		arkCrudContainerVO.getDetailPanelFormContainer().add(addressTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(addressStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateReceivedDp);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(preferredMailingAddressChkBox);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(sourceTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(addressLineOneTxtFld);
 
 	}
 
@@ -270,7 +266,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 
 			studyService.delete(containerForm.getModelObject().getAddress());
 			containerForm.info("The Address has been deleted successfully.");
-			editCancelProcess(target);
+			editCancelProcess(target, true);
 		}
 		catch (ArkSystemException e) {
 			this.error("An error occured while processing your delete. Please contact Support");
@@ -329,7 +325,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				this.info(feedBackMessageStr.toString());
 				processErrors(target);
-				onSavePostProcess(target);
+				onSavePostProcess(target, arkCrudContainerVO);
 			}
 			// Invoke backend to persist the AddressVO
 		}

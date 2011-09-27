@@ -53,13 +53,13 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	private SearchPanel						searchPanel;
 	private SearchResultListPanel			searchResultListPanel;
 	private DetailPanel						detailPanel;
-	private PageableListView<Address>	pageableListView;
+	private PageableListView<Address>	listView;
 
 	/**
 	 * @param id
 	 */
 	public AddressContainerPanel(String id) {
-		super(id);
+		super(id, true);
 		cpModel = new CompoundPropertyModel<AddressVO>(new AddressVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -77,11 +77,10 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, arkCrudContainerVO, containerForm);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	/*
@@ -106,11 +105,10 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 			}
 
 			cpModel.getObject().setAddresses(addressList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-					viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+			searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO, feedBackPanel, containerForm, listView);
 
 			searchPanel.initialisePanel(cpModel);
-			searchPanelContainer.add(searchPanel);
+			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 		}
 		catch (EntityNotFoundException e) {
 			// Report this to the user
@@ -118,7 +116,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 		catch (ArkSystemException e) {
 			// Logged by the back end. Report this to the user
 		}
-		return searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	/*
@@ -129,8 +127,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO, containerForm);
 
 		iModel = new LoadableDetachableModel<Object>() {
 
@@ -154,19 +151,19 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 				catch (ArkSystemException e) {
 					containerForm.error("A System Exception has occured please contact support.");
 				}
-				pageableListView.removeAll();
+				listView.removeAll();
 				return addressList;
 			}
 		};
 
-		pageableListView = searchResultPanel.buildPageableListView(iModel);
-		pageableListView.setReuseItems(true);
-		PagingNavigator pageNavigator = new PagingNavigator("addressNavigator", pageableListView);
+		listView = searchResultPanel.buildPageableListView(iModel);
+		listView.setReuseItems(true);
+		// TODO: use Ajax paging navigator
+		PagingNavigator pageNavigator = new PagingNavigator("addressNavigator", listView);
 		searchResultPanel.add(pageNavigator);
-		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
-
+		searchResultPanel.add(listView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 }

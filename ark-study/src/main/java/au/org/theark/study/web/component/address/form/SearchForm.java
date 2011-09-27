@@ -41,6 +41,7 @@ import au.org.theark.core.model.study.entity.Country;
 import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.AddressVO;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -58,8 +59,9 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService						studyService;
 
+	private ArkCrudContainerVO				arkCrudContainerVO;
 	private DetailPanel							detailPanel;
-	private PageableListView<Address>		pageableListView;
+	private PageableListView<Address>		listView;
 
 	private TextField<String>					streetAddressTxtFld;
 	private TextField<String>					cityTxtFld;
@@ -70,23 +72,29 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 
 	private WebMarkupContainer					countryStateSelector;
 
+
 	/**
-	 * Constructor
 	 * 
 	 * @param id
+	 * @param cpmModel
+	 * @param arkCrudContainerVO
+	 * @param feedBackPanel
+	 * @param listView
 	 */
-	public SearchForm(String id, CompoundPropertyModel<AddressVO> model, PageableListView<Address> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
+	public SearchForm(String id,CompoundPropertyModel<AddressVO> cpmModel, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<Address> listView){
+		
+		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.feedbackPanel = feedBackPanel;
+		this.listView = listView;
 
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-		this.pageableListView = listView;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
+		//TODO: Use Subject UID when they are not just contacts
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
+		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.", arkCrudContainerVO);
 	}
-
+	
 	/**
 	 * Initialise all the form components for the search
 	 */
@@ -199,10 +207,9 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			}
 
 			getModelObject().setAddresses(addressList);
-			pageableListView.removeAll();
-			listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-			target.add(listContainer);
-
+			listView.removeAll();
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
 			this.warn("There are no addresses available for the specified criteria.");
@@ -226,14 +233,14 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		}
 		updateDetailFormPrerender(getModelObject().getAddress());
 
-		preProcessDetailPanel(target);
+		preProcessDetailPanel(target, arkCrudContainerVO);
 	}
 
 	public void updateDetailFormPrerender(Address address) {
 		// Ensure we update the CountyStateChoices in DetailsForm
 		// like what happens via DetailForm's updateCountryStateChoices(..)
 		List<CountryState> countryStateList = iArkCommonService.getStates(address.getCountry());
-		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) detailFormCompContainer.get(Constants.COUNTRY_STATE_SELECTOR_WMC);
+		WebMarkupContainer wmcStateSelector = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.COUNTRY_STATE_SELECTOR_WMC);
 		DropDownChoice<CountryState> detailStateSelector = (DropDownChoice<CountryState>) wmcStateSelector.get("address.countryState");
 
 		TextField<String> otherState = (TextField<String>) wmcStateSelector.get("address.otherState");
