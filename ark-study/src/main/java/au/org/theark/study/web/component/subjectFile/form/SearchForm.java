@@ -80,7 +80,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		initialiseSearchForm();
 		addSearchComponentsToForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.",arkCrudContainerVO);
+		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -152,7 +152,7 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 		getModelObject().getSubjectFile().setId(null); // only reset ID (not
 		// user definable)
 
-		preProcessDetailPanel(target,arkCrudContainerVO);
+		preProcessDetailPanel(target);
 	}
 
 }

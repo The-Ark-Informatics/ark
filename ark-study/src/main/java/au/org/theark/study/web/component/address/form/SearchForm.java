@@ -92,7 +92,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		addSearchComponentsToForm();
 		//TODO: Use Subject UID when they are not just contacts
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.", arkCrudContainerVO);
+		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
 	
 	/**
@@ -233,7 +233,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		}
 		updateDetailFormPrerender(getModelObject().getAddress());
 
-		preProcessDetailPanel(target, arkCrudContainerVO);
+		preProcessDetailPanel(target);
 	}
 
 	public void updateDetailFormPrerender(Address address) {

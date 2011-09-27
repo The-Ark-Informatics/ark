@@ -265,8 +265,8 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 		try {
 
 			studyService.delete(containerForm.getModelObject().getAddress());
-			containerForm.info("The Address has been deleted successfully.");
-			editCancelProcess(target, true);
+			this.info("The Address has been deleted successfully.");
+			editCancelProcess(target);
 		}
 		catch (ArkSystemException e) {
 			this.error("An error occured while processing your delete. Please contact Support");
@@ -325,16 +325,15 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				}
 				this.info(feedBackMessageStr.toString());
 				processErrors(target);
-				onSavePostProcess(target, arkCrudContainerVO);
+				onSavePostProcess(target);
 			}
 			// Invoke backend to persist the AddressVO
 		}
 		catch (EntityNotFoundException e) {
-			containerForm.error("The Specified subject is not available any more in the system. Please re-do the operation");
-
+			this.error("The Specified subject is not available any more in the system. Please re-do the operation");
 		}
 		catch (ArkSystemException e) {
-			containerForm.error("A system error has occured, Pleas contact support.");
+			this.error("A system error has occured, Pleas contact support.");
 		}
 	}
 

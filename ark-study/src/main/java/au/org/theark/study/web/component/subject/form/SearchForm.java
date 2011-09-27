@@ -22,12 +22,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -37,16 +33,14 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.Country;
-import au.org.theark.core.model.study.entity.CountryState;
 import au.org.theark.core.model.study.entity.GenderType;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -80,12 +74,10 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	 * @param id
 	 * @param cpmModel
 	 */
-	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailsContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
+	public SearchForm(String id, CompoundPropertyModel<SubjectVO> cpmModel, PageableListView<SubjectVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 
 		// super(id, cpmModel);
-		super(id, cpmModel, detailsContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
 
 		this.cpmModel = cpmModel;
 		this.listView = listView;
@@ -153,19 +145,17 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	@SuppressWarnings("unchecked")
 	protected void onNew(AjaxRequestTarget target) {
 
-		WebMarkupContainer wmc = (WebMarkupContainer) detailFormCompContainer;
-
 		// Disable SubjectUID if auto-generation set
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study studyInContext = iArkCommonService.getStudy(sessionStudyId);
 		if ((studyInContext != null) && (studyInContext.getAutoGenerateSubjectUid())) {
-			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
+			TextField<String> subjectUIDTxtFld = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.SUBJECT_UID);
 			getModelObject().getLinkSubjectStudy().setSubjectUID(Constants.SUBJECT_AUTO_GENERATED);
 			subjectUIDTxtFld.setEnabled(false);
 			target.add(subjectUIDTxtFld);
 		}
 		else {
-			TextField<String> subjectUIDTxtFld = (TextField<String>) detailFormCompContainer.get(Constants.SUBJECT_UID);
+			TextField<String> subjectUIDTxtFld = (TextField<String>) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.SUBJECT_UID);
 			subjectUIDTxtFld.setEnabled(true);
 			target.add(subjectUIDTxtFld);
 		}
@@ -184,9 +174,8 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 			this.info("There are no subjects with the specified criteria.");
 			target.add(feedbackPanel);
 		}
-
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);// For ajax this is required so
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());// For ajax this is required so
 	}
 
 }

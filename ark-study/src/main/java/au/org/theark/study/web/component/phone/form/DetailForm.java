@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -45,10 +44,10 @@ import au.org.theark.core.model.study.entity.PhoneStatus;
 import au.org.theark.core.model.study.entity.PhoneType;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.PhoneVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -77,21 +76,18 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	private DropDownChoice<YesNo>			silentModeChoice;
 
 	/**
+	 * 	/**
+	 * 
 	 * @param id
 	 * @param feedBackPanel
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailPanelFormContainer
-	 * @param searchPanelContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
+	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<PhoneVO> containerForm) {
-
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,au.org.theark.study.web.component.phone.form.ContainerForm containerForm){
+		
+		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+		this.feedBackPanel = feedBackPanel;
+		setMultiPart(false);
 	}
 
 	public void initialiseDetailForm() {
@@ -124,16 +120,16 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	}
 
 	public void addDetailFormComponents() {
-		detailPanelFormContainer.add(phoneIdTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(areaCodeTxtFld);
-		detailPanelFormContainer.add(phoneNumberTxtFld);
-		detailPanelFormContainer.add(phoneTypeChoice);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(areaCodeTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneNumberTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneTypeChoice);
 
-		detailPanelFormContainer.add(phoneStatusChoice);
-		detailPanelFormContainer.add(source);
-		detailPanelFormContainer.add(commentsTxtArea);
-		detailPanelFormContainer.add(dateReceivedDp);
-		detailPanelFormContainer.add(silentModeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneStatusChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateReceivedDp);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(silentModeChoice);
 
 	}
 

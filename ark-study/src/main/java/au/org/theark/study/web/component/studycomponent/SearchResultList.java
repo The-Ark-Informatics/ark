@@ -95,7 +95,7 @@ public class SearchResultList extends Panel {
 				}
 
 				/* For the alternative stripes */
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class",  new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";

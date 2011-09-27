@@ -60,23 +60,6 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 	private DetailPanel							detailPanel;
 	private PageableListView<ConsentFile>	pageableListView;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 */
-	public ConsentFileContainerPanel(String id) {
-
-		super(id);
-		cpModel = new CompoundPropertyModel<ConsentVO>(new ConsentVO());
-		containerForm = new ContainerForm("containerForm", cpModel);
-		containerForm.add(initialiseFeedBackPanel());
-		containerForm.add(initialiseDetailPanel());
-		containerForm.add(initialiseSearchResults());
-		containerForm.add(initialiseSearchPanel());
-		add(containerForm);
-	}
-
 	public ConsentFileContainerPanel(String id, ConsentVO consentVo) {
 		super(id);
 		// Use consentVo in context from consent page
@@ -97,11 +80,10 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel,arkCrudContainerVO,containerForm);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	/*
@@ -128,14 +110,12 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 				consent.setLinkSubjectStudy(linkSubjectStudy);
 				containerForm.getModelObject().setConsent(consent);
 			}
-
 			// All the phone items related to the person if one found in session or an empty list
 			cpModel.getObject().setConsentFileList(consentFileList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-					viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+			searchPanel = new SearchPanel("searchComponentPanel", arkCrudContainerVO,feedBackPanel,containerForm,pageableListView);
 			searchPanel.initialisePanel(cpModel);
-			searchPanelContainer.add(searchPanel);
-
+			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+			
 		}
 		catch (EntityNotFoundException entityNotFoundException) {
 			containerForm.error("The Person/Subject cannot be found in the system.Please contact Support");
@@ -145,7 +125,7 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 			containerForm.error("A System Error has occured.Please contact Support");
 		}
 
-		return searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	/*
@@ -156,8 +136,7 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO,containerForm);
 
 		iModel = new LoadableDetachableModel<Object>() {
 
@@ -196,7 +175,7 @@ public class ConsentFileContainerPanel extends AbstractContainerPanel<ConsentVO>
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 }

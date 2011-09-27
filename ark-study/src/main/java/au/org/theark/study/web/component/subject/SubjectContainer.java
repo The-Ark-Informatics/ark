@@ -116,12 +116,12 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
 				if (contextLoaded) {
 					// Put into Detail View mode
-					searchPanelContainer.setVisible(false);
-					searchResultPanelContainer.setVisible(false);
-					detailPanelContainer.setVisible(true);
-					detailPanelFormContainer.setEnabled(false);
-					viewButtonContainer.setVisible(true);
-					editButtonContainer.setVisible(false);
+					arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
+					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+					arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 				}
 			}
 		}
@@ -133,27 +133,24 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		searchPanel = new Search("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer,
-				viewButtonContainer, editButtonContainer, detailsPanel, containerForm);
+		searchPanel = new Search("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
 
 		searchPanel.initialisePanel(cpModel);
-		searchPanelContainer.add(searchPanel);
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailsPanel = new Details("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, arkContextMarkup, containerForm);
+		detailsPanel = new Details("detailsPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
 		detailsPanel.initialisePanel();
-		detailPanelContainer.add(detailsPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultsPanel = new SearchResults("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
-				editButtonContainer, arkContextMarkup, containerForm);
+		searchResultsPanel = new SearchResults("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
 
 		// Restrict to subjects in current study in session
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -187,8 +184,8 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultsPanel.add(pageNavigator);
 		searchResultsPanel.add(dataView);
-		searchResultPanelContainer.add(searchResultsPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultsPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	public void resetDataProvider() {

@@ -202,7 +202,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				containerForm.getModelObject().setMode(Constants.MODE_EDIT);
 				userNameTxtField.setEnabled(false);
-				onSavePostProcess(target, arkCrudContainerVO);
+				onSavePostProcess(target);
 				this.info(new StringResourceModel("user.saved", this, null).getString());
 				target.add(feedBackPanel);
 
@@ -225,7 +225,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 				userService.updateArkUser(containerForm.getModelObject());
 				containerForm.getModelObject().setArkUserPresentInDatabase(true);
 				this.info(new StringResourceModel("user.updated", this, null).getString());
-				onSavePostProcess(target, arkCrudContainerVO);
+				onSavePostProcess(target);
 
 			}
 			catch (EntityNotFoundException e) {
@@ -262,7 +262,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 		try {
 			userService.deleteArkUser(containerForm.getModelObject());
 			this.info(new StringResourceModel("user.removed", this, null).getString());
-			editCancelProcess(target, true);
+			editCancelProcess(target);
 		}
 		catch (EntityNotFoundException e) {
 			this.error(new StringResourceModel("user.notFound", this, null).getString());

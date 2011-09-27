@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -49,17 +48,6 @@ public class SearchResultListPanel extends Panel {
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
-	/**
-	 * @param id
-	 */
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
-		super(id);
-		this.containerForm = containerForm;
-
-	}
-	
 	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
@@ -128,7 +116,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("address.preferredMailingAddress", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class",  new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";

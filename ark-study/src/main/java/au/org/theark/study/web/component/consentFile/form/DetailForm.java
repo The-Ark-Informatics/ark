@@ -40,6 +40,7 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.Consent;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -77,10 +78,9 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 	 * @param editButtonContainer
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, AbstractContainerForm<ConsentVO> containerForm) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, AbstractContainerForm<ConsentVO> containerForm) {
 
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+		super(id, feedBackPanel,containerForm,arkCrudContainerVO);
 
 		// Check consent in context
 		if (containerForm.getModelObject().getConsent() == null) {
@@ -134,8 +134,8 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		// Add components
 		consentFileIdTxtFld.setEnabled(false);
 		consentFileIdTxtFld.setVisible(true);
-		detailPanelFormContainer.add(consentFileIdTxtFld);
-		detailPanelFormContainer.add(fileConsentFileField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(consentFileIdTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileConsentFileField);
 		// detailPanelFormContainer.add(fileFormatDdc);
 		// detailPanelFormContainer.add(delimiterTypeDdc);
 
@@ -143,7 +143,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
 
-		add(detailPanelFormContainer);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	private void createDirectoryIfNeeded(String directoryName) {

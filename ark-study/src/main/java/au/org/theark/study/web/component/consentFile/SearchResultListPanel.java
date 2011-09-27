@@ -41,6 +41,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.ConsentFile;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.consentFile.form.ContainerForm;
@@ -51,30 +52,16 @@ public class SearchResultListPanel extends Panel {
 	private IStudyService		studyService;
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
-
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 	private ContainerForm		containerForm;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 
 	/**
 	 * @param id
 	 */
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
-
+	public SearchResultListPanel(String id,  ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
-		// TODO Auto-generated constructor stub
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.containerForm = containerForm;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	/**
@@ -213,7 +200,8 @@ public class SearchResultListPanel extends Panel {
 				containerForm.info("Consent file " + consentFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				target.add(searchResultContainer);
+				//target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				target.add(containerForm);
 			}
 

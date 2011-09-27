@@ -59,7 +59,7 @@ public class AddressContainerPanel extends AbstractContainerPanel<AddressVO> {
 	 * @param id
 	 */
 	public AddressContainerPanel(String id) {
-		super(id, true);
+		super(id);
 		cpModel = new CompoundPropertyModel<AddressVO>(new AddressVO());
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());

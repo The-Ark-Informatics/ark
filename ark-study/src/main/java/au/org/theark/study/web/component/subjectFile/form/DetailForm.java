@@ -188,7 +188,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 				processErrors(target);
 			}
 
-			onSavePostProcess(target,arkCrudContainerVO);
+			onSavePostProcess(target);
 			AjaxButton editButton = (AjaxButton) arkCrudContainerVO.getViewButtonContainer().get("edit");
 			editButton.setEnabled(false);
 			
