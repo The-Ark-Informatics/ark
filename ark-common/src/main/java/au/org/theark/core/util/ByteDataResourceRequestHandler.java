@@ -32,7 +32,7 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	private static final long	serialVersionUID	= 1L;
 
 	/**
-	 * the name of the file
+	 * the name of the file (because the ByteArrayResource's fileName is private)
 	 */
 	private String					fileName;
 
@@ -45,7 +45,7 @@ public class ByteDataResourceRequestHandler extends ByteArrayResource implements
 	 */
 	public ByteDataResourceRequestHandler(String mimeType, byte[] data, String fileName) {
 		super(mimeType, data, fileName);
-	
+		this.fileName = fileName;
 	}
 
 
