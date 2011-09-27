@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -36,18 +35,21 @@ import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.component.subjectUpload.DetailPanel;
-import au.org.theark.study.web.component.subjectUpload.WizardPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class SearchForm extends AbstractSearchForm<UploadVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 
@@ -56,40 +58,19 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 
 	private PageableListView<StudyUpload>		listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
-	private DetailPanel								detailPanel;
-	private WizardPanel								wizardPanel;
-	private WebMarkupContainer						wizardContainer;
-
+	
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
 
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<StudyUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer wizardContainer, WebMarkupContainer wizardPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, wizardContainer, wizardPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<StudyUpload> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, model, feedBackPanel, arkCrudContainerVO);
 		this.cpmModel = model;
 		this.listView = listView;
-		this.wizardPanel = wizardPanel;
-		this.wizardContainer = wizardContainer;
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> compoundPropertyModel) {
-		super(id, compoundPropertyModel);
-		this.cpmModel = compoundPropertyModel;
-		initialiseFieldForm();
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");	
 	}
 
 	@SuppressWarnings("unchecked")
@@ -143,8 +124,8 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		getModelObject().setUploadCollection(uploadCollection);
 
 		listView.removeAll();
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	@Override
@@ -156,16 +137,16 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		UploadVO.getUpload().setId(null); // must ensure Id is blank onNew
 		setModelObject(UploadVO);
 
-		listContainer.setVisible(false);
-		searchMarkupContainer.setVisible(false);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 		// Explicitly Show Wizard panel
-		wizardContainer.setVisible(true);
-		wizardContainer.setEnabled(true);
+		arkCrudContainerVO.getWizardPanelContainer().setVisible(true);
+		arkCrudContainerVO.getWizardPanelContainer().setEnabled(true);
 
-		target.add(listContainer);
-		target.add(searchMarkupContainer);
-		target.add(detailFormCompContainer);
-		target.add(wizardContainer);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVO.getWizardPanelContainer());
 	}
 }

@@ -40,6 +40,11 @@ import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class CorrespondenceContainerPanel extends AbstractContainerPanel<CorrespondenceVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 
@@ -67,12 +72,11 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, containerForm);
+		detailPanel = new DetailPanel("detailsPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	@Override
@@ -93,10 +97,9 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 
 			// add the correspondence items related to the person if one found in session, or an empty list
 			cpModel.getObject().setCorrespondenceList(personCorrespondenceList);
-			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-					viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+			searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO);
 			searchPanel.initialisePanel(cpModel);
-			searchPanelContainer.add(searchPanel);
+			arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
 
 		}
 		catch (EntityNotFoundException ex) {
@@ -109,14 +112,13 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 			ex.printStackTrace();
 		}
 
-		return searchPanelContainer;
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer,
-				viewButtonContainer, editButtonContainer, containerForm);
+		SearchResultListPanel searchResultPanel = new SearchResultListPanel("searchResults", containerForm, arkCrudContainerVO);
 
 		iModel = new LoadableDetachableModel<Object>() {
 
@@ -153,9 +155,9 @@ public class CorrespondenceContainerPanel extends AbstractContainerPanel<Corresp
 		PagingNavigator pageNavigator = new PagingNavigator("correspondenceNavigator", pageableListView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(pageableListView);
-		searchResultPanelContainer.add(searchResultPanel);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 
-		return searchResultPanelContainer;
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 }

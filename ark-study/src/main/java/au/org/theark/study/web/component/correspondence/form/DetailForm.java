@@ -28,7 +28,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,7 +36,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.upload.FileUpload;
 import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.lang.Bytes;
@@ -54,6 +52,7 @@ import au.org.theark.core.model.study.entity.CorrespondenceStatusType;
 import au.org.theark.core.model.study.entity.Person;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.CorrespondenceVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -86,10 +85,8 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 	private TextArea<String>										commentsTxtArea;
 	private FileUploadField											fileUploadField;
 
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, Form<CorrespondenceVO> containerForm) {
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		setMultiPart(true);
 	}
 
@@ -162,17 +159,17 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 
 	public void addDetailFormComponents() {
 
-		detailPanelFormContainer.add(statusTypeChoice);
-		detailPanelFormContainer.add(operatorChoice);
-		detailPanelFormContainer.add(dateFld);
-		detailPanelFormContainer.add(timeTxtFld);
-		detailPanelFormContainer.add(modeTypeChoice);
-		detailPanelFormContainer.add(directionTypeChoice);
-		detailPanelFormContainer.add(outcomeTypeChoice);
-		detailPanelFormContainer.add(reasonTxtArea);
-		detailPanelFormContainer.add(detailsTxtArea);
-		detailPanelFormContainer.add(commentsTxtArea);
-		detailPanelFormContainer.add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(statusTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(operatorChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(timeTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(modeTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(directionTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(outcomeTypeChoice);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(reasonTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(detailsTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
 	}
 
 	protected void attachValidators() {

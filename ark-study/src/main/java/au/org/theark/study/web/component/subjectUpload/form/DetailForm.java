@@ -25,8 +25,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -44,26 +42,27 @@ import au.org.theark.core.model.study.entity.DelimiterType;
 import au.org.theark.core.model.study.entity.FileFormat;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.UploadVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.study.service.IStudyService;
-import au.org.theark.study.web.component.subjectUpload.DetailPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<UploadVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService						studyService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
-
-	private ContainerForm						fieldContainerForm;
 
 	private int										mode;
 
@@ -74,25 +73,8 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param detailPanel
-	 * @param listContainer
-	 * @param detailsContainer
-	 * @param containerForm
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param detailFormContainer
-	 * @param searchPanelContainer
-	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer,
-			AbstractContainerForm<UploadVO> containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer,
-			WebMarkupContainer searchPanelContainer) {
-
-		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -135,16 +117,16 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 
 	private void addComponents() {
 		// Add components here eg:
-		detailPanelFormContainer.add(uploadIdTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fileUploadField);
-		detailPanelFormContainer.add(fileFormatDdc);
-		detailPanelFormContainer.add(delimiterTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(uploadIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fileFormatDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(delimiterTypeDdc);
 
 		// TODO: AJAXify the form to show progress bar
 		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
 		// add(ajaxSimpleUploadForm);
 
-		add(detailPanelFormContainer);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	private void createDirectoryIfNeeded(String directoryName) {

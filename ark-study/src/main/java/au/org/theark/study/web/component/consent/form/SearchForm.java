@@ -24,7 +24,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
@@ -43,19 +42,23 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ConsentVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.phone.DetailPanel;
 
 /**
  * @author Nivedan
  * 
  */
-@SuppressWarnings({ "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<ConsentVO> {
+
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService						iArkCommonService;
@@ -63,7 +66,6 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	protected IStudyService								studyService;
 
-	protected DetailPanel								detailPanel;
 	protected PageableListView<Consent>				pageableListView;
 	protected CompoundPropertyModel<ConsentVO>	cpmModel;
 
@@ -78,14 +80,9 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 	protected DropDownChoice<ConsentStatus>		consentStatusChoice;
 	protected DropDownChoice<ConsentType>			consentTypeChoice;
 
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<ConsentVO> model, PageableListView<Consent> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+	public SearchForm(String id, PageableListView<Consent> listView, FeedbackPanel feedBackPanel, 
+							CompoundPropertyModel<ConsentVO> model, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, model, feedBackPanel, arkCrudContainerVO);
 
 		this.cpmModel = model;
 		this.pageableListView = listView;
@@ -200,9 +197,9 @@ public class SearchForm extends AbstractSearchForm<ConsentVO> {
 
 			getModelObject().setConsentList(consentList);
 			pageableListView.removeAll();
-			listContainer.setVisible(true);
-			target.add(listContainer);
-
+			
+			arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+			target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 		}
 		catch (EntityNotFoundException e) {
 			// TODO Auto-generated catch block

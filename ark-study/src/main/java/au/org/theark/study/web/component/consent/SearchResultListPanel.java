@@ -35,6 +35,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.Consent;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
@@ -49,27 +50,18 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	protected IStudyService		studyService;
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
+
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
 
 	/**
 	 * @param id
+	 * @param arkCrudContainerVO 
 	 */
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
+	public SearchResultListPanel(String id, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id);
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 	}
 
@@ -120,7 +112,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("consentDate", consentDate));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -146,27 +138,28 @@ public class SearchResultListPanel extends Panel {
 					// Add consentId into context (for use with consentFile(s))
 					SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_CONSENT_ID, consentFromBackend.getId());
 
-					WebMarkupContainer wmcPlain = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_PLAIN);
-					WebMarkupContainer wmcRequested = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_REQUESTED);
-					WebMarkupContainer wmcRecieved = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_RECIEVED);
-					WebMarkupContainer wmcCompleted = (WebMarkupContainer) detailPanelFormContainer.get(Constants.WMC_COMPLETED);
+					WebMarkupContainer wmcPlain = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_PLAIN);
+					WebMarkupContainer wmcRequested = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_REQUESTED);
+					WebMarkupContainer wmcRecieved = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_RECIEVED);
+					WebMarkupContainer wmcCompleted = (WebMarkupContainer) arkCrudContainerVO.getDetailPanelFormContainer().get(Constants.WMC_COMPLETED);
 
 					new FormHelper().updateStudyCompStatusDates(target, consentFromBackend.getStudyComponentStatus().getName(), wmcPlain, wmcRequested, wmcRecieved, wmcCompleted);
 
-					detailPanelContainer.setVisible(true);
-					viewButtonContainer.setVisible(true);
-					viewButtonContainer.setEnabled(true);
-					detailPanelFormContainer.setEnabled(false);
-					searchResultContainer.setVisible(false);
-					searchPanelContainer.setVisible(false);
-					editButtonContainer.setVisible(false);
+					//TODO: Use arkCrudContainerVO.showDetailPanelInViewMode(target); ????
+					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+					arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+					arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
-					target.add(searchResultContainer);
-					target.add(detailPanelContainer);
-					target.add(detailPanelFormContainer);
-					target.add(searchPanelContainer);
-					target.add(viewButtonContainer);
-					target.add(editButtonContainer);
+					target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+					target.add(arkCrudContainerVO.getDetailPanelContainer());
+					target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+					target.add(arkCrudContainerVO.getSearchPanelContainer());
+					target.add(arkCrudContainerVO.getViewButtonContainer());
+					target.add(arkCrudContainerVO.getEditButtonContainer());
 
 				}
 				catch (ArkSystemException e) {
