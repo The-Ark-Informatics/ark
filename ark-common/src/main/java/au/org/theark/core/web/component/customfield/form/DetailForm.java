@@ -150,9 +150,9 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				updateEncodedValueFld();
 				updateUnitTypeDdc();
 				initMinMaxValuePnls();
-				target.addComponent(minMaxValueEntryWMC);
-				target.addComponent(fieldEncodedValuesTxtFld);
-				target.addComponent(fieldUnitTypeDdc);
+				target.add(minMaxValueEntryWMC);
+				target.add(fieldEncodedValuesTxtFld);
+				target.add(fieldUnitTypeDdc);
 			}
 		});
 	}
@@ -345,7 +345,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				iArkCommonService.createCustomField(getModelObject());
 				this.info(new StringResourceModel("info.createSuccessMsg", this, null, 
 						new Object[] { getModelObject().getCustomField().getName() }).getString());
-				onSavePostProcess(target, arkCrudContainerVO);
+				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
@@ -364,7 +364,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 				iArkCommonService.updateCustomField(getModelObject());
 				this.info(new StringResourceModel("info.updateSuccessMsg", this, null, 
 												new Object[] { getModelObject().getCustomField().getName() }).getString());
-				onSavePostProcess(target, arkCrudContainerVO);
+				onSavePostProcess(target);
 			}
 			catch (ArkSystemException e) {
 				this.error(new StringResourceModel("error.internalErrorMsg", this, null).getString());
@@ -385,7 +385,7 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 	}
 
 	/**
@@ -404,14 +404,14 @@ public class DetailForm extends AbstractDetailForm<CustomFieldVO> {
 		}
 
 		// Display delete confirmation message
-		target.addComponent(feedBackPanel);
+		target.add(feedBackPanel);
 		// TODO Implement Exceptions in PhentoypicService
 		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
 		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
 		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
 
 		// Move focus back to Search form
-		editCancelProcess(target, true);	//this ends up calling onCancel(target)
+		editCancelProcess(target);	//this ends up calling onCancel(target)
 	}
 
 	/*

@@ -75,7 +75,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 	 */
 	public CustomFieldContainerPanel(String id, boolean useCustomFieldDisplay, ArkFunction associatedPrimaryFn) {
 
-		super(id, true);
+		super(id);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
 		cpModel.getObject().getCustomField().setArkFunction(associatedPrimaryFn);
@@ -158,7 +158,7 @@ public class CustomFieldContainerPanel extends AbstractContainerPanel<CustomFiel
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 			}
 		};
 		searchResultListPanel.add(pageNavigator);

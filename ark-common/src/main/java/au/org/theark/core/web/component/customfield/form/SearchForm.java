@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.core.web.component.customfield.form;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -33,7 +32,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.model.study.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
@@ -79,7 +77,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		initialiseFieldForm();
 
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study", arkCrudContainerVO);
+		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
 
 	private void initFieldTypeDdc() {
@@ -119,7 +117,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		final Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		// Get a list of all Fields for the Study in context
 		Study study = iArkCommonService.getStudy(sessionStudyId);
@@ -128,18 +126,18 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		int count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
 		if (count <= 0) {
 			this.info("Fields with the specified criteria does not exist in the system.");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.addComponent(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	// Reset button implemented in AbstractSearchForm
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		// Instead of having to reset the criteria, we just copy the criteria across
 		CustomField cf = getModelObject().getCustomField();
 		CompoundPropertyModel<CustomFieldVO> newModel = new CompoundPropertyModel<CustomFieldVO>(new CustomFieldVO());
@@ -169,7 +167,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 		cf.setArkFunction(newCF.getArkFunction());
 		getModelObject().setCustomField(cf);
 		
-		preProcessDetailPanel(target, arkCrudContainerVO);
+		preProcessDetailPanel(target);
 	}
 
 }
