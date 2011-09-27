@@ -290,7 +290,7 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 	protected void onSave(Form<AddressVO> containerForm, AjaxRequestTarget target) {
 
 		Long personSessionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
-
+		StringBuffer feedBackMessageStr = new StringBuffer();
 		// Get the person and set it on the AddressVO.
 		try {
 			Person person = studyService.getPerson(personSessionId);
@@ -307,20 +307,28 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				containerForm.error("The person has already specified a Preferred Mailing address. This address cannot be set as Preferred Mailing address.");
 				processErrors(target);
 			}
-			else {
+			else{
+				
+			
 				containerForm.getModelObject().getAddress().setPerson(person);
 				if (containerForm.getModelObject().getAddress().getId() == null) {
 					studyService.create(containerForm.getModelObject().getAddress());
-					this.info("Address was successfully added and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
-					processErrors(target);
+					feedBackMessageStr.append("Address was successfully added and linked to Subject");
 				}
 				else {
 
 					studyService.update(containerForm.getModelObject().getAddress());
-					this.info("Address was successfully updated and linked to Subject:" + person.getFirstName() + " " + person.getLastName());
-					processErrors(target);
+					feedBackMessageStr.append("Address was successfully updated and linked to Subject:");
 				}
-
+				
+				if(person.getFirstName()  != null && person.getLastName() != null ){
+					feedBackMessageStr.append(person.getFirstName() + " " + person.getLastName());
+				}else{
+					String uid = iArkCommonService.getSubject(person.getId()).getSubjectUID();
+					feedBackMessageStr.append(uid);
+				}
+				this.info(feedBackMessageStr.toString());
+				processErrors(target);
 				onSavePostProcess(target);
 			}
 			// Invoke backend to persist the AddressVO
