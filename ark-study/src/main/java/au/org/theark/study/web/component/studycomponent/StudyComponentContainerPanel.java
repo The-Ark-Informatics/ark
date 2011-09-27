@@ -59,7 +59,6 @@ public class StudyComponentContainerPanel extends AbstractContainerPanel<StudyCo
 	private IArkCommonService				iArkCommonService;
 
 	public StudyComponentContainerPanel(String id) {
-		//super(id);
 		super(id,true);
 
 		/* Initialise the CPM */
