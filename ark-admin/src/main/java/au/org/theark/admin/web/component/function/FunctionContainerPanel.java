@@ -60,7 +60,7 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO> {
 	 * @param id
 	 */
 	public FunctionContainerPanel(String id) {
-		super(id, true);
+		super(id);
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<AdminVO>(new AdminVO());
 
