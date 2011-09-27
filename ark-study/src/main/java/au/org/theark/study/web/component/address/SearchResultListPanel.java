@@ -34,6 +34,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Address;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
@@ -45,13 +46,8 @@ import au.org.theark.study.web.component.address.form.SearchForm;
  */
 public class SearchResultListPanel extends Panel {
 
-	private WebMarkupContainer	detailPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
 	private ContainerForm		containerForm;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 
 	/**
 	 * @param id
@@ -60,14 +56,14 @@ public class SearchResultListPanel extends Panel {
 			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, ContainerForm containerForm) {
 
 		super(id);
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
 		this.containerForm = containerForm;
 
+	}
+	
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
+		super(id);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
 	}
 
 	public PageableListView<Address> buildPageableListView(IModel iModel) {
@@ -154,24 +150,25 @@ public class SearchResultListPanel extends Panel {
 
 				containerForm.getModelObject().setAddress(address);
 
-				detailPanelContainer.setVisible(true);
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				editButtonContainer.setVisible(false);
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 				// Update the state choices based on selected address pre-render...
-				SearchForm searchForm = (SearchForm) ((SearchPanel) searchPanelContainer.get("searchComponentPanel")).get("searchForm");
+				SearchForm searchForm = (SearchForm) ((SearchPanel) arkCrudContainerVO.getSearchPanelContainer().get("searchComponentPanel")).get("searchForm");
 				searchForm.updateDetailFormPrerender(address);
 
-				target.add(searchResultContainer);
-				target.add(detailPanelContainer);
-				target.add(detailPanelFormContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 
 		};
