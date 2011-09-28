@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011  University of Western Australia. All rights reserved.
+initialiseFeedBackPanel * Copyright (c) 2011  University of Western Australia. All rights reserved.
  * 
  * This file is part of The Ark.
  * 
@@ -42,7 +42,7 @@ import au.org.theark.phenotypic.web.component.fieldData.FieldDataContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.fieldUpload.FieldUploadContainerPanel;
 import au.org.theark.phenotypic.web.component.phenoCollection.PhenoCollectionContainerPanel;
-import au.org.theark.phenotypic.web.component.summaryModule.SummaryContainerPanel;
+import au.org.theark.phenotypic.web.component.summary.SummaryContainerPanel;
 
 @SuppressWarnings({ "serial", "unused" })
 public class PhenotypicSubMenuTab extends AbstractArkTabPanel {
