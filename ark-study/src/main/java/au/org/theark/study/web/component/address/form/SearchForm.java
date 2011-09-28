@@ -202,7 +202,7 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 			address.setPerson(studyService.getPerson(sessionPersonId));
 			Collection<Address> addressList = studyService.getPersonAddressList(sessionPersonId, address);
 			if (addressList != null && addressList.size() == 0) {
-				this.info("Fields with the specified criteria does not exist in the system.");
+				this.info("No records match the specified criteria.");
 				target.add(feedbackPanel);
 			}
 

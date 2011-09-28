@@ -125,7 +125,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldVO> {
 
 		int count = iArkCommonService.getCustomFieldCount(getModelObject().getCustomField());
 		if (count <= 0) {
-			this.info("Fields with the specified criteria does not exist in the system.");
+			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
 		}
 

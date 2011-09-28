@@ -66,7 +66,7 @@ public class SearchForm extends AbstractSearchForm<CustomFieldGroupVO>{
 		int count = iArkCommonService.getCustomFieldGroupCount(getModelObject().getCustomFieldGroup());
 
 		if (count <= 0) {
-			this.info("Fields with the specified criteria does not exist in the system.");
+			this.info("No records match the specified criteria.");
 			target.addComponent(feedbackPanel);
 		}
 		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible

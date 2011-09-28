@@ -124,7 +124,7 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 		java.util.Collection<Field> fieldCollection = phenotypicService.searchField(searchField);
 
 		if (fieldCollection != null && fieldCollection.size() == 0) {
-			this.info("Fields with the specified criteria does not exist in the system.");
+			this.info("No records match the specified criteria.");
 			target.add(feedbackPanel);
 		}
 		getModelObject().setFieldCollection(fieldCollection);
