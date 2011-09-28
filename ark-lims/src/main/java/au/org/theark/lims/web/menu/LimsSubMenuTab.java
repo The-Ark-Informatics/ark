@@ -82,9 +82,9 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
 			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
-		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
-			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
-		}
+//		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
+//			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
+//		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
