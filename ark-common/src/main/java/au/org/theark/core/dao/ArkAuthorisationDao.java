@@ -762,7 +762,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	 * @param searchStudy
 	 * @param studyCriteria
 	 */
-	private void applyStudySearchCritiera(Study searchStudy,Criteria studyCriteria){
+	private void applyStudySearchCriteria(Study searchStudy,Criteria studyCriteria){
 		
 		if (searchStudy.getId() != null) {
 			studyCriteria.add(Restrictions.eq(Constants.STUDY_KEY, searchStudy.getId()));
@@ -817,7 +817,7 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 	private List<Study> getAllStudies(Study searchStudy){
 		
 		Criteria criteria = getSession().createCriteria(Study.class);
-		applyStudySearchCritiera(searchStudy, criteria);
+		applyStudySearchCriteria(searchStudy, criteria);
 		return criteria.list();
 	}
 	
@@ -834,8 +834,9 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 			else{
 				/* Get only the studies the ArkUser is linked to via the ArkUserRole */
 				Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+				criteria.add(Restrictions.eq("arkUser", arkUserVo.getArkUserEntity()));
 				Criteria studyCriteria = criteria.createCriteria("study");
-				applyStudySearchCritiera(searchStudy, studyCriteria);
+				applyStudySearchCriteria(searchStudy, studyCriteria);
 				ProjectionList projectionList = Projections.projectionList();
 				projectionList.add(Projections.groupProperty("study"), "study");
 				criteria.setProjection(projectionList);
