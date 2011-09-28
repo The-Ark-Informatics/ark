@@ -18,11 +18,11 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biospecimen;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
 import au.org.theark.lims.web.component.biospecimen.form.SearchForm;
@@ -36,47 +36,46 @@ public class SearchPanel extends Panel {
 	 * 
 	 */
 	private static final long					serialVersionUID	= 641659658295189720L;
-	private FeedbackPanel						feedbackPanel;
-	private WebMarkupContainer					resultListContainer;
-	private ContainerForm						containerForm;
-	private WebMarkupContainer					viewButtonContainer;
-	private WebMarkupContainer					editButtonContainer;
-	private WebMarkupContainer					arkContextMarkup;
 	
-	public SearchPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
+	private ArkCrudContainerVO					arkCrudContainerVO;
+	private FeedbackPanel						feedbackPanel;
+	private ContainerForm						containerForm;
+	
+//	public SearchPanel(String id, FeedbackPanel feedbackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
+//		super(id);
+//		this.resultListContainer = resultListContainer;
+//		this.containerForm = containerForm;
+//		this.feedbackPanel = feedbackPanel;
+//
+//		/* Defines a Read-Only Mode */
+//		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
+//		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
+//		viewButtonContainer.setVisible(false);
+//
+//		/* Defines a edit mode */
+//		editButtonContainer = new WebMarkupContainer("editButtonContainer");
+//		editButtonContainer.setOutputMarkupPlaceholderTag(true);
+//		editButtonContainer.setVisible(false);
+//	}
+
+	public SearchPanel(String id, FeedbackPanel feedbackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		this.resultListContainer = resultListContainer;
-		this.setArkContextMarkup(arkContextMarkup);
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.feedbackPanel = feedbackPanel;
 
 		/* Defines a Read-Only Mode */
-		viewButtonContainer = new WebMarkupContainer("viewButtonContainer");
-		viewButtonContainer.setOutputMarkupPlaceholderTag(true);
-		viewButtonContainer.setVisible(false);
+		arkCrudContainerVO.getViewButtonContainer().setOutputMarkupPlaceholderTag(true);
+		arkCrudContainerVO.getViewButtonContainer().setVisible(false);
 
 		/* Defines a edit mode */
-		editButtonContainer = new WebMarkupContainer("editButtonContainer");
-		editButtonContainer.setOutputMarkupPlaceholderTag(true);
-		editButtonContainer.setVisible(false);
+		arkCrudContainerVO.getEditButtonContainer().setOutputMarkupPlaceholderTag(true);
+		arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 	}
 
 	public void initialisePanel() {
-		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<LimsVO>) containerForm.getModel(), resultListContainer, viewButtonContainer, feedbackPanel);
+		SearchForm searchForm = new SearchForm(au.org.theark.core.Constants.SEARCH_FORM, (CompoundPropertyModel<LimsVO>) containerForm.getModel(), feedbackPanel, arkCrudContainerVO);
 		add(searchForm);
 	}
 
-	/**
-	 * @param arkContextMarkup the arkContextMarkup to set
-	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
-		this.arkContextMarkup = arkContextMarkup;
-	}
-
-	/**
-	 * @return the arkContextMarkup
-	 */
-	public WebMarkupContainer getArkContextMarkup() {
-		return arkContextMarkup;
-	}
 }

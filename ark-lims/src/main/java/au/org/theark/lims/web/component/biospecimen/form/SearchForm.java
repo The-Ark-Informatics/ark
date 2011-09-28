@@ -46,6 +46,7 @@ import au.org.theark.core.model.study.entity.ArkModule;
 import au.org.theark.core.model.study.entity.ArkUser;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
@@ -79,13 +80,10 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private TextField<String>					biospecimenUidTxtFld;
 	private DateTextField						sampleDateTxtFld;
 	private DropDownChoice<BioSampletype>	sampleTypeDdc;
-	private WebMarkupContainer					resultListContainer;
-	private WebMarkupContainer					arkContextMarkup;
 	
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, WebMarkupContainer resultListContainer, WebMarkupContainer arkContextMarkup, FeedbackPanel feedbackPanel) {
-		super(id, compoundPropertyModel, feedbackPanel);
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> compoundPropertyModel, FeedbackPanel feedbackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, compoundPropertyModel, feedbackPanel, arkCrudContainerVO);
 		this.cpmModel = compoundPropertyModel;
-		this.resultListContainer = resultListContainer;
 		initialiseFieldForm();
 		
 		// Override New button, disabling
@@ -186,22 +184,7 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			target.add(feedbackPanel);
 		}
 		
-		target.add(resultListContainer);
-	}
-
-	/**
-	 * @param arkContextMarkup
-	 *           the arkContextMarkup to set
-	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
-		this.arkContextMarkup = arkContextMarkup;
-	}
-
-	/**
-	 * @return the arkContextMarkup
-	 */
-	public WebMarkupContainer getArkContextMarkup() {
-		return arkContextMarkup;
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	/**
