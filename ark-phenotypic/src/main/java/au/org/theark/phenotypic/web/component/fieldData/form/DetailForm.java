@@ -26,7 +26,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -35,6 +34,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractDetailForm;
@@ -42,7 +42,6 @@ import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.util.PhenotypicValidator;
-import au.org.theark.phenotypic.web.component.fieldData.DetailPanel;
 
 /**
  * @author nivedann
@@ -81,10 +80,9 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel,ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 
-		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
 
 	public void initialiseDetailForm() {
@@ -108,14 +106,14 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	}
 
 	private void addComponents() {
-		detailPanelFormContainer.add(fieldDataIdTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldDataCollectionTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldDataSubjectUidTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldDataDateCollectedDteFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldDataFieldTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldDataValueTxtFld);
-
-		add(detailPanelFormContainer);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataCollectionTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataSubjectUidTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataDateCollectedDteFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataFieldTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDataValueTxtFld);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
@@ -185,11 +183,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 
 		// Display delete confirmation message
 		target.add(feedBackPanel);
-		// TODO Implement Exceptions in PhentoypicService
-		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-
 		// Force refresh of search results
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
