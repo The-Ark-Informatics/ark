@@ -282,5 +282,22 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	public void onEditButtonClick() {
 		userNameTxtField.setEnabled(false);
 	}
+	
+	public void enableOrDisableRemoveButton(){
+		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
+		Study study = iArkCommonService.getStudy(sessionStudyId);
+		try {
+			ArkUserVO arkUserVO = userService.lookupArkUser(containerForm.getModelObject().getUserName(), study);
+			if (!arkUserVO.isArkUserPresentInDatabase()) {
+				deleteButton.setEnabled(false);
+			}else{
+				deleteButton.setEnabled(true);
+			}
+			
+		} catch (ArkSystemException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
