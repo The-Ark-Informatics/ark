@@ -70,7 +70,7 @@ public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 				}
 
 				if (target != null) {
-					target.addComponent(ArkAjaxTabbedPanel.this);
+					target.add(ArkAjaxTabbedPanel.this);
 				}
 				onAjaxUpdate(target);
 			}

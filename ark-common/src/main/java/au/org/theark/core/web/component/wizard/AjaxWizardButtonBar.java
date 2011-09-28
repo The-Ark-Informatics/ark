@@ -100,12 +100,12 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 
 			@Override
 			protected void onSubmit(AjaxRequestTarget target) {
-				target.addComponent(wizard);
+				target.add(wizard);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target) {
-				target.addComponent(wizard);
+				target.add(wizard);
 			}
 		});
 
@@ -141,15 +141,15 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 
 				cancelWizard(target);
 
-				target.addComponent(wizard.getSearchPanelContainer());
-				target.addComponent(wizard.getResultListContainer());
-				target.addComponent(wizard.getWizardPanelContainer());
-				target.addComponent(wizard);
+				target.add(wizard.getSearchPanelContainer());
+				target.add(wizard.getResultListContainer());
+				target.add(wizard.getWizardPanelContainer());
+				target.add(wizard);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target) {
-				target.addComponent(wizard);
+				target.add(wizard);
 			}
 		});
 
@@ -181,15 +181,15 @@ public class AjaxWizardButtonBar extends Panel implements IDefaultButtonProvider
 
 				wizard.getWizardModel().finish();
 
-				target.addComponent(wizard.getSearchPanelContainer());
-				target.addComponent(wizard.getResultListContainer());
-				target.addComponent(wizard.getWizardPanelContainer());
-				target.addComponent(wizard);
+				target.add(wizard.getSearchPanelContainer());
+				target.add(wizard.getResultListContainer());
+				target.add(wizard.getWizardPanelContainer());
+				target.add(wizard);
 			}
 
 			@Override
 			protected void onError(AjaxRequestTarget target) {
-				target.addComponent(wizard);
+				target.add(wizard);
 			}
 		});
 

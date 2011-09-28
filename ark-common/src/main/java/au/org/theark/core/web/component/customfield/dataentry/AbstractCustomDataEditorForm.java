@@ -101,18 +101,17 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 	}
 
 	public void onEditCancel(AjaxRequestTarget target, Form<?> form) {
-		this.info("Cancelling the edit");
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		
 		initialiseViewButtonsPanel();	//put View mode buttons back
 		dataViewWMC.setEnabled(false);
-		target.addComponent(dataViewWMC);
-		target.addComponent(buttonsPanelWMC);
+		target.add(dataViewWMC);
+		target.add(buttonsPanelWMC);
 	}
 
 	public void onEditCancelError(AjaxRequestTarget target, Form<?> form) {
 		this.info("Error occurred with cancelling the edit.  If this persists, please contact your System Administrator.");
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		log.error("Unknown error: Couldn't cancel the edit.");
 	}
 
@@ -129,7 +128,7 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 	abstract public void onEditSave(AjaxRequestTarget target, Form<?> form);
 	
 	public void onEditSaveError(AjaxRequestTarget target, Form<?> form) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 	}
 	
 	public void onViewCancel(AjaxRequestTarget target, Form<?> form) {
@@ -149,13 +148,13 @@ public abstract class AbstractCustomDataEditorForm<T extends CustomDataVO<? exte
 		buttonsPanel.setDeleteButtonVisible(false);
 		buttonsPanelWMC.addOrReplace(buttonsPanel);
 		dataViewWMC.setEnabled(true);	//allow fields to be edited
-		target.addComponent(dataViewWMC);
-		target.addComponent(buttonsPanelWMC);
+		target.add(dataViewWMC);
+		target.add(buttonsPanelWMC);
 	}
 
 	public void onViewEditError(AjaxRequestTarget target, Form<?> form) {
 		this.error("Couldn't go into edit mode.  If this persists, please contact your System Administrator.");
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		log.error("Unknown error: Couldn't go into edit mode.");
 	}
 	

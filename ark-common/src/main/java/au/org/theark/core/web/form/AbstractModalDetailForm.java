@@ -147,9 +147,9 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		arkCrudContainerVo.getDetailPanelContainer().setVisible(true);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 		initialiseEditButtonsPanel(false);	// restore the Delete button
-		target.addComponent(buttonsPanelWMC);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
+		target.add(buttonsPanelWMC);
+		target.add(arkCrudContainerVo.getDetailPanelContainer());
+		target.add(arkCrudContainerVo.getDetailPanelFormContainer());
 	}
 
 	protected void disableModalDetailForm(Long sessionId, String errorMessage) {
@@ -210,8 +210,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		else {
 			initialiseViewButtonsPanel(); // put View mode buttons back
 			arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(false);
-			target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-			target.addComponent(buttonsPanelWMC);			
+			target.add(arkCrudContainerVo.getDetailPanelFormContainer());
+			target.add(buttonsPanelWMC);			
 		}
 	}
 
@@ -253,7 +253,7 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 	 */
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
 		onSave(target);
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
+		target.add(arkCrudContainerVo.getDetailPanelContainer());
 	}
 
 	/*
@@ -297,8 +297,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		initialiseEditButtonsPanel(false);
 		arkCrudContainerVo.getDetailPanelFormContainer().setEnabled(true);
 
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(buttonsPanelWMC);
+		target.add(arkCrudContainerVo.getDetailPanelFormContainer());
+		target.add(buttonsPanelWMC);
 	}
 
 	/*
