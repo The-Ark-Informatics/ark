@@ -18,44 +18,47 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.studycomponent;
 
-import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.CompoundPropertyModel;
 
-import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.study.model.vo.StudyCompVo;
-import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
-import au.org.theark.study.web.component.studycomponent.form.SearchForm;
+import au.org.theark.study.web.component.studycomponent.form.DetailForm;
 
-public class Search extends Panel {
+public class DetailPanel extends Panel {
 
-	private ArkCrudContainerVO	arkCrudContainerVO;
-	private FeedbackPanel	feedBackPanel;
-	private PageableListView<StudyComp>	listView;
-	
 	/**
 	 * 
-	 * @param id
-	 * @param crudContainerVO
-	 * @param feedBackPanel
-	 * @param containerForm
-	 * @param listView
 	 */
-	public Search(String id,ArkCrudContainerVO crudContainerVO,FeedbackPanel feedBackPanel,ContainerForm containerForm, PageableListView<StudyComp> listView){
-		super(id);
-		arkCrudContainerVO = crudContainerVO;
-		this.feedBackPanel = feedBackPanel; 
-		this.listView = listView;
-	}
+	private static final long	serialVersionUID	= 1L;
 	
+	private DetailForm			detailForm;
+	private FeedbackPanel		feedBackPanel;
+	private ContainerForm		containerForm;
+	private ArkCrudContainerVO arkCrudContainerVO;
+	
+	public DetailPanel(String id,FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
+		
+		super(id);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
+		this.feedBackPanel = feedBackPanel;
+		
+	}
 
-	public void initialisePanel(CompoundPropertyModel<StudyCompVo> studyCompCpm) {
+	public void initialisePanel() {
 
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM,studyCompCpm,arkCrudContainerVO,feedBackPanel,listView);
-		add(searchStudyCompForm);
+		detailForm  = new DetailForm("detailsForm",feedBackPanel,arkCrudContainerVO,containerForm);
+		detailForm.initialiseDetailForm();
+		add(detailForm);
+	}
+
+	public DetailForm getDetailForm() {
+		return detailForm;
+	}
+
+	public void setDetailForm(DetailForm detailForm) {
+		this.detailForm = detailForm;
 	}
 
 }

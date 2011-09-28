@@ -35,8 +35,13 @@ import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;
 
-public class SearchResultList extends Panel {
+public class SearchResultListPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private ContainerForm		containerForm;
 	private ArkCrudContainerVO	arkCrudContainerVO;
 
@@ -46,7 +51,7 @@ public class SearchResultList extends Panel {
 	 * @param crudContainerVO
 	 * @param studyCompContainerForm
 	 */
-	public SearchResultList(String id, ArkCrudContainerVO crudContainerVO,ContainerForm studyCompContainerForm){
+	public SearchResultListPanel(String id, ArkCrudContainerVO crudContainerVO,ContainerForm studyCompContainerForm){
 		super(id);
 		arkCrudContainerVO = crudContainerVO;
 		containerForm = studyCompContainerForm;
