@@ -20,10 +20,14 @@ package au.org.theark.study.web.component.subjectcustomdata;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.ResourceModel;
 
+import au.org.theark.core.Constants;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
 import au.org.theark.study.model.vo.SubjectCustomDataVO;
 import au.org.theark.study.web.component.subjectcustomdata.form.CustomDataEditorForm;
@@ -45,7 +49,8 @@ public class SubjectCustomDataEditorPanel extends Panel {
 	protected FeedbackPanel				feedbackPanel;
 	protected AbstractCustomDataEditorForm<SubjectCustomDataVO>	customDataEditorForm;
 	protected SubjectCustomDataDataViewPanel dataViewPanel;
-
+	protected Label warnSaveLabel;
+	
 	public SubjectCustomDataEditorPanel(String id, CompoundPropertyModel<SubjectCustomDataVO> cpModel, FeedbackPanel feedBackPanel) {
 		super(id);
 
@@ -67,8 +72,13 @@ public class SubjectCustomDataEditorPanel extends Panel {
 		};
 		pageNavigator.setVisible(false);
 		customDataEditorForm.getDataViewWMC().add(dataViewPanel);
+		
+		warnSaveLabel = new Label("warnSaveLabel", new ResourceModel("warnSaveLabel"));
+		warnSaveLabel.setVisible(ArkPermissionHelper.isActionPermitted(Constants.NEW));
+		
 		this.add(customDataEditorForm);
 		this.add(pageNavigator);
+		this.add(warnSaveLabel);
 		
 		return this;
 	}
