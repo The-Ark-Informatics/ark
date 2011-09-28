@@ -545,7 +545,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param target
 	 * @param form
 	 */
-	public abstract void onError(AjaxRequestTarget target, Form form);
+	public abstract void onError(AjaxRequestTarget target, Form<?> form);
 
 	/**
 	 * Called when finish is clicked.
@@ -553,7 +553,7 @@ public abstract class AbstractWizardForm<T> extends Form<T> {
 	 * @param target
 	 * @param form
 	 */
-	public abstract void onFinish(AjaxRequestTarget target, Form form);
+	public abstract void onFinish(AjaxRequestTarget target, Form<?> form);
 
 	/**
 	 * Called when cancel is clicked.
