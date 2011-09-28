@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
+import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractContainerPanel;
 import au.org.theark.core.web.component.ArkDataProvider2;
@@ -73,6 +74,9 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private DataView<LinkSubjectStudy>						dataView;
 	private ArkDataProvider2<LimsVO, LinkSubjectStudy>	subjectProvider;
 
+	@SpringBean(name = "arkLdapRealm")
+	private ArkLdapRealm											realm;
+
 	/**
 	 * @param id
 	 */
@@ -91,9 +95,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		containerForm.add(initialiseSearchResults());
 		containerForm.add(initialiseSearchPanel());
 		containerForm.add(initialiseDetailPanel());
-
 		prerenderContextCheck();
-
 		add(containerForm);
 	}
 
@@ -102,28 +104,44 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		String sessionSubjectUID = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.SUBJECTUID);
 
 		if ((sessionStudyId != null) && (sessionSubjectUID != null)) {
-			LinkSubjectStudy linkSubjectStudy = null;
+			LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
 			Study study = null;
 			boolean contextLoaded = false;
+			
+			study = iArkCommonService.getStudy(sessionStudyId);
+			
 			try {
-				study = iArkCommonService.getStudy(sessionStudyId);
-				linkSubjectStudy = iArkCommonService.getSubjectByUID(sessionSubjectUID);
-				if (study != null && linkSubjectStudy != null) {
-					contextLoaded = true;
-					cpModel.getObject().setStudy(study);
-					cpModel.getObject().setLinkSubjectStudy(linkSubjectStudy);
-				}
+				subjectFromBackend = iArkCommonService.getSubjectByUID(sessionSubjectUID);
 			}
 			catch (EntityNotFoundException e) {
 				log.error(e.getMessage());
 			}
 
+			// Set SubjectUID into context
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
+
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subjectFromBackend.getPerson().getId());
+			SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
+
+			// Force clearing of Cache to re-load roles for the user for the study
+			realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
+
+			if (study != null && subjectFromBackend != null) {
+				contextLoaded = true;
+				LimsVO limsVo = new LimsVO();
+				limsVo.setLinkSubjectStudy(subjectFromBackend);
+				limsVo.setStudy(subjectFromBackend.getStudy());
+				containerForm.setModelObject(limsVo);
+			}
+
 			if (contextLoaded) {
 				// Put into Detail View mode
-				arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
-				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 				arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
@@ -136,7 +154,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView, arkCrudContainerVO, containerForm);
 
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -152,7 +170,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultListPanel = new SearchResultListPanel("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
+		searchResultListPanel = new SearchResultListPanel("searchResults", arkContextMarkup, containerForm, arkCrudContainerVO);
 
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 			/**
