@@ -54,12 +54,18 @@ import au.org.theark.study.web.Constants;
 
 /**
  * @author nivedann
+ * @author cellis
  * 
  */
 public class DetailForm extends AbstractDetailForm<PhoneVO> {
 
+	/**
+	 * 
+	 */
+	private static final long				serialVersionUID	= -5784184438113767249L;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService				iArkCommonService;
+	private IArkCommonService<Void>		iArkCommonService;
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
@@ -76,16 +82,16 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	private DropDownChoice<YesNo>			silentModeChoice;
 
 	/**
-	 * 	/**
+	 * /**
 	 * 
 	 * @param id
 	 * @param feedBackPanel
 	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,au.org.theark.study.web.component.phone.form.ContainerForm containerForm){
-		
-		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, au.org.theark.study.web.component.phone.form.ContainerForm containerForm) {
+
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
 		setMultiPart(false);
 	}
@@ -112,7 +118,7 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		silentModeChoice = new DropDownChoice<YesNo>("phone.silentMode", yesNoListSource, yesNoRenderer);
 
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
-		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
+		ChoiceRenderer<PhoneType> defaultChoiceRenderer = new ChoiceRenderer<PhoneType>(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice<PhoneType>("phone.phoneType", phoneTypeList, defaultChoiceRenderer);
 		phoneTypeChoice.add(new ArkDefaultFormFocusBehavior());
 		addDetailFormComponents();
@@ -120,17 +126,15 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	}
 
 	public void addDetailFormComponents() {
-		
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneIdTxtFld.setEnabled(false));
 		arkCrudContainerVO.getDetailPanelFormContainer().add(areaCodeTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneNumberTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneTypeChoice);
-
 		arkCrudContainerVO.getDetailPanelFormContainer().add(phoneStatusChoice);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(dateReceivedDp);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(silentModeChoice);
-
+		arkCrudContainerVO.getDetailPanelFormContainer().add(source);
 	}
 
 	/*
@@ -142,11 +146,9 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 	protected void attachValidators() {
 		phoneNumberTxtFld.setRequired(true);
 		phoneNumberTxtFld.add(StringValidator.maximumLength(10));
-		// areaCodeTxtFld.setRequired(true); // Removed due to ARK-73:: May be option depending on phone type
 		areaCodeTxtFld.add(StringValidator.maximumLength(10));
 		phoneTypeChoice.setRequired(true);
 		dateReceivedDp.add(DateValidator.maximum(new Date())).setLabel(new StringResourceModel("phone.dateReceived.DateValidator.maximum", this, null));
-
 	}
 
 	/*
@@ -207,11 +209,12 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 			}
 			if (saveOk) {
 				// Ok to save...
-				String personType = (String)SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
-				
-				if(personType != null && personType.equalsIgnoreCase( au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)){
-					
-					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);//This is fetched basically to display the info message along with the Subject UID or Contact ID
+				String personType = (String) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_TYPE);
+
+				if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT)) {
+
+					LinkSubjectStudy subjectInContext = iArkCommonService.getSubject(personSessionId);// This is fetched basically to display the info
+																																	// message along with the Subject UID or Contact ID
 					if (containerForm.getModelObject().getPhone().getId() == null) {
 						studyService.create(containerForm.getModelObject().getPhone());
 						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
@@ -224,15 +227,13 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 						processErrors(target);
 						// Update
 					}
-				}else if(personType != null && personType.equalsIgnoreCase( au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
-					//TODO: Contact Interface implementation
-					
-					
 				}
-				
+				else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
+					// TODO: Contact Interface implementation
+				}
+
 				onSavePostProcess(target);
 			}
-			// Invoke backend to persist the phone
 		}
 		catch (ArkUniqueException aue) {
 			this.error(aue.getMessage());
@@ -268,6 +269,5 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 		else {
 			return false;
 		}
-
 	}
 }
