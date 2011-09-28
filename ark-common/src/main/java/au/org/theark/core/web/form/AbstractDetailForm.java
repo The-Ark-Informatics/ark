@@ -234,8 +234,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editButton);
 		arkCrudContainerVO.getViewButtonContainer().addOrReplace(editCancelButton.setDefaultFormProcessing(false));
 
-		//arkCrudContainerVO.getDetailPanelFormContainer().addOrReplace(selectModalWindow);
-
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
 		add(arkCrudContainerVO.getViewButtonContainer());
 		add(arkCrudContainerVO.getEditButtonContainer());
