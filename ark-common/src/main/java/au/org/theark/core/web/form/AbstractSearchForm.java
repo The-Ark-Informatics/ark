@@ -76,7 +76,7 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 	 * @param arkCrudContainerVO
 	 */
 	protected void initialiseForm() {
-		searchButton = new AjaxButton(Constants.SEARCH) {
+		searchButton = new ArkBusyAjaxButton(Constants.SEARCH) {
 			/**
 			 * 
 			 */
