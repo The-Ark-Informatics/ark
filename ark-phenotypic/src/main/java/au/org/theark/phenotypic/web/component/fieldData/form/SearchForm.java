@@ -40,6 +40,7 @@ import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -77,15 +78,12 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	/**
 	 * @param id
 	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<FieldData> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
-			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer) {
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model,ArkCrudContainerVO arkCrudContainerVO,
+			PageableListView<FieldData> listView, FeedbackPanel feedBackPanel) {
 
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+		super(id, model, feedBackPanel,arkCrudContainerVO);
 		this.cpmModel = model;
 		this.listView = listView;
-		this.detailPanel = detailPanel;
 		initialiseFieldForm();
 
 		sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
@@ -181,8 +179,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 			this.info("There are no field data records with the specified criteria.");
 			target.add(feedbackPanel);
 		}
-		listContainer.setVisible(true);
-		target.add(listContainer);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	@Override

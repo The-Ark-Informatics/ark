@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -37,6 +36,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.FieldData;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
@@ -46,26 +46,18 @@ import au.org.theark.phenotypic.web.component.fieldData.form.ContainerForm;
 @SuppressWarnings({ "serial", "unchecked" })
 public class SearchResultListPanel extends Panel {
 
-	private WebMarkupContainer	detailsPanelContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
+	
 	private ContainerForm		containerForm;
-	private DetailPanel			detailPanel;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
-
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
-			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+	private ArkCrudContainerVO arkCrudContainerVO;
+	private PageableListView<FieldData>	listView;
+	
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO,  PageableListView<FieldData>	listView, ContainerForm containerForm) {
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
-		this.containerForm = studyCompContainerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.setDetailPanel(detail);
+		
+		this.containerForm = containerForm;
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.listView = listView;
+
 	}
 
 	/**
@@ -157,23 +149,17 @@ public class SearchResultListPanel extends Panel {
 				// Sets the selected object into the model
 				PhenoCollectionVO phenoCollectionVo = containerForm.getModelObject();
 				phenoCollectionVo.setFieldData(fieldData);
-
-				detailsPanelContainer.setVisible(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-
+				
+				
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 				// Button containers
 				// View Field, thus view container visible
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				editButtonContainer.setVisible(false);
-
-				target.add(searchResultContainer);
-				target.add(detailsPanelContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
 		};
 
@@ -261,18 +247,4 @@ public class SearchResultListPanel extends Panel {
 		return fieldDataDataView;
 	}
 
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
-	}
 }

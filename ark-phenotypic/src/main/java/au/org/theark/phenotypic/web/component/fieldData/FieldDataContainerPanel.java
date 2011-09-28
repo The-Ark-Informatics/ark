@@ -67,8 +67,6 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<PhenoCollectionVO>(new PhenoCollectionVO());
 
-		initialiseMarkupContainers();
-
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
@@ -81,8 +79,7 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultPanel = new SearchResultListPanel("searchResults", detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel, viewButtonContainer,
-				editButtonContainer, detailPanelFormContainer);
+		searchResultPanel = new SearchResultListPanel("searchResults", arkCrudContainerVO,listView, containerForm);
 
 		// Data providor to paginate resultList
 		fieldDataProvider = new ArkDataProvider<PhenoCollectionVO, IPhenotypicService>(iPhenotypicService) {
@@ -105,64 +102,32 @@ public class FieldDataContainerPanel extends AbstractContainerPanel<PhenoCollect
 
 		dataView = searchResultPanel.buildDataView(fieldDataProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
-
-		/*
-		 * iModel = new LoadableDetachableModel<Object>() { private static final long serialVersionUID = 1L;
-		 * 
-		 * @Override protected Object load() { // Get a collection of field data for the study in context by default Collection<FieldData> fieldDataCol
-		 * = new ArrayList<FieldData>(); Long sessionStudyId = (Long)
-		 * SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		 * 
-		 * if (sessionStudyId != null && sessionStudyId > 0) { Study study = iArkCommonService.getStudy(sessionStudyId); Field searchField = new
-		 * Field(); searchField.setStudy(study); fieldDataCol = iPhenotypicService.searchFieldDataByField(searchField); }
-		 * 
-		 * listView.removeAll(); containerForm.getModelObject().setFieldDataCollection(fieldDataCol); return
-		 * containerForm.getModelObject().getFieldDataCollection(); } };
-		 * 
-		 * listView = searchResultPanel.buildPageableListView(iModel); listView.setReuseItems(true);
-		 * 
-		 * PagingNavigator pageNavigator = new PagingNavigator("navigator", listView); searchResultPanel.add(pageNavigator);
-		 * searchResultPanel.add(listView); searchResultPanelContainer.add(searchResultPanel); return searchResultPanelContainer;
-		 */
-
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", dataView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(dataView);
-		searchResultPanelContainer.add(searchResultPanel);
-		return searchResultPanelContainer;
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
-				detailPanelFormContainer);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel,arkCrudContainerVO, containerForm);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
+		
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
 
 		// Get a collection of fieldData's for the study in context by default
 		Collection<FieldData> fieldDataCollection = new ArrayList<FieldData>();
-		/*
-		 * Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		 * 
-		 * if (sessionStudyId != null && sessionStudyId > 0) { Study study = iArkCommonService.getStudy(sessionStudyId); Long phenoCollectionId = (Long)
-		 * SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
-		 * 
-		 * if (phenoCollectionId != null) { PhenoCollection phenoCollection = phenotypicService.getPhenoCollection(phenoCollectionId);
-		 * containerForm.getModelObject().getFieldData().setCollection(phenoCollection);
-		 * //containerForm.getModelObject().getFieldData().getField().setStudy(study); } fieldDataCollection =
-		 * phenotypicService.searchFieldData(containerForm.getModelObject().getFieldData()); }
-		 */
 		containerForm.getModelObject().setFieldDataCollection(fieldDataCollection);
-
-		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, detailPanelContainer, detailPanel, containerForm,
-				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchComponentPanel = new SearchPanel("searchPanel", arkCrudContainerVO, feedBackPanel, listView, containerForm);
 
 		searchComponentPanel.initialisePanel();
-		searchPanelContainer.add(searchComponentPanel);
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchComponentPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
+		
 	}
 }
