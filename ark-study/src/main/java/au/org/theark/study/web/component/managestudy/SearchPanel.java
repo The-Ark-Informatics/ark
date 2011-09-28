@@ -27,7 +27,7 @@ import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.SearchForm;
 
-public class Search extends Panel {
+public class SearchPanel extends Panel {
 
 	/**
 	 * 
@@ -43,7 +43,7 @@ public class Search extends Panel {
 	 * @param id
 	 * @param studyCrudContainerVO
 	 */
-	public Search(String id, StudyCrudContainerVO studyCrudContainerVO, FeedbackPanel feedbackPanel, Container containerForm) {
+	public SearchPanel(String id, StudyCrudContainerVO studyCrudContainerVO, FeedbackPanel feedbackPanel, Container containerForm) {
 
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;

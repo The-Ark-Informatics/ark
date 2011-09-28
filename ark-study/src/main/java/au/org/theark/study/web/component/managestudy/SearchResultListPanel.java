@@ -51,7 +51,7 @@ import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
-public class SearchResults extends Panel {
+public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
@@ -74,13 +74,13 @@ public class SearchResults extends Panel {
 
 	private StudyCrudContainerVO	studyCrudContainerVO;
 
-	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
+	public SearchResultListPanel(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		studyContainerForm = containerForm;
 	}
 
-	public SearchResults(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm, TabbedPanel moduleTabbedPanel) {
+	public SearchResultListPanel(String id, StudyCrudContainerVO studyCrudContainerVO, Container containerForm, TabbedPanel moduleTabbedPanel) {
 		super(id);
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		this.studyContainerForm = containerForm;
@@ -158,7 +158,7 @@ public class SearchResults extends Panel {
 				studyContainerForm.getModelObject().setSubjectUidExample(iArkCommonService.getSubjectUidExample(searchStudy));
 
 				WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
-				Details detailsPanel = (Details) wmc.get("detailsPanel");
+				DetailPanel detailsPanel = (DetailPanel) wmc.get("detailsPanel");
 				DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 
 				// All SubjectUID generator fields grouped within a container(s)

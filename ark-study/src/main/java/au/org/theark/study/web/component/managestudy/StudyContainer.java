@@ -49,9 +49,9 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	private static final long			serialVersionUID	= 6705316114204293307L;
 	private static final Logger		log					= LoggerFactory.getLogger(StudyContainer.class);
 	private Container						containerForm;
-	private Details						detailsPanel;
-	private SearchResults				searchResultsPanel;
-	private Search							searchStudyPanel;
+	private DetailPanel						detailsPanel;
+	private SearchResultListPanel				searchResultsPanel;
+	private SearchPanel							searchStudyPanel;
 	private TabbedPanel					moduleTabbedPanel;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
@@ -121,7 +121,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 	}
 
 	protected WebMarkupContainer initialiseSearchPanel() {
-		searchStudyPanel = new Search("searchStudyPanel", studyCrudContainerVO, feedBackPanel, containerForm);
+		searchStudyPanel = new SearchPanel("searchStudyPanel", studyCrudContainerVO, feedBackPanel, containerForm);
 		searchStudyPanel.initialisePanel(cpModel);
 		studyCrudContainerVO.getSearchPanelContainer().add(searchStudyPanel);
 		return studyCrudContainerVO.getSearchPanelContainer();
@@ -129,7 +129,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 
 	@Override
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultsPanel = new SearchResults("searchResults", studyCrudContainerVO, containerForm, moduleTabbedPanel);
+		searchResultsPanel = new SearchResultListPanel("searchResults", studyCrudContainerVO, containerForm, moduleTabbedPanel);
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
 
@@ -166,7 +166,7 @@ public class StudyContainer extends AbstractContainerPanel<StudyModelVO> {
 
 	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailsPanel = new Details("detailsPanel", feedBackPanel, studyCrudContainerVO, containerForm);
+		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, studyCrudContainerVO, containerForm);
 		detailsPanel.initialisePanel();
 		studyCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return studyCrudContainerVO.getDetailPanelContainer();
