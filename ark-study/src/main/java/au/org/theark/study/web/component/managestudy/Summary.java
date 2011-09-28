@@ -26,6 +26,10 @@ import au.org.theark.core.vo.StudyModelVO;
 
 public class Summary extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long							serialVersionUID	= 1829943256396848345L;
 	/* A reference of the Model from the Container in this case Search Panel */
 	private CompoundPropertyModel<StudyModelVO>	cpm;
 
@@ -42,5 +46,4 @@ public class Summary extends Panel {
 		Label studySummaryLabel = new Label("studySummaryLabel", "You have selected the Study " + cpm.getObject().getStudy().getName() + ".Summary of the study follows:");
 		add(studySummaryLabel);
 	}
-
 }
