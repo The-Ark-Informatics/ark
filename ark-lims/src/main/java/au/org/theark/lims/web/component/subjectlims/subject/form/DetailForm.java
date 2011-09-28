@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -37,7 +36,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,9 +187,6 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		wmcDeathDetailsContainer = new WebMarkupContainer("deathDetailsContainer");
 		wmcDeathDetailsContainer.setOutputMarkupId(true);
 
-		// Default death details to disabled (enable onChange of vitalStatus)
-		setDeathDetailsContainer();
-
 		// Initialise Drop Down Choices
 		// We can also have the reference data populated on Application start
 		// and refer to a static list instead of hitting the database
@@ -206,18 +201,6 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		Collection<VitalStatus> vitalStatusList = iArkCommonService.getVitalStatus();
 		ChoiceRenderer<VitalStatus> vitalStatusRenderer = new ChoiceRenderer<VitalStatus>(Constants.NAME, Constants.ID);
 		vitalStatusDdc = new DropDownChoice<VitalStatus>(Constants.PERSON_VITAL_STATUS, (List<VitalStatus>) vitalStatusList, vitalStatusRenderer);
-		vitalStatusDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 3329734396453572649L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				setDeathDetailsContainer();
-				target.add(wmcDeathDetailsContainer);
-			}
-		});
 
 		// Gender Type
 		Collection<GenderType> genderTypeList = iArkCommonService.getGenderType();
@@ -237,26 +220,11 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		// Container for preferredEmail (required when Email selected as preferred contact)
 		wmcPreferredEmailContainer = new WebMarkupContainer("preferredEmailContainer");
 		wmcPreferredEmailContainer.setOutputMarkupPlaceholderTag(true);
-		// Depends on preferredContactMethod
-		setPreferredEmailContainer();
 
 		// Person Contact Method
 		Collection<PersonContactMethod> contactMethodList = iArkCommonService.getPersonContactMethodList();
 		ChoiceRenderer<PersonContactMethod> contactMethodRender = new ChoiceRenderer<PersonContactMethod>(Constants.NAME, Constants.ID);
 		personContactMethodDdc = new DropDownChoice<PersonContactMethod>(Constants.PERSON_CONTACT_METHOD, (List) contactMethodList, contactMethodRender);
-		personContactMethodDdc.add(new AjaxFormComponentUpdatingBehavior("onchange") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 7009218706170453708L;
-
-			@Override
-			protected void onUpdate(AjaxRequestTarget target) {
-				// Check what was selected and then toggle
-				setPreferredEmailContainer();
-				target.add(wmcPreferredEmailContainer);
-			}
-		});
 
 		initialiseConsentStatusChoice();
 		initialiseConsentTypeChoice();
@@ -280,41 +248,6 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		List<ConsentType> consentTypeList = iArkCommonService.getConsentType();
 		ChoiceRenderer<ConsentType> defaultChoiceRenderer = new ChoiceRenderer<ConsentType>(Constants.NAME, Constants.ID);
 		consentTypeChoice = new DropDownChoice<ConsentType>(Constants.SUBJECT_CONSENT_TYPE, consentTypeList, defaultChoiceRenderer);
-	}
-
-	// Death details dependent on Vital Status selected to "Deceased"
-	private void setDeathDetailsContainer() {
-		VitalStatus vitalStatus = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getVitalStatus();
-		if (vitalStatus != null) {
-			String vitalStatusName = vitalStatus.getName();
-
-			if (vitalStatusName.equalsIgnoreCase("DECEASED")) {
-				wmcDeathDetailsContainer.setEnabled(true);
-			}
-			else {
-				wmcDeathDetailsContainer.setEnabled(false);
-				;
-			}
-		}
-		else {
-			wmcDeathDetailsContainer.setEnabled(false);
-		}
-	}
-
-	// Email required when preferred contact set to "Email"
-	private void setPreferredEmailContainer() {
-		PersonContactMethod personContactMethod = containerForm.getModelObject().getLinkSubjectStudy().getPerson().getPersonContactMethod();
-
-		if (personContactMethod != null) {
-			String personContactMethodName = personContactMethod.getName();
-			if (personContactMethodName.equalsIgnoreCase("EMAIL")) {
-				preferredEmailTxtFld.setRequired(true).setLabel(new StringResourceModel("subject.preferredEmail.required", null));
-			}
-			else {
-				preferredEmailTxtFld.setRequired(false);
-
-			}
-		}
 	}
 
 	public void addDetailFormComponents() {
