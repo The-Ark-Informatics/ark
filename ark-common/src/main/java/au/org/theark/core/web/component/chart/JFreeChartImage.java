@@ -41,31 +41,29 @@ public class JFreeChartImage extends Image {
 		this.height = height;
 	}
 
-	
-    @Override
-    protected IResource getImageResource() {
-        DynamicImageResource resource = new DynamicImageResource() {
+	@Override
+	protected IResource getImageResource() {
+		DynamicImageResource resource = new DynamicImageResource() {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
-            @Override
-            protected byte[] getImageData(final Attributes attributes) {
-                JFreeChart chart = (JFreeChart) getDefaultModelObject();
-                return toImageData(chart.createBufferedImage(width, height));
-            }
+			@Override
+			protected byte[] getImageData(final Attributes attributes) {
+				JFreeChart chart = (JFreeChart) getDefaultModelObject();
+				return toImageData(chart.createBufferedImage(width, height));
+			}
 
-            @Override
-            protected void configureResponse(final ResourceResponse response, final Attributes attributes) {
-                super.configureResponse(response, attributes);
-               
-                //if (isCacheable() == false) {TODO Resolve this.
-                    response.setCacheDuration(Duration.NONE);
-                    response.setCacheScope(CacheScope.PRIVATE);
-                //}
-            }
+			@Override
+			protected void configureResponse(final ResourceResponse response, final Attributes attributes) {
+				super.configureResponse(response, attributes);
+				response.setCacheDuration(Duration.NONE);
+				response.setCacheScope(CacheScope.PRIVATE);
+			}
 
-        };
+		};
 
-        return resource;
-    }
-
-	
+		return resource;
+	}
 }
