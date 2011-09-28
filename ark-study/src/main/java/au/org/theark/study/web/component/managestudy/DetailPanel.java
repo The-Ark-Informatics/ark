@@ -51,12 +51,10 @@ public class DetailPanel extends Panel {
 		this.studyCrudContainerVO = studyCrudContainerVO;
 		fbPanel = feedbackPanel;
 	}
-
-	@SuppressWarnings("serial")
+	
 	public void initialisePanel() {
 		detailForm = new DetailForm("detailForm", studyCrudContainerVO, fbPanel, studyContainerForm);
 		detailForm.initialiseDetailForm();
 		add(detailForm); // Add the form to the panel
 	}
-
 }
