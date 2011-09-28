@@ -39,6 +39,7 @@ import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.lims.model.vo.LimsVO;
@@ -51,7 +52,7 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.DetailForm;
  * @author nivedann
  * 
  */
-@SuppressWarnings({ "unchecked", "serial" })
+@SuppressWarnings( { "unchecked", "serial" })
 public class SearchResultListPanel extends Panel {
 
 	/**
@@ -59,34 +60,21 @@ public class SearchResultListPanel extends Panel {
 	 */
 	private static final long		serialVersionUID	= -8517602411833622907L;
 	private static final Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
-	private WebMarkupContainer		detailPanelContainer;
-	private WebMarkupContainer		detailPanelFormContainer;
-	private WebMarkupContainer		searchPanelContainer;
-	private WebMarkupContainer		searchResultContainer;
-	private WebMarkupContainer		viewButtonContainer;
-	private WebMarkupContainer		editButtonContainer;
+	private ArkCrudContainerVO		arkCrudContainerVO;
 	private WebMarkupContainer		arkContextMarkup;
-	private ContainerForm			subjectContainerForm;
+	private ContainerForm			containerForm;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
-	
+
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm				realm;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer searchPanelContainer,
-			WebMarkupContainer searchResultContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup, ContainerForm containerForm) {
-
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-
-		this.detailPanelContainer = detailPanelContainer;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.containerForm = containerForm;
 		this.arkContextMarkup = arkContextMarkup;
-		this.subjectContainerForm = containerForm;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public DataView<LinkSubjectStudy> buildDataView(ArkDataProvider2<LimsVO, LinkSubjectStudy> subjectProvider) {
@@ -97,7 +85,7 @@ public class SearchResultListPanel extends Panel {
 			protected void populateItem(final Item<LinkSubjectStudy> item) {
 				LinkSubjectStudy subject = item.getModelObject();
 				item.add(buildLink(item.getModelObject()));
-				
+
 				Label studyLbl = new Label("studyLbl", subject.getStudy().getName());
 				item.add(studyLbl);
 
@@ -134,14 +122,14 @@ public class SearchResultListPanel extends Panel {
 
 				item.add(new Label("person.vitalStatus.statusName", subject.getPerson().getVitalStatus().getName()));
 
-				if(subject.getConsentStatus() != null) {
+				if (subject.getConsentStatus() != null) {
 					item.add(new Label("consentStatus.name", subject.getConsentStatus().getName()));
 				}
 				else {
 					item.add(new Label("consentStatus.name", ""));
 				}
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? Constants.EVEN : Constants.ODD;
@@ -154,6 +142,7 @@ public class SearchResultListPanel extends Panel {
 
 	/**
 	 * Builds the link for selection of subject (gets from database to ensure persistence)s
+	 * 
 	 * @param subject
 	 * @return
 	 */
@@ -163,7 +152,7 @@ public class SearchResultListPanel extends Panel {
 			public void onClick(AjaxRequestTarget target) {
 				LinkSubjectStudy subjectFromBackend = new LinkSubjectStudy();
 				try {
-					
+
 					subjectFromBackend = iArkCommonService.getSubjectByUID(subject.getSubjectUID());
 				}
 				catch (EntityNotFoundException e) {
@@ -174,49 +163,49 @@ public class SearchResultListPanel extends Panel {
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.SUBJECTUID, subjectFromBackend.getSubjectUID());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY, subjectFromBackend.getStudy());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID, subjectFromBackend.getStudy().getId());
-				
+
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID, subject.getPerson().getId());
 				SecurityUtils.getSubject().getSession().setAttribute(au.org.theark.core.Constants.PERSON_TYPE, au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_SUBJECT);
-				
+
 				// Force clearing of Cache to re-load roles for the user for the study
 				realm.clearCachedAuthorizationInfo(SecurityUtils.getSubject().getPrincipals());
 
 				LimsVO limsVo = new LimsVO();
 				limsVo.setLinkSubjectStudy(subjectFromBackend);
 				limsVo.setStudy(subjectFromBackend.getStudy());
-				subjectContainerForm.setModelObject(limsVo);
-				
+				containerForm.setModelObject(limsVo);
+
 				// Set context items
 				ContextHelper contextHelper = new ContextHelper();
 				contextHelper.setStudyContextLabel(target, subjectFromBackend.getStudy().getName(), arkContextMarkup);
 				contextHelper.setSubjectContextLabel(target, subjectFromBackend.getSubjectUID(), arkContextMarkup);
 
-				detailPanelContainer.setVisible(true);
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-				editButtonContainer.setVisible(false);
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 				// Always disable subjectUID
-				DetailPanel details = (DetailPanel) detailPanelContainer.get("detailsPanel");
+				DetailPanel details = (DetailPanel) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
 				DetailForm detailsForm = (DetailForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 
-				target.add(searchResultContainer);
-				target.add(detailPanelContainer);
-				target.add(detailPanelFormContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
 
 				// Refresh the contextUpdateTarget (add)
-				if (subjectContainerForm.getContextUpdateLimsWMC() != null) {
+				if (containerForm.getContextUpdateLimsWMC() != null) {
 					Panel limsContainerPanel = new LimsContainerPanel("limsContainerPanel", arkContextMarkup);
-					subjectContainerForm.getContextUpdateLimsWMC().setVisible(true);
-					subjectContainerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
-					target.add(subjectContainerForm.getContextUpdateLimsWMC());
+					containerForm.getContextUpdateLimsWMC().setVisible(true);
+					containerForm.getContextUpdateLimsWMC().addOrReplace(limsContainerPanel);
+					target.add(containerForm.getContextUpdateLimsWMC());
 				}
 			}
 		};

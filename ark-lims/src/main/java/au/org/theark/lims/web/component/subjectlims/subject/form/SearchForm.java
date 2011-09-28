@@ -27,7 +27,6 @@ import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -50,6 +49,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.SubjectStatus;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
@@ -86,16 +86,16 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 	private CompoundPropertyModel<LimsVO>	cpmModel;
 
 	/**
+	 * Constructor
 	 * @param id
 	 * @param cpmModel
+	 * @param listView
+	 * @param feedBackPanel
+	 * @param arkCrudContainerVO
 	 */
-	public SearchForm(String id, CompoundPropertyModel<LimsVO> cpmModel, PageableListView<LimsVO> listView, FeedbackPanel feedBackPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailsContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
+	public SearchForm(String id, CompoundPropertyModel<LimsVO> cpmModel, PageableListView<LimsVO> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
 		// super(id, cpmModel);
-		super(id, cpmModel, detailsContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+		super(id, cpmModel,feedBackPanel,arkCrudContainerVO);
 		this.cpmModel = cpmModel;
 		initialiseSearchForm();
 		addSearchComponentsToForm();
@@ -233,8 +233,8 @@ public class SearchForm extends AbstractSearchForm<LimsVO> {
 			target.add(feedbackPanel);
 		}
 
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);// For ajax this is required so
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 	
 	/**

@@ -57,7 +57,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 	private static final long									serialVersionUID	= -2956968644138345497L;
 	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainerPanel.class);
 	private SearchPanel											searchPanel;
-	private SearchResultListPanel								searchResultsPanel;
+	private SearchResultListPanel								searchResultListPanel;
 	private DetailPanel											detailsPanel;
 	private PageableListView<LimsVO>							pageableListView;
 	private ContainerForm										containerForm;
@@ -120,12 +120,12 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 			if (contextLoaded) {
 				// Put into Detail View mode
-				searchPanelContainer.setVisible(false);
-				searchResultPanelContainer.setVisible(false);
-				detailPanelContainer.setVisible(true);
-				detailPanelFormContainer.setEnabled(false);
-				viewButtonContainer.setVisible(true);
-				editButtonContainer.setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 			}
 		}
 	}
@@ -136,27 +136,23 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, searchPanelContainer, pageableListView, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer,
-				viewButtonContainer, editButtonContainer, detailsPanel, containerForm);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
 
 		searchPanel.initialisePanel(cpModel);
-		searchPanelContainer.add(searchPanel);
-		return searchPanelContainer;
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseDetailPanel() {
-
-		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, searchResultPanelContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer,
-				editButtonContainer, arkContextMarkup, containerForm);
+		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, arkContextMarkup, containerForm, arkCrudContainerVO);
 		detailsPanel.initialisePanel();
-		detailPanelContainer.add(detailsPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultsPanel = new SearchResultListPanel("searchResults", detailPanelContainer, detailPanelFormContainer, searchPanelContainer, searchResultPanelContainer, viewButtonContainer,
-				editButtonContainer, arkContextMarkup, containerForm);
+		searchResultListPanel = new SearchResultListPanel("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
 
 		subjectProvider = new ArkDataProvider2<LimsVO, LinkSubjectStudy>() {
 			/**
@@ -204,7 +200,7 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 		};
 		subjectProvider.setCriteriaModel(this.cpModel);
 
-		dataView = searchResultsPanel.buildDataView(subjectProvider);
+		dataView = searchResultListPanel.buildDataView(subjectProvider);
 		dataView.setItemsPerPage(au.org.theark.core.Constants.ROWS_PER_PAGE);
 
 		AjaxPagingNavigator pageNavigator = new AjaxPagingNavigator("navigator", dataView) {
@@ -215,13 +211,13 @@ public class SubjectContainerPanel extends AbstractContainerPanel<LimsVO> {
 
 			@Override
 			protected void onAjaxEvent(AjaxRequestTarget target) {
-				target.add(searchResultPanelContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 			}
 		};
-		searchResultsPanel.add(pageNavigator);
-		searchResultsPanel.add(dataView);
-		searchResultPanelContainer.add(searchResultsPanel);
-		return searchResultPanelContainer;
+		searchResultListPanel.add(pageNavigator);
+		searchResultListPanel.add(dataView);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
 	public void resetDataProvider() {

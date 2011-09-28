@@ -18,12 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.subject;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.Constants;
 import au.org.theark.lims.web.component.subjectlims.subject.form.ContainerForm;
@@ -36,52 +36,32 @@ import au.org.theark.lims.web.component.subjectlims.subject.form.SearchForm;
  */
 public class SearchPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 5699910763818733372L;
 	private FeedbackPanel					feedBackPanel;
-	private WebMarkupContainer				searchMarkupContainer;
-	private WebMarkupContainer				listContainer;
-	private WebMarkupContainer				detailsContainer;
-	private WebMarkupContainer				viewButtonContainer;
-	private WebMarkupContainer				editButtonContainer;
-	private WebMarkupContainer				detailFormContainer;
-	private PageableListView<LimsVO>	listView;
+	private PageableListView<LimsVO>		listView;
+	private ArkCrudContainerVO				arkCrudContainerVO;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param id
 	 * @param feedBackPanel
-	 * @param searchMarkupContainer
 	 * @param listView
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailFormContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param detailPanel
+	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, PageableListView<LimsVO> listView, WebMarkupContainer resultListContainer,
-			WebMarkupContainer detailPanelContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, DetailPanel detailPanel,
-			ContainerForm containerForm) {
-
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<LimsVO> listView, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
-		this.searchMarkupContainer = searchMarkupContainer;
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
-		this.listContainer = resultListContainer;
-		this.detailsContainer = detailPanelContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailFormContainer = detailFormContainer;
-
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public void initialisePanel(CompoundPropertyModel<LimsVO> limsVoCpm) {
-
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, limsVoCpm, listView, feedBackPanel, listContainer, searchMarkupContainer, detailsContainer, detailFormContainer,
-				viewButtonContainer, editButtonContainer);
-		add(searchStudyCompForm);
-
+		SearchForm searchForm = new SearchForm(Constants.SEARCH_FORM, limsVoCpm, listView, feedBackPanel, arkCrudContainerVO);
+		add(searchForm);
 	}
-
 }
