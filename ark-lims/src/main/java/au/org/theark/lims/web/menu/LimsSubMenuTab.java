@@ -36,7 +36,6 @@ import au.org.theark.core.web.component.customfield.CustomFieldContainerPanel;
 import au.org.theark.core.web.component.menu.AbstractArkTabPanel;
 import au.org.theark.core.web.component.tabbedPanel.ArkAjaxTabbedPanel;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.biocollection.BioCollectionContainerPanel;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biospecimen.BiospecimenContainerPanel;
 import au.org.theark.lims.web.component.biospecimencustomdata.BiospecimenCustomDataContainerPanel;
@@ -82,9 +81,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 		if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_SUBJECT)) {
 			panelToReturn = new SubjectContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
-//		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_LIMS_COLLECTION)) {
-//			panelToReturn = new BioCollectionContainerPanel(panelId, arkContextMarkup);// Note the constructor
-//		}
 		else if (arkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN)) {
 			panelToReturn = new BiospecimenContainerPanel(panelId, arkContextMarkup);// Note the constructor
 		}
@@ -108,7 +104,6 @@ public class LimsSubMenuTab extends AbstractArkTabPanel {
 			panelToReturn = new BiospecimenCustomDataContainerPanel(panelId).initialisePanel();
 		}
 		else {
-			//TODO: This shouldn't happen when all functions have been implemented
 			panelToReturn = new EmptyPanel(panelId);
 		}
 		return panelToReturn;
