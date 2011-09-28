@@ -29,6 +29,8 @@ import org.apache.wicket.markup.html.navigation.paging.PagingNavigator;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -49,6 +51,11 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  */
 public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2166285054533611912L;
+	private static final Logger								log					= LoggerFactory.getLogger(SubjectContainer.class);
 	private SearchPanel														searchPanel;
 	private SearchResultListPanel											searchResultsPanel;
 	private DetailPanel													detailsPanel;
@@ -106,12 +113,10 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 					contextLoaded = true;
 				}
 				catch (EntityNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				catch (ArkSystemException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 
 				if (contextLoaded) {
