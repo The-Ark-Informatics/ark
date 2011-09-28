@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -36,7 +35,6 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -46,60 +44,49 @@ import au.org.theark.core.model.pheno.entity.FileFormat;
 import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.DetailPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<UploadVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -8266132080909805310L;
+
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService					phenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>			iArkCommonService;
 
-	private ContainerForm						fieldContainerForm;
-
-	private int										mode;
+	private ContainerForm						containerForm;
 
 	private TextField<String>					uploadIdTxtFld;
-	private TextField<String>					uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>		fileFormatDdc;
 	private FileUploadField						fileUploadField;
 	// private UploadProgressBar uploadProgressBar;
 	private DropDownChoice<DelimiterType>	delimiterTypeDdc;
 
 	/**
-	 * Constructor
 	 * 
 	 * @param id
 	 * @param feedBackPanel
-	 * @param detailPanel
-	 * @param listContainer
-	 * @param detailsContainer
 	 * @param containerForm
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param detailFormContainer
-	 * @param searchPanelContainer
+	 * @param arkCrudContainerVO
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer,
-			AbstractContainerForm<UploadVO> containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer,
-			WebMarkupContainer searchPanelContainer) {
-
-		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 	}
-
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
+	@SuppressWarnings({ "unchecked" })
 	private void initialiseDropDownChoices() {
 		// Initialise Drop Down Choices
 		java.util.Collection<FileFormat> fieldFormatCollection = phenotypicService.getFileFormats();
@@ -138,27 +125,11 @@ public class DetailForm extends AbstractDetailForm<UploadVO> {
 	}
 
 	private void addComponents() {
-		// Add components here eg:
-		detailPanelFormContainer.add(uploadIdTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fileUploadField);
-		detailPanelFormContainer.add(fileFormatDdc);
-		detailPanelFormContainer.add(delimiterTypeDdc);
-
-		// TODO: AJAXify the form to show progress bar
-		// ajaxSimpleUploadForm.add(new UploadProgressBar("progress", ajaxSimpleUploadForm));
-		// add(ajaxSimpleUploadForm);
-
-		add(detailPanelFormContainer);
-	}
-
-	private void createDirectoryIfNeeded(String directoryName) {
-		File theDir = new File(directoryName);
-
-		// if the directory does not exist, create it
-		if (!theDir.exists()) {
-			System.out.println("creating directory: " + directoryName);
-			theDir.mkdir();
-		}
+		arkCrudContainerVO.getDetailPanelContainer().add(uploadIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelContainer().add(fileUploadField);
+		arkCrudContainerVO.getDetailPanelContainer().add(fileFormatDdc);
+		arkCrudContainerVO.getDetailPanelContainer().add(delimiterTypeDdc);
+		add(arkCrudContainerVO.getDetailPanelContainer());
 	}
 
 	@Override

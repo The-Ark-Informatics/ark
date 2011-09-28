@@ -18,11 +18,7 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.fieldDataUpload;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -30,22 +26,15 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.DownloadLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
-import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.io.IOUtils;
-import org.apache.wicket.util.resource.StringResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,43 +44,34 @@ import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.FieldPhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 
-@SuppressWarnings( { "serial", "unchecked", "unused" })
 public class SearchResultListPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 5162032563985446903L;
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
-
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
-
-	private WebMarkupContainer	detailsPanelContainer;
-	private WebMarkupContainer	feedBackPanel;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
 	private ContainerForm		containerForm;
-	private DetailPanel			detailPanel;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
-
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer feedBackPanel, WebMarkupContainer searchPanelContainer, ContainerForm containerForm,
-			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+	private ArkCrudContainerVO	arkCrudContainerVO;
+	
+	/**
+	 * 
+	 * @param id
+	 * @param arkCrudContainerVO
+	 * @param containerForm
+	 */
+	public SearchResultListPanel(String id, PageableListView<PhenoUpload> listView, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
-		this.feedBackPanel = feedBackPanel;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.setDetailPanel(detail);
-
-		Collection<String> fieldCollection = new ArrayList<String>();
-
 		Long sessionPhenoCollectionId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.phenotypic.web.Constants.SESSION_PHENO_COLLECTION_ID);
 		if (sessionPhenoCollectionId != null) {
 			PhenoCollection phenoCollection = iPhenotypicService.getPhenoCollection(sessionPhenoCollectionId);
@@ -101,12 +81,17 @@ public class SearchResultListPanel extends Panel {
 			fieldDataTemplate[0] = "SUBJECTUID";
 			fieldDataTemplate[1] = "DATE_COLLECTED";
 			int i = 2;
-			for (Iterator iterator = fieldsInCollection.iterator(); iterator.hasNext();) {
+			for (Iterator<FieldPhenoCollection> iterator = fieldsInCollection.iterator(); iterator.hasNext();) {
 				FieldPhenoCollection fpc = (FieldPhenoCollection) iterator.next();
 				fieldDataTemplate[i++] = fpc.getField().getName();
 			}
 
 			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "FieldDataUpload", fieldDataTemplate){
+
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 1L;
 
 				@Override
 				protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -119,6 +104,11 @@ public class SearchResultListPanel extends Panel {
 		else {
 			String[] fieldDataTemplate = new String[0];
 			ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", null, fieldDataTemplate){
+
+				/**
+				 * 
+				 */
+				private static final long	serialVersionUID	= 1L;
 
 				@Override
 				protected void onError(AjaxRequestTarget target, Form<?> form) {
@@ -137,6 +127,11 @@ public class SearchResultListPanel extends Panel {
 	 */
 	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel) {
 		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<PhenoUpload> item) {
 				PhenoUpload upload = item.getModelObject();
@@ -223,7 +218,7 @@ public class SearchResultListPanel extends Panel {
 				// Delete the upload file
 				item.add(buildDeleteButton(upload));
 
-				// For the alternative stripes
+				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
 					@Override
 					public String getObject() {
@@ -235,31 +230,13 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private Link buildDownloadLink(final PhenoUpload upload) {
-		Link link = new Link(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE) {
-			@Override
-			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				try {
-					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
-				}
-				catch (SQLException e) {
-					log.error(e.getMessage());
-				}
-				// getRequestCycle().setRequest(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
-
-			};
-		};
-
-		// Add the label for the link
-		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
-		link.add(nameLinkLabel);
-		return link;
-	}
-
 	private AjaxButton buildDownloadButton(final PhenoUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
@@ -271,12 +248,7 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
-				
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName(upload.getFilename());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-				// getRequestCycle().setRequest(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
 
 			@Override
@@ -294,34 +266,13 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private DownloadLink buildDownloadReportLink(final PhenoUpload upload) {
-		// Attempt to download the Blob as an array of bytes
-		byte[] data = null;
-		File file = null;
-		
-		try {
-			data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
-			file = File.createTempFile("tempfile", ".tmp");
-			FileOutputStream outStream = new FileOutputStream(file);
-			IOUtils.copy(upload.getUploadReport().getBinaryStream(), outStream);
-		}
-		catch (IOException e) {
-			log.error(e.getMessage());
-		}
-		catch (SQLException e) {
-			log.error(e.getMessage());
-		}
-
-		DownloadLink link = new DownloadLink(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, file, "uploadReport" + upload.getId());
-
-		// Add the label for the link
-		Label nameLinkLabel = new Label("downloadReportLbl", "Download Report");
-		link.add(nameLinkLabel);
-		return link;
-	}
-
 	private AjaxButton buildDownloadReportButton(final PhenoUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
@@ -333,15 +284,7 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/csv");
-				
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName("uploadReport" + upload.getId());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-			   
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
-				
-				// getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 
 			@Override
@@ -361,6 +304,11 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxDeleteButton buildDeleteButton(final PhenoUpload upload) {
 		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
@@ -377,8 +325,7 @@ public class SearchResultListPanel extends Panel {
 					}
 				}
 
-				// Update the result panel and contianerForm (for feedBack message)
-				target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 				target.add(containerForm);
 			}
 		};
@@ -386,20 +333,5 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setDefaultFormProcessing(false);
 
 		return ajaxButton;
-	}
-
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
 	}
 }

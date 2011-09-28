@@ -40,8 +40,7 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm
 public class FieldDataUploadContainerPanel extends AbstractContainerPanel<UploadVO> {
 	private static final long					serialVersionUID				= 1L;
 
-	// Panels
-	private SearchPanel							searchComponentPanel;
+	private SearchPanel							searchPanel;
 	private SearchResultListPanel				searchResultPanel;
 	private DetailPanel							detailPanel;
 	private WizardPanel							wizardPanel;
@@ -63,29 +62,24 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 		/* Initialise the CPM */
 		cpModel = new CompoundPropertyModel<UploadVO>(new UploadVO());
 
-		initialiseMarkupContainers();
-
 		/* Bind the CPM to the Form */
 		containerForm = new ContainerForm("containerForm", cpModel);
 		containerForm.add(initialiseFeedBackPanel());
-		// containerForm.add(initialiseDetailPanel());
 		containerForm.add(initialiseWizardPanel());
 		containerForm.add(initialiseSearchResults());
-		// containerForm.add(initialiseSearchPanel());
 		add(containerForm);
 	}
 
 	private WebMarkupContainer initialiseWizardPanel() {
-		wizardPanel = new WizardPanel("wizardPanel", searchResultPanelContainer, feedBackPanel, wizardPanelContainer, searchPanelContainer, wizardPanelFormContainer, containerForm);
+		wizardPanel = new WizardPanel("wizardPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		wizardPanel.initialisePanel();
-		wizardPanelContainer.setVisible(true);
-		wizardPanelContainer.add(wizardPanel);
-		return wizardPanelContainer;
+		arkCrudContainerVO.getWizardPanelContainer().setVisible(true);
+		arkCrudContainerVO.getWizardPanelContainer().add(wizardPanel);
+		return arkCrudContainerVO.getWizardPanelContainer();
 	}
 
 	protected WebMarkupContainer initialiseSearchResults() {
-		searchResultPanel = new SearchResultListPanel("searchResults", feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, searchResultPanelContainer, detailPanel,
-				viewButtonContainer, editButtonContainer, detailPanelFormContainer);
+		searchResultPanel = new SearchResultListPanel("searchResults", listView, containerForm, arkCrudContainerVO);
 
 		iModel = new LoadableDetachableModel<Object>() {
 			private static final long	serialVersionUID	= 1L;
@@ -120,26 +114,26 @@ public class FieldDataUploadContainerPanel extends AbstractContainerPanel<Upload
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
 		searchResultPanel.add(pageNavigator);
 		searchResultPanel.add(listView);
-		searchResultPanelContainer.add(searchResultPanel);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultPanel);
 		searchResultPanel.setVisible(true);
 
-		return searchResultPanelContainer;
+		return arkCrudContainerVO.getSearchResultPanelContainer();
 	}
 
+	@Override
 	protected WebMarkupContainer initialiseDetailPanel() {
-		detailPanel = new DetailPanel("detailPanel", searchResultPanelContainer, feedBackPanel, detailPanelContainer, searchPanelContainer, containerForm, viewButtonContainer, editButtonContainer,
-				detailPanelFormContainer);
+		detailPanel = new DetailPanel("detailPanel", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailPanel.initialisePanel();
-		detailPanelContainer.add(detailPanel);
-		return detailPanelContainer;
+		arkCrudContainerVO.getDetailPanelContainer().add(detailPanel);
+		return arkCrudContainerVO.getDetailPanelContainer();
 	}
 
+	@Override
 	protected WebMarkupContainer initialiseSearchPanel() {
-		searchComponentPanel = new SearchPanel("searchPanel", feedBackPanel, searchPanelContainer, listView, searchResultPanelContainer, wizardPanelContainer, wizardPanel, containerForm,
-				viewButtonContainer, editButtonContainer, wizardPanelFormContainer);
-		searchComponentPanel.initialisePanel();
-		searchComponentPanel.setVisible(false);
-		searchPanelContainer.add(searchComponentPanel);
-		return searchPanelContainer;
+		searchPanel = new SearchPanel("searchPanel", feedBackPanel, listView, containerForm, arkCrudContainerVO);
+		searchPanel.initialisePanel();
+		searchPanel.setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
+		return arkCrudContainerVO.getSearchPanelContainer();
 	}
 }
