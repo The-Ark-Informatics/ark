@@ -105,7 +105,7 @@ public class FieldUploadContainerPanel extends AbstractContainerPanel<UploadVO> 
 		PagingNavigator pageNavigator = new PagingNavigator("navigator", listView);
 		searchResultListPanel.add(pageNavigator);
 		searchResultListPanel.add(listView);
-		arkCrudContainerVO.getSearchPanelContainer().add(searchResultListPanel);
+		arkCrudContainerVO.getSearchResultPanelContainer().add(searchResultListPanel);
 		searchResultListPanel.setVisible(true);
 
 		return arkCrudContainerVO.getSearchResultPanelContainer();
