@@ -53,7 +53,7 @@ import au.org.theark.study.web.component.subject.form.DetailsForm;
  * 
  */
 @SuppressWarnings({ "unchecked", "serial" })
-public class SearchResults extends Panel {
+public class SearchResultListPanel extends Panel {
 
 	/**
 	 * 
@@ -68,7 +68,7 @@ public class SearchResults extends Panel {
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		iStudyService;
 
-	public SearchResults(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
+	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id);
 		this.subjectContainerForm = containerForm;
@@ -238,7 +238,7 @@ public class SearchResults extends Panel {
 				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 				// Always disable subjectUID
-				Details details = (Details) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
+				DetailPanel details = (DetailPanel) arkCrudContainerVO.getDetailPanelContainer().get("detailsPanel");
 				DetailsForm detailsForm = (DetailsForm) details.get("detailsForm");
 				detailsForm.getSubjectUIDTxtFld().setEnabled(false);
 

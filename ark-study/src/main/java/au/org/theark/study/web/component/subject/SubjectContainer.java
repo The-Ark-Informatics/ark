@@ -49,9 +49,9 @@ import au.org.theark.study.web.component.subject.form.ContainerForm;
  */
 public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
-	private Search														searchPanel;
-	private SearchResults											searchResultsPanel;
-	private Details													detailsPanel;
+	private SearchPanel														searchPanel;
+	private SearchResultListPanel											searchResultsPanel;
+	private DetailPanel													detailsPanel;
 	private PageableListView<SubjectVO>							pageableListView;
 	private ContainerForm											containerForm;
 
@@ -133,7 +133,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 			containerForm.getModelObject().getLinkSubjectStudy().setStudy(iArkCommonService.getStudy(sessionStudyId));
 		}
 
-		searchPanel = new Search("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
+		searchPanel = new SearchPanel("searchComponentPanel", feedBackPanel, pageableListView,arkCrudContainerVO,containerForm);
 
 		searchPanel.initialisePanel(cpModel);
 		arkCrudContainerVO.getSearchPanelContainer().add(searchPanel);
@@ -142,7 +142,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
 	protected WebMarkupContainer initialiseDetailPanel() {
 
-		detailsPanel = new Details("detailsPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
+		detailsPanel = new DetailPanel("detailsPanel", feedBackPanel, arkContextMarkup, containerForm,arkCrudContainerVO);
 		detailsPanel.initialisePanel();
 		arkCrudContainerVO.getDetailPanelContainer().add(detailsPanel);
 		return arkCrudContainerVO.getDetailPanelContainer();
@@ -150,7 +150,7 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
 	protected WebMarkupContainer initialiseSearchResults() {
 
-		searchResultsPanel = new SearchResults("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
+		searchResultsPanel = new SearchResultListPanel("searchResults",arkContextMarkup, containerForm,arkCrudContainerVO);
 
 		// Restrict to subjects in current study in session
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
