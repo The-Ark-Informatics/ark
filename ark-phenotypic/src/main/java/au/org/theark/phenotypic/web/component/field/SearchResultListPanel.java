@@ -23,6 +23,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,6 +32,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.pheno.entity.Field;
+import au.org.theark.core.model.pheno.entity.FieldType;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -39,29 +42,25 @@ import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
 
 @SuppressWarnings({ "serial", "unchecked" })
 public class SearchResultListPanel extends Panel {
+	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
 
-	private WebMarkupContainer	detailsPanelContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
-	private DetailPanel			detailPanel;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
+	private PageableListView<Field>	listView;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
-			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+	/**
+	 * 
+	 * @param id
+	 * @param arkCrudContainerVO
+	 * @param containerForm
+	 */
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, PageableListView<Field>	listView,ContainerForm containerForm) {
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
-		this.containerForm = studyCompContainerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.setDetailPanel(detail);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
+		this.listView = listView;
 	}
 
 	/**
@@ -170,29 +169,33 @@ public class SearchResultListPanel extends Panel {
 				FieldVO fieldVo = containerForm.getModelObject();
 				fieldVo.setField(field);
 
-				detailsPanelContainer.setVisible(true);
-				detailPanelFormContainer.setEnabled(false);
-				searchResultContainer.setVisible(false);
-				searchPanelContainer.setVisible(false);
-
+				arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
+				arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
+				arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+				arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 				// Button containers
 				// View Field, thus view container visible
-				viewButtonContainer.setVisible(true);
-				viewButtonContainer.setEnabled(true);
-				editButtonContainer.setVisible(false);
+				arkCrudContainerVO.getViewButtonContainer().setVisible(true);// saveBtn
+				arkCrudContainerVO.getViewButtonContainer().setEnabled(true);
+				arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 
 				// Have to Edit, before allowing delete
 				// detailPanel.getDetailForm().getDeleteButton().setEnabled(false);
 
 				// Disable fieldType dropdown if data exists
 				boolean hasData = iPhenotypicService.fieldHasData(field);
-				detailPanel.getDetailForm().getFieldTypeDdc().setEnabled(!hasData);
+				DropDownChoice<FieldType>	fieldTypeDdc = (DropDownChoice<FieldType>) arkCrudContainerVO.getDetailPanelFormContainer().get("field.fieldType");
+				fieldTypeDdc.setEnabled(!hasData);
+				//Replaced the above instead of using detailPanel which will be a lot heavy passing it around. TODO:Remove commented code after testing(NN)
+				//detailPanel.getDetailForm().getFieldTypeDdc().setEnabled(!hasData);
 
-				target.add(searchResultContainer);
-				target.add(detailsPanelContainer);
-				target.add(searchPanelContainer);
-				target.add(viewButtonContainer);
-				target.add(editButtonContainer);
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
+				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVO.getViewButtonContainer());
+				target.add(arkCrudContainerVO.getEditButtonContainer());
+				target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVO.getDetailPanelContainer());
 			}
 		};
 
@@ -203,18 +206,4 @@ public class SearchResultListPanel extends Panel {
 		return link;
 	}
 
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
-	}
 }

@@ -23,8 +23,6 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -42,14 +40,13 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.Field;
-import au.org.theark.core.model.pheno.entity.FieldData;
 import au.org.theark.core.model.pheno.entity.FieldType;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.DetailPanel;
 
 /**
  * @author nivedann
@@ -61,9 +58,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 	private IPhenotypicService				iPhenotypicService;
 
 	private ContainerForm					fieldContainerForm;
-
-	private int									mode;
-
 	private TextField<String>				fieldIdTxtFld;
 	private TextField<String>				fieldNameTxtFld;
 	private DropDownChoice<FieldType>	fieldTypeDdc;
@@ -89,10 +83,9 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 	 * @param detailFormContainer
 	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer, ContainerForm containerForm,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer, WebMarkupContainer searchPanelContainer) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 
-		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
+		super(id, feedBackPanel, containerForm,arkCrudContainerVO);
 	}
 
 	private void initFieldTypeDdc() {
@@ -165,17 +158,17 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 
 	private void addComponents() {
 		// Disable ID field editing
-		detailPanelFormContainer.add(fieldIdTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(fieldNameTxtFld);
-		detailPanelFormContainer.add(fieldDescriptionTxtAreaFld);
-		detailPanelFormContainer.add(fieldTypeDdc);
-		detailPanelFormContainer.add(fieldUnitsTxtFld);
-		detailPanelFormContainer.add(fieldMinValueTxtFld);
-		detailPanelFormContainer.add(fieldMaxValueTxtFld);
-		detailPanelFormContainer.add(fieldEncodedValuesTxtFld);
-		detailPanelFormContainer.add(fieldMissingValueTxtFld);
-
-		add(detailPanelFormContainer);
+		
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldIdTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldDescriptionTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldUnitsTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMinValueTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMaxValueTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldEncodedValuesTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldMissingValueTxtFld);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
@@ -207,22 +200,6 @@ public class DetailForm extends AbstractDetailForm<FieldVO> {
 	@Override
 	protected void processErrors(AjaxRequestTarget target) {
 		target.add(feedBackPanel);
-	}
-
-	public AjaxButton getDeleteButton() {
-		return deleteButton;
-	}
-
-	public void setDeleteButton(AjaxButton deleteButton) {
-		this.deleteButton = deleteButton;
-	}
-
-	public DropDownChoice<FieldType> getFieldTypeDdc() {
-		return fieldTypeDdc;
-	}
-
-	public void setFieldTypeDdc(DropDownChoice<FieldType> fieldTypeDdc) {
-		this.fieldTypeDdc = fieldTypeDdc;
 	}
 
 	/**

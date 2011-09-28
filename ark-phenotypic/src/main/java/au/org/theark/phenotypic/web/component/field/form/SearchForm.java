@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -37,10 +36,10 @@ import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.FieldType;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.FieldVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.DetailPanel;
 
 /**
  * @author cellis
@@ -63,22 +62,22 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 	private TextField<String>					fieldUnitsTxtFld;
 	private TextField<String>					fieldMinValueTxtFld;
 	private TextField<String>					fieldMaxValueTxtFld;
-	private DetailPanel							detailPanel;
+	
 
 	/**
 	 * @param id
+	 * 
+	 * String id,CompoundPropertyModel<StudyCompVo> cpmModel, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<StudyComp> listView){
+		
 	 */
-	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, PageableListView<Field> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
+	public SearchForm(String id, CompoundPropertyModel<FieldVO> model, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel, PageableListView<Field> listView) {
 
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+		super(id, model, feedBackPanel,arkCrudContainerVO);
 
 		this.cpmModel = model;
 		this.listView = listView;
-		this.setDetailPanel(detailPanel);
+		
 		initialiseFieldForm();
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
 	}
@@ -130,8 +129,9 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 		}
 		getModelObject().setFieldCollection(fieldCollection);
 		listView.removeAll();
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);
+
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	// Reset button implemented in AbstractSearchForm
@@ -150,20 +150,5 @@ public class SearchForm extends AbstractSearchForm<FieldVO> {
 		fieldVo.getField().setQualityControlStatus(true);
 		setModelObject(fieldVo);
 		preProcessDetailPanel(target);
-	}
-
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
 	}
 }
