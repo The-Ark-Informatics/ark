@@ -21,9 +21,6 @@ package au.org.theark.phenotypic.web.component.fieldUpload.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
@@ -35,13 +32,11 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
-import au.org.theark.core.model.pheno.entity.FieldUpload;
 import au.org.theark.core.model.pheno.entity.FileFormat;
-import au.org.theark.core.model.pheno.entity.PhenoCollectionUpload;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -58,7 +53,7 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	private IPhenotypicService						iPhenotypicService;
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService						iArkCommonService;
+	private IArkCommonService<Void>				iArkCommonService;
 
 	private PageableListView<PhenoUpload>		listView;
 	private CompoundPropertyModel<UploadVO>	cpmModel;
@@ -69,51 +64,25 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 	private TextField<String>						uploadIdTxtFld;
 	private TextField<String>						uploadFilenameTxtFld;
 	private DropDownChoice<FileFormat>			fileFormatDdc;
-
+	
 	/**
+	 * 
 	 * @param id
+	 * @param model
+	 * @param arkCrudContainerVO
+	 * @param feedBackPanel
+	 * @param listView
 	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer wizardContainer, WebMarkupContainer wizardPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
+	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel, PageableListView<PhenoUpload> listView) {
 
-		super(id, model, wizardContainer, wizardPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
+		super(id, model, feedBackPanel,arkCrudContainerVO);
 
 		this.cpmModel = model;
 		this.listView = listView;
-		this.wizardPanel = wizardPanel;
-		this.wizardContainer = wizardContainer;
+		
 		initialiseFieldForm();
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> model, PageableListView<PhenoUpload> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer,
-			WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer, WebMarkupContainer viewButtonContainer,
-			WebMarkupContainer editButtonContainer) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
-		this.cpmModel = model;
-		this.listView = listView;
-		this.detailPanel = detailPanel;
-		initialiseFieldForm();
-
-		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
-		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<UploadVO> compoundPropertyModel) {
-		super(id, compoundPropertyModel);
-		this.cpmModel = compoundPropertyModel;
-		initialiseFieldForm();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -143,8 +112,6 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		add(fileFormatDdc);
 	}
 
-	// Reset button implemented in AbstractSearchForm
-
 	@Override
 	protected void onSearch(AjaxRequestTarget target) {
 		target.add(feedbackPanel);
@@ -167,8 +134,8 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		getModelObject().setUploadCollection(uploadCollection);
 
 		listView.removeAll();
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
 	}
 
 	@Override
@@ -180,17 +147,16 @@ public class SearchForm extends AbstractSearchForm<UploadVO> {
 		uploadVo.getUpload().setId(null); // must ensure Id is blank onNew
 		setModelObject(uploadVo);
 
-		listContainer.setVisible(false);
-		searchMarkupContainer.setVisible(false);
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
+		arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
 
 		// Explicitly Show Wizard panel
-		wizardContainer.setVisible(true);
-		wizardContainer.setEnabled(true);
+		arkCrudContainerVO.getWizardPanelContainer().setVisible(true);
+		arkCrudContainerVO.getWizardPanelContainer().setEnabled(true);
 
-		target.add(listContainer);
-		target.add(searchMarkupContainer);
-		target.add(detailFormCompContainer);
-		target.add(wizardContainer);
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVO.getSearchPanelContainer());
+		target.add(arkCrudContainerVO.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVO.getWizardPanelContainer());
 	}
-
 }

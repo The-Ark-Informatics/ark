@@ -18,43 +18,32 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.fieldUpload;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.phenotypic.web.component.fieldUpload.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.fieldUpload.form.DetailForm;
 
-@SuppressWarnings("serial")
 public class DetailPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 5564530940538687914L;
 	private DetailForm			detailForm;
 	private FeedbackPanel		feedBackPanel;
-	private WebMarkupContainer	listContainer;
-	private WebMarkupContainer	detailsContainer;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
-
 	private ContainerForm		containerForm;
-
-	public DetailPanel(String id, final WebMarkupContainer listContainer, FeedbackPanel feedBackPanel, WebMarkupContainer detailsContainer, WebMarkupContainer searchPanelContainer,
-			ContainerForm containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+	private ArkCrudContainerVO arkCrudContainerVO;
+	
+	public DetailPanel(String id,  FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.feedBackPanel = feedBackPanel;
-		this.listContainer = listContainer;
-		this.detailsContainer = detailsContainer;
 		this.containerForm = containerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
 	public void initialisePanel() {
-		detailForm = new DetailForm("detailForm", feedBackPanel, this, listContainer, detailsContainer, containerForm, viewButtonContainer, editButtonContainer, detailPanelFormContainer,
-				searchPanelContainer);
-
+		detailForm = new DetailForm("detailForm", feedBackPanel, containerForm, arkCrudContainerVO);
 		detailForm.initialiseDetailForm();
 		add(detailForm);
 	}
