@@ -23,7 +23,12 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.StudyModelVO;
 
-public class SummaryForm extends Form {
+public class SummaryForm extends Form<StudyModelVO> {
+
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -2337659552076973105L;
 
 	public SummaryForm(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id);
