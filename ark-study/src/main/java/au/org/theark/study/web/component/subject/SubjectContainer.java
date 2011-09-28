@@ -121,10 +121,10 @@ public class SubjectContainer extends AbstractContainerPanel<SubjectVO> {
 
 				if (contextLoaded) {
 					// Put into Detail View mode
-					arkCrudContainerVO.getSearchPanelContainer().setVisible(true);
-					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);
+					arkCrudContainerVO.getSearchPanelContainer().setVisible(false);
+					arkCrudContainerVO.getSearchResultPanelContainer().setVisible(false);
 					arkCrudContainerVO.getDetailPanelContainer().setVisible(true);
-					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(true);
+					arkCrudContainerVO.getDetailPanelFormContainer().setEnabled(false);
 					arkCrudContainerVO.getViewButtonContainer().setVisible(true);
 					arkCrudContainerVO.getEditButtonContainer().setVisible(false);
 				}
