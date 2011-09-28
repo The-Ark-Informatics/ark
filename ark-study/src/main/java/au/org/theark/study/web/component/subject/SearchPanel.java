@@ -35,26 +35,24 @@ import au.org.theark.study.web.component.subject.form.SearchForm;
  */
 public class SearchPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long				serialVersionUID	= 8622291403026645858L;
 	private FeedbackPanel					feedBackPanel;
 	private PageableListView<SubjectVO>	listView;
-	private ArkCrudContainerVO arkCrudContainerVO;
+	private ArkCrudContainerVO				arkCrudContainerVO;
 
 	/**
 	 * Constructor
 	 * 
 	 * @param id
 	 * @param feedBackPanel
-	 * @param searchMarkupContainer
 	 * @param listView
-	 * @param resultListContainer
-	 * @param detailPanelContainer
-	 * @param detailFormContainer
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param detailPanel
+	 * @param arkCrudContainerVO
 	 * @param containerForm
 	 */
-	public SearchPanel(String id, FeedbackPanel feedBackPanel,PageableListView<SubjectVO> listView,ArkCrudContainerVO arkCrudContainerVO,	ContainerForm containerForm) {
+	public SearchPanel(String id, FeedbackPanel feedBackPanel, PageableListView<SubjectVO> listView, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
 		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
@@ -62,10 +60,7 @@ public class SearchPanel extends Panel {
 	}
 
 	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm) {
-
-		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel,arkCrudContainerVO);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel, arkCrudContainerVO);
 		add(searchStudyCompForm);
-
 	}
-
 }
