@@ -20,7 +20,6 @@ package au.org.theark.phenotypic.web.component.fieldDataUpload.form;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -29,6 +28,7 @@ import org.apache.wicket.util.file.File;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.form.AbstractWizardForm;
 import au.org.theark.phenotypic.model.vo.UploadVO;
 import au.org.theark.phenotypic.service.Constants;
@@ -38,14 +38,18 @@ import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadSte
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep3;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep4;
 import au.org.theark.phenotypic.web.component.fieldDataUpload.FieldDataUploadStep5;
-import au.org.theark.phenotypic.web.component.fieldDataUpload.WizardPanel;
+import au.org.theark.phenotypic.web.component.fieldDataUpload.form.ContainerForm;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial" })
 public class WizardForm extends AbstractWizardForm<UploadVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -4208718275072143464L;
+
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -55,22 +59,12 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 	private File							file;
 	private String							fileName;
 
-	/**
-	 * Constructor
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param wizardStep
-	 * @param listContainer
-	 * @param wizardContainer
-	 * @param containerForm
-	 * @param wizardButtonContainer
-	 * @param wizardFormContainer
-	 * @param searchPanelContainer
-	 */
-	public WizardForm(String id, FeedbackPanel feedBackPanel, WizardPanel wizardPanel, WebMarkupContainer listContainer, WebMarkupContainer wizardContainer, Form<UploadVO> containerForm,
-			WebMarkupContainer wizardButtonContainer, WebMarkupContainer wizardFormContainer, WebMarkupContainer searchPanelContainer) {
-		super(id, feedBackPanel, listContainer, wizardContainer, wizardFormContainer, searchPanelContainer, containerForm);
+	
+	public WizardForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
+		// TODO: Fix the AbstractWizardForm to use ArkCrudContainerVO
+		super(id, feedBackPanel, arkCrudContainerVO.getSearchResultPanelContainer(),
+				arkCrudContainerVO.getWizardPanelContainer(), arkCrudContainerVO.getWizardPanelFormContainer(), 
+				arkCrudContainerVO.getSearchPanelContainer(), containerForm);
 
 		// Set study in context
 		Study study = new Study();
@@ -115,9 +109,8 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 		add(wizardPanelFormContainer);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public void onFinish(AjaxRequestTarget target, Form form) {
+	public void onFinish(AjaxRequestTarget target, Form<?> form) {
 		this.info("Data upload of file: " + containerForm.getModelObject().getUpload().getFilename() + " was uploaded successfully");
 		onCancel(target);
 	}
@@ -136,9 +129,8 @@ public class WizardForm extends AbstractWizardForm<UploadVO> {
 		target.add(feedBackPanel);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
-	public void onError(AjaxRequestTarget target, Form form) {
+	public void onError(AjaxRequestTarget target, Form<?> form) {
 		processErrors(target);
 	}
 
