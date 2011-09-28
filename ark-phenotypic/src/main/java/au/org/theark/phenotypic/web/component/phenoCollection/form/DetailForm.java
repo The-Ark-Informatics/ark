@@ -45,6 +45,7 @@ import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.security.ArkPermissionHelper;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
@@ -53,7 +54,7 @@ import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.field.form.ContainerForm;
+import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
 import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 
 /**
@@ -67,8 +68,6 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
-
-	private ContainerForm				fieldContainerForm;
 
 	private int								mode;
 
@@ -88,24 +87,10 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param id
-	 * @param feedBackPanel
-	 * @param detailPanel
-	 * @param listContainer
-	 * @param detailsContainer
-	 * @param containerForm
-	 * @param viewButtonContainer
-	 * @param editButtonContainer
-	 * @param detailFormContainer
-	 * @param searchPanelContainer
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, DetailPanel detailPanel, WebMarkupContainer listContainer, WebMarkupContainer detailsContainer,
-			AbstractContainerForm<PhenoCollectionVO> containerForm, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer arkContextMarkup) {
-
-		super(id, feedBackPanel, listContainer, detailsContainer, detailFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-
+	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, 
+			ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.arkContextMarkup = arkContextMarkup;
 	}
 
@@ -185,18 +170,18 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	}
 
 	private void addComponents() {
-		detailPanelFormContainer.add(idTxtFld.setEnabled(false));
-		detailPanelFormContainer.add(nameTxtFld);
-		detailPanelFormContainer.add(descriptionTxtAreaFld);
-		detailPanelFormContainer.add(statusDdc);
-		detailPanelFormContainer.add(startDateTxtFld);
-		detailPanelFormContainer.add(endDateTxtFld);
-		detailPanelFormContainer.add(fieldPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(idTxtFld.setEnabled(false));
+		arkCrudContainerVO.getDetailPanelFormContainer().add(nameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(descriptionTxtAreaFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(statusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(startDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(endDateTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldPalette);
 
 		// Custom clear collection button
-		editButtonContainer.add(clearCollectionButton);
+		arkCrudContainerVO.getEditButtonContainer().add(clearCollectionButton);
 
-		add(detailPanelFormContainer);
+		add(arkCrudContainerVO.getDetailPanelFormContainer());
 	}
 
 	@Override
