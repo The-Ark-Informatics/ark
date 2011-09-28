@@ -511,12 +511,15 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 	private boolean validateEstYearOfComp(Long yearOfCompletion, Date dateOfApplication, String message, AjaxRequestTarget target) {
 		boolean validFlag = true;
 		SimpleDateFormat simpleDateformat = new SimpleDateFormat("yyyy");
-		int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication));
 
-		if (yearOfCompletion < dateOfApplicationYear) {
-			this.error(message);
-			processErrors(target);
-			validFlag = false;
+		if(dateOfApplication != null){
+			int dateOfApplicationYear = Integer.parseInt(simpleDateformat.format(dateOfApplication));
+
+			if (yearOfCompletion < dateOfApplicationYear) {
+				this.error(message);
+				processErrors(target);
+				validFlag = false;
+			}
 		}
 
 		return validFlag;
