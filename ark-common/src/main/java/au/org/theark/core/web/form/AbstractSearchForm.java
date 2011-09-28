@@ -106,9 +106,8 @@ public abstract class AbstractSearchForm<T> extends Form<T> {
 			}
 
 			@Override
-			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO 
-				
+			protected void onError(final AjaxRequestTarget target, Form<?> form1) {
+				target.add(feedbackPanel);
 			}
 		};
 
