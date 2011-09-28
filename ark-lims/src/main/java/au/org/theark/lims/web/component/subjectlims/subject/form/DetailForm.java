@@ -124,6 +124,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
+		this.containerForm = containerForm;
 		
 		// Disable editing of Subject details in LIMS
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT) {
