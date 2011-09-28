@@ -21,12 +21,8 @@ package au.org.theark.phenotypic.web.component.phenoCollection.form;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
-import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -41,20 +37,23 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.model.pheno.entity.Status;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.RoleConstants;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unchecked" })
 public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService									phenotypicService;
 
@@ -69,36 +68,17 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 	private DropDownChoice<Status>							statusDdc;
 	private DateTextField										phenoCollectionStartDateFld;
 	private DateTextField										phenoCollectionEndDateFld;
-	private DetailPanel											detailPanel;
 	private Long													sessionStudyId;
-	private WebMarkupContainer									arkContextMarkup;
 
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, DetailPanel detailPanel,
-			WebMarkupContainer listContainer, WebMarkupContainer searchMarkupContainer, WebMarkupContainer detailContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextMarkup) {
-
-		super(id, model, detailContainer, detailPanelFormContainer, viewButtonContainer, editButtonContainer, searchMarkupContainer, listContainer, feedBackPanel);
-
+	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> model, PageableListView<PhenoCollection> listView, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO) {
+		super(id, model, feedBackPanel, arkCrudContainerVO);
+		
 		this.cpmModel = model;
 		this.listView = listView;
-		this.detailPanel = detailPanel;
-		this.setArkContextMarkup(arkContextMarkup);
 		initialiseFieldForm();
 
 		this.sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a study");
-	}
-
-	/**
-	 * @param id
-	 */
-	public SearchForm(String id, CompoundPropertyModel<PhenoCollectionVO> compoundPropertyModel) {
-		super(id, compoundPropertyModel);
-		this.cpmModel = compoundPropertyModel;
-		initialiseFieldForm();
 	}
 
 	private void initStatusDdc() {
@@ -180,22 +160,8 @@ public class SearchForm extends AbstractSearchForm<PhenoCollectionVO> {
 		}
 		getModelObject().setPhenoCollectionCollection(phenoCollectionCollection);
 		listView.removeAll();
-		listContainer.setVisible(true);// Make the WebMarkupContainer that houses the search results visible
-		target.add(listContainer);// For ajax this is required so
+		arkCrudContainerVO.getSearchResultPanelContainer().setVisible(true);// Make the WebMarkupContainer that houses the search results visible
+		target.add(arkCrudContainerVO.getSearchResultPanelContainer());// For ajax this is required so
 	}
 
-	/**
-	 * @param arkContextMarkup
-	 *           the arkContextMarkup to set
-	 */
-	public void setArkContextMarkup(WebMarkupContainer arkContextMarkup) {
-		this.arkContextMarkup = arkContextMarkup;
-	}
-
-	/**
-	 * @return the arkContextMarkup
-	 */
-	public WebMarkupContainer getArkContextMarkup() {
-		return arkContextMarkup;
-	}
 }
