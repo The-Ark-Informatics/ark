@@ -18,7 +18,6 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subjectUpload;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -27,9 +26,11 @@ import au.org.theark.core.web.component.worksheet.ArkExcelWorkSheetAsGrid;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 import au.org.theark.study.web.component.subjectUpload.form.WizardForm;
 
-@SuppressWarnings("serial")
 public class WizardPanel extends Panel {
-	
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -3052058152472704291L;
 	private ArkCrudContainerVO			arkCrudContainerVO;
 	private WizardForm					wizardForm;
 	private FeedbackPanel				feedBackPanel;
