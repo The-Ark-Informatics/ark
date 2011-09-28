@@ -19,7 +19,6 @@
 package au.org.theark.core.web.form;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
@@ -55,48 +54,8 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 		setMultiPart(false);	//hack to fix the default super-class behaviour
 	}
 
-	protected void initialiseForm(Boolean isArkCrudContainerVOPattern) {
+	protected void initialiseRemoveButton() {
 
-		cancelButton = new AjaxButton(Constants.CANCEL, new StringResourceModel("cancelKey", this, null)) {
-			private static final long	serialVersionUID	= 1684005199059571017L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				if (isNew()) {
-					editCancelProcess(target);
-				}
-				else {
-					editCancelProcessForUpdate(target);
-				}
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget arg0, Form<?> arg1) {
-				// TODO Auto-generated method stub
-				
-			}
-		};
-
-		saveButton = new AjaxButton(Constants.SAVE, new StringResourceModel("saveKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -423605230448635419L;
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				onSave(containerForm, target);
-				target.add(arkCrudContainerVO.getDetailPanelContainer());
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				saveOnErrorProcess(target);
-			}
-		};
 
 		deleteButton = new AjaxDeleteButton(Constants.REMOVE, new StringResourceModel("confirmRemove", this, null), new StringResourceModel("removeUserKey", this, null)) {
 			/**
@@ -120,46 +79,10 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 				
 			}
 		};
-
-		editButton = new AjaxButton("edit", new StringResourceModel("editKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= -6282464357368710796L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editButtonProcess(target);
-				// Add the sub-class functionality
-				onEditButtonClick();
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-
-			@Override
-			public boolean isVisible() {
-				return ArkPermissionHelper.isActionPermitted(Constants.SAVE);
-			}
-		};
-
-		editCancelButton = new AjaxButton("editCancel", new StringResourceModel("editCancelKey", this, null)) {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 5457464178392550628L;
-
-			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				editCancelProcess(target);
-			}
-
-			public void onError(AjaxRequestTarget target, Form<?> form) {
-				processErrors(target);
-			}
-		};
-
-
-		addComponentsToForm();
+		
+		arkCrudContainerVO.getEditButtonContainer().remove(Constants.DELETE);
+		arkCrudContainerVO.getEditButtonContainer().addOrReplace(deleteButton.setDefaultFormProcessing(false));
+		
 	}
 
 	/**
