@@ -56,6 +56,7 @@ import au.org.theark.core.model.study.entity.TitleType;
 import au.org.theark.core.model.study.entity.VitalStatus;
 import au.org.theark.core.model.study.entity.YesNo;
 import au.org.theark.core.service.IArkCommonService;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
@@ -77,7 +78,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>						iArkCommonService;
-
+	
 	protected TextField<String>							subjectUIDTxtFld;
 	protected TextField<String>							firstNameTxtFld;
 	protected TextField<String>							middleNameTxtFld;
@@ -121,13 +122,11 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	protected ContainerForm									containerForm;
 
 	protected Study											study;
+	
+	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer resultListContainer, WebMarkupContainer detailPanelContainer, WebMarkupContainer detailPanelFormContainer,
-			WebMarkupContainer searchPanelContainer, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer arkContextContainer, ContainerForm containerForm) {
-
-		super(id, feedBackPanel, resultListContainer, detailPanelContainer, detailPanelFormContainer, searchPanelContainer, viewButtonContainer, editButtonContainer, containerForm);
-		this.containerForm = containerForm;
-
+		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
+		
 		// Disable editing of Subject details in LIMS
 		editButton = new AjaxButton(au.org.theark.core.Constants.EDIT) {
 
@@ -153,7 +152,7 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 				log.error("Incorrect application workflow - tried to edit Subject Details via LIMS and error occurred");
 			}
 		};
-		this.viewButtonContainer.addOrReplace(editButton);
+		arkCrudContainerVO.getViewButtonContainer().add(editButton);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -319,29 +318,19 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 	}
 
 	public void addDetailFormComponents() {
-		detailPanelFormContainer.add(subjectUIDTxtFld);
-		detailPanelFormContainer.add(titleTypeDdc);
-		detailPanelFormContainer.add(firstNameTxtFld);
-		//detailPanelFormContainer.add(middleNameTxtFld);
-		detailPanelFormContainer.add(lastNameTxtFld);
-		//detailPanelFormContainer.add(preferredNameTxtFld);
-		detailPanelFormContainer.add(dateOfBirthTxtFld);
-		detailPanelFormContainer.add(vitalStatusDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(subjectUIDTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(titleTypeDdc);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(firstNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(lastNameTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(dateOfBirthTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(vitalStatusDdc);
 
 		// Death details only be edited when vital status set to deceased
 		wmcDeathDetailsContainer.add(dateOfDeathTxtFld);
 		wmcDeathDetailsContainer.add(causeOfDeathTxtFld);
-		detailPanelFormContainer.add(wmcDeathDetailsContainer);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(wmcDeathDetailsContainer);
 
-		detailPanelFormContainer.add(genderTypeDdc);
-		//detailPanelFormContainer.add(subjectStatusDdc);
-		//detailPanelFormContainer.add(maritalStatusDdc);
-		//detailPanelFormContainer.add(personContactMethodDdc);
-
-		// Preferred email becomes required when selected as preferred contact method
-		//wmcPreferredEmailContainer.add(preferredEmailTxtFld);
-		//detailPanelFormContainer.add(wmcPreferredEmailContainer);
-		//detailPanelFormContainer.add(otherEmailTxtFld);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(genderTypeDdc);
 	}
 
 	/*
@@ -360,9 +349,6 @@ public class DetailForm extends AbstractDetailForm<LimsVO> {
 		// Set study in context back to limsVo.study
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		if(sessionStudyId != null) {
-			//Study study = iArkCommonService.getStudy(sessionStudyId);
-			//limsVo.setStudy(study);
-			//limsVo.setStudyList(getStudyListForUser());	
 			containerForm.setModelObject(limsVo);
 
 			// Refresh the contextUpdateTarget (remove)
