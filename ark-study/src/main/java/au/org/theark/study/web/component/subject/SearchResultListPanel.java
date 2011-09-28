@@ -43,7 +43,6 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
-import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
 import au.org.theark.study.web.component.subject.form.DetailsForm;
@@ -64,9 +63,6 @@ public class SearchResultListPanel extends Panel {
 	private ArkCrudContainerVO arkCrudContainerVO;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService	iArkCommonService;
-
-	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
-	private IStudyService		iStudyService;
 
 	public SearchResultListPanel(String id, WebMarkupContainer arkContextMarkup, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
 
