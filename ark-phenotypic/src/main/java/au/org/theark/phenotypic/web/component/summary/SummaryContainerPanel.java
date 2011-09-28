@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.phenotypic.web.component.summary;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
@@ -28,8 +29,16 @@ public class SummaryContainerPanel extends Panel {
 
 	public SummaryContainerPanel(String id) {
 		super(id);
+		add(initialiseFeedBackPanel());
 		summaryPanel = new SummaryPanel("summaryPanel", feedBackPanel);
 		summaryPanel.initialisePanel();
 		add(summaryPanel);
+	}
+	
+	protected WebMarkupContainer initialiseFeedBackPanel() {
+		/* Feedback Panel */
+		feedBackPanel = new FeedbackPanel("feedbackMessage");
+		feedBackPanel.setOutputMarkupId(true);
+		return feedBackPanel;
 	}
 }
