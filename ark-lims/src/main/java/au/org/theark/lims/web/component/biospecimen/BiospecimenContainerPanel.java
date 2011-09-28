@@ -28,6 +28,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.biospecimen.form.ContainerForm;
@@ -48,27 +49,28 @@ public class BiospecimenContainerPanel extends Panel {
 	protected LimsVO									limsVO				= new LimsVO();
 	protected CompoundPropertyModel<LimsVO>	cpModel;
 
+	protected ArkCrudContainerVO					arkCrudContainerVO;
+
 	protected FeedbackPanel							feedbackPanel;
 	protected WebMarkupContainer					arkContextMarkup;
 	protected ContainerForm							containerForm;
-	protected WebMarkupContainer					resultListContainer;
 	protected Panel									biospecimenListPanel;
 
 	public BiospecimenContainerPanel(String id, WebMarkupContainer arkContextMarkup) {
 		super(id);
 		this.arkContextMarkup = arkContextMarkup;
 		cpModel = new CompoundPropertyModel<LimsVO>(limsVO);
+		arkCrudContainerVO = new ArkCrudContainerVO();
+		
 		initialisePanel();
 	}
 
 	public void initialisePanel() {
 		containerForm = new ContainerForm("containerForm", cpModel);
-		
-		resultListContainer = initialiseSearchResultPanel();
-		
+				
 		containerForm.add(initialiseFeedBackPanel());
 		containerForm.add(initialiseSearchPanel());
-		containerForm.add(resultListContainer);
+		containerForm.add(initialiseSearchResultPanel());
 		this.add(containerForm);
 	}
 	
@@ -80,15 +82,15 @@ public class BiospecimenContainerPanel extends Panel {
 	}
 	
 	private WebMarkupContainer initialiseSearchPanel() {
-		WebMarkupContainer searchPanelContainer = new WebMarkupContainer("searchPanelContainer");
-		SearchPanel searchComponentPanel = new SearchPanel("searchPanel", feedbackPanel, resultListContainer, arkContextMarkup, containerForm);
+		WebMarkupContainer searchPanelContainer = arkCrudContainerVO.getSearchPanelContainer();
+		SearchPanel searchComponentPanel = new SearchPanel("searchPanel", feedbackPanel, containerForm, arkCrudContainerVO);
 		searchComponentPanel.initialisePanel();
 		searchPanelContainer.add(searchComponentPanel);
 		return searchPanelContainer;
 	}
 	
 	private WebMarkupContainer initialiseSearchResultPanel() {
-		WebMarkupContainer resultListContainer = new WebMarkupContainer("resultListContainer");
+		WebMarkupContainer resultListContainer = arkCrudContainerVO.getSearchResultPanelContainer();
 		resultListContainer.setOutputMarkupPlaceholderTag(true);
 		
 		BiospecimenListPanel biospecimenListPanel = new BiospecimenListPanel("biospecimenListPanel", feedbackPanel, cpModel);
