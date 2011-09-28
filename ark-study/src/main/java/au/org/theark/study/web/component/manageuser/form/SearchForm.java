@@ -23,23 +23,26 @@ import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.validator.EmailAddressValidator;
-import org.apache.wicket.validation.validator.StringValidator;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.model.study.entity.YesNo;
+import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkModuleVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -127,11 +130,42 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 		prePopulateArkUserRoleList();
 		arkCrudContainerVO.getWmcForarkUserAccountPanel().setVisible(true);
 		preProcessDetailPanel(target);
+		target.add(arkCrudContainerVO.getEditButtonContainer());
 		target.add(arkCrudContainerVO.getWmcForarkUserAccountPanel());// This should re-render the list again
 	}
 
 	protected void initialiseSearchForm() {
+		
+		newButton = new ArkBusyAjaxButton(Constants.NEW) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1666656098281624401L;
 
+			@Override
+			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+				// Make the details panel visible, disabling delete button (if found)
+				// AjaxButton ajaxButton = (AjaxButton) editButtonContainer.get("delete");
+				AjaxButton ajaxButton = (AjaxButton) arkCrudContainerVO.getEditButtonContainer().get("remove");
+				if (ajaxButton != null) {
+					ajaxButton.setEnabled(false);
+					target.add(ajaxButton);
+				}
+				// Call abstract method
+				onNew(target);
+			}
+
+			@Override
+			public boolean isVisible() {
+				return ArkPermissionHelper.isActionPermitted(Constants.NEW);
+			}
+
+			@Override
+			protected void onError(final AjaxRequestTarget target, Form<?> form) {
+				target.add(feedbackPanel);
+			}
+		};
+		
 		userNameTxtField = new TextField<String>(Constants.USER_NAME);
 		firstNameTxtField = new TextField<String>(Constants.FIRST_NAME);
 		lastNameTxtField = new TextField<String>(Constants.LAST_NAME);
@@ -140,6 +174,7 @@ public class SearchForm extends AbstractSearchForm<ArkUserVO> {
 
 
 	private void addSearchComponentsToForm() {
+		addOrReplace(newButton);
 		add(emailTxtField);
 		add(firstNameTxtField);
 		add(lastNameTxtField);

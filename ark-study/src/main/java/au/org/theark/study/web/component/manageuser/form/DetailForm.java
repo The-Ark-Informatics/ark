@@ -54,6 +54,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
+import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -76,11 +77,10 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	protected PasswordTextField	confirmPasswordField		= new PasswordTextField(Constants.CONFIRM_PASSWORD);
 	protected PasswordTextField	oldPasswordField			= new PasswordTextField(Constants.OLD_PASSWORD);
 	protected WebMarkupContainer	groupPasswordContainer	= new WebMarkupContainer("groupPasswordContainer");
-	private ArkCrudContainerVO		arkCrudContainerVO;
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id, feedBackPanel, arkCrudContainerVO, containerForm);
-		this.arkCrudContainerVO = arkCrudContainerVO;
+		initialiseRemoveButton();
 	}
 
 	@SuppressWarnings("unchecked")
