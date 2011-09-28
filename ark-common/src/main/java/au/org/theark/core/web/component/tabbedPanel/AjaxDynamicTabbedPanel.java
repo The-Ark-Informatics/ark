@@ -54,7 +54,7 @@ public class AjaxDynamicTabbedPanel extends DynamicTabbedPanel {
 			public void onClick(final AjaxRequestTarget target) {
 				setSelectedTab(index);
 				if (target != null) {
-					target.addComponent(AjaxDynamicTabbedPanel.this);
+					target.add(AjaxDynamicTabbedPanel.this);
 				}
 				onAjaxUpdate(target);
 			}

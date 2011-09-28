@@ -76,7 +76,7 @@ public abstract class AbstractWizardStepPanel extends Panel {
 		else {
 			current.replaceWith(content);
 			if (target != null) {
-				target.addComponent(get(getContentId()));
+				target.add(get(getContentId()));
 			}
 		}
 

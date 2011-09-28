@@ -39,35 +39,35 @@ public class ContextHelper {
 		arkContextMarkup.addOrReplace(phenoLabel);
 		genoLabel = new Label("genoLabel", new Model(""));
 		arkContextMarkup.addOrReplace(genoLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setStudyContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
 		studyLabel = new Label("studyLabel", new Model("Study: " + label));
 		arkContextMarkup.addOrReplace(studyLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setSubjectContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
 		subjectLabel = new Label("subjectLabel", new Model("Subject UID: " + label));
 		arkContextMarkup.addOrReplace(subjectLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setPhenoContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
 		phenoLabel = new Label("phenoLabel", new Model("Pheno Col.: " + label));
 		arkContextMarkup.addOrReplace(phenoLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void setGenoContextLabel(AjaxRequestTarget target, String label, WebMarkupContainer arkContextMarkup) {
 		genoLabel = new Label("genoLabel", new Model("Geno Col.: " + label));
 		arkContextMarkup.addOrReplace(genoLabel);
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -77,6 +77,6 @@ public class ContextHelper {
 			arkContextMarkup.addOrReplace(phenoLabel);
 		}
 
-		target.addComponent(arkContextMarkup);
+		target.add(arkContextMarkup);
 	}
 }
