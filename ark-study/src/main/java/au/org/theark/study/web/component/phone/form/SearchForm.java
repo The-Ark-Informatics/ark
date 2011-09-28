@@ -132,7 +132,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 			// }
 			Collection<Phone> phones = studyService.getPersonPhoneList(sessionPersonId, getModelObject().getPhone());
 			if (phones != null && phones.size() == 0) {
-				this.info("Fields with the specified criteria does not exist in the system.");
+				this.info("No records match the specified criteria.");
 				target.add(feedbackPanel);
 			}
 
