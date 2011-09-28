@@ -33,6 +33,8 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
 import org.apache.wicket.util.io.Streams;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.util.ImageResource;
@@ -41,12 +43,12 @@ public class StudyHelper implements Serializable {
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 8485137084667518625L;
-
-	NonCachingImage				studyLogoImage;
-	ContextImage					noStudyLogoImage;
-	Label								studyNameLabel		= null;
-	Label								studyLabel			= null;
+	private static final long		serialVersionUID	= 8485137084667518625L;
+	private static final Logger	log					= LoggerFactory.getLogger(StudyHelper.class);
+	private NonCachingImage			studyLogoImage;
+	private ContextImage				noStudyLogoImage;
+	private Label						studyNameLabel		= null;
+	private Label						studyLabel			= null;
 
 	public void setStudyLogo(Study study, AjaxRequestTarget target, WebMarkupContainer studyNameMarkup, WebMarkupContainer studyLogoMarkup) {
 		// Set the study logo
@@ -58,7 +60,7 @@ public class StudyHelper implements Serializable {
 		}
 		else {
 			// Only show study name, no logo
-			studyNameLabel = new Label("studyNameLabel", new Model(study.getName()));
+			studyNameLabel = new Label("studyNameLabel", new Model<String>(study.getName()));
 			studyNameMarkup.replace(studyNameLabel);
 			studyNameMarkup.setVisible(true);
 			studyLogoMarkup.setVisible(false);
@@ -68,7 +70,7 @@ public class StudyHelper implements Serializable {
 		target.add(studyLogoMarkup);
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings("unchecked")
 	public void setStudyLogoImage(Study study, String id, WebMarkupContainer studyLogoImageContainer) {
 		// Set the study logo
 		try {
@@ -84,6 +86,11 @@ public class StudyHelper implements Serializable {
 					final byte[] data = out.toByteArray(); // studyLogoBlob.getBytes(1, (int) studyLogoBlob.length());
 
 					studyLogoImage = new NonCachingImage(id, new AbstractReadOnlyModel() {
+						/**
+						 * 
+						 */
+						private static final long	serialVersionUID	= 1L;
+
 						@Override
 						public Object getObject() {
 							return new ImageResource(data, "gif");
@@ -95,25 +102,20 @@ public class StudyHelper implements Serializable {
 			}
 			else {
 				noStudyLogoImage = new ContextImage("study.studyLogoImage", new Model<String>("images/no_study_logo.gif"));
-				;
 				studyLogoImageContainer.replace(noStudyLogoImage);
 			}
 		}
 		catch (SQLException sqle) {
-			// Log SQL exception
-			sqle.printStackTrace();
+			log.error(sqle.getMessage());
 		}
 		catch (IOException ioe) {
-			// Log IO Exception
-			ioe.printStackTrace();
+			log.error(ioe.getMessage());
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public void setStudyContextLabel(AjaxRequestTarget target, String studyName, WebMarkupContainer arkContextMarkup) {
-		studyLabel = new Label("studyLabel", new Model("Study: " + studyName));
+		studyLabel = new Label("studyLabel", new Model<String>("Study: " + studyName));
 		arkContextMarkup.addOrReplace(studyLabel);
 		target.add(arkContextMarkup);
 	}
-
 }
