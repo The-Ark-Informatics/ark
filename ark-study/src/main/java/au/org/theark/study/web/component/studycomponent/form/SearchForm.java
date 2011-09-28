@@ -52,21 +52,7 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService					studyService;
-
-	protected void addSearchComponentsToForm() {
-		add(studyCompIdTxtFld);
-		add(compNameTxtFld);
-		add(keywordTxtArea);
-	}
-
-	protected void initialiseSearchForm() {
-
-		studyCompIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
-		compNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
-		descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
-		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
-	}
-
+	
 	/**
 	 * 
 	 * @param id
@@ -87,6 +73,22 @@ public class SearchForm extends AbstractSearchForm<StudyCompVo> {
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		disableSearchForm(sessionStudyId, "There is no study in context. Please select a Study.");
 	}
+
+	protected void addSearchComponentsToForm() {
+		add(studyCompIdTxtFld);
+		add(compNameTxtFld);
+		add(keywordTxtArea);
+	}
+
+	protected void initialiseSearchForm() {
+
+		studyCompIdTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_ID);
+		compNameTxtFld = new TextField<String>(Constants.STUDY_COMPONENT_NAME);
+		descriptionTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_DESCRIPTION);
+		keywordTxtArea = new TextArea<String>(Constants.STUDY_COMPONENT_KEYWORD);
+	}
+
+
 	/*
 	 * (non-Javadoc)
 	 * 
