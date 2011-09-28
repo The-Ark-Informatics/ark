@@ -25,8 +25,12 @@ import au.org.theark.core.vo.StudyModelVO;
 
 public class BaseForm extends Form<StudyModelVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -6987234585940716713L;
+
 	public BaseForm(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id, model);
 	}
-
 }
