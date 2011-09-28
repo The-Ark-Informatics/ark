@@ -23,9 +23,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
-import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
@@ -47,14 +45,13 @@ import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
 import au.org.theark.core.web.component.ArkBusyAjaxLink;
-import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
+@SuppressWarnings("unchecked")
 public class SearchResultListPanel extends Panel {
-
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService		iArkCommonService;
+	private IArkCommonService	iArkCommonService;
 
 	/**
 	 * 
@@ -63,9 +60,6 @@ public class SearchResultListPanel extends Panel {
 	private NonCachingImage			studyLogoImage;
 	private transient StudyHelper	studyHelper;
 	private TabbedPanel				moduleTabbedPanel;
-
-	@SpringBean(name = "userService")
-	private IUserService				userService;
 
 	@SpringBean(name = "arkLdapRealm")
 	private ArkLdapRealm				realm;
@@ -90,6 +84,11 @@ public class SearchResultListPanel extends Panel {
 	public PageableListView<Study> buildPageableListView(IModel iModel, final WebMarkupContainer searchResultsContainer) {
 
 		PageableListView<Study> studyPageableListView = new PageableListView<Study>("studyList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<Study> item) {
 
@@ -121,7 +120,12 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("dateOfApplication", dateOfApplication));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -133,15 +137,17 @@ public class SearchResultListPanel extends Panel {
 		return studyPageableListView;
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
 	private AjaxLink buildLink(final Study study, final WebMarkupContainer searchResultsContainer) {
 
 		ArkBusyAjaxLink link = new ArkBusyAjaxLink("studyName") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 
-				SecurityManager securityManager = ThreadContext.getSecurityManager();
 				Subject currentUser = SecurityUtils.getSubject();
 
 				// Place the selected study in session context for the user
@@ -236,9 +242,6 @@ public class SearchResultListPanel extends Panel {
 
 				// Refresh base container form to remove any feedBack messages
 				target.add(studyContainerForm);
-
-				// Refresh main tabs based on study selection
-				TabbedPanel moduleTabbedPanelRef = moduleTabbedPanel;
 
 				target.add(moduleTabbedPanel);
 			}
