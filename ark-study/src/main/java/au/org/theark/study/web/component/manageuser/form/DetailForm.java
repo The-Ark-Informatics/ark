@@ -295,7 +295,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			}
 			
 		} catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 	}
