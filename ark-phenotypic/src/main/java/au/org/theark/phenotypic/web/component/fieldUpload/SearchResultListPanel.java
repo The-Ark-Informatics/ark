@@ -23,7 +23,6 @@ import java.sql.SQLException;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -33,10 +32,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
-import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.resource.StringResourceStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +40,8 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityCannotBeRemoved;
 import au.org.theark.core.model.pheno.entity.PhenoUpload;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
+import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.phenotypic.service.IPhenotypicService;
@@ -56,28 +54,21 @@ public class SearchResultListPanel extends Panel {
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
-	private WebMarkupContainer	detailsPanelContainer;
-	private WebMarkupContainer	feedBackPanel;
-	private WebMarkupContainer	searchPanelContainer;
-	private WebMarkupContainer	searchResultContainer;
+	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
-	private DetailPanel			detailPanel;
-	private WebMarkupContainer	detailPanelFormContainer;
-	private WebMarkupContainer	viewButtonContainer;
-	private WebMarkupContainer	editButtonContainer;
+	private PageableListView<PhenoUpload>	listView;
 
-	public SearchResultListPanel(String id, WebMarkupContainer detailPanelContainer, WebMarkupContainer feedBackPanel, WebMarkupContainer searchPanelContainer, ContainerForm studyCompContainerForm,
-			WebMarkupContainer searchResultContainer, DetailPanel detail, WebMarkupContainer viewButtonContainer, WebMarkupContainer editButtonContainer, WebMarkupContainer detailPanelFormContainer) {
+	/**
+	 * 
+	 * @param id
+	 * @param arkCrudContainerVO
+	 * @param containerForm
+	 */
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, PageableListView<PhenoUpload> listView,ContainerForm containerForm) {
 		super(id);
-		this.detailsPanelContainer = detailPanelContainer;
-		this.feedBackPanel = feedBackPanel;
-		this.containerForm = studyCompContainerForm;
-		this.searchPanelContainer = searchPanelContainer;
-		this.searchResultContainer = searchResultContainer;
-		this.viewButtonContainer = viewButtonContainer;
-		this.editButtonContainer = editButtonContainer;
-		this.detailPanelFormContainer = detailPanelFormContainer;
-		this.setDetailPanel(detail);
+		this.arkCrudContainerVO = arkCrudContainerVO;
+		this.containerForm = containerForm;
+		this.listView = listView;
 
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "DataDictionaryUpload", au.org.theark.phenotypic.web.Constants.DATA_DICTIONARY_HEADER) {
 
@@ -119,7 +110,6 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// File Format
 				if (upload.getFileFormat() != null) {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));// the name
@@ -132,7 +122,6 @@ public class SearchResultListPanel extends Panel {
 					// mark-up
 				}
 
-				// TODO when displaying text escape any special characters
 				// UserId
 				if (upload.getUserId() != null) {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));// the ID here must match the
@@ -142,13 +131,6 @@ public class SearchResultListPanel extends Panel {
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, ""));// the ID here must match the ones in mark-up
 				}
-
-				/*
-				 * TODO when displaying text escape any special characters // Insert time if (upload.getInsertTime() != null) { item.add(new
-				 * Label(au.org.theark.phenotypic.web.Constants. UPLOADVO_UPLOAD_INSERT_TIME, upload.getInsertTime().toString()));// the ID // here must
-				 * // match the // ones in mark-up } else { item.add(new Label(au.org .theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME,
-				 * ""));// the ID here must match the ones in // mark-up }
-				 */
 
 				// Start time
 				if (upload.getStartTime() != null) {
@@ -208,19 +190,12 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName(upload.getFilename());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-			   
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
-				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, "uploadReport" + upload.getFilename()));
 
 			};
 		};
 
 		// Add the label for the link
-		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
 		link.add(nameLinkLabel);
 		return link;
@@ -239,11 +214,7 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/csv");
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName(upload.getFilename());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, upload.getFilename()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/csv", data, "uploadReport" + upload.getFilename()));
 			}
 
 			@Override
@@ -273,16 +244,11 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName("uploadReport" + upload.getId());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
 
 		// Add the label for the link
-		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("downloadReportLbl", "Download Report");
 		link.add(nameLinkLabel);
 		return link;
@@ -301,11 +267,7 @@ public class SearchResultListPanel extends Panel {
 					log.error(e.getMessage());
 				}
 				
-				StringResourceStream stream = new StringResourceStream(new String(data), "text/plain");
-				ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-				resourceStreamRequestHandler.setFileName("uploadReport" + upload.getId());
-				resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-				//getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("text/plain", data, "uploadReport" + upload.getId()));
+				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			}
 
 			@Override
@@ -344,7 +306,7 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Update the result panel and containerForm (for feedBack message)
-				target.add(searchResultContainer);
+				target.add(arkCrudContainerVO.getSearchPanelContainer());
 				target.add(containerForm);
 			}
 		};
@@ -352,20 +314,5 @@ public class SearchResultListPanel extends Panel {
 		ajaxButton.setDefaultFormProcessing(false);
 
 		return ajaxButton;
-	}
-
-	/**
-	 * @param detailPanel
-	 *           the detailPanel to set
-	 */
-	public void setDetailPanel(DetailPanel detailPanel) {
-		this.detailPanel = detailPanel;
-	}
-
-	/**
-	 * @return the detailPanel
-	 */
-	public DetailPanel getDetailPanel() {
-		return detailPanel;
 	}
 }
