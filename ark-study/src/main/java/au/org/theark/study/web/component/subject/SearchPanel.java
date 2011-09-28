@@ -18,39 +18,54 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.subject;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.vo.ArkCrudContainerVO;
+import au.org.theark.core.vo.SubjectVO;
+import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subject.form.ContainerForm;
-import au.org.theark.study.web.component.subject.form.DetailsForm;
+import au.org.theark.study.web.component.subject.form.SearchForm;
 
 /**
  * @author nivedann
  * 
  */
-public class Details extends Panel {
+public class SearchPanel extends Panel {
 
-	private DetailsForm			detailsForm;
-	private FeedbackPanel		feedBackPanel;
-	private WebMarkupContainer	arkContextContainer;
-	private ContainerForm		containerForm;
+	private FeedbackPanel					feedBackPanel;
+	private PageableListView<SubjectVO>	listView;
 	private ArkCrudContainerVO arkCrudContainerVO;
 
-	public Details(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextContainer, ContainerForm containerForm,ArkCrudContainerVO arkCrudContainerVO) {
+	/**
+	 * Constructor
+	 * 
+	 * @param id
+	 * @param feedBackPanel
+	 * @param searchMarkupContainer
+	 * @param listView
+	 * @param resultListContainer
+	 * @param detailPanelContainer
+	 * @param detailFormContainer
+	 * @param viewButtonContainer
+	 * @param editButtonContainer
+	 * @param detailPanel
+	 * @param containerForm
+	 */
+	public SearchPanel(String id, FeedbackPanel feedBackPanel,PageableListView<SubjectVO> listView,ArkCrudContainerVO arkCrudContainerVO,	ContainerForm containerForm) {
 		super(id);
+		this.listView = listView;
 		this.feedBackPanel = feedBackPanel;
-		this.arkContextContainer = arkContextContainer;
-		this.containerForm = containerForm;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 	}
 
-	public void initialisePanel() {
+	public void initialisePanel(CompoundPropertyModel<SubjectVO> subjectVoCpm) {
 
-		detailsForm = new DetailsForm("detailsForm", feedBackPanel, arkContextContainer, containerForm,arkCrudContainerVO);
-		detailsForm.initialiseDetailForm();
-		add(detailsForm);
+		SearchForm searchStudyCompForm = new SearchForm(Constants.SEARCH_FORM, subjectVoCpm, listView, feedBackPanel,arkCrudContainerVO);
+		add(searchStudyCompForm);
+
 	}
 
 }
