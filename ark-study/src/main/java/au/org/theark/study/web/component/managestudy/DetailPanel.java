@@ -18,17 +18,20 @@
  ******************************************************************************/
 package au.org.theark.study.web.component.managestudy;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
-public class Details extends Panel {
+public class DetailPanel extends Panel {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+	
 	private FeedbackPanel			fbPanel;
-	private WebMarkupContainer		arkContextMarkup;
 	private Container					studyContainerForm;
 
 	private DetailForm				detailForm;
@@ -42,7 +45,7 @@ public class Details extends Panel {
 	 * @param studyCrudContainerVO
 	 * @param containerForm
 	 */
-	public Details(String id, FeedbackPanel feedbackPanel, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
+	public DetailPanel(String id, FeedbackPanel feedbackPanel, StudyCrudContainerVO studyCrudContainerVO, Container containerForm) {
 		super(id);
 		studyContainerForm = containerForm;
 		this.studyCrudContainerVO = studyCrudContainerVO;

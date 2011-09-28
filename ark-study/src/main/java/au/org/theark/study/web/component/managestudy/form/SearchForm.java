@@ -50,7 +50,7 @@ import au.org.theark.core.vo.StudyModelVO;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.form.AbstractSearchForm;
 import au.org.theark.study.web.Constants;
-import au.org.theark.study.web.component.managestudy.Details;
+import au.org.theark.study.web.component.managestudy.DetailPanel;
 import au.org.theark.study.web.component.managestudy.StudyCrudContainerVO;
 import au.org.theark.study.web.component.managestudy.StudyHelper;
 
@@ -195,9 +195,10 @@ public class SearchForm extends AbstractSearchForm<StudyModelVO> {
 		containerForm.getModelObject().getStudy().setAutoGenerateSubjectUid(false);
 		containerForm.getModelObject().getStudy().setAutoConsent(false);
 
+		//TODO: Suggest moving some of this "onNew" code into DetailPanel/DetailForm's onBeforeRender(..)
 		// Disable SubjectUID pattern fields by default for New study
 		WebMarkupContainer wmc = (WebMarkupContainer) studyCrudContainerVO.getDetailPanelContainer();
-		Details detailsPanel = (Details) wmc.get("detailsPanel");
+		DetailPanel detailsPanel = (DetailPanel) wmc.get("detailsPanel");
 		DetailForm detailForm = (DetailForm) detailsPanel.get("detailForm");
 		WebMarkupContainer autoSubjectUidcontainer = detailForm.getAutoSubjectUidContainer();
 		WebMarkupContainer subjectUidcontainer = detailForm.getSubjectUidContainer();

@@ -25,6 +25,11 @@ import au.org.theark.core.web.form.AbstractContainerForm;
 
 public class Container extends AbstractContainerForm<StudyModelVO> {
 
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1L;
+
 	public Container(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id, model);
 	}
