@@ -16,16 +16,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
-package au.org.theark.phenotypic.web.component.summaryModule.form;
+package au.org.theark.phenotypic.web.component.summaryModule;
 
 import java.awt.Color;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.JFreeChart;
@@ -38,18 +37,17 @@ import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.BarChartResult;
 import au.org.theark.core.web.component.chart.JFreeChartImage;
-import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 
 /**
  * @author cellis
  * 
  */
-public class SummaryForm extends Form<PhenoCollectionVO> {
+public class SummaryPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long			serialVersionUID	= 7554016167563013219L;
+	private static final long	serialVersionUID	= 4201333378260325156L;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>	iArkCommonService;
 
@@ -59,33 +57,27 @@ public class SummaryForm extends Form<PhenoCollectionVO> {
 	private JFreeChart					jFreeChart;
 	private DefaultPieDataset			defaultPieDataset;
 
-	/**
-	 * @param id
-	 */
-	public SummaryForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer searchMarkupContainer, WebMarkupContainer resultListContainer) {
+	/* Constructor */
+	public SummaryPanel(String id, FeedbackPanel feedBackPanel) {
 		super(id);
-
-		initialiseFieldForm();
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		
 		if (ArkPermissionHelper.isModuleFunctionAccessPermitted()) {
 			if (sessionStudyId == null) {
-				searchMarkupContainer.setEnabled(false);
+				this.setVisible(false);
 				this.error("There is no study in context. Please select a study");
 			}
 			else {
-				searchMarkupContainer.setEnabled(true);
+				this.setVisible(true);
 			}
 		}
 		else {
-			searchMarkupContainer.setEnabled(false);
-			resultListContainer.setVisible(false);
+			this.setVisible(false);
 			this.error(au.org.theark.core.Constants.MODULE_NOT_ACCESSIBLE_MESSAGE);
 		}
 	}
 
-	public void initialiseFieldForm() {
+	public void initialisePanel() {
 		// Force versioning to force the refresh of the images (ignoring cache)
 		setVersioned(true);
 
