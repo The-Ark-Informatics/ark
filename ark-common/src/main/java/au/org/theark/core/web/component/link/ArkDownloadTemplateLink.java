@@ -23,12 +23,10 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
-import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.util.io.ByteArrayOutputStream;
-import org.apache.wicket.util.resource.StringResourceStream;
 
 import au.org.theark.core.util.ArkSheetMetaData;
+import au.org.theark.core.util.ByteDataResourceRequestHandler;
 
 public class ArkDownloadTemplateLink extends Link {
 	/**
@@ -89,14 +87,7 @@ public class ArkDownloadTemplateLink extends Link {
 	public void onClick() {
 		byte[] data = writeOutXlsFileToBytes();
 		if (data != null) {
-			StringResourceStream stream = new StringResourceStream(new String(data), "application/vnd.ms-excel");
-         
-         ResourceStreamRequestHandler resourceStreamRequestHandler = new ResourceStreamRequestHandler(stream);
-         resourceStreamRequestHandler.setFileName(templateFilename + ".xls");
-         resourceStreamRequestHandler.setContentDisposition(ContentDisposition.ATTACHMENT);
-        
-         getRequestCycle().scheduleRequestHandlerAfterCurrent(resourceStreamRequestHandler);
-//			getRequestCycle().setRequestTarget(new au.org.theark.core.util.ByteDataRequestTarget("application/vnd.ms-excel", data, templateFilename + ".xls"));
+			getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("application/vnd.ms-excel", data, templateFilename + ".xls"));
 		}
 	}
 }
