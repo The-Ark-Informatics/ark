@@ -97,7 +97,7 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkFunction.arkFunctionType", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
@@ -152,7 +152,7 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkFunction.arkFunctionType", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
@@ -169,9 +169,13 @@ public class SearchResultsPanel extends Panel {
 		return pageableListView;
 	}
 
-	@SuppressWarnings( { "unchecked", "serial" })
-	private AjaxLink buildLink(final ArkFunction arkFunction) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("link") {
+	private AjaxLink<ArkFunction> buildLink(final ArkFunction arkFunction) {
+		ArkBusyAjaxLink<ArkFunction> link = new ArkBusyAjaxLink<ArkFunction>("link") {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				Long id = arkFunction.getId();
@@ -187,15 +191,15 @@ public class SearchResultsPanel extends Panel {
 				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
 
 				// Refresh the markup containers
-				target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
-				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-				target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-				target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
-				target.addComponent(arkCrudContainerVo.getViewButtonContainer());
-				target.addComponent(arkCrudContainerVo.getEditButtonContainer());
+				target.add(arkCrudContainerVo.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVo.getDetailPanelContainer());
+				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVo.getSearchPanelContainer());
+				target.add(arkCrudContainerVo.getViewButtonContainer());
+				target.add(arkCrudContainerVo.getEditButtonContainer());
 
 				// Refresh base container form to remove any feedBack messages
-				target.addComponent(containerForm);
+				target.add(containerForm);
 			}
 		};
 
