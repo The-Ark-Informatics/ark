@@ -125,6 +125,7 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
+	@SuppressWarnings("unchecked")
 	public PageableListView<PhenoUpload> buildPageableListView(IModel iModel) {
 		PageableListView<PhenoUpload> sitePageableListView = new PageableListView<PhenoUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
 			/**
@@ -138,7 +139,6 @@ public class SearchResultListPanel extends Panel {
 
 				// The ID
 				if (upload.getId() != null) {
-					// Add the id component here
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_ID, upload.getId().toString()));
 				}
 				else {
@@ -147,14 +147,13 @@ public class SearchResultListPanel extends Panel {
 
 				// The collection
 				if (upload.getFilename() != null) {
-					// Add the id component here
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, iPhenotypicService.getPhenoCollectionByUpload(upload).getName()));
 				}
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_PHENO_COLLECTION, ""));
 				}
 
-				// / The filename
+				// Filename
 				if (upload.getFilename() != null) {
 					// Add the id component here
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILENAME, upload.getFilename()));
@@ -165,48 +164,34 @@ public class SearchResultListPanel extends Panel {
 
 				// File Format
 				if (upload.getFileFormat() != null) {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));// the name
-					// here
-					// must match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));
 				}
 				else {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));// the ID here must match the ones in
-					// mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));
 				}
 
 				// UserId
 				if (upload.getUserId() != null) {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));// the ID here must match the
-					// ones in
-					// mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));
 				}
 				else {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_USER_ID, ""));
 				}
 
 				// Start time
 				if (upload.getStartTime() != null) {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, upload.getStartTime().toString()));// the ID here
-					// must
-					// match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, upload.getStartTime().toString()));
 				}
 				else {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, ""));// the ID here must match the ones in
-					// mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_START_TIME, ""));
 				}
 
 				// Finish time
 				if (upload.getFinishTime() != null) {
-					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, upload.getInsertTime().toString()));// the ID
-					// here must
-					// match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, upload.getFinishTime().toString()));
 				}
 				else {
 					item.add(new Label(au.org.theark.phenotypic.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));
-					// the ID here must match the ones in mark-up
 				}
 
 				// Download file link button
@@ -218,8 +203,13 @@ public class SearchResultListPanel extends Panel {
 				// Delete the upload file
 				item.add(buildDeleteButton(upload));
 
-				/* For the alternative stripes */
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+				// For the alternative stripes
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
