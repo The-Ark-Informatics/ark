@@ -19,14 +19,11 @@
 package au.org.theark.report;
 
 import junit.framework.TestCase;
-import org.apache.wicket.util.tester.WicketTester;
 
 /**
  * Simple test using the WicketTester
  */
 public class TestHomePage extends TestCase {
-	private WicketTester	tester;
-
 	@Override
 	public void setUp() {
 		// tester = new WicketTester(new WicketApplication());
