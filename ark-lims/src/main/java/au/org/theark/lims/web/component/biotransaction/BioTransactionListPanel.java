@@ -247,7 +247,7 @@ public class BioTransactionListPanel extends Panel {
 				item.add(requestLbl);
 				item.add(rowDetailsWMC);
 
-				item.add(new AttributeModifier(Constants.CLASS, true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier(Constants.CLASS, new AbstractReadOnlyModel<String>() {
 
 					/**
 					 * 
