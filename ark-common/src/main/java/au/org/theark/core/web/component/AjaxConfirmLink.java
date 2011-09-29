@@ -22,9 +22,7 @@ import org.apache.wicket.ajax.IAjaxCallDecorator;
 import org.apache.wicket.ajax.calldecorator.AjaxPreprocessingCallDecorator;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
 
-@SuppressWarnings( { "unchecked" })
 /**
  * @author elam
  *
