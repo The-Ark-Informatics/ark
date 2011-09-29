@@ -66,7 +66,8 @@ public abstract class AbstractModalDetailForm<T> extends Form<T> implements IVie
 		this.feedbackPanel = feedbackPanel;
 		this.arkCrudContainerVo = arkCrudContainerVo;
 		this.cpModel = cpModel;
-
+		//TODO: Shouldn't really have to do this, as there is not FileUpload on the modalWindow's, but needed to get this working!
+		setMultiPart(true);
 		initialiseForm();
 	}
 
