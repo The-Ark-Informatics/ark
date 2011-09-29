@@ -157,7 +157,7 @@ public class SearchResultsPanel extends Panel {
 				rowSaveWMC.setVisible(false);
 				item.add(rowSaveWMC);
 
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
