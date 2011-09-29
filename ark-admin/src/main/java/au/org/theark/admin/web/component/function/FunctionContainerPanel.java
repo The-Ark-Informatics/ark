@@ -51,6 +51,7 @@ public class FunctionContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private DetailPanel												detailPanel;
 	private SearchResultsPanel										searchResultsPanel;
 	private DataView<ArkFunction>									dataView;
+	@SuppressWarnings("unchecked")
 	private ArkDataProvider<ArkFunction, IAdminService>	dataProvider;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)
