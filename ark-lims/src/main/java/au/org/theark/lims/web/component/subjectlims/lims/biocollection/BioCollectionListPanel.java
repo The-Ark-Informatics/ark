@@ -51,6 +51,11 @@ public class BioCollectionListPanel extends Panel {
 		final BioCollectionListPanel panelToRepaint = this;
 		AbstractDetailModalWindow modalWindow = new AbstractDetailModalWindow("detailModalWindow") {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
 				target.add(panelToRepaint);
@@ -63,5 +68,4 @@ public class BioCollectionListPanel extends Panel {
 
 		add(bioCollectionListForm);
 	}
-
 }
