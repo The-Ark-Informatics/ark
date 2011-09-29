@@ -42,16 +42,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ldap.core.ContextMapper;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
-import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.filter.AndFilter;
 import org.springframework.ldap.filter.EqualsFilter;
+import org.springframework.ldap.filter.Filter;
+import org.springframework.ldap.filter.NotFilter;
 import org.springframework.ldap.filter.OrFilter;
 import org.springframework.ldap.filter.WhitespaceWildcardsFilter;
 import org.springframework.stereotype.Repository;
 
 import au.org.theark.core.dao.ArkLdapContextSource;
+import au.org.theark.core.dao.IArkAuthorisation;
 import au.org.theark.core.exception.ArkSystemException;
+import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.exception.UserNameExistsException;
+import au.org.theark.core.model.study.entity.ArkUser;
+import au.org.theark.core.model.study.entity.ArkUserRole;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.vo.ArkUserVO;
 import au.org.theark.core.vo.SiteVO;
@@ -64,6 +69,8 @@ public class LdapUserDao implements ILdapUserDao {
 
 	private IStudyDao	studyDao;
 	private ArkLdapContextSource		ldapDataContextSource;
+	
+	private IArkAuthorisation	arkAuthorisationService;
 
 	/* To access Hibernate Study Dao */
 	@Autowired
@@ -82,6 +89,15 @@ public class LdapUserDao implements ILdapUserDao {
 	@Autowired
 	public void setLdapDataContextSource(ArkLdapContextSource ldapDataContextSource) {
 		this.ldapDataContextSource = ldapDataContextSource;
+	}
+	
+	public IArkAuthorisation getArkAuthorisationService() {
+		return arkAuthorisationService;
+	}
+
+	@Autowired
+	public void setArkAuthorisationService(IArkAuthorisation arkAuthorisationService) {
+		this.arkAuthorisationService = arkAuthorisationService;
 	}
 	
 	/**
@@ -254,51 +270,68 @@ public class LdapUserDao implements ILdapUserDao {
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
+		
+		try {
+			List<ArkUserRole> adminUserNameList = arkAuthorisationService.getArkSuperAdministratorList();
+			if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
+					&& securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
 
-		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
-				&& securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
+				log.debug("getBaseDn() " + ldapDataContextSource.getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
+				LdapName ldapName;
+				try {
 
-			log.debug("getBaseDn() " + ldapDataContextSource.getBasePeopleDn());// ou=arkUsers or whatever is configured in the context file.
-			LdapName ldapName;
-			try {
+					AndFilter andFilter = new AndFilter();
+					andFilter.and(new EqualsFilter("objectClass", "person"));
 
-				AndFilter andFilter = new AndFilter();
-				andFilter.and(new EqualsFilter("objectClass", "person"));
+					ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
+					// if userId was specified
+					/* User ID */
+					if (StringUtils.hasText(userCriteriaVO.getUserName())) {
+						ldapName.add(new Rdn(Constants.CN, userCriteriaVO.getUserName()));
+						andFilter.and(new WhitespaceWildcardsFilter(Constants.CN, userCriteriaVO.getUserName()));
+					}
+					/* Given Name */
+					if (StringUtils.hasText(userCriteriaVO.getFirstName())) {
+						ldapName.add(new Rdn(Constants.GIVEN_NAME, userCriteriaVO.getFirstName()));
+						andFilter.and(new WhitespaceWildcardsFilter(Constants.GIVEN_NAME, userCriteriaVO.getFirstName()));
+					}
 
-				ldapName = new LdapName(ldapDataContextSource.getBasePeopleDn());
-				// if userId was specified
-				/* User ID */
-				if (StringUtils.hasText(userCriteriaVO.getUserName())) {
-					ldapName.add(new Rdn(Constants.CN, userCriteriaVO.getUserName()));
-					andFilter.and(new WhitespaceWildcardsFilter(Constants.CN, userCriteriaVO.getUserName()));
+					/* Surname Name */
+					if (StringUtils.hasText(userCriteriaVO.getLastName())) {
+						ldapName.add(new Rdn(Constants.LAST_NAME, userCriteriaVO.getLastName()));
+						andFilter.and(new WhitespaceWildcardsFilter(Constants.LAST_NAME, userCriteriaVO.getLastName()));
+					}
+
+					/* Email */
+					if (StringUtils.hasText(userCriteriaVO.getEmail())) {
+						ldapName.add(new Rdn(Constants.EMAIL, userCriteriaVO.getEmail()));
+						andFilter.and(new WhitespaceWildcardsFilter(Constants.EMAIL, userCriteriaVO.getEmail()));
+					}
+					
+					for (ArkUserRole superAdmin : adminUserNameList) {
+						ldapName.add(new Rdn(Constants.CN, superAdmin.getArkUser().getLdapUserName()));
+						Filter filter = new NotFilter(new EqualsFilter(Constants.CN, superAdmin.getArkUser().getLdapUserName()));
+						andFilter.and(filter);
+					}
+					
+					/* Status is not defined as yet in the schema */
+					userList = ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
+					log.debug("Size of list " + userList.size());
 				}
-				/* Given Name */
-				if (StringUtils.hasText(userCriteriaVO.getFirstName())) {
-					ldapName.add(new Rdn(Constants.GIVEN_NAME, userCriteriaVO.getFirstName()));
-					andFilter.and(new WhitespaceWildcardsFilter(Constants.GIVEN_NAME, userCriteriaVO.getFirstName()));
-				}
+				catch (InvalidNameException ine) {
 
-				/* Surname Name */
-				if (StringUtils.hasText(userCriteriaVO.getLastName())) {
-					ldapName.add(new Rdn(Constants.LAST_NAME, userCriteriaVO.getLastName()));
-					andFilter.and(new WhitespaceWildcardsFilter(Constants.LAST_NAME, userCriteriaVO.getLastName()));
+					log.error("Exception occured in searchAllUsers " + ine);
+					throw new ArkSystemException("A system errror occured");
 				}
-
-				/* Email */
-				if (StringUtils.hasText(userCriteriaVO.getEmail())) {
-					ldapName.add(new Rdn(Constants.EMAIL, userCriteriaVO.getEmail()));
-					andFilter.and(new WhitespaceWildcardsFilter(Constants.EMAIL, userCriteriaVO.getEmail()));
-				}
-				/* Status is not defined as yet in the schema */
-				userList = ldapDataContextSource.getLdapTemplate().search(ldapDataContextSource.getBasePeopleDn(), andFilter.encode(), new PersonContextMapper());
-				log.debug("Size of list " + userList.size());
 			}
-			catch (InvalidNameException ine) {
+			
+		} catch (EntityNotFoundException e) {
 
-				log.error("Exception occured in searchAllUsers " + ine);
-				throw new ArkSystemException("A system errror occured");
-			}
+			log.error("Exception occured in searchAllUsers " + e);
+			throw new ArkSystemException("A system errror occured. ");
 		}
+
+		
 
 		return userList;
 	}
@@ -392,7 +425,6 @@ public class LdapUserDao implements ILdapUserDao {
 
 	public List<ArkUserVO> searchUser(ArkUserVO userVO) throws ArkSystemException {
 
-		String userName = null;
 		// This is only when you want all the users.
 		List<ArkUserVO> userList = new ArrayList<ArkUserVO>();
 		/**
@@ -401,17 +433,6 @@ public class LdapUserDao implements ILdapUserDao {
 		SecurityManager securityManager = ThreadContext.getSecurityManager();
 		Subject currentUser = SecurityUtils.getSubject();
 
-		// if(securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.ARK_SUPER_ADMIN) ||
-		// securityManager.hasRole(currentUser.getPrincipals(), RoleConstants.STUDY_ADMIN)){
-		// log.debug("User can access all users");
-		// userList = searchAllUsers(userVO);
-		// }else{
-		// log.debug("User can access only a sub-set of users.");
-		// //Get logged in user's Groups and roles(and permissions)
-		// userName = (String) currentUser.getPrincipal();
-		// //delegate call to another method and get back a list of users into userList
-		// userList = searchGroupMembers(userVO, userName);
-		// }
 		// Allow only a role that has Create,
 		if (securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.CREATE) && securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.UPDATE)
 				&& securityManager.isPermitted(currentUser.getPrincipals(), PermissionConstants.READ)) {
