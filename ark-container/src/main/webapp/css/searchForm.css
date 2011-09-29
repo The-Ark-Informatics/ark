@@ -10,6 +10,26 @@ font-weight:700;
 padding:2px 6px;
 }
 
+#searchPanelTextMessage {
+float:left;
+width:90%;
+height:90%;
+}
+
+#searchPanelTextMessageLeft{
+float:right;
+height:5%;
+width:5%;
+}
+
+
+#searchPanelTextMessageRight{
+float:right;
+height:5%;
+width:5%;
+}
+
+
 #searchPanel {
 float:left;
 width:100%;
