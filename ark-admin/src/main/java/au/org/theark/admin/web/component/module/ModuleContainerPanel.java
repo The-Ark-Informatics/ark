@@ -51,6 +51,7 @@ public class ModuleContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private DetailPanel											detailPanel;
 	private SearchResultsPanel									searchResultsPanel;
 	private DataView<ArkModule>								dataView;
+	@SuppressWarnings("unchecked")
 	private ArkDataProvider<ArkModule, IAdminService>	dataProvider;
 
 	@SpringBean(name = au.org.theark.admin.service.Constants.ARK_ADMIN_SERVICE)

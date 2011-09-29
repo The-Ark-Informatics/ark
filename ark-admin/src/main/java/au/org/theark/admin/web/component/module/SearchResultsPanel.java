@@ -172,15 +172,15 @@ public class SearchResultsPanel extends Panel {
 				arkCrudContainerVo.getEditButtonContainer().setVisible(false);
 
 				// Refresh the markup containers
-				target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
-				target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-				target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-				target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
-				target.addComponent(arkCrudContainerVo.getViewButtonContainer());
-				target.addComponent(arkCrudContainerVo.getEditButtonContainer());
+				target.add(arkCrudContainerVo.getSearchResultPanelContainer());
+				target.add(arkCrudContainerVo.getDetailPanelContainer());
+				target.add(arkCrudContainerVo.getDetailPanelFormContainer());
+				target.add(arkCrudContainerVo.getSearchPanelContainer());
+				target.add(arkCrudContainerVo.getViewButtonContainer());
+				target.add(arkCrudContainerVo.getEditButtonContainer());
 
 				// Refresh base container form to remove any feedBack messages
-				target.addComponent(containerForm);
+				target.add(containerForm);
 			}
 		};
 

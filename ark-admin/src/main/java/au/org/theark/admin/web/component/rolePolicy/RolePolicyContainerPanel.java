@@ -57,6 +57,7 @@ public class RolePolicyContainerPanel extends AbstractContainerPanel<AdminVO> {
 	private DetailPanel																detailPanel;
 	private SearchResultsPanel														searchResultsPanel;
 	private DataView<ArkRoleModuleFunctionVO>									dataView;
+	@SuppressWarnings("unchecked")
 	private ArkDataProvider<ArkRoleModuleFunctionVO, IAdminService>	dataProvider;
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService<Void>												iArkCommonService;

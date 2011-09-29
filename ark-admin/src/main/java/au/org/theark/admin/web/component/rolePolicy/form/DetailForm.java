@@ -116,8 +116,7 @@ public class DetailForm extends AbstractDetailForm<AdminVO> {
 				item.addOrReplace(new CheckBox("arkDeletePermission"));
 				item.setEnabled(false);
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
-
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
