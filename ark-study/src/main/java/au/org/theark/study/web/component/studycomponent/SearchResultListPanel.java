@@ -30,7 +30,7 @@ import org.apache.wicket.model.IModel;
 
 import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.model.vo.StudyCompVo;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.studycomponent.form.ContainerForm;

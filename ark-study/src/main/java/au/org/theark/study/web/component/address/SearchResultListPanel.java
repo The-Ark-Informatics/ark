@@ -34,7 +34,7 @@ import org.apache.wicket.model.Model;
 
 import au.org.theark.core.model.study.entity.Address;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.address.form.ContainerForm;
 import au.org.theark.study.web.component.address.form.SearchForm;

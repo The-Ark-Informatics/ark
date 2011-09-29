@@ -38,8 +38,8 @@ import au.org.theark.admin.service.IAdminService;
 import au.org.theark.admin.web.component.function.form.ContainerForm;
 import au.org.theark.core.model.study.entity.ArkFunction;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkDataProvider;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class SearchResultsPanel extends Panel {
 	/**

@@ -29,7 +29,7 @@ import org.apache.wicket.markup.html.image.ContextImage;
 import org.apache.wicket.model.Model;
 
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.mydetails.MyDetailsContainer;
 
 /**

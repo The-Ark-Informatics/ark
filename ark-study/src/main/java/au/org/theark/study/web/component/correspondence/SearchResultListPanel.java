@@ -36,7 +36,7 @@ import org.apache.wicket.model.StringResourceModel;
 
 import au.org.theark.core.model.study.entity.Correspondences;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.correspondence.form.ContainerForm;
 
 public class SearchResultListPanel extends Panel {

@@ -7,8 +7,8 @@ import org.apache.wicket.request.resource.ResourceReference;
 
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.image.MouseOverImage;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
