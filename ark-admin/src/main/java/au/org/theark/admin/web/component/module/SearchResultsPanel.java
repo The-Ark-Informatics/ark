@@ -91,7 +91,7 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkModule.description", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
@@ -137,7 +137,7 @@ public class SearchResultsPanel extends Panel {
 					item.add(new Label("arkModule.description", ""));
 				}
 
-				item.add(new AttributeModifier("class", true, new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
