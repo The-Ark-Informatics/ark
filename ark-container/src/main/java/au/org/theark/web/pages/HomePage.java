@@ -53,6 +53,10 @@ import au.org.theark.study.web.menu.MainTabProviderImpl;
  * @author cellis
  */
 public class HomePage extends BasePage {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 6042144198163845254L;
 	private transient static Logger	log	= LoggerFactory.getLogger(HomePage.class);
 	private WebMarkupContainer			arkContextPanelMarkup;
 	private TabbedPanel					moduleTabbedPanel;
