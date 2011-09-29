@@ -120,7 +120,7 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label("dateOfApplication", dateOfApplication));
 				}
 
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
