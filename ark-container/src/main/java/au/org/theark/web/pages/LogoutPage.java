@@ -32,19 +32,28 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 
-@SuppressWarnings("unchecked")
-public class LogoutPage<T> extends WebPage
-{
+/**
+ * <p>
+ * The <code>LogoutPage</code> class that extends the {@link au.org.theark.web.pages.BasePage BasePage} class. It provides the implementation of the
+ * logout page of The Ark application.
+ * </p>
+ * 
+ * @author nivedann
+ * @author cellis
+ */
+public class LogoutPage<T> extends WebPage {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 2460094866903978128L;
+	public static final String	REDIRECT_PAGE		= "redirectPage";
 
-	public static final String	REDIRECT_PAGE	= "redirectPage";
-
-	public LogoutPage(final CharSequence url)
-	{
+	public LogoutPage(final CharSequence url) {
 		doLogoutAndAddRedirect(url, 0);
 	}
 
-	public LogoutPage(final PageParameters parameters)
-	{
+	@SuppressWarnings("unchecked")
+	public LogoutPage(final PageParameters parameters) {
 
 		System.out.println("\n Constructor LogoutPage(final PageParameters param)");
 
@@ -52,30 +61,25 @@ public class LogoutPage<T> extends WebPage
 
 		Class<? extends Page> pageClass;
 
-		if (page != null)
-		{
-			try
-			{
+		if (page != null) {
+			try {
 				pageClass = (Class<? extends Page>) Class.forName(page);
 			}
-			catch (ClassNotFoundException e)
-			{
+			catch (ClassNotFoundException e) {
 				throw new RuntimeException(e);
 			}
 		}
-		else
-		{
-
+		else {
 			System.out.println("Send the user to LoginPage");
 			pageClass = LoginPage.class; // getApplication().getHomePage();
 		}
 
 		this.setStatelessHint(true);
 		setResponsePage(pageClass);
-		
+
 		// this should remove the cookie...
 		Subject subject = SecurityUtils.getSubject();
-		//Place the selected study in session context for the user
+		// Place the selected study in session context for the user
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		SecurityUtils.getSubject().getSession().removeAttribute(au.org.theark.core.Constants.PERSON_TYPE);
@@ -84,8 +88,7 @@ public class LogoutPage<T> extends WebPage
 		return;
 	}
 
-	private void doLogoutAndAddRedirect(final CharSequence url, final int waitBeforeRedirectInSeconds)
-	{
+	private void doLogoutAndAddRedirect(final CharSequence url, final int waitBeforeRedirectInSeconds) {
 		System.out.println("\n doLogoutAndAddRedirect() invoked");
 
 		this.setStatelessHint(true);
@@ -109,13 +112,11 @@ public class LogoutPage<T> extends WebPage
 	}
 
 	@Override
-	public boolean isVersioned()
-	{
+	public boolean isVersioned() {
 		return false;
 	}
 
-	public int getDelayTime()
-	{
+	public int getDelayTime() {
 		return 0;
 	}
 }
