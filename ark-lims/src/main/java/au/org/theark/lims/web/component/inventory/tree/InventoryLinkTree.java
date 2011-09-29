@@ -42,7 +42,7 @@ import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvSite;
 import au.org.theark.core.model.lims.entity.InvTank;
 import au.org.theark.core.model.lims.entity.InvTray;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.InventoryModel;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;

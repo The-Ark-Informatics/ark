@@ -34,7 +34,7 @@ import org.apache.wicket.model.IModel;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.geno.entity.Upload;
 import au.org.theark.core.model.geno.entity.UploadCollection;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.geno.model.vo.UploadCollectionVO;
 import au.org.theark.geno.web.component.upload.form.ContainerForm;
 

@@ -36,7 +36,7 @@ import au.org.theark.core.Constants;
 import au.org.theark.core.model.pheno.entity.Field;
 import au.org.theark.core.model.pheno.entity.PhenoCollection;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.IPhenotypicService;
 import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;

@@ -29,8 +29,8 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
 import au.org.theark.core.web.component.ArkMainTab;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 
 public class ArkAjaxTabbedPanel extends AjaxTabbedPanel {
 	/**

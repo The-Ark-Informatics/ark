@@ -45,6 +45,11 @@ public abstract class AjaxDeleteButton extends IndicatingAjaxButton {
 		this.setModel(label);
 		this.confirm = confirm;
 	}
+	
+	public AjaxDeleteButton(String id, IModel confirm) {
+		super(id);
+		this.confirm = confirm;
+	}
 
 	@Override
 	protected IAjaxCallDecorator getAjaxCallDecorator() {

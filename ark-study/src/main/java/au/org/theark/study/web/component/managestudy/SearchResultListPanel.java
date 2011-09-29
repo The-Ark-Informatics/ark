@@ -44,7 +44,7 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.security.ArkLdapRealm;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ContextHelper;
-import au.org.theark.core.web.component.ArkBusyAjaxLink;
+import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.study.web.component.managestudy.form.Container;
 import au.org.theark.study.web.component.managestudy.form.DetailForm;
 
