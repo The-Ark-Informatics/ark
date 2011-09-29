@@ -177,4 +177,6 @@ public interface IArkAuthorisation<T> {
 	public List<ArkModule> getArkModuleListByArkUser(ArkUser arkUser);
 	
 	public Boolean isArkUserLinkedToStudies(ArkUser arkUser);
+	
+	public List<ArkUserRole> getArkSuperAdministratorList() throws EntityNotFoundException;
 }
