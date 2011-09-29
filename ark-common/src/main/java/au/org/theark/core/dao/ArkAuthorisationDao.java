@@ -176,6 +176,13 @@ public class ArkAuthorisationDao<T> extends HibernateSessionDao implements IArkA
 		session.close();
 		return isAdminType;
 	}
+	
+	public List<ArkUserRole> getArkSuperAdministratorList() throws EntityNotFoundException {
+		Criteria criteria = getSession().createCriteria(ArkUserRole.class);
+		ArkRole arkRole = getArkRoleByName(RoleConstants.ARK_ROLE_SUPER_ADMINISTATOR);
+		criteria.add(Restrictions.eq("arkRole",arkRole));
+		return criteria.list();
+	}
 
 	private boolean isUserAdminHelper(String ldapUserName, String roleName, ArkFunction arkFunction, ArkModule arkModule) throws EntityNotFoundException {
 		boolean isAdminType = false;
