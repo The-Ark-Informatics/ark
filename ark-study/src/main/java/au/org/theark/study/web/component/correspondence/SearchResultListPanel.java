@@ -116,7 +116,7 @@ public class SearchResultListPanel extends Panel {
 				// Download file link button
 				item.add(buildDownloadButton(correspondence));
 
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					/**
 					 * 
 					 */
