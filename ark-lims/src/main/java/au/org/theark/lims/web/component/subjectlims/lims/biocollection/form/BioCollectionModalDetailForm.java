@@ -18,17 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.subjectlims.lims.biocollection.form;
 
-import java.util.List;
-
-import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.extensions.markup.html.form.DateTextField;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
@@ -40,10 +35,6 @@ import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.BioCollection;
-import au.org.theark.core.model.lims.entity.BioCollectionCustomFieldData;
-import au.org.theark.core.model.study.entity.ArkModule;
-import au.org.theark.core.model.study.entity.CustomField;
-import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
@@ -53,14 +44,12 @@ import au.org.theark.lims.model.vo.BioCollectionCustomDataVO;
 import au.org.theark.lims.model.vo.LimsVO;
 import au.org.theark.lims.service.ILimsService;
 import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataContainerPanel;
 import au.org.theark.lims.web.component.biocollectioncustomdata.BioCollectionCustomDataDataViewPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings ("unused")
 public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO> {
 	/**
 	 * 
@@ -73,16 +62,12 @@ public class BioCollectionModalDetailForm extends AbstractModalDetailForm<LimsVO
 	@SpringBean(name = Constants.LIMS_SERVICE)
 	private ILimsService					iLimsService;
 
-	private int								mode;
-
 	private TextField<String>			idTxtFld;
 	private TextField<String>			nameTxtFld;
-	private TextField<String>			collectionIdTxtFld;
 	private TextArea<String>			commentsTxtAreaFld;
 	private DateTextField				collectionDateTxtFld;
 	private DateTextField				surgeryDateTxtFld;
 	private ModalWindow					modalWindow;
-	private WebMarkupContainer			arkContextMarkup;
 	private Panel 							bioCollectionCFDataEntryPanel;
 
 	/**
