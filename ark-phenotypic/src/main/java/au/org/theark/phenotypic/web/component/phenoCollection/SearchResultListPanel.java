@@ -49,16 +49,13 @@ public class SearchResultListPanel extends Panel {
 
 	@SpringBean(name = au.org.theark.phenotypic.service.Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService	iPhenotypicService;
-
 	private ArkCrudContainerVO	arkCrudContainerVO;
 	private ContainerForm		containerForm;
-	private WebMarkupContainer	arkContextMarkup;
-
+	
 	public SearchResultListPanel(String id, ContainerForm containerForm, WebMarkupContainer arkContextMarkup, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
-		this.arkContextMarkup = arkContextMarkup;
 	}
 
 	/**
@@ -66,9 +63,15 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of PhenoCollection
 	 */
+	@SuppressWarnings("unchecked")
 	public PageableListView<PhenoCollection> buildPageableListView(IModel iModel) {
 
 		PageableListView<PhenoCollection> sitePageableListView = new PageableListView<PhenoCollection>("collectionList", iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<PhenoCollection> item) {
 				PhenoCollection phenoCollection = item.getModelObject();
@@ -145,6 +148,11 @@ public class SearchResultListPanel extends Panel {
 
 				/* For the alternative stripes */
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -156,8 +164,13 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private AjaxLink buildLink(final PhenoCollection phenoCollection) {
-		ArkBusyAjaxLink link = new ArkBusyAjaxLink("phenoCollection.name") {
+	private AjaxLink<String> buildLink(final PhenoCollection phenoCollection) {
+		ArkBusyAjaxLink<String> link = new ArkBusyAjaxLink<String>("phenoCollection.name"){
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+			
 			@Override
 			public void onClick(AjaxRequestTarget target) {
 				// Sets the selected object into the model
