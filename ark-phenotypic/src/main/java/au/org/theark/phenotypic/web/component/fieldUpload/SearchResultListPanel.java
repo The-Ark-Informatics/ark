@@ -166,7 +166,7 @@ public class SearchResultListPanel extends Panel {
 				item.add(buildDeleteButton(upload));
 
 				// For the alternative stripes
-				item.add(new AttributeModifier("class", new AbstractReadOnlyModel() {
+				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
