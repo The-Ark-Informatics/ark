@@ -24,6 +24,10 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 
+/**
+ * @author cellis
+ *
+ */
 public class MyDetailModalWindow extends AbstractDetailModalWindow {
 	/**
 	 * 
@@ -37,8 +41,8 @@ public class MyDetailModalWindow extends AbstractDetailModalWindow {
 	}
 
 	protected void onCloseModalWindow(AjaxRequestTarget target) {
-		target.addComponent(form);
-		target.addComponent(panel);
+		target.add(form);
+		target.add(panel);
 	}
 
 	/**
