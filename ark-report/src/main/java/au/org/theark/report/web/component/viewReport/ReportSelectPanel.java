@@ -55,8 +55,12 @@ import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLeve
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportContainer;
 import au.org.theark.report.web.component.viewReport.studyUserRolePermissions.StudyUserRolePermissionsReportContainer;
 
-@SuppressWarnings("serial")
 public class ReportSelectPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 1685981337753191247L;
+
 	private static Logger							log	= LoggerFactory.getLogger(ReportSelectPanel.class);
 
 	@SpringBean(name = au.org.theark.report.service.Constants.REPORT_SERVICE)
@@ -88,9 +92,11 @@ public class ReportSelectPanel extends Panel {
 			study = iArkCommonService.getStudy(sessionStudyId);
 			reportSelectCPM.getObject().setStudy(study);
 		}
-		ArkUser arkUser;
+		
 		try {
-			arkUser = iArkCommonService.getArkUser(subject.getPrincipal().toString());
+			@SuppressWarnings("unused")
+			ArkUser arkUser = iArkCommonService.getArkUser(subject.getPrincipal().toString());
+			//TODO: Make this method work! :D
 			// List<ReportTemplate> resultList = reportService.getReportsAvailableList(arkUser, study);
 			List<ReportTemplate> resultList = reportService.getReportsAvailableList(null, null);
 
@@ -200,7 +206,7 @@ public class ReportSelectPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
+	@SuppressWarnings({ "unchecked" })
 	private AjaxLink buildLink(final ReportTemplate reportTemplate) {
 
 		AjaxLink link = new AjaxLink("reportTemplate.link") {
