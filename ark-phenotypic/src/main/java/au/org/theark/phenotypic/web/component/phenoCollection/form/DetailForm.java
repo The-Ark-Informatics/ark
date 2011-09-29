@@ -49,27 +49,27 @@ import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.behavior.ArkDefaultFormFocusBehavior;
 import au.org.theark.core.web.component.ArkDatePicker;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
-import au.org.theark.core.web.form.AbstractContainerForm;
+import au.org.theark.core.web.component.palette.ArkPalette;
 import au.org.theark.core.web.form.AbstractDetailForm;
 import au.org.theark.phenotypic.model.vo.PhenoCollectionVO;
 import au.org.theark.phenotypic.service.Constants;
 import au.org.theark.phenotypic.service.IPhenotypicService;
-import au.org.theark.phenotypic.web.component.phenoCollection.form.ContainerForm;
-import au.org.theark.phenotypic.web.component.phenoCollection.DetailPanel;
 
 /**
  * @author nivedann
  * 
  */
-@SuppressWarnings( { "serial", "unchecked", "unused" })
 public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
-	
-	private transient Logger	log					= LoggerFactory.getLogger(DetailForm.class);
-	
+
+	/**
+	 * 
+	 */
+	private static final long			serialVersionUID	= 8027046304220525464L;
+
+	private transient Logger			log					= LoggerFactory.getLogger(DetailForm.class);
+
 	@SpringBean(name = Constants.PHENOTYPIC_SERVICE)
 	private IPhenotypicService			iPhenotypicService;
-
-	private int								mode;
 
 	private TextField<String>			idTxtFld;
 	private TextField<String>			nameTxtFld;
@@ -78,25 +78,21 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 	private DateTextField				startDateTxtFld;
 	private DateTextField				endDateTxtFld;
 
-	// Field selection Palette
-	private Palette						fieldPalette;
-
+	@SuppressWarnings("unchecked")
+	private Palette						fieldsInCollectionPalette;
 	private AjaxButton					clearCollectionButton;
-
-	private WebMarkupContainer			arkContextMarkup;
 
 	/**
 	 * Constructor
 	 */
-	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, 
-			ArkCrudContainerVO arkCrudContainerVO) {
+	public DetailForm(String id, FeedbackPanel feedBackPanel, WebMarkupContainer arkContextMarkup, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
-		this.arkContextMarkup = arkContextMarkup;
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initStatusDdc() {
 		java.util.Collection<Status> statusCollection = iPhenotypicService.getStatus();
-		ChoiceRenderer statusRenderer = new ChoiceRenderer(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
+		ChoiceRenderer<Status> statusRenderer = new ChoiceRenderer<Status>(au.org.theark.phenotypic.web.Constants.STATUS_NAME, au.org.theark.phenotypic.web.Constants.STATUS_ID);
 		statusDdc = new DropDownChoice<Status>(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_PHENO_COLLECTION_STATUS, (List) statusCollection, statusRenderer);
 	}
 
@@ -118,6 +114,11 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 
 		clearCollectionButton = new AjaxDeleteButton("clearCollection", new StringResourceModel("button.clearCollection.confirm", this, null), new StringResourceModel("button.clearCollection", this,
 				null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				int rowsDeleted = iPhenotypicService.clearPhenoCollection(containerForm.getModelObject().getPhenoCollection());
@@ -147,14 +148,19 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		addComponents();
 	}
 
+	@SuppressWarnings("unchecked")
 	private void initFieldPalette() {
 		CompoundPropertyModel<PhenoCollectionVO> cpm = (CompoundPropertyModel<PhenoCollectionVO>) containerForm.getModel();
 		IChoiceRenderer<String> renderer = new ChoiceRenderer<String>("name", "id");
 		PropertyModel<Collection<Field>> selectedModPm = new PropertyModel<Collection<Field>>(cpm, "fieldsSelected");
 		PropertyModel<Collection<Field>> availableModPm = new PropertyModel<Collection<Field>>(cpm, "fieldsAvailable");
 
-		fieldPalette = new Palette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, au.org.theark.core.Constants.ROWS_PER_PAGE, false) {
-			
+		fieldsInCollectionPalette = new ArkPalette(au.org.theark.phenotypic.web.Constants.PHENO_COLLECTIONVO_FIELD_PALETTE, selectedModPm, availableModPm, renderer, au.org.theark.core.Constants.ROWS_PER_PAGE, false) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected org.apache.wicket.request.resource.ResourceReference getCSS() {
 				return null;
@@ -176,7 +182,7 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(statusDdc);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(startDateTxtFld);
 		arkCrudContainerVO.getDetailPanelFormContainer().add(endDateTxtFld);
-		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldPalette);
+		arkCrudContainerVO.getDetailPanelFormContainer().add(fieldsInCollectionPalette);
 
 		// Custom clear collection button
 		arkCrudContainerVO.getEditButtonContainer().add(clearCollectionButton);
@@ -224,21 +230,13 @@ public class DetailForm extends AbstractDetailForm<PhenoCollectionVO> {
 		this.deleteButton = deleteButton;
 	}
 
-	/**
-	 * 
-	 */
+	@Override
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		// TODO:(CE) To handle Business and System Exceptions here
 		iPhenotypicService.deleteCollection(containerForm.getModelObject());
 		this.info("Phenotypic collection " + containerForm.getModelObject().getPhenoCollection().getName() + " was deleted successfully");
 
 		// Display delete confirmation message
 		target.add(feedBackPanel);
-		// TODO Implement Exceptions in PhentoypicService
-		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		// this.error("A System error occured, we will have someone contact you."); processFeedback(target); }
-		// Move focus back to Search form
 		PhenoCollectionVO phenoCollectionVo = new PhenoCollectionVO();
 		containerForm.setModelObject(phenoCollectionVo);
 		editCancelProcess(target);
