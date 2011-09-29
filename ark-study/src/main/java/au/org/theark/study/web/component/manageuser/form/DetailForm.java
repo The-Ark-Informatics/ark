@@ -54,7 +54,6 @@ import au.org.theark.core.model.study.entity.Study;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.ArkUserVO;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.form.AbstractUserDetailForm;
 import au.org.theark.study.service.IUserService;
 import au.org.theark.study.web.Constants;
@@ -65,7 +64,7 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 	@SpringBean(name = "userService")
 	private IUserService				userService;
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService		iArkCommonService;
 
@@ -105,7 +104,6 @@ public class DetailForm extends AbstractUserDetailForm<ArkUserVO> {
 			}
 		};
 
-		@SuppressWarnings("rawtypes")
 		ListView listView = new ListView("arkUserRoleList", iModel) {
 
 			private static final long	serialVersionUID	= 1L;
