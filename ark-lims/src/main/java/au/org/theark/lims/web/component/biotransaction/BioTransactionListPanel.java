@@ -35,7 +35,6 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.data.DataView;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -57,27 +56,27 @@ public class BioTransactionListPanel extends Panel {
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 7224168117680252835L;
+	private static final long									serialVersionUID	= 7224168117680252835L;
 
-	private static Logger		log	= LoggerFactory.getLogger(BioTransactionListPanel.class);
-	protected CompoundPropertyModel<LimsVO>	cpModel;
+	private static Logger										log					= LoggerFactory.getLogger(BioTransactionListPanel.class);
+	protected CompoundPropertyModel<LimsVO>				cpModel;
 
 	@SpringBean(name = Constants.LIMS_SERVICE)
-	private ILimsService										iLimsService;
+	private ILimsService											iLimsService;
 
-	protected FeedbackPanel									feedbackPanel;
-	private BioTransactionListForm						bioTransactionListForm;
-	
-	private Label												idLbl;
-	private Label												transactionDateLbl;
-	private Label												quantityLbl;
-	private Label												unitsLbl;
-	private Label												recorderLbl;
-	private Label												reasonLbl;
-	private Label												statusLbl;
-	private Label												requestLbl;
+	protected FeedbackPanel										feedbackPanel;
+	private BioTransactionListForm							bioTransactionListForm;
 
-	protected WebMarkupContainer							dataViewListWMC;
+	private Label													idLbl;
+	private Label													transactionDateLbl;
+	private Label													quantityLbl;
+	private Label													unitsLbl;
+	private Label													recorderLbl;
+	private Label													reasonLbl;
+	private Label													statusLbl;
+	private Label													requestLbl;
+
+	protected WebMarkupContainer								dataViewListWMC;
 	private DataView<BioTransaction>							dataView;
 	private ArkDataProvider2<LimsVO, BioTransaction>	bioTransactionProvider;
 
@@ -104,13 +103,13 @@ public class BioTransactionListPanel extends Panel {
 			}
 
 		};
-		
+
 		bioTransactionListForm = new BioTransactionListForm("bioTransactionListForm", feedbackPanel, modalWindow, cpModel);
 		bioTransactionListForm.initialiseForm();
 		add(bioTransactionListForm);
-		
+
 		initialiseDataView();
-		
+
 		return this;
 	}
 
@@ -159,7 +158,7 @@ public class BioTransactionListPanel extends Panel {
 		add(dataViewListWMC);
 
 	}
-	
+
 	/**
 	 * 
 	 * @param iModel
@@ -182,9 +181,13 @@ public class BioTransactionListPanel extends Panel {
 				final BioTransaction bioTransaction = item.getModelObject();
 
 				WebMarkupContainer rowDetailsWMC = new WebMarkupContainer("rowDetailsWMC", item.getModel());
-				AjaxConfirmLink<BioTransaction> rowDeleteLink = new AjaxConfirmLink<BioTransaction>("rowDeleteLink", 
-																											new StringResourceModel("bioTransaction.confirmDelete", this, item.getModel()), 
-																											item.getModel()) {
+				AjaxConfirmLink<BioTransaction> rowDeleteLink = new AjaxConfirmLink<BioTransaction>("rowDeleteLink", new StringResourceModel("bioTransaction.confirmDelete", this, item.getModel()), item
+						.getModel()) {
+
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
 
 					@Override
 					public void onClick(AjaxRequestTarget target) {
@@ -192,17 +195,16 @@ public class BioTransactionListPanel extends Panel {
 						iLimsService.deleteBioTransaction(bioTransaction);
 						this.info("Successfully removed the transaction");
 						target.add(feedbackPanel);
-						target.add(dataViewListWMC);	//repaint the list
+						target.add(dataViewListWMC); // repaint the list
 					}
 
 				};
 				rowDetailsWMC.add(rowDeleteLink);
-				if ((bioTransaction.getStatus() != null) 
-						&& (bioTransaction.getStatus().getName().equals(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY))) {
+				if ((bioTransaction.getStatus() != null) && (bioTransaction.getStatus().getName().equals(Constants.BIOTRANSACTION_STATUS_INITIAL_QTY))) {
 					// do not allow the initial quantity to be deleted
 					rowDetailsWMC.setVisible(false);
 				}
-				
+
 				idLbl = new Label("bioTransaction.id", bioTransaction.getId().toString());
 				String dateOfTransaction = "";
 				if (bioTransaction.getTransactionDate() != null) {
@@ -217,7 +219,7 @@ public class BioTransactionListPanel extends Panel {
 					quantityLbl = new Label("bioTransaction.quantity", bioTransaction.getQuantity().toString());
 				}
 				if (bioTransaction.getBiospecimen().getUnit() == null) {
-					unitsLbl = new Label("bioTransaction.biospecimen.unit.name", "");					
+					unitsLbl = new Label("bioTransaction.biospecimen.unit.name", "");
 				}
 				else {
 					unitsLbl = new Label("bioTransaction.biospecimen.unit.name", bioTransaction.getBiospecimen().getUnit().getName());
@@ -228,15 +230,15 @@ public class BioTransactionListPanel extends Panel {
 					statusLbl = new Label("bioTransaction.status.name", "");
 				}
 				else {
-					statusLbl = new Label("bioTransaction.status.name", bioTransaction.getStatus().getName());		
+					statusLbl = new Label("bioTransaction.status.name", bioTransaction.getStatus().getName());
 				}
 				if (bioTransaction.getAccessRequest() == null) {
 					requestLbl = new Label("bioTransaction.accessRequest.id", "");
 				}
 				else {
-					requestLbl = new Label("bioTransaction.accessRequest.id", bioTransaction.getAccessRequest().getId().toString());		
+					requestLbl = new Label("bioTransaction.accessRequest.id", bioTransaction.getAccessRequest().getId().toString());
 				}
-				
+
 				item.add(idLbl);
 				item.add(transactionDateLbl);
 				item.add(quantityLbl);
@@ -288,7 +290,6 @@ public class BioTransactionListPanel extends Panel {
 				cpModel.getObject().getBioTransaction().setBiospecimen(biospecimen);
 			}
 		}
-
 
 		super.onBeforeRender();
 	}
