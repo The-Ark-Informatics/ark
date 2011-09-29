@@ -101,15 +101,15 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void onSearch(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		int count = iAdminService.getArkFunctionCount(containerForm.getModelObject().getArkFunction());
 		if (count == 0) {
 			this.info("There are no records that matched your query. Please modify your filter");
-			target.addComponent(feedbackPanel);
+			target.add(feedbackPanel);
 		}
 
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(true);
-		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVo.getSearchResultPanelContainer());
 	}
 
 	private void addSearchComponentsToForm() {
@@ -119,7 +119,7 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
-		target.addComponent(feedbackPanel);
+		target.add(feedbackPanel);
 		containerForm.setModelObject(new AdminVO());
 		arkCrudContainerVo.getSearchResultPanelContainer().setVisible(false);
 		arkCrudContainerVo.getSearchPanelContainer().setVisible(false);
@@ -129,15 +129,15 @@ public class SearchForm extends AbstractSearchForm<AdminVO> {
 		arkCrudContainerVo.getEditButtonContainer().setVisible(true);
 
 		// Refresh the markup containers
-		target.addComponent(arkCrudContainerVo.getSearchResultPanelContainer());
-		target.addComponent(arkCrudContainerVo.getDetailPanelContainer());
-		target.addComponent(arkCrudContainerVo.getDetailPanelFormContainer());
-		target.addComponent(arkCrudContainerVo.getSearchPanelContainer());
-		target.addComponent(arkCrudContainerVo.getViewButtonContainer());
-		target.addComponent(arkCrudContainerVo.getEditButtonContainer());
+		target.add(arkCrudContainerVo.getSearchResultPanelContainer());
+		target.add(arkCrudContainerVo.getDetailPanelContainer());
+		target.add(arkCrudContainerVo.getDetailPanelFormContainer());
+		target.add(arkCrudContainerVo.getSearchPanelContainer());
+		target.add(arkCrudContainerVo.getViewButtonContainer());
+		target.add(arkCrudContainerVo.getEditButtonContainer());
 
 		// Refresh base container form to remove any feedBack messages
-		target.addComponent(containerForm);
+		target.add(containerForm);
 	}
 
 	/**
