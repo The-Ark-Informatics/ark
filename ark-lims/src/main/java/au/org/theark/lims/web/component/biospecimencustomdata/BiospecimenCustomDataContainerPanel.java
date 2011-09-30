@@ -28,6 +28,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.lims.entity.Biospecimen;
@@ -44,35 +46,37 @@ import au.org.theark.lims.service.ILimsService;
  * 
  */
 public class BiospecimenCustomDataContainerPanel extends Panel {
-
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long											serialVersionUID	= 8026325227533917979L;
 
+	private static final Logger										log					= LoggerFactory.getLogger(BiospecimenCustomDataContainerPanel.class);
+
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	protected IArkCommonService			iArkCommonService;
+	protected IArkCommonService										iArkCommonService;
 
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	protected ILimsService					iLimsService;
-	
-	protected CompoundPropertyModel<BiospecimenCustomDataVO> cpModel;
+	protected ILimsService												iLimsService;
 
-	protected FeedbackPanel feedbackPanel;
-	protected WebMarkupContainer customDataEditorWMC;
+	protected CompoundPropertyModel<BiospecimenCustomDataVO>	cpModel;
+
+	protected FeedbackPanel												feedbackPanel;
+	protected WebMarkupContainer										customDataEditorWMC;
 
 	/**
 	 * @param id
 	 */
 	public BiospecimenCustomDataContainerPanel(String id) {
 		super(id);
-	/* This doesn't need to be done here assuming that it is already done via SubjectSubMenuTab's processAuthorizationCache(..) */
-//		Subject currentUser = SecurityUtils.getSubject();
-//		realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
-		
-		cpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());		
+		/* This doesn't need to be done here assuming that it is already done via SubjectSubMenuTab's processAuthorizationCache(..) */
+		// Subject currentUser = SecurityUtils.getSubject();
+		// realm.clearCachedAuthorizationInfo(currentUser.getPrincipals());
+
+		cpModel = new CompoundPropertyModel<BiospecimenCustomDataVO>(new BiospecimenCustomDataVO());
 	}
-	
+
 	public BiospecimenCustomDataContainerPanel initialisePanel() {
 		add(initialiseFeedbackPanel());
 		add(initialiseCustomDataEditorWMC());
@@ -88,7 +92,8 @@ public class BiospecimenCustomDataContainerPanel extends Panel {
 		Panel dataEditorPanel;
 		boolean contextLoaded = prerenderContextCheck();
 		if (contextLoaded && isActionPermitted()) {
-			dataEditorPanel = new BiospecimenCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();;
+			dataEditorPanel = new BiospecimenCustomDataEditorPanel("customDataEditorPanel", cpModel, feedbackPanel).initialisePanel();
+			;
 		}
 		else if (!contextLoaded) {
 			dataEditorPanel = new EmptyPanel("customDataEditorPanel");
@@ -139,18 +144,16 @@ public class BiospecimenCustomDataContainerPanel extends Panel {
 				biospecimen = iLimsService.getBiospecimen(sessionBiospecimenId);
 				cpModel.getObject().setBiospecimen(biospecimen);
 				arkModule = iArkCommonService.getArkModuleById(sessionArkModuleId);
-//				cpModel.getObject().setArkModule(arkModule);
+				// cpModel.getObject().setArkModule(arkModule);
 				if (study != null && biospecimen != null && arkModule != null) {
 					contextLoaded = true;
 					cpModel.getObject().setArkFunction(iArkCommonService.getArkFunctionByName(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_BIOSPECIMEN));
 				}
 			}
 			catch (EntityNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.error(e.getMessage());
 			}
 		}
 		return contextLoaded;
 	}
-
 }
