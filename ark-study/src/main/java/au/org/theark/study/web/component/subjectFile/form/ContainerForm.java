@@ -40,6 +40,9 @@ public class ContainerForm extends AbstractContainerForm<SubjectVO> {
 	 */
 	public ContainerForm(String id, CompoundPropertyModel<SubjectVO> cpmModel) {
 		super(id, cpmModel);
+		//TODO: Seems like this multiPart(true) is required to fix a problem after upgrading to Wicket 1.5.0...
+		//Problem is with trying to create a new Attachment for the 2nd time without moving to another function
+		setMultiPart(true);
 	}
 
 }
