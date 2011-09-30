@@ -93,7 +93,6 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
-		setMultiPart(false);
 	}
 
 	public void initialiseDetailForm() {
