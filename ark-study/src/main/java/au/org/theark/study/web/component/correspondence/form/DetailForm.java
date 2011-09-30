@@ -215,19 +215,6 @@ public class DetailForm extends AbstractDetailForm<CorrespondenceVO> {
 			containerForm.getModelObject().getCorrespondence().setStudy(study);
 
 			if (containerForm.getModelObject().getCorrespondence().getId() == null) {
-				/*
-				 * // required for file uploads setMultiPart(true); // retrieve the file and store as Blob in database FileUpload
-				 * fileCorrespondenceAttachment = fileCorrespondenceFileField.getFileUpload();
-				 * 
-				 * try { // copy file to Blob object Blob payload = Hibernate.createBlob(fileCorrespondenceAttachment.getInputStream());
-				 * containerForm.getModelObject().getCorrespondenceAttachment().setPayload(payload); } catch (IOException ex) { ex.printStackTrace(); }
-				 * 
-				 * byte[] byteArray = fileCorrespondenceAttachment.getMD5(); String checksum = getHex(byteArray);
-				 * 
-				 * // set the details of the CorrespondenceAttachment containerForm.getModelObject().getCorrespondenceAttachment().setChecksum(checksum);
-				 * containerForm.getModelObject().getCorrespondenceAttachment().setFilename(fileCorrespondenceAttachment.getClientFileName());
-				 */
-
 				// store correspondence file attachment
 				if (fileUploadField != null && fileUploadField.getFileUpload() != null) {
 					// retrieve file and store as Blob in database
