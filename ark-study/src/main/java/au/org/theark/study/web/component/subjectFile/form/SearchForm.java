@@ -34,6 +34,8 @@ import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
@@ -53,9 +55,13 @@ import au.org.theark.study.web.component.subjectFile.DetailPanel;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial" })
 public class SearchForm extends AbstractSearchForm<SubjectVO> {
-
+	/**
+	 * 
+	 */
+	private static final long							serialVersionUID	= 716294824375744799L;
+	private transient Logger							log					= LoggerFactory.getLogger(SearchForm.class);
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	protected IArkCommonService						iArkCommonService;
 
@@ -72,19 +78,16 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 	protected TextField<String>						subjectFileId;
 	protected TextField<String>						subjectFileName;
 	private DropDownChoice<StudyCompStatus>		studyComponentChoice;
-	private ArkCrudContainerVO				arkCrudContainerVO;
-	
-	public SearchForm(String id,CompoundPropertyModel<SubjectVO> model,ArkCrudContainerVO arkCrudContainerVO,FeedbackPanel feedBackPanel,PageableListView<SubjectFile> listView ){
-		
-		super(id,model,feedBackPanel,arkCrudContainerVO);
+	private ArkCrudContainerVO							arkCrudContainerVO;
+
+	public SearchForm(String id, CompoundPropertyModel<SubjectVO> model, ArkCrudContainerVO arkCrudContainerVO, FeedbackPanel feedBackPanel, PageableListView<SubjectFile> listView) {
+		super(id, model, feedBackPanel, arkCrudContainerVO);
 		this.cpmModel = model;
 		this.pageableListView = listView;
 		this.arkCrudContainerVO = arkCrudContainerVO;
 
-		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model<String>()));
 		add(generalTextLbl);
-		//initialiseSearchForm();
-		//addSearchComponentsToForm();
 		resetButton.setVisible(false);
 		searchButton.setVisible(false);
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
@@ -145,22 +148,16 @@ public class SearchForm extends AbstractSearchForm<SubjectVO> {
 
 		}
 		catch (EntityNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 		catch (ArkSystemException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e.getMessage());
 		}
 	}
 
 	@Override
 	protected void onNew(AjaxRequestTarget target) {
-		// ARK-108:: no longer do full reset to VO
-		getModelObject().getSubjectFile().setId(null); // only reset ID (not
-		// user definable)
-
+		getModelObject().getSubjectFile().setId(null);
 		preProcessDetailPanel(target);
 	}
-
 }
