@@ -40,6 +40,13 @@ import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.Constants;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
+/**
+ * 
+ * @author nivedann
+ * @author elam
+ * @author cellis
+ *
+ */
 public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO> {
 
 	private static final long					serialVersionUID	= 1L;
@@ -47,13 +54,12 @@ public class SubjectFileContainerPanel extends AbstractContainerPanel<SubjectVO>
 	@SpringBean(name = Constants.STUDY_SERVICE)
 	private IStudyService						studyService;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService					iArkCommonService;
 
 	// Container Form
 	private ContainerForm						containerForm;
-	// Panels
-	// private SearchResultListPanel searchResultListPanel;
 	private SearchPanel							searchPanel;
 	private DetailPanel							detailPanel;
 	private PageableListView<SubjectFile>	pageableListView;
