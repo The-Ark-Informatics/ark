@@ -18,23 +18,12 @@
  ******************************************************************************/
 package au.org.theark.lims.web.component.biotransaction.form;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.shiro.SecurityUtils;
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.navigation.paging.AjaxPagingNavigator;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.data.DataView;
-import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -42,27 +31,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import au.org.theark.core.exception.EntityNotFoundException;
-import au.org.theark.core.model.lims.entity.BioTransaction;
-import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.security.ArkPermissionHelper;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
-import au.org.theark.core.web.component.ArkDataProvider2;
 import au.org.theark.core.web.component.button.ArkBusyAjaxButton;
-import au.org.theark.core.web.component.link.ArkBusyAjaxLink;
 import au.org.theark.lims.model.vo.LimsVO;
-import au.org.theark.lims.service.ILimsService;
-import au.org.theark.lims.util.UniqueIdGenerator;
-import au.org.theark.lims.web.Constants;
-import au.org.theark.lims.web.component.subjectlims.lims.biospecimen.BiospecimenModalDetailPanel;
 
 /**
  * @author cellis
  * 
  */
-@SuppressWarnings( { "unchecked" })
 public class BioTransactionListForm extends Form<LimsVO> {
 	/**
 	 * 
@@ -156,25 +135,20 @@ public class BioTransactionListForm extends Form<LimsVO> {
 	}
 
 	protected void onNew(AjaxRequestTarget target) {
-
 		CompoundPropertyModel<LimsVO> newModel = new CompoundPropertyModel<LimsVO>(new LimsVO());
 		// Create new BioTransaction given a biospecimen
 		newModel.getObject().setBiospecimen(cpModel.getObject().getBiospecimen());
-
 		showModalWindow(target, newModel);
 
 		// refresh the feedback messages
 		target.add(feedbackPanel);
 	}
-
-
+	
 	protected void showModalWindow(AjaxRequestTarget target, CompoundPropertyModel<LimsVO> cpModel) {
 		modalContentPanel = new EmptyPanel("content");
-
 		// Set the modalWindow title and content
 		modalWindow.setTitle("Biospecimen Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
 	}
-
 }
