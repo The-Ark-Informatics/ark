@@ -95,7 +95,7 @@ public class DetailForm extends AbstractDetailForm<ConsentVO> {
 
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
-	}
+}
 
 	public void initialiseDetailForm() {
 		consentedBy = new TextField<String>(Constants.CONSENT_CONSENTED_BY);
