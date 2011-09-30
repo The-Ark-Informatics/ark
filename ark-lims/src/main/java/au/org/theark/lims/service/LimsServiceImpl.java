@@ -63,6 +63,7 @@ import au.org.theark.lims.web.Constants;
 public class LimsServiceImpl implements ILimsService {
 	private static Logger		log	= LoggerFactory.getLogger(LimsServiceImpl.class);
 
+	@SuppressWarnings("unchecked")
 	private IArkCommonService	arkCommonService;
 	private IStudyDao				iStudyDao;
 	private IBioCollectionDao	iBioCollectionDao;
@@ -74,6 +75,7 @@ public class LimsServiceImpl implements ILimsService {
 	 * @param arkCommonService
 	 *           the arkCommonService to set
 	 */
+	@SuppressWarnings("unchecked")
 	@Autowired
 	public void setArkCommonService(IArkCommonService arkCommonService) {
 		this.arkCommonService = arkCommonService;
