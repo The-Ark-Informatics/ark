@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.report</groupId>
 	<artifactId>ark-report</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.4-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<name>Ark Report</name>
 	<description>ARK Module that contains all Reporting related functionality.</description>
 	<organization>
@@ -124,6 +124,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>0.1.4-SNAPSHOT</ark-common.version>
+		<ark-common.version>0.1.5-SNAPSHOT</ark-common.version>
 	</properties>
 </project>

@@ -4,7 +4,7 @@
 	<groupId>au.org.theark.admin</groupId>
 	<artifactId>ark-admin</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<name>ark-admin</name>
 	<description>Administration module for the ARK</description>
 	<organization>
@@ -119,6 +119,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>0.1.4-SNAPSHOT</ark-common.version>
+		<ark-common.version>0.1.5-SNAPSHOT</ark-common.version>
 	</properties>
 </project>
