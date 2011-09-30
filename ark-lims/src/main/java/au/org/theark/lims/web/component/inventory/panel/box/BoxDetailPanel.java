@@ -69,8 +69,6 @@ public class BoxDetailPanel extends Panel {
 
 			@Override
 			protected void onCloseModalWindow(AjaxRequestTarget target) {
-				// Repaint gridBoxPanel
-				target.add(gridBoxPanel);
 			}
 		};
 		

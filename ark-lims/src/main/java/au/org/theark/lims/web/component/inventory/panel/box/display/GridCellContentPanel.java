@@ -7,17 +7,22 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvCell;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
+import au.org.theark.lims.service.IInventoryService;
+import au.org.theark.lims.web.Constants;
 
 public class GridCellContentPanel extends Panel {
-
 	/**
 	 * 
 	 */
 	private static final long					serialVersionUID				= 435929363844198235L;
+	
+	@SpringBean(name = Constants.LIMS_INVENTORY_SERVICE)
+	private IInventoryService					iInventoryService;
 
 	private static final PackageResourceReference	EMPTY_CELL_ICON				= new PackageResourceReference(GridCellContentPanel.class, "emptyCell.gif");
 	private static final PackageResourceReference	USED_CELL_ICON					= new PackageResourceReference(GridCellContentPanel.class, "usedCell.gif");
@@ -25,7 +30,10 @@ public class GridCellContentPanel extends Panel {
 	private static final PackageResourceReference	SELECTED_EMPTY_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedEmptyCell.gif");
 	private static final PackageResourceReference	SELECTED_USED_CELL_ICON		= new PackageResourceReference(GridCellContentPanel.class, "selectedUsedCell.gif");
 	private static final PackageResourceReference	SELECTED_BARCODE_CELL_ICON	= new PackageResourceReference(GridCellContentPanel.class, "selectedBarcodeCell.gif");
-
+	private Component gridCellContent = new EmptyPanel("gridCellContent");
+	private InvCell invCell;
+	private AbstractDetailModalWindow modalWindow;
+	
 	/**
 	 * A representation of a cell contained within in a GridBox
 	 * 
@@ -35,10 +43,18 @@ public class GridCellContentPanel extends Panel {
 	public GridCellContentPanel(String id, InvCell invCell, AbstractDetailModalWindow modalWindow) {
 		super(id);
 		setOutputMarkupPlaceholderTag(true);
+		this.invCell = invCell;
+		this.modalWindow = modalWindow;
+	}
+	
+	@Override
+	protected void onBeforeRender() {
+		super.onBeforeRender();
+		initialiseContentPanel();	
+	}
 
-		Component gridCellContent = new EmptyPanel("gridCellContent");
-		
-		if(invCell.getBiospecimen() == null) {
+	private void initialiseContentPanel() {
+		if(this.invCell.getBiospecimen() == null) {
 			gridCellContent = new GridCellIcon("gridCellContent", getIconResourceReference(invCell), getIconOverResourceReference(invCell), invCell.getId().toString());
 		}
 		else {
@@ -46,15 +62,14 @@ public class GridCellContentPanel extends Panel {
 		}
 
 		addOrReplace(gridCellContent);
-		addToolTip(invCell);
+		addToolTip();
 	}
 
 	/**
 	 * Adds a ToolTip, using the invCell details
-	 * 
-	 * @param invCell
 	 */
-	private void addToolTip(InvCell invCell) {
+	private void addToolTip() {
+		invCell = iInventoryService.getInvCell(invCell.getId());
 		StringBuffer stringBuffer = new StringBuffer();
 		stringBuffer.append("Column: ");
 		stringBuffer.append(invCell.getColno());
@@ -98,7 +113,7 @@ public class GridCellContentPanel extends Panel {
 	 */
 	private ResourceReference getIconResourceReference(InvCell invCell) {
 		ResourceReference resourceReference = null;
-		Biospecimen biospecimen = invCell.getBiospecimen();
+		Biospecimen biospecimen = iInventoryService.getBiospecimenByInvCell(invCell);
 		if (biospecimen == null) {
 			resourceReference = EMPTY_CELL_ICON;
 		}
