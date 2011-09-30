@@ -29,7 +29,6 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import au.org.theark.core.model.lims.entity.BiospecimenCustomFieldData;
 import au.org.theark.core.model.study.entity.CustomField;
 import au.org.theark.core.web.component.customfield.dataentry.AbstractCustomDataEditorForm;
-import au.org.theark.core.web.form.ArkFormVisitor;
 import au.org.theark.lims.model.vo.BiospecimenCustomDataVO;
 import au.org.theark.lims.service.ILimsService;
 
@@ -37,16 +36,18 @@ import au.org.theark.lims.service.ILimsService;
  * @author elam
  * 
  */
-@SuppressWarnings("serial")
 public class CustomDataEditorForm extends AbstractCustomDataEditorForm<BiospecimenCustomDataVO> {
-
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 6243088121937721984L;
 	@SpringBean(name = au.org.theark.lims.web.Constants.LIMS_SERVICE)
-	private ILimsService				iLimsService;
+	private ILimsService	iLimsService;
 
 	public CustomDataEditorForm(String id, CompoundPropertyModel<BiospecimenCustomDataVO> cpModel, FeedbackPanel feedbackPanel) {
 		super(id, cpModel, feedbackPanel);
 	}
-	
+
 	public void onEditSave(AjaxRequestTarget target, Form<?> form) {
 		List<BiospecimenCustomFieldData> errorList = iLimsService.createOrUpdateBiospecimenCustomFieldData(cpModel.getObject().getCustomFieldDataList());
 		if (errorList.size() > 0) {
@@ -57,7 +58,7 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<Biospecim
 					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + biospecimenCustomFieldData.getDateDataValue());
 				}
 				else {
-					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + biospecimenCustomFieldData.getTextDataValue());					
+					this.error("Unable to save this data: " + cf.getFieldLabel() + " = " + biospecimenCustomFieldData.getTextDataValue());
 				}
 			}
 		}
@@ -65,9 +66,8 @@ public class CustomDataEditorForm extends AbstractCustomDataEditorForm<Biospecim
 			this.info("Successfully saved all edits");
 		}
 		/*
-		 * Need to update the dataView, which forces a refresh of the model objects from backend.
-		 * This is because deleted fields still remain in the model, and are stale objects if we 
-		 * try to use them for future saves.
+		 * Need to update the dataView, which forces a refresh of the model objects from backend. This is because deleted fields still remain in the
+		 * model, and are stale objects if we try to use them for future saves.
 		 */
 		target.add(dataViewWMC);
 		target.add(feedbackPanel);
