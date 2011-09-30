@@ -27,16 +27,12 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
@@ -49,24 +45,32 @@ import au.org.theark.core.model.study.entity.SubjectFile;
 import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
-import au.org.theark.core.web.component.button.AjaxDeleteButton;
 import au.org.theark.core.web.component.panel.DeleteIconAjaxLinkPanel;
 import au.org.theark.core.web.component.panel.DownloadIconAjaxLinkPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
-@SuppressWarnings({ "serial", "unchecked", "unused" })
+/**
+ * 
+ * @author nivedann
+ * @author elam
+ * @author cellis
+ * 
+ */
 public class SearchResultListPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 8147089460348057381L;
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
 	private ArkCrudContainerVO	arkCrudContainerVO;
-	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
+	private transient Logger	log					= LoggerFactory.getLogger(SearchResultListPanel.class);
 	private ContainerForm		containerForm;
 
-	
-	public SearchResultListPanel(String id,ArkCrudContainerVO arkCrudContainerVO,ContainerForm containerForm){
+	public SearchResultListPanel(String id, ArkCrudContainerVO arkCrudContainerVO, ContainerForm containerForm) {
 		super(id);
-		this.arkCrudContainerVO=arkCrudContainerVO;
+		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 	}
 
@@ -75,8 +79,14 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of SubjectFile
 	 */
+	@SuppressWarnings("unchecked")
 	public PageableListView<SubjectFile> buildPageableListView(IModel iModel) {
 		PageableListView<SubjectFile> sitePageableListView = new PageableListView<SubjectFile>(Constants.RESULT_LIST, iModel, Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<SubjectFile> item) {
 				SubjectFile subjectFile = item.getModelObject();
@@ -91,7 +101,6 @@ public class SearchResultListPanel extends Panel {
 
 				// The filename
 				if (subjectFile.getFilename() != null) {
-					// Add the id component here
 					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME, subjectFile.getFilename()));
 				}
 				else {
@@ -100,22 +109,18 @@ public class SearchResultListPanel extends Panel {
 
 				// The study component
 				if (subjectFile.getStudyComp() != null) {
-					// Add the id component here
 					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP, subjectFile.getStudyComp().getName()));
 				}
 				else {
 					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_STUDY_COMP, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// UserId
 				if (subjectFile.getUserId() != null) {
-					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, subjectFile.getUserId()));// the ID here must match the
-					// ones in
-					// mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, subjectFile.getUserId()));
 				}
 				else {
-					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.SUBJECT_FILE_USER_ID, ""));
 				}
 
 				// Comments
@@ -135,6 +140,11 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -149,6 +159,11 @@ public class SearchResultListPanel extends Panel {
 	protected Component buildDeleteLinkPanel(final SubjectFile subjectFile, final Panel downloadLinkPanel) {
 		DeleteIconAjaxLinkPanel deleteLinkPanel = new DeleteIconAjaxLinkPanel(au.org.theark.study.web.Constants.DELETE_FILE) {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onLinkClick(AjaxRequestTarget target) {
 				if (subjectFile.getId() != null) {
@@ -159,24 +174,20 @@ public class SearchResultListPanel extends Panel {
 						studyService.delete(subjectFile);
 					}
 					catch (ArkSystemException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 					catch (EntityNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.error(e.getMessage());
 					}
 				}
 
 				containerForm.info("Attachment " + subjectFile.getFilename() + " was deleted successfully.");
 
 				// Update the result panel
-				//target.add(searchResultContainer);
 				target.add(arkCrudContainerVO.getSearchResultPanelContainer());
-				
 				target.add(containerForm);
 			}
-			
+
 			@Override
 			public boolean isVisible() {
 				SecurityManager securityManager = ThreadContext.getSecurityManager();
@@ -196,6 +207,11 @@ public class SearchResultListPanel extends Panel {
 	private Panel buildDownloadLinkPanel(final SubjectFile subjectFile) {
 		DownloadIconAjaxLinkPanel downloadLinkPanel = new DownloadIconAjaxLinkPanel(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
 
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public IRequestHandler getDownloadRequestHandler() {
 				// Attempt to download the Blob as an array of bytes
@@ -204,13 +220,12 @@ public class SearchResultListPanel extends Panel {
 					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				return new ByteDataResourceRequestHandler("", data, subjectFile.getFilename());
 			}
 		};
 		return downloadLinkPanel;
 	}
-	
+
 }
