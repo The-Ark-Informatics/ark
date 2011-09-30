@@ -31,12 +31,12 @@
 			</th>
 			<th width="5%">
 				<label for="col6">
-					&nbsp;
+					<wicket:message	key="subjectFile.download">[Download]</wicket:message>
 				</label>
 			</th>
 			<th width="5%">
 				<label for="col7">
-					&nbsp;
+					<wicket:message	key="subjectFile.delete">[Delete]</wicket:message>
 				</label>
 			</th>
 			<th width="2%">
@@ -62,10 +62,12 @@
 				<span wicket:id="subjectFile.comments">Comments</span>
 			</td>
 			<td width="5%">
-			  	<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />
+			  	<!--<input wicket:id="downloadFile" type="submit" wicket:message="value:button.downloadFile" />-->
+			  	<div wicket:id="downloadFile"></div>
 			</td>
 			<td width="5%">
-					<input wicket:id="deleteFile" type="submit" wicket:message="value:button.deleteFile" />
+				<!--<input wicket:id="deleteFile" type="submit" wicket:message="value:button.deleteFile" />-->
+			  	<div wicket:id="deleteFile"></div>
 			</td>
 			<td width="2%">&nbsp;</td>
 		</tr>

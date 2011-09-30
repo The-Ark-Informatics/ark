@@ -25,6 +25,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.basic.Label;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,8 @@ import au.org.theark.core.security.PermissionConstants;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
+import au.org.theark.core.web.component.panel.DeleteIconAjaxLinkPanel;
+import au.org.theark.core.web.component.panel.DownloadIconAjaxLinkPanel;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectFile.form.ContainerForm;
 
@@ -123,11 +127,11 @@ public class SearchResultListPanel extends Panel {
 				}
 
 				// Download file link button
-				AjaxButton downloadButton = buildDownloadButton(subjectFile);
-				item.add(downloadButton);
+				Panel downloadLinkPanel = buildDownloadLinkPanel(subjectFile);
+				item.add(downloadLinkPanel);
 
 				// Delete the upload file
-				item.add(buildDeleteButton(subjectFile, downloadButton));
+				item.add(buildDeleteLinkPanel(subjectFile, downloadLinkPanel));
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
@@ -137,78 +141,21 @@ public class SearchResultListPanel extends Panel {
 					}
 				}));
 			}
+
 		};
 		return sitePageableListView;
 	}
 
-	private Link buildDownloadLink(final SubjectFile subjectFile) {
-		Link link = new Link(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
-			@Override
-			public void onClick() {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				try {
-					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("", data, subjectFile.getFilename()));
-
-			};
-		};
-
-		// Add the label for the link
-		// TODO when displaying text escape any special characters
-		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
-		link.add(nameLinkLabel);
-		return link;
-	}
-
-	private AjaxButton buildDownloadButton(final SubjectFile subjectFile) {
-		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE, new StringResourceModel("downloadKey", this, null)) {
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to download the Blob as an array of bytes
-				byte[] data = null;
-				try {
-					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
-				}
-				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("", data, subjectFile.getFilename()));
-			}
+	protected Component buildDeleteLinkPanel(final SubjectFile subjectFile, final Panel downloadLinkPanel) {
+		DeleteIconAjaxLinkPanel deleteLinkPanel = new DeleteIconAjaxLinkPanel(au.org.theark.study.web.Constants.DELETE_FILE) {
 
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Download request could not be fulfilled.");
-				// TODO: Improve msg?
-			};
-		};
-
-		ajaxButton.setVisible(true);
-		ajaxButton.setDefaultFormProcessing(false);
-
-		if (subjectFile.getPayload() == null)
-			ajaxButton.setVisible(false);
-
-		return ajaxButton;
-	}
-
-	private AjaxDeleteButton buildDeleteButton(final SubjectFile subjectFile, final AjaxButton downloadButton) {
-
-		DeleteButton ajaxButton = new DeleteButton(subjectFile, SearchResultListPanel.this) {
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				// Attempt to delete upload
+			protected void onLinkClick(AjaxRequestTarget target) {
 				if (subjectFile.getId() != null) {
 					try {
 						// TODO: implement disabling of other buttons on row when buttons clicked once
-						downloadButton.setEnabled(false);
-						target.add(downloadButton);
+						downloadLinkPanel.setEnabled(false);
+						target.add(downloadLinkPanel);
 						studyService.delete(subjectFile);
 					}
 					catch (ArkSystemException e) {
@@ -229,7 +176,7 @@ public class SearchResultListPanel extends Panel {
 				
 				target.add(containerForm);
 			}
-
+			
 			@Override
 			public boolean isVisible() {
 				SecurityManager securityManager = ThreadContext.getSecurityManager();
@@ -242,17 +189,28 @@ public class SearchResultListPanel extends Panel {
 				return flag;
 			}
 
+		};
+		return deleteLinkPanel;
+	}
+
+	private Panel buildDownloadLinkPanel(final SubjectFile subjectFile) {
+		DownloadIconAjaxLinkPanel downloadLinkPanel = new DownloadIconAjaxLinkPanel(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+
 			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected error: Delete request could not be fulfilled.");
-				// TODO: Improve msg?
+			public IRequestHandler getDownloadRequestHandler() {
+				// Attempt to download the Blob as an array of bytes
+				byte[] data = null;
+				try {
+					data = subjectFile.getPayload().getBytes(1, (int) subjectFile.getPayload().length());
+				}
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return new ByteDataResourceRequestHandler("", data, subjectFile.getFilename());
 			}
 		};
-
-		// TODO: Check permissions for delete
-		ajaxButton.setVisible(true);
-		ajaxButton.setDefaultFormProcessing(false);
-
-		return ajaxButton;
+		return downloadLinkPanel;
 	}
+	
 }
