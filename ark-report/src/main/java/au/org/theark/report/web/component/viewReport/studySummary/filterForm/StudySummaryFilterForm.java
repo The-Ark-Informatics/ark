@@ -33,19 +33,8 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.IAjaxCallDecorator;
-import org.apache.wicket.ajax.calldecorator.AjaxPostprocessingCallDecorator;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.extensions.ajax.markup.html.IndicatingAjaxButton;
-import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
-import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.wicketstuff.jasperreports.JRConcreteResource;
 import org.wicketstuff.jasperreports.JRResource;
 import org.wicketstuff.jasperreports.handlers.CsvResourceHandler;
@@ -54,13 +43,7 @@ import org.wicketstuff.jasperreports.handlers.PdfResourceHandler;
 import au.org.theark.core.model.report.entity.ReportOutputFormat;
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.service.IArkCommonService;
-import au.org.theark.core.web.form.AbstractContainerForm;
 import au.org.theark.report.model.vo.GenericReportViewVO;
-import au.org.theark.report.service.IReportService;
-import au.org.theark.report.web.Constants;
-import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
-import au.org.theark.report.web.component.viewReport.consentDetails.ConsentDetailsReportDataSource;
 import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterForm;
 import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryReportDataSource;
 
@@ -68,8 +51,11 @@ import au.org.theark.report.web.component.viewReport.studySummary.StudySummaryRe
  * @author elam
  * 
  */
-@SuppressWarnings("serial")
 public class StudySummaryFilterForm extends AbstractReportFilterForm<GenericReportViewVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -6917137603826043554L;
 
 	public StudySummaryFilterForm(String id, CompoundPropertyModel<GenericReportViewVO> model) {
 		super(id, model);
