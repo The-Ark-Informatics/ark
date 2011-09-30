@@ -62,5 +62,6 @@ public class GridCellLink extends Panel {
 		modalWindow.setTitle("Biospecimen Detail");
 		modalWindow.setContent(modalContentPanel);
 		modalWindow.show(target);
+		modalWindow.repaintComponent(GridCellLink.this.getParent());
 	}
 }
