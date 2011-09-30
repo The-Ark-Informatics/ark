@@ -27,6 +27,7 @@ public class ContainerForm extends AbstractContainerForm<CorrespondenceVO> {
 
 	public ContainerForm(String id, CompoundPropertyModel<CorrespondenceVO> cpmModel) {
 		super(id, cpmModel);
+		setMultiPart(true);
 	}
 
 }
