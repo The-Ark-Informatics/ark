@@ -100,7 +100,7 @@ public class SubjectSubMenuTab extends AbstractArkTabPanel {
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new ConsentContainerPanel(panelId);
 					}
-					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_SUBJECT_FILE)) {
+					else if (menuArkFunction.getName().equalsIgnoreCase(au.org.theark.core.Constants.FUNCTION_KEY_VALUE_ATTACHMENT)) {
 
 						processAuthorizationCache(au.org.theark.core.Constants.ARK_MODULE_SUBJECT, menuArkFunction);
 						panelToReturn = new SubjectFileContainerPanel(panelId);
