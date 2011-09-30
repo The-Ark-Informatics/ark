@@ -23,20 +23,22 @@ import org.apache.wicket.model.CompoundPropertyModel;
 
 import au.org.theark.core.model.report.entity.ReportTemplate;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
-import au.org.theark.report.model.vo.GenericReportViewVO;
 import au.org.theark.report.web.component.viewReport.AbstractSelectedReportContainer;
 import au.org.theark.report.web.component.viewReport.ReportOutputPanel;
 
+/**
+ * 
+ * @author elam
+ *
+ */
 public class ConsentDetailsReportContainer extends AbstractSelectedReportContainer<ConsentDetailsReportVO> {
-
 	/**
 	 * 
 	 */
-	private static final long	serialVersionUID	= 1L;
+	private static final long	serialVersionUID	= -6101080529839072207L;
 
 	public ConsentDetailsReportContainer(String id) {
 		super(id);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -57,5 +59,4 @@ public class ConsentDetailsReportContainer extends AbstractSelectedReportContain
 		add(rfp);
 		add(reportOutputPanel);
 	}
-
 }
