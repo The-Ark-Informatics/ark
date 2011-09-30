@@ -218,21 +218,22 @@ public class DetailForm extends AbstractDetailForm<PhoneVO> {
 					if (containerForm.getModelObject().getPhone().getId() == null) {
 						studyService.create(containerForm.getModelObject().getPhone());
 						this.info("Phone number was added and linked to Subject UID: " + subjectInContext.getSubjectUID());
-						processErrors(target);
-						// Call the create
 					}
 					else {
 						studyService.update(containerForm.getModelObject().getPhone());
 						this.info("Phone number was updated and linked to Subject UID: " + subjectInContext.getSubjectUID());
-						processErrors(target);
-						// Update
 					}
 				}
 				else if (personType != null && personType.equalsIgnoreCase(au.org.theark.core.Constants.PERSON_CONTEXT_TYPE_CONTACT)) {
 					// TODO: Contact Interface implementation
 				}
-
+				
+				processErrors(target);
 				onSavePostProcess(target);
+			}else{
+				
+				processErrors(target);
+				
 			}
 		}
 		catch (ArkUniqueException aue) {
