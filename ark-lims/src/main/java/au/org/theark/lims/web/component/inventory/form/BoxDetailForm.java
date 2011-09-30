@@ -162,7 +162,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		add(detailFormContainer);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void onSave(Form<LimsVO> containerForm, AjaxRequestTarget target) {
 		if (containerForm.getModelObject().getInvBox().getId() == null) {
@@ -179,19 +178,6 @@ public class BoxDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		}
 
 		onSavePostProcess(target);
-		
-		//InvBox invBox = iInventoryService.getInvBox(containerForm.getModelObject().getInvBox().getId());
-		/* Set new path
-		List path = iInventoryService.getInventoryPathOfNode(containerForm.getModelObject().getInvBox());
-		for (Iterator iterator = path.iterator(); iterator.hasNext();) {
-			Object object = (Object) iterator.next();
-			tree.getTreeState().expandNode(object);
-			tree.updateTree();
-		}
-		
-		tree.getTreeState().selectNode(containerForm.getModelObject().getInvBox(), true);
-		tree.updateTree();
-		*/
 	}
 
 	protected void onCancel(AjaxRequestTarget target) {
