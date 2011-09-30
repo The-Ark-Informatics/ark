@@ -32,8 +32,11 @@ import au.org.theark.lims.web.component.inventory.form.BoxDetailForm;
 import au.org.theark.lims.web.component.inventory.form.ContainerForm;
 import au.org.theark.lims.web.component.inventory.panel.box.display.GridBoxPanel;
 
-@SuppressWarnings("serial")
 public class BoxDetailPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 7132411215567811297L;
 	private FeedbackPanel					feedbackPanel;
 	private WebMarkupContainer				detailContainer;
 	private BoxDetailForm					detailForm;

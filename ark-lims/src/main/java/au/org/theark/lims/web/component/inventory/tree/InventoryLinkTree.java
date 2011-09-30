@@ -84,7 +84,7 @@ public class InventoryLinkTree extends LinkTree {
 		this.containerForm = containerForm;
 	}
 
-	@SuppressWarnings({ "unchecked"})
+	@SuppressWarnings("unchecked")
 	@Override
 	protected Component newNodeComponent(String id, IModel model) {
 		// Override standard node creation so we can setup our own component
@@ -193,8 +193,8 @@ public class InventoryLinkTree extends LinkTree {
 		}
 		
 		String toolTip = stringBuffer.toString();
-		panel.add(new AttributeModifier("showtooltip", true, new Model<Boolean>(true)));
-		panel.add(new AttributeModifier("title", true, new Model<String>(toolTip)));
+		panel.add(new AttributeModifier("showtooltip", new Model<Boolean>(true)));
+		panel.add(new AttributeModifier("title", new Model<String>(toolTip)));
 	}
 	
 	/**
@@ -227,6 +227,7 @@ public class InventoryLinkTree extends LinkTree {
 	/**
 	 * Expand or collapse a node if the user clicks on a node (in addition to the +/- signs)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onNodeLinkClicked(Object object, BaseTree tree, AjaxRequestTarget target) {
 		final DefaultMutableTreeNode node = (DefaultMutableTreeNode) object;
@@ -307,6 +308,7 @@ public class InventoryLinkTree extends LinkTree {
 	 *           the reference object of the node
 	 * @return resourceReference to the icon for the node in question
 	 */
+	@SuppressWarnings("unchecked")
 	private ResourceReference getIconResourceReference(Object object) {
 		final DefaultMutableTreeNode defaultMutableTreeNode = (DefaultMutableTreeNode) object;
 		ResourceReference resourceReference = STUDY_ICON;

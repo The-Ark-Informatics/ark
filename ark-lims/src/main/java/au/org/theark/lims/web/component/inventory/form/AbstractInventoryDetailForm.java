@@ -120,8 +120,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
-				
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -138,9 +137,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 
 			public void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				onSave(containerForm, target);
-				target.add(detailContainer);
-				//tree.updateTree(target);
-				//target.add(tree);
+				target.add(detailFormContainer);
 			}
 
 			@SuppressWarnings("unchecked")
@@ -189,8 +186,7 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				// TODO Auto-generated method stub
-				
+				target.add(feedbackPanel);
 			}
 		};
 
@@ -308,7 +304,6 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 		target.add(detailFormContainer);
 		target.add(viewButtonContainer);
 		target.add(editButtonContainer);
-		target.add(detailContainer);
 	}
 
 	/**
@@ -319,15 +314,11 @@ public abstract class AbstractInventoryDetailForm<T> extends Form<T> {
 	 * @param target
 	 */
 	protected void onSavePostProcess(AjaxRequestTarget target) {
-		detailContainer.setVisible(true);
 		detailFormContainer.setEnabled(false);
-		
 		viewButtonContainer.setVisible(true);
 		viewButtonContainer.setEnabled(true);
-		
 		editButtonContainer.setVisible(false);
 
-		target.add(detailContainer);
 		target.add(detailFormContainer);
 		target.add(viewButtonContainer);
 		target.add(editButtonContainer);
