@@ -18,6 +18,7 @@
  ******************************************************************************/
 package au.org.theark.core.web.component;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -33,6 +34,7 @@ public abstract class AbstractDetailModalWindow extends ModalWindow {
 	protected String				title;
 	protected FeedbackPanel		feedbackPanel;
 	protected Panel				panel;
+	protected Component			component;
 
 	public AbstractDetailModalWindow(String id) {
 		super(id);
@@ -65,9 +67,21 @@ public abstract class AbstractDetailModalWindow extends ModalWindow {
 		setContent(panel);
 	}
 
+	@Override
 	public void close(final AjaxRequestTarget target) {
 		super.close(target);
 		onCloseModalWindow(target);
+		if(component != null) {
+			target.add(component);
+		}
+	}
+	
+	/**
+	 * What component to repaint after modalWindow is closed
+	 * @param component
+	 */
+	public void repaintComponent(final Component component) {
+		this.component = component;
 	}
 
 	abstract protected void onCloseModalWindow(AjaxRequestTarget target);
