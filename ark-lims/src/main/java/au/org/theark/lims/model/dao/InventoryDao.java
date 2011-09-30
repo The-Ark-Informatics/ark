@@ -157,15 +157,11 @@ public class InventoryDao extends HibernateSessionDao implements IInventoryDao {
 
 	public Biospecimen getBiospecimenByInvCell(InvCell invCell) {
 		Biospecimen biospecimen = null;
-		Criteria criteria = getSession().createCriteria(Biospecimen.class);
-
-		if (invCell != null) {
-			criteria.add(Restrictions.eq("invCell", invCell));
-		}
-		
-		List<Biospecimen> list = criteria.list();
+		Criteria criteria = getSession().createCriteria(InvCell.class);
+		criteria.add(Restrictions.eq("id", invCell.getId()));
+		List<InvCell> list = criteria.list();
 		if(!list.isEmpty()){ 
-			biospecimen = (Biospecimen) list.get(0);	
+			biospecimen = (Biospecimen) list.get(0).getBiospecimen();	
 		}
 		return biospecimen;
 	}
