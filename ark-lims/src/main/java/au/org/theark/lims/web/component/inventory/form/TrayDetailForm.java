@@ -119,6 +119,7 @@ public class TrayDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTray.name.required", this, new Model<String>("Name")));
 		invTankDdc.setRequired(true).setLabel(new StringResourceModel("error.invTank.name.required", this, new Model<String>("Name")));
+		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTray.capacity.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {

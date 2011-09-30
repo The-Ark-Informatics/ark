@@ -130,6 +130,7 @@ public class TankDetailForm extends AbstractInventoryDetailForm<LimsVO> {
 		idTxtFld.setRequired(true);
 		nameTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTank.name.required", this, new Model<String>("Name")));
 		invSiteDdc.setRequired(true).setLabel(new StringResourceModel("error.invSite.name.required", this, new Model<String>("Name")));
+		capacityTxtFld.setRequired(true).setLabel(new StringResourceModel("error.invTank.capacity.required", this, new Model<String>("Name")));
 	}
 
 	private void addComponents() {
