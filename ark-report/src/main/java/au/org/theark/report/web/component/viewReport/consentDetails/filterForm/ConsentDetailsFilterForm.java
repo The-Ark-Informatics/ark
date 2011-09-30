@@ -62,9 +62,11 @@ import au.org.theark.report.web.component.viewReport.form.AbstractReportFilterFo
  * @author elam
  * 
  */
-@SuppressWarnings("serial")
 public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO> {
-
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= -2592846903002478421L;
 	protected TextField<String>					tfSubjectUID;
 	protected DropDownChoice<SubjectStatus>	ddcSubjectStatus;
 	protected DropDownChoice<ConsentStatus>	ddcConsentStatus;
@@ -210,5 +212,4 @@ public class ConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDe
 		ddcStudyComp.setRequired(true);
 		add(ddcStudyComp);
 	}
-
 }
