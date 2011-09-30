@@ -154,7 +154,6 @@ public class DetailForm extends AbstractArchiveDetailForm<StudyModelVO> {
 		super(id, feedbackPanel, crudVO, containerForm);
 		this.studyCrudVO = crudVO;
 		this.containerForm = containerForm;
-		setMultiPart(true);
 		AjaxFormValidatingBehavior.addToAllFormComponents(this, "onKeyup", Duration.seconds(2));
 	}
 
