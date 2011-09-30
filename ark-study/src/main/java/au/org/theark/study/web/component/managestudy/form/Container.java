@@ -32,6 +32,7 @@ public class Container extends AbstractContainerForm<StudyModelVO> {
 
 	public Container(String id, CompoundPropertyModel<StudyModelVO> model) {
 		super(id, model);
+		setMultiPart(true);
 	}
 
 }
