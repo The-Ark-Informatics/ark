@@ -35,7 +35,6 @@ import org.apache.wicket.markup.html.form.upload.FileUploadField;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.file.File;
 import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +43,6 @@ import au.org.theark.core.exception.ArkSystemException;
 import au.org.theark.core.exception.EntityNotFoundException;
 import au.org.theark.core.model.study.entity.LinkSubjectStudy;
 import au.org.theark.core.model.study.entity.StudyComp;
-import au.org.theark.core.model.study.entity.StudyCompStatus;
 import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.vo.SubjectVO;
@@ -58,28 +56,26 @@ import au.org.theark.study.web.Constants;
  * @author cellis
  * 
  */
-@SuppressWarnings({ "serial", "unused" })
 public class DetailForm extends AbstractDetailForm<SubjectVO> {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 8560698088787915274L;
 	private transient Logger						log	= LoggerFactory.getLogger(DetailForm.class);
 	@SpringBean(name = au.org.theark.study.web.Constants.STUDY_SERVICE)
 	private IStudyService							studyService;
 
+	@SuppressWarnings("unchecked")
 	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
 	private IArkCommonService						iArkCommonService;
 
-	private int											mode;
-
 	private TextField<String>						subjectFileIdTxtFld;
-	private TextField<String>						consentFileFilenameTxtFld;
 	private FileUploadField							fileSubjectFileField;
-	private DropDownChoice<StudyCompStatus>	studyComponentChoice;
+	private DropDownChoice<StudyComp>			studyComponentChoice;
 	private TextArea<String>						commentsTxtArea;
-
-	// private ConsentFileProgressBar uploadProgressBar;
-	
+	//private UploadProgressBar 						uploadProgressBar;
 	
 	public DetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO,AbstractContainerForm<SubjectVO> containerForm){
-		
 		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
 	}
 
@@ -88,7 +84,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		// Initialise Drop Down Choices
 		List<StudyComp> studyCompList = iArkCommonService.getStudyComponent();
 		ChoiceRenderer<StudyComp> defaultChoiceRenderer = new ChoiceRenderer<StudyComp>(Constants.NAME, Constants.ID);
-		studyComponentChoice = new DropDownChoice(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
+		studyComponentChoice = new DropDownChoice<StudyComp>(Constants.SUBJECT_FILE_STUDY_COMP, studyCompList, defaultChoiceRenderer);
 	}
 
 	public void initialiseDetailForm() {
@@ -96,7 +92,7 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		subjectFileIdTxtFld = new TextField<String>(au.org.theark.study.web.Constants.SUBJECT_FILE_ID);
 
 		// progress bar for upload
-		// uploadProgressBar = new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm);
+		// uploadProgressBar = new UploadProgressBar("progress", ajaxSimpleConsentFileForm);
 
 		// fileSubjectFile for payload (attached to filename key)
 		fileSubjectFileField = new FileUploadField(au.org.theark.study.web.Constants.SUBJECT_FILE_FILENAME);
@@ -128,19 +124,9 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 		arkCrudContainerVO.getDetailPanelFormContainer().add(commentsTxtArea);
 
 		// TODO: AJAXify the form to show progress bar
-		// ajaxSimpleConsentFileForm.add(new ConsentFileProgressBar("progress", ajaxSimpleConsentFileForm));
+		// ajaxSimpleConsentFileForm.add(new UploadProgressBar("progress", ajaxSimpleConsentFileForm));
 		// add(ajaxSimpleConsentFileForm);
 		add(arkCrudContainerVO.getDetailPanelFormContainer());
-	}
-
-	private void createDirectoryIfNeeded(String directoryName) {
-		File theDir = new File(directoryName);
-
-		// if the directory does not exist, create it
-		if (!theDir.exists()) {
-			log.debug("Creating directory: " + directoryName);
-			theDir.mkdir();
-		}
 	}
 
 	@Override
@@ -248,20 +234,8 @@ public class DetailForm extends AbstractDetailForm<SubjectVO> {
 	 * 
 	 */
 	protected void onDeleteConfirmed(AjaxRequestTarget target, String selection) {
-		// required for file uploads
-		setMultiPart(true);
-
-		// TODO:(CE) To handle Business and System Exceptions here
-		// studyService.deleteConsentFile(containerForm.getModelObject().getSubjectFile());
-		// this.info("Consent file " + containerForm.getModelObject().getSubjectFile().getFilename() + " was deleted successfully");
-
 		// Display delete confirmation message
 		target.add(feedBackPanel);
-		// TODO Implement Exceptions in PhentoypicService
-		// } catch (UnAuthorizedOperation e) { this.error("You are not authorised to manage study components for the given study " +
-		// study.getName()); processFeedback(target); } catch (ArkSystemException e) {
-		// this.error("A System error occurred, we will have someone contact you."); processFeedback(target); }
-
 		// Move focus back to Search form
 		SubjectVO subjectVO = new SubjectVO();
 		setModelObject(subjectVO);
