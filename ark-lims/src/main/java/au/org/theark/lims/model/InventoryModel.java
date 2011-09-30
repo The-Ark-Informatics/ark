@@ -29,7 +29,6 @@ import au.org.theark.core.model.lims.entity.InvTreeNode;
  * @param <T>
  */
 public class InventoryModel<T> implements Serializable {
-
 	/**
 	 * 
 	 */
@@ -46,6 +45,7 @@ public class InventoryModel<T> implements Serializable {
 		return inventoryObject;
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public String toString() {
 		String name = null;
