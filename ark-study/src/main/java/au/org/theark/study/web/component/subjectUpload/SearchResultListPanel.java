@@ -27,7 +27,6 @@ import org.apache.shiro.util.ThreadContext;
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -45,7 +44,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.Constants;
 import au.org.theark.core.model.study.entity.StudyUpload;
 import au.org.theark.core.security.PermissionConstants;
-import au.org.theark.core.service.IArkCommonService;
 import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.vo.ArkCrudContainerVO;
 import au.org.theark.core.web.component.button.AjaxDeleteButton;
@@ -53,33 +51,41 @@ import au.org.theark.core.web.component.button.ArkDownloadTemplateButton;
 import au.org.theark.study.service.IStudyService;
 import au.org.theark.study.web.component.subjectUpload.form.ContainerForm;
 
-@SuppressWarnings({ "serial", "unchecked", "unused" })
+/**
+ * 
+ * @author cellis
+ * @author elam
+ *
+ */
 public class SearchResultListPanel extends Panel {
+	/**
+	 * 
+	 */
+	private static final long	serialVersionUID	= 6150100976180421479L;
+
 	@SpringBean(name = au.org.theark.core.Constants.STUDY_SERVICE)
 	private IStudyService		studyService;
-
-	@SpringBean(name = au.org.theark.core.Constants.ARK_COMMON_SERVICE)
-	private IArkCommonService	iArkCommonService;
 
 	private transient Logger	log	= LoggerFactory.getLogger(SearchResultListPanel.class);
 
 	private ArkCrudContainerVO	arkCrudContainerVO;
-	private WebMarkupContainer	feedBackPanel;
 	private ContainerForm		containerForm;
 
 
 	public SearchResultListPanel(String id, FeedbackPanel feedBackPanel, ContainerForm containerForm, ArkCrudContainerVO arkCrudContainerVO) {
 		super(id);
 		this.arkCrudContainerVO = arkCrudContainerVO;
-		this.feedBackPanel = feedBackPanel;
 		this.containerForm = containerForm;
 
 		ArkDownloadTemplateButton downloadTemplateButton = new ArkDownloadTemplateButton("downloadTemplate", "SubjectUpload", au.org.theark.study.web.Constants.SUBJECT_TEMPLATE_CELLS) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not proceed with download of the template.");
-				// TODO Auto-generated method stub				
 			}
 			
 		};
@@ -91,8 +97,14 @@ public class SearchResultListPanel extends Panel {
 	 * @param iModel
 	 * @return the pageableListView of Upload
 	 */
+	@SuppressWarnings("unchecked")
 	public PageableListView<StudyUpload> buildPageableListView(IModel iModel) {
 		PageableListView<StudyUpload> sitePageableListView = new PageableListView<StudyUpload>(Constants.RESULT_LIST, iModel, au.org.theark.core.Constants.ROWS_PER_PAGE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void populateItem(final ListItem<StudyUpload> item) {
 				StudyUpload upload = item.getModelObject();
@@ -115,59 +127,36 @@ public class SearchResultListPanel extends Panel {
 					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILENAME, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// File Format
 				if (upload.getFileFormat() != null) {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));// the name
-					// here
-					// must match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, upload.getFileFormat().getName()));
 				}
 				else {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));// the ID here must match the ones in
-					// mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FILE_FORMAT, ""));
 				}
 
-				// TODO when displaying text escape any special characters
 				// UserId
 				if (upload.getUserId() != null) {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));// the ID here must match the
-					// ones in
-					// mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_USER_ID, upload.getUserId()));
 				}
 				else {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_USER_ID, ""));// the ID here must match the ones in mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_USER_ID, ""));
 				}
-
-				/*
-				 * TODO when displaying text escape any special characters // Insert time if (upload.getInsertTime() != null) { item.add(new
-				 * Label(au.org.theark.study.web.Constants. UPLOADVO_UPLOAD_INSERT_TIME, upload.getInsertTime().toString()));// the ID // here must //
-				 * match the // ones in mark-up } else { item.add(new Label(au.org .theark.study.web.Constants.UPLOADVO_UPLOAD_INSERT_TIME, ""));// the ID
-				 * here must match the ones in // mark-up }
-				 */
 
 				// Start time
 				if (upload.getStartTime() != null) {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_START_TIME, upload.getStartTime().toString()));// the ID here
-					// must
-					// match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_START_TIME, upload.getStartTime().toString()));
 				}
 				else {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_START_TIME, ""));// the ID here must match the ones in
-					// mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_START_TIME, ""));
 				}
 
 				// Finish time
 				if (upload.getFinishTime() != null) {
-					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, upload.getFinishTime().toString()));// the ID
-					// here must
-					// match the
-					// ones in mark-up
+					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, upload.getFinishTime().toString()));
 				}
 				else {
 					item.add(new Label(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_FINISH_TIME, ""));
-					// the ID here must match the ones in mark-up
 				}
 
 				// Download file link button
@@ -181,6 +170,11 @@ public class SearchResultListPanel extends Panel {
 
 				// For the alternative stripes
 				item.add(new AttributeModifier("class", new AbstractReadOnlyModel<String>() {
+					/**
+					 * 
+					 */
+					private static final long	serialVersionUID	= 1L;
+
 					@Override
 					public String getObject() {
 						return (item.getIndex() % 2 == 1) ? "even" : "odd";
@@ -191,8 +185,13 @@ public class SearchResultListPanel extends Panel {
 		return sitePageableListView;
 	}
 
-	private Link buildDownloadLink(final StudyUpload upload) {
-		Link link = new Link(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+	protected Link<StudyUpload> buildDownloadLink(final StudyUpload upload) {
+		Link<StudyUpload> link = new Link<StudyUpload>(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
@@ -201,16 +200,13 @@ public class SearchResultListPanel extends Panel {
 					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 
 			};
 		};
 
-		// Add the label for the link
-		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("downloadFileLbl", "Download File");
 		link.add(nameLinkLabel);
 		return link;
@@ -218,6 +214,11 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.DOWNLOAD_FILE) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
@@ -226,8 +227,7 @@ public class SearchResultListPanel extends Panel {
 					data = upload.getPayload().getBytes(1, (int) upload.getPayload().length());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, upload.getFilename()));
 			}
@@ -235,7 +235,6 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not process download request");
-				// TODO Auto-generated method stub
 			};
 		};
 
@@ -248,8 +247,13 @@ public class SearchResultListPanel extends Panel {
 		return ajaxButton;
 	}
 
-	private Link buildDownloadReportLink(final StudyUpload upload) {
-		Link link = new Link(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
+	protected Link<StudyUpload> buildDownloadReportLink(final StudyUpload upload) {
+		Link<StudyUpload> link = new Link<StudyUpload>(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			public void onClick() {
 				// Attempt to download the Blob as an array of bytes
@@ -258,15 +262,12 @@ public class SearchResultListPanel extends Panel {
 					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					log.error(e.getMessage());
 				}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
 			};
 		};
 
-		// Add the label for the link
-		// TODO when displaying text escape any special characters
 		Label nameLinkLabel = new Label("downloadReportLbl", "Download Report");
 		link.add(nameLinkLabel);
 		return link;
@@ -274,6 +275,11 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxButton buildDownloadReportButton(final StudyUpload upload) {
 		AjaxButton ajaxButton = new AjaxButton(au.org.theark.study.web.Constants.UPLOADVO_UPLOAD_UPLOAD_REPORT, new StringResourceModel("downloadReportKey", this, null)) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to download the Blob as an array of bytes
@@ -282,7 +288,6 @@ public class SearchResultListPanel extends Panel {
 					data = upload.getUploadReport().getBytes(1, (int) upload.getUploadReport().length());
 				}
 				catch (SQLException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				getRequestCycle().scheduleRequestHandlerAfterCurrent(new ByteDataResourceRequestHandler("text/plain", data, "uploadReport" + upload.getId()));
@@ -290,8 +295,7 @@ public class SearchResultListPanel extends Panel {
 
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				this.error("Unexpected Error: Could not process download upload report request");
-				// TODO Auto-generated method stub				
+				this.error("Unexpected Error: Could not process download upload report request");				
 			};
 		};
 
@@ -306,6 +310,11 @@ public class SearchResultListPanel extends Panel {
 
 	private AjaxDeleteButton buildDeleteButton(final StudyUpload upload) {
 		DeleteButton ajaxButton = new DeleteButton(upload, SearchResultListPanel.this) {
+			/**
+			 * 
+			 */
+			private static final long	serialVersionUID	= 1L;
+
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
 				// Attempt to delete upload
@@ -334,16 +343,12 @@ public class SearchResultListPanel extends Panel {
 			@Override
 			protected void onError(AjaxRequestTarget target, Form<?> form) {
 				this.error("Unexpected Error: Could not process delete request");
-				// TODO Auto-generated method stub		
 			}
 
 		};
 
-		// TODO: Check permissions for delete
-		ajaxButton.setVisible(true);
 		ajaxButton.setDefaultFormProcessing(false);
 
 		return ajaxButton;
 	}
-
 }
