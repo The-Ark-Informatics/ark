@@ -23,18 +23,15 @@ import java.io.Serializable;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 
-import au.org.theark.report.web.component.viewReport.studySummary.filterForm.StudySummaryFilterForm;
-
 public class ReportContainerVO implements Serializable {
-
 	/**
 	 * 
 	 */
-	private static final long						serialVersionUID	= 1L;
-
+	private static final long	serialVersionUID	= 6807181645927832209L;
 	private FeedbackPanel							feedbackPanel;
 	private ReportSelectPanel						reportSelectPanel;
 	private WebMarkupContainer						selectedReportContainerWMC;
+	@SuppressWarnings("unchecked")
 	private AbstractSelectedReportContainer	selectedReportPanel;
 
 	public ReportContainerVO() {
@@ -69,10 +66,12 @@ public class ReportContainerVO implements Serializable {
 		this.selectedReportContainerWMC = selectedReportContainerWMC;
 	}
 
+	@SuppressWarnings("unchecked")
 	public AbstractSelectedReportContainer getSelectedReportPanel() {
 		return selectedReportPanel;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void setSelectedReportPanel(AbstractSelectedReportContainer selectedReportPanel) {
 		this.selectedReportPanel = selectedReportPanel;
 	}
