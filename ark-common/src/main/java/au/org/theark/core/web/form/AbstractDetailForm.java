@@ -79,7 +79,6 @@ public abstract class AbstractDetailForm<T> extends Form<T> {
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.containerForm = containerForm;
 		this.feedBackPanel = feedBackPanel;
-		setMultiPart(true);// Make sure this is required.
 		initialiseForm();
 	}
 	
