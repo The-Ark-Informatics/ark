@@ -42,13 +42,13 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
+import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.list.Loop;
 import org.apache.wicket.markup.html.list.LoopItem;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.util.file.File;
@@ -259,8 +259,8 @@ public class GridBoxPanel extends Panel {
 		gridBoxKeyContainer.addOrReplace(new Image("usedCellIcon", USED_CELL_ICON));
 		gridBoxKeyContainer.addOrReplace(new Image("barcodeCellIcon", BARCODE_CELL_ICON));
 
-		// Download file link button
-		gridBoxKeyContainer.addOrReplace(buildDownloadButton(invCellList));
+		// Download file link
+		gridBoxKeyContainer.addOrReplace(buildDownloadLink(invCellList));
 		addOrReplace(gridBoxKeyContainer);
 	}
 	
@@ -311,9 +311,33 @@ public class GridBoxPanel extends Panel {
 
 		return bytes;
 	}
+	
+	protected DownloadLink buildDownloadLink(final List<InvCell> invCellList) {
+		log.info("Downloading grid as XLS");
+		byte[] data = createWorkBookAsByteArray(invCellList);
+		InputStream inputStream = new ByteArrayInputStream(data);
+		OutputStream outputStream;
+		DownloadLink link = null;
+		try {
+			java.io.File file = File.createTempFile("exportXlsFileName", ".xls");
+			log.info("Writing out temp file to: " + file.getCanonicalPath());
+			outputStream = new FileOutputStream(file);
+			IOUtils.copy(inputStream, outputStream);
+			
+			link = new DownloadLink("downloadGridBoxDataLink", file);
+		}
+		catch (FileNotFoundException e) {
+			log.error(e.getMessage());
+		}
+		catch (IOException e) {
+			log.error(e.getMessage());
+		}
+		
+		return link;
+	}
 
-	private AjaxButton buildDownloadButton(final List<InvCell> invCellList) {
-		AjaxButton ajaxButton = new AjaxButton("downloadGridBoxData", new StringResourceModel("downloadGridBoxData", this, null)) {
+	protected AjaxButton buildDownloadButton(final List<InvCell> invCellList) {
+		AjaxButton ajaxButton = new AjaxButton("downloadGridBoxData") {
 			/**
 			 * 
 			 */
@@ -326,7 +350,7 @@ public class GridBoxPanel extends Panel {
 				String filename = exportXlsFileName + ".xls";
 				if (data != null) {
 					log.info("Writing out XLS to client");
-					ByteDataResourceRequestHandler handler = new ByteDataResourceRequestHandler("application/vnd.ms-excel", data, filename);
+					ByteDataResourceRequestHandler handler = new ByteDataResourceRequestHandler("", data, filename);
 					getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
 				}
 
