@@ -5,7 +5,7 @@
 	<artifactId>ark-registry</artifactId>
 	<packaging>jar</packaging>
 	<name>Ark Registry</name>
-	<version>0.1.3-SNAPSHOT</version>
+	<version>0.1.5-SNAPSHOT</version>
 	<description>ARK Module that contains all Subject/Prospective Registration related functionality.</description>
 	<organization>
 		<name>Centre for Genetic Epidemiology and Biostatistics (CGEB)</name>
@@ -120,6 +120,6 @@
 	</build>
 	<properties>
 		<jetty.version>6.1.4</jetty.version>
-		<ark-common.version>0.1.4-SNAPSHOT</ark-common.version>
+		<ark-common.version>0.1.5-SNAPSHOT</ark-common.version>
 	</properties>
 	</project>
