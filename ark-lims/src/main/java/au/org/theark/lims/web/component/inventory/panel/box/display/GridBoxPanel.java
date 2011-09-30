@@ -34,13 +34,10 @@ import jxl.write.WritableSheet;
 import jxl.write.WritableWorkbook;
 
 import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.list.Loop;
@@ -60,7 +57,6 @@ import org.slf4j.LoggerFactory;
 import au.org.theark.core.model.lims.entity.Biospecimen;
 import au.org.theark.core.model.lims.entity.InvBox;
 import au.org.theark.core.model.lims.entity.InvCell;
-import au.org.theark.core.util.ByteDataResourceRequestHandler;
 import au.org.theark.core.web.component.AbstractDetailModalWindow;
 import au.org.theark.lims.service.IInventoryService;
 import au.org.theark.lims.web.Constants;
@@ -312,6 +308,11 @@ public class GridBoxPanel extends Panel {
 		return bytes;
 	}
 	
+	/**
+	 * Return a download link for the gridBox contents as an Excel Worksheet 
+	 * @param invCellList
+	 * @return
+	 */
 	protected DownloadLink buildDownloadLink(final List<InvCell> invCellList) {
 		log.info("Downloading grid as XLS");
 		byte[] data = createWorkBookAsByteArray(invCellList);
@@ -334,53 +335,6 @@ public class GridBoxPanel extends Panel {
 		}
 		
 		return link;
-	}
-
-	protected AjaxButton buildDownloadButton(final List<InvCell> invCellList) {
-		AjaxButton ajaxButton = new AjaxButton("downloadGridBoxData") {
-			/**
-			 * 
-			 */
-			private static final long	serialVersionUID	= 2409955824467683966L;
-
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				log.info("Downloading grid as XLS");
-				byte[] data = createWorkBookAsByteArray(invCellList);
-				String filename = exportXlsFileName + ".xls";
-				if (data != null) {
-					log.info("Writing out XLS to client");
-					ByteDataResourceRequestHandler handler = new ByteDataResourceRequestHandler("", data, filename);
-					getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
-				}
-
-				//TODO: Remove when working
-				InputStream inputStream = new ByteArrayInputStream(data);
-				OutputStream outputStream;
-				try {
-					java.io.File file = File.createTempFile("tmpBoxData_", ".xls");
-					log.info("Writing out temp file to: " + file.getCanonicalPath());
-					outputStream = new FileOutputStream(file);
-					IOUtils.copy(inputStream, outputStream);
-				}
-				catch (FileNotFoundException e) {
-					log.error(e.getMessage());
-				}
-				catch (IOException e) {
-					log.error(e.getMessage());
-				}
-			}
-
-			@Override
-			protected void onError(AjaxRequestTarget target, Form<?> form) {
-				log.error("Error occurred in AjaxButton downloadGridBoxData.onError(..)");
-				this.error("Error occurred in processing the download of grid box data");
-			};
-		};
-
-		ajaxButton.setVisible(true);
-		ajaxButton.setDefaultFormProcessing(false);
-		return ajaxButton;
 	}
 
 	/**
