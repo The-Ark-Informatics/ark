@@ -25,12 +25,15 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 import au.org.theark.core.exception.ArkSystemException;
@@ -88,8 +91,13 @@ public class SearchForm extends AbstractSearchForm<AddressVO> {
 		this.feedbackPanel = feedBackPanel;
 		this.listView = listView;
 
-		initialiseSearchForm();
-		addSearchComponentsToForm();
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		add(generalTextLbl);
+		resetButton.setVisible(false);
+		searchButton.setVisible(false);
+		
+		//initialiseSearchForm();
+		//addSearchComponentsToForm();
 		//TODO: Use Subject UID when they are not just contacts
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");

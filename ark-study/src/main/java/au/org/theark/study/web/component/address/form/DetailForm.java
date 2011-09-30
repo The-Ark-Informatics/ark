@@ -309,12 +309,12 @@ public class DetailForm extends AbstractDetailForm<AddressVO> {
 				containerForm.getModelObject().getAddress().setPerson(person);
 				if (containerForm.getModelObject().getAddress().getId() == null) {
 					studyService.create(containerForm.getModelObject().getAddress());
-					feedBackMessageStr.append("Address was successfully added and linked to Subject");
+					feedBackMessageStr.append("Address was successfully added and linked to Subject: ");
 				}
 				else {
 
 					studyService.update(containerForm.getModelObject().getAddress());
-					feedBackMessageStr.append("Address was successfully updated and linked to Subject:");
+					feedBackMessageStr.append("Address was successfully updated and linked to Subject: ");
 				}
 				
 				if(person.getFirstName()  != null && person.getLastName() != null ){
