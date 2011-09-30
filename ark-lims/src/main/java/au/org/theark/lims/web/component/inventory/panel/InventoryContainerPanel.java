@@ -30,7 +30,8 @@ public class InventoryContainerPanel extends AbstractInventoryPanel<LimsVO> {
 		
 		/* Tree not in the containrForm (avoid lag of ArkFormVisitor) */ 
 		add(initialiseTreeContainer());
-		
+		//TODO: This was added to overcome Wicket 1.5.0's strange multipart bug...shouldn't really be needed!
+		containerForm.setMultiPart(true);
 		add(containerForm);
 	}
 	
