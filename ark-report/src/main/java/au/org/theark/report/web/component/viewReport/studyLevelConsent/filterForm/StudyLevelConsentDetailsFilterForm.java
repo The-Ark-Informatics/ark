@@ -60,9 +60,11 @@ import au.org.theark.report.web.component.viewReport.studyLevelConsent.StudyLeve
  * @author elam
  * 
  */
-@SuppressWarnings("serial")
 public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm<ConsentDetailsReportVO> {
-
+	/**
+	 * 
+	 */
+	private static final long						serialVersionUID	= 3402740307146826684L;
 	protected TextField<String>					tfSubjectUID;
 	protected DropDownChoice<SubjectStatus>	ddcSubjectStatus;
 	protected DropDownChoice<ConsentStatus>	ddcConsentStatus;
@@ -74,7 +76,6 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 	}
 
 	protected void onGenerateProcess(AjaxRequestTarget target) {
-
 		Long sessionStudyId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.STUDY_CONTEXT_ID);
 		Study study = iArkCommonService.getStudy(sessionStudyId);
 		cpModel.getObject().getLinkSubjectStudy().setStudy(study);
@@ -170,5 +171,4 @@ public class StudyLevelConsentDetailsFilterForm extends AbstractReportFilterForm
 		ddcConsentStatus = new DropDownChoice<ConsentStatus>(Constants.CONSENT_STATUS, consentStatusList, defaultChoiceRenderer);
 		add(ddcConsentStatus);
 	}
-
 }
