@@ -52,7 +52,6 @@ public abstract class AbstractUserDetailForm<T> extends AbstractDetailForm<T> {
 	 */
 	public AbstractUserDetailForm(String id, FeedbackPanel feedBackPanel, ArkCrudContainerVO arkCrudContainerVO, Form<T> containerForm) {
 		super(id, feedBackPanel, containerForm, arkCrudContainerVO);
-		setMultiPart(false);	//hack to fix the default super-class behaviour
 	}
 
 	protected void initialiseRemoveButton() {
