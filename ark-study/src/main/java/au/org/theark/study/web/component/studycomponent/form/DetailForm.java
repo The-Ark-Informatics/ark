@@ -75,7 +75,6 @@ public class DetailForm extends AbstractDetailForm<StudyCompVo> {
 		
 		super(id,feedBackPanel,containerForm,arkCrudContainerVO);
 		this.feedBackPanel = feedBackPanel;
-		setMultiPart(false);
 	}
 	
 
