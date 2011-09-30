@@ -19,19 +19,11 @@
 package au.org.theark.report.web.component.viewReport.consentDetails;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
-import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
-import au.org.theark.core.model.study.entity.LinkSubjectStudy;
-import au.org.theark.core.model.study.entity.Study;
-import au.org.theark.core.model.study.entity.StudyComp;
 import au.org.theark.report.model.vo.ConsentDetailsReportVO;
 import au.org.theark.report.model.vo.report.ConsentDetailsDataRow;
 import au.org.theark.report.service.IReportService;
@@ -45,13 +37,12 @@ import au.org.theark.report.service.IReportService;
  * @author elam
  */
 public class ConsentDetailsReportDataSource implements Serializable, JRDataSource {
+
 	/**
-	 *
+	 * 
 	 */
-	private static final long				serialVersionUID	= 1L;
-
+	private static final long				serialVersionUID	= 6160868706063977404L;
 	private List<ConsentDetailsDataRow>	data					= null;
-
 	private int									index					= -1;
 
 	/**
@@ -135,5 +126,4 @@ public class ConsentDetailsReportDataSource implements Serializable, JRDataSourc
 
 		return value;
 	}
-
 }
