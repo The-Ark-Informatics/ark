@@ -24,12 +24,15 @@ import java.util.List;
 import org.apache.shiro.SecurityUtils;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.PageableListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.RangeValidator;
 import org.apache.wicket.validation.validator.StringValidator;
@@ -76,8 +79,11 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		super(id,cpmModel,feedBackPanel,arkCrudContainerVO);
 		this.arkCrudContainerVO = arkCrudContainerVO;
 		this.feedbackPanel = feedBackPanel;
-		initialiseSearchForm();
-		addSearchComponentsToForm();
+		Label generalTextLbl = new Label("generalLbl", new StringResourceModel("search.panel.text", new Model() ));
+		add(generalTextLbl);
+		resetButton.setVisible(false);
+		searchButton.setVisible(false);
+		//initialiseSearchForm();
 		Long sessionPersonId = (Long) SecurityUtils.getSubject().getSession().getAttribute(au.org.theark.core.Constants.PERSON_CONTEXT_ID);
 		disableSearchForm(sessionPersonId, "There is no subject or contact in context. Please select a Subject or Contact.");
 	}
@@ -91,6 +97,7 @@ public class SearchForm extends AbstractSearchForm<PhoneVO> {
 		List<PhoneType> phoneTypeList = iArkCommonService.getListOfPhoneType();
 		ChoiceRenderer defaultChoiceRenderer = new ChoiceRenderer(Constants.NAME, Constants.ID);
 		phoneTypeChoice = new DropDownChoice("phone.phoneType", phoneTypeList, defaultChoiceRenderer);
+		//addSearchComponentsToForm();
 
 	}
 
