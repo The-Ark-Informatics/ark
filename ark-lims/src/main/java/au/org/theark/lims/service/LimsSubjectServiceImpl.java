@@ -20,8 +20,6 @@ package au.org.theark.lims.service;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +36,6 @@ import au.org.theark.lims.model.vo.LimsVO;
 @Transactional
 @Service(au.org.theark.lims.web.Constants.LIMS_SUBJECT_SERVICE)
 public class LimsSubjectServiceImpl implements ILimsSubjectService  {
-	private static Logger		log	= LoggerFactory.getLogger(LimsSubjectServiceImpl.class);
 	private ILimsSubjectDao iLimsSubjectDao;
 	
 	/**
